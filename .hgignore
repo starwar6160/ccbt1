@@ -1,0 +1,6 @@
+syntax: glob
+Debug/*
+Release/*
+CCBelock.sdf
+CCBelock.opensdf
+CCBelock.suo

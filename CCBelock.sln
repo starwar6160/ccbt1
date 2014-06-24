@@ -1,0 +1,26 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CCBelock", "CCBelock\CCBelock.vcxproj", "{2466CA9D-28E7-4156-B35E-B1D595ED5F99}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "eLockTest1", "eLockTest1\eLockTest1.vcxproj", "{F5F5FDD3-71E8-4878-BB6A-9B295C790FC4}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{2466CA9D-28E7-4156-B35E-B1D595ED5F99}.Debug|Win32.ActiveCfg = Debug|Win32
+		{2466CA9D-28E7-4156-B35E-B1D595ED5F99}.Debug|Win32.Build.0 = Debug|Win32
+		{2466CA9D-28E7-4156-B35E-B1D595ED5F99}.Release|Win32.ActiveCfg = Release|Win32
+		{2466CA9D-28E7-4156-B35E-B1D595ED5F99}.Release|Win32.Build.0 = Release|Win32
+		{F5F5FDD3-71E8-4878-BB6A-9B295C790FC4}.Debug|Win32.ActiveCfg = Debug|Win32
+		{F5F5FDD3-71E8-4878-BB6A-9B295C790FC4}.Debug|Win32.Build.0 = Debug|Win32
+		{F5F5FDD3-71E8-4878-BB6A-9B295C790FC4}.Release|Win32.ActiveCfg = Release|Win32
+		{F5F5FDD3-71E8-4878-BB6A-9B295C790FC4}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
