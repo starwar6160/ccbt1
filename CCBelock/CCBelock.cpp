@@ -4,19 +4,29 @@
 #include "stdafx.h"
 #include "CCBelock.h"
 
-
-// 这是导出变量的一个示例
-CCBELOCK_API int nCCBelock=0;
-
-// 这是导出函数的一个示例。
-CCBELOCK_API int fnCCBelock(void)
+CCBELOCK_API long Open(long lTimeOut)
 {
-	return 42;
+	return 624;
 }
 
-// 这是已导出类的构造函数。
-// 有关类定义的信息，请参阅 CCBelock.h
-CCCBelock::CCCBelock()
+CCBELOCK_API long Close()
 {
-	return;
+	return 1544;
+}
+
+CCBELOCK_API long Notify(const char *pszMsg)
+{
+	return 333;
+}
+
+void cdecl myRecvMsgRotine(const char *pszMsg)
+{
+
+}
+
+typedef void (cdecl *RecvMsgRotine)(const char *pszMsg);
+
+CCBELOCK_API int SetRecvMsgRotine(RecvMsgRotine pRecvMsgFun)
+{
+	return 0;
 }

@@ -10,13 +10,3 @@
 #define CCBELOCK_API __declspec(dllimport)
 #endif
 
-// 此类是从 CCBelock.dll 导出的
-class CCBELOCK_API CCCBelock {
-public:
-	CCCBelock(void);
-	// TODO: 在此添加您的方法。
-};
-
-extern CCBELOCK_API int nCCBelock;
-
-CCBELOCK_API int fnCCBelock(void);
