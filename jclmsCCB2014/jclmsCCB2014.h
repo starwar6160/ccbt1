@@ -1,3 +1,7 @@
+#ifndef jclmsCCB2014_h__
+#define jclmsCCB2014_h__
+#include "stdafx.h"
+
 // 下列 ifdef 块是创建使从 DLL 导出更简单的
 // 宏的标准方法。此 DLL 中的所有文件都是用命令行上定义的 JCLMSCCB2014_EXPORTS
 // 符号编译的。在使用此 DLL 的
@@ -57,3 +61,4 @@ typedef enum jc_cmd_type{
 //////////////////////////////////////////////////////////////////////////
 //}	//end of namespace jclms
 
+#endif // jclmsCCB2014_h__
