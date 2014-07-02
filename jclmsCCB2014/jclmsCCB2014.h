@@ -20,3 +20,32 @@ public:
 extern JCLMSCCB2014_API int njclmsCCB2014;
 
 JCLMSCCB2014_API int fnjclmsCCB2014(void);
+
+
+//////////////////////////////////////////////////////////////////////////
+namespace jclms{
+//////////////////////////////////////////////////////////////////////////
+
+	class JcLockInput
+	{
+	public:
+		//固定因素部分
+		string m_atmno;			//ATM号
+		string m_lockno;		//锁号
+		string m_psk;			//PSK，上下位机共同持有的唯一机密因素
+		//可变因素部分
+		int64_t m_datetime;		//日期时间
+		int32_t m_validity;		//有效期
+		int32_t m_closecode;	//闭锁码
+		int32_t m_cmdtype;		//模式代码，比如开锁模式，远程重置模式，建行的流程要求的各种模式等等
+		//////////////////////////////////////////////////////////////////////////
+#ifdef JC_USEKEYINFO_201407
+		string m_keyno;
+		string m_keypin;
+#endif // JC_USEKEYINFO_201407
+	public:
+		void print(void);
+	};
+//////////////////////////////////////////////////////////////////////////
+}	//end of namespace jclms
+

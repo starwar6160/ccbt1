@@ -20,3 +20,28 @@ CjclmsCCB2014::CjclmsCCB2014()
 {
 	return;
 }
+
+namespace jclms{
+	void JcLockInput::print()
+	{
+		string conn=".";	//连字符号
+		//三个固定条件组合在一起
+		string allItems=m_atmno+conn+m_lockno+conn+m_psk+conn;
+		//可变条件逐个化为字符串，组合到一起
+#define BLEN (16)
+		char buf[BLEN];
+		memset(buf,0,BLEN);
+		sprintf(buf,"%d",m_datetime);
+		allItems=allItems+buf+conn;
+		memset(buf,0,BLEN);
+		sprintf(buf,"%d",m_validity);
+		allItems=allItems+buf+conn;
+		memset(buf,0,BLEN);
+		sprintf(buf,"%d",m_closecode);
+		allItems=allItems+buf+conn;
+		memset(buf,0,BLEN);
+		sprintf(buf,"%d",m_cmdtype);
+		allItems=allItems+buf+conn;
+		cout<<allItems<<endl;			
+	}
+}
