@@ -61,6 +61,38 @@ typedef enum jc_cmd_type{
 		JCERROR CheckInput(void);
 	};
 //////////////////////////////////////////////////////////////////////////
+
+	//实际上不限于AES,只是作为一个基本的块规整大小单位方便处理
+#define ZW_AES_BLOCK_SIZE	(128/8)	
+#define ZW_SM3_DGST_SIZE	(256/8)
+	class JCLMSCCB2014_API zwHexTool
+	{
+		char *m_bin;
+		int m_binLen;
+		int m_padLen;
+		string m_CArrayStr;
+	public:
+		zwHexTool(const char *HexInput);
+		zwHexTool(const void *msg,const int msgLen);
+		~zwHexTool();
+		//出参给出内部bin数据区地址,以及长度
+		char * getBin(void);
+		int getBinLen(void);
+		int getPadedLen(void);
+		int getXXTEABlockNum(void);
+		void PrintBin(void);
+		const char * getCArrayStr(void);
+	protected:
+
+	private:
+	};
+//////////////////////////////////////////////////////////////////////////
+	//密钥，消息，输出的摘要,都是二进制格式
+	int32_t JCLMSCCB2014_API zwSm3Hmac7(zwHexTool &inPsk,
+		zwHexTool &inMessage,
+		zwHexTool &outHmac);
+
+
 }	//end of namespace jclms
 
 #endif // jclmsCCB2014_h__

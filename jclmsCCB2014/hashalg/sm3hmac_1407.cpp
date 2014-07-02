@@ -3,7 +3,7 @@
 #include <memory.h>
 #include <cstring>
 #include "sm3.h"
-#include "..\\mydefs.h"
+#include "..\\jclmsCCB2014.h"
 using namespace std;
 typedef unsigned char BYTE;
 
@@ -11,7 +11,7 @@ typedef unsigned char BYTE;
 namespace jclms{
 const uint8_t ZW_INPAD_FILL_CHAR=0x36;
 const uint8_t ZW_OUTPAD_FILL_CHAR=0x5C;
-//6个参数实际上是3个，密钥，消息，输出的摘要
+//密钥，消息，输出的摘要,都是二进制格式
 int32_t zwSm3Hmac7(zwHexTool &inPsk,
 				  zwHexTool &inMessage,
 				  zwHexTool &outHmac)
