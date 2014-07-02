@@ -474,7 +474,7 @@ SWIGEXPORT void SWIGSTDCALL CSharp_JcLockInput_print(void * jarg1) {
   JcLockInput *arg1 = (JcLockInput *) 0 ;
   
   arg1 = (JcLockInput *)jarg1; 
-  (arg1)->print();
+  (arg1)->DebugPrint();
 }
 
 
@@ -484,7 +484,7 @@ SWIGEXPORT int SWIGSTDCALL CSharp_JcLockInput_check(void * jarg1) {
   JCERROR result;
   
   arg1 = (JcLockInput *)jarg1; 
-  result = (JCERROR)(arg1)->check();
+  result = (JCERROR)(arg1)->CheckInput();
   jresult = result; 
   return jresult;
 }

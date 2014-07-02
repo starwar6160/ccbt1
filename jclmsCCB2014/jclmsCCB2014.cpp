@@ -14,11 +14,12 @@
 		m_validity=-1;
 		m_closecode=-1;
 		m_cmdtype=-1;
+		m_status=EJC_FAIL;
 	}
 
-	void JcLockInput::print()
+	void JcLockInput::DebugPrint()
 	{
-		if (EJC_SUSSESS!=check())
+		if (EJC_SUSSESS!=CheckInput())
 		{
 			printf("JcLock Input Para Error!\n");
 		}
@@ -44,7 +45,7 @@
 		printf("All Items = %s \n",allItems.c_str());
 	}
 
-	JCERROR JcLockInput::check()
+	JCERROR JcLockInput::CheckInput()
 	{
 		JCERROR status=EJC_SUSSESS;
 		if (m_atmno=="")
@@ -76,7 +77,7 @@
 			status=EJC_INPUT_NULL;
 		}
 
-
+		m_status=status;
 		return status;
 	}
 //}

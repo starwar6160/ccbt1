@@ -119,11 +119,11 @@ public class JcLockInput : IDisposable {
   public JcLockInput() : this(jclmsCCB2014PINVOKE.new_JcLockInput(), true) {
   }
 
-  public void print() {
+  public void DebugPrint() {
     jclmsCCB2014PINVOKE.JcLockInput_print(swigCPtr);
   }
 
-  public JCERROR check() {
+  public JCERROR CheckInput() {
     JCERROR ret = (JCERROR)jclmsCCB2014PINVOKE.JcLockInput_check(swigCPtr);
     return ret;
   }

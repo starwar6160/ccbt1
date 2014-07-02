@@ -53,10 +53,12 @@ typedef enum jc_cmd_type{
 		string m_keyno;
 		string m_keypin;
 #endif // JC_USEKEYINFO_201407
+	private:
+		JCERROR m_status;
 	public:
 		JcLockInput(void);
-		void print(void);
-		JCERROR check(void);
+		void DebugPrint(void);	//
+		JCERROR CheckInput(void);
 	};
 //////////////////////////////////////////////////////////////////////////
 //}	//end of namespace jclms

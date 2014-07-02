@@ -17,7 +17,7 @@ namespace cstest702
             aa.m_validity = 240;
             aa.m_closecode = 87654321;
             aa.m_cmdtype = 0;
-            aa.print();
+            aa.DebugPrint();
         }
     }
 }
