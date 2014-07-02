@@ -3,6 +3,7 @@
 #include <memory.h>
 #include <cstring>
 #include "sm3.h"
+#include "..\\mydefs.h"
 using namespace std;
 typedef unsigned char BYTE;
 
@@ -11,9 +12,9 @@ namespace jclms{
 const uint8_t ZW_INPAD_FILL_CHAR=0x36;
 const uint8_t ZW_OUTPAD_FILL_CHAR=0x5C;
 //6个参数实际上是3个，密钥，消息，输出的摘要
-int32_t zwSm3Hmac7(const char *psk,const int32_t pskLen,
-				  const char *message,const int32_t msgLen,
-				  char *outHmac,const int32_t outHmacLen)
+int32_t zwSm3Hmac7(zwHexTool &pskbin,
+				  zwHexTool &message,
+				  zwHexTool &outHmac)
 {
 	SM3 sm3p1,sm3p2;
 	uint8_t sm3hash_t1[ZWSM3_DGST_LEN];	//中间HASH结果pass1保存的地方
@@ -22,29 +23,11 @@ int32_t zwSm3Hmac7(const char *psk,const int32_t pskLen,
 	uint8_t inpad[ZWSM3_BLOCK_LEN];
 	uint8_t outpad [ZWSM3_BLOCK_LEN];
 	int32_t i=0;
-	//参数检查断言
-	assert(psk!=NULL);
-	assert(pskLen<=ZWSM3_BLOCK_LEN);
-	assert(message!=NULL);
-	assert(msgLen>0);
-	assert(outHmac!=NULL);
-	//20140701,由于不明原因，暂且不用这个检查
-	//assert(outHmac[0]==outHmac[1]);
-	assert(outHmacLen==ZWSM3_DGST_LEN);
-	//参数检查，如果不符合条件，就返回一个很大的负数
-	if (psk==NULL || message==NULL ||outHmac==NULL)
-	{
-		return -1608;
-	}
-	if (pskLen>ZWSM3_BLOCK_LEN || pskLen<=0 ||
-		msgLen<=0 || outHmacLen!=ZWSM3_DGST_LEN)
-	{
-		return -1609;
-	}
+
 	//////////////////////////////////////////////////////////////////////////
 	//组合第一趟HASH所需的内容，psk放在开头，余下部分被ZW_INPAD_FILL_CHAR填充
 	memset(inpad,ZW_INPAD_FILL_CHAR,ZWSM3_BLOCK_LEN);
-	memcpy(inpad,psk,pskLen);
+	memcpy(inpad,pskbin.getBin(),pskbin.getBinLen());
 	memset(&sm3p1,0,sizeof(sm3p1));
 	//计算第一趟HASH结果
 	SM3_init(&sm3p1);
@@ -52,16 +35,16 @@ int32_t zwSm3Hmac7(const char *psk,const int32_t pskLen,
 	{
 		SM3_process(&sm3p1,inpad[i]);
 	}
-	for (i=0;i<msgLen;i++)
+	for (i=0;i<message.getBinLen();i++)
 	{
-		SM3_process(&sm3p1,message[i]);
+		SM3_process(&sm3p1,*(message.getBin()+i));
 	}
 	memset(sm3hash_t1,0,ZWSM3_DGST_LEN);
 	SM3_hash(&sm3p1,(char *)sm3hash_t1);
 	//////////////////////////////////////////////////////////////////////////
 	//计算第二趟HASH结果
 	memset(outpad,ZW_OUTPAD_FILL_CHAR,ZWSM3_BLOCK_LEN);
-	memcpy(outpad,psk,pskLen);
+	memcpy(outpad,pskbin.getBin(),pskbin.getBinLen());
 	memset(&sm3p2,0,sizeof(sm3p2));
 	SM3_init(&sm3p2);
 	for (i=0;i<ZWSM3_BLOCK_LEN;i++)
@@ -72,7 +55,7 @@ int32_t zwSm3Hmac7(const char *psk,const int32_t pskLen,
 	{
 		SM3_process(&sm3p2,sm3hash_t1[i]);
 	}
-	SM3_hash(&sm3p2,outHmac);
+	SM3_hash(&sm3p2,outHmac.getBin());
 	return 0;
 }
 
