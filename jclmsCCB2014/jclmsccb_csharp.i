@@ -1,4 +1,4 @@
-%module jclmsccb
+%module jclmsCCB2014
 using namespace std;
 %include "std_string.i"
 %include "typemaps.i"

@@ -10,7 +10,7 @@
 using System;
 using System.Runtime.InteropServices;
 
-class jclmsccbPINVOKE {
+class jclmsCCB2014PINVOKE {
 
   protected class SWIGExceptionHelper {
 
@@ -33,8 +33,8 @@ class jclmsccbPINVOKE {
     static ExceptionArgumentDelegate argumentNullDelegate = new ExceptionArgumentDelegate(SetPendingArgumentNullException);
     static ExceptionArgumentDelegate argumentOutOfRangeDelegate = new ExceptionArgumentDelegate(SetPendingArgumentOutOfRangeException);
 
-    [DllImport("jclmsccb", EntryPoint="SWIGRegisterExceptionCallbacks_jclmsccb")]
-    public static extern void SWIGRegisterExceptionCallbacks_jclmsccb(
+    [DllImport("jclmsCCB2014", EntryPoint="SWIGRegisterExceptionCallbacks_jclmsCCB2014")]
+    public static extern void SWIGRegisterExceptionCallbacks_jclmsCCB2014(
                                 ExceptionDelegate applicationDelegate,
                                 ExceptionDelegate arithmeticDelegate,
                                 ExceptionDelegate divideByZeroDelegate, 
@@ -47,8 +47,8 @@ class jclmsccbPINVOKE {
                                 ExceptionDelegate overflowDelegate, 
                                 ExceptionDelegate systemExceptionDelegate);
 
-    [DllImport("jclmsccb", EntryPoint="SWIGRegisterExceptionArgumentCallbacks_jclmsccb")]
-    public static extern void SWIGRegisterExceptionCallbacksArgument_jclmsccb(
+    [DllImport("jclmsCCB2014", EntryPoint="SWIGRegisterExceptionArgumentCallbacks_jclmsCCB2014")]
+    public static extern void SWIGRegisterExceptionCallbacksArgument_jclmsCCB2014(
                                 ExceptionArgumentDelegate argumentDelegate,
                                 ExceptionArgumentDelegate argumentNullDelegate,
                                 ExceptionArgumentDelegate argumentOutOfRangeDelegate);
@@ -102,7 +102,7 @@ class jclmsccbPINVOKE {
     }
 
     static SWIGExceptionHelper() {
-      SWIGRegisterExceptionCallbacks_jclmsccb(
+      SWIGRegisterExceptionCallbacks_jclmsCCB2014(
                                 applicationDelegate,
                                 arithmeticDelegate,
                                 divideByZeroDelegate,
@@ -115,7 +115,7 @@ class jclmsccbPINVOKE {
                                 overflowDelegate,
                                 systemDelegate);
 
-      SWIGRegisterExceptionCallbacksArgument_jclmsccb(
+      SWIGRegisterExceptionCallbacksArgument_jclmsCCB2014(
                                 argumentDelegate,
                                 argumentNullDelegate,
                                 argumentOutOfRangeDelegate);
@@ -143,7 +143,7 @@ class jclmsccbPINVOKE {
       if (pendingException != null)
         throw new ApplicationException("FATAL: An earlier pending exception from unmanaged code was missed and thus not thrown (" + pendingException.ToString() + ")", e);
       pendingException = e;
-      lock(typeof(jclmsccbPINVOKE)) {
+      lock(typeof(jclmsCCB2014PINVOKE)) {
         numExceptionsPending++;
       }
     }
@@ -154,7 +154,7 @@ class jclmsccbPINVOKE {
         if (pendingException != null) {
           e = pendingException;
           pendingException = null;
-          lock(typeof(jclmsccbPINVOKE)) {
+          lock(typeof(jclmsCCB2014PINVOKE)) {
             numExceptionsPending--;
           }
         }
@@ -169,76 +169,76 @@ class jclmsccbPINVOKE {
     public delegate string SWIGStringDelegate(string message);
     static SWIGStringDelegate stringDelegate = new SWIGStringDelegate(CreateString);
 
-    [DllImport("jclmsccb", EntryPoint="SWIGRegisterStringCallback_jclmsccb")]
-    public static extern void SWIGRegisterStringCallback_jclmsccb(SWIGStringDelegate stringDelegate);
+    [DllImport("jclmsCCB2014", EntryPoint="SWIGRegisterStringCallback_jclmsCCB2014")]
+    public static extern void SWIGRegisterStringCallback_jclmsCCB2014(SWIGStringDelegate stringDelegate);
 
     static string CreateString(string cString) {
       return cString;
     }
 
     static SWIGStringHelper() {
-      SWIGRegisterStringCallback_jclmsccb(stringDelegate);
+      SWIGRegisterStringCallback_jclmsCCB2014(stringDelegate);
     }
   }
 
   static protected SWIGStringHelper swigStringHelper = new SWIGStringHelper();
 
 
-  static jclmsccbPINVOKE() {
+  static jclmsCCB2014PINVOKE() {
   }
 
 
-  [DllImport("jclmsccb", EntryPoint="CSharp_JcLockInput_m_atmno_set")]
+  [DllImport("jclmsCCB2014", EntryPoint="CSharp_JcLockInput_m_atmno_set")]
   public static extern void JcLockInput_m_atmno_set(HandleRef jarg1, string jarg2);
 
-  [DllImport("jclmsccb", EntryPoint="CSharp_JcLockInput_m_atmno_get")]
+  [DllImport("jclmsCCB2014", EntryPoint="CSharp_JcLockInput_m_atmno_get")]
   public static extern string JcLockInput_m_atmno_get(HandleRef jarg1);
 
-  [DllImport("jclmsccb", EntryPoint="CSharp_JcLockInput_m_lockno_set")]
+  [DllImport("jclmsCCB2014", EntryPoint="CSharp_JcLockInput_m_lockno_set")]
   public static extern void JcLockInput_m_lockno_set(HandleRef jarg1, string jarg2);
 
-  [DllImport("jclmsccb", EntryPoint="CSharp_JcLockInput_m_lockno_get")]
+  [DllImport("jclmsCCB2014", EntryPoint="CSharp_JcLockInput_m_lockno_get")]
   public static extern string JcLockInput_m_lockno_get(HandleRef jarg1);
 
-  [DllImport("jclmsccb", EntryPoint="CSharp_JcLockInput_m_psk_set")]
+  [DllImport("jclmsCCB2014", EntryPoint="CSharp_JcLockInput_m_psk_set")]
   public static extern void JcLockInput_m_psk_set(HandleRef jarg1, string jarg2);
 
-  [DllImport("jclmsccb", EntryPoint="CSharp_JcLockInput_m_psk_get")]
+  [DllImport("jclmsCCB2014", EntryPoint="CSharp_JcLockInput_m_psk_get")]
   public static extern string JcLockInput_m_psk_get(HandleRef jarg1);
 
-  [DllImport("jclmsccb", EntryPoint="CSharp_JcLockInput_m_datetime_set")]
+  [DllImport("jclmsCCB2014", EntryPoint="CSharp_JcLockInput_m_datetime_set")]
   public static extern void JcLockInput_m_datetime_set(HandleRef jarg1, int jarg2);
 
-  [DllImport("jclmsccb", EntryPoint="CSharp_JcLockInput_m_datetime_get")]
+  [DllImport("jclmsCCB2014", EntryPoint="CSharp_JcLockInput_m_datetime_get")]
   public static extern int JcLockInput_m_datetime_get(HandleRef jarg1);
 
-  [DllImport("jclmsccb", EntryPoint="CSharp_JcLockInput_m_validity_set")]
+  [DllImport("jclmsCCB2014", EntryPoint="CSharp_JcLockInput_m_validity_set")]
   public static extern void JcLockInput_m_validity_set(HandleRef jarg1, int jarg2);
 
-  [DllImport("jclmsccb", EntryPoint="CSharp_JcLockInput_m_validity_get")]
+  [DllImport("jclmsCCB2014", EntryPoint="CSharp_JcLockInput_m_validity_get")]
   public static extern int JcLockInput_m_validity_get(HandleRef jarg1);
 
-  [DllImport("jclmsccb", EntryPoint="CSharp_JcLockInput_m_closecode_set")]
+  [DllImport("jclmsCCB2014", EntryPoint="CSharp_JcLockInput_m_closecode_set")]
   public static extern void JcLockInput_m_closecode_set(HandleRef jarg1, int jarg2);
 
-  [DllImport("jclmsccb", EntryPoint="CSharp_JcLockInput_m_closecode_get")]
+  [DllImport("jclmsCCB2014", EntryPoint="CSharp_JcLockInput_m_closecode_get")]
   public static extern int JcLockInput_m_closecode_get(HandleRef jarg1);
 
-  [DllImport("jclmsccb", EntryPoint="CSharp_JcLockInput_m_cmdtype_set")]
+  [DllImport("jclmsCCB2014", EntryPoint="CSharp_JcLockInput_m_cmdtype_set")]
   public static extern void JcLockInput_m_cmdtype_set(HandleRef jarg1, int jarg2);
 
-  [DllImport("jclmsccb", EntryPoint="CSharp_JcLockInput_m_cmdtype_get")]
+  [DllImport("jclmsCCB2014", EntryPoint="CSharp_JcLockInput_m_cmdtype_get")]
   public static extern int JcLockInput_m_cmdtype_get(HandleRef jarg1);
 
-  [DllImport("jclmsccb", EntryPoint="CSharp_new_JcLockInput")]
+  [DllImport("jclmsCCB2014", EntryPoint="CSharp_new_JcLockInput")]
   public static extern IntPtr new_JcLockInput();
 
-  [DllImport("jclmsccb", EntryPoint="CSharp_JcLockInput_print")]
+  [DllImport("jclmsCCB2014", EntryPoint="CSharp_JcLockInput_print")]
   public static extern void JcLockInput_print(HandleRef jarg1);
 
-  [DllImport("jclmsccb", EntryPoint="CSharp_JcLockInput_check")]
+  [DllImport("jclmsCCB2014", EntryPoint="CSharp_JcLockInput_check")]
   public static extern int JcLockInput_check(HandleRef jarg1);
 
-  [DllImport("jclmsccb", EntryPoint="CSharp_delete_JcLockInput")]
+  [DllImport("jclmsCCB2014", EntryPoint="CSharp_delete_JcLockInput")]
   public static extern void delete_JcLockInput(HandleRef jarg1);
 }

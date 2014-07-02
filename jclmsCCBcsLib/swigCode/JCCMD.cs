@@ -7,8 +7,10 @@
  * ----------------------------------------------------------------------------- */
 
 
-using System;
-using System.Runtime.InteropServices;
-
-public class jclmsccb {
+public enum JCCMD {
+  JCCMD_GEN_DYNACODE,
+  JCCMD_CCB_DYPASS1,
+  JCCMD_CCB_LOCK_VERCODE,
+  JCCMD_CCB_DYPASS2,
+  JCCMD_RESET_KEY
 }
