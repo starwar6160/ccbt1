@@ -26,7 +26,7 @@ JCLMSCCB2014_API int fnjclmsCCB2014(void);
 namespace jclms{
 //////////////////////////////////////////////////////////////////////////
 
-	class JcLockInput
+	class JCLMSCCB2014_API JcLockInput
 	{
 	public:
 		//固定因素部分

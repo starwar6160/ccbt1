@@ -41,7 +41,7 @@ namespace jclms{
 		allItems=allItems+buf+conn;
 		memset(buf,0,BLEN);
 		sprintf(buf,"%d",m_cmdtype);
-		allItems=allItems+buf+conn;
+		allItems=allItems+buf;
 		cout<<allItems<<endl;			
 	}
 }
