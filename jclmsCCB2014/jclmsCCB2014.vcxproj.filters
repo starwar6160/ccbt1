@@ -53,5 +53,8 @@
     <ClCompile Include="hashalg\sm3hmac_1407.cpp">
       <Filter>源文件\hashalg</Filter>
     </ClCompile>
+    <ClCompile Include="zwhextool.cpp">
+      <Filter>源文件\hashalg</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

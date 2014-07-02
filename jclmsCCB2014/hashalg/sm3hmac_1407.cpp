@@ -11,7 +11,7 @@ namespace jclms{
 const uint8_t ZW_INPAD_FILL_CHAR=0x36;
 const uint8_t ZW_OUTPAD_FILL_CHAR=0x5C;
 //6个参数实际上是3个，密钥，消息，输出的摘要
-int32_t zwSm3Hmac(const char *psk,const int32_t pskLen,
+int32_t zwSm3Hmac7(const char *psk,const int32_t pskLen,
 				  const char *message,const int32_t msgLen,
 				  char *outHmac,const int32_t outHmacLen)
 {
