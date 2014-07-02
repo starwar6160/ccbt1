@@ -1,0 +1,9 @@
+syntax: glob
+.git/*
+Debug/*
+Release/*
+ipch/*
+*.suo
+*.opensdf
+*.sdf
+
