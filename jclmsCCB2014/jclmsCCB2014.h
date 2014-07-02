@@ -60,7 +60,10 @@ typedef enum jc_cmd_type{
 		void DebugPrint(void);	//
 		JCERROR CheckInput(void);
 	};
-//////////////////////////////////////////////////////////////////////////
+}	//end of namespace jclms
+
+namespace zwTools{
+	//////////////////////////////////////////////////////////////////////////
 
 	//实际上不限于AES,只是作为一个基本的块规整大小单位方便处理
 #define ZW_AES_BLOCK_SIZE	(128/8)	
@@ -86,13 +89,11 @@ typedef enum jc_cmd_type{
 
 	private:
 	};
-//////////////////////////////////////////////////////////////////////////
+	//////////////////////////////////////////////////////////////////////////
 	//密钥，消息，输出的摘要,都是二进制格式
 	int32_t JCLMSCCB2014_API zwSm3Hmac7(zwHexTool &inPsk,
 		zwHexTool &inMessage,
 		zwHexTool &outHmac);
-
-
-}	//end of namespace jclms
+}
 
 #endif // jclmsCCB2014_h__

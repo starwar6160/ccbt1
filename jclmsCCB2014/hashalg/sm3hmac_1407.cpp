@@ -8,7 +8,7 @@ using namespace std;
 typedef unsigned char BYTE;
 
 
-namespace jclms{
+namespace zwTools{
 const uint8_t ZW_INPAD_FILL_CHAR=0x36;
 const uint8_t ZW_OUTPAD_FILL_CHAR=0x5C;
 //密钥，消息，输出的摘要,都是二进制格式

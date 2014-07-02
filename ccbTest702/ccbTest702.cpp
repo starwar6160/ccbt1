@@ -9,7 +9,7 @@ void myJcLockInputTest1();
 void zwSm3HmacTest2();
 
 
-
+using namespace zwTools;
 using namespace jclms;
 
 int _tmain(int argc, _TCHAR* argv[])
@@ -38,7 +38,7 @@ void myJcLockInputTest1()
 void zwSm3HmacTest2()
 {
 	const char *pska="mypskaaabbbcccdddeee";
-	const char *msga="myplaintexttest201407021710.myplaintexttest201407021710";
+	const char *msga="myplaintexttest201407021710.myplaintexttest201407021742";
 	char tbuf[ZW_SM3_DGST_SIZE];
 	memset(tbuf,0,ZW_SM3_DGST_SIZE);
 	zwHexTool psk(pska,strlen(pska));

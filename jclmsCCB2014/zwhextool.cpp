@@ -2,7 +2,7 @@
 using namespace std;
 #include "jclmsCCB2014.h"
 
-namespace jclms{
+namespace zwTools{
 /////////////////////////////////十六进制操作/////////////////////////////////////////
 zwHexTool::zwHexTool(const char *HexInput)
 {
@@ -174,4 +174,4 @@ void btea(uint32_t *v, int n, uint32_t const key[4]) {
 }
 //////////////////////////////////XXTEA end ////////////////////////////////////////
 
-}	//namespace jclms{
+}	//namespace zwTools{
