@@ -25,6 +25,20 @@ JCLMSCCB2014_API int fnjclmsCCB2014(void);
 //////////////////////////////////////////////////////////////////////////
 namespace jclms{
 //////////////////////////////////////////////////////////////////////////
+typedef enum jc_error_code{
+	EJC_SUSSESS,	//成功
+	EJC_FAIL,		//失败
+	EJC_INPUT_NULL	//输入条件缺少
+} JCERROR;
+
+typedef enum jc_cmd_type{
+	JCCMD_GEN_DYNACODE,		//正常生成动态码
+	JCCMD_CCB_DYPASS1,		//上位机第一开锁密码
+	JCCMD_CCB_LOCK_VERCODE,	//下位机验证码
+	JCCMD_CCB_DYPASS2,		//上位机第二开锁密码
+	JCCMD_RESET_KEY		//重置钥匙
+} JCCMD;
+
 
 	class JCLMSCCB2014_API JcLockInput
 	{
@@ -44,7 +58,9 @@ namespace jclms{
 		string m_keypin;
 #endif // JC_USEKEYINFO_201407
 	public:
+		JcLockInput(void);
 		void print(void);
+		JCERROR check(void);
 	};
 //////////////////////////////////////////////////////////////////////////
 }	//end of namespace jclms

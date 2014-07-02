@@ -3,10 +3,11 @@
 
 #include "stdafx.h"
 #include "jclmsCCB2014.h"
+using namespace jclms;
 
 int _tmain(int argc, _TCHAR* argv[])
 {
-	jclms::JcLockInput aa;
+	JcLockInput aa;
 	aa.m_atmno="atmno";
 	aa.m_lockno="lockno";
 	aa.m_psk="pskaaaabbbbbcccc";
@@ -15,6 +16,10 @@ int _tmain(int argc, _TCHAR* argv[])
 	aa.m_closecode=87654321;
 	aa.m_cmdtype=0;
 	aa.print();
+	if (aa.check()!=EJC_SUSSESS)
+	{
+		cout<<"Check Error!"<<endl;
+	}
 	return 0;
 }
 

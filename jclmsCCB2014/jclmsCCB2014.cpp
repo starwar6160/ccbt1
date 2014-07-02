@@ -22,6 +22,17 @@ CjclmsCCB2014::CjclmsCCB2014()
 }
 
 namespace jclms{
+	JcLockInput::JcLockInput()
+	{
+		m_atmno="";
+		m_lockno="";
+		m_psk="";
+		m_datetime=-1;
+		m_validity=-1;
+		m_closecode=-1;
+		m_cmdtype=-1;
+	}
+
 	void JcLockInput::print()
 	{
 		string conn=".";	//Á¬×Ö·ûºÅ
@@ -43,5 +54,41 @@ namespace jclms{
 		sprintf(buf,"%d",m_cmdtype);
 		allItems=allItems+buf;
 		cout<<allItems<<endl;			
+	}
+
+	JCERROR JcLockInput::check()
+	{
+		JCERROR status=EJC_SUSSESS;
+		if (m_atmno=="")
+		{
+			status=EJC_INPUT_NULL;
+		}
+		if (m_lockno=="")
+		{
+			status=EJC_INPUT_NULL;
+		}
+		if (m_psk=="")
+		{
+			status=EJC_INPUT_NULL;
+		}
+		if (m_datetime<0)
+		{
+			status=EJC_INPUT_NULL;
+		}
+		if (m_validity<0)
+		{
+			status=EJC_INPUT_NULL;
+		}
+		if (m_closecode<0)
+		{
+			status=EJC_INPUT_NULL;
+		}
+		if (m_cmdtype<0)
+		{
+			status=EJC_INPUT_NULL;
+		}
+
+
+		return status;
 	}
 }
