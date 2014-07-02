@@ -50,7 +50,7 @@
     <ClCompile Include="hashalg\sm3_1407.c">
       <Filter>源文件\hashalg</Filter>
     </ClCompile>
-    <ClCompile Include="hashalg\sm3hmac_1407.c">
+    <ClCompile Include="hashalg\sm3hmac_1407.cpp">
       <Filter>源文件\hashalg</Filter>
     </ClCompile>
   </ItemGroup>
