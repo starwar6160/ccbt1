@@ -4,7 +4,7 @@
 #include "stdafx.h"
 #include "jclmsCCB2014.h"
 
-//namespace jclms{
+namespace jclms{
 	JcLockInput::JcLockInput()
 	{
 		m_atmno="";
@@ -80,4 +80,4 @@
 		m_status=status;
 		return status;
 	}
-//}
+}

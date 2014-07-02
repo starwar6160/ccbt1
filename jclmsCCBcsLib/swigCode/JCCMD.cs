@@ -6,6 +6,7 @@
  * the SWIG interface file instead.
  * ----------------------------------------------------------------------------- */
 
+namespace jclms {
 
 public enum JCCMD {
   JCCMD_GEN_DYNACODE,
@@ -13,4 +14,6 @@ public enum JCCMD {
   JCCMD_CCB_LOCK_VERCODE,
   JCCMD_CCB_DYPASS2,
   JCCMD_RESET_KEY
+}
+
 }

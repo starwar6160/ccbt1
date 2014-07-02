@@ -6,6 +6,7 @@
  * the SWIG interface file instead.
  * ----------------------------------------------------------------------------- */
 
+namespace jclms {
 
 using System;
 using System.Runtime.InteropServices;
@@ -233,12 +234,14 @@ class jclmsCCB2014PINVOKE {
   [DllImport("jclmsCCB2014", EntryPoint="CSharp_new_JcLockInput")]
   public static extern IntPtr new_JcLockInput();
 
-  [DllImport("jclmsCCB2014", EntryPoint="CSharp_JcLockInput_print")]
-  public static extern void JcLockInput_print(HandleRef jarg1);
+  [DllImport("jclmsCCB2014", EntryPoint="CSharp_JcLockInput_DebugPrint")]
+  public static extern void JcLockInput_DebugPrint(HandleRef jarg1);
 
-  [DllImport("jclmsCCB2014", EntryPoint="CSharp_JcLockInput_check")]
-  public static extern int JcLockInput_check(HandleRef jarg1);
+  [DllImport("jclmsCCB2014", EntryPoint="CSharp_JcLockInput_CheckInput")]
+  public static extern int JcLockInput_CheckInput(HandleRef jarg1);
 
   [DllImport("jclmsCCB2014", EntryPoint="CSharp_delete_JcLockInput")]
   public static extern void delete_JcLockInput(HandleRef jarg1);
+}
+
 }

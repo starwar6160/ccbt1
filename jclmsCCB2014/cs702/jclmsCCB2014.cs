@@ -6,9 +6,12 @@
  * the SWIG interface file instead.
  * ----------------------------------------------------------------------------- */
 
+namespace jclms {
 
 using System;
 using System.Runtime.InteropServices;
 
 public class jclmsCCB2014 {
+}
+
 }

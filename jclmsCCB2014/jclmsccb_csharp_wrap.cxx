@@ -292,10 +292,10 @@ extern "C" {
 #endif
 
 SWIGEXPORT void SWIGSTDCALL CSharp_JcLockInput_m_atmno_set(void * jarg1, char * jarg2) {
-  JcLockInput *arg1 = (JcLockInput *) 0 ;
+  jclms::JcLockInput *arg1 = (jclms::JcLockInput *) 0 ;
   std::string *arg2 = 0 ;
   
-  arg1 = (JcLockInput *)jarg1; 
+  arg1 = (jclms::JcLockInput *)jarg1; 
   if (!jarg2) {
     SWIG_CSharpSetPendingExceptionArgument(SWIG_CSharpArgumentNullException, "null string", 0);
     return ;
@@ -308,10 +308,10 @@ SWIGEXPORT void SWIGSTDCALL CSharp_JcLockInput_m_atmno_set(void * jarg1, char * 
 
 SWIGEXPORT char * SWIGSTDCALL CSharp_JcLockInput_m_atmno_get(void * jarg1) {
   char * jresult ;
-  JcLockInput *arg1 = (JcLockInput *) 0 ;
+  jclms::JcLockInput *arg1 = (jclms::JcLockInput *) 0 ;
   std::string *result = 0 ;
   
-  arg1 = (JcLockInput *)jarg1; 
+  arg1 = (jclms::JcLockInput *)jarg1; 
   result = (std::string *) & ((arg1)->m_atmno);
   jresult = SWIG_csharp_string_callback(result->c_str()); 
   return jresult;
@@ -319,10 +319,10 @@ SWIGEXPORT char * SWIGSTDCALL CSharp_JcLockInput_m_atmno_get(void * jarg1) {
 
 
 SWIGEXPORT void SWIGSTDCALL CSharp_JcLockInput_m_lockno_set(void * jarg1, char * jarg2) {
-  JcLockInput *arg1 = (JcLockInput *) 0 ;
+  jclms::JcLockInput *arg1 = (jclms::JcLockInput *) 0 ;
   std::string *arg2 = 0 ;
   
-  arg1 = (JcLockInput *)jarg1; 
+  arg1 = (jclms::JcLockInput *)jarg1; 
   if (!jarg2) {
     SWIG_CSharpSetPendingExceptionArgument(SWIG_CSharpArgumentNullException, "null string", 0);
     return ;
@@ -335,10 +335,10 @@ SWIGEXPORT void SWIGSTDCALL CSharp_JcLockInput_m_lockno_set(void * jarg1, char *
 
 SWIGEXPORT char * SWIGSTDCALL CSharp_JcLockInput_m_lockno_get(void * jarg1) {
   char * jresult ;
-  JcLockInput *arg1 = (JcLockInput *) 0 ;
+  jclms::JcLockInput *arg1 = (jclms::JcLockInput *) 0 ;
   std::string *result = 0 ;
   
-  arg1 = (JcLockInput *)jarg1; 
+  arg1 = (jclms::JcLockInput *)jarg1; 
   result = (std::string *) & ((arg1)->m_lockno);
   jresult = SWIG_csharp_string_callback(result->c_str()); 
   return jresult;
@@ -346,10 +346,10 @@ SWIGEXPORT char * SWIGSTDCALL CSharp_JcLockInput_m_lockno_get(void * jarg1) {
 
 
 SWIGEXPORT void SWIGSTDCALL CSharp_JcLockInput_m_psk_set(void * jarg1, char * jarg2) {
-  JcLockInput *arg1 = (JcLockInput *) 0 ;
+  jclms::JcLockInput *arg1 = (jclms::JcLockInput *) 0 ;
   std::string *arg2 = 0 ;
   
-  arg1 = (JcLockInput *)jarg1; 
+  arg1 = (jclms::JcLockInput *)jarg1; 
   if (!jarg2) {
     SWIG_CSharpSetPendingExceptionArgument(SWIG_CSharpArgumentNullException, "null string", 0);
     return ;
@@ -362,10 +362,10 @@ SWIGEXPORT void SWIGSTDCALL CSharp_JcLockInput_m_psk_set(void * jarg1, char * ja
 
 SWIGEXPORT char * SWIGSTDCALL CSharp_JcLockInput_m_psk_get(void * jarg1) {
   char * jresult ;
-  JcLockInput *arg1 = (JcLockInput *) 0 ;
+  jclms::JcLockInput *arg1 = (jclms::JcLockInput *) 0 ;
   std::string *result = 0 ;
   
-  arg1 = (JcLockInput *)jarg1; 
+  arg1 = (jclms::JcLockInput *)jarg1; 
   result = (std::string *) & ((arg1)->m_psk);
   jresult = SWIG_csharp_string_callback(result->c_str()); 
   return jresult;
@@ -373,10 +373,10 @@ SWIGEXPORT char * SWIGSTDCALL CSharp_JcLockInput_m_psk_get(void * jarg1) {
 
 
 SWIGEXPORT void SWIGSTDCALL CSharp_JcLockInput_m_datetime_set(void * jarg1, int jarg2) {
-  JcLockInput *arg1 = (JcLockInput *) 0 ;
+  jclms::JcLockInput *arg1 = (jclms::JcLockInput *) 0 ;
   int arg2 ;
   
-  arg1 = (JcLockInput *)jarg1; 
+  arg1 = (jclms::JcLockInput *)jarg1; 
   arg2 = (int)jarg2; 
   if (arg1) (arg1)->m_datetime = arg2;
 }
@@ -384,10 +384,10 @@ SWIGEXPORT void SWIGSTDCALL CSharp_JcLockInput_m_datetime_set(void * jarg1, int 
 
 SWIGEXPORT int SWIGSTDCALL CSharp_JcLockInput_m_datetime_get(void * jarg1) {
   int jresult ;
-  JcLockInput *arg1 = (JcLockInput *) 0 ;
+  jclms::JcLockInput *arg1 = (jclms::JcLockInput *) 0 ;
   int result;
   
-  arg1 = (JcLockInput *)jarg1; 
+  arg1 = (jclms::JcLockInput *)jarg1; 
   result = (int) ((arg1)->m_datetime);
   jresult = result; 
   return jresult;
@@ -395,10 +395,10 @@ SWIGEXPORT int SWIGSTDCALL CSharp_JcLockInput_m_datetime_get(void * jarg1) {
 
 
 SWIGEXPORT void SWIGSTDCALL CSharp_JcLockInput_m_validity_set(void * jarg1, int jarg2) {
-  JcLockInput *arg1 = (JcLockInput *) 0 ;
+  jclms::JcLockInput *arg1 = (jclms::JcLockInput *) 0 ;
   int arg2 ;
   
-  arg1 = (JcLockInput *)jarg1; 
+  arg1 = (jclms::JcLockInput *)jarg1; 
   arg2 = (int)jarg2; 
   if (arg1) (arg1)->m_validity = arg2;
 }
@@ -406,10 +406,10 @@ SWIGEXPORT void SWIGSTDCALL CSharp_JcLockInput_m_validity_set(void * jarg1, int 
 
 SWIGEXPORT int SWIGSTDCALL CSharp_JcLockInput_m_validity_get(void * jarg1) {
   int jresult ;
-  JcLockInput *arg1 = (JcLockInput *) 0 ;
+  jclms::JcLockInput *arg1 = (jclms::JcLockInput *) 0 ;
   int result;
   
-  arg1 = (JcLockInput *)jarg1; 
+  arg1 = (jclms::JcLockInput *)jarg1; 
   result = (int) ((arg1)->m_validity);
   jresult = result; 
   return jresult;
@@ -417,10 +417,10 @@ SWIGEXPORT int SWIGSTDCALL CSharp_JcLockInput_m_validity_get(void * jarg1) {
 
 
 SWIGEXPORT void SWIGSTDCALL CSharp_JcLockInput_m_closecode_set(void * jarg1, int jarg2) {
-  JcLockInput *arg1 = (JcLockInput *) 0 ;
+  jclms::JcLockInput *arg1 = (jclms::JcLockInput *) 0 ;
   int arg2 ;
   
-  arg1 = (JcLockInput *)jarg1; 
+  arg1 = (jclms::JcLockInput *)jarg1; 
   arg2 = (int)jarg2; 
   if (arg1) (arg1)->m_closecode = arg2;
 }
@@ -428,10 +428,10 @@ SWIGEXPORT void SWIGSTDCALL CSharp_JcLockInput_m_closecode_set(void * jarg1, int
 
 SWIGEXPORT int SWIGSTDCALL CSharp_JcLockInput_m_closecode_get(void * jarg1) {
   int jresult ;
-  JcLockInput *arg1 = (JcLockInput *) 0 ;
+  jclms::JcLockInput *arg1 = (jclms::JcLockInput *) 0 ;
   int result;
   
-  arg1 = (JcLockInput *)jarg1; 
+  arg1 = (jclms::JcLockInput *)jarg1; 
   result = (int) ((arg1)->m_closecode);
   jresult = result; 
   return jresult;
@@ -439,10 +439,10 @@ SWIGEXPORT int SWIGSTDCALL CSharp_JcLockInput_m_closecode_get(void * jarg1) {
 
 
 SWIGEXPORT void SWIGSTDCALL CSharp_JcLockInput_m_cmdtype_set(void * jarg1, int jarg2) {
-  JcLockInput *arg1 = (JcLockInput *) 0 ;
+  jclms::JcLockInput *arg1 = (jclms::JcLockInput *) 0 ;
   int arg2 ;
   
-  arg1 = (JcLockInput *)jarg1; 
+  arg1 = (jclms::JcLockInput *)jarg1; 
   arg2 = (int)jarg2; 
   if (arg1) (arg1)->m_cmdtype = arg2;
 }
@@ -450,10 +450,10 @@ SWIGEXPORT void SWIGSTDCALL CSharp_JcLockInput_m_cmdtype_set(void * jarg1, int j
 
 SWIGEXPORT int SWIGSTDCALL CSharp_JcLockInput_m_cmdtype_get(void * jarg1) {
   int jresult ;
-  JcLockInput *arg1 = (JcLockInput *) 0 ;
+  jclms::JcLockInput *arg1 = (jclms::JcLockInput *) 0 ;
   int result;
   
-  arg1 = (JcLockInput *)jarg1; 
+  arg1 = (jclms::JcLockInput *)jarg1; 
   result = (int) ((arg1)->m_cmdtype);
   jresult = result; 
   return jresult;
@@ -462,38 +462,38 @@ SWIGEXPORT int SWIGSTDCALL CSharp_JcLockInput_m_cmdtype_get(void * jarg1) {
 
 SWIGEXPORT void * SWIGSTDCALL CSharp_new_JcLockInput() {
   void * jresult ;
-  JcLockInput *result = 0 ;
+  jclms::JcLockInput *result = 0 ;
   
-  result = (JcLockInput *)new JcLockInput();
+  result = (jclms::JcLockInput *)new jclms::JcLockInput();
   jresult = (void *)result; 
   return jresult;
 }
 
 
-SWIGEXPORT void SWIGSTDCALL CSharp_JcLockInput_print(void * jarg1) {
-  JcLockInput *arg1 = (JcLockInput *) 0 ;
+SWIGEXPORT void SWIGSTDCALL CSharp_JcLockInput_DebugPrint(void * jarg1) {
+  jclms::JcLockInput *arg1 = (jclms::JcLockInput *) 0 ;
   
-  arg1 = (JcLockInput *)jarg1; 
+  arg1 = (jclms::JcLockInput *)jarg1; 
   (arg1)->DebugPrint();
 }
 
 
-SWIGEXPORT int SWIGSTDCALL CSharp_JcLockInput_check(void * jarg1) {
+SWIGEXPORT int SWIGSTDCALL CSharp_JcLockInput_CheckInput(void * jarg1) {
   int jresult ;
-  JcLockInput *arg1 = (JcLockInput *) 0 ;
-  JCERROR result;
+  jclms::JcLockInput *arg1 = (jclms::JcLockInput *) 0 ;
+  jclms::JCERROR result;
   
-  arg1 = (JcLockInput *)jarg1; 
-  result = (JCERROR)(arg1)->CheckInput();
+  arg1 = (jclms::JcLockInput *)jarg1; 
+  result = (jclms::JCERROR)(arg1)->CheckInput();
   jresult = result; 
   return jresult;
 }
 
 
 SWIGEXPORT void SWIGSTDCALL CSharp_delete_JcLockInput(void * jarg1) {
-  JcLockInput *arg1 = (JcLockInput *) 0 ;
+  jclms::JcLockInput *arg1 = (jclms::JcLockInput *) 0 ;
   
-  arg1 = (JcLockInput *)jarg1; 
+  arg1 = (jclms::JcLockInput *)jarg1; 
   delete arg1;
 }
 

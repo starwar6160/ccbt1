@@ -3,7 +3,7 @@
 
 #include "stdafx.h"
 #include "jclmsCCB2014.h"
-//using namespace jclms;
+using namespace jclms;
 
 int _tmain(int argc, _TCHAR* argv[])
 {

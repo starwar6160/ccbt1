@@ -6,9 +6,12 @@
  * the SWIG interface file instead.
  * ----------------------------------------------------------------------------- */
 
+namespace jclms {
 
 public enum JCERROR {
   EJC_SUSSESS,
   EJC_FAIL,
   EJC_INPUT_NULL
+}
+
 }

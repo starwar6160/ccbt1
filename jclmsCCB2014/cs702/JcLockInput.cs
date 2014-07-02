@@ -6,6 +6,7 @@
  * the SWIG interface file instead.
  * ----------------------------------------------------------------------------- */
 
+namespace jclms {
 
 using System;
 using System.Runtime.InteropServices;
@@ -119,13 +120,15 @@ public class JcLockInput : IDisposable {
   public JcLockInput() : this(jclmsCCB2014PINVOKE.new_JcLockInput(), true) {
   }
 
-  public void print() {
-    jclmsCCB2014PINVOKE.JcLockInput_print(swigCPtr);
+  public void DebugPrint() {
+    jclmsCCB2014PINVOKE.JcLockInput_DebugPrint(swigCPtr);
   }
 
-  public JCERROR check() {
-    JCERROR ret = (JCERROR)jclmsCCB2014PINVOKE.JcLockInput_check(swigCPtr);
+  public JCERROR CheckInput() {
+    JCERROR ret = (JCERROR)jclmsCCB2014PINVOKE.JcLockInput_CheckInput(swigCPtr);
     return ret;
   }
+
+}
 
 }
