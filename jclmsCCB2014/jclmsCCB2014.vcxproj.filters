@@ -13,6 +13,9 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="源文件\hashalg">
+      <UniqueIdentifier>{88aef7c4-5779-4511-a1dc-c065a15ae8cc}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="ReadMe.txt" />
@@ -27,6 +30,9 @@
     <ClInclude Include="jclmsCCB2014.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="hashalg\sm3.h">
+      <Filter>源文件\hashalg</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -40,6 +46,12 @@
     </ClCompile>
     <ClCompile Include="jclmsccb_csharp_wrap.cxx">
       <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="hashalg\sm3.c">
+      <Filter>源文件\hashalg</Filter>
+    </ClCompile>
+    <ClCompile Include="hashalg\sm3hmac.c">
+      <Filter>源文件\hashalg</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
