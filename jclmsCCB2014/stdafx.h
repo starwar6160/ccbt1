@@ -11,19 +11,13 @@
 // Windows 头文件:
 #include <windows.h>
 
-
-
 // TODO: 在此处引用程序需要的其他头文件
-#include <iostream>
 #include <ctime>
 #include <string>
 #include <vector>
 #include <map>
 #include <stdint.h>
 using std::string;
-using std::cout;
-using std::cin;
-using std::cerr;
 using std::endl;
 using std::vector;
 using std::map;

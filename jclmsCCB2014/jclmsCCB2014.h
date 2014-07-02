@@ -10,18 +10,6 @@
 #define JCLMSCCB2014_API __declspec(dllimport)
 #endif
 
-// 此类是从 jclmsCCB2014.dll 导出的
-class JCLMSCCB2014_API CjclmsCCB2014 {
-public:
-	CjclmsCCB2014(void);
-	// TODO: 在此添加您的方法。
-};
-
-extern JCLMSCCB2014_API int njclmsCCB2014;
-
-JCLMSCCB2014_API int fnjclmsCCB2014(void);
-
-
 //////////////////////////////////////////////////////////////////////////
 namespace jclms{
 //////////////////////////////////////////////////////////////////////////
