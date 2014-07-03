@@ -44,9 +44,26 @@ namespace jclms{
 		mySm3Process(&sm3,lock.m_lockno.data(),lock.m_lockno.size());
 		mySm3Process(&sm3,lock.m_psk.data(),lock.m_psk.size());
 
-		mySm3Process(&sm3,lock.m_datetime);
-		mySm3Process(&sm3,lock.m_validity);
-		mySm3Process(&sm3,lock.m_closecode);
+		int l_datetime=lock.m_datetime;
+		int l_validity=lock.m_validity;
+		int l_closecode=lock.m_closecode;
+		const int ZWDAYLEN=24*60*60;	//一天的秒数；
+		switch (lock.m_cmdtype)
+		{
+		case JCCMD_INIT_CLOSECODE:
+			int tail=l_datetime % ZWDAYLEN;
+			l_datetime-=tail;
+			l_validity=2222;	//初始闭锁码特选一个合法有效期之外的值
+			l_closecode=0;	//初始闭锁码特选一个非法闭锁码
+			break;
+		//case :
+		//	break;
+		//case :
+		//	break;
+		}
+		mySm3Process(&sm3,l_datetime);
+		mySm3Process(&sm3,l_validity);
+		mySm3Process(&sm3,l_closecode);
 		mySm3Process(&sm3,lock.m_cmdtype);
 		//////////////////////////////////////////////////////////////////////////
 		memset(outHmac,0,ZWSM3_DGST_LEN);
@@ -85,7 +102,7 @@ namespace jclms{
 		m_psk="";
 		m_datetime=-1;
 		m_validity=-1;
-		m_closecode=-1;
+		m_closecode=-1;	
 		m_cmdtype=JCCMD_INVALID;
 		m_status=EJC_FAIL;
 	}

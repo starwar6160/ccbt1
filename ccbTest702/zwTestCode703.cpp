@@ -23,7 +23,7 @@ void myJcLockInputTest1()
 	aa.m_datetime=140007775;
 	aa.m_validity=5;
 	aa.m_closecode=87654325;
-	aa.m_cmdtype=JCCMD_GEN_DYNACODE;
+	aa.m_cmdtype=JCCMD_CCB_DYPASS1;
 	aa.DebugPrint();
 	set <int> rset;
 	//基本上做到了40K个批量生成时重复在个位数，13K个无重复
@@ -54,7 +54,7 @@ void myJcLockInputTest1()
 	cout<<"Dups Item is "<<RCOUNT-realSize<<endl;
 	for (int i=1;i<10;i++)
 	{
-		cout<<i<<":"<<head[i]*100.0f/(RCOUNT/9)<<"\t";
+		cout<<i<<":"<<head[i]*100.0f/(RCOUNT/9)<<"\n";
 	}
 }
 
