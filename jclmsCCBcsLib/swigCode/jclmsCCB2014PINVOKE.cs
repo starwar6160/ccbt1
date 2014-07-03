@@ -189,6 +189,24 @@ class jclmsCCB2014PINVOKE {
   }
 
 
+  [DllImport("jclmsCCB2014", EntryPoint="CSharp_JCOFFLINE_s_datetime_set")]
+  public static extern void JCOFFLINE_s_datetime_set(HandleRef jarg1, int jarg2);
+
+  [DllImport("jclmsCCB2014", EntryPoint="CSharp_JCOFFLINE_s_datetime_get")]
+  public static extern int JCOFFLINE_s_datetime_get(HandleRef jarg1);
+
+  [DllImport("jclmsCCB2014", EntryPoint="CSharp_JCOFFLINE_s_validity_set")]
+  public static extern void JCOFFLINE_s_validity_set(HandleRef jarg1, int jarg2);
+
+  [DllImport("jclmsCCB2014", EntryPoint="CSharp_JCOFFLINE_s_validity_get")]
+  public static extern int JCOFFLINE_s_validity_get(HandleRef jarg1);
+
+  [DllImport("jclmsCCB2014", EntryPoint="CSharp_new_JCOFFLINE")]
+  public static extern IntPtr new_JCOFFLINE();
+
+  [DllImport("jclmsCCB2014", EntryPoint="CSharp_delete_JCOFFLINE")]
+  public static extern void delete_JCOFFLINE(HandleRef jarg1);
+
   [DllImport("jclmsCCB2014", EntryPoint="CSharp_JcLockInput_m_atmno_set")]
   public static extern void JcLockInput_m_atmno_set(HandleRef jarg1, string jarg2);
 
@@ -248,6 +266,9 @@ class jclmsCCB2014PINVOKE {
 
   [DllImport("jclmsCCB2014", EntryPoint="CSharp_zwVerifyDynaCode")]
   public static extern int zwVerifyDynaCode(HandleRef jarg1, int jarg2);
+
+  [DllImport("jclmsCCB2014", EntryPoint="CSharp_zwOfflineVerifyDynaCode")]
+  public static extern IntPtr zwOfflineVerifyDynaCode(HandleRef jarg1, int jarg2);
 
   [DllImport("jclmsCCB2014", EntryPoint="CSharp_getVersion")]
   public static extern int getVersion();

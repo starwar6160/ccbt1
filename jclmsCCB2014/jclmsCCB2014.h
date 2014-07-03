@@ -37,6 +37,11 @@ typedef enum jc_cmd_type{
 	JCCMD_RESET_KEY		//重置钥匙
 } JCCMD;
 
+//离线匹配的返回值
+typedef struct jcOfflineResult{
+	int s_datetime;
+	int s_validity;
+}JCOFFLINE;
 
 	class JCLMSCCB2014_API JcLockInput
 	{
@@ -62,6 +67,8 @@ typedef enum jc_cmd_type{
 
 //验证动态码，成功返回EJC_SUSSESS，失败返回EJC_FAIL
 	JCERROR zwVerifyDynaCode(const JcLockInput &lock,const int dstDyCode);
+
+	JCOFFLINE JCLMSCCB2014_API zwOfflineVerifyDynaCode( const JcLockInput &lock,const int dstCode );
 	int JCLMSCCB2014_API getVersion(void);
 }	//end of namespace jclms
 

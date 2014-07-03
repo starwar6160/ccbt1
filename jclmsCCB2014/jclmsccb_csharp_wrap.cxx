@@ -291,6 +291,68 @@ SWIGEXPORT void SWIGSTDCALL SWIGRegisterStringCallback_jclmsCCB2014(SWIG_CSharpS
 extern "C" {
 #endif
 
+SWIGEXPORT void SWIGSTDCALL CSharp_JCOFFLINE_s_datetime_set(void * jarg1, int jarg2) {
+  jclms::jcOfflineResult *arg1 = (jclms::jcOfflineResult *) 0 ;
+  int arg2 ;
+  
+  arg1 = (jclms::jcOfflineResult *)jarg1; 
+  arg2 = (int)jarg2; 
+  if (arg1) (arg1)->s_datetime = arg2;
+}
+
+
+SWIGEXPORT int SWIGSTDCALL CSharp_JCOFFLINE_s_datetime_get(void * jarg1) {
+  int jresult ;
+  jclms::jcOfflineResult *arg1 = (jclms::jcOfflineResult *) 0 ;
+  int result;
+  
+  arg1 = (jclms::jcOfflineResult *)jarg1; 
+  result = (int) ((arg1)->s_datetime);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void SWIGSTDCALL CSharp_JCOFFLINE_s_validity_set(void * jarg1, int jarg2) {
+  jclms::jcOfflineResult *arg1 = (jclms::jcOfflineResult *) 0 ;
+  int arg2 ;
+  
+  arg1 = (jclms::jcOfflineResult *)jarg1; 
+  arg2 = (int)jarg2; 
+  if (arg1) (arg1)->s_validity = arg2;
+}
+
+
+SWIGEXPORT int SWIGSTDCALL CSharp_JCOFFLINE_s_validity_get(void * jarg1) {
+  int jresult ;
+  jclms::jcOfflineResult *arg1 = (jclms::jcOfflineResult *) 0 ;
+  int result;
+  
+  arg1 = (jclms::jcOfflineResult *)jarg1; 
+  result = (int) ((arg1)->s_validity);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void * SWIGSTDCALL CSharp_new_JCOFFLINE() {
+  void * jresult ;
+  jclms::jcOfflineResult *result = 0 ;
+  
+  result = (jclms::jcOfflineResult *)new jclms::jcOfflineResult();
+  jresult = (void *)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void SWIGSTDCALL CSharp_delete_JCOFFLINE(void * jarg1) {
+  jclms::jcOfflineResult *arg1 = (jclms::jcOfflineResult *) 0 ;
+  
+  arg1 = (jclms::jcOfflineResult *)jarg1; 
+  delete arg1;
+}
+
+
 SWIGEXPORT void SWIGSTDCALL CSharp_JcLockInput_m_atmno_set(void * jarg1, char * jarg2) {
   jclms::JcLockInput *arg1 = (jclms::JcLockInput *) 0 ;
   std::string *arg2 = 0 ;
@@ -528,6 +590,24 @@ SWIGEXPORT int SWIGSTDCALL CSharp_zwVerifyDynaCode(void * jarg1, int jarg2) {
   arg2 = (int)jarg2; 
   result = (jclms::JCERROR)jclms::zwVerifyDynaCode((jclms::JcLockInput const &)*arg1,arg2);
   jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void * SWIGSTDCALL CSharp_zwOfflineVerifyDynaCode(void * jarg1, int jarg2) {
+  void * jresult ;
+  jclms::JcLockInput *arg1 = 0 ;
+  int arg2 ;
+  jclms::JCOFFLINE result;
+  
+  arg1 = (jclms::JcLockInput *)jarg1;
+  if (!arg1) {
+    SWIG_CSharpSetPendingExceptionArgument(SWIG_CSharpArgumentNullException, "jclms::JcLockInput const & type is null", 0);
+    return 0;
+  } 
+  arg2 = (int)jarg2; 
+  result = jclms::zwOfflineVerifyDynaCode((jclms::JcLockInput const &)*arg1,arg2);
+  jresult = new jclms::JCOFFLINE((const jclms::JCOFFLINE &)result); 
   return jresult;
 }
 
