@@ -6,6 +6,9 @@
 #include "hashalg\\sm3.h"
 
 namespace jclms{
+int myGetDynaCodeImpl( const JcLockInput &lock );
+//从包含二进制数据的字符串输入，获得一个8位整数的输出
+unsigned int zwBinString2Int32(const char *data,const int len);
 
 	void mySm3Process(SM3 *ctx,const char *data,const int len)
 	{
@@ -36,32 +39,20 @@ namespace jclms{
 
 	int zwGetDynaCode(const JcLockInput &lock)
 	{
-		SM3 sm3;
-		char outHmac[ZW_SM3_DGST_SIZE];
-		SM3_init(&sm3);
-		/////////////////////////////逐个元素进行HASH运算/////////////////////////////////////////////
-		mySm3Process(&sm3,lock.m_atmno.data(),lock.m_atmno.size());
-		mySm3Process(&sm3,lock.m_lockno.data(),lock.m_lockno.size());
-		mySm3Process(&sm3,lock.m_psk.data(),lock.m_psk.size());
+		return myGetDynaCodeImpl(lock);
+	}
 
-		int l_datetime=lock.m_datetime;
-		int l_validity=lock.m_validity;
-		int l_closecode=lock.m_closecode;	
-		if (JCCMD_INIT_CLOSECODE==lock.m_cmdtype)
+	int zwVerifyDynaCode(const JcLockInput &lock,const int dstDyCode)
+	{
+		int calCode= myGetDynaCodeImpl(lock);
+		if (calCode==dstDyCode)
 		{
-			l_datetime=1400000000;	//初始闭锁码采用一个特殊的固定值作为时间
-			l_validity=0;	//初始闭锁码特选一个合法有效期之外的值
-			l_closecode=0;	//初始闭锁码特选一个非法闭锁码			
+			return EJC_SUSSESS;
 		}
-		mySm3Process(&sm3,l_datetime);
-		mySm3Process(&sm3,l_validity);
-		mySm3Process(&sm3,l_closecode);
-		mySm3Process(&sm3,lock.m_cmdtype);
-		//////////////////////////////HASH运算结束////////////////////////////////////////////
-		memset(outHmac,0,ZWSM3_DGST_LEN);
-		SM3_hash(&sm3,(char *)(outHmac));
-		unsigned int res=zwBinString2Int32(outHmac,ZWSM3_DGST_LEN);
-		return res;
+		else
+		{
+			return EJC_FAIL;
+		}
 	}
 
 	//从包含二进制数据的字符串输入，获得一个8位整数的输出
@@ -162,4 +153,35 @@ namespace jclms{
 		m_status=status;
 		return status;
 	}
+
+	int myGetDynaCodeImpl( const JcLockInput &lock )
+	{
+		SM3 sm3;
+		char outHmac[ZW_SM3_DGST_SIZE];
+		SM3_init(&sm3);
+		/////////////////////////////逐个元素进行HASH运算/////////////////////////////////////////////
+		mySm3Process(&sm3,lock.m_atmno.data(),lock.m_atmno.size());
+		mySm3Process(&sm3,lock.m_lockno.data(),lock.m_lockno.size());
+		mySm3Process(&sm3,lock.m_psk.data(),lock.m_psk.size());
+
+		int l_datetime=lock.m_datetime;
+		int l_validity=lock.m_validity;
+		int l_closecode=lock.m_closecode;	
+		if (JCCMD_INIT_CLOSECODE==lock.m_cmdtype)
+		{
+			l_datetime=1400000000;	//初始闭锁码采用一个特殊的固定值作为时间
+			l_validity=0;	//初始闭锁码特选一个合法有效期之外的值
+			l_closecode=0;	//初始闭锁码特选一个非法闭锁码			
+		}
+		mySm3Process(&sm3,l_datetime);
+		mySm3Process(&sm3,l_validity);
+		mySm3Process(&sm3,l_closecode);
+		mySm3Process(&sm3,lock.m_cmdtype);
+		//////////////////////////////HASH运算结束////////////////////////////////////////////
+		memset(outHmac,0,ZWSM3_DGST_LEN);
+		SM3_hash(&sm3,(char *)(outHmac));
+		unsigned int res=zwBinString2Int32(outHmac,ZWSM3_DGST_LEN);
+		return res;
+	}
+
 }

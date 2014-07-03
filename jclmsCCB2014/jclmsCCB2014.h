@@ -59,9 +59,9 @@ typedef enum jc_cmd_type{
 	};
 	//lock结构体内部m_cmdtype决定了生成哪一类动态码；
 	int JCLMSCCB2014_API zwGetDynaCode(const JcLockInput &lock);
-	//从包含二进制数据的字符串输入，获得一个8位整数的输出
-	unsigned int JCLMSCCB2014_API zwBinString2Int32(const char *data,const int len);
 
+//验证动态码，成功返回EJC_SUSSESS，失败返回EJC_FAIL
+	int zwVerifyDynaCode(const JcLockInput &lock,const int dstDyCode);
 }	//end of namespace jclms
 
 namespace zwTools{

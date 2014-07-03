@@ -246,8 +246,8 @@ class jclmsCCB2014PINVOKE {
   [DllImport("jclmsCCB2014", EntryPoint="CSharp_zwGetDynaCode")]
   public static extern int zwGetDynaCode(HandleRef jarg1);
 
-  [DllImport("jclmsCCB2014", EntryPoint="CSharp_zwBinString2Int32By8")]
-  public static extern uint zwBinString2Int32By8(string jarg1, int jarg2);
+  [DllImport("jclmsCCB2014", EntryPoint="CSharp_zwVerifyDynaCode")]
+  public static extern int zwVerifyDynaCode(HandleRef jarg1, int jarg2);
 
   [DllImport("jclmsCCB2014", EntryPoint="CSharp_ZW_AES_BLOCK_SIZE_get")]
   public static extern int ZW_AES_BLOCK_SIZE_get();

@@ -514,15 +514,19 @@ SWIGEXPORT int SWIGSTDCALL CSharp_zwGetDynaCode(void * jarg1) {
 }
 
 
-SWIGEXPORT unsigned int SWIGSTDCALL CSharp_zwBinString2Int32By8(char * jarg1, int jarg2) {
-  unsigned int jresult ;
-  char *arg1 = (char *) 0 ;
+SWIGEXPORT int SWIGSTDCALL CSharp_zwVerifyDynaCode(void * jarg1, int jarg2) {
+  int jresult ;
+  jclms::JcLockInput *arg1 = 0 ;
   int arg2 ;
-  unsigned int result;
+  int result;
   
-  arg1 = (char *)jarg1; 
+  arg1 = (jclms::JcLockInput *)jarg1;
+  if (!arg1) {
+    SWIG_CSharpSetPendingExceptionArgument(SWIG_CSharpArgumentNullException, "jclms::JcLockInput const & type is null", 0);
+    return 0;
+  } 
   arg2 = (int)jarg2; 
-  result = (unsigned int)jclms::zwBinString2Int32((char const *)arg1,arg2);
+  result = (int)jclms::zwVerifyDynaCode((jclms::JcLockInput const &)*arg1,arg2);
   jresult = result; 
   return jresult;
 }

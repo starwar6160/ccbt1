@@ -112,6 +112,7 @@ void myBigNumModTest1()
 	cout<<aa<<"*"<<bb<<"%"<<cc<<"="<<rs<<endl;
 }
 
+#ifdef _DEBUG_BINTEST703
 void myBinString2intTest1()
 {
 	vector <unsigned int>res;
@@ -131,4 +132,5 @@ void myBinString2intTest1()
 	}
 	cout<<endl;
 }
+#endif // _DEBUG_BINTEST703
 
