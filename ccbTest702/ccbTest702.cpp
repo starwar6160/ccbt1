@@ -2,11 +2,17 @@
 //
 
 #include "stdafx.h"
+#include <iostream>
+using std::cout;
+using std::endl;
+
 #include "jclmsCCB2014.h"
 
 void myJcLockInputTest1();
 
 void zwSm3HmacTest2();
+
+void myStringTest1();
 
 
 using namespace zwTools;
@@ -16,6 +22,9 @@ int _tmain(int argc, _TCHAR* argv[])
 {
 	myJcLockInputTest1();
 	zwSm3HmacTest2();
+
+	myStringTest1();
+
 
 	return 0;
 }
@@ -50,5 +59,33 @@ void zwSm3HmacTest2()
 	zwSm3Hmac7(psk,msg,hmac);
 	printf("Result Value of hmac\n");
 	hmac.PrintBin();
+}
+
+//测试std::string对于含有0字符的二进制数据的处理能力
+void myStringTest1()
+{
+	const int BUFSIZE=16;
+	string aa,bb,cc;
+	char buf[BUFSIZE];
+	char b2[BUFSIZE];
+	memset(buf,'A',BUFSIZE);
+	memset(b2,'B',BUFSIZE);
+	buf[6]=NULL;
+	b2[10]=NULL;
+	//assign可以正确赋值含有0字符的二进制数据
+	aa.assign(buf,BUFSIZE);
+	bb.assign(b2,BUFSIZE);
+	//+运算符可以正确处理含有0字符的二进制数据
+	cc=aa+bb;
+	cout<<"aa="<<aa<<endl;
+	cout<<"bb="<<bb<<endl;
+	cout<<"cc="<<cc<<endl;
+	//=运算符碰到含有0字符的二进制数据会截断
+	aa=buf;
+	bb=b2;
+	cc=aa+bb;
+	cout<<"aa="<<aa<<endl;
+	cout<<"bb="<<bb<<endl;
+	cout<<"cc="<<cc<<endl;
 }
 

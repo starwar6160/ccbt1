@@ -59,23 +59,7 @@ int32_t zwSm3Hmac7(zwHexTool &inPsk,
 	return 0;
 }
 
-#ifdef _DEBUG_SM3DEMO1
-void zwsm3hmacTest1(void)
-{
-	const char *psk="hellopsk";
-	const char *msg="mysm3testmessage";
-	int32_t i=0;
-	uint8_t outHmac[ZWSM3_DGST_LEN];
-	memset(outHmac,0,ZWSM3_DGST_LEN);
-	zwSm3Hmac(psk,strlen(psk),msg,strlen(msg),(char *)outHmac,ZWSM3_DGST_LEN);
-	printf("T1537B %s:\n",__FUNCTION__);
-	for (i=0;i<ZWSM3_DGST_LEN;i++)
-	{
-		printf("%02X",outHmac[i]);
-	}
-	printf("\n");
-}
-#endif // _DEBUG_SM3DEMO1
+
 
 //做一个实际运行的机器上的SM3计算，针对一个已知值A，把结果与PC上的SM3(A)比对，
 //返回值为0代表正确，非0代表错误，那么整个算法不用运行下去了；
