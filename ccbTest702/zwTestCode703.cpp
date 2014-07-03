@@ -5,6 +5,12 @@ using std::endl;
 #include "jclmsCCB2014.h"
 using namespace zwTools;
 using namespace jclms;
+#include <vector>
+#include <algorithm>
+using std::vector;
+using std::sort;
+//从包含二进制数据的字符串输入，获得一个8位整数的输出
+unsigned int zwBinString2Int32By8(const string &inStr);
 
 
 //基本的填写JcLockInput结构体并输出的测试
@@ -73,5 +79,23 @@ void myBigNumModTest1()
 	unsigned int aa=77778888,bb=88889999,cc=99998887;
 	unsigned int rs=aa*bb % cc;
 	cout<<aa<<"*"<<bb<<"%"<<cc<<"="<<rs<<endl;
+}
+
+void myBinString2intTest1()
+{
+	vector <unsigned int>res;
+	string msg("zbouweiteststring201407031011c");
+	for (int i=0;i<100;i++)
+	{
+		msg[0]=i;		
+		unsigned int rv=zwBinString2Int32By8(msg);
+		res.push_back(rv);
+	}
+	sort(res.begin(),res.end());
+	for (size_t i=0;i<res.size();i++)
+	{
+		cout<<res[i]<<"\t";
+	}
+	cout<<endl;
 }
 
