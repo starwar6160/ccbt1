@@ -17,8 +17,11 @@ namespace cstest702
             aa.m_datetime = 1400887766;
             aa.m_validity = 240;
             aa.m_closecode = 87654321;
-            aa.m_cmdtype = 0;
+            aa.m_cmdtype = JCCMD.JCCMD_CCB_LOCK_VERCODE;
             aa.DebugPrint();
+            int dyCode=jclmsCCB2014.zwGetDynaCode(aa);
+            Console.Out.WriteLine(aa);
+            Console.Out.WriteLine("DynaCode={0}", dyCode);
         }
     }
 }

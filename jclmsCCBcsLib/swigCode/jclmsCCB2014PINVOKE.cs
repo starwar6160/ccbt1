@@ -242,6 +242,48 @@ class jclmsCCB2014PINVOKE {
 
   [DllImport("jclmsCCB2014", EntryPoint="CSharp_delete_JcLockInput")]
   public static extern void delete_JcLockInput(HandleRef jarg1);
+
+  [DllImport("jclmsCCB2014", EntryPoint="CSharp_zwGetDynaCode")]
+  public static extern int zwGetDynaCode(HandleRef jarg1);
+
+  [DllImport("jclmsCCB2014", EntryPoint="CSharp_zwBinString2Int32By8")]
+  public static extern uint zwBinString2Int32By8(string jarg1, int jarg2);
+
+  [DllImport("jclmsCCB2014", EntryPoint="CSharp_ZW_AES_BLOCK_SIZE_get")]
+  public static extern int ZW_AES_BLOCK_SIZE_get();
+
+  [DllImport("jclmsCCB2014", EntryPoint="CSharp_ZW_SM3_DGST_SIZE_get")]
+  public static extern int ZW_SM3_DGST_SIZE_get();
+
+  [DllImport("jclmsCCB2014", EntryPoint="CSharp_new_zwHexTool__SWIG_0")]
+  public static extern IntPtr new_zwHexTool__SWIG_0(string jarg1);
+
+  [DllImport("jclmsCCB2014", EntryPoint="CSharp_new_zwHexTool__SWIG_1")]
+  public static extern IntPtr new_zwHexTool__SWIG_1(HandleRef jarg1, int jarg2);
+
+  [DllImport("jclmsCCB2014", EntryPoint="CSharp_delete_zwHexTool")]
+  public static extern void delete_zwHexTool(HandleRef jarg1);
+
+  [DllImport("jclmsCCB2014", EntryPoint="CSharp_zwHexTool_getBin")]
+  public static extern string zwHexTool_getBin(HandleRef jarg1);
+
+  [DllImport("jclmsCCB2014", EntryPoint="CSharp_zwHexTool_getBinLen")]
+  public static extern int zwHexTool_getBinLen(HandleRef jarg1);
+
+  [DllImport("jclmsCCB2014", EntryPoint="CSharp_zwHexTool_getPadedLen")]
+  public static extern int zwHexTool_getPadedLen(HandleRef jarg1);
+
+  [DllImport("jclmsCCB2014", EntryPoint="CSharp_zwHexTool_getXXTEABlockNum")]
+  public static extern int zwHexTool_getXXTEABlockNum(HandleRef jarg1);
+
+  [DllImport("jclmsCCB2014", EntryPoint="CSharp_zwHexTool_PrintBin")]
+  public static extern void zwHexTool_PrintBin(HandleRef jarg1);
+
+  [DllImport("jclmsCCB2014", EntryPoint="CSharp_zwHexTool_getCArrayStr")]
+  public static extern string zwHexTool_getCArrayStr(HandleRef jarg1);
+
+  [DllImport("jclmsCCB2014", EntryPoint="CSharp_zwSm3Hmac7")]
+  public static extern IntPtr zwSm3Hmac7(HandleRef jarg1, HandleRef jarg2, HandleRef jarg3);
 }
 
 }

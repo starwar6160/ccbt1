@@ -28,6 +28,7 @@ typedef enum jc_error_code{
 } JCERROR;
 
 typedef enum jc_cmd_type{
+	JCCMD_INVALID,			//无效命令
 	JCCMD_GEN_DYNACODE,		//正常生成动态码
 	JCCMD_CCB_DYPASS1,		//上位机第一开锁密码
 	JCCMD_CCB_LOCK_VERCODE,	//下位机验证码
@@ -47,7 +48,7 @@ typedef enum jc_cmd_type{
 		int m_datetime;		//日期时间
 		int m_validity;		//有效期
 		int m_closecode;	//闭锁码
-		int m_cmdtype;		//模式代码，比如开锁模式，远程重置模式，建行的流程要求的各种模式等等
+		JCCMD m_cmdtype;		//模式代码，比如开锁模式，远程重置模式，建行的流程要求的各种模式等等
 		//////////////////////////////////////////////////////////////////////////
 #ifdef JC_USEKEYINFO_201407
 		string m_keyno;

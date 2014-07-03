@@ -440,10 +440,10 @@ SWIGEXPORT int SWIGSTDCALL CSharp_JcLockInput_m_closecode_get(void * jarg1) {
 
 SWIGEXPORT void SWIGSTDCALL CSharp_JcLockInput_m_cmdtype_set(void * jarg1, int jarg2) {
   jclms::JcLockInput *arg1 = (jclms::JcLockInput *) 0 ;
-  int arg2 ;
+  jclms::JCCMD arg2 ;
   
   arg1 = (jclms::JcLockInput *)jarg1; 
-  arg2 = (int)jarg2; 
+  arg2 = (jclms::JCCMD)jarg2; 
   if (arg1) (arg1)->m_cmdtype = arg2;
 }
 
@@ -451,10 +451,10 @@ SWIGEXPORT void SWIGSTDCALL CSharp_JcLockInput_m_cmdtype_set(void * jarg1, int j
 SWIGEXPORT int SWIGSTDCALL CSharp_JcLockInput_m_cmdtype_get(void * jarg1) {
   int jresult ;
   jclms::JcLockInput *arg1 = (jclms::JcLockInput *) 0 ;
-  int result;
+  jclms::JCCMD result;
   
   arg1 = (jclms::JcLockInput *)jarg1; 
-  result = (int) ((arg1)->m_cmdtype);
+  result = (jclms::JCCMD) ((arg1)->m_cmdtype);
   jresult = result; 
   return jresult;
 }
@@ -495,6 +495,186 @@ SWIGEXPORT void SWIGSTDCALL CSharp_delete_JcLockInput(void * jarg1) {
   
   arg1 = (jclms::JcLockInput *)jarg1; 
   delete arg1;
+}
+
+
+SWIGEXPORT int SWIGSTDCALL CSharp_zwGetDynaCode(void * jarg1) {
+  int jresult ;
+  jclms::JcLockInput *arg1 = 0 ;
+  int result;
+  
+  arg1 = (jclms::JcLockInput *)jarg1;
+  if (!arg1) {
+    SWIG_CSharpSetPendingExceptionArgument(SWIG_CSharpArgumentNullException, "jclms::JcLockInput const & type is null", 0);
+    return 0;
+  } 
+  result = (int)jclms::zwGetDynaCode((jclms::JcLockInput const &)*arg1);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_zwBinString2Int32By8(char * jarg1, int jarg2) {
+  unsigned int jresult ;
+  char *arg1 = (char *) 0 ;
+  int arg2 ;
+  unsigned int result;
+  
+  arg1 = (char *)jarg1; 
+  arg2 = (int)jarg2; 
+  result = (unsigned int)jclms::zwBinString2Int32By8((char const *)arg1,arg2);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT int SWIGSTDCALL CSharp_ZW_AES_BLOCK_SIZE_get() {
+  int jresult ;
+  int result;
+  
+  result = (int)((128/8));
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT int SWIGSTDCALL CSharp_ZW_SM3_DGST_SIZE_get() {
+  int jresult ;
+  int result;
+  
+  result = (int)((256/8));
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void * SWIGSTDCALL CSharp_new_zwHexTool__SWIG_0(char * jarg1) {
+  void * jresult ;
+  char *arg1 = (char *) 0 ;
+  zwTools::zwHexTool *result = 0 ;
+  
+  arg1 = (char *)jarg1; 
+  result = (zwTools::zwHexTool *)new zwTools::zwHexTool((char const *)arg1);
+  jresult = (void *)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void * SWIGSTDCALL CSharp_new_zwHexTool__SWIG_1(void * jarg1, int jarg2) {
+  void * jresult ;
+  void *arg1 = (void *) 0 ;
+  int arg2 ;
+  zwTools::zwHexTool *result = 0 ;
+  
+  arg1 = (void *)jarg1; 
+  arg2 = (int)jarg2; 
+  result = (zwTools::zwHexTool *)new zwTools::zwHexTool((void const *)arg1,arg2);
+  jresult = (void *)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void SWIGSTDCALL CSharp_delete_zwHexTool(void * jarg1) {
+  zwTools::zwHexTool *arg1 = (zwTools::zwHexTool *) 0 ;
+  
+  arg1 = (zwTools::zwHexTool *)jarg1; 
+  delete arg1;
+}
+
+
+SWIGEXPORT char * SWIGSTDCALL CSharp_zwHexTool_getBin(void * jarg1) {
+  char * jresult ;
+  zwTools::zwHexTool *arg1 = (zwTools::zwHexTool *) 0 ;
+  char *result = 0 ;
+  
+  arg1 = (zwTools::zwHexTool *)jarg1; 
+  result = (char *)(arg1)->getBin();
+  jresult = SWIG_csharp_string_callback((const char *)result); 
+  return jresult;
+}
+
+
+SWIGEXPORT int SWIGSTDCALL CSharp_zwHexTool_getBinLen(void * jarg1) {
+  int jresult ;
+  zwTools::zwHexTool *arg1 = (zwTools::zwHexTool *) 0 ;
+  int result;
+  
+  arg1 = (zwTools::zwHexTool *)jarg1; 
+  result = (int)(arg1)->getBinLen();
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT int SWIGSTDCALL CSharp_zwHexTool_getPadedLen(void * jarg1) {
+  int jresult ;
+  zwTools::zwHexTool *arg1 = (zwTools::zwHexTool *) 0 ;
+  int result;
+  
+  arg1 = (zwTools::zwHexTool *)jarg1; 
+  result = (int)(arg1)->getPadedLen();
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT int SWIGSTDCALL CSharp_zwHexTool_getXXTEABlockNum(void * jarg1) {
+  int jresult ;
+  zwTools::zwHexTool *arg1 = (zwTools::zwHexTool *) 0 ;
+  int result;
+  
+  arg1 = (zwTools::zwHexTool *)jarg1; 
+  result = (int)(arg1)->getXXTEABlockNum();
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void SWIGSTDCALL CSharp_zwHexTool_PrintBin(void * jarg1) {
+  zwTools::zwHexTool *arg1 = (zwTools::zwHexTool *) 0 ;
+  
+  arg1 = (zwTools::zwHexTool *)jarg1; 
+  (arg1)->PrintBin();
+}
+
+
+SWIGEXPORT char * SWIGSTDCALL CSharp_zwHexTool_getCArrayStr(void * jarg1) {
+  char * jresult ;
+  zwTools::zwHexTool *arg1 = (zwTools::zwHexTool *) 0 ;
+  char *result = 0 ;
+  
+  arg1 = (zwTools::zwHexTool *)jarg1; 
+  result = (char *)(arg1)->getCArrayStr();
+  jresult = SWIG_csharp_string_callback((const char *)result); 
+  return jresult;
+}
+
+
+SWIGEXPORT void * SWIGSTDCALL CSharp_zwSm3Hmac7(void * jarg1, void * jarg2, void * jarg3) {
+  void * jresult ;
+  zwTools::zwHexTool *arg1 = 0 ;
+  zwTools::zwHexTool *arg2 = 0 ;
+  zwTools::zwHexTool *arg3 = 0 ;
+  int32_t result;
+  
+  arg1 = (zwTools::zwHexTool *)jarg1;
+  if (!arg1) {
+    SWIG_CSharpSetPendingExceptionArgument(SWIG_CSharpArgumentNullException, "zwTools::zwHexTool & type is null", 0);
+    return 0;
+  } 
+  arg2 = (zwTools::zwHexTool *)jarg2;
+  if (!arg2) {
+    SWIG_CSharpSetPendingExceptionArgument(SWIG_CSharpArgumentNullException, "zwTools::zwHexTool & type is null", 0);
+    return 0;
+  } 
+  arg3 = (zwTools::zwHexTool *)jarg3;
+  if (!arg3) {
+    SWIG_CSharpSetPendingExceptionArgument(SWIG_CSharpArgumentNullException, "zwTools::zwHexTool & type is null", 0);
+    return 0;
+  } 
+  result = zwTools::zwSm3Hmac7(*arg1,*arg2,*arg3);
+  jresult = new int32_t((const int32_t &)result); 
+  return jresult;
 }
 
 

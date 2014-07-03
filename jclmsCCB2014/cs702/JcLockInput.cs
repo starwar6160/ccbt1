@@ -107,12 +107,12 @@ public class JcLockInput : IDisposable {
     } 
   }
 
-  public int m_cmdtype {
+  public JCCMD m_cmdtype {
     set {
-      jclmsCCB2014PINVOKE.JcLockInput_m_cmdtype_set(swigCPtr, value);
+      jclmsCCB2014PINVOKE.JcLockInput_m_cmdtype_set(swigCPtr, (int)value);
     } 
     get {
-      int ret = jclmsCCB2014PINVOKE.JcLockInput_m_cmdtype_get(swigCPtr);
+      JCCMD ret = (JCCMD)jclmsCCB2014PINVOKE.JcLockInput_m_cmdtype_get(swigCPtr);
       return ret;
     } 
   }

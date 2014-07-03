@@ -12,6 +12,25 @@ using System;
 using System.Runtime.InteropServices;
 
 public class jclmsCCB2014 {
+  public static int zwGetDynaCode(JcLockInput arg0) {
+    int ret = jclmsCCB2014PINVOKE.zwGetDynaCode(JcLockInput.getCPtr(arg0));
+    if (jclmsCCB2014PINVOKE.SWIGPendingException.Pending) throw jclmsCCB2014PINVOKE.SWIGPendingException.Retrieve();
+    return ret;
+  }
+
+  public static uint zwBinString2Int32By8(string data, int len) {
+    uint ret = jclmsCCB2014PINVOKE.zwBinString2Int32By8(data, len);
+    return ret;
+  }
+
+  public static SWIGTYPE_p_int32_t zwSm3Hmac7(zwHexTool inPsk, zwHexTool inMessage, zwHexTool outHmac) {
+    SWIGTYPE_p_int32_t ret = new SWIGTYPE_p_int32_t(jclmsCCB2014PINVOKE.zwSm3Hmac7(zwHexTool.getCPtr(inPsk), zwHexTool.getCPtr(inMessage), zwHexTool.getCPtr(outHmac)), true);
+    if (jclmsCCB2014PINVOKE.SWIGPendingException.Pending) throw jclmsCCB2014PINVOKE.SWIGPendingException.Retrieve();
+    return ret;
+  }
+
+  public static readonly int ZW_AES_BLOCK_SIZE = jclmsCCB2014PINVOKE.ZW_AES_BLOCK_SIZE_get();
+  public static readonly int ZW_SM3_DGST_SIZE = jclmsCCB2014PINVOKE.ZW_SM3_DGST_SIZE_get();
 }
 
 }

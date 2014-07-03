@@ -86,7 +86,7 @@ namespace jclms{
 		m_datetime=-1;
 		m_validity=-1;
 		m_closecode=-1;
-		m_cmdtype=-1;
+		m_cmdtype=JCCMD_INVALID;
 		m_status=EJC_FAIL;
 	}
 
@@ -145,7 +145,7 @@ namespace jclms{
 		{
 			status=EJC_INPUT_NULL;
 		}
-		if (m_cmdtype<0)
+		if (m_cmdtype==JCCMD_INVALID)
 		{
 			status=EJC_INPUT_NULL;
 		}
