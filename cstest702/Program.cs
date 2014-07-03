@@ -22,6 +22,16 @@ namespace cstest702
             int dyCode=jclmsCCB2014.zwGetDynaCode(aa);
             Console.Out.WriteLine(aa);
             Console.Out.WriteLine("DynaCode={0}", dyCode);
+            JCERROR err = jclmsCCB2014.zwVerifyDynaCode(aa, dyCode);
+            if (err == JCERROR.EJC_SUSSESS)
+            {
+                Console.Out.WriteLine("verify Success");
+            }
+            else
+            {
+                Console.Out.WriteLine("verify Fail");
+            }
+
         }
     }
 }

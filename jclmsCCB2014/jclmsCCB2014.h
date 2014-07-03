@@ -61,7 +61,7 @@ typedef enum jc_cmd_type{
 	int JCLMSCCB2014_API zwGetDynaCode(const JcLockInput &lock);
 
 //验证动态码，成功返回EJC_SUSSESS，失败返回EJC_FAIL
-	int zwVerifyDynaCode(const JcLockInput &lock,const int dstDyCode);
+	JCERROR zwVerifyDynaCode(const JcLockInput &lock,const int dstDyCode);
 }	//end of namespace jclms
 
 namespace zwTools{

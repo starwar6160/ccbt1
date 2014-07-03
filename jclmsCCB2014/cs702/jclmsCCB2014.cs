@@ -18,8 +18,8 @@ public class jclmsCCB2014 {
     return ret;
   }
 
-  public static int zwVerifyDynaCode(JcLockInput arg0, int dstDyCode) {
-    int ret = jclmsCCB2014PINVOKE.zwVerifyDynaCode(JcLockInput.getCPtr(arg0), dstDyCode);
+  public static JCERROR zwVerifyDynaCode(JcLockInput arg0, int dstDyCode) {
+    JCERROR ret = (JCERROR)jclmsCCB2014PINVOKE.zwVerifyDynaCode(JcLockInput.getCPtr(arg0), dstDyCode);
     if (jclmsCCB2014PINVOKE.SWIGPendingException.Pending) throw jclmsCCB2014PINVOKE.SWIGPendingException.Retrieve();
     return ret;
   }

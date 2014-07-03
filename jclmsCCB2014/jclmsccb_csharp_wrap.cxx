@@ -518,7 +518,7 @@ SWIGEXPORT int SWIGSTDCALL CSharp_zwVerifyDynaCode(void * jarg1, int jarg2) {
   int jresult ;
   jclms::JcLockInput *arg1 = 0 ;
   int arg2 ;
-  int result;
+  jclms::JCERROR result;
   
   arg1 = (jclms::JcLockInput *)jarg1;
   if (!arg1) {
@@ -526,7 +526,7 @@ SWIGEXPORT int SWIGSTDCALL CSharp_zwVerifyDynaCode(void * jarg1, int jarg2) {
     return 0;
   } 
   arg2 = (int)jarg2; 
-  result = (int)jclms::zwVerifyDynaCode((jclms::JcLockInput const &)*arg1,arg2);
+  result = (jclms::JCERROR)jclms::zwVerifyDynaCode((jclms::JcLockInput const &)*arg1,arg2);
   jresult = result; 
   return jresult;
 }

@@ -42,7 +42,7 @@ unsigned int zwBinString2Int32(const char *data,const int len);
 		return myGetDynaCodeImpl(lock);
 	}
 
-	int zwVerifyDynaCode(const JcLockInput &lock,const int dstDyCode)
+	jclms::JCERROR zwVerifyDynaCode( const JcLockInput &lock,const int dstDyCode )
 	{
 		int calCode= myGetDynaCodeImpl(lock);
 		if (calCode==dstDyCode)
