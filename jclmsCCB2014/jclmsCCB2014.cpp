@@ -51,10 +51,7 @@ namespace jclms{
 		//////////////////////////////////////////////////////////////////////////
 		memset(outHmac,0,ZWSM3_DGST_LEN);
 		SM3_hash(&sm3,(char *)(outHmac));
-		unsigned int res=*(unsigned int *)outHmac;
-		res%=89999967;
-		res+=10000017;
-
+		unsigned int res=zwBinString2Int32By8(outHmac,ZWSM3_DGST_LEN);
 		return res;
 	}
 

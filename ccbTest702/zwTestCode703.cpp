@@ -7,27 +7,41 @@ using namespace zwTools;
 using namespace jclms;
 #include <vector>
 #include <algorithm>
+#include <set>
+using std::set;
 using std::vector;
 using std::sort;
+
 
 //基本的填写JcLockInput结构体并输出的测试
 void myJcLockInputTest1()
 {
 	JcLockInput aa;
-	aa.m_atmno="atmno";
-	aa.m_lockno="lockno";
-	aa.m_psk="pskaaaabbbbbcccc";
+	aa.m_atmno="atmnoddddddddsssssssssssssssssssss";
+	aa.m_lockno="locknossssssssssssa1";
+	aa.m_psk="pskaaaabbbbbccccsssssssssssssssssssssssssssssssssssss";
 	aa.m_datetime=140007775;
-	aa.m_validity=240;
-	aa.m_closecode=87654322;
+	aa.m_validity=5;
+	aa.m_closecode=87654325;
 	aa.m_cmdtype=0;
 	aa.DebugPrint();
-	for (int i=0;i<10;i++)
+	set <int> rset;
+	//基本上做到了40K个批量生成时重复在个位数，13K个无重复
+	const int RCOUNT=13000;
+	for (int i=0;i<RCOUNT;i++)
 	{
-		aa.m_atmno[0]=i;
+		aa.m_datetime++;
 		int dycode=zwGetDynaCode(aa);
-		cout<<dycode<<"\t";
+		rset.insert(dycode);
+		if (i % 256 ==0)
+		{
+			cout<<dycode<<"\t";
+		}	
 	}
+	cout<<endl;
+	int realSize=rset.size();
+	cout<<"Total Item is "<<RCOUNT<<"\t";
+	cout<<"Dups Item is "<<RCOUNT-realSize<<endl;
 }
 
 //二进制的SM3HMAC测试

@@ -18,7 +18,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	//zwSm3HmacTest2();
 	//myStringTest1();
 	//myBigNumModTest1();
-	myBinString2intTest1();
+	//myBinString2intTest1();
 
 
 	return 0;
