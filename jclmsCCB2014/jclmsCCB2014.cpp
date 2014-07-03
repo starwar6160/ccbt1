@@ -47,31 +47,25 @@ namespace jclms{
 		int l_datetime=lock.m_datetime;
 		int l_validity=lock.m_validity;
 		int l_closecode=lock.m_closecode;	
-		switch (lock.m_cmdtype)
+		if (JCCMD_INIT_CLOSECODE==lock.m_cmdtype)
 		{
-		case JCCMD_INIT_CLOSECODE:
 			l_datetime=1400000000;	//初始闭锁码采用一个特殊的固定值作为时间
 			l_validity=0;	//初始闭锁码特选一个合法有效期之外的值
-			l_closecode=0;	//初始闭锁码特选一个非法闭锁码
-			break;
-		//case :
-		//	break;
-		//case :
-		//	break;
+			l_closecode=0;	//初始闭锁码特选一个非法闭锁码			
 		}
 		mySm3Process(&sm3,l_datetime);
 		mySm3Process(&sm3,l_validity);
 		mySm3Process(&sm3,l_closecode);
 		mySm3Process(&sm3,lock.m_cmdtype);
-		//////////////////////////////////////////////////////////////////////////
+		//////////////////////////////HASH运算结束////////////////////////////////////////////
 		memset(outHmac,0,ZWSM3_DGST_LEN);
 		SM3_hash(&sm3,(char *)(outHmac));
-		unsigned int res=zwBinString2Int32By8(outHmac,ZWSM3_DGST_LEN);
+		unsigned int res=zwBinString2Int32(outHmac,ZWSM3_DGST_LEN);
 		return res;
 	}
 
 	//从包含二进制数据的字符串输入，获得一个8位整数的输出
-	unsigned int zwBinString2Int32By8(const char *data,const int len)
+	unsigned int zwBinString2Int32(const char *data,const int len)
 	{
 		//比1开头的8位数稍微小一些的质数
 		const int dyLow=10000019;

@@ -522,7 +522,7 @@ SWIGEXPORT unsigned int SWIGSTDCALL CSharp_zwBinString2Int32By8(char * jarg1, in
   
   arg1 = (char *)jarg1; 
   arg2 = (int)jarg2; 
-  result = (unsigned int)jclms::zwBinString2Int32By8((char const *)arg1,arg2);
+  result = (unsigned int)jclms::zwBinString2Int32((char const *)arg1,arg2);
   jresult = result; 
   return jresult;
 }

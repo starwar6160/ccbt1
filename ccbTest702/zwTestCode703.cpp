@@ -120,7 +120,7 @@ void myBinString2intTest1()
 	for (int i=0;i<100;i++)
 	{
 		msg[0]=i;		
-		unsigned int rv=zwBinString2Int32By8(msg,msglen);
+		unsigned int rv=zwBinString2Int32(msg,msglen);
 		res.push_back(rv);
 	}
 	sort(res.begin(),res.end());
