@@ -10,19 +10,26 @@ namespace cstest702
     {
         static void Main(string[] args)
         {
-            JcLockInput aa=new JcLockInput();
-            aa.m_atmno = "atmno1";
-            aa.m_lockno = "lockno1";
-            aa.m_psk = "mypskexample1";
-            aa.m_datetime = 1400887765;
-            aa.m_validity = 241;
-            aa.m_closecode = 87654322;
-            aa.m_cmdtype = JCCMD.JCCMD_INIT_CLOSECODE;
-            aa.DebugPrint();
-            int dyCode=jclmsCCB2014.zwGetDynaCode(aa);
-            Console.Out.WriteLine(aa);
+            JcLockInput myLock=new JcLockInput();
+            int dyCode = 0;
+            dyCode = myInitCloseCodeTest1(myLock, dyCode);
+
+        }
+
+        private static int myInitCloseCodeTest1(JcLockInput myLock, int dyCode)
+        {
+            myLock.m_atmno = "atmno1";
+            myLock.m_lockno = "lockno1";
+            myLock.m_psk = "mypskexample1";
+            myLock.m_datetime = 1400887765;
+            myLock.m_validity = 241;
+            myLock.m_closecode = 87654322;
+            myLock.m_cmdtype = JCCMD.JCCMD_INIT_CLOSECODE;
+            myLock.DebugPrint();
+            dyCode = jclmsCCB2014.zwGetDynaCode(myLock);
+            Console.Out.WriteLine(myLock);
             Console.Out.WriteLine("DynaCode={0}", dyCode);
-            JCERROR err = jclmsCCB2014.zwVerifyDynaCode(aa, dyCode);
+            JCERROR err = jclmsCCB2014.zwVerifyDynaCode(myLock, dyCode);
             if (err == JCERROR.EJC_SUSSESS)
             {
                 Console.Out.WriteLine("verify Success");
@@ -31,7 +38,7 @@ namespace cstest702
             {
                 Console.Out.WriteLine("verify Fail");
             }
-
+            return dyCode;
         }
     }
 }
