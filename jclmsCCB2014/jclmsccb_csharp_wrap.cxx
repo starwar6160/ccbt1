@@ -532,6 +532,16 @@ SWIGEXPORT int SWIGSTDCALL CSharp_zwVerifyDynaCode(void * jarg1, int jarg2) {
 }
 
 
+SWIGEXPORT int SWIGSTDCALL CSharp_getVersion() {
+  int jresult ;
+  int result;
+  
+  result = (int)jclms::getVersion();
+  jresult = result; 
+  return jresult;
+}
+
+
 SWIGEXPORT int SWIGSTDCALL CSharp_ZW_AES_BLOCK_SIZE_get() {
   int jresult ;
   int result;

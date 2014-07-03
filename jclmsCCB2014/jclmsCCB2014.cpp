@@ -10,6 +10,11 @@ int myGetDynaCodeImpl( const JcLockInput &lock );
 //从包含二进制数据的字符串输入，获得一个8位整数的输出
 unsigned int zwBinString2Int32(const char *data,const int len);
 
+	int getVersion(void)
+	{
+		return 201407030;	//含义是前8位是日期，第9位一般是0，如果一天出了多个发布版本，最后一位变化
+	}
+
 	void mySm3Process(SM3 *ctx,const char *data,const int len)
 	{
 		assert(ctx!=NULL);
@@ -183,5 +188,29 @@ unsigned int zwBinString2Int32(const char *data,const int len);
 		unsigned int res=zwBinString2Int32(outHmac,ZWSM3_DGST_LEN);
 		return res;
 	}
+
+	int myOfflineVerifyDynaCode( const JcLockInput &lock,const int dstCode )
+	{
+		SM3 sm3;
+		char outHmac[ZW_SM3_DGST_SIZE];
+		SM3_init(&sm3);
+		/////////////////////////////逐个元素进行HASH运算/////////////////////////////////////////////
+		mySm3Process(&sm3,lock.m_atmno.data(),lock.m_atmno.size());
+		mySm3Process(&sm3,lock.m_lockno.data(),lock.m_lockno.size());
+		mySm3Process(&sm3,lock.m_psk.data(),lock.m_psk.size());
+
+		int l_datetime=lock.m_datetime;
+		int l_validity=lock.m_validity;
+		mySm3Process(&sm3,l_datetime);
+		mySm3Process(&sm3,l_validity);
+		mySm3Process(&sm3,lock.m_closecode);
+		mySm3Process(&sm3,lock.m_cmdtype);
+		//////////////////////////////HASH运算结束////////////////////////////////////////////
+		memset(outHmac,0,ZWSM3_DGST_LEN);
+		SM3_hash(&sm3,(char *)(outHmac));
+		unsigned int res=zwBinString2Int32(outHmac,ZWSM3_DGST_LEN);
+		return res;
+	}
+
 
 }

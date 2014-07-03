@@ -62,6 +62,7 @@ typedef enum jc_cmd_type{
 
 //验证动态码，成功返回EJC_SUSSESS，失败返回EJC_FAIL
 	JCERROR zwVerifyDynaCode(const JcLockInput &lock,const int dstDyCode);
+	int JCLMSCCB2014_API getVersion(void);
 }	//end of namespace jclms
 
 namespace zwTools{
@@ -95,7 +96,7 @@ namespace zwTools{
 	//密钥，消息，输出的摘要,都是二进制格式
 	int32_t JCLMSCCB2014_API zwSm3Hmac7(zwHexTool &inPsk,
 		zwHexTool &inMessage,
-		zwHexTool &outHmac);
+		zwHexTool &outHmac);	
 }
 
 #endif // jclmsCCB2014_h__

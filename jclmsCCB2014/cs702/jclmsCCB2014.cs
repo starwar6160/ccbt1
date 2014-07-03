@@ -24,6 +24,11 @@ public class jclmsCCB2014 {
     return ret;
   }
 
+  public static int getVersion() {
+    int ret = jclmsCCB2014PINVOKE.getVersion();
+    return ret;
+  }
+
   public static SWIGTYPE_p_int32_t zwSm3Hmac7(zwHexTool inPsk, zwHexTool inMessage, zwHexTool outHmac) {
     SWIGTYPE_p_int32_t ret = new SWIGTYPE_p_int32_t(jclmsCCB2014PINVOKE.zwSm3Hmac7(zwHexTool.getCPtr(inPsk), zwHexTool.getCPtr(inMessage), zwHexTool.getCPtr(outHmac)), true);
     if (jclmsCCB2014PINVOKE.SWIGPendingException.Pending) throw jclmsCCB2014PINVOKE.SWIGPendingException.Retrieve();
