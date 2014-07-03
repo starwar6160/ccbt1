@@ -3,8 +3,62 @@
 
 #include "stdafx.h"
 #include "jclmsCCB2014.h"
+#include "hashalg\\sm3.h"
 
 namespace jclms{
+
+	void mySm3Process(SM3 *ctx,const char *data,const int len)
+	{
+		assert(ctx!=NULL);
+		assert(ctx->length>0);
+		assert(data!=NULL);
+		assert(len>0);
+		for (int i=0;i<len;i++)
+		{
+			SM3_process(ctx,*(data+i));
+		}
+	}
+
+	void mySm3Process(SM3 *ctx,const int data)
+	{
+		assert(ctx!=NULL);
+		assert(ctx->length>0);
+		assert(data>=0);	//几个整数参数，都是0或者正整数
+		int td=data;
+		for (int i=0;i<sizeof(data);i++)
+		{
+			unsigned char t=td & 0xff;
+			SM3_process(ctx,t);
+			td=td>>8;
+		}
+		assert(td==0);
+	}
+
+	int zwGetDynaCode(const JcLockInput &lock)
+	{
+		SM3 sm3;
+		char outHmac[ZW_SM3_DGST_SIZE];
+		SM3_init(&sm3);
+		/////////////////////////////逐个元素进行HASH运算/////////////////////////////////////////////
+		mySm3Process(&sm3,lock.m_atmno.data(),lock.m_atmno.size());
+		mySm3Process(&sm3,lock.m_lockno.data(),lock.m_lockno.size());
+		mySm3Process(&sm3,lock.m_psk.data(),lock.m_psk.size());
+
+		mySm3Process(&sm3,lock.m_datetime);
+		mySm3Process(&sm3,lock.m_validity);
+		mySm3Process(&sm3,lock.m_closecode);
+		mySm3Process(&sm3,lock.m_cmdtype);
+		//////////////////////////////////////////////////////////////////////////
+		memset(outHmac,0,ZWSM3_DGST_LEN);
+		SM3_hash(&sm3,(char *)(outHmac));
+		unsigned int res=*(unsigned int *)outHmac;
+		res%=89999967;
+		res+=10000017;
+
+		return res;
+	}
+
+
 	JcLockInput::JcLockInput()
 	{
 		m_atmno="";

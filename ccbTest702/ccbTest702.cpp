@@ -39,11 +39,11 @@ void myBinString2intTest1();
 
 int _tmain(int argc, _TCHAR* argv[])
 {
-	//myJcLockInputTest1();
+	myJcLockInputTest1();
 	//zwSm3HmacTest2();
 	//myStringTest1();
 	//myBigNumModTest1();
-	myBinString2intTest1();
+	//myBinString2intTest1();
 
 
 	return 0;

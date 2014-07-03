@@ -60,6 +60,7 @@ typedef enum jc_cmd_type{
 		void DebugPrint(void);	//
 		JCERROR CheckInput(void);
 	};
+	int JCLMSCCB2014_API zwGetDynaCode(const JcLockInput &lock);
 }	//end of namespace jclms
 
 namespace zwTools{

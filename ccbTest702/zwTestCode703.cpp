@@ -22,9 +22,15 @@ void myJcLockInputTest1()
 	aa.m_psk="pskaaaabbbbbcccc";
 	aa.m_datetime=140007775;
 	aa.m_validity=240;
-	aa.m_closecode=87654321;
+	aa.m_closecode=87654322;
 	aa.m_cmdtype=0;
 	aa.DebugPrint();
+	for (int i=0;i<10;i++)
+	{
+		aa.m_atmno[0]=i;
+		int dycode=zwGetDynaCode(aa);
+		cout<<dycode<<"\t";
+	}
 }
 
 //二进制的SM3HMAC测试
