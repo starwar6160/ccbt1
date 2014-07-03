@@ -61,6 +61,9 @@ typedef enum jc_cmd_type{
 		JCERROR CheckInput(void);
 	};
 	int JCLMSCCB2014_API zwGetDynaCode(const JcLockInput &lock);
+	//从包含二进制数据的字符串输入，获得一个8位整数的输出
+	unsigned int JCLMSCCB2014_API zwBinString2Int32By8(const char *data,const int len);
+
 }	//end of namespace jclms
 
 namespace zwTools{

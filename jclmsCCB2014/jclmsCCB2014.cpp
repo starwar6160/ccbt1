@@ -58,7 +58,29 @@ namespace jclms{
 		return res;
 	}
 
+	//从包含二进制数据的字符串输入，获得一个8位整数的输出
+	unsigned int zwBinString2Int32By8(const char *data,const int len)
+	{
+		//比1开头的8位数稍微小一些的质数
+		const int dyLow=10000019;
+		//比开头的8位数稍微小一些的质数
+		const int dyMod=89999981;	
+		const int dyMul=257;	//随便找的一个质数作为相乘的因子
+		unsigned int sum=0;
+		for (int i=0;i<len;i++)
+		{
+			unsigned char t=*(data+i);
+			sum*=257;
+			sum+=t;		
+		}
+		//这两个数字结合使用，产生肯定是8位数的动态码
+		sum %=89999981;
+		sum +=dyLow;
+		return sum;
+	}
 
+
+//////////////////////////////////////////////////////////////////////////
 	JcLockInput::JcLockInput()
 	{
 		m_atmno="";

@@ -9,9 +9,6 @@ using namespace jclms;
 #include <algorithm>
 using std::vector;
 using std::sort;
-//从包含二进制数据的字符串输入，获得一个8位整数的输出
-unsigned int zwBinString2Int32By8(const string &inStr);
-
 
 //基本的填写JcLockInput结构体并输出的测试
 void myJcLockInputTest1()
@@ -90,14 +87,16 @@ void myBigNumModTest1()
 void myBinString2intTest1()
 {
 	vector <unsigned int>res;
-	string msg("zbouweiteststring201407031011c");
+	char  msg[]="zbouweiteststring201407031011c";
+	int msglen=sizeof(msg);
 	for (int i=0;i<100;i++)
 	{
 		msg[0]=i;		
-		unsigned int rv=zwBinString2Int32By8(msg);
+		unsigned int rv=zwBinString2Int32By8(msg,msglen);
 		res.push_back(rv);
 	}
 	sort(res.begin(),res.end());
+	cout<<"*******************\n";
 	for (size_t i=0;i<res.size();i++)
 	{
 		cout<<res[i]<<"\t";
