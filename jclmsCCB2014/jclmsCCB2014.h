@@ -29,7 +29,8 @@ typedef enum jc_error_code{
 
 typedef enum jc_cmd_type{
 	JCCMD_INVALID,			//无效命令
-	JCCMD_INIT_CLOSECODE,	//初始闭锁码
+	//初始闭锁码，此时仅有ATM编号，锁编号，PSK三者决定，其余可变因素为定值
+	JCCMD_INIT_CLOSECODE,	
 	JCCMD_CCB_DYPASS1,		//上位机第一开锁密码
 	JCCMD_CCB_LOCK_VERCODE,	//下位机验证码
 	JCCMD_CCB_DYPASS2,		//上位机第二开锁密码
@@ -56,6 +57,7 @@ typedef enum jc_cmd_type{
 		void DebugPrint(void);	//
 		JCERROR CheckInput(void);
 	};
+	//lock结构体内部m_cmdtype决定了生成哪一类动态码；
 	int JCLMSCCB2014_API zwGetDynaCode(const JcLockInput &lock);
 	//从包含二进制数据的字符串输入，获得一个8位整数的输出
 	unsigned int JCLMSCCB2014_API zwBinString2Int32By8(const char *data,const int len);

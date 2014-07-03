@@ -46,14 +46,12 @@ namespace jclms{
 
 		int l_datetime=lock.m_datetime;
 		int l_validity=lock.m_validity;
-		int l_closecode=lock.m_closecode;
-		const int ZWDAYLEN=24*60*60;	//一天的秒数；
+		int l_closecode=lock.m_closecode;	
 		switch (lock.m_cmdtype)
 		{
 		case JCCMD_INIT_CLOSECODE:
-			int tail=l_datetime % ZWDAYLEN;
-			l_datetime-=tail;
-			l_validity=2222;	//初始闭锁码特选一个合法有效期之外的值
+			l_datetime=1400000000;	//初始闭锁码采用一个特殊的固定值作为时间
+			l_validity=0;	//初始闭锁码特选一个合法有效期之外的值
 			l_closecode=0;	//初始闭锁码特选一个非法闭锁码
 			break;
 		//case :
