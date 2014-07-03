@@ -23,25 +23,39 @@ void myJcLockInputTest1()
 	aa.m_datetime=140007775;
 	aa.m_validity=5;
 	aa.m_closecode=87654325;
-	aa.m_cmdtype=0;
+	aa.m_cmdtype=JCCMD_GEN_DYNACODE;
 	aa.DebugPrint();
 	set <int> rset;
 	//基本上做到了40K个批量生成时重复在个位数，13K个无重复
-	const int RCOUNT=13000;
+	//在1到9的字头分布方面，几千个时偏差在10%以内，
+	//几万个时偏差3.5%以内，也就是说基本均匀
+	const int RCOUNT=900*3;
+	int head[10];
+	for (int i=0;i<10;i++)
+	{
+		head[i]=0;
+	}
 	for (int i=0;i<RCOUNT;i++)
 	{
 		aa.m_datetime++;
 		int dycode=zwGetDynaCode(aa);
 		rset.insert(dycode);
-		if (i % 256 ==0)
+		if (i % (RCOUNT/32) ==0)
 		{
 			cout<<dycode<<"\t";
-		}	
+		}
+		int hd=dycode /10000000;
+		assert(hd>=0 && hd <=9);
+		head[hd]++;
 	}
 	cout<<endl;
 	int realSize=rset.size();
 	cout<<"Total Item is "<<RCOUNT<<"\t";
 	cout<<"Dups Item is "<<RCOUNT-realSize<<endl;
+	for (int i=1;i<10;i++)
+	{
+		cout<<i<<":"<<head[i]*100.0f/(RCOUNT/9)<<"\t";
+	}
 }
 
 //二进制的SM3HMAC测试
