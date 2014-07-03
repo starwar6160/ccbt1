@@ -55,7 +55,7 @@ void myStringTest1()
 	bb.assign(b2,BUFSIZE);
 	//+运算符可以正确处理含有0字符的二进制数据
 	cc=aa+bb;
-	cout<<"aa="<<aa<<endl;
+	cout<<"aa="<<aa<<"len of aa ="<<aa.length()<<endl;
 	cout<<"bb="<<bb<<endl;
 	cout<<"cc="<<cc<<endl;
 	//=运算符碰到含有0字符的二进制数据会截断
