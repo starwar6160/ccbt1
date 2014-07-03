@@ -58,6 +58,7 @@ void myJcLockInputTest1()
 	}
 }
 
+#ifdef _DEBUG_USE_OLD_SM3HMAC20140703
 //二进制的SM3HMAC测试
 void zwSm3HmacTest2()
 {
@@ -75,6 +76,7 @@ void zwSm3HmacTest2()
 	printf("Result Value of hmac\n");
 	hmac.PrintBin();
 }
+#endif // _DEBUG_USE_OLD_SM3HMAC20140703
 
 //测试std::string对于含有0字符的二进制数据的处理能力
 void myStringTest1()

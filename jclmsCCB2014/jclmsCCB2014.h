@@ -93,10 +93,13 @@ namespace zwTools{
 	private:
 	};
 	//////////////////////////////////////////////////////////////////////////
+#ifdef _DEBUG_USE_OLD_SM3HMAC20140703
 	//密钥，消息，输出的摘要,都是二进制格式
 	int32_t JCLMSCCB2014_API zwSm3Hmac7(zwHexTool &inPsk,
 		zwHexTool &inMessage,
-		zwHexTool &outHmac);	
+		zwHexTool &outHmac);
+#endif // _DEBUG_USE_OLD_SM3HMAC20140703
+	
 }
 
 #endif // jclmsCCB2014_h__

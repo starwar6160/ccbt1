@@ -11,6 +11,7 @@ typedef unsigned char BYTE;
 namespace zwTools{
 const uint8_t ZW_INPAD_FILL_CHAR=0x36;
 const uint8_t ZW_OUTPAD_FILL_CHAR=0x5C;
+#ifdef _DEBUG_USE_OLD_SM3HMAC20140703
 //密钥，消息，输出的摘要,都是二进制格式
 int32_t zwSm3Hmac7(zwHexTool &inPsk,
 				  zwHexTool &inMessage,
@@ -58,6 +59,7 @@ int32_t zwSm3Hmac7(zwHexTool &inPsk,
 	SM3_hash(&sm3p2,outHmac.getBin());
 	return 0;
 }
+#endif // _DEBUG_USE_OLD_SM3HMAC20140703
 
 
 

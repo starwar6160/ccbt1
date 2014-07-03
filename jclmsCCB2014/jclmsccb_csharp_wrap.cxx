@@ -664,34 +664,6 @@ SWIGEXPORT char * SWIGSTDCALL CSharp_zwHexTool_getCArrayStr(void * jarg1) {
 }
 
 
-SWIGEXPORT void * SWIGSTDCALL CSharp_zwSm3Hmac7(void * jarg1, void * jarg2, void * jarg3) {
-  void * jresult ;
-  zwTools::zwHexTool *arg1 = 0 ;
-  zwTools::zwHexTool *arg2 = 0 ;
-  zwTools::zwHexTool *arg3 = 0 ;
-  int32_t result;
-  
-  arg1 = (zwTools::zwHexTool *)jarg1;
-  if (!arg1) {
-    SWIG_CSharpSetPendingExceptionArgument(SWIG_CSharpArgumentNullException, "zwTools::zwHexTool & type is null", 0);
-    return 0;
-  } 
-  arg2 = (zwTools::zwHexTool *)jarg2;
-  if (!arg2) {
-    SWIG_CSharpSetPendingExceptionArgument(SWIG_CSharpArgumentNullException, "zwTools::zwHexTool & type is null", 0);
-    return 0;
-  } 
-  arg3 = (zwTools::zwHexTool *)jarg3;
-  if (!arg3) {
-    SWIG_CSharpSetPendingExceptionArgument(SWIG_CSharpArgumentNullException, "zwTools::zwHexTool & type is null", 0);
-    return 0;
-  } 
-  result = zwTools::zwSm3Hmac7(*arg1,*arg2,*arg3);
-  jresult = new int32_t((const int32_t &)result); 
-  return jresult;
-}
-
-
 #ifdef __cplusplus
 }
 #endif

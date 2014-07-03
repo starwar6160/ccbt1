@@ -284,9 +284,6 @@ class jclmsCCB2014PINVOKE {
 
   [DllImport("jclmsCCB2014", EntryPoint="CSharp_zwHexTool_getCArrayStr")]
   public static extern string zwHexTool_getCArrayStr(HandleRef jarg1);
-
-  [DllImport("jclmsCCB2014", EntryPoint="CSharp_zwSm3Hmac7")]
-  public static extern IntPtr zwSm3Hmac7(HandleRef jarg1, HandleRef jarg2, HandleRef jarg3);
 }
 
 }
