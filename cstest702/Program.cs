@@ -10,11 +10,30 @@ namespace cstest702
     {
         static void Main(string[] args)
         {
-            JcLockInput myLock=new JcLockInput();
-            int dyCode = 0;
-            dyCode = myInitCloseCodeTest1(myLock, dyCode);
             int lmsver = jclmsCCB2014.getVersion();
             Console.Out.WriteLine("Jclms DLL Version is {0}", lmsver);
+
+            //锁具的模拟
+            JcLockInput myLock=new JcLockInput();
+            //int dyCode = 0;
+            //dyCode = myInitCloseCodeTest1(myLock, dyCode);
+/////////////////////////////////////////////////////////////
+
+            //上位机的模拟
+            JcLockInput jcLms = new JcLockInput();
+            const String atmno = "atm1045576";
+            const String lockno = "lock14771509";
+            const String psk = "jclmsdemopsk201407071509##jclmsdemopsk201407071509";
+            //传入当前时间的GMT(格林尼治时间)
+            DateTime jcdt = DateTime.Now.ToUniversalTime();
+            Console.Out.WriteLine("当前的格林尼治时间(GMT)是{0},建行1.1版本算法上下位机都统一采用GMT来计算减少混乱"
+                , jcdt.ToString("yyyy MMdd HHmm ss") );
+            //计算当前时间距离GMT的秒数
+            DateTime dt = new DateTime(1970, 1, 1);
+            TimeSpan dp = jcdt- dt;
+            long seconddiff = dp.Ticks / 10000000;
+            Console.Out.WriteLine("当前的GMT秒数是 is {0}", seconddiff);
+
 
         }
 
@@ -26,7 +45,7 @@ namespace cstest702
             myLock.m_psk = "mypskexample1";
             myLock.m_datetime = 1400887765;
             myLock.m_validity = 241;
-            myLock.m_closecode = 87654322;
+            myLock.m_closecode = 87654321;
             //要生成哪一类动态码，请看JCCMD的定义
             myLock.m_cmdtype = JCCMD.JCCMD_INIT_CLOSECODE;
             myLock.DebugPrint();

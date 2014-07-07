@@ -12,7 +12,8 @@ unsigned int zwBinString2Int32(const char *data,const int len);
 
 	int getVersion(void)
 	{
-		return 201407030;	//含义是前8位是日期，第9位一般是0，如果一天出了多个发布版本，最后一位变化
+		//含义是前8位是日期，第9位一般是0，如果一天出了多个发布版本，最后一位变化
+		return 201407030;	
 	}
 
 	void mySm3Process(SM3 *ctx,const char *data,const int len)
@@ -197,19 +198,25 @@ unsigned int zwBinString2Int32(const char *data,const int len);
 		//填入默认的失败返回值
 		jcoff.s_datetime=0;
 		jcoff.s_validity=0;
+		int l_datetime=time(NULL);
+		const int MYHOUR=60;
+		int valarr[]={MYHOUR*1,MYHOUR*4,MYHOUR*8,MYHOUR*12,MYHOUR*24};
+
+		int tail=l_datetime % (24*60*60);
+		l_datetime-=tail;	//取整到整点小时
+
 
 		SM3 sm3;
 		char outHmac[ZW_SM3_DGST_SIZE];
+
 		SM3_init(&sm3);
 		/////////////////////////////逐个元素进行HASH运算/////////////////////////////////////////////
 		mySm3Process(&sm3,lock.m_atmno.data(),lock.m_atmno.size());
 		mySm3Process(&sm3,lock.m_lockno.data(),lock.m_lockno.size());
 		mySm3Process(&sm3,lock.m_psk.data(),lock.m_psk.size());
 
-		int l_datetime=lock.m_datetime;
-		int l_validity=lock.m_validity;
 		mySm3Process(&sm3,l_datetime);
-		mySm3Process(&sm3,l_validity);
+		mySm3Process(&sm3,240);
 		mySm3Process(&sm3,lock.m_closecode);
 		mySm3Process(&sm3,lock.m_cmdtype);
 		//////////////////////////////HASH运算结束////////////////////////////////////////////

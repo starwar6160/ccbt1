@@ -19,7 +19,9 @@ int _tmain(int argc, _TCHAR* argv[])
 	//myStringTest1();
 	//myBigNumModTest1();
 	//myBinString2intTest1();
-
+	const int MYHOUR=60;
+	int valarr[]={MYHOUR*1,MYHOUR*4,MYHOUR*8,MYHOUR*12,MYHOUR*24};
+	cout<<"items of valarr is "<<sizeof(valarr)/sizeof(int)<<endl;
 
 	return 0;
 }
