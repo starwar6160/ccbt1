@@ -6,6 +6,7 @@
 #include "hashalg\\sm3.h"
 
 namespace jclms{
+	const int G_TIMEMOD=10;	//默认按照10秒取整进入的数据，用于防止一些1-3秒钟的错误
 int myGetDynaCodeImpl( const JcLockInput &lock );
 //从包含二进制数据的字符串输入，获得一个8位整数的输出
 unsigned int zwBinString2Int32(const char *data,const int len);
@@ -14,6 +15,13 @@ unsigned int zwBinString2Int32(const char *data,const int len);
 	{
 		//含义是前8位是日期，第9位一般是0，如果一天出了多个发布版本，最后一位变化
 		return 201407030;	
+	}
+
+	//获得规格化的时间，也就是按照某个值取整的时间
+	static int myGetNormalTime(int gmtTime,const int TIMEMOD) 
+	{
+		int tail=gmtTime % TIMEMOD;
+		return gmtTime-tail;
 	}
 
 	void mySm3Process(SM3 *ctx,const char *data,const int len)
@@ -103,6 +111,7 @@ unsigned int zwBinString2Int32(const char *data,const int len);
 			printf("JcLock Input Para Error!\n");
 		}
 		 
+		m_datetime=myGetNormalTime(m_datetime,G_TIMEMOD);
 		string conn=".";	//连字符号
 		//三个固定条件组合在一起
 		string allItems=m_atmno+conn+m_lockno+conn+m_psk+conn;
@@ -155,10 +164,11 @@ unsigned int zwBinString2Int32(const char *data,const int len);
 		{
 			status=EJC_INPUT_NULL;
 		}
-
+		m_datetime=myGetNormalTime(m_datetime,G_TIMEMOD);
 		m_status=status;
 		return status;
 	}
+
 
 	int myGetDynaCodeImpl( const JcLockInput &lock )
 	{
@@ -170,7 +180,7 @@ unsigned int zwBinString2Int32(const char *data,const int len);
 		mySm3Process(&sm3,lock.m_lockno.data(),lock.m_lockno.size());
 		mySm3Process(&sm3,lock.m_psk.data(),lock.m_psk.size());
 
-		int l_datetime=lock.m_datetime;
+		int l_datetime=myGetNormalTime(lock.m_datetime,G_TIMEMOD);
 		int l_validity=lock.m_validity;
 		int l_closecode=lock.m_closecode;	
 		if (JCCMD_INIT_CLOSECODE==lock.m_cmdtype)
@@ -178,7 +188,7 @@ unsigned int zwBinString2Int32(const char *data,const int len);
 			l_datetime=1400000000;	//初始闭锁码采用一个特殊的固定值作为时间
 			l_validity=0;	//初始闭锁码特选一个合法有效期之外的值
 			l_closecode=0;	//初始闭锁码特选一个非法闭锁码			
-		}
+		}		
 		mySm3Process(&sm3,l_datetime);
 		mySm3Process(&sm3,l_validity);
 		mySm3Process(&sm3,l_closecode);
