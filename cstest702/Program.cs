@@ -51,8 +51,26 @@ namespace cstest702
             jcSrv.m_cmdtype = JCCMD.JCCMD_INIT_CLOSECODE;
             jcLock.DebugPrint();
             //锁具产生初始闭锁码
-            int dyCode = jclmsCCB2014.zwGetDynaCode(jcLock);
-            Console.Out.WriteLine("锁具产生的初始闭锁码是 {0}", dyCode);
+            int firstCloseCode = jclmsCCB2014.zwGetDynaCode(jcLock);
+            Console.Out.WriteLine("锁具产生的初始闭锁码是 {0}", firstCloseCode);
+            //初始闭锁码输入到上位机DLL，其他条件已经准备好
+            jcSrv.m_closecode = firstCloseCode;
+            //获取第一开锁密码.注意，获得每一类动态码的方式都是这个调用，区别在于m_cmdtype
+            jcSrv.m_cmdtype = JCCMD.JCCMD_CCB_DYPASS1;
+            int dyCode1 = jclmsCCB2014.zwGetDynaCode(jcSrv);
+            Console.Out.WriteLine("上位机产生的第一开锁动态码是 {0}", dyCode1);
+            //锁具验证第一开锁动态码，实质上是在下位机把该动态码再次计算一次
+            jcLock.m_closecode = firstCloseCode;
+            jcLock.m_cmdtype = JCCMD.JCCMD_CCB_DYPASS1;
+            int dyCode1Verify = jclmsCCB2014.zwGetDynaCode(jcLock);
+            if (dyCode1 == dyCode1Verify)
+            {
+                Console.Out.WriteLine("锁具对于第一开锁密码验证成功，证实了上位机的身份");
+            }
+            else
+            {
+                Console.Out.WriteLine("锁具对于第一开锁密码验证失败，上位机的身份是错误的");
+            }
 
         }
 
