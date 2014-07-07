@@ -13,27 +13,46 @@ namespace cstest702
             int lmsver = jclmsCCB2014.getVersion();
             Console.Out.WriteLine("Jclms DLL Version is {0}", lmsver);
 
-            //锁具的模拟
-            JcLockInput myLock=new JcLockInput();
-            //int dyCode = 0;
-            //dyCode = myInitCloseCodeTest1(myLock, dyCode);
-/////////////////////////////////////////////////////////////
+            //锁具的模拟对象
+            JcLockInput jcLock=new JcLockInput();
+            //上位机的模拟对象
+            JcLockInput jcSrv = new JcLockInput();
 
-            //上位机的模拟
-            JcLockInput jcLms = new JcLockInput();
             const String atmno = "atm1045576";
             const String lockno = "lock14771509";
-            const String psk = "jclmsdemopsk201407071509##jclmsdemopsk201407071509";
+            const String psk = "jclmsdemopsk201407071509aajclmsdemopsk201407071509";
+            const Int32 validity=240;
             //传入当前时间的GMT(格林尼治时间)
             DateTime jcdt = DateTime.Now.ToUniversalTime();
             Console.Out.WriteLine("当前的格林尼治时间(GMT)是{0},建行1.1版本算法上下位机都统一采用GMT来计算减少混乱"
-                , jcdt.ToString("yyyy MMdd HHmm ss") );
+                , jcdt.ToString("yyyy MMdd HHmm ss"));
             //计算当前时间距离GMT的秒数
             DateTime dt = new DateTime(1970, 1, 1);
-            TimeSpan dp = jcdt- dt;
-            long seconddiff = dp.Ticks / 10000000;
+            TimeSpan dp = jcdt - dt;
+            int seconddiff = (int)(dp.Ticks / 10000000);
             Console.Out.WriteLine("当前的GMT秒数是 is {0}", seconddiff);
 
+            //锁具和上位机填入相同的初始条件，暂时替代初始化过程
+            //固定条件部分
+            jcLock.m_atmno = atmno;
+            jcSrv.m_atmno = atmno;
+            jcLock.m_lockno = lockno;
+            jcSrv.m_lockno = lockno;
+            jcLock.m_psk = psk;
+            jcSrv.m_psk = psk;
+            //可变条件部分
+            jcLock.m_datetime = seconddiff;
+            jcSrv.m_datetime = seconddiff;
+            jcLock.m_validity = validity;
+            jcSrv.m_validity = validity;
+            jcLock.m_closecode = 0;
+            jcSrv.m_closecode = 0;
+            jcLock.m_cmdtype = JCCMD.JCCMD_INIT_CLOSECODE;
+            jcSrv.m_cmdtype = JCCMD.JCCMD_INIT_CLOSECODE;
+            jcLock.DebugPrint();
+            //锁具产生初始闭锁码
+            int dyCode = jclmsCCB2014.zwGetDynaCode(jcLock);
+            Console.Out.WriteLine("锁具产生的初始闭锁码是 {0}", dyCode);
 
         }
 
