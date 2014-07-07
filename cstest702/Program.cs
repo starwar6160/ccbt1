@@ -71,14 +71,40 @@ namespace cstest702
             }
             else
             {
-                Console.Out.WriteLine("锁具对于第一开锁密码验证失败，上位机的身份是错误的");
+                Console.Out.WriteLine("锁具对于第一开锁密码验证失败，上位机的身份是非法的");
                 Environment.Exit(-1654); 
             }
             //锁具生成验证码
             jcLock.m_cmdtype = JCCMD.JCCMD_CCB_LOCK_VERCODE;
             int lockVerifyCode = jclmsCCB2014.zwGetDynaCode(jcLock);
             Console.Out.WriteLine("锁具产生的验证码是 {0}", lockVerifyCode);
-
+            jcSrv.m_cmdtype = JCCMD.JCCMD_CCB_LOCK_VERCODE;
+            //上位机也计算锁具应该返回的验证码的值，予以比对
+            int srvLockVerCode = jclmsCCB2014.zwGetDynaCode(jcSrv);
+            if (dyCode1 == dyCode1Verify)
+            {
+                Console.Out.WriteLine("上位机对于锁具应该返回的验证码验证成功，证实了锁具的身份");
+            }
+            else
+            {
+                Console.Out.WriteLine("上位机对于锁具应该返回的验证码验证失败，锁具的身份是非法的");
+                Environment.Exit(-1739);
+            }
+            //上位机计算第二开锁码
+            jcSrv.m_cmdtype = JCCMD.JCCMD_CCB_DYPASS2;
+            int dyCode2 = jclmsCCB2014.zwGetDynaCode(jcSrv);
+            Console.Out.WriteLine("上位机计算的第二开锁码是 {0}", dyCode2);
+            jcLock.m_cmdtype = JCCMD.JCCMD_CCB_DYPASS2;
+            //锁具计算第二开锁码，以便于上位机传来的第二开锁码比对
+            int dyCode2Verify = jclmsCCB2014.zwGetDynaCode(jcLock);
+            if (dyCode2 == dyCode2Verify)
+            {
+                Console.Out.WriteLine("锁具验证第二开锁码成功，开锁成功");
+            }
+            else
+            {
+                Console.Out.WriteLine("锁具验证第二开锁码失败，开锁失败");
+            }
         }
 
         private static int myInitCloseCodeTest1(JcLockInput myLock, int dyCode)
