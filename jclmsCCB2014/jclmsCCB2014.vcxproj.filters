@@ -16,6 +16,9 @@
     <Filter Include="源文件\hashalg">
       <UniqueIdentifier>{88aef7c4-5779-4511-a1dc-c065a15ae8cc}</UniqueIdentifier>
     </Filter>
+    <Filter Include="源文件\ECIES">
+      <UniqueIdentifier>{08dad2fa-5f52-4ee9-90a7-1e3462674d96}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="ReadMe.txt" />
@@ -58,6 +61,21 @@
     </ClCompile>
     <ClCompile Include="zwhextool.cpp">
       <Filter>源文件\hashalg</Filter>
+    </ClCompile>
+    <ClCompile Include="ECIES708\ecdh.c">
+      <Filter>源文件\ECIES</Filter>
+    </ClCompile>
+    <ClCompile Include="ECIES708\octet.c">
+      <Filter>源文件\ECIES</Filter>
+    </ClCompile>
+    <ClCompile Include="ECIES708\zwEcies529.cpp">
+      <Filter>源文件\ECIES</Filter>
+    </ClCompile>
+    <ClCompile Include="ECIES708\zwRand201406.cpp">
+      <Filter>源文件\ECIES</Filter>
+    </ClCompile>
+    <ClCompile Include="ECIES708\sha2.c">
+      <Filter>源文件\ECIES</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
