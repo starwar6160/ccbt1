@@ -165,31 +165,38 @@ unsigned int zwBinString2Int32(const char *data,const int len);
 		{
 			status=EJC_INPUT_NULL;
 		}
+		//时间秒数取整到G_TIMEMOD，以便消除一些1-2秒的RTC时钟误差造成无法开锁
 		m_datetime=myGetNormalTime(m_datetime,G_TIMEMOD);
 		m_status=status;
 		return status;
 	}
 
-
+	//生成各种类型的动态码
 	int myGetDynaCodeImpl( const JcLockInput &lock )
 	{
 		SM3 sm3;
 		char outHmac[ZW_SM3_DGST_SIZE];
 		SM3_init(&sm3);
 		/////////////////////////////逐个元素进行HASH运算/////////////////////////////////////////////
+		//首先处理固定字段的HASH值输入
 		mySm3Process(&sm3,lock.m_atmno.data(),lock.m_atmno.size());
 		mySm3Process(&sm3,lock.m_lockno.data(),lock.m_lockno.size());
 		mySm3Process(&sm3,lock.m_psk.data(),lock.m_psk.size());
 
+		//规格化时间到G_TIMEMOD这么多秒
 		int l_datetime=myGetNormalTime(lock.m_datetime,G_TIMEMOD);
+		//有效期和闭锁码需要根据不同情况分别处理
 		int l_validity=lock.m_validity;
 		int l_closecode=lock.m_closecode;	
+		//计算初始闭锁码时，采用固定的时间，有效期，闭锁码的值
+		//以便对于特定的锁具和PSK来说，初始闭锁码是一个恒定值
 		if (JCCMD_INIT_CLOSECODE==lock.m_cmdtype)
 		{
 			l_datetime=1400000000;	//初始闭锁码采用一个特殊的固定值作为时间
 			l_validity=0;	//初始闭锁码特选一个合法有效期之外的值
 			l_closecode=0;	//初始闭锁码特选一个非法闭锁码			
 		}		
+		//继续输入各个可变字段的HASH值
 		mySm3Process(&sm3,l_datetime);
 		mySm3Process(&sm3,l_validity);
 		mySm3Process(&sm3,l_closecode);
@@ -197,6 +204,7 @@ unsigned int zwBinString2Int32(const char *data,const int len);
 		//////////////////////////////HASH运算结束////////////////////////////////////////////
 		memset(outHmac,0,ZWSM3_DGST_LEN);
 		SM3_hash(&sm3,(char *)(outHmac));
+		//把HASH结果转化为8位数字输出
 		unsigned int res=zwBinString2Int32(outHmac,ZWSM3_DGST_LEN);
 		return res;
 	}
@@ -238,4 +246,4 @@ unsigned int zwBinString2Int32(const char *data,const int len);
 	}
 
 
-}
+}	//end of namespace jclms
