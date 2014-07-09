@@ -10,18 +10,62 @@ namespace cstest702
     {
         static void Main(string[] args)
         {
+            //安全初始化例子
+            myECIEStest();
+            //建行1.1版本动态码验证流程例子
+            myV11DynaCodeTest();
+        }
+
+        //安全初始化例子
+        private static void myECIEStest()
+        {
+            //生成ECIES公钥/私钥对，返回保存密钥对等等的内部数据结构句柄
+            //1为模拟的上位机，2为模拟的下位机
+            int hec = jclmsCCB2014.EciesGenKeyPair();
+            //从句柄所指向的内部数据结构获取前面生成好的公钥和私钥，是Base64格式字符串，
+            //不必理解其含义，原样透传即可，把公钥发给对方，私钥保存在断电后不丢失的
+            //存储器中比如磁盘或者FLASH中
+            String ecPub = jclmsCCB2014.EciesGetPubKey(hec);
+            String ecPri = jclmsCCB2014.EciesGetPriKey(hec);
+            Console.Out.WriteLine("CCB 1.1版本算法ECIES(椭圆曲线集成加密公钥算法)安全初始化演示开始");
+            Console.Out.WriteLine("ECIES PubKey=\t{0},", ecPub);
+            Console.Out.WriteLine("ECIES Prikey=\t{0}", ecPri);
+            //删除保存密钥对等等的内部数据结构.实践中密钥对生成只用做一次，以后就是            
+            //保存下来重复利用了；这里每次都生成新的公钥/私钥对，是因为测试程序的缘故
+            jclmsCCB2014.EciesDelete(hec);
+
+            String plainText = "myplaintext20140709.1419";  //明文
+            //用对方的公钥加密后发给对方
+            String cryptText = jclmsCCB2014.EciesEncrypt(ecPub, plainText);
+            //对方使用自己的私钥解密，还原出来明文
+            String decryptText = jclmsCCB2014.EciesDecrypt(ecPri, cryptText);
+            Console.Out.WriteLine("PlainText1:\t{0}", plainText);
+            Console.Out.WriteLine("cryptText:\t{0}", cryptText);
+            Console.Out.WriteLine("decryptText:\t{0}", decryptText);
+            Console.Out.WriteLine("*************************");
+        }
+
+        //建行1.1版本动态码验证流程例子
+        private static void myV11DynaCodeTest()
+        {
+            //以后每次算法如果有了不兼容的修改，或者出一个正式版本，
+            //都会有一个版本号，就是一个整数，前8位是日期，最后一位是次版本号
+            //一般为0，除非一天之内出了超过1个版本；有问题请先给我版本号；
             int lmsver = jclmsCCB2014.getVersion();
             Console.Out.WriteLine("Jclms DLL Version is {0}", lmsver);
 
             //锁具的模拟对象
-            JcLockInput jcLock=new JcLockInput();
+            JcLockInput jcLock = new JcLockInput();
             //上位机的模拟对象
             JcLockInput jcSrv = new JcLockInput();
 
+            //在此我特地用了普通的字符串，用意在于，这些字符串的字段内容是什么都可以，长度多长都可以
+            //因为内部使用的C++的String，对于长度没有限制，只受内存大小限制；从几个字节
+            //到几百字节乃至于更长都可以，只要内存足够，当然实践中建议限制在100字节以内
             const String atmno = "atm1045576";
             const String lockno = "lock14771509";
             const String psk = "jclmsdemopsk201407071509aajclmsdemopsk201407071509";
-            const Int32 validity=240;
+            const Int32 validity = 240;
             //传入当前时间的GMT(格林尼治时间)
             DateTime jcdt = DateTime.Now.ToUniversalTime();
             Console.Out.WriteLine("当前的格林尼治时间(GMT)是{0},建行1.1版本算法上下位机都统一采用GMT来计算减少混乱"
@@ -30,7 +74,7 @@ namespace cstest702
             DateTime dt = new DateTime(1970, 1, 1);
             TimeSpan dp = jcdt - dt;
             int seconddiff = (int)(dp.Ticks / 10000000);
-            Console.Out.WriteLine("当前的GMT秒数是 is {0}", seconddiff);
+            Console.Out.WriteLine("当前的GMT秒数是\t{0}", seconddiff);
 
             //锁具和上位机填入相同的初始条件，暂时替代初始化过程
             //固定条件部分
@@ -47,8 +91,11 @@ namespace cstest702
             jcSrv.m_validity = validity;
             jcLock.m_closecode = 0;
             jcSrv.m_closecode = 0;
+            //此处不同的命令码指示生成不同的动态码
             jcLock.m_cmdtype = JCCMD.JCCMD_INIT_CLOSECODE;
             jcSrv.m_cmdtype = JCCMD.JCCMD_INIT_CLOSECODE;
+            //有问题请给我这个字符串
+            Console.Out.WriteLine("动态码输入条件调试信息字符串是");
             jcLock.DebugPrint();
             //锁具产生初始闭锁码
             int firstCloseCode = jclmsCCB2014.zwGetDynaCode(jcLock);
@@ -60,7 +107,7 @@ namespace cstest702
             jcSrv.m_cmdtype = JCCMD.JCCMD_CCB_DYPASS1;
             int dyCode1 = jclmsCCB2014.zwGetDynaCode(jcSrv);
             Console.Out.WriteLine("上位机产生的第一开锁动态码是 {0}", dyCode1);
-            
+
             //锁具验证第一开锁动态码，实质上是在下位机把该动态码再次计算一次
             jcLock.m_closecode = firstCloseCode;
             jcLock.m_cmdtype = JCCMD.JCCMD_CCB_DYPASS1;
@@ -72,7 +119,7 @@ namespace cstest702
             else
             {
                 Console.Out.WriteLine("锁具对于第一开锁密码验证失败，上位机的身份是非法的");
-                Environment.Exit(-1654); 
+                Environment.Exit(-1654);
             }
             //锁具生成验证码
             jcLock.m_cmdtype = JCCMD.JCCMD_CCB_LOCK_VERCODE;

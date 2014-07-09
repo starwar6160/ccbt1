@@ -305,6 +305,54 @@ class jclmsCCB2014PINVOKE {
 
   [DllImport("jclmsCCB2014", EntryPoint="CSharp_zwHexTool_getCArrayStr")]
   public static extern string zwHexTool_getCArrayStr(HandleRef jarg1);
+
+  [DllImport("jclmsCCB2014", EntryPoint="CSharp_EFS_get")]
+  public static extern int EFS_get();
+
+  [DllImport("jclmsCCB2014", EntryPoint="CSharp_ZW_EXA_get")]
+  public static extern int ZW_EXA_get();
+
+  [DllImport("jclmsCCB2014", EntryPoint="CSharp_ZW_ECIES_PUBKEY_LEN_get")]
+  public static extern int ZW_ECIES_PUBKEY_LEN_get();
+
+  [DllImport("jclmsCCB2014", EntryPoint="CSharp_ZW_ECIES_PRIKEY_LEN_get")]
+  public static extern int ZW_ECIES_PRIKEY_LEN_get();
+
+  [DllImport("jclmsCCB2014", EntryPoint="CSharp_ZW_ECIES_ENCSYNCKEY_LEN_get")]
+  public static extern int ZW_ECIES_ENCSYNCKEY_LEN_get();
+
+  [DllImport("jclmsCCB2014", EntryPoint="CSharp_ZW_ECIES_HASH_LEN_get")]
+  public static extern int ZW_ECIES_HASH_LEN_get();
+
+  [DllImport("jclmsCCB2014", EntryPoint="CSharp_ZW_ECIES_MESSAGE_MAXLEN_get")]
+  public static extern int ZW_ECIES_MESSAGE_MAXLEN_get();
+
+  [DllImport("jclmsCCB2014", EntryPoint="CSharp_zwEciesKeyPairGen")]
+  public static extern int zwEciesKeyPairGen(string jarg1, string jarg2, int jarg3, string jarg4, int jarg5);
+
+  [DllImport("jclmsCCB2014", EntryPoint="CSharp_zwEciesEncrypt")]
+  public static extern int zwEciesEncrypt(string jarg1, string jarg2, string jarg3, int jarg4, string jarg5, int jarg6, string jarg7, int jarg8);
+
+  [DllImport("jclmsCCB2014", EntryPoint="CSharp_zwEciesDecrypt")]
+  public static extern int zwEciesDecrypt(string jarg1, string jarg2, int jarg3, string jarg4, string jarg5, string jarg6);
+
+  [DllImport("jclmsCCB2014", EntryPoint="CSharp_EciesGenKeyPair")]
+  public static extern int EciesGenKeyPair();
+
+  [DllImport("jclmsCCB2014", EntryPoint="CSharp_EciesDelete")]
+  public static extern void EciesDelete(int jarg1);
+
+  [DllImport("jclmsCCB2014", EntryPoint="CSharp_EciesGetPubKey")]
+  public static extern string EciesGetPubKey(int jarg1);
+
+  [DllImport("jclmsCCB2014", EntryPoint="CSharp_EciesGetPriKey")]
+  public static extern string EciesGetPriKey(int jarg1);
+
+  [DllImport("jclmsCCB2014", EntryPoint="CSharp_EciesEncrypt")]
+  public static extern string EciesEncrypt(string jarg1, string jarg2);
+
+  [DllImport("jclmsCCB2014", EntryPoint="CSharp_EciesDecrypt")]
+  public static extern string EciesDecrypt(string jarg1, string jarg2);
 }
 
 }

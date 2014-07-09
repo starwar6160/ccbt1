@@ -35,8 +35,61 @@ public class jclmsCCB2014 {
     return ret;
   }
 
+  public static int zwEciesKeyPairGen(string password, string outPriKeyStr, int priLen, string outPublicKeyStr, int pubLen) {
+    int ret = jclmsCCB2014PINVOKE.zwEciesKeyPairGen(password, outPriKeyStr, priLen, outPublicKeyStr, pubLen);
+    return ret;
+  }
+
+  public static int zwEciesEncrypt(string pubkeyStr, string PlainText, string outEncryptedSyncKeyStr, int syncKeyLen, string outMsgHashStr, int hashLen, string outCryptedTextStr, int cryptLen) {
+    int ret = jclmsCCB2014PINVOKE.zwEciesEncrypt(pubkeyStr, PlainText, outEncryptedSyncKeyStr, syncKeyLen, outMsgHashStr, hashLen, outCryptedTextStr, cryptLen);
+    return ret;
+  }
+
+  public static int zwEciesDecrypt(string prikeyStr, string outPlainText, int plainLen, string EncryptedSyncKeyStr, string MsgHashStr, string CryptedTextStr) {
+    int ret = jclmsCCB2014PINVOKE.zwEciesDecrypt(prikeyStr, outPlainText, plainLen, EncryptedSyncKeyStr, MsgHashStr, CryptedTextStr);
+    return ret;
+  }
+
+  public static int EciesGenKeyPair() {
+    int ret = jclmsCCB2014PINVOKE.EciesGenKeyPair();
+    return ret;
+  }
+
+  public static void EciesDelete(int eciesHandle) {
+    jclmsCCB2014PINVOKE.EciesDelete(eciesHandle);
+  }
+
+  public static string EciesGetPubKey(int eciesHandle) {
+    string ret = jclmsCCB2014PINVOKE.EciesGetPubKey(eciesHandle);
+    return ret;
+  }
+
+  public static string EciesGetPriKey(int eciesHandle) {
+    string ret = jclmsCCB2014PINVOKE.EciesGetPriKey(eciesHandle);
+    return ret;
+  }
+
+  public static string EciesEncrypt(string pubKey, string plainText) {
+    string ret = jclmsCCB2014PINVOKE.EciesEncrypt(pubKey, plainText);
+    if (jclmsCCB2014PINVOKE.SWIGPendingException.Pending) throw jclmsCCB2014PINVOKE.SWIGPendingException.Retrieve();
+    return ret;
+  }
+
+  public static string EciesDecrypt(string priKey, string cryptText) {
+    string ret = jclmsCCB2014PINVOKE.EciesDecrypt(priKey, cryptText);
+    if (jclmsCCB2014PINVOKE.SWIGPendingException.Pending) throw jclmsCCB2014PINVOKE.SWIGPendingException.Retrieve();
+    return ret;
+  }
+
   public static readonly int ZW_AES_BLOCK_SIZE = jclmsCCB2014PINVOKE.ZW_AES_BLOCK_SIZE_get();
   public static readonly int ZW_SM3_DGST_SIZE = jclmsCCB2014PINVOKE.ZW_SM3_DGST_SIZE_get();
+  public static readonly int EFS = jclmsCCB2014PINVOKE.EFS_get();
+  public static readonly int ZW_EXA = jclmsCCB2014PINVOKE.ZW_EXA_get();
+  public static readonly int ZW_ECIES_PUBKEY_LEN = jclmsCCB2014PINVOKE.ZW_ECIES_PUBKEY_LEN_get();
+  public static readonly int ZW_ECIES_PRIKEY_LEN = jclmsCCB2014PINVOKE.ZW_ECIES_PRIKEY_LEN_get();
+  public static readonly int ZW_ECIES_ENCSYNCKEY_LEN = jclmsCCB2014PINVOKE.ZW_ECIES_ENCSYNCKEY_LEN_get();
+  public static readonly int ZW_ECIES_HASH_LEN = jclmsCCB2014PINVOKE.ZW_ECIES_HASH_LEN_get();
+  public static readonly int ZW_ECIES_MESSAGE_MAXLEN = jclmsCCB2014PINVOKE.ZW_ECIES_MESSAGE_MAXLEN_get();
 }
 
 }

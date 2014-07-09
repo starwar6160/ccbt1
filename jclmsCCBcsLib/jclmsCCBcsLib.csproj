@@ -42,6 +42,8 @@
   <ItemGroup>
     <Compile Include="Class1.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="swigCode\ECIES_ERROR.cs" />
+    <Compile Include="swigCode\ECIES_ITEMS.cs" />
     <Compile Include="swigCode\JCCMD.cs" />
     <Compile Include="swigCode\JCERROR.cs" />
     <Compile Include="swigCode\jclmsCCB2014.cs" />
