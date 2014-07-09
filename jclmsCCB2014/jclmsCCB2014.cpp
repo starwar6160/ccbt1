@@ -14,7 +14,7 @@ unsigned int zwBinString2Int32(const char *data,const int len);
 	int getVersion(void)
 	{
 		//含义是前8位是日期，第9位一般是0，如果一天出了多个发布版本，最后一位变化
-		return 201407030;	
+		return 201407090;	
 	}
 
 	//获得规格化的时间，也就是按照某个值取整的时间
@@ -72,20 +72,21 @@ unsigned int zwBinString2Int32(const char *data,const int len);
 	//从包含二进制数据的字符串输入，获得一个8位整数的输出
 	unsigned int zwBinString2Int32(const char *data,const int len)
 	{
-		//比1开头的8位数稍微小一些的质数
+		//比1开头的8位数稍微大一些的质数
 		const int dyLow=10000019;
-		//比开头的8位数稍微小一些的质数
-		const int dyMod=89999981;	
+		//比9开头的8位数稍微小一些的质数
+		const int dyMod=89999969;	
 		const int dyMul=257;	//随便找的一个质数作为相乘的因子
-		unsigned int sum=0;
+
+		unsigned __int64 sum=0;
 		for (int i=0;i<len;i++)
 		{
 			unsigned char t=*(data+i);
-			sum*=257;
+			sum*=dyMul;
 			sum+=t;		
 		}
 		//这两个数字结合使用，产生肯定是8位数的动态码
-		sum %=89999981;
+		sum %=dyMod;
 		sum +=dyLow;
 		return sum;
 	}
