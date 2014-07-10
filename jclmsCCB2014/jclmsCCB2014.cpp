@@ -218,30 +218,50 @@ unsigned int zwBinString2Int32(const char *data,const int len);
 		jcoff.s_datetime=0;
 		jcoff.s_validity=0;
 		int l_datetime=time(NULL);
-		const int MYHOUR=60;
-		int valarr[]={MYHOUR*1,MYHOUR*4,MYHOUR*8,MYHOUR*12,MYHOUR*24};
+		const int MIN_OF_HOUR=60;	//一小时的分钟数
+		const int SEC_OF_HOUR=60*60;		//一小时的秒数
+		const int SEC_OF_DAY=24*60*60;//一天的秒数
+		int valarr[]={MIN_OF_HOUR*4,MIN_OF_HOUR*8,MIN_OF_HOUR*12,MIN_OF_HOUR*24};
 
-		int tail=l_datetime % (24*60*60);
+		int tail=l_datetime % SEC_OF_HOUR;
 		l_datetime-=tail;	//取整到整点小时
+		//结束时间，往前推一整天
+		int tend=l_datetime-SEC_OF_DAY;
 
+		for (int tdate=l_datetime;tdate>tend;tdate-=SEC_OF_HOUR)
+		{
+			//printf("TDATE=\t%d\n",tdate);
+			for (int v=0;v<sizeof(valarr)/sizeof(int);v++)
+			{
+				SM3 sm3;
+				char outHmac[ZW_SM3_DGST_SIZE];
 
-		SM3 sm3;
-		char outHmac[ZW_SM3_DGST_SIZE];
+				SM3_init(&sm3);
+				/////////////////////////////逐个元素进行HASH运算/////////////////////////////////////////////
+				mySm3Process(&sm3,lock.m_atmno.data(),lock.m_atmno.size());
+				mySm3Process(&sm3,lock.m_lockno.data(),lock.m_lockno.size());
+				mySm3Process(&sm3,lock.m_psk.data(),lock.m_psk.size());
 
-		SM3_init(&sm3);
-		/////////////////////////////逐个元素进行HASH运算/////////////////////////////////////////////
-		mySm3Process(&sm3,lock.m_atmno.data(),lock.m_atmno.size());
-		mySm3Process(&sm3,lock.m_lockno.data(),lock.m_lockno.size());
-		mySm3Process(&sm3,lock.m_psk.data(),lock.m_psk.size());
+				mySm3Process(&sm3,tdate);
+				mySm3Process(&sm3,valarr[v]);
+				mySm3Process(&sm3,lock.m_closecode);
+				mySm3Process(&sm3,lock.m_cmdtype);
+				//////////////////////////////HASH运算结束////////////////////////////////////////////
+				memset(outHmac,0,ZWSM3_DGST_LEN);
+				SM3_hash(&sm3,(char *)(outHmac));
+				unsigned int res=zwBinString2Int32(outHmac,ZWSM3_DGST_LEN);
+				if (dstCode==res)	//发现了匹配的时间和有效期
+				{
+					//填写匹配的时间和有效期到结果
+					printf("FOUND MATCH %d %d\n",tdate,valarr[v]);
+					jcoff.s_datetime=tdate;
+					jcoff.s_validity=valarr[v];
+					goto foundMatch;
+				}
+			}	//END OF VALIDITY LOOP
+		} //END OF DATE LOOP
+foundMatch:
 
-		mySm3Process(&sm3,l_datetime);
-		mySm3Process(&sm3,240);
-		mySm3Process(&sm3,lock.m_closecode);
-		mySm3Process(&sm3,lock.m_cmdtype);
-		//////////////////////////////HASH运算结束////////////////////////////////////////////
-		memset(outHmac,0,ZWSM3_DGST_LEN);
-		SM3_hash(&sm3,(char *)(outHmac));
-		unsigned int res=zwBinString2Int32(outHmac,ZWSM3_DGST_LEN);
 		return jcoff;
 	}
 
