@@ -210,7 +210,7 @@ BOOL HMAC(octet *m,octet *k,int olen,octet *tag)
  * olen is requested output length in bytes. k is the key  *
  * The output is the calculated tag */
     int i,hlen,b;
-	char h[HASH_BYTES],k0[HASH_BLOCK];
+	static char h[HASH_BYTES],k0[HASH_BLOCK];
     octet H={0,sizeof(h),h};
 	octet K0={0,sizeof(k0),k0};
 
@@ -241,7 +241,7 @@ BOOL HMAC(octet *m,octet *k,int olen,octet *tag)
 
 void KDF1(octet *z,int olen,octet *key)
 {
-    char h[HASH_BYTES];
+    static char h[HASH_BYTES];
 	octet H={0,sizeof(h),h};
     int counter,cthreshold;
     int hlen=HASH_BYTES;
@@ -261,7 +261,7 @@ void KDF1(octet *z,int olen,octet *key)
 void KDF2(octet *z,octet *p,int olen,octet *key)
 {
 /* NOTE: the parameter olen is the length of the output k in bytes */
-    char h[HASH_BYTES];
+    static char h[HASH_BYTES];
 	octet H={0,sizeof(h),h};
     int counter,cthreshold;
     int hlen=HASH_BYTES;
@@ -285,7 +285,7 @@ void KDF2(octet *z,octet *p,int olen,octet *key)
 void PBKDF2(octet *p,octet *s,int rep,int olen,octet *key)
 {
 	int i,j,len,d=MR_ROUNDUP(olen,HASH_BYTES);
-	char f[EFS],u[EFS];
+	static char f[EFS],u[EFS];
 	octet F={0,sizeof(f),f};
 	octet U={0,sizeof(u),u};
 	OCTET_EMPTY(key);
@@ -733,7 +733,7 @@ int ECPSVDP_DH(ecp_domain *DOM,octet *S,octet *WD,octet *Z)
 
 int ECPSP_DSA(ecp_domain *DOM,csprng *RNG,octet *S,octet *F,octet *C,octet *D)
 {
-	char h[HASH_BYTES];
+	static char h[HASH_BYTES];
 	octet H={0,sizeof(h),h};
 #ifdef MR_GENERIC_AND_STATIC
 	miracl instance;
@@ -828,7 +828,7 @@ int ECPSP_DSA(ecp_domain *DOM,csprng *RNG,octet *S,octet *F,octet *C,octet *D)
 
 int ECPVP_DSA(ecp_domain *DOM,octet *W,octet *F, octet *C,octet *D)
 {
-	char h[HASH_BYTES];
+	static char h[HASH_BYTES];
 	octet H={0,sizeof(h),h};
 #ifdef MR_GENERIC_AND_STATIC
 	miracl instance;
@@ -934,7 +934,7 @@ void ECP_ECIES_ENCRYPT(ecp_domain *DOM,octet *P1,octet *P2,csprng *RNG,octet *W,
   /* Outputs: my one-time public key, the ciphertext and the MAC tag */
 
 	int i,len;
-	char z[EFS],vz[3*EFS+2],k[32],k1[16],k2[16],l2[8],u[EFS];
+	static char z[EFS],vz[3*EFS+2],k[32],k1[16],k2[16],l2[8],u[EFS];
 	octet Z={0,sizeof(z),z};
 	octet VZ={0,sizeof(vz),vz};
 	octet K={0,sizeof(k),k};
@@ -974,7 +974,7 @@ BOOL ECP_ECIES_DECRYPT(ecp_domain *DOM,octet *P1,octet *P2,octet *V,octet *C,oct
   /* Output: recovered plaintext M */
 
 	int i,len;
-	char z[EFS],vz[3*EFS+2],k[32],k1[16],k2[16],l2[8],tag[32];
+	static char z[EFS],vz[3*EFS+2],k[32],k1[16],k2[16],l2[8],tag[32];
 	octet Z={0,sizeof(z),z};
 	octet VZ={0,sizeof(vz),vz};
 	octet K={0,sizeof(k),k};

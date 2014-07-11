@@ -72,7 +72,7 @@ private:
 };
 
 //此处的初始化值控制着同样的明文，出来不同的对称密钥
-static void myPrngInit( csprng *RNG )
+void myPrngInit( csprng *RNG )
 {
 	assert(RNG!=NULL);
 	int i;
@@ -160,7 +160,7 @@ void ZWOCTET_FROM_ASCII( octet *dstOct,const char *srcAscii )
 	}	//ZWOUTFMT_HEX
 }
 
-static void myKDFHMACSeed( octet *KDF2Seed, octet *HmacSeed )
+void myKDFHMACSeed( octet *KDF2Seed, octet *HmacSeed )
 {
 	assert(KDF2Seed!=NULL && KDF2Seed->max>0);
 	assert(HmacSeed!=NULL && HmacSeed->max>0);

@@ -33,9 +33,6 @@
     <ClInclude Include="jclmsCCB2014.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="hashalg\sm3.h">
-      <Filter>源文件\hashalg</Filter>
-    </ClInclude>
     <ClInclude Include="mydefs.h">
       <Filter>源文件</Filter>
     </ClInclude>
