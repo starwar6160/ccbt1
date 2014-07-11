@@ -1,4 +1,6 @@
-#include "stdafx.h"
+//#include "stdafx.h"
+#include <cassert>
+#include <cstdint>
 using namespace std;
 #include "jclmsCCB2014.h"
 

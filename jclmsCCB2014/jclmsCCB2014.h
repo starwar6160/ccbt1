@@ -1,6 +1,6 @@
 #ifndef jclmsCCB2014_h__
 #define jclmsCCB2014_h__
-#include "stdafx.h"
+#include "zwstdafx.h"
 
 // 下列 ifdef 块是创建使从 DLL 导出更简单的
 // 宏的标准方法。此 DLL 中的所有文件都是用命令行上定义的 JCLMSCCB2014_EXPORTS

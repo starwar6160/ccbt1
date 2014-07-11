@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include <iostream>
+#include <cassert>
 using std::cout;
 using std::endl;
 #include "jclmsCCB2014.h"

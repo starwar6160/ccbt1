@@ -1,5 +1,9 @@
-#include <Windows.h>
+
 #include "sha2.h"
+#ifdef WIN32
+#include <Windows.h>
+#endif	//end of WIN32
+
 void zwRandSeedGen603(char *randBuf,const int randBufLen)
 {
 	int rndCount=(randBufLen)/sizeof(LARGE_INTEGER);
@@ -20,5 +24,5 @@ void zwRandSeedGen603(char *randBuf,const int randBufLen)
 	{
 		randBuf[i]=sha512out[(i)%SHA512_DIGEST_SIZE];
 	}
-
 }
+
