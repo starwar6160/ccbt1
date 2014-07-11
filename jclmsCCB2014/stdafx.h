@@ -5,7 +5,7 @@
 
 #pragma once
 
-#include "targetver.h"
+//#include "targetver.h"
 
 #define WIN32_LEAN_AND_MEAN             //  从 Windows 头文件中排除极少使用的信息
 // Windows 头文件:
@@ -43,4 +43,27 @@ typedef void *            *LPVOID;	//此处和windef.h不太一样，去掉了过时的far关键
 #define FALSE 0
 #define TRUE 1
 
+/* Define NULL pointer value */
+#ifndef NULL
+#ifdef __cplusplus
+#define NULL    0
+#else
+#define NULL    ((void *)0)
+#endif
+#endif
+
+#undef WIN32
+#ifdef WIN32
+//此处要结合/Za开关关闭，才能编译通过，因为cassert内部用到了windows特有的东西
+#include <cassert>
+#else 
+#undef assert
+#define assert 
+#endif
+
+
+
+
+
 //////////////////////替换windows.h中用到的部分定义结束///////////////////////////////
+

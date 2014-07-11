@@ -2,6 +2,7 @@
 //
 
 #include "stdafx.h"
+//#include <cassert>
 #include "jclmsCCB2014.h"
 #include "hashalg\\sm3.h"
 

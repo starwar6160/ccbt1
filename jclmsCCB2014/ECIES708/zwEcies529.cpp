@@ -5,7 +5,8 @@ extern "C" {
 #ifdef  __cplusplus
 }
 #endif
-#include <assert.h>
+#include "..\stdafx.h"
+//#include <assert.h>
 #include <string>
 #include <vector>
 using std::string;
