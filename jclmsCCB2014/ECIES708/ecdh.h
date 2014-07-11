@@ -40,6 +40,11 @@ the CertiVox MIRACL Crypto SDK with a closed source product.               *
 #ifndef ECDH_H
 #define ECDH_H
 
+#ifdef  __cplusplus
+extern "C" {
+#endif
+
+
 #include "miracl.h"
 #include "octet.h"
 
@@ -137,5 +142,11 @@ extern BOOL ECP_ECIES_DECRYPT(ecp_domain *,octet *,octet *,octet *,octet *,octet
 /* ECDSA functions */
 extern int ECPSP_DSA(ecp_domain *,csprng *,octet *,octet *,octet *,octet *);
 extern int ECPVP_DSA(ecp_domain *,octet *,octet *,octet *,octet *);
+
+#ifdef  __cplusplus
+}	//extern "C" {
+#endif
+
+
 #endif
 

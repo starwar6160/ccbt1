@@ -388,7 +388,7 @@ ZWECIES_API BOOL zwEciesDecrypt( const char *prikeyStr,char *outPlainText,const 
 	if (ECIES_SUCCESS!=ZWOCTET_OUTPUT_STRING(&oct_plain.Value(),outPlainText, plainLen))
 	{
 		printf("PlainText Buffer Too Short\n");
-		exit(ECIES_PLAIN_TOO_SHORT);
+		return ECIES_PLAIN_TOO_SHORT;
 	}
 	if (TRUE==res)
 	{
@@ -420,7 +420,7 @@ int myTestEccMain()
 		zwEciesKeyPairGen("privatekeypassword",PriKey, sizeof(PriKey), PubKey, sizeof(PubKey)))
 	{
 		printf("ECIES KeyPair Gen Fail!\n");
-		exit(ECIES_PUBKEY_GEN_FAIL);
+		return ECIES_PUBKEY_GEN_FAIL;
 	}
 		
 	//////////////////////////////////////////////////////////////////////////

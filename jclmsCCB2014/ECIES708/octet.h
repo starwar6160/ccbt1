@@ -40,6 +40,10 @@ the CertiVox MIRACL Crypto SDK with a closed source product.               *
 #include <stdlib.h>
 #include <string.h>
 
+#ifdef  __cplusplus
+extern "C" {
+#endif
+
 /* portable representation of a big positive number */
 
 typedef struct
@@ -68,5 +72,10 @@ extern void OCTET_COPY(octet *,octet *);
 extern void OCTET_XOR_BYTE(int,octet *);
 extern void OCTET_CHOP(octet *,int,octet *);
 extern void OCTET_JOIN_LONG(long,int,octet *);
+
+#ifdef  __cplusplus
+}	//extern "C" {
+#endif
+
 
 #endif

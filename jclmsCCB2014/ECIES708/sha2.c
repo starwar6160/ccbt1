@@ -843,7 +843,7 @@ void test(const char *vector, unsigned char *digest,
     printf("H: %s\n", output);
     if (strcmp(vector, output)) {
         fprintf(stderr, "Test failed.\n");
-        exit(EXIT_FAILURE);
+        return EXIT_FAILURE;
     }
 }
 
