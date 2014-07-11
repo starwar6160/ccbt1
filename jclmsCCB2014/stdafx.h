@@ -13,13 +13,13 @@
 
 // TODO: 在此处引用程序需要的其他头文件
 #include <ctime>
+#include <cstdio>
 #include <cassert>
 #include <string>
 #include <vector>
 #include <map>
 #include <stdint.h>
 using std::string;
-using std::endl;
 using std::vector;
 using std::map;
 
@@ -58,7 +58,7 @@ typedef void *            *LPVOID;	//此处和windef.h不太一样，去掉了过时的far关键
 #include <cassert>
 #else 
 #undef assert
-#define assert 
+#define assert(x)		0
 #endif
 
 

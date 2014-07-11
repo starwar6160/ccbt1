@@ -8,7 +8,8 @@
 // 任何其他项目上不应定义此符号。这样，源文件中包含此文件的任何其他项目都会将
 // JCLMSCCB2014_API 函数视为是从 DLL 导入的，而此 DLL 则将用此宏定义的
 // 符号视为是被导出的。
-#ifdef _ZWUSE_AS_JNI
+//#define _USEON_NONWIN32
+#ifdef _USEON_NONWIN32
 #define JCLMSCCB2014_API
 #else
 #ifdef JCLMSCCB2014_EXPORTS

@@ -3,6 +3,9 @@
 
 #include "stdafx.h"
 //#include <cassert>
+#include <stdio.h>
+#include <string.h>
+#include <time.h>
 #include "jclmsCCB2014.h"
 #include "hashalg\\sm3.h"
 

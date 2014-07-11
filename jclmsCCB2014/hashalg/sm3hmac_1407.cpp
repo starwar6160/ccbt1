@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <cassert>
-#include <memory.h>
+//#include <memory.h>
 #include <cstring>
 #include "sm3.h"
 #include "..\\jclmsCCB2014.h"
