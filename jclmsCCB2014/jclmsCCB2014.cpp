@@ -105,7 +105,7 @@ unsigned int zwBinString2Int32(const char *data,const int len);
 		m_datetime=-1;
 		m_validity=-1;
 		m_closecode=-1;	
-		m_cmdtype=JCCMD_INVALID;
+		m_cmdtype=JCCMD_INVALID_START;
 		m_status=EJC_FAIL;
 	}
 
@@ -165,7 +165,7 @@ unsigned int zwBinString2Int32(const char *data,const int len);
 		{
 			status=EJC_INPUT_NULL;
 		}
-		if (m_cmdtype==JCCMD_INVALID)
+		if (m_cmdtype==JCCMD_INVALID_START)
 		{
 			status=EJC_INPUT_NULL;
 		}
@@ -178,9 +178,19 @@ unsigned int zwBinString2Int32(const char *data,const int len);
 	//生成各种类型的动态码
 	int myGetDynaCodeImpl( const JcLockInput &lock )
 	{
+		const int ZWMEGA=1000*1000;
 		SM3 sm3;
 		char outHmac[ZW_SM3_DGST_SIZE];
 		SM3_init(&sm3);
+		//假定这些数字字段在二进制层面都是等同于int的长度的，以便通过一个统一的函数进行HASH运算
+		assert(sizeof(JcLockInput.m_datetime)==sizeof(int));
+		assert(sizeof(JcLockInput.m_validity)==sizeof(int));
+		assert(sizeof(JcLockInput.m_closecode)==sizeof(int));
+		assert(sizeof(JcLockInput.m_cmdtype)==sizeof(int));
+		assert(lock.m_datetime>(1400*ZWMEGA) && lock.m_datetime<(2<<31));
+		assert(lock.m_validity>0 && lock.m_validity<=(24*60));
+		assert(lock.m_closecode>=0 && lock.m_closecode<=(100*ZWMEGA));
+		assert(lock.m_cmdtype>JCCMD_INVALID_START && lock.m_cmdtype<JCCMD_INVALID_END);
 		/////////////////////////////逐个元素进行HASH运算/////////////////////////////////////////////
 		//首先处理固定字段的HASH值输入
 		mySm3Process(&sm3,lock.m_atmno.data(),lock.m_atmno.size());

@@ -30,13 +30,17 @@ typedef enum jc_error_code{
 } JCERROR;
 
 typedef enum jc_cmd_type{
-	JCCMD_INVALID,			//无效命令
+	JCCMD_INVALID_START,			//无效命令
 	//初始闭锁码，此时仅有ATM编号，锁编号，PSK三者决定，其余可变因素为定值
 	JCCMD_INIT_CLOSECODE,	
 	JCCMD_CCB_DYPASS1,		//上位机第一开锁密码
 	JCCMD_CCB_LOCK_VERCODE,	//下位机验证码
 	JCCMD_CCB_DYPASS2,		//上位机第二开锁密码
-	JCCMD_RESET_KEY		//重置钥匙
+	JCCMD_RESET_NFCKEY,		//重置NFC钥匙
+	JCCMD_RESET_LOCKTIME,	//重设锁体时间
+	JCCMD_RESET_LOCKSYSTEM,	//锁系统重置
+	JCCMD_GET_LOCKLOG,		//提取锁体日志	
+	JCCMD_INVALID_END
 } JCCMD;
 
 //离线匹配的返回值
