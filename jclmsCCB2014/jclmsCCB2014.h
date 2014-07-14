@@ -26,7 +26,8 @@ namespace jclms{
 typedef enum jc_error_code{
 	EJC_SUSSESS,	//成功
 	EJC_FAIL,		//失败
-	EJC_INPUT_NULL	//输入条件缺少
+	EJC_INPUT_NULL,	//输入条件缺少
+	EJC_INPUT_INVALID	//非法输入值
 } JCERROR;
 
 typedef enum jc_cmd_type{
