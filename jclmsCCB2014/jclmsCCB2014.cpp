@@ -203,9 +203,9 @@ unsigned int zwBinString2Int32(const char *data,const int len);
 		//以便对于特定的锁具和PSK来说，初始闭锁码是一个恒定值
 		if (JCCMD_INIT_CLOSECODE==lock.m_cmdtype)
 		{
-			l_datetime=1400000000;	//初始闭锁码采用一个特殊的固定值作为时间
-			l_validity=0;	//初始闭锁码特选一个合法有效期之外的值
-			l_closecode=0;	//初始闭锁码特选一个非法闭锁码			
+			l_datetime=myGetNormalTime(time(NULL),8*60*60);	//初始闭锁码采用8小时的取整时间
+			l_validity=(24*60)*365;	//初始闭锁码特选一个合法有效期之外的值,一整年
+			l_closecode=100001111;	//初始闭锁码特选一个超范围的9位非法闭锁码			
 		}		
 		//继续输入各个可变字段的HASH值
 		mySm3Process(&sm3,l_datetime);
