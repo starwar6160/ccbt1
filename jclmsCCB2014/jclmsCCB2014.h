@@ -27,7 +27,10 @@ typedef enum jc_error_code{
 	EJC_SUSSESS,	//成功
 	EJC_FAIL,		//失败
 	EJC_INPUT_NULL,	//输入条件缺少
-	EJC_INPUT_INVALID	//非法输入值
+	EJC_DATETIME_INVALID,	//日期时间非法
+	EJC_VALIDRANGE_INVALID,	//有效期非法
+	EJC_CLOSECODE_INVALID,	//闭锁码非法
+	EJC_CMDTYPE_INVALID		//命令类型非法
 } JCERROR;
 
 typedef enum jc_cmd_type{
@@ -77,6 +80,9 @@ typedef struct jcOfflineResult{
 
 	JCOFFLINE JCLMSCCB2014_API zwOfflineVerifyDynaCode( const JcLockInput &lock,const int dstCode );
 	int JCLMSCCB2014_API getVersion(void);
+
+	JCERROR CheckInputValid( const JcLockInput &lock );
+
 }	//end of namespace jclms
 
 namespace zwTools{
