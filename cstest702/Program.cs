@@ -65,7 +65,7 @@ namespace cstest702
             //在此我特地用了普通的字符串，用意在于，这些字符串的字段内容是什么都可以，长度多长都可以
             //因为内部使用的C++的String，对于长度没有限制，只受内存大小限制；从几个字节
             //到几百字节乃至于更长都可以，只要内存足够，当然实践中建议限制在100字节以内
-            const String atmno = "atm1045576";
+            const String atmno = "atm10455761";
             const String lockno = "lock14771509";
             const String psk = "jclmsdemopsk201407071509aajclmsdemopsk201407071509";
             const Int32 validity = 240;

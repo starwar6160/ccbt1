@@ -11,14 +11,14 @@
 
 namespace jclms{
 	const int G_TIMEMOD=10;	//默认按照10秒取整进入的数据，用于防止一些1-3秒钟的错误
-int myGetDynaCodeImpl( const JcLockInput &lock );
+int myGetDynaCodeImplCCB201407a( const JcLockInput &lock );
 //从包含二进制数据的字符串输入，获得一个8位整数的输出
 unsigned int zwBinString2Int32(const char *data,const int len);
 
 	int getVersion(void)
 	{
 		//含义是前8位是日期，第9位一般是0，如果一天出了多个发布版本，最后一位变化
-		return 201407090;	
+		return 201407140;	
 	}
 
 	//获得规格化的时间，也就是按照某个值取整的时间
@@ -57,12 +57,12 @@ unsigned int zwBinString2Int32(const char *data,const int len);
 
 	int zwGetDynaCode(const JcLockInput &lock)
 	{
-		return myGetDynaCodeImpl(lock);
+		return myGetDynaCodeImplCCB201407a(lock);
 	}
 
 	jclms::JCERROR zwVerifyDynaCode( const JcLockInput &lock,const int dstDyCode )
 	{
-		int calCode= myGetDynaCodeImpl(lock);
+		int calCode= myGetDynaCodeImplCCB201407a(lock);
 		if (calCode==dstDyCode)
 		{
 			return EJC_SUSSESS;
@@ -176,28 +176,22 @@ unsigned int zwBinString2Int32(const char *data,const int len);
 	}
 
 	//生成各种类型的动态码
-	int myGetDynaCodeImpl( const JcLockInput &lock )
+	int myGetDynaCodeImplCCB201407a( const JcLockInput &lock )
 	{
 		SM3 sm3;
 		char outHmac[ZW_SM3_DGST_SIZE];
 		SM3_init(&sm3);
-		//假定这些数字字段在二进制层面都是等同于int的长度的，以便通过一个统一的函数进行HASH运算
-		assert(sizeof(JcLockInput.m_datetime)==sizeof(int));
-		assert(sizeof(JcLockInput.m_validity)==sizeof(int));
-		assert(sizeof(JcLockInput.m_closecode)==sizeof(int));
-		assert(sizeof(JcLockInput.m_cmdtype)==sizeof(int));
 
 		JCERROR err=CheckInputValid(lock);
 		if (EJC_SUSSESS!=err)
 		{
 			return err;
 		}
-		
-
+		//限度是小于14开头的时间(1.4G秒)或者快要超出2048M秒的话就是非法了
 		/////////////////////////////逐个元素进行HASH运算/////////////////////////////////////////////
 		//首先处理固定字段的HASH值输入
 		mySm3Process(&sm3,lock.m_atmno.data(),lock.m_atmno.size());
-		mySm3Process(&sm3,lock.m_lockno.data(),lock.m_lockno.size());
+		mySm3Process(&sm3,lock.m_lockno.data(),lock.m_lockno.size());		
 		mySm3Process(&sm3,lock.m_psk.data(),lock.m_psk.size());
 
 		//规格化时间到G_TIMEMOD这么多秒
@@ -285,12 +279,19 @@ foundMatch:
 	jclms::JCERROR CheckInputValid( const JcLockInput &lock )
 	{
 		const int ZWMEGA=1000*1000;
+		//假定这些数字字段在二进制层面都是等同于int的长度的，以便通过一个统一的函数进行HASH运算
+		assert(sizeof(JcLockInput.m_datetime)==sizeof(int));
+		assert(sizeof(JcLockInput.m_validity)==sizeof(int));
+		assert(sizeof(JcLockInput.m_closecode)==sizeof(int));
+		assert(sizeof(JcLockInput.m_cmdtype)==sizeof(int));
+
 		assert(lock.m_datetime>(1400*ZWMEGA) && lock.m_datetime<(2<<31));
 		assert(lock.m_validity>=0 && lock.m_validity<=(24*60));
 		assert(lock.m_closecode>=0 && lock.m_closecode<=(100*ZWMEGA));
 		assert(lock.m_cmdtype>JCCMD_INVALID_START && lock.m_cmdtype<JCCMD_INVALID_END);
 
-		if (lock.m_datetime<(1400*ZWMEGA) || lock.m_datetime>((2<<31)-100))
+		//限度是小于14开头的时间(1.4G秒)或者快要超出2048M秒的话就是非法了
+		if (lock.m_datetime<(1400*ZWMEGA) || lock.m_datetime>((2048*ZWMEGA)-3))
 		{
 			return EJC_DATETIME_INVALID;
 		}
