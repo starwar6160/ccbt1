@@ -128,12 +128,15 @@ namespace cstest702
             }
             //锁具生成验证码
             jcLock.m_cmdtype = JCCMD.JCCMD_CCB_LOCK_VERCODE;
+            //用第一开锁密码作为验证码的元素，以便适应建行的3个码环环相扣的要求
+            jcLock.m_closecode = dyCode1;   
             int lockVerifyCode = jclmsCCB2014.zwGetDynaCode(jcLock);
             Console.Out.WriteLine("锁具产生的验证码是 {0}", lockVerifyCode);
             jcSrv.m_cmdtype = JCCMD.JCCMD_CCB_LOCK_VERCODE;
             //上位机也计算锁具应该返回的验证码的值，予以比对
+            jcSrv.m_closecode = dyCode1;
             int srvLockVerCode = jclmsCCB2014.zwGetDynaCode(jcSrv);
-            if (dyCode1 == dyCode1Verify)
+            if (lockVerifyCode == srvLockVerCode)
             {
                 Console.Out.WriteLine("上位机对于锁具应该返回的验证码验证成功，证实了锁具的身份");
             }
@@ -144,10 +147,12 @@ namespace cstest702
             }
             //上位机计算第二开锁码
             jcSrv.m_cmdtype = JCCMD.JCCMD_CCB_DYPASS2;
+            jcSrv.m_closecode = lockVerifyCode; //锁具验证码作为第二开锁码的计算要素
             int dyCode2 = jclmsCCB2014.zwGetDynaCode(jcSrv);
             Console.Out.WriteLine("上位机计算的第二开锁码是 {0}", dyCode2);
             jcLock.m_cmdtype = JCCMD.JCCMD_CCB_DYPASS2;
             //锁具计算第二开锁码，以便于上位机传来的第二开锁码比对
+            jcLock.m_closecode = lockVerifyCode;//锁具验证码作为第二开锁码的计算要素
             int dyCode2Verify = jclmsCCB2014.zwGetDynaCode(jcLock);
             if (dyCode2 == dyCode2Verify)
             {

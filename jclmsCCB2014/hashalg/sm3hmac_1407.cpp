@@ -8,6 +8,8 @@ using namespace std;
 typedef unsigned char BYTE;
 
 
+
+
 namespace zwTools{
 const uint8_t ZW_INPAD_FILL_CHAR=0x36;
 const uint8_t ZW_OUTPAD_FILL_CHAR=0x5C;
