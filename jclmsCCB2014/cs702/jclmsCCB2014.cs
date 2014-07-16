@@ -35,6 +35,12 @@ public class jclmsCCB2014 {
     return ret;
   }
 
+  public static JCERROR CheckInputValid(JcLockInput arg0) {
+    JCERROR ret = (JCERROR)jclmsCCB2014PINVOKE.CheckInputValid(JcLockInput.getCPtr(arg0));
+    if (jclmsCCB2014PINVOKE.SWIGPendingException.Pending) throw jclmsCCB2014PINVOKE.SWIGPendingException.Retrieve();
+    return ret;
+  }
+
   public static int zwEciesKeyPairGen(string password, string outPriKeyStr, int priLen, string outPublicKeyStr, int pubLen) {
     int ret = jclmsCCB2014PINVOKE.zwEciesKeyPairGen(password, outPriKeyStr, priLen, outPublicKeyStr, pubLen);
     return ret;
@@ -78,6 +84,11 @@ public class jclmsCCB2014 {
   public static string EciesDecrypt(string priKey, string cryptText) {
     string ret = jclmsCCB2014PINVOKE.EciesDecrypt(priKey, cryptText);
     if (jclmsCCB2014PINVOKE.SWIGPendingException.Pending) throw jclmsCCB2014PINVOKE.SWIGPendingException.Retrieve();
+    return ret;
+  }
+
+  public static string zwMergePsk(string pskInput) {
+    string ret = jclmsCCB2014PINVOKE.zwMergePsk(pskInput);
     return ret;
   }
 

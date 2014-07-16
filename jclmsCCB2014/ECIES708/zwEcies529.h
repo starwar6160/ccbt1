@@ -104,6 +104,7 @@ ZWECIES_API string EciesEncrypt(const string &pubKey,const string &plainText);
 //输入加密函数输出的base64编码的3个元素的组合的密文，以及base64格式的私钥，返回明文
 ZWECIES_API string EciesDecrypt(const string &priKey,const string &cryptText);
 
+ZWECIES_API const char * zwMergePsk(const char *pskInput);
 #ifdef  __cplusplus
 }
 #endif

@@ -600,3 +600,4 @@ ZWECIES_API string EciesDecrypt(const string &priKey,const string &cryptText)
 	return plainTextBuf;
 }
 
+

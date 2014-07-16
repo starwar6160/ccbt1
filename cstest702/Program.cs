@@ -51,6 +51,8 @@ namespace cstest702
             Console.Out.WriteLine("cryptText:\t{0}", cryptText);
             Console.Out.WriteLine("decryptText:\t{0}", decryptText);
             Console.Out.WriteLine("*************************");
+            String mypsk = jclmsCCB2014.zwMergePsk("testpsk1");
+            Console.Out.WriteLine("mypsk:\t{0}", mypsk);
         }
 
         //建行1.1版本动态码验证流程例子

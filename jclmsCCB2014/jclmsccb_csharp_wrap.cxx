@@ -623,6 +623,22 @@ SWIGEXPORT int SWIGSTDCALL CSharp_getVersion() {
 }
 
 
+SWIGEXPORT int SWIGSTDCALL CSharp_CheckInputValid(void * jarg1) {
+  int jresult ;
+  jclms::JcLockInput *arg1 = 0 ;
+  jclms::JCERROR result;
+  
+  arg1 = (jclms::JcLockInput *)jarg1;
+  if (!arg1) {
+    SWIG_CSharpSetPendingExceptionArgument(SWIG_CSharpArgumentNullException, "jclms::JcLockInput const & type is null", 0);
+    return 0;
+  } 
+  result = (jclms::JCERROR)jclms::CheckInputValid((jclms::JcLockInput const &)*arg1);
+  jresult = result; 
+  return jresult;
+}
+
+
 SWIGEXPORT int SWIGSTDCALL CSharp_ZW_AES_BLOCK_SIZE_get() {
   int jresult ;
   int result;
@@ -969,6 +985,18 @@ SWIGEXPORT char * SWIGSTDCALL CSharp_EciesDecrypt(char * jarg1, char * jarg2) {
   arg2 = &arg2_str; 
   result = EciesDecrypt((std::string const &)*arg1,(std::string const &)*arg2);
   jresult = SWIG_csharp_string_callback((&result)->c_str()); 
+  return jresult;
+}
+
+
+SWIGEXPORT char * SWIGSTDCALL CSharp_zwMergePsk(char * jarg1) {
+  char * jresult ;
+  char *arg1 = (char *) 0 ;
+  char *result = 0 ;
+  
+  arg1 = (char *)jarg1; 
+  result = (char *)zwMergePsk((char const *)arg1);
+  jresult = SWIG_csharp_string_callback((const char *)result); 
   return jresult;
 }
 

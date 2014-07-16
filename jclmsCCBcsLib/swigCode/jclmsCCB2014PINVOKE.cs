@@ -273,6 +273,9 @@ class jclmsCCB2014PINVOKE {
   [DllImport("jclmsCCB2014", EntryPoint="CSharp_getVersion")]
   public static extern int getVersion();
 
+  [DllImport("jclmsCCB2014", EntryPoint="CSharp_CheckInputValid")]
+  public static extern int CheckInputValid(HandleRef jarg1);
+
   [DllImport("jclmsCCB2014", EntryPoint="CSharp_ZW_AES_BLOCK_SIZE_get")]
   public static extern int ZW_AES_BLOCK_SIZE_get();
 
@@ -353,6 +356,9 @@ class jclmsCCB2014PINVOKE {
 
   [DllImport("jclmsCCB2014", EntryPoint="CSharp_EciesDecrypt")]
   public static extern string EciesDecrypt(string jarg1, string jarg2);
+
+  [DllImport("jclmsCCB2014", EntryPoint="CSharp_zwMergePsk")]
+  public static extern string zwMergePsk(string jarg1);
 }
 
 }

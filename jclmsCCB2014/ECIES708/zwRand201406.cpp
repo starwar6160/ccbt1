@@ -1,4 +1,7 @@
 #include "sha2.h"
+#include <time.h>
+#include <string.h>
+#include "zwEcies529.h"
 #ifdef WIN32
 unsigned int RdtscRand()
 {
@@ -34,4 +37,25 @@ void zwRandSeedGen603(char *randBuf,const int randBufLen)
 		randBuf[i]=sha512out[(i)%SHA512_DIGEST_SIZE];
 	}
 
+}
+
+//此处static变量可能会有多线程安全问题，以后再说；20140716.1600.周伟
+static char g_zwPskBuf[SHA256_DIGEST_SIZE];
+static char g_zwPskAsc[SHA256_DIGEST_SIZE*2+1];
+ZWECIES_API const char * zwMergePsk(const char *pskInput)
+{
+	time_t rnd;
+	memset(g_zwPskBuf,0,sizeof(g_zwPskBuf));
+	memset(g_zwPskAsc,0,sizeof(g_zwPskAsc));
+	sha256_ctx shactx;
+	sha256_init(&shactx);
+	rnd = time(NULL);
+	sha256_update(&shactx,(unsigned char *)pskInput,strlen(pskInput));
+	sha256_update(&shactx,(unsigned char *)&rnd,sizeof(rnd));
+	sha256_final(&shactx,(unsigned char *)g_zwPskBuf);
+	for (int i=0;i<SHA256_DIGEST_SIZE;i++)
+	{
+		sprintf(g_zwPskAsc+i*2,"%02X",(unsigned char)g_zwPskBuf[i]);
+	}
+	return g_zwPskAsc;
 }

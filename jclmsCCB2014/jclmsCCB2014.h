@@ -10,7 +10,7 @@
 // 符号视为是被导出的。
 //在ARM上使用请打开该宏定义以便消除windows的DLL相关定义的编译错误
 //#define _USEON_NONWIN32
-#ifdef _USEON_NONWIN32
+#ifdef _ZWUSE_AS_JNI
 #define JCLMSCCB2014_API
 #else
 #ifdef JCLMSCCB2014_EXPORTS
