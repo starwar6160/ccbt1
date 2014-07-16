@@ -581,9 +581,9 @@ ZWECIES_API string EciesEncrypt( const string &pubKey,const string &plainText )
 }
 
 //要求eciesHandle已经被设置了私钥才能成功，输入密文是3个元素的组合，不必理解其意义
-ZWECIES_API string EciesDecrypt(const string &priKey,const string &cryptText)
+ZWECIES_API const char * EciesDecrypt( const char *priKey,const char *cryptText )
 {
-	if (priKey.length()==0)
+	if (priKey==NULL || strlen(priKey)==0)
 	{
 		return "";
 	}
@@ -592,12 +592,12 @@ ZWECIES_API string EciesDecrypt(const string &priKey,const string &cryptText)
 	vector<string> encout;
 	string delm=".";
 	zwsplit(cryptText,delm,&encout);
-	char plainTextBuf[ZW_ECIES_MESSAGE_MAXLEN];
-	memset(plainTextBuf,0,ZW_ECIES_MESSAGE_MAXLEN);
+	static char g_plainTextBuf_decrypt[ZW_ECIES_MESSAGE_MAXLEN];
+	memset(g_plainTextBuf_decrypt,0,ZW_ECIES_MESSAGE_MAXLEN);
 
-	zwEciesDecrypt(priKey.c_str(),plainTextBuf,ZW_ECIES_MESSAGE_MAXLEN,
+	zwEciesDecrypt(priKey,g_plainTextBuf_decrypt,ZW_ECIES_MESSAGE_MAXLEN,
 		encout[0].c_str(),encout[1].c_str(),encout[2].c_str());
-	return plainTextBuf;
+	return g_plainTextBuf_decrypt;
 }
 
 
