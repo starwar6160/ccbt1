@@ -77,7 +77,6 @@ public class jclmsCCB2014 {
 
   public static string EciesEncrypt(string pubKey, string plainText) {
     string ret = jclmsCCB2014PINVOKE.EciesEncrypt(pubKey, plainText);
-    if (jclmsCCB2014PINVOKE.SWIGPendingException.Pending) throw jclmsCCB2014PINVOKE.SWIGPendingException.Retrieve();
     return ret;
   }
 

@@ -100,7 +100,7 @@ ZWECIES_API string EciesGetPubKey(int eciesHandle);
 ZWECIES_API string EciesGetPriKey(int eciesHandle);
 //
 //输入明文以及base64格式的公钥，返回值是base64编码的3个元素的组合，不必理解其意义，原样透传即可
-ZWECIES_API string EciesEncrypt(const string &pubKey,const string &plainText);
+ZWECIES_API const char * EciesEncrypt(const char *pubKey,const char *plainText);
 //输入加密函数输出的base64编码的3个元素的组合的密文，以及base64格式的私钥，返回明文
 ZWECIES_API const char * EciesDecrypt(const char *priKey,const char *cryptText);
 
