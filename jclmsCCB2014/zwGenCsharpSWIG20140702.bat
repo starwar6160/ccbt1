@@ -1,6 +1,6 @@
 @ECHO OFF
-set PATH=F:\DiskD\zwTools\swigwin-2.0.11;%PATH%
-set SWIG_LIB=F:\DiskD\zwTools\swigwin-2.0.11\Lib
+REM set PATH=F:\DiskD\zwTools\swigwin-2.0.11;%PATH%
+REM set SWIG_LIB=F:\DiskD\zwTools\swigwin-2.0.11\Lib
 @ECHO ON
 del /Q cs702\*.cs
 swig -csharp -c++  -outdir cs702 -namespace "jclms" jclmsccb_csharp.i
