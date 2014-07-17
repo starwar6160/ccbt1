@@ -287,12 +287,12 @@ foundMatch:
 	{
 		const int ZWMEGA=1000*1000;
 		//假定这些数字字段在二进制层面都是等同于int的长度的，以便通过一个统一的函数进行HASH运算
-		assert(sizeof(JcLockInput.m_datetime)==sizeof(int));
-		assert(sizeof(JcLockInput.m_validity)==sizeof(int));
-		assert(sizeof(JcLockInput.m_closecode)==sizeof(int));
-		assert(sizeof(JcLockInput.m_cmdtype)==sizeof(int));
+		assert(sizeof(lock.m_datetime)==sizeof(int));
+		assert(sizeof(lock.m_validity)==sizeof(int));
+		assert(sizeof(lock.m_closecode)==sizeof(int));
+		assert(sizeof(lock.m_cmdtype)==sizeof(int));
 
-		assert(lock.m_datetime>(1400*ZWMEGA) && lock.m_datetime<(2<<31));
+		assert(lock.m_datetime>(1400*ZWMEGA) && lock.m_datetime<((2048*ZWMEGA)-3));
 		assert(lock.m_validity>=0 && lock.m_validity<=(24*60));
 		assert(lock.m_closecode>=0 && lock.m_closecode<=(100*ZWMEGA));
 		assert(lock.m_cmdtype>JCCMD_INVALID_START && lock.m_cmdtype<JCCMD_INVALID_END);

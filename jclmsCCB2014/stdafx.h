@@ -52,18 +52,5 @@ typedef void *            *LPVOID;	//此处和windef.h不太一样，去掉了过时的far关键
 #endif
 #endif
 
-#undef WIN32
-#ifdef WIN32
-//此处要结合/Za开关关闭，才能编译通过，因为cassert内部用到了windows特有的东西
-#include <cassert>
-#else 
-#undef assert
-#define assert(x)		0
-#endif
-
-
-
-
-
 //////////////////////替换windows.h中用到的部分定义结束///////////////////////////////
 

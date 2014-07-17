@@ -52,7 +52,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_CRT_SECURE_NO_WARNINGS;ZWECIES_EXPORTS;_DEBUG;_WINDOWS;_USRDLL;JCLMSCCB2014_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(MIRACL);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <DisableLanguageExtensions>true</DisableLanguageExtensions>
+      <DisableLanguageExtensions>false</DisableLanguageExtensions>
       <DisableSpecificWarnings>4731</DisableSpecificWarnings>
     </ClCompile>
     <Link>
@@ -72,7 +72,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;_CRT_SECURE_NO_WARNINGS;ZWECIES_EXPORTS;NDEBUG;_WINDOWS;_USRDLL;JCLMSCCB2014_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(MIRACL);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <DisableLanguageExtensions>true</DisableLanguageExtensions>
+      <DisableLanguageExtensions>false</DisableLanguageExtensions>
       <DisableSpecificWarnings>4731</DisableSpecificWarnings>
     </ClCompile>
     <Link>
