@@ -9,6 +9,20 @@
 namespace jclms {
 
 public class jclmsCCB2014 {
+  public static int ZW_AES_BLOCK_SIZE {
+    get {
+      int ret = jclmsCCB2014PINVOKE.ZW_AES_BLOCK_SIZE_get();
+      return ret;
+    } 
+  }
+
+  public static int ZW_SM3_DGST_SIZE {
+    get {
+      int ret = jclmsCCB2014PINVOKE.ZW_SM3_DGST_SIZE_get();
+      return ret;
+    } 
+  }
+
   public static int zwGetDynaCode(JcLockInput arg0) {
     int ret = jclmsCCB2014PINVOKE.zwGetDynaCode(JcLockInput.getCPtr(arg0));
     if (jclmsCCB2014PINVOKE.SWIGPendingException.Pending) throw jclmsCCB2014PINVOKE.SWIGPendingException.Retrieve();
@@ -36,6 +50,55 @@ public class jclmsCCB2014 {
     JCERROR ret = (JCERROR)jclmsCCB2014PINVOKE.CheckInputValid(JcLockInput.getCPtr(arg0));
     if (jclmsCCB2014PINVOKE.SWIGPendingException.Pending) throw jclmsCCB2014PINVOKE.SWIGPendingException.Retrieve();
     return ret;
+  }
+
+  public static int ZWEFS {
+    get {
+      int ret = jclmsCCB2014PINVOKE.ZWEFS_get();
+      return ret;
+    } 
+  }
+
+  public static int ZW_EXA {
+    get {
+      int ret = jclmsCCB2014PINVOKE.ZW_EXA_get();
+      return ret;
+    } 
+  }
+
+  public static int ZW_ECIES_PUBKEY_LEN {
+    get {
+      int ret = jclmsCCB2014PINVOKE.ZW_ECIES_PUBKEY_LEN_get();
+      return ret;
+    } 
+  }
+
+  public static int ZW_ECIES_PRIKEY_LEN {
+    get {
+      int ret = jclmsCCB2014PINVOKE.ZW_ECIES_PRIKEY_LEN_get();
+      return ret;
+    } 
+  }
+
+  public static int ZW_ECIES_ENCSYNCKEY_LEN {
+    get {
+      int ret = jclmsCCB2014PINVOKE.ZW_ECIES_ENCSYNCKEY_LEN_get();
+      return ret;
+    } 
+  }
+
+  public static int ZW_ECIES_HASH_LEN {
+    get {
+      int ret = jclmsCCB2014PINVOKE.ZW_ECIES_HASH_LEN_get();
+      return ret;
+    } 
+  }
+
+  public static int ZW_ECIES_MESSAGE_MAXLEN {
+    get {
+      int ret = jclmsCCB2014PINVOKE.ZW_ECIES_MESSAGE_MAXLEN_get();
+      return ret;
+    } 
   }
 
   public static int zwEciesKeyPairGen(string password, string outPriKeyStr, int priLen, string outPublicKeyStr, int pubLen) {
@@ -87,15 +150,6 @@ public class jclmsCCB2014 {
     return ret;
   }
 
-  public static readonly int ZW_AES_BLOCK_SIZE = jclmsCCB2014PINVOKE.ZW_AES_BLOCK_SIZE_get();
-  public static readonly int ZW_SM3_DGST_SIZE = jclmsCCB2014PINVOKE.ZW_SM3_DGST_SIZE_get();
-  public static readonly int EFS = jclmsCCB2014PINVOKE.EFS_get();
-  public static readonly int ZW_EXA = jclmsCCB2014PINVOKE.ZW_EXA_get();
-  public static readonly int ZW_ECIES_PUBKEY_LEN = jclmsCCB2014PINVOKE.ZW_ECIES_PUBKEY_LEN_get();
-  public static readonly int ZW_ECIES_PRIKEY_LEN = jclmsCCB2014PINVOKE.ZW_ECIES_PRIKEY_LEN_get();
-  public static readonly int ZW_ECIES_ENCSYNCKEY_LEN = jclmsCCB2014PINVOKE.ZW_ECIES_ENCSYNCKEY_LEN_get();
-  public static readonly int ZW_ECIES_HASH_LEN = jclmsCCB2014PINVOKE.ZW_ECIES_HASH_LEN_get();
-  public static readonly int ZW_ECIES_MESSAGE_MAXLEN = jclmsCCB2014PINVOKE.ZW_ECIES_MESSAGE_MAXLEN_get();
 }
 
 }

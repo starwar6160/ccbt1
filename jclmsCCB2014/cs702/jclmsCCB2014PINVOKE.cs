@@ -186,6 +186,12 @@ class jclmsCCB2014PINVOKE {
   }
 
 
+  [global::System.Runtime.InteropServices.DllImport("jclmsCCB2014", EntryPoint="CSharp_ZW_AES_BLOCK_SIZE_get")]
+  public static extern int ZW_AES_BLOCK_SIZE_get();
+
+  [global::System.Runtime.InteropServices.DllImport("jclmsCCB2014", EntryPoint="CSharp_ZW_SM3_DGST_SIZE_get")]
+  public static extern int ZW_SM3_DGST_SIZE_get();
+
   [global::System.Runtime.InteropServices.DllImport("jclmsCCB2014", EntryPoint="CSharp_JCOFFLINE_s_datetime_set")]
   public static extern void JCOFFLINE_s_datetime_set(global::System.Runtime.InteropServices.HandleRef jarg1, int jarg2);
 
@@ -273,12 +279,6 @@ class jclmsCCB2014PINVOKE {
   [global::System.Runtime.InteropServices.DllImport("jclmsCCB2014", EntryPoint="CSharp_CheckInputValid")]
   public static extern int CheckInputValid(global::System.Runtime.InteropServices.HandleRef jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("jclmsCCB2014", EntryPoint="CSharp_ZW_AES_BLOCK_SIZE_get")]
-  public static extern int ZW_AES_BLOCK_SIZE_get();
-
-  [global::System.Runtime.InteropServices.DllImport("jclmsCCB2014", EntryPoint="CSharp_ZW_SM3_DGST_SIZE_get")]
-  public static extern int ZW_SM3_DGST_SIZE_get();
-
   [global::System.Runtime.InteropServices.DllImport("jclmsCCB2014", EntryPoint="CSharp_new_zwHexTool__SWIG_0")]
   public static extern global::System.IntPtr new_zwHexTool__SWIG_0(string jarg1);
 
@@ -306,8 +306,8 @@ class jclmsCCB2014PINVOKE {
   [global::System.Runtime.InteropServices.DllImport("jclmsCCB2014", EntryPoint="CSharp_zwHexTool_getCArrayStr")]
   public static extern string zwHexTool_getCArrayStr(global::System.Runtime.InteropServices.HandleRef jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("jclmsCCB2014", EntryPoint="CSharp_EFS_get")]
-  public static extern int EFS_get();
+  [global::System.Runtime.InteropServices.DllImport("jclmsCCB2014", EntryPoint="CSharp_ZWEFS_get")]
+  public static extern int ZWEFS_get();
 
   [global::System.Runtime.InteropServices.DllImport("jclmsCCB2014", EntryPoint="CSharp_ZW_EXA_get")]
   public static extern int ZW_EXA_get();

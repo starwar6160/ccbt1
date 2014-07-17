@@ -42,7 +42,7 @@ namespace cstest702
             //保存下来重复利用了；这里每次都生成新的公钥/私钥对，是因为测试程序的缘故
             jclmsCCB2014.EciesDelete(hec);
 
-            String plainText = "myplaintext20140709.1419";  //明文
+            String plainText = "myplaintext20140717.0918.012myplaintext20140717.0918.012end920;AAABBB";  //明文
             //用对方的公钥加密后发给对方
             String cryptText = jclmsCCB2014.EciesEncrypt(ecPub, plainText);
             //对方使用自己的私钥解密，还原出来明文

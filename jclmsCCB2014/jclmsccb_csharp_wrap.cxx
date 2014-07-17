@@ -292,6 +292,26 @@ SWIGEXPORT void SWIGSTDCALL SWIGRegisterStringCallback_jclmsCCB2014(SWIG_CSharpS
 extern "C" {
 #endif
 
+SWIGEXPORT int SWIGSTDCALL CSharp_ZW_AES_BLOCK_SIZE_get() {
+  int jresult ;
+  int result;
+  
+  result = (int)(int)jclms::ZW_AES_BLOCK_SIZE;
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT int SWIGSTDCALL CSharp_ZW_SM3_DGST_SIZE_get() {
+  int jresult ;
+  int result;
+  
+  result = (int)(int)jclms::ZW_SM3_DGST_SIZE;
+  jresult = result; 
+  return jresult;
+}
+
+
 SWIGEXPORT void SWIGSTDCALL CSharp_JCOFFLINE_s_datetime_set(void * jarg1, int jarg2) {
   jclms::jcOfflineResult *arg1 = (jclms::jcOfflineResult *) 0 ;
   int arg2 ;
@@ -639,26 +659,6 @@ SWIGEXPORT int SWIGSTDCALL CSharp_CheckInputValid(void * jarg1) {
 }
 
 
-SWIGEXPORT int SWIGSTDCALL CSharp_ZW_AES_BLOCK_SIZE_get() {
-  int jresult ;
-  int result;
-  
-  result = (int)((128/8));
-  jresult = result; 
-  return jresult;
-}
-
-
-SWIGEXPORT int SWIGSTDCALL CSharp_ZW_SM3_DGST_SIZE_get() {
-  int jresult ;
-  int result;
-  
-  result = (int)((256/8));
-  jresult = result; 
-  return jresult;
-}
-
-
 SWIGEXPORT void * SWIGSTDCALL CSharp_new_zwHexTool__SWIG_0(char * jarg1) {
   void * jresult ;
   char *arg1 = (char *) 0 ;
@@ -761,11 +761,11 @@ SWIGEXPORT char * SWIGSTDCALL CSharp_zwHexTool_getCArrayStr(void * jarg1) {
 }
 
 
-SWIGEXPORT int SWIGSTDCALL CSharp_EFS_get() {
+SWIGEXPORT int SWIGSTDCALL CSharp_ZWEFS_get() {
   int jresult ;
   int result;
   
-  result = (int)(32);
+  result = (int)(int)ZWEFS;
   jresult = result; 
   return jresult;
 }
@@ -775,7 +775,7 @@ SWIGEXPORT int SWIGSTDCALL CSharp_ZW_EXA_get() {
   int jresult ;
   int result;
   
-  result = (int)((4));
+  result = (int)(int)ZW_EXA;
   jresult = result; 
   return jresult;
 }
@@ -785,7 +785,7 @@ SWIGEXPORT int SWIGSTDCALL CSharp_ZW_ECIES_PUBKEY_LEN_get() {
   int jresult ;
   int result;
   
-  result = (int)((32*2+(4)));
+  result = (int)(int)ZW_ECIES_PUBKEY_LEN;
   jresult = result; 
   return jresult;
 }
@@ -795,7 +795,7 @@ SWIGEXPORT int SWIGSTDCALL CSharp_ZW_ECIES_PRIKEY_LEN_get() {
   int jresult ;
   int result;
   
-  result = (int)((32*1+(4)));
+  result = (int)(int)ZW_ECIES_PRIKEY_LEN;
   jresult = result; 
   return jresult;
 }
@@ -805,7 +805,7 @@ SWIGEXPORT int SWIGSTDCALL CSharp_ZW_ECIES_ENCSYNCKEY_LEN_get() {
   int jresult ;
   int result;
   
-  result = (int)((32*2+(4)));
+  result = (int)(int)ZW_ECIES_ENCSYNCKEY_LEN;
   jresult = result; 
   return jresult;
 }
@@ -815,7 +815,7 @@ SWIGEXPORT int SWIGSTDCALL CSharp_ZW_ECIES_HASH_LEN_get() {
   int jresult ;
   int result;
   
-  result = (int)((32*1+(4)));
+  result = (int)(int)ZW_ECIES_HASH_LEN;
   jresult = result; 
   return jresult;
 }
@@ -825,7 +825,7 @@ SWIGEXPORT int SWIGSTDCALL CSharp_ZW_ECIES_MESSAGE_MAXLEN_get() {
   int jresult ;
   int result;
   
-  result = (int)((32*2));
+  result = (int)(int)ZW_ECIES_MESSAGE_MAXLEN;
   jresult = result; 
   return jresult;
 }

@@ -18,14 +18,14 @@ zwHexTool::zwHexTool(const char *HexInput)
 	}
 
 	//计算分配整块内存所需的大小，为加密运算做准备
-	int blockNum=len /ZW_AES_BLOCK_SIZE;
-	int blockTail=len % ZW_AES_BLOCK_SIZE;
+	int blockNum=len /jclms::ZW_AES_BLOCK_SIZE;
+	int blockTail=len % jclms::ZW_AES_BLOCK_SIZE;
 	if (blockTail>0)
 	{
 		blockNum=blockNum+1;
 	}
 	//分配足够的Pad空间以备加密运算使用，但是只使用实际长度所需要的空间
-	m_padLen=blockNum*ZW_AES_BLOCK_SIZE;
+	m_padLen=blockNum* jclms::ZW_AES_BLOCK_SIZE;
 	m_binLen=len/2;
 	m_bin=new char [m_padLen];
 	assert(m_bin!=NULL);
@@ -54,14 +54,14 @@ zwHexTool::zwHexTool(const void *msg,const int msgLen)
 	int len=msgLen;
 
 	//计算分配整块内存所需的大小，为加密运算做准备
-	int blockNum=len /ZW_AES_BLOCK_SIZE;
-	int blockTail=len % ZW_AES_BLOCK_SIZE;
+	int blockNum=len / jclms::ZW_AES_BLOCK_SIZE;
+	int blockTail=len % jclms::ZW_AES_BLOCK_SIZE;
 	if (blockTail>0)
 	{
 		blockNum=blockNum+1;
 	}
 	//分配足够的Pad空间以备加密运算使用，但是只使用实际长度所需要的空间
-	m_padLen=blockNum*ZW_AES_BLOCK_SIZE;
+	m_padLen=blockNum* jclms::ZW_AES_BLOCK_SIZE;
 	m_binLen=len/1;	//HEX时除以2，现在就等长了
 	m_bin=new char [m_padLen];
 	assert(m_bin!=NULL);

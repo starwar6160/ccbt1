@@ -22,6 +22,9 @@
 
 //////////////////////////////////////////////////////////////////////////
 namespace jclms{
+	extern const int ZW_AES_BLOCK_SIZE;
+	extern const int ZW_SM3_DGST_SIZE;
+
 //////////////////////////////////////////////////////////////////////////
 typedef enum jc_error_code{
 	EJC_SUSSESS,	//成功
@@ -88,9 +91,7 @@ typedef struct jcOfflineResult{
 namespace zwTools{
 	//////////////////////////////////////////////////////////////////////////
 
-	//实际上不限于AES,只是作为一个基本的块规整大小单位方便处理
-#define ZW_AES_BLOCK_SIZE	(128/8)	
-#define ZW_SM3_DGST_SIZE	(256/8)
+
 	class JCLMSCCB2014_API zwHexTool
 	{
 		char *m_bin;

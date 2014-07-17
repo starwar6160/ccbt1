@@ -11,6 +11,13 @@
 
 namespace jclms{
 	const int G_TIMEMOD=10;	//默认按照10秒取整进入的数据，用于防止一些1-3秒钟的错误
+	//实际上不限于AES,只是作为一个基本的块规整大小单位方便处理
+	//#define ZW_AES_BLOCK_SIZE	(128/8)	
+	//#define ZW_SM3_DGST_SIZE	(256/8)
+	const int ZW_AES_BLOCK_SIZE=(128/8)	;
+	const int ZW_SM3_DGST_SIZE=(256/8)	;
+
+
 int myGetDynaCodeImplCCB201407a( const JcLockInput &lock );
 //从包含二进制数据的字符串输入，获得一个8位整数的输出
 unsigned int zwBinString2Int32(const char *data,const int len);

@@ -4,21 +4,23 @@
 using std::string;
 
 #ifndef ECDH_H
-#define EFS 32 /* ECCSI Field Size - 256 bits */
+//#define EFS 32 /* ECCSI Field Size - 256 bits */
 typedef int BOOL;
 #endif 
+const int ZWEFS=256/8;	
+const int ZW_EXA=4;
 //EFS=32字节=256bit
 //经验值，程序实际输出90字节长度的BASE64字符串
 //额外多留的保险字节数目
-#define ZW_EXA	(4)
-#define ZW_ECIES_PUBKEY_LEN	(EFS*2+ZW_EXA)
-#define ZW_ECIES_PRIKEY_LEN	(EFS*1+ZW_EXA)
-#define ZW_ECIES_ENCSYNCKEY_LEN	(EFS*2+ZW_EXA)
-#define ZW_ECIES_HASH_LEN	(EFS*1+ZW_EXA)
+//#define ZW_EXA	(4)
+const int ZW_ECIES_PUBKEY_LEN=(ZWEFS*2+ZW_EXA);
+const int ZW_ECIES_PRIKEY_LEN=(ZWEFS*1+ZW_EXA);
+const int ZW_ECIES_ENCSYNCKEY_LEN=(ZWEFS*2+ZW_EXA);
+const int ZW_ECIES_HASH_LEN=(ZWEFS*1+ZW_EXA);
 //ECIES的作用就是用来加密对称密钥，已知最大的BLOWFISH是448bit，
 //SHA512的输出作为密钥的话是512bit，考虑可能加入其他一些开销，
 //所以最多768bit(EFS*3)应该足够了
-#define ZW_ECIES_MESSAGE_MAXLEN	(EFS*2)
+const int ZW_ECIES_MESSAGE_MAXLEN=ZWEFS*3;
 
 #ifndef _ZWUSE_AS_JNI
 #ifdef ZWECIES_EXPORTS
@@ -100,6 +102,7 @@ ZWECIES_API string EciesGetPubKey(int eciesHandle);
 ZWECIES_API string EciesGetPriKey(int eciesHandle);
 //
 //输入明文以及base64格式的公钥，返回值是base64编码的3个元素的组合，不必理解其意义，原样透传即可
+//明文最长限制为ZW_ECIES_MESSAGE_MAXLEN-1个字符，必须为空结束字符串，-1是因为NULL字符占据位置
 ZWECIES_API const char * EciesEncrypt(const char *pubKey,const char *plainText);
 //输入加密函数输出的base64编码的3个元素的组合的密文，以及base64格式的私钥，返回明文
 ZWECIES_API const char * EciesDecrypt(const char *priKey,const char *cryptText);
