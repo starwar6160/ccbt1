@@ -503,24 +503,24 @@ ZWECIES_API void EciesDelete(int eciesHandle)
 	}
 }
 
-ZWECIES_API string EciesGetPubKey(int eciesHandle)
+ZWECIES_API const char * EciesGetPubKey( int eciesHandle )
 {
 	zwEcies_t *stu=(zwEcies_t *)eciesHandle;
 	if (NULL==stu || ECIES_INIT_FLAG!=stu->status)
 	{
 		return "BADHANDLE20140604";
 	}
-	return stu->pubKey;
+	return stu->pubKey.c_str();
 }
 
-ZWECIES_API string EciesGetPriKey(int eciesHandle)
+ZWECIES_API const char * EciesGetPriKey( int eciesHandle )
 {
 	zwEcies_t *stu=(zwEcies_t *)eciesHandle;
 	if (NULL==stu || ECIES_INIT_FLAG!=stu->status)
 	{
 		return "BADHANDLE20140604";
 	}
-	return stu->priKey;
+	return stu->priKey.c_str();
 }
 
 //自定义实现split函数

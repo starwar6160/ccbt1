@@ -97,9 +97,9 @@ ZWECIES_API int		EciesGenKeyPair(void);
 //删除保存密钥对等等的内部数据结构
 ZWECIES_API void	EciesDelete(int eciesHandle);
 //从句柄所指向的内部数据结构获取前面生成好的公钥，是Base64格式字符串，不必理解其含义，原样透传即可
-ZWECIES_API string EciesGetPubKey(int eciesHandle);
+ZWECIES_API const char * EciesGetPubKey(int eciesHandle);
 //从句柄所指向的内部数据结构获取前面生成好的私钥，是Base64格式字符串，不必理解其含义，原样透传即可
-ZWECIES_API string EciesGetPriKey(int eciesHandle);
+ZWECIES_API const char * EciesGetPriKey(int eciesHandle);
 //
 //输入明文以及base64格式的公钥，返回值是base64编码的3个元素的组合，不必理解其意义，原样透传即可
 //明文最长限制为ZW_ECIES_MESSAGE_MAXLEN-1个字符，必须为空结束字符串，-1是因为NULL字符占据位置

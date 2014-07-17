@@ -920,11 +920,11 @@ SWIGEXPORT void SWIGSTDCALL CSharp_EciesDelete(int jarg1) {
 SWIGEXPORT char * SWIGSTDCALL CSharp_EciesGetPubKey(int jarg1) {
   char * jresult ;
   int arg1 ;
-  string result;
+  char *result = 0 ;
   
   arg1 = (int)jarg1; 
-  result = EciesGetPubKey(arg1);
-  jresult = SWIG_csharp_string_callback((&result)->c_str()); 
+  result = (char *)EciesGetPubKey(arg1);
+  jresult = SWIG_csharp_string_callback((const char *)result); 
   return jresult;
 }
 
@@ -932,11 +932,11 @@ SWIGEXPORT char * SWIGSTDCALL CSharp_EciesGetPubKey(int jarg1) {
 SWIGEXPORT char * SWIGSTDCALL CSharp_EciesGetPriKey(int jarg1) {
   char * jresult ;
   int arg1 ;
-  string result;
+  char *result = 0 ;
   
   arg1 = (int)jarg1; 
-  result = EciesGetPriKey(arg1);
-  jresult = SWIG_csharp_string_callback((&result)->c_str()); 
+  result = (char *)EciesGetPriKey(arg1);
+  jresult = SWIG_csharp_string_callback((const char *)result); 
   return jresult;
 }
 
