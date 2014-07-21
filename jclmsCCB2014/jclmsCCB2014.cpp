@@ -9,7 +9,7 @@
 #include "jclmsCCB2014.h"
 #include "hashalg\\sm3.h"
 
-namespace jclms{
+//namespace jclms{
 	const int G_TIMEMOD=10;	//默认按照10秒取整进入的数据，用于防止一些1-3秒钟的错误
 	//实际上不限于AES,只是作为一个基本的块规整大小单位方便处理
 	//#define ZW_AES_BLOCK_SIZE	(128/8)	
@@ -301,7 +301,7 @@ foundMatch:
 		return jcoff;
 	}
 
-	jclms::JCERROR CheckInputValid( const JcLockInput &lock )
+	JCERROR CheckInputValid( const JcLockInput &lock )
 	{
 		const int ZWMEGA=1000*1000;
 		//假定这些数字字段在二进制层面都是等同于int的长度的，以便通过一个统一的函数进行HASH运算
@@ -337,4 +337,4 @@ foundMatch:
 	}
 
 
-}	//end of namespace jclms
+//}	//end of namespace jclms

@@ -21,7 +21,7 @@
 #endif	//_ZWUSE_AS_JNI
 
 //////////////////////////////////////////////////////////////////////////
-namespace jclms{
+//namespace jclms{
 	extern const int ZW_AES_BLOCK_SIZE;
 	extern const int ZW_SM3_DGST_SIZE;
 
@@ -60,11 +60,11 @@ typedef struct jcLockReverseMatchResult{
 //有效期数组大小；更改此处以后请对应更改源代码中JcLockInput类初始化代码中
 //为有效期数组m_validity_array赋予初值的相应语句
 const int NUM_VALIDITY=8;
+
 	struct JCLMSCCB2014_API JcLockInput
 	{
 	public:
 		//固定因素部分
-		//char mt_atmno[16];
 		string m_atmno;			//ATM号
 		string m_lockno;		//锁号
 		string m_psk;			//PSK，上下位机共同持有的唯一机密因素
@@ -98,7 +98,7 @@ const int NUM_VALIDITY=8;
 
 	JCERROR CheckInputValid( const JcLockInput &lock );
 
-}	//end of namespace jclms
+//}	//end of namespace jclms
 
 
 #endif // jclmsCCB2014_h__
