@@ -267,11 +267,8 @@ class jclmsCCB2014PINVOKE {
   [global::System.Runtime.InteropServices.DllImport("jclmsCCB2014", EntryPoint="CSharp_zwGetDynaCode")]
   public static extern int zwGetDynaCode(global::System.Runtime.InteropServices.HandleRef jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("jclmsCCB2014", EntryPoint="CSharp_zwVerifyDynaCode")]
-  public static extern int zwVerifyDynaCode(global::System.Runtime.InteropServices.HandleRef jarg1, int jarg2);
-
-  [global::System.Runtime.InteropServices.DllImport("jclmsCCB2014", EntryPoint="CSharp_zwOfflineVerifyDynaCode")]
-  public static extern global::System.IntPtr zwOfflineVerifyDynaCode(global::System.Runtime.InteropServices.HandleRef jarg1, int jarg2);
+  [global::System.Runtime.InteropServices.DllImport("jclmsCCB2014", EntryPoint="CSharp_zwReverseVerifyDynaCode")]
+  public static extern global::System.IntPtr zwReverseVerifyDynaCode(global::System.Runtime.InteropServices.HandleRef jarg1, int jarg2);
 
   [global::System.Runtime.InteropServices.DllImport("jclmsCCB2014", EntryPoint="CSharp_getVersion")]
   public static extern int getVersion();

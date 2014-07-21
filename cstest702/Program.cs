@@ -70,9 +70,10 @@ namespace cstest702
             //上位机的模拟对象
             JcLockInput jcSrv = new JcLockInput();
 
-            //在此我特地用了普通的字符串，用意在于，这些字符串的字段内容是什么都可以，长度多长都可以
-            //因为内部使用的C++的String，对于长度没有限制，只受内存大小限制；从几个字节
-            //到几百字节乃至于更长都可以，只要内存足够，当然实践中建议限制在100字节以内
+            //在此我特地用了普通的字符串，用意在于，这些字符串的字段内容是什么都可以，
+            //长度多长都可以,因为内部使用的C++的String，对于长度没有限制，只受内存大小限制；
+            //从几个字节到几百字节乃至于更长都可以，只要内存足够
+            //当然实践中建议限制在100字节以内
             //传入当前时间的GMT(格林尼治时间)
             DateTime jcdt = DateTime.Now.ToUniversalTime();
             Console.Out.WriteLine("当前的格林尼治时间(GMT)是{0},建行1.1版本算法上下位机都统一采用GMT来计算减少混乱"
@@ -233,7 +234,7 @@ namespace cstest702
             int dyCode1 = jclmsCCB2014.zwGetDynaCode(jcSrv);
             Console.Out.WriteLine("上位机产生的第一开锁动态码是 {0}", dyCode1);
 
-            JCOFFLINE jcoret= jclmsCCB2014.zwOfflineVerifyDynaCode(jcSrv, dyCode1);
+            JCOFFLINE jcoret= jclmsCCB2014.zwReverseVerifyDynaCode(jcSrv, dyCode1);
             Console.Out.WriteLine("离线匹配的时间(GMT)和有效期(分钟)是 {0},\t{1}",
                 jcoret.s_datetime, jcoret.s_validity);
             if (jcoret.s_datetime == 0)
@@ -269,7 +270,8 @@ namespace cstest702
             //验证动态码，同样填写完毕各项输入要素，然后把结构体连同动态码传入
             //返回值只有成功或者失败；请不要依赖于具体值，而是要用枚举量，
             //因为具体值随着枚举量的变化可能变化，而某个枚举符号的含义是不会变化的
-            JCERROR err = jclmsCCB2014.zwVerifyDynaCode(myLock, dyCode);
+            JCERROR err = JCERROR.EJC_FAIL;
+                //jclmsCCB2014.zwVerifyDynaCode(myLock, dyCode);
             if (err == JCERROR.EJC_SUSSESS)
             {
                 Console.Out.WriteLine("InitCloseCode verify Success");

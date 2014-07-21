@@ -597,25 +597,7 @@ SWIGEXPORT int SWIGSTDCALL CSharp_zwGetDynaCode(void * jarg1) {
 }
 
 
-SWIGEXPORT int SWIGSTDCALL CSharp_zwVerifyDynaCode(void * jarg1, int jarg2) {
-  int jresult ;
-  jclms::JcLockInput *arg1 = 0 ;
-  int arg2 ;
-  jclms::JCERROR result;
-  
-  arg1 = (jclms::JcLockInput *)jarg1;
-  if (!arg1) {
-    SWIG_CSharpSetPendingExceptionArgument(SWIG_CSharpArgumentNullException, "jclms::JcLockInput const & type is null", 0);
-    return 0;
-  } 
-  arg2 = (int)jarg2; 
-  result = (jclms::JCERROR)jclms::zwVerifyDynaCode((jclms::JcLockInput const &)*arg1,arg2);
-  jresult = (int)result; 
-  return jresult;
-}
-
-
-SWIGEXPORT void * SWIGSTDCALL CSharp_zwOfflineVerifyDynaCode(void * jarg1, int jarg2) {
+SWIGEXPORT void * SWIGSTDCALL CSharp_zwReverseVerifyDynaCode(void * jarg1, int jarg2) {
   void * jresult ;
   jclms::JcLockInput *arg1 = 0 ;
   int arg2 ;
@@ -627,7 +609,7 @@ SWIGEXPORT void * SWIGSTDCALL CSharp_zwOfflineVerifyDynaCode(void * jarg1, int j
     return 0;
   } 
   arg2 = (int)jarg2; 
-  result = jclms::zwOfflineVerifyDynaCode((jclms::JcLockInput const &)*arg1,arg2);
+  result = jclms::zwReverseVerifyDynaCode((jclms::JcLockInput const &)*arg1,arg2);
   jresult = new jclms::JCOFFLINE((const jclms::JCOFFLINE &)result); 
   return jresult;
 }

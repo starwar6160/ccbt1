@@ -29,14 +29,8 @@ public class jclmsCCB2014 {
     return ret;
   }
 
-  public static JCERROR zwVerifyDynaCode(JcLockInput arg0, int dstDyCode) {
-    JCERROR ret = (JCERROR)jclmsCCB2014PINVOKE.zwVerifyDynaCode(JcLockInput.getCPtr(arg0), dstDyCode);
-    if (jclmsCCB2014PINVOKE.SWIGPendingException.Pending) throw jclmsCCB2014PINVOKE.SWIGPendingException.Retrieve();
-    return ret;
-  }
-
-  public static JCOFFLINE zwOfflineVerifyDynaCode(JcLockInput arg0, int dstCode) {
-    JCOFFLINE ret = new JCOFFLINE(jclmsCCB2014PINVOKE.zwOfflineVerifyDynaCode(JcLockInput.getCPtr(arg0), dstCode), true);
+  public static JCOFFLINE zwReverseVerifyDynaCode(JcLockInput arg0, int dstCode) {
+    JCOFFLINE ret = new JCOFFLINE(jclmsCCB2014PINVOKE.zwReverseVerifyDynaCode(JcLockInput.getCPtr(arg0), dstCode), true);
     if (jclmsCCB2014PINVOKE.SWIGPendingException.Pending) throw jclmsCCB2014PINVOKE.SWIGPendingException.Retrieve();
     return ret;
   }

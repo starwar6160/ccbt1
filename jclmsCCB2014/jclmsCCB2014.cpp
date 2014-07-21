@@ -67,18 +67,18 @@ unsigned int zwBinString2Int32(const char *data,const int len);
 		return myGetDynaCodeImplCCB201407a(lock);
 	}
 
-	jclms::JCERROR zwVerifyDynaCode( const JcLockInput &lock,const int dstDyCode )
-	{
-		int calCode= myGetDynaCodeImplCCB201407a(lock);
-		if (calCode==dstDyCode)
-		{
-			return EJC_SUSSESS;
-		}
-		else
-		{
-			return EJC_FAIL;
-		}
-	}
+	//jclms::JCERROR zwVerifyDynaCode( const JcLockInput &lock,const int dstDyCode )
+	//{
+	//	int calCode= myGetDynaCodeImplCCB201407a(lock);
+	//	if (calCode==dstDyCode)
+	//	{
+	//		return EJC_SUSSESS;
+	//	}
+	//	else
+	//	{
+	//		return EJC_FAIL;
+	//	}
+	//}
 
 	//从包含二进制数据的字符串输入，获得一个8位整数的输出
 	unsigned int zwBinString2Int32(const char *data,const int len)
@@ -229,7 +229,7 @@ unsigned int zwBinString2Int32(const char *data,const int len);
 
 	//离线模式匹配，时间点精度为取整到一个小时的零点，有效期精度为1小时起
 	//如果找到了，返回JCOFFLINE中是匹配的时间和有效期，否则其中的值都是0
-	JCOFFLINE zwOfflineVerifyDynaCode( const JcLockInput &lock,const int dstCode )
+	JCOFFLINE zwReverseVerifyDynaCode( const JcLockInput &lock,const int dstCode )
 	{
 		JCOFFLINE jcoff;
 		//填入默认的失败返回值
