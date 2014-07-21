@@ -33,9 +33,6 @@ const int ZW_ECIES_MESSAGE_MAXLEN=ZWEFS*3*4/3;
 #define ZWECIES_API
 #endif
 
-//ZWECIES_API string & zwtestString(const string &inStr,string &outStr);
-//ZWECIES_API const string & zwtestString(const string &inStr,const string &outStr);
-
 #ifdef  __cplusplus
 extern "C" {
 #endif
