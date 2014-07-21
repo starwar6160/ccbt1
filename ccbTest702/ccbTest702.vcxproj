@@ -51,14 +51,14 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\jclmsCCB2014</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\jclmsCCB2014;$(GTEST)\include\</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>jclmsCCB2014.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(ZWBINJCLOCK)\$(Configuration)\$(TargetName)$(TargetExt)</OutputFile>
-      <AdditionalLibraryDirectories>$(ZWBINJCLOCK)\$(Configuration)\</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(ZWBINJCLOCK)\$(Configuration)\;$(GTEST)\msvc\gtest\$(Configuration)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -69,7 +69,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\jclmsCCB2014</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\jclmsCCB2014;$(GTEST)\include\</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -78,7 +78,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalDependencies>jclmsCCB2014.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(ZWBINJCLOCK)\$(Configuration)\$(TargetName)$(TargetExt)</OutputFile>
-      <AdditionalLibraryDirectories>$(ZWBINJCLOCK)\$(Configuration)\</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(ZWBINJCLOCK)\$(Configuration)\;$(GTEST)\msvc\gtest\$(Configuration)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>

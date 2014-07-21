@@ -22,7 +22,8 @@ void myJcLockInputTest1()
 	aa.m_atmno="atmnoddddddddsssssssssssssssssssss";
 	aa.m_lockno="locknossssssssssssa1";
 	aa.m_psk="pskaaaabbbbbccccsssssssssssssssssssssssssssssssssssss";
-	aa.m_datetime=140007775;
+	//注意现在合法的时间值应该是1.4G以上了，注意位数。20140721.1709
+	aa.m_datetime=1400077751;
 	aa.m_validity=5;
 	aa.m_closecode=87654325;
 	aa.m_cmdtype=JCCMD_CCB_DYPASS1;
