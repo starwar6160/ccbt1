@@ -56,6 +56,7 @@ typedef struct jcOfflineResult{
 	int s_validity;
 }JCOFFLINE;
 
+const int NUM_VALIDITY=8;
 	class JCLMSCCB2014_API JcLockInput
 	{
 	public:
@@ -72,14 +73,14 @@ typedef struct jcOfflineResult{
 		//反推时间步长秒数，默认为在线模式，精度1分钟，值为60，离线模式请自己设置为3600秒或者其他数值
 		int m_stepoftime;	
 		//往前反推的时间长度秒数，默认为在线模式，10分钟，值为600，其他值比如离线24小时请自己设置
-		int m_reverse_time_length;	
-		const static int NUM_VALIDITY=8;
+		int m_reverse_time_length;					
 		//有效期，共有NUM_VALIDITY个,默认值是从5分钟到24小时那一系列，单位是分钟；可以自己设定
 		int m_validity_array[NUM_VALIDITY];
 	public:
 		JcLockInput(void);
 		void DebugPrint(void);	//
 		JCERROR CheckInput(void);
+		void SetValidity(const int index,const int val);	//设置m_validity_array数组中某个值
 	private:				
 		JCERROR m_status;
 	};

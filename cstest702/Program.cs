@@ -235,6 +235,7 @@ namespace cstest702
             int dyCode1 = jclmsCCB2014.zwGetDynaCode(jcSrv);
             Console.Out.WriteLine("上位机产生的第一开锁动态码是 {0}", dyCode1);
 
+            //jcSrv.SetValidity(2, 17);
             JCOFFLINE jcoret= jclmsCCB2014.zwReverseVerifyDynaCode(jcSrv, dyCode1);
             Console.Out.WriteLine("离线匹配的时间(GMT)和有效期(分钟)是 {0},\t{1}",
                 jcoret.s_datetime, jcoret.s_validity);

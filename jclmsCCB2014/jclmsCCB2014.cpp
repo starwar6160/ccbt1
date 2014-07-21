@@ -102,7 +102,13 @@ unsigned int zwBinString2Int32(const char *data,const int len);
 		return sum;
 	}
 
-
+	void JcLockInput::SetValidity(const int index,const int val)
+	{
+		if (index>=0 && index<=NUM_VALIDITY)
+		{
+			m_validity_array[index]=val;
+		}		
+	}
 //////////////////////////////////////////////////////////////////////////
 	JcLockInput::JcLockInput()
 	{
@@ -240,6 +246,8 @@ unsigned int zwBinString2Int32(const char *data,const int len);
 		return res;
 	}
 
+
+
 	//离线模式匹配，时间点精度为取整到一个小时的零点，有效期精度为1小时起
 	//如果找到了，返回JCOFFLINE中是匹配的时间和有效期，否则其中的值都是0
 	JCOFFLINE zwReverseVerifyDynaCode( const JcLockInput &lock,const int dstCode )
@@ -263,7 +271,7 @@ unsigned int zwBinString2Int32(const char *data,const int len);
 		for (int tdate=l_datetime;tdate>=tend;tdate-=lock.m_stepoftime)
 		{			
 			//printf("TDATE=\t%d\n",tdate);
-			for (int v=0;v<lock.NUM_VALIDITY;v++)
+			for (int v=0;v<NUM_VALIDITY;v++)
 			{
 				SM3 sm3;
 				char outHmac[ZW_SM3_DGST_SIZE];

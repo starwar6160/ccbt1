@@ -374,6 +374,16 @@ SWIGEXPORT void SWIGSTDCALL CSharp_delete_JCOFFLINE(void * jarg1) {
 }
 
 
+SWIGEXPORT int SWIGSTDCALL CSharp_NUM_VALIDITY_get() {
+  int jresult ;
+  int result;
+  
+  result = (int)(int)jclms::NUM_VALIDITY;
+  jresult = result; 
+  return jresult;
+}
+
+
 SWIGEXPORT void SWIGSTDCALL CSharp_JcLockInput_m_atmno_set(void * jarg1, char * jarg2) {
   jclms::JcLockInput *arg1 = (jclms::JcLockInput *) 0 ;
   std::string *arg2 = 0 ;
@@ -587,6 +597,32 @@ SWIGEXPORT int SWIGSTDCALL CSharp_JcLockInput_m_reverse_time_length_get(void * j
 }
 
 
+SWIGEXPORT void SWIGSTDCALL CSharp_JcLockInput_m_validity_array_set(void * jarg1, void * jarg2) {
+  jclms::JcLockInput *arg1 = (jclms::JcLockInput *) 0 ;
+  int *arg2 ;
+  
+  arg1 = (jclms::JcLockInput *)jarg1; 
+  arg2 = (int *)jarg2; 
+  {
+    size_t ii;
+    int *b = (int *) arg1->m_validity_array;
+    for (ii = 0; ii < (size_t)jclms::NUM_VALIDITY; ii++) b[ii] = *((int *) arg2 + ii);
+  }
+}
+
+
+SWIGEXPORT void * SWIGSTDCALL CSharp_JcLockInput_m_validity_array_get(void * jarg1) {
+  void * jresult ;
+  jclms::JcLockInput *arg1 = (jclms::JcLockInput *) 0 ;
+  int *result = 0 ;
+  
+  arg1 = (jclms::JcLockInput *)jarg1; 
+  result = (int *)(int *) ((arg1)->m_validity_array);
+  jresult = result; 
+  return jresult;
+}
+
+
 SWIGEXPORT void * SWIGSTDCALL CSharp_new_JcLockInput() {
   void * jresult ;
   jclms::JcLockInput *result = 0 ;
@@ -614,6 +650,18 @@ SWIGEXPORT int SWIGSTDCALL CSharp_JcLockInput_CheckInput(void * jarg1) {
   result = (jclms::JCERROR)(arg1)->CheckInput();
   jresult = (int)result; 
   return jresult;
+}
+
+
+SWIGEXPORT void SWIGSTDCALL CSharp_JcLockInput_SetValidity(void * jarg1, int jarg2, int jarg3) {
+  jclms::JcLockInput *arg1 = (jclms::JcLockInput *) 0 ;
+  int arg2 ;
+  int arg3 ;
+  
+  arg1 = (jclms::JcLockInput *)jarg1; 
+  arg2 = (int)jarg2; 
+  arg3 = (int)jarg3; 
+  (arg1)->SetValidity(arg2,arg3);
 }
 
 

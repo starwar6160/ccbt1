@@ -23,6 +23,13 @@ public class jclmsCCB2014 {
     } 
   }
 
+  public static int NUM_VALIDITY {
+    get {
+      int ret = jclmsCCB2014PINVOKE.NUM_VALIDITY_get();
+      return ret;
+    } 
+  }
+
   public static int zwGetDynaCode(JcLockInput arg0) {
     int ret = jclmsCCB2014PINVOKE.zwGetDynaCode(JcLockInput.getCPtr(arg0));
     if (jclmsCCB2014PINVOKE.SWIGPendingException.Pending) throw jclmsCCB2014PINVOKE.SWIGPendingException.Retrieve();

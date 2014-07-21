@@ -134,6 +134,17 @@ public class JcLockInput : global::System.IDisposable {
     } 
   }
 
+  public SWIGTYPE_p_int m_validity_array {
+    set {
+      jclmsCCB2014PINVOKE.JcLockInput_m_validity_array_set(swigCPtr, SWIGTYPE_p_int.getCPtr(value));
+    } 
+    get {
+      global::System.IntPtr cPtr = jclmsCCB2014PINVOKE.JcLockInput_m_validity_array_get(swigCPtr);
+      SWIGTYPE_p_int ret = (cPtr == global::System.IntPtr.Zero) ? null : new SWIGTYPE_p_int(cPtr, false);
+      return ret;
+    } 
+  }
+
   public JcLockInput() : this(jclmsCCB2014PINVOKE.new_JcLockInput(), true) {
   }
 
@@ -144,6 +155,10 @@ public class JcLockInput : global::System.IDisposable {
   public JCERROR CheckInput() {
     JCERROR ret = (JCERROR)jclmsCCB2014PINVOKE.JcLockInput_CheckInput(swigCPtr);
     return ret;
+  }
+
+  public void SetValidity(int index, int val) {
+    jclmsCCB2014PINVOKE.JcLockInput_SetValidity(swigCPtr, index, val);
   }
 
 }

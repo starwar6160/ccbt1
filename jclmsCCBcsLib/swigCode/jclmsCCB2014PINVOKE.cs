@@ -210,6 +210,9 @@ class jclmsCCB2014PINVOKE {
   [global::System.Runtime.InteropServices.DllImport("jclmsCCB2014", EntryPoint="CSharp_delete_JCOFFLINE")]
   public static extern void delete_JCOFFLINE(global::System.Runtime.InteropServices.HandleRef jarg1);
 
+  [global::System.Runtime.InteropServices.DllImport("jclmsCCB2014", EntryPoint="CSharp_NUM_VALIDITY_get")]
+  public static extern int NUM_VALIDITY_get();
+
   [global::System.Runtime.InteropServices.DllImport("jclmsCCB2014", EntryPoint="CSharp_JcLockInput_m_atmno_set")]
   public static extern void JcLockInput_m_atmno_set(global::System.Runtime.InteropServices.HandleRef jarg1, string jarg2);
 
@@ -264,6 +267,12 @@ class jclmsCCB2014PINVOKE {
   [global::System.Runtime.InteropServices.DllImport("jclmsCCB2014", EntryPoint="CSharp_JcLockInput_m_reverse_time_length_get")]
   public static extern int JcLockInput_m_reverse_time_length_get(global::System.Runtime.InteropServices.HandleRef jarg1);
 
+  [global::System.Runtime.InteropServices.DllImport("jclmsCCB2014", EntryPoint="CSharp_JcLockInput_m_validity_array_set")]
+  public static extern void JcLockInput_m_validity_array_set(global::System.Runtime.InteropServices.HandleRef jarg1, global::System.Runtime.InteropServices.HandleRef jarg2);
+
+  [global::System.Runtime.InteropServices.DllImport("jclmsCCB2014", EntryPoint="CSharp_JcLockInput_m_validity_array_get")]
+  public static extern global::System.IntPtr JcLockInput_m_validity_array_get(global::System.Runtime.InteropServices.HandleRef jarg1);
+
   [global::System.Runtime.InteropServices.DllImport("jclmsCCB2014", EntryPoint="CSharp_new_JcLockInput")]
   public static extern global::System.IntPtr new_JcLockInput();
 
@@ -272,6 +281,9 @@ class jclmsCCB2014PINVOKE {
 
   [global::System.Runtime.InteropServices.DllImport("jclmsCCB2014", EntryPoint="CSharp_JcLockInput_CheckInput")]
   public static extern int JcLockInput_CheckInput(global::System.Runtime.InteropServices.HandleRef jarg1);
+
+  [global::System.Runtime.InteropServices.DllImport("jclmsCCB2014", EntryPoint="CSharp_JcLockInput_SetValidity")]
+  public static extern void JcLockInput_SetValidity(global::System.Runtime.InteropServices.HandleRef jarg1, int jarg2, int jarg3);
 
   [global::System.Runtime.InteropServices.DllImport("jclmsCCB2014", EntryPoint="CSharp_delete_JcLockInput")]
   public static extern void delete_JcLockInput(global::System.Runtime.InteropServices.HandleRef jarg1);
