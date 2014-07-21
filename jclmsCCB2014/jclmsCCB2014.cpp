@@ -15,8 +15,7 @@
 	//#define ZW_AES_BLOCK_SIZE	(128/8)	
 	//#define ZW_SM3_DGST_SIZE	(256/8)
 	const int ZW_AES_BLOCK_SIZE=(128/8)	;
-	const int ZW_SM3_DGST_SIZE=(256/8)	;
-
+	const int ZW_SM3_DGST_SIZE=(256/8)	;	
 
 int myGetDynaCodeImplCCB201407a( const JcLockInput &lock );
 //从包含二进制数据的字符串输入，获得一个8位整数的输出
@@ -112,9 +111,9 @@ unsigned int zwBinString2Int32(const char *data,const int len);
 //////////////////////////////////////////////////////////////////////////
 	JcLockInput::JcLockInput()
 	{
-		m_atmno="";
-		m_lockno="";
-		m_psk="";
+		memset(m_atmno,0,JC_ATMNO_MAXLEN);
+		memset(m_lockno,0,JC_LOCKNO_MAXLEN);
+		memset(m_psk,0,JC_PSK_LEN);
 		m_datetime=-1;
 		m_validity=-1;
 		m_closecode=-1;	
@@ -215,9 +214,9 @@ unsigned int zwBinString2Int32(const char *data,const int len);
 		//限度是小于14开头的时间(1.4G秒)或者快要超出2048M秒的话就是非法了
 		/////////////////////////////逐个元素进行HASH运算/////////////////////////////////////////////
 		//首先处理固定字段的HASH值输入
-		mySm3Process(&sm3,lock.m_atmno.data(),lock.m_atmno.size());
-		mySm3Process(&sm3,lock.m_lockno.data(),lock.m_lockno.size());		
-		mySm3Process(&sm3,lock.m_psk.data(),lock.m_psk.size());
+		mySm3Process(&sm3,lock.m_atmno,sizeof(lock.m_atmno));
+		mySm3Process(&sm3,lock.m_lockno,sizeof(lock.m_lockno));		
+		mySm3Process(&sm3,lock.m_psk,sizeof(lock.m_psk));
 
 		//规格化时间到G_TIMEMOD这么多秒
 		int l_datetime=myGetNormalTime(lock.m_datetime,G_TIMEMOD);
@@ -274,9 +273,9 @@ unsigned int zwBinString2Int32(const char *data,const int len);
 
 				SM3_init(&sm3);
 				/////////////////////////////逐个元素进行HASH运算/////////////////////////////////////////////
-				mySm3Process(&sm3,lock.m_atmno.data(),lock.m_atmno.size());
-				mySm3Process(&sm3,lock.m_lockno.data(),lock.m_lockno.size());
-				mySm3Process(&sm3,lock.m_psk.data(),lock.m_psk.size());
+				mySm3Process(&sm3,lock.m_atmno,sizeof(lock.m_atmno));
+				mySm3Process(&sm3,lock.m_lockno,sizeof(lock.m_lockno));
+				mySm3Process(&sm3,lock.m_psk,sizeof(lock.m_psk));
 
 				mySm3Process(&sm3,tdate);
 				mySm3Process(&sm3,lock.m_validity_array[v]);

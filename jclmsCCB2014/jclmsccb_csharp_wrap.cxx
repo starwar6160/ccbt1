@@ -406,83 +406,119 @@ SWIGEXPORT int SWIGSTDCALL CSharp_NUM_VALIDITY_get() {
 }
 
 
+SWIGEXPORT int SWIGSTDCALL CSharp_JC_ATMNO_MAXLEN_get() {
+  int jresult ;
+  int result;
+  
+  result = (int)(int)JC_ATMNO_MAXLEN;
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT int SWIGSTDCALL CSharp_JC_LOCKNO_MAXLEN_get() {
+  int jresult ;
+  int result;
+  
+  result = (int)(int)JC_LOCKNO_MAXLEN;
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT int SWIGSTDCALL CSharp_JC_PSK_LEN_get() {
+  int jresult ;
+  int result;
+  
+  result = (int)(int)JC_PSK_LEN;
+  jresult = result; 
+  return jresult;
+}
+
+
 SWIGEXPORT void SWIGSTDCALL CSharp_JcLockInput_m_atmno_set(void * jarg1, char * jarg2) {
   JcLockInput *arg1 = (JcLockInput *) 0 ;
-  std::string *arg2 = 0 ;
+  char *arg2 ;
   
   arg1 = (JcLockInput *)jarg1; 
-  if (!jarg2) {
-    SWIG_CSharpSetPendingExceptionArgument(SWIG_CSharpArgumentNullException, "null string", 0);
-    return ;
+  arg2 = (char *)jarg2; 
+  {
+    if(arg2) {
+      strncpy((char*)arg1->m_atmno, (const char *)arg2, JC_ATMNO_MAXLEN-1);
+      arg1->m_atmno[JC_ATMNO_MAXLEN-1] = 0;
+    } else {
+      arg1->m_atmno[0] = 0;
+    }
   }
-  std::string arg2_str(jarg2);
-  arg2 = &arg2_str; 
-  if (arg1) (arg1)->m_atmno = *arg2;
 }
 
 
 SWIGEXPORT char * SWIGSTDCALL CSharp_JcLockInput_m_atmno_get(void * jarg1) {
   char * jresult ;
   JcLockInput *arg1 = (JcLockInput *) 0 ;
-  std::string *result = 0 ;
+  char *result = 0 ;
   
   arg1 = (JcLockInput *)jarg1; 
-  result = (std::string *) & ((arg1)->m_atmno);
-  jresult = SWIG_csharp_string_callback(result->c_str()); 
+  result = (char *)(char *) ((arg1)->m_atmno);
+  jresult = SWIG_csharp_string_callback((const char *)result); 
   return jresult;
 }
 
 
 SWIGEXPORT void SWIGSTDCALL CSharp_JcLockInput_m_lockno_set(void * jarg1, char * jarg2) {
   JcLockInput *arg1 = (JcLockInput *) 0 ;
-  std::string *arg2 = 0 ;
+  char *arg2 ;
   
   arg1 = (JcLockInput *)jarg1; 
-  if (!jarg2) {
-    SWIG_CSharpSetPendingExceptionArgument(SWIG_CSharpArgumentNullException, "null string", 0);
-    return ;
+  arg2 = (char *)jarg2; 
+  {
+    if(arg2) {
+      strncpy((char*)arg1->m_lockno, (const char *)arg2, JC_LOCKNO_MAXLEN-1);
+      arg1->m_lockno[JC_LOCKNO_MAXLEN-1] = 0;
+    } else {
+      arg1->m_lockno[0] = 0;
+    }
   }
-  std::string arg2_str(jarg2);
-  arg2 = &arg2_str; 
-  if (arg1) (arg1)->m_lockno = *arg2;
 }
 
 
 SWIGEXPORT char * SWIGSTDCALL CSharp_JcLockInput_m_lockno_get(void * jarg1) {
   char * jresult ;
   JcLockInput *arg1 = (JcLockInput *) 0 ;
-  std::string *result = 0 ;
+  char *result = 0 ;
   
   arg1 = (JcLockInput *)jarg1; 
-  result = (std::string *) & ((arg1)->m_lockno);
-  jresult = SWIG_csharp_string_callback(result->c_str()); 
+  result = (char *)(char *) ((arg1)->m_lockno);
+  jresult = SWIG_csharp_string_callback((const char *)result); 
   return jresult;
 }
 
 
 SWIGEXPORT void SWIGSTDCALL CSharp_JcLockInput_m_psk_set(void * jarg1, char * jarg2) {
   JcLockInput *arg1 = (JcLockInput *) 0 ;
-  std::string *arg2 = 0 ;
+  char *arg2 ;
   
   arg1 = (JcLockInput *)jarg1; 
-  if (!jarg2) {
-    SWIG_CSharpSetPendingExceptionArgument(SWIG_CSharpArgumentNullException, "null string", 0);
-    return ;
+  arg2 = (char *)jarg2; 
+  {
+    if(arg2) {
+      strncpy((char*)arg1->m_psk, (const char *)arg2, JC_PSK_LEN-1);
+      arg1->m_psk[JC_PSK_LEN-1] = 0;
+    } else {
+      arg1->m_psk[0] = 0;
+    }
   }
-  std::string arg2_str(jarg2);
-  arg2 = &arg2_str; 
-  if (arg1) (arg1)->m_psk = *arg2;
 }
 
 
 SWIGEXPORT char * SWIGSTDCALL CSharp_JcLockInput_m_psk_get(void * jarg1) {
   char * jresult ;
   JcLockInput *arg1 = (JcLockInput *) 0 ;
-  std::string *result = 0 ;
+  char *result = 0 ;
   
   arg1 = (JcLockInput *)jarg1; 
-  result = (std::string *) & ((arg1)->m_psk);
-  jresult = SWIG_csharp_string_callback(result->c_str()); 
+  result = (char *)(char *) ((arg1)->m_psk);
+  jresult = SWIG_csharp_string_callback((const char *)result); 
   return jresult;
 }
 

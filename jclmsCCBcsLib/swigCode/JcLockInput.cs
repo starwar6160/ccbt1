@@ -41,11 +41,9 @@ public class JcLockInput : global::System.IDisposable {
   public string m_atmno {
     set {
       jclmsCCB2014PINVOKE.JcLockInput_m_atmno_set(swigCPtr, value);
-      if (jclmsCCB2014PINVOKE.SWIGPendingException.Pending) throw jclmsCCB2014PINVOKE.SWIGPendingException.Retrieve();
     } 
     get {
       string ret = jclmsCCB2014PINVOKE.JcLockInput_m_atmno_get(swigCPtr);
-      if (jclmsCCB2014PINVOKE.SWIGPendingException.Pending) throw jclmsCCB2014PINVOKE.SWIGPendingException.Retrieve();
       return ret;
     } 
   }
@@ -53,11 +51,9 @@ public class JcLockInput : global::System.IDisposable {
   public string m_lockno {
     set {
       jclmsCCB2014PINVOKE.JcLockInput_m_lockno_set(swigCPtr, value);
-      if (jclmsCCB2014PINVOKE.SWIGPendingException.Pending) throw jclmsCCB2014PINVOKE.SWIGPendingException.Retrieve();
     } 
     get {
       string ret = jclmsCCB2014PINVOKE.JcLockInput_m_lockno_get(swigCPtr);
-      if (jclmsCCB2014PINVOKE.SWIGPendingException.Pending) throw jclmsCCB2014PINVOKE.SWIGPendingException.Retrieve();
       return ret;
     } 
   }
@@ -65,11 +61,9 @@ public class JcLockInput : global::System.IDisposable {
   public string m_psk {
     set {
       jclmsCCB2014PINVOKE.JcLockInput_m_psk_set(swigCPtr, value);
-      if (jclmsCCB2014PINVOKE.SWIGPendingException.Pending) throw jclmsCCB2014PINVOKE.SWIGPendingException.Retrieve();
     } 
     get {
       string ret = jclmsCCB2014PINVOKE.JcLockInput_m_psk_get(swigCPtr);
-      if (jclmsCCB2014PINVOKE.SWIGPendingException.Pending) throw jclmsCCB2014PINVOKE.SWIGPendingException.Retrieve();
       return ret;
     } 
   }

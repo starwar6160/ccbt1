@@ -30,6 +30,27 @@ public class jclmsCCB2014 {
     } 
   }
 
+  public static int JC_ATMNO_MAXLEN {
+    get {
+      int ret = jclmsCCB2014PINVOKE.JC_ATMNO_MAXLEN_get();
+      return ret;
+    } 
+  }
+
+  public static int JC_LOCKNO_MAXLEN {
+    get {
+      int ret = jclmsCCB2014PINVOKE.JC_LOCKNO_MAXLEN_get();
+      return ret;
+    } 
+  }
+
+  public static int JC_PSK_LEN {
+    get {
+      int ret = jclmsCCB2014PINVOKE.JC_PSK_LEN_get();
+      return ret;
+    } 
+  }
+
   public static int zwGetDynaCode(JcLockInput arg0) {
     int ret = jclmsCCB2014PINVOKE.zwGetDynaCode(JcLockInput.getCPtr(arg0));
     if (jclmsCCB2014PINVOKE.SWIGPendingException.Pending) throw jclmsCCB2014PINVOKE.SWIGPendingException.Retrieve();

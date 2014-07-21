@@ -219,6 +219,15 @@ class jclmsCCB2014PINVOKE {
   [global::System.Runtime.InteropServices.DllImport("jclmsCCB2014", EntryPoint="CSharp_NUM_VALIDITY_get")]
   public static extern int NUM_VALIDITY_get();
 
+  [global::System.Runtime.InteropServices.DllImport("jclmsCCB2014", EntryPoint="CSharp_JC_ATMNO_MAXLEN_get")]
+  public static extern int JC_ATMNO_MAXLEN_get();
+
+  [global::System.Runtime.InteropServices.DllImport("jclmsCCB2014", EntryPoint="CSharp_JC_LOCKNO_MAXLEN_get")]
+  public static extern int JC_LOCKNO_MAXLEN_get();
+
+  [global::System.Runtime.InteropServices.DllImport("jclmsCCB2014", EntryPoint="CSharp_JC_PSK_LEN_get")]
+  public static extern int JC_PSK_LEN_get();
+
   [global::System.Runtime.InteropServices.DllImport("jclmsCCB2014", EntryPoint="CSharp_JcLockInput_m_atmno_set")]
   public static extern void JcLockInput_m_atmno_set(global::System.Runtime.InteropServices.HandleRef jarg1, string jarg2);
 
