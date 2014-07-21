@@ -2,9 +2,6 @@
 //
 
 #include "stdafx.h"
-#include <iostream>
-using std::cout;
-using std::endl;
 
 void myJcLockInputTest1();
 void zwSm3HmacTest2();
@@ -12,15 +9,8 @@ void myStringTest1();
 void myBigNumModTest1();
 void myBinString2intTest1();
 
-#ifdef _DEBUG
-#pragma comment(lib,"gtestd.lib")
-#pragma comment(lib,"gtest_main-mdd.lib")
-#else
-#pragma comment(lib,"gtest.lib")
-#pragma comment(lib,"gtest_main-md.lib")
-#endif // _DEBUG
 
-int _tmain(int argc, _TCHAR* argv[])
+int main703(int argc, _TCHAR* argv[])
 {
 	myJcLockInputTest1();
 	//zwSm3HmacTest2();
