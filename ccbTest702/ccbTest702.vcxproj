@@ -58,7 +58,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>jclmsCCB2014.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(ZWBINJCLOCK)\$(Configuration)\$(TargetName)$(TargetExt)</OutputFile>
-      <AdditionalLibraryDirectories>$(ZWBINJCLOCK)\$(Configuration)\;$(GTEST)\msvc\gtest\$(Configuration)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(ZWBINJCLOCK)\$(Configuration)\;$(GTEST)\msvc\gtest-md\$(Configuration)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -78,7 +78,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalDependencies>jclmsCCB2014.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(ZWBINJCLOCK)\$(Configuration)\$(TargetName)$(TargetExt)</OutputFile>
-      <AdditionalLibraryDirectories>$(ZWBINJCLOCK)\$(Configuration)\;$(GTEST)\msvc\gtest\$(Configuration)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(ZWBINJCLOCK)\$(Configuration)\;$(GTEST)\msvc\gtest-md\$(Configuration)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
