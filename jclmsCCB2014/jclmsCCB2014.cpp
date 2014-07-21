@@ -116,6 +116,17 @@ unsigned int zwBinString2Int32(const char *data,const int len);
 		m_status=EJC_FAIL;
 		m_stepoftime=60;	//默认在线模式，反推时间步长60秒
 		m_reverse_time_length=10*60;	//默认在线模式，反推10分钟
+		//将5分钟，4小时这样最常用到的有效期排列在前面，提高效率
+		m_validity_array[0]=5;
+		m_validity_array[1]=60*4;
+		m_validity_array[2]=60*8;
+		m_validity_array[3]=60*12;
+		m_validity_array[4]=15;
+		m_validity_array[5]=30;
+		m_validity_array[6]=60;
+		m_validity_array[7]=60*24;
+		//{5,MIN_OF_HOUR*4,MIN_OF_HOUR*8,MIN_OF_HOUR*12,15,30,60,MIN_OF_HOUR*24};
+
 	}
 
 	void JcLockInput::DebugPrint()
@@ -233,24 +244,26 @@ unsigned int zwBinString2Int32(const char *data,const int len);
 	//如果找到了，返回JCOFFLINE中是匹配的时间和有效期，否则其中的值都是0
 	JCOFFLINE zwReverseVerifyDynaCode( const JcLockInput &lock,const int dstCode )
 	{
+		const int MIN_OF_HOUR=60;	//一小时的分钟数
+		//const int SEC_OF_DAY=24*60*60;//一天的秒数
+		////将5分钟，4小时这样最常用到的有效期排列在前面，提高效率
+		//int valarr[]={5,MIN_OF_HOUR*4,MIN_OF_HOUR*8,MIN_OF_HOUR*12,15,30,60,MIN_OF_HOUR*24};
+
 		JCOFFLINE jcoff;
 		//填入默认的失败返回值
 		jcoff.s_datetime=0;
 		jcoff.s_validity=0;
+		
 		int l_datetime=time(NULL);
-		const int MIN_OF_HOUR=60;	//一小时的分钟数
-		//const int SEC_OF_DAY=24*60*60;//一天的秒数
-		int valarr[]={MIN_OF_HOUR*4,5,MIN_OF_HOUR*8,15,MIN_OF_HOUR*12,30,60,MIN_OF_HOUR*24};
-
 		int tail=l_datetime % lock.m_stepoftime;
 		l_datetime-=tail;	//取整到数据结构中指定的步长
 		//结束时间，往前推数据结构所指定的一段时间，几分钟到一整天不等
 		int tend=l_datetime-lock.m_reverse_time_length;
 		
 		for (int tdate=l_datetime;tdate>=tend;tdate-=lock.m_stepoftime)
-		{
+		{			
 			//printf("TDATE=\t%d\n",tdate);
-			for (int v=0;v<sizeof(valarr)/sizeof(int);v++)
+			for (int v=0;v<lock.NUM_VALIDITY;v++)
 			{
 				SM3 sm3;
 				char outHmac[ZW_SM3_DGST_SIZE];
@@ -262,7 +275,7 @@ unsigned int zwBinString2Int32(const char *data,const int len);
 				mySm3Process(&sm3,lock.m_psk.data(),lock.m_psk.size());
 
 				mySm3Process(&sm3,tdate);
-				mySm3Process(&sm3,valarr[v]);
+				mySm3Process(&sm3,lock.m_validity_array[v]);
 				mySm3Process(&sm3,lock.m_closecode);
 				mySm3Process(&sm3,lock.m_cmdtype);
 				//////////////////////////////HASH运算结束////////////////////////////////////////////
@@ -272,9 +285,9 @@ unsigned int zwBinString2Int32(const char *data,const int len);
 				if (dstCode==res)	//发现了匹配的时间和有效期
 				{
 					//填写匹配的时间和有效期到结果
-					printf("FOUND MATCH %d %d\n",tdate,valarr[v]);
+					printf("FOUND MATCH %d %d\n",tdate,lock.m_validity_array[v]);
 					jcoff.s_datetime=tdate;
-					jcoff.s_validity=valarr[v];
+					jcoff.s_validity=lock.m_validity_array[v];
 					goto foundMatch;
 				}
 			}	//END OF VALIDITY LOOP

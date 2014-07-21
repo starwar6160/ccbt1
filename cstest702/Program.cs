@@ -217,8 +217,6 @@ namespace cstest702
             jcSrv.m_validity = validity;
             jcLock.m_closecode = 0;
             jcSrv.m_closecode = 0;
-            jcLock.m_stepoftime = 60;
-            jcSrv.m_stepoftime = 60;
             //jcLock.m_reverse_time_length=
             //此处不同的命令码指示生成不同的动态码
             jcLock.m_cmdtype = JCCMD.JCCMD_INIT_CLOSECODE;

@@ -73,13 +73,15 @@ typedef struct jcOfflineResult{
 		int m_stepoftime;	
 		//往前反推的时间长度秒数，默认为在线模式，10分钟，值为600，其他值比如离线24小时请自己设置
 		int m_reverse_time_length;	
-	private:		
-		JCERROR m_status;
-		
+		const static int NUM_VALIDITY=8;
+		//有效期，共有NUM_VALIDITY个,默认值是从5分钟到24小时那一系列，单位是分钟；可以自己设定
+		int m_validity_array[NUM_VALIDITY];
 	public:
 		JcLockInput(void);
 		void DebugPrint(void);	//
 		JCERROR CheckInput(void);
+	private:				
+		JCERROR m_status;
 	};
 	//lock结构体内部m_cmdtype决定了生成哪一类动态码；
 	int JCLMSCCB2014_API zwGetDynaCode(const JcLockInput &lock);
