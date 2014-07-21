@@ -114,6 +114,26 @@ public class JcLockInput : global::System.IDisposable {
     } 
   }
 
+  public int m_stepoftime {
+    set {
+      jclmsCCB2014PINVOKE.JcLockInput_m_stepoftime_set(swigCPtr, value);
+    } 
+    get {
+      int ret = jclmsCCB2014PINVOKE.JcLockInput_m_stepoftime_get(swigCPtr);
+      return ret;
+    } 
+  }
+
+  public int m_reverse_time_length {
+    set {
+      jclmsCCB2014PINVOKE.JcLockInput_m_reverse_time_length_set(swigCPtr, value);
+    } 
+    get {
+      int ret = jclmsCCB2014PINVOKE.JcLockInput_m_reverse_time_length_get(swigCPtr);
+      return ret;
+    } 
+  }
+
   public JcLockInput() : this(jclmsCCB2014PINVOKE.new_JcLockInput(), true) {
   }
 

@@ -114,6 +114,8 @@ unsigned int zwBinString2Int32(const char *data,const int len);
 		m_closecode=-1;	
 		m_cmdtype=JCCMD_INVALID_START;
 		m_status=EJC_FAIL;
+		m_stepoftime=60;	//默认在线模式，反推时间步长60秒
+		m_reverse_time_length=10*60;	//默认在线模式，反推10分钟
 	}
 
 	void JcLockInput::DebugPrint()
@@ -211,7 +213,7 @@ unsigned int zwBinString2Int32(const char *data,const int len);
 		if (JCCMD_INIT_CLOSECODE==lock.m_cmdtype)
 		{
 			l_datetime=myGetNormalTime(time(NULL),8*60*60);	//初始闭锁码采用8小时的取整时间
-			l_validity=(24*60)*365;	//初始闭锁码特选一个合法有效期之外的值,一整年
+			l_validity=(24*60)*365;	//初始有效期特选一个合法有效期之外的值,一整年
 			l_closecode=100001111;	//初始闭锁码特选一个超范围的9位非法闭锁码			
 		}		
 		//继续输入各个可变字段的HASH值
@@ -237,16 +239,15 @@ unsigned int zwBinString2Int32(const char *data,const int len);
 		jcoff.s_validity=0;
 		int l_datetime=time(NULL);
 		const int MIN_OF_HOUR=60;	//一小时的分钟数
-		const int SEC_OF_HOUR=60*60;		//一小时的秒数
-		const int SEC_OF_DAY=24*60*60;//一天的秒数
-		int valarr[]={MIN_OF_HOUR*4,MIN_OF_HOUR*8,MIN_OF_HOUR*12,MIN_OF_HOUR*24};
+		//const int SEC_OF_DAY=24*60*60;//一天的秒数
+		int valarr[]={MIN_OF_HOUR*4,5,MIN_OF_HOUR*8,15,MIN_OF_HOUR*12,30,60,MIN_OF_HOUR*24};
 
-		int tail=l_datetime % SEC_OF_HOUR;
-		l_datetime-=tail;	//取整到整点小时
-		//结束时间，往前推一整天
-		int tend=l_datetime-SEC_OF_DAY;
-
-		for (int tdate=l_datetime;tdate>tend;tdate-=SEC_OF_HOUR)
+		int tail=l_datetime % lock.m_stepoftime;
+		l_datetime-=tail;	//取整到数据结构中指定的步长
+		//结束时间，往前推数据结构所指定的一段时间，几分钟到一整天不等
+		int tend=l_datetime-lock.m_reverse_time_length;
+		
+		for (int tdate=l_datetime;tdate>=tend;tdate-=lock.m_stepoftime)
 		{
 			//printf("TDATE=\t%d\n",tdate);
 			for (int v=0;v<sizeof(valarr)/sizeof(int);v++)

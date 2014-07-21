@@ -252,6 +252,18 @@ class jclmsCCB2014PINVOKE {
   [global::System.Runtime.InteropServices.DllImport("jclmsCCB2014", EntryPoint="CSharp_JcLockInput_m_cmdtype_get")]
   public static extern int JcLockInput_m_cmdtype_get(global::System.Runtime.InteropServices.HandleRef jarg1);
 
+  [global::System.Runtime.InteropServices.DllImport("jclmsCCB2014", EntryPoint="CSharp_JcLockInput_m_stepoftime_set")]
+  public static extern void JcLockInput_m_stepoftime_set(global::System.Runtime.InteropServices.HandleRef jarg1, int jarg2);
+
+  [global::System.Runtime.InteropServices.DllImport("jclmsCCB2014", EntryPoint="CSharp_JcLockInput_m_stepoftime_get")]
+  public static extern int JcLockInput_m_stepoftime_get(global::System.Runtime.InteropServices.HandleRef jarg1);
+
+  [global::System.Runtime.InteropServices.DllImport("jclmsCCB2014", EntryPoint="CSharp_JcLockInput_m_reverse_time_length_set")]
+  public static extern void JcLockInput_m_reverse_time_length_set(global::System.Runtime.InteropServices.HandleRef jarg1, int jarg2);
+
+  [global::System.Runtime.InteropServices.DllImport("jclmsCCB2014", EntryPoint="CSharp_JcLockInput_m_reverse_time_length_get")]
+  public static extern int JcLockInput_m_reverse_time_length_get(global::System.Runtime.InteropServices.HandleRef jarg1);
+
   [global::System.Runtime.InteropServices.DllImport("jclmsCCB2014", EntryPoint="CSharp_new_JcLockInput")]
   public static extern global::System.IntPtr new_JcLockInput();
 

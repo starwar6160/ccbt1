@@ -68,8 +68,14 @@ typedef struct jcOfflineResult{
 		int m_validity;		//有效期
 		int m_closecode;	//闭锁码		
 		JCCMD m_cmdtype;		//模式代码，比如开锁模式，远程重置模式，建行的流程要求的各种模式等等
+	///////////////////////////////////以下为配置算法运作模式的数据///////////////////////////////////////
+		//反推时间步长秒数，默认为在线模式，精度1分钟，值为60，离线模式请自己设置为3600秒或者其他数值
+		int m_stepoftime;	
+		//往前反推的时间长度秒数，默认为在线模式，10分钟，值为600，其他值比如离线24小时请自己设置
+		int m_reverse_time_length;	
 	private:		
 		JCERROR m_status;
+		
 	public:
 		JcLockInput(void);
 		void DebugPrint(void);	//

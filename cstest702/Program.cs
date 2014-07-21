@@ -12,7 +12,7 @@ namespace cstest702
         const String atmno = "atm10455761";
         const String lockno = "lock14771509";
         const String psk = "jclmsdemopsk201407071509aajclmsdemopsk201407071509";
-        const Int32 validity = 240;
+        const Int32 validity = 5;
 
         static void Main(string[] args)
         {
@@ -199,7 +199,7 @@ namespace cstest702
             TimeSpan dp = jcdt - dt;
             int seconddiff = (int)(dp.Ticks / 10000000);
             Console.Out.WriteLine("当前的GMT秒数是\t{0}", seconddiff);
-            int tail = seconddiff % 3600;
+            int tail = seconddiff % 60;
             seconddiff -= tail;
             Console.Out.WriteLine("当前的GMT秒数规格化到整点是\t{0}", seconddiff);
             //锁具和上位机填入相同的初始条件，暂时替代初始化过程
@@ -217,6 +217,9 @@ namespace cstest702
             jcSrv.m_validity = validity;
             jcLock.m_closecode = 0;
             jcSrv.m_closecode = 0;
+            jcLock.m_stepoftime = 60;
+            jcSrv.m_stepoftime = 60;
+            //jcLock.m_reverse_time_length=
             //此处不同的命令码指示生成不同的动态码
             jcLock.m_cmdtype = JCCMD.JCCMD_INIT_CLOSECODE;
             jcSrv.m_cmdtype = JCCMD.JCCMD_INIT_CLOSECODE;

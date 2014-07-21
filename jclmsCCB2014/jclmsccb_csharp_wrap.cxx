@@ -543,6 +543,50 @@ SWIGEXPORT int SWIGSTDCALL CSharp_JcLockInput_m_cmdtype_get(void * jarg1) {
 }
 
 
+SWIGEXPORT void SWIGSTDCALL CSharp_JcLockInput_m_stepoftime_set(void * jarg1, int jarg2) {
+  jclms::JcLockInput *arg1 = (jclms::JcLockInput *) 0 ;
+  int arg2 ;
+  
+  arg1 = (jclms::JcLockInput *)jarg1; 
+  arg2 = (int)jarg2; 
+  if (arg1) (arg1)->m_stepoftime = arg2;
+}
+
+
+SWIGEXPORT int SWIGSTDCALL CSharp_JcLockInput_m_stepoftime_get(void * jarg1) {
+  int jresult ;
+  jclms::JcLockInput *arg1 = (jclms::JcLockInput *) 0 ;
+  int result;
+  
+  arg1 = (jclms::JcLockInput *)jarg1; 
+  result = (int) ((arg1)->m_stepoftime);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void SWIGSTDCALL CSharp_JcLockInput_m_reverse_time_length_set(void * jarg1, int jarg2) {
+  jclms::JcLockInput *arg1 = (jclms::JcLockInput *) 0 ;
+  int arg2 ;
+  
+  arg1 = (jclms::JcLockInput *)jarg1; 
+  arg2 = (int)jarg2; 
+  if (arg1) (arg1)->m_reverse_time_length = arg2;
+}
+
+
+SWIGEXPORT int SWIGSTDCALL CSharp_JcLockInput_m_reverse_time_length_get(void * jarg1) {
+  int jresult ;
+  jclms::JcLockInput *arg1 = (jclms::JcLockInput *) 0 ;
+  int result;
+  
+  arg1 = (jclms::JcLockInput *)jarg1; 
+  result = (int) ((arg1)->m_reverse_time_length);
+  jresult = result; 
+  return jresult;
+}
+
+
 SWIGEXPORT void * SWIGSTDCALL CSharp_new_JcLockInput() {
   void * jresult ;
   jclms::JcLockInput *result = 0 ;
