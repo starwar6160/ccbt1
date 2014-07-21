@@ -186,10 +186,6 @@ namespace cstest702
             //在此我特地用了普通的字符串，用意在于，这些字符串的字段内容是什么都可以，长度多长都可以
             //因为内部使用的C++的String，对于长度没有限制，只受内存大小限制；从几个字节
             //到几百字节乃至于更长都可以，只要内存足够，当然实践中建议限制在100字节以内
-            //const String atmno = "atm1045576";
-            //const String lockno = "lock14771509";
-            //const String psk = "jclmsdemopsk201407071509aajclmsdemopsk201407071509";
-            //const Int32 validity = 240;
             //传入当前时间的GMT(格林尼治时间)
             DateTime jcdt = DateTime.Now.ToUniversalTime();
             Console.Out.WriteLine("当前的格林尼治时间(GMT)是{0},建行1.1版本算法上下位机都统一采用GMT来计算减少混乱"
@@ -236,7 +232,7 @@ namespace cstest702
             Console.Out.WriteLine("上位机产生的第一开锁动态码是 {0}", dyCode1);
 
             //jcSrv.SetValidity(2, 17);
-            JCOFFLINE jcoret= jclmsCCB2014.zwReverseVerifyDynaCode(jcSrv, dyCode1);
+            JCMATCH jcoret= jclmsCCB2014.zwReverseVerifyDynaCode(jcSrv, dyCode1);
             Console.Out.WriteLine("离线匹配的时间(GMT)和有效期(分钟)是 {0},\t{1}",
                 jcoret.s_datetime, jcoret.s_validity);
             if (jcoret.s_datetime == 0)

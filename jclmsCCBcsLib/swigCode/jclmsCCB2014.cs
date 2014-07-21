@@ -36,8 +36,8 @@ public class jclmsCCB2014 {
     return ret;
   }
 
-  public static JCOFFLINE zwReverseVerifyDynaCode(JcLockInput arg0, int dstCode) {
-    JCOFFLINE ret = new JCOFFLINE(jclmsCCB2014PINVOKE.zwReverseVerifyDynaCode(JcLockInput.getCPtr(arg0), dstCode), true);
+  public static JCMATCH zwReverseVerifyDynaCode(JcLockInput arg0, int dstCode) {
+    JCMATCH ret = new JCMATCH(jclmsCCB2014PINVOKE.zwReverseVerifyDynaCode(JcLockInput.getCPtr(arg0), dstCode), true);
     if (jclmsCCB2014PINVOKE.SWIGPendingException.Pending) throw jclmsCCB2014PINVOKE.SWIGPendingException.Retrieve();
     return ret;
   }

@@ -192,23 +192,29 @@ class jclmsCCB2014PINVOKE {
   [global::System.Runtime.InteropServices.DllImport("jclmsCCB2014", EntryPoint="CSharp_ZW_SM3_DGST_SIZE_get")]
   public static extern int ZW_SM3_DGST_SIZE_get();
 
-  [global::System.Runtime.InteropServices.DllImport("jclmsCCB2014", EntryPoint="CSharp_JCOFFLINE_s_datetime_set")]
-  public static extern void JCOFFLINE_s_datetime_set(global::System.Runtime.InteropServices.HandleRef jarg1, int jarg2);
+  [global::System.Runtime.InteropServices.DllImport("jclmsCCB2014", EntryPoint="CSharp_JCMATCH_s_datetime_set")]
+  public static extern void JCMATCH_s_datetime_set(global::System.Runtime.InteropServices.HandleRef jarg1, int jarg2);
 
-  [global::System.Runtime.InteropServices.DllImport("jclmsCCB2014", EntryPoint="CSharp_JCOFFLINE_s_datetime_get")]
-  public static extern int JCOFFLINE_s_datetime_get(global::System.Runtime.InteropServices.HandleRef jarg1);
+  [global::System.Runtime.InteropServices.DllImport("jclmsCCB2014", EntryPoint="CSharp_JCMATCH_s_datetime_get")]
+  public static extern int JCMATCH_s_datetime_get(global::System.Runtime.InteropServices.HandleRef jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("jclmsCCB2014", EntryPoint="CSharp_JCOFFLINE_s_validity_set")]
-  public static extern void JCOFFLINE_s_validity_set(global::System.Runtime.InteropServices.HandleRef jarg1, int jarg2);
+  [global::System.Runtime.InteropServices.DllImport("jclmsCCB2014", EntryPoint="CSharp_JCMATCH_s_validity_set")]
+  public static extern void JCMATCH_s_validity_set(global::System.Runtime.InteropServices.HandleRef jarg1, int jarg2);
 
-  [global::System.Runtime.InteropServices.DllImport("jclmsCCB2014", EntryPoint="CSharp_JCOFFLINE_s_validity_get")]
-  public static extern int JCOFFLINE_s_validity_get(global::System.Runtime.InteropServices.HandleRef jarg1);
+  [global::System.Runtime.InteropServices.DllImport("jclmsCCB2014", EntryPoint="CSharp_JCMATCH_s_validity_get")]
+  public static extern int JCMATCH_s_validity_get(global::System.Runtime.InteropServices.HandleRef jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("jclmsCCB2014", EntryPoint="CSharp_new_JCOFFLINE")]
-  public static extern global::System.IntPtr new_JCOFFLINE();
+  [global::System.Runtime.InteropServices.DllImport("jclmsCCB2014", EntryPoint="CSharp_JCMATCH_s_matchTimes_set")]
+  public static extern void JCMATCH_s_matchTimes_set(global::System.Runtime.InteropServices.HandleRef jarg1, int jarg2);
 
-  [global::System.Runtime.InteropServices.DllImport("jclmsCCB2014", EntryPoint="CSharp_delete_JCOFFLINE")]
-  public static extern void delete_JCOFFLINE(global::System.Runtime.InteropServices.HandleRef jarg1);
+  [global::System.Runtime.InteropServices.DllImport("jclmsCCB2014", EntryPoint="CSharp_JCMATCH_s_matchTimes_get")]
+  public static extern int JCMATCH_s_matchTimes_get(global::System.Runtime.InteropServices.HandleRef jarg1);
+
+  [global::System.Runtime.InteropServices.DllImport("jclmsCCB2014", EntryPoint="CSharp_new_JCMATCH")]
+  public static extern global::System.IntPtr new_JCMATCH();
+
+  [global::System.Runtime.InteropServices.DllImport("jclmsCCB2014", EntryPoint="CSharp_delete_JCMATCH")]
+  public static extern void delete_JCMATCH(global::System.Runtime.InteropServices.HandleRef jarg1);
 
   [global::System.Runtime.InteropServices.DllImport("jclmsCCB2014", EntryPoint="CSharp_NUM_VALIDITY_get")]
   public static extern int NUM_VALIDITY_get();

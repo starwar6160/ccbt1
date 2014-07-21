@@ -24,8 +24,8 @@ unsigned int zwBinString2Int32(const char *data,const int len);
 
 	int getVersion(void)
 	{
-		//含义是前8位是日期，第9位一般是0，如果一天出了多个发布版本，最后一位变化
-		return 201407140;	
+		//含义是是日期
+		return 20140721;	
 	}
 
 	//获得规格化的时间，也就是按照某个值取整的时间
@@ -122,7 +122,8 @@ unsigned int zwBinString2Int32(const char *data,const int len);
 		m_status=EJC_FAIL;
 		m_stepoftime=60;	//默认在线模式，反推时间步长60秒
 		m_reverse_time_length=10*60;	//默认在线模式，反推10分钟
-		//将5分钟，4小时这样最常用到的有效期排列在前面，提高效率
+		////将5分钟，4小时这样最常用到的有效期排列在前面，提高效率
+		//int valarr[]={5,MIN_OF_HOUR*4,MIN_OF_HOUR*8,MIN_OF_HOUR*12,15,30,60,MIN_OF_HOUR*24};
 		m_validity_array[0]=5;
 		m_validity_array[1]=60*4;
 		m_validity_array[2]=60*8;
@@ -131,8 +132,6 @@ unsigned int zwBinString2Int32(const char *data,const int len);
 		m_validity_array[5]=30;
 		m_validity_array[6]=60;
 		m_validity_array[7]=60*24;
-		//{5,MIN_OF_HOUR*4,MIN_OF_HOUR*8,MIN_OF_HOUR*12,15,30,60,MIN_OF_HOUR*24};
-
 	}
 
 	void JcLockInput::DebugPrint()
@@ -250,14 +249,11 @@ unsigned int zwBinString2Int32(const char *data,const int len);
 
 	//离线模式匹配，时间点精度为取整到一个小时的零点，有效期精度为1小时起
 	//如果找到了，返回JCOFFLINE中是匹配的时间和有效期，否则其中的值都是0
-	JCOFFLINE zwReverseVerifyDynaCode( const JcLockInput &lock,const int dstCode )
+	JCMATCH zwReverseVerifyDynaCode( const JcLockInput &lock,const int dstCode )
 	{
 		const int MIN_OF_HOUR=60;	//一小时的分钟数
-		//const int SEC_OF_DAY=24*60*60;//一天的秒数
-		////将5分钟，4小时这样最常用到的有效期排列在前面，提高效率
-		//int valarr[]={5,MIN_OF_HOUR*4,MIN_OF_HOUR*8,MIN_OF_HOUR*12,15,30,60,MIN_OF_HOUR*24};
 
-		JCOFFLINE jcoff;
+		JCMATCH jcoff;
 		//填入默认的失败返回值
 		jcoff.s_datetime=0;
 		jcoff.s_validity=0;

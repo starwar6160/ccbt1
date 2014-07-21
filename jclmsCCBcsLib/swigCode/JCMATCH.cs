@@ -8,20 +8,20 @@
 
 namespace jclms {
 
-public class JCOFFLINE : global::System.IDisposable {
+public class JCMATCH : global::System.IDisposable {
   private global::System.Runtime.InteropServices.HandleRef swigCPtr;
   protected bool swigCMemOwn;
 
-  internal JCOFFLINE(global::System.IntPtr cPtr, bool cMemoryOwn) {
+  internal JCMATCH(global::System.IntPtr cPtr, bool cMemoryOwn) {
     swigCMemOwn = cMemoryOwn;
     swigCPtr = new global::System.Runtime.InteropServices.HandleRef(this, cPtr);
   }
 
-  internal static global::System.Runtime.InteropServices.HandleRef getCPtr(JCOFFLINE obj) {
+  internal static global::System.Runtime.InteropServices.HandleRef getCPtr(JCMATCH obj) {
     return (obj == null) ? new global::System.Runtime.InteropServices.HandleRef(null, global::System.IntPtr.Zero) : obj.swigCPtr;
   }
 
-  ~JCOFFLINE() {
+  ~JCMATCH() {
     Dispose();
   }
 
@@ -30,7 +30,7 @@ public class JCOFFLINE : global::System.IDisposable {
       if (swigCPtr.Handle != global::System.IntPtr.Zero) {
         if (swigCMemOwn) {
           swigCMemOwn = false;
-          jclmsCCB2014PINVOKE.delete_JCOFFLINE(swigCPtr);
+          jclmsCCB2014PINVOKE.delete_JCMATCH(swigCPtr);
         }
         swigCPtr = new global::System.Runtime.InteropServices.HandleRef(null, global::System.IntPtr.Zero);
       }
@@ -40,25 +40,35 @@ public class JCOFFLINE : global::System.IDisposable {
 
   public int s_datetime {
     set {
-      jclmsCCB2014PINVOKE.JCOFFLINE_s_datetime_set(swigCPtr, value);
+      jclmsCCB2014PINVOKE.JCMATCH_s_datetime_set(swigCPtr, value);
     } 
     get {
-      int ret = jclmsCCB2014PINVOKE.JCOFFLINE_s_datetime_get(swigCPtr);
+      int ret = jclmsCCB2014PINVOKE.JCMATCH_s_datetime_get(swigCPtr);
       return ret;
     } 
   }
 
   public int s_validity {
     set {
-      jclmsCCB2014PINVOKE.JCOFFLINE_s_validity_set(swigCPtr, value);
+      jclmsCCB2014PINVOKE.JCMATCH_s_validity_set(swigCPtr, value);
     } 
     get {
-      int ret = jclmsCCB2014PINVOKE.JCOFFLINE_s_validity_get(swigCPtr);
+      int ret = jclmsCCB2014PINVOKE.JCMATCH_s_validity_get(swigCPtr);
       return ret;
     } 
   }
 
-  public JCOFFLINE() : this(jclmsCCB2014PINVOKE.new_JCOFFLINE(), true) {
+  public int s_matchTimes {
+    set {
+      jclmsCCB2014PINVOKE.JCMATCH_s_matchTimes_set(swigCPtr, value);
+    } 
+    get {
+      int ret = jclmsCCB2014PINVOKE.JCMATCH_s_matchTimes_get(swigCPtr);
+      return ret;
+    } 
+  }
+
+  public JCMATCH() : this(jclmsCCB2014PINVOKE.new_JCMATCH(), true) {
   }
 
 }

@@ -312,64 +312,86 @@ SWIGEXPORT int SWIGSTDCALL CSharp_ZW_SM3_DGST_SIZE_get() {
 }
 
 
-SWIGEXPORT void SWIGSTDCALL CSharp_JCOFFLINE_s_datetime_set(void * jarg1, int jarg2) {
-  jclms::jcOfflineResult *arg1 = (jclms::jcOfflineResult *) 0 ;
+SWIGEXPORT void SWIGSTDCALL CSharp_JCMATCH_s_datetime_set(void * jarg1, int jarg2) {
+  jclms::jcLockReverseMatchResult *arg1 = (jclms::jcLockReverseMatchResult *) 0 ;
   int arg2 ;
   
-  arg1 = (jclms::jcOfflineResult *)jarg1; 
+  arg1 = (jclms::jcLockReverseMatchResult *)jarg1; 
   arg2 = (int)jarg2; 
   if (arg1) (arg1)->s_datetime = arg2;
 }
 
 
-SWIGEXPORT int SWIGSTDCALL CSharp_JCOFFLINE_s_datetime_get(void * jarg1) {
+SWIGEXPORT int SWIGSTDCALL CSharp_JCMATCH_s_datetime_get(void * jarg1) {
   int jresult ;
-  jclms::jcOfflineResult *arg1 = (jclms::jcOfflineResult *) 0 ;
+  jclms::jcLockReverseMatchResult *arg1 = (jclms::jcLockReverseMatchResult *) 0 ;
   int result;
   
-  arg1 = (jclms::jcOfflineResult *)jarg1; 
+  arg1 = (jclms::jcLockReverseMatchResult *)jarg1; 
   result = (int) ((arg1)->s_datetime);
   jresult = result; 
   return jresult;
 }
 
 
-SWIGEXPORT void SWIGSTDCALL CSharp_JCOFFLINE_s_validity_set(void * jarg1, int jarg2) {
-  jclms::jcOfflineResult *arg1 = (jclms::jcOfflineResult *) 0 ;
+SWIGEXPORT void SWIGSTDCALL CSharp_JCMATCH_s_validity_set(void * jarg1, int jarg2) {
+  jclms::jcLockReverseMatchResult *arg1 = (jclms::jcLockReverseMatchResult *) 0 ;
   int arg2 ;
   
-  arg1 = (jclms::jcOfflineResult *)jarg1; 
+  arg1 = (jclms::jcLockReverseMatchResult *)jarg1; 
   arg2 = (int)jarg2; 
   if (arg1) (arg1)->s_validity = arg2;
 }
 
 
-SWIGEXPORT int SWIGSTDCALL CSharp_JCOFFLINE_s_validity_get(void * jarg1) {
+SWIGEXPORT int SWIGSTDCALL CSharp_JCMATCH_s_validity_get(void * jarg1) {
   int jresult ;
-  jclms::jcOfflineResult *arg1 = (jclms::jcOfflineResult *) 0 ;
+  jclms::jcLockReverseMatchResult *arg1 = (jclms::jcLockReverseMatchResult *) 0 ;
   int result;
   
-  arg1 = (jclms::jcOfflineResult *)jarg1; 
+  arg1 = (jclms::jcLockReverseMatchResult *)jarg1; 
   result = (int) ((arg1)->s_validity);
   jresult = result; 
   return jresult;
 }
 
 
-SWIGEXPORT void * SWIGSTDCALL CSharp_new_JCOFFLINE() {
-  void * jresult ;
-  jclms::jcOfflineResult *result = 0 ;
+SWIGEXPORT void SWIGSTDCALL CSharp_JCMATCH_s_matchTimes_set(void * jarg1, int jarg2) {
+  jclms::jcLockReverseMatchResult *arg1 = (jclms::jcLockReverseMatchResult *) 0 ;
+  int arg2 ;
   
-  result = (jclms::jcOfflineResult *)new jclms::jcOfflineResult();
+  arg1 = (jclms::jcLockReverseMatchResult *)jarg1; 
+  arg2 = (int)jarg2; 
+  if (arg1) (arg1)->s_matchTimes = arg2;
+}
+
+
+SWIGEXPORT int SWIGSTDCALL CSharp_JCMATCH_s_matchTimes_get(void * jarg1) {
+  int jresult ;
+  jclms::jcLockReverseMatchResult *arg1 = (jclms::jcLockReverseMatchResult *) 0 ;
+  int result;
+  
+  arg1 = (jclms::jcLockReverseMatchResult *)jarg1; 
+  result = (int) ((arg1)->s_matchTimes);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void * SWIGSTDCALL CSharp_new_JCMATCH() {
+  void * jresult ;
+  jclms::jcLockReverseMatchResult *result = 0 ;
+  
+  result = (jclms::jcLockReverseMatchResult *)new jclms::jcLockReverseMatchResult();
   jresult = (void *)result; 
   return jresult;
 }
 
 
-SWIGEXPORT void SWIGSTDCALL CSharp_delete_JCOFFLINE(void * jarg1) {
-  jclms::jcOfflineResult *arg1 = (jclms::jcOfflineResult *) 0 ;
+SWIGEXPORT void SWIGSTDCALL CSharp_delete_JCMATCH(void * jarg1) {
+  jclms::jcLockReverseMatchResult *arg1 = (jclms::jcLockReverseMatchResult *) 0 ;
   
-  arg1 = (jclms::jcOfflineResult *)jarg1; 
+  arg1 = (jclms::jcLockReverseMatchResult *)jarg1; 
   delete arg1;
 }
 
@@ -693,7 +715,7 @@ SWIGEXPORT void * SWIGSTDCALL CSharp_zwReverseVerifyDynaCode(void * jarg1, int j
   void * jresult ;
   jclms::JcLockInput *arg1 = 0 ;
   int arg2 ;
-  jclms::JCOFFLINE result;
+  jclms::JCMATCH result;
   
   arg1 = (jclms::JcLockInput *)jarg1;
   if (!arg1) {
@@ -702,7 +724,7 @@ SWIGEXPORT void * SWIGSTDCALL CSharp_zwReverseVerifyDynaCode(void * jarg1, int j
   } 
   arg2 = (int)jarg2; 
   result = jclms::zwReverseVerifyDynaCode((jclms::JcLockInput const &)*arg1,arg2);
-  jresult = new jclms::JCOFFLINE((const jclms::JCOFFLINE &)result); 
+  jresult = new jclms::JCMATCH((const jclms::JCMATCH &)result); 
   return jresult;
 }
 

@@ -51,16 +51,20 @@ typedef enum jc_cmd_type{
 } JCCMD;
 
 //离线匹配的返回值
-typedef struct jcOfflineResult{
-	int s_datetime;
-	int s_validity;
-}JCOFFLINE;
+typedef struct jcLockReverseMatchResult{
+	int s_datetime;		//匹配结果秒数
+	int s_validity;		//匹配结果有效期分钟数
+	int s_matchTimes;	//匹配所用计算次数
+}JCMATCH;
 
+//有效期数组大小；更改此处以后请对应更改源代码中JcLockInput类初始化代码中
+//为有效期数组m_validity_array赋予初值的相应语句
 const int NUM_VALIDITY=8;
-	class JCLMSCCB2014_API JcLockInput
+	struct JCLMSCCB2014_API JcLockInput
 	{
 	public:
 		//固定因素部分
+		//char mt_atmno[16];
 		string m_atmno;			//ATM号
 		string m_lockno;		//锁号
 		string m_psk;			//PSK，上下位机共同持有的唯一机密因素
@@ -75,6 +79,7 @@ const int NUM_VALIDITY=8;
 		//往前反推的时间长度秒数，默认为在线模式，10分钟，值为600，其他值比如离线24小时请自己设置
 		int m_reverse_time_length;					
 		//有效期，共有NUM_VALIDITY个,默认值是从5分钟到24小时那一系列，单位是分钟；可以自己设定
+		//可以把最常用的有效期设置在更靠近开始处加快匹配速度
 		int m_validity_array[NUM_VALIDITY];
 	public:
 		JcLockInput(void);
@@ -86,11 +91,9 @@ const int NUM_VALIDITY=8;
 	};
 	//lock结构体内部m_cmdtype决定了生成哪一类动态码；
 	int JCLMSCCB2014_API zwGetDynaCode(const JcLockInput &lock);
-
-//验证动态码，成功返回EJC_SUSSESS，失败返回EJC_FAIL
-	//JCERROR zwVerifyDynaCode(const JcLockInput &lock,const int dstDyCode);
-
-	JCOFFLINE JCLMSCCB2014_API zwReverseVerifyDynaCode( const JcLockInput &lock,const int dstCode );
+	//验证动态码，返回反推出来的时间和有效期结果，失败的话，两者均为0；
+	JCMATCH JCLMSCCB2014_API zwReverseVerifyDynaCode( const JcLockInput &lock,const int dstCode );
+	//指明该算法是哪一天出的，当算法有运算结果上的变更时这个版本改变，一天最多只出一个版本；
 	int JCLMSCCB2014_API getVersion(void);
 
 	JCERROR CheckInputValid( const JcLockInput &lock );
