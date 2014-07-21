@@ -12,6 +12,14 @@ void myStringTest1();
 void myBigNumModTest1();
 void myBinString2intTest1();
 
+#ifdef _DEBUG
+#pragma comment(lib,"gtestd.lib")
+#pragma comment(lib,"gtest_maind.lib")
+#else
+#pragma comment(lib,"gtest.lib")
+#pragma comment(lib,"gtest_main.lib")
+#endif // _DEBUG
+
 int _tmain(int argc, _TCHAR* argv[])
 {
 	myJcLockInputTest1();
