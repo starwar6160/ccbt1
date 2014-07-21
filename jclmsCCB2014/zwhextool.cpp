@@ -3,6 +3,7 @@
 #include <cstdint>
 using namespace std;
 #include "jclmsCCB2014.h"
+#include "zwTools1.h"
 
 namespace zwTools{
 /////////////////////////////////十六进制操作/////////////////////////////////////////

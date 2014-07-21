@@ -39,6 +39,9 @@
     <ClInclude Include="zwstdafx.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="zwTools1.h">
+      <Filter>源文件\hashalg</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">

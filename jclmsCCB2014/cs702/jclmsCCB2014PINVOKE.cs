@@ -279,33 +279,6 @@ class jclmsCCB2014PINVOKE {
   [global::System.Runtime.InteropServices.DllImport("jclmsCCB2014", EntryPoint="CSharp_CheckInputValid")]
   public static extern int CheckInputValid(global::System.Runtime.InteropServices.HandleRef jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("jclmsCCB2014", EntryPoint="CSharp_new_zwHexTool__SWIG_0")]
-  public static extern global::System.IntPtr new_zwHexTool__SWIG_0(string jarg1);
-
-  [global::System.Runtime.InteropServices.DllImport("jclmsCCB2014", EntryPoint="CSharp_new_zwHexTool__SWIG_1")]
-  public static extern global::System.IntPtr new_zwHexTool__SWIG_1(global::System.Runtime.InteropServices.HandleRef jarg1, int jarg2);
-
-  [global::System.Runtime.InteropServices.DllImport("jclmsCCB2014", EntryPoint="CSharp_delete_zwHexTool")]
-  public static extern void delete_zwHexTool(global::System.Runtime.InteropServices.HandleRef jarg1);
-
-  [global::System.Runtime.InteropServices.DllImport("jclmsCCB2014", EntryPoint="CSharp_zwHexTool_getBin")]
-  public static extern string zwHexTool_getBin(global::System.Runtime.InteropServices.HandleRef jarg1);
-
-  [global::System.Runtime.InteropServices.DllImport("jclmsCCB2014", EntryPoint="CSharp_zwHexTool_getBinLen")]
-  public static extern int zwHexTool_getBinLen(global::System.Runtime.InteropServices.HandleRef jarg1);
-
-  [global::System.Runtime.InteropServices.DllImport("jclmsCCB2014", EntryPoint="CSharp_zwHexTool_getPadedLen")]
-  public static extern int zwHexTool_getPadedLen(global::System.Runtime.InteropServices.HandleRef jarg1);
-
-  [global::System.Runtime.InteropServices.DllImport("jclmsCCB2014", EntryPoint="CSharp_zwHexTool_getXXTEABlockNum")]
-  public static extern int zwHexTool_getXXTEABlockNum(global::System.Runtime.InteropServices.HandleRef jarg1);
-
-  [global::System.Runtime.InteropServices.DllImport("jclmsCCB2014", EntryPoint="CSharp_zwHexTool_PrintBin")]
-  public static extern void zwHexTool_PrintBin(global::System.Runtime.InteropServices.HandleRef jarg1);
-
-  [global::System.Runtime.InteropServices.DllImport("jclmsCCB2014", EntryPoint="CSharp_zwHexTool_getCArrayStr")]
-  public static extern string zwHexTool_getCArrayStr(global::System.Runtime.InteropServices.HandleRef jarg1);
-
   [global::System.Runtime.InteropServices.DllImport("jclmsCCB2014", EntryPoint="CSharp_ZWEFS_get")]
   public static extern int ZWEFS_get();
 

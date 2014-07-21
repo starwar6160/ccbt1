@@ -4,6 +4,7 @@
 using std::cout;
 using std::endl;
 #include "jclmsCCB2014.h"
+#include "zwTools1.h"
 using namespace zwTools;
 using namespace jclms;
 #include <vector>
