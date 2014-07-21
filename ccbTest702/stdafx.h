@@ -25,3 +25,5 @@ using std::endl;
 using std::string;
 using std::vector;
 using std::map;
+
+#include <gtest/gtest.h>
