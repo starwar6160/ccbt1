@@ -2,8 +2,9 @@
 #include "zwEcies529.h"
 void myJcLockInputTest1();
 
-namespace ccbtest722{
+namespace CcbV11Test722Ecies{
 
+#ifdef _DEBUG722
 int Foo(int a, int b)
 {
 	if (a == 0 || b == 0)
@@ -21,6 +22,7 @@ TEST(FooTest, HandleNoneZeroInput)
 	EXPECT_EQ(2, Foo(4, 10));
 	EXPECT_EQ(6, Foo(30, 18));
 }
+#endif // _DEBUG722
 
 
 
@@ -45,7 +47,7 @@ protected:
 
 TEST_F(ECIES_Test,NormalKeyPairGen)
 {
-	myJcLockInputTest1();
+	//myJcLockInputTest1();
 	EXPECT_GT(ZW_ECIES_PUBKEY_LEN,0);
 	EXPECT_LT(ZW_ECIES_PUBKEY_LEN,100);
 	//ZWECIES_API int zwEciesKeyPairGen( const char *password,char *outPriKeyStr,const int priLen,
@@ -57,15 +59,14 @@ TEST_F(ECIES_Test,NormalKeyPairGen)
 }
 
 
-TEST_F(ECIES_Test,NormalEncDec)
-{
+//TEST_F(ECIES_Test,NormalEncDec)
+//{
 	//ZWECIES_API int zwEciesEncrypt(const char *pubkeyStr,const char *PlainText, 
 	//	char *outEncryptedSyncKeyStr,const int syncKeyLen, 
 	//	char *outMsgHashStr,const int hashLen,
 	//	char *outCryptedTextStr,const int cryptLen);
 
-
-}
+//}
 
 
 }	//namespace ccbtest722{
