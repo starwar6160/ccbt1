@@ -1,5 +1,8 @@
 #include "stdafx.h"
 #include "zwEcies529.h"
+void myJcLockInputTest1();
+
+namespace ccbtest722{
 
 int Foo(int a, int b)
 {
@@ -40,9 +43,9 @@ protected:
 	}
 };
 
-
 TEST_F(ECIES_Test,NormalKeyPairGen)
 {
+	myJcLockInputTest1();
 	EXPECT_GT(ZW_ECIES_PUBKEY_LEN,0);
 	EXPECT_LT(ZW_ECIES_PUBKEY_LEN,100);
 	//ZWECIES_API int zwEciesKeyPairGen( const char *password,char *outPriKeyStr,const int priLen,
@@ -63,3 +66,6 @@ TEST_F(ECIES_Test,NormalEncDec)
 
 
 }
+
+
+}	//namespace ccbtest722{

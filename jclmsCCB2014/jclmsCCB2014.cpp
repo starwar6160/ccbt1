@@ -111,9 +111,9 @@ unsigned int zwBinString2Int32(const char *data,const int len);
 //////////////////////////////////////////////////////////////////////////
 	JcLockInput::JcLockInput()
 	{
-		memset(m_atmno,0,JC_ATMNO_MAXLEN);
-		memset(m_lockno,0,JC_LOCKNO_MAXLEN);
-		memset(m_psk,0,JC_PSK_LEN);
+		memset(m_atmno,0,JC_ATMNO_MAXLEN+1);
+		memset(m_lockno,0,JC_LOCKNO_MAXLEN+1);
+		memset(m_psk,0,JC_PSK_LEN+1);
 		m_datetime=-1;
 		m_validity=-1;
 		m_closecode=-1;	

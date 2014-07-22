@@ -19,9 +19,9 @@ using std::sort;
 void myJcLockInputTest1()
 {
 	JcLockInput aa;
-	strncpy(aa.m_atmno,"atmnoddddddddsssssssssssssssssssss",JC_ATMNO_MAXLEN);
-	strncpy(aa.m_lockno,"locknossssssssssssa1",JC_LOCKNO_MAXLEN);
-	strncpy(aa.m_psk,"pskaaaabbbbbccccsssssssssssssssssssssssssssssssssssss",JC_PSK_LEN);
+	strncpy(aa.m_atmno,"atmnodddd0123456789",JC_ATMNO_MAXLEN);
+	strncpy(aa.m_lockno,"locknossssssa1234",JC_LOCKNO_MAXLEN);
+	strncpy(aa.m_psk,"pskabcdefghijabcdefghijabcdefghijabcdefghijabcdefghijabcdefghij1234",JC_PSK_LEN);
 	//注意现在合法的时间值应该是1.4G以上了，注意位数。20140721.1709
 	aa.m_datetime=1400077751;
 	aa.m_validity=5;

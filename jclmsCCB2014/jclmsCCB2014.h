@@ -60,17 +60,17 @@ typedef struct jcLockReverseMatchResult{
 //有效期数组大小；更改此处以后请对应更改源代码中JcLockInput类初始化代码中
 //为有效期数组m_validity_array赋予初值的相应语句
 const int NUM_VALIDITY=8;
-const int JC_ATMNO_MAXLEN=16+1;	//ATM编号长度最大值
-const int JC_LOCKNO_MAXLEN=16+1;	//LOCK编号长度最大值
-const int JC_PSK_LEN=256/4+1;	//256bit HEX+NULL,这是定长值
+const int JC_ATMNO_MAXLEN=16;	//ATM编号长度最大值
+const int JC_LOCKNO_MAXLEN=16;	//LOCK编号长度最大值
+const int JC_PSK_LEN=256/4;	//256bit HEX+NULL,这是定长值
 
 	struct JCLMSCCB2014_API JcLockInput
 	{
 	public:
 		//固定因素部分
-		char m_atmno[JC_ATMNO_MAXLEN];		//ATM号
-		char m_lockno[JC_LOCKNO_MAXLEN];	//锁号
-		char m_psk[JC_PSK_LEN];			//PSK，上下位机共同持有的唯一机密因素
+		char m_atmno[JC_ATMNO_MAXLEN+1];		//ATM号
+		char m_lockno[JC_LOCKNO_MAXLEN+1];	//锁号
+		char m_psk[JC_PSK_LEN+1];			//PSK，上下位机共同持有的唯一机密因素
 		//可变因素部分
 		int m_datetime;		//日期时间
 		int m_validity;		//有效期
