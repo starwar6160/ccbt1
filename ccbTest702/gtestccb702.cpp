@@ -110,5 +110,25 @@ TEST_F(ECIES_Test,NormalDec)
 #endif // _DEBUG
 }
 
+TEST_F(ECIES_Test,csGenKeyPair)
+{
+	int hd=0;
+	hd=EciesGenKeyPair();
+	EXPECT_NE(hd,0);
+	char pubkey[ZW_ECIES_PUBKEY_LEN];
+	char prikey[ZW_ECIES_PRIKEY_LEN];
+	memset(pubkey,0,sizeof(pubkey));
+	memset(prikey,0,sizeof(prikey));
+	strcpy(pubkey,EciesGetPubKey(hd));
+	strcpy(prikey,EciesGetPriKey(hd));
+	EXPECT_GT(strlen(pubkey),0);
+	EXPECT_GT(strlen(prikey),0);
+#ifdef _DEBUG
+	cout<<"pubkey=\t"<<pubkey<<endl;
+	cout<<"prikey=\t"<<prikey<<endl;
+#endif // _DEBUG
+	EciesDelete(hd);
+}
+
 //////////////////////////////////////////////////////////////////////////
 }	//namespace ccbtest722{
