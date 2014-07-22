@@ -70,11 +70,6 @@ cout<<"s_pubKey=\t"<<s_pubKey<<endl;
 #endif // _DEBUG
 }
 
-//ZWECIES_API int zwEciesEncrypt(const char *pubkeyStr,const char *PlainText, 
-//	char *outEncryptedSyncKeyStr,const int syncKeyLen, 
-//	char *outMsgHashStr,const int hashLen,
-//	char *outCryptedTextStr,const int cryptLen);
-
 TEST_F(ECIES_Test,NormalEnc)
 {
 EXPECT_GT(strlen(s_priKey),0);
@@ -89,6 +84,29 @@ EXPECT_GT(strlen(s_crypt),0);
 cout<<"syncKey=\t"<<s_syncKey<<endl;
 cout<<"s_hash=\t"<<s_hash<<endl;
 cout<<"s_crypt=\t"<<s_crypt<<endl;
+#endif // _DEBUG
+}
+
+//ECIES解密：
+//prikeyStr：编码过的私钥	outPlainText：输出明文缓冲区	plainLen：明文缓冲区长度
+//EncryptedSyncKeyStr，MsgHashStr，CryptedTextStr：含义同加密输出的3个项目
+//ZWECIES_API BOOL zwEciesDecrypt(const char *prikeyStr,char *outPlainText,const int plainLen, 
+//	const char *EncryptedSyncKeyStr,const char *MsgHashStr,const char *CryptedTextStr);
+
+
+TEST_F(ECIES_Test,NormalDec)
+{
+	EXPECT_GT(strlen(s_syncKey),0);
+	EXPECT_GT(strlen(s_hash),0);
+	EXPECT_GT(strlen(s_crypt),0);
+	char plainOut[ZW_ECIES_MESSAGE_MAXLEN];
+	memset(plainOut,0,sizeof(plainOut));
+	int eciesEncRet=zwEciesDecrypt(s_priKey,plainOut,sizeof(plainOut),
+		s_syncKey,s_hash,s_crypt);
+	EXPECT_EQ(eciesEncRet,ECIES_SUCCESS);
+	EXPECT_GT(strlen(plainOut),0);
+#ifdef _DEBUG
+	cout<<"plainOut=\t"<<plainOut<<endl;
 #endif // _DEBUG
 }
 
