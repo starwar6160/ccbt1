@@ -21,7 +21,7 @@ const int ZW_ECIES_HASH_LEN=(ZWEFS*1+ZW_EXA)*4/3;
 //ECIES的作用就是用来加密对称密钥，已知最大的BLOWFISH是448bit，
 //SHA512的输出作为密钥的话是512bit，考虑可能加入其他一些开销，
 //所以最多768bit(EFS*3)应该足够了
-const int ZW_ECIES_MESSAGE_MAXLEN=ZWEFS*3*4/3;
+const int ZW_ECIES_MESSAGE_MAXLEN=ZWEFS*2*4/3;
 
 #ifndef _ZWUSE_AS_JNI
 #ifdef ZWECIES_EXPORTS
