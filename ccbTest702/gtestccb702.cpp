@@ -130,5 +130,37 @@ TEST_F(ECIES_Test,csGenKeyPair)
 	EciesDelete(hd);
 }
 
+TEST_F(ECIES_Test,csEncDec)
+{
+	const char *csPlainText="C# Port Test plain text 20140722.1625";
+	int hd=0;
+	hd=EciesGenKeyPair();
+	EXPECT_NE(hd,0);
+	char pubkey[ZW_ECIES_PUBKEY_LEN];
+	char prikey[ZW_ECIES_PRIKEY_LEN];
+	memset(pubkey,0,sizeof(pubkey));
+	memset(prikey,0,sizeof(prikey));
+	strcpy(pubkey,EciesGetPubKey(hd));
+	strcpy(prikey,EciesGetPriKey(hd));
+	EXPECT_GT(strlen(pubkey),0);
+	EXPECT_GT(strlen(prikey),0);
+	char crypt[ZW_ECIES_CRYPT_TOTALLEN];
+	char outPlain[ZW_ECIES_CRYPT_TOTALLEN];
+	memset(crypt,0,sizeof(crypt));
+	memset(outPlain,0,sizeof(outPlain));
+	strcpy(crypt, EciesEncrypt(pubkey,csPlainText));
+	EXPECT_GT(strlen(crypt),0);
+	strcpy(outPlain,EciesDecrypt(prikey,crypt));
+	EXPECT_GT(strlen(outPlain),0);
+	EciesDelete(hd);
+#ifdef _DEBUG
+	cout<<"pubkey=\t"<<pubkey<<endl;
+	cout<<"prikey=\t"<<prikey<<endl;
+	cout<<"ecies crypt combie result is"<<endl<<crypt<<endl;
+#endif // _DEBUG
+
+}
+
+
 //////////////////////////////////////////////////////////////////////////
 }	//namespace ccbtest722{
