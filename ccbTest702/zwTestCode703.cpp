@@ -40,7 +40,10 @@ void myJcLockInputTest1()
 	}
 	for (int i=0;i<RCOUNT;i++)
 	{
-		aa.m_datetime++;
+		//后期做的时间规格化到10秒，导致变更时间不足10秒的话出来的结果是一样的
+		//所以测试结果大量重复，改为变更闭锁码的条件，结果就不重复了；
+		//周伟.20140722.
+		aa.m_closecode++;
 		int dycode=zwGetDynaCode(aa);
 		rset.insert(dycode);
 		if (i % (RCOUNT/32) ==0)
