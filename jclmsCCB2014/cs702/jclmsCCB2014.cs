@@ -47,6 +47,10 @@ public class jclmsCCB2014 {
     return ret;
   }
 
+  public static void JcLockDebugPrint(JCINPUT jc) {
+    jclmsCCB2014PINVOKE.JcLockDebugPrint(JCINPUT.getCPtr(jc));
+  }
+
   public static int ZWEFS {
     get {
       int ret = jclmsCCB2014PINVOKE.ZWEFS_get();

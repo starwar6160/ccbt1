@@ -212,6 +212,31 @@ TEST_F(ECIES_Test,csGenKeyPair)
 	EciesDelete(hd);
 }
 
+TEST_F(ECIES_Test,cs_BadInput)
+{
+	int hd=0;
+	hd=EciesGenKeyPair();
+	EXPECT_GT(hd,0);
+
+	char *pubKey=NULL;	
+	char *priKey=NULL;
+
+	pubKey=(char *)EciesGetPubKey(NULL);
+	priKey=(char *)EciesGetPriKey(NULL);
+	EXPECT_EQ(NULL,pubKey);
+	EXPECT_EQ(NULL,priKey);
+	char *crypt=NULL;
+	crypt=(char *)EciesEncrypt(NULL,"palintext");
+	EXPECT_EQ(NULL,crypt);
+	crypt=(char *)EciesEncrypt("pubkey",NULL);
+	EXPECT_EQ(NULL,crypt);
+	crypt=(char *)EciesDecrypt("pubkey",NULL);
+	EXPECT_EQ(NULL,crypt);
+	crypt=(char *)EciesDecrypt(NULL,"crypttext");
+	EXPECT_EQ(NULL,crypt);
+
+}
+
 TEST_F(ECIES_Test,csEncDec)
 {
 	const char *csPlainText="C# Port Test plain text 20140722.1625";

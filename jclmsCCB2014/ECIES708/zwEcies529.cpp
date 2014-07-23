@@ -509,7 +509,7 @@ ZWECIES_API const char * EciesGetPubKey( int eciesHandle )
 	zwEcies_t *stu=(zwEcies_t *)eciesHandle;
 	if (NULL==stu || ECIES_INIT_FLAG!=stu->status)
 	{
-		return "BADHANDLE20140604";
+		return NULL;
 	}
 	return stu->pubKey.c_str();
 }
@@ -519,7 +519,7 @@ ZWECIES_API const char * EciesGetPriKey( int eciesHandle )
 	zwEcies_t *stu=(zwEcies_t *)eciesHandle;
 	if (NULL==stu || ECIES_INIT_FLAG!=stu->status)
 	{
-		return "BADHANDLE20140604";
+		return NULL;
 	}
 	return stu->priKey.c_str();
 }
@@ -570,6 +570,10 @@ ZWECIES_API const char * EciesEncrypt( const char *pubKey,const char *plainText 
 #define SKELEN	(ZW_ECIES_ENCSYNCKEY_LEN*2)
 #define HASHLEN	(EFS*2+ZW_EXA)
 #define CRLEN	(ZW_ECIES_MESSAGE_MAXLEN*2)
+	if (NULL==pubKey || NULL==plainText)
+	{
+		return NULL;
+	}
 	char encSyncKey[SKELEN],msgHashBuf[HASHLEN];
 	char cryptText[CRLEN];
 	memset(encSyncKey,0,SKELEN);
