@@ -23,55 +23,32 @@ public class jclmsCCB2014 {
     } 
   }
 
-  public static int NUM_VALIDITY {
-    get {
-      int ret = jclmsCCB2014PINVOKE.NUM_VALIDITY_get();
-      return ret;
-    } 
+  public static void JcLockNew(JCINPUT pjc) {
+    jclmsCCB2014PINVOKE.JcLockNew(JCINPUT.getCPtr(pjc));
   }
 
-  public static int JC_ATMNO_MAXLEN {
-    get {
-      int ret = jclmsCCB2014PINVOKE.JC_ATMNO_MAXLEN_get();
-      return ret;
-    } 
-  }
-
-  public static int JC_LOCKNO_MAXLEN {
-    get {
-      int ret = jclmsCCB2014PINVOKE.JC_LOCKNO_MAXLEN_get();
-      return ret;
-    } 
-  }
-
-  public static int JC_PSK_LEN {
-    get {
-      int ret = jclmsCCB2014PINVOKE.JC_PSK_LEN_get();
-      return ret;
-    } 
-  }
-
-  public static int zwGetDynaCode(JcLockInput arg0) {
-    int ret = jclmsCCB2014PINVOKE.zwGetDynaCode(JcLockInput.getCPtr(arg0));
-    if (jclmsCCB2014PINVOKE.SWIGPendingException.Pending) throw jclmsCCB2014PINVOKE.SWIGPendingException.Retrieve();
+  public static JCERROR JcLockCheckInput(JCINPUT arg0) {
+    JCERROR ret = (JCERROR)jclmsCCB2014PINVOKE.JcLockCheckInput(JCINPUT.getCPtr(arg0));
     return ret;
   }
 
-  public static JCMATCH zwReverseVerifyDynaCode(JcLockInput arg0, int dstCode) {
-    JCMATCH ret = new JCMATCH(jclmsCCB2014PINVOKE.zwReverseVerifyDynaCode(JcLockInput.getCPtr(arg0), dstCode), true);
-    if (jclmsCCB2014PINVOKE.SWIGPendingException.Pending) throw jclmsCCB2014PINVOKE.SWIGPendingException.Retrieve();
+  public static int JcLockGetDynaCode(JCINPUT arg0) {
+    int ret = jclmsCCB2014PINVOKE.JcLockGetDynaCode(JCINPUT.getCPtr(arg0));
     return ret;
   }
 
-  public static int getVersion() {
-    int ret = jclmsCCB2014PINVOKE.getVersion();
+  public static JCMATCH JcLockReverseVerifyDynaCode(JCINPUT arg0, int dstCode) {
+    JCMATCH ret = new JCMATCH(jclmsCCB2014PINVOKE.JcLockReverseVerifyDynaCode(JCINPUT.getCPtr(arg0), dstCode), true);
     return ret;
   }
 
-  public static JCERROR CheckInputValid(JcLockInput arg0) {
-    JCERROR ret = (JCERROR)jclmsCCB2014PINVOKE.CheckInputValid(JcLockInput.getCPtr(arg0));
-    if (jclmsCCB2014PINVOKE.SWIGPendingException.Pending) throw jclmsCCB2014PINVOKE.SWIGPendingException.Retrieve();
+  public static int JcLockGetVersion() {
+    int ret = jclmsCCB2014PINVOKE.JcLockGetVersion();
     return ret;
+  }
+
+  public static void JcLockDebugPrint(JCINPUT jc) {
+    jclmsCCB2014PINVOKE.JcLockDebugPrint(JCINPUT.getCPtr(jc));
   }
 
   public static int ZWEFS {
@@ -119,6 +96,13 @@ public class jclmsCCB2014 {
   public static int ZW_ECIES_MESSAGE_MAXLEN {
     get {
       int ret = jclmsCCB2014PINVOKE.ZW_ECIES_MESSAGE_MAXLEN_get();
+      return ret;
+    } 
+  }
+
+  public static int ZW_ECIES_CRYPT_TOTALLEN {
+    get {
+      int ret = jclmsCCB2014PINVOKE.ZW_ECIES_CRYPT_TOTALLEN_get();
       return ret;
     } 
   }
@@ -172,6 +156,11 @@ public class jclmsCCB2014 {
     return ret;
   }
 
+  public static readonly int NUM_VALIDITY = jclmsCCB2014PINVOKE.NUM_VALIDITY_get();
+  public static readonly int JC_ATMNO_MAXLEN = jclmsCCB2014PINVOKE.JC_ATMNO_MAXLEN_get();
+  public static readonly int JC_LOCKNO_MAXLEN = jclmsCCB2014PINVOKE.JC_LOCKNO_MAXLEN_get();
+  public static readonly int JC_PSK_LEN = jclmsCCB2014PINVOKE.JC_PSK_LEN_get();
+  public static readonly int JC_INVALID_VALUE = jclmsCCB2014PINVOKE.JC_INVALID_VALUE_get();
 }
 
 }

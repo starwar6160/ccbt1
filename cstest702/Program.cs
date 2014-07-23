@@ -66,9 +66,9 @@ namespace cstest702
             Console.Out.WriteLine("Jclms DLL Version is {0}", lmsver);
 
             //锁具的模拟对象
-            JcLockInput jcLock = new JcLockInput();
+            JCINPUT jcLock = new JCINPUT();
             //上位机的模拟对象
-            JcLockInput jcSrv = new JcLockInput();
+            JCINPUT jcSrv = new JCINPUT();
 
             //在此我特地用了普通的字符串，用意在于，这些字符串的字段内容是什么都可以，
             //长度多长都可以,因为内部使用的C++的String，对于长度没有限制，只受内存大小限制；
@@ -251,7 +251,7 @@ namespace cstest702
         }
 
 
-        private static int myInitCloseCodeTest1(JcLockInput myLock, int dyCode)
+        private static int myInitCloseCodeTest1(JCINPUT myLock, int dyCode)
         {
             //填写完整JcLockInput结构体中的各个项目
             myLock.m_atmno = "atmno1";

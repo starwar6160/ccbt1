@@ -1,3 +1,9 @@
+#include "..\stdafx.h"
+//#include <assert.h>
+#include <string>
+#include <vector>
+using std::string;
+using std::vector;
 #ifdef  __cplusplus
 extern "C" {
 #endif
@@ -5,12 +11,7 @@ extern "C" {
 #ifdef  __cplusplus
 }
 #endif
-#include "..\stdafx.h"
-//#include <assert.h>
-#include <string>
-#include <vector>
-using std::string;
-using std::vector;
+
 
 void zwRandSeedGen603(char *randBuf,const int randBufLen);
 
@@ -508,7 +509,7 @@ ZWECIES_API const char * EciesGetPubKey( int eciesHandle )
 	zwEcies_t *stu=(zwEcies_t *)eciesHandle;
 	if (NULL==stu || ECIES_INIT_FLAG!=stu->status)
 	{
-		return "BADHANDLE20140604";
+		return NULL;
 	}
 	return stu->pubKey.c_str();
 }
@@ -518,7 +519,7 @@ ZWECIES_API const char * EciesGetPriKey( int eciesHandle )
 	zwEcies_t *stu=(zwEcies_t *)eciesHandle;
 	if (NULL==stu || ECIES_INIT_FLAG!=stu->status)
 	{
-		return "BADHANDLE20140604";
+		return NULL;
 	}
 	return stu->priKey.c_str();
 }
@@ -569,6 +570,10 @@ ZWECIES_API const char * EciesEncrypt( const char *pubKey,const char *plainText 
 #define SKELEN	(ZW_ECIES_ENCSYNCKEY_LEN*2)
 #define HASHLEN	(EFS*2+ZW_EXA)
 #define CRLEN	(ZW_ECIES_MESSAGE_MAXLEN*2)
+	if (NULL==pubKey || NULL==plainText)
+	{
+		return NULL;
+	}
 	char encSyncKey[SKELEN],msgHashBuf[HASHLEN];
 	char cryptText[CRLEN];
 	memset(encSyncKey,0,SKELEN);
@@ -584,9 +589,10 @@ ZWECIES_API const char * EciesEncrypt( const char *pubKey,const char *plainText 
 //要求eciesHandle已经被设置了私钥才能成功，输入密文是3个元素的组合，不必理解其意义
 ZWECIES_API const char * EciesDecrypt( const char *priKey,const char *cryptText )
 {
-	if (priKey==NULL || strlen(priKey)==0)
+	if (priKey==NULL || strlen(priKey)==0
+		|| cryptText==NULL || strlen(cryptText)==0)
 	{
-		return "";
+		return NULL;
 	}
 
 	//首先把组合的3个项目切分开来
