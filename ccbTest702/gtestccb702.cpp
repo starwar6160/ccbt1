@@ -4,7 +4,7 @@
 void myJcLockInputTest1();
 
 namespace CcbV11Test722Ecies{
-
+const int ZWMEGA=1000*1000;
 #ifdef _DEBUG722
 int Foo(int a, int b)
 {
@@ -208,9 +208,9 @@ TEST_F(jclmsCCBV11_Test,inputCheck)
 	EXPECT_EQ(EJC_SUSSESS,JcLockCheckInput(&jc));
 }
 
-TEST_F(jclmsCCBV11_Test,getDynaCode)
+//第一开锁码测试
+TEST_F(jclmsCCBV11_Test,getDynaCodePass1)
 {
-	//initCloseCode
 	jc.m_cmdtype=JCCMD_INIT_CLOSECODE;
 	JcLockDebugPrint(&jc);
 	int initCloseCode=JcLockGetDynaCode(&jc);
@@ -222,16 +222,31 @@ TEST_F(jclmsCCBV11_Test,getDynaCode)
 	jc.m_cmdtype=JCCMD_CCB_DYPASS1;
 	jc.m_closecode=initCloseCode;
 	int dynaPass1=JcLockGetDynaCode(&jc);
-	EXPECT_GT(dynaPass1,0);
-	EXPECT_LT(dynaPass1,100000000);
+	EXPECT_GT(dynaPass1,10*ZWMEGA);
+	EXPECT_LT(dynaPass1,100*ZWMEGA);
 	printf("dynaPass1=\t%d\n",dynaPass1);
-	JCMATCH myMatch= JcLockReverseVerifyDynaCode(&jc,dynaPass1);
-	EXPECT_GT(myMatch.s_datetime,1400*1000000)<<myMatch.s_datetime;
-	EXPECT_LT(myMatch.s_datetime,time(NULL)+15);
+	JCMATCH pass1Match= JcLockReverseVerifyDynaCode(&jc,dynaPass1);
+	EXPECT_GT(pass1Match.s_datetime,time(NULL)-60);
+	EXPECT_LT(pass1Match.s_datetime,time(NULL)+15);
 	printf("current time=\t%d\n",time(NULL));
-	printf("Match Time =\t%d\tValidity=%d\n",myMatch.s_datetime,myMatch.s_validity);
+	printf("pass1Match Time =\t%d\tValidity=%d\n",pass1Match.s_datetime,pass1Match.s_validity);
 }
 
+//下位机校验码测试
+TEST_F(jclmsCCBV11_Test,getDynaCodeVerifyCode)
+{
+	jc.m_cmdtype=JCCMD_CCB_LOCK_VERCODE;
+	int verCode=JcLockGetDynaCode(&jc);
+	EXPECT_GT(verCode,10*ZWMEGA);
+	EXPECT_LT(verCode,100*ZWMEGA);
+	printf("verCode=\t%d\n",verCode);
+	JCMATCH verCodeMatch=JcLockReverseVerifyDynaCode(&jc,verCode);
+	EXPECT_GT(verCodeMatch.s_datetime,time(NULL)-60);
+	EXPECT_LT(verCodeMatch.s_datetime,time(NULL)+15);
+	printf("current time=\t%d\n",time(NULL));
+	printf("verCodeMatch Time =\t%d\tValidity=%d\n",verCodeMatch.s_datetime,verCodeMatch.s_validity);
+
+}
 
 //////////////////////////////////////////////////////////////////////////
 }	//namespace ccbtest722{
