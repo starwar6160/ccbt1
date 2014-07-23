@@ -234,7 +234,7 @@ TEST_F(jclmsCCBV11_Test,getDynaCodePass1)
 	JCMATCH pass1Match= JcLockReverseVerifyDynaCode(&jc,pass1DyCode);
 	EXPECT_GT(pass1Match.s_datetime,time(NULL)-60);
 	EXPECT_LT(pass1Match.s_datetime,time(NULL)+15);
-	printf("current time=\t%d\n",time(NULL));
+	printf("current time=\t\t%d\n",time(NULL));
 	printf("pass1Match Time =\t%d\tValidity=%d\n",pass1Match.s_datetime,pass1Match.s_validity);
 }
 
@@ -250,9 +250,24 @@ TEST_F(jclmsCCBV11_Test,getDynaCodeVerifyCode)
 	JCMATCH verCodeMatch=JcLockReverseVerifyDynaCode(&jc,verifyCode);
 	EXPECT_GT(verCodeMatch.s_datetime,time(NULL)-60);
 	EXPECT_LT(verCodeMatch.s_datetime,time(NULL)+15);
-	printf("current time=\t%d\n",time(NULL));
+	printf("current time=\t\t%d\n",time(NULL));
 	printf("verCodeMatch Time =\t%d\tValidity=%d\n",verCodeMatch.s_datetime,verCodeMatch.s_validity);
+}
 
+//第二开锁码测试
+TEST_F(jclmsCCBV11_Test,getDynaCodePass2)
+{
+	jc.m_cmdtype=JCCMD_CCB_DYPASS2;
+	jc.m_closecode=verifyCode;	//校验码作为要素参与生成第二开锁码
+	pass2DyCode=JcLockGetDynaCode(&jc);
+	EXPECT_GT(pass2DyCode,10*ZWMEGA);
+	EXPECT_LT(pass2DyCode,100*ZWMEGA);
+	printf("pass2DyCode=\t%d\n",pass2DyCode);
+	JCMATCH pass2Match=JcLockReverseVerifyDynaCode(&jc,pass2DyCode);
+	EXPECT_GT(pass2Match.s_datetime,time(NULL)-60);
+	EXPECT_LT(pass2Match.s_datetime,time(NULL)+15);
+	printf("current time=\t\t%d\n",time(NULL));
+	printf("pass2Match Time =\t%d\tValidity=%d\n",pass2Match.s_datetime,pass2Match.s_validity);
 }
 
 //////////////////////////////////////////////////////////////////////////
