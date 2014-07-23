@@ -76,6 +76,27 @@ cout<<"s_pubKey=\t"<<s_pubKey<<endl;
 #endif // _DEBUG
 }
 
+TEST_F(ECIES_Test,NormalKeyPairGen_BadInput)
+{
+	int keygenResult=ECIES_SUCCESS;
+	keygenResult=zwEciesKeyPairGen("",
+		s_priKey,ZW_ECIES_PRIKEY_LEN,s_pubKey,ZW_ECIES_PUBKEY_LEN);
+	EXPECT_NE(keygenResult,ECIES_SUCCESS);
+	keygenResult=zwEciesKeyPairGen("aaa",
+		NULL,ZW_ECIES_PRIKEY_LEN,s_pubKey,ZW_ECIES_PUBKEY_LEN);
+	EXPECT_NE(keygenResult,ECIES_SUCCESS);
+	keygenResult=zwEciesKeyPairGen("aaa",
+		s_priKey,0,s_pubKey,ZW_ECIES_PUBKEY_LEN);
+	EXPECT_NE(keygenResult,ECIES_SUCCESS);
+	keygenResult=zwEciesKeyPairGen("aaa",
+		s_priKey,ZW_ECIES_PRIKEY_LEN,NULL,ZW_ECIES_PUBKEY_LEN);
+	EXPECT_NE(keygenResult,ECIES_SUCCESS);
+	keygenResult=zwEciesKeyPairGen("aaa",
+		s_priKey,ZW_ECIES_PRIKEY_LEN,s_pubKey,0);
+	EXPECT_NE(keygenResult,ECIES_SUCCESS);
+
+}
+
 TEST_F(ECIES_Test,NormalEnc)
 {
 	memset(s_syncKey,0,sizeof(s_syncKey));
