@@ -793,66 +793,6 @@ SWIGEXPORT int SWIGSTDCALL CSharp_ZW_EXA_get() {
 }
 
 
-SWIGEXPORT int SWIGSTDCALL CSharp_ZW_ECIES_PUBKEY_LEN_get() {
-  int jresult ;
-  int result;
-  
-  result = (int)(int)ZW_ECIES_PUBKEY_LEN;
-  jresult = result; 
-  return jresult;
-}
-
-
-SWIGEXPORT int SWIGSTDCALL CSharp_ZW_ECIES_PRIKEY_LEN_get() {
-  int jresult ;
-  int result;
-  
-  result = (int)(int)ZW_ECIES_PRIKEY_LEN;
-  jresult = result; 
-  return jresult;
-}
-
-
-SWIGEXPORT int SWIGSTDCALL CSharp_ZW_ECIES_ENCSYNCKEY_LEN_get() {
-  int jresult ;
-  int result;
-  
-  result = (int)(int)ZW_ECIES_ENCSYNCKEY_LEN;
-  jresult = result; 
-  return jresult;
-}
-
-
-SWIGEXPORT int SWIGSTDCALL CSharp_ZW_ECIES_HASH_LEN_get() {
-  int jresult ;
-  int result;
-  
-  result = (int)(int)ZW_ECIES_HASH_LEN;
-  jresult = result; 
-  return jresult;
-}
-
-
-SWIGEXPORT int SWIGSTDCALL CSharp_ZW_ECIES_MESSAGE_MAXLEN_get() {
-  int jresult ;
-  int result;
-  
-  result = (int)(int)ZW_ECIES_MESSAGE_MAXLEN;
-  jresult = result; 
-  return jresult;
-}
-
-
-SWIGEXPORT int SWIGSTDCALL CSharp_ZW_ECIES_CRYPT_TOTALLEN_get() {
-  int jresult ;
-  int result;
-  
-  result = (int)(int)ZW_ECIES_CRYPT_TOTALLEN;
-  jresult = result; 
-  return jresult;
-}
-
-
 SWIGEXPORT int SWIGSTDCALL CSharp_zwEciesKeyPairGen(char * jarg1, char * jarg2, int jarg3, char * jarg4, int jarg5) {
   int jresult ;
   char *arg1 = (char *) 0 ;
