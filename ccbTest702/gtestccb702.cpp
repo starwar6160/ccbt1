@@ -196,9 +196,9 @@ TEST_F(jclmsCCBV11_Test,inputNew)
 
 TEST_F(jclmsCCBV11_Test,inputCheck)
 {
-	strncpy(jc.m_atmno,"atmnodddd0123456789",JC_ATMNO_MAXLEN);
-	strncpy(jc.m_lockno,"locknossssssa1234",JC_LOCKNO_MAXLEN);
-	strncpy(jc.m_psk,"pskabcdefghijabcdefghijabcdefghijabcdefghijabcdefghijabcdefghij1234",JC_PSK_LEN);
+	strncpy(jc.m_atmno,"ATMNO723",JC_ATMNO_MAXLEN);
+	strncpy(jc.m_lockno,"LOCKNO1430",JC_LOCKNO_MAXLEN);
+	strncpy(jc.m_psk,"PSKTESTJINCHU",JC_PSK_LEN);
 	//注意现在合法的时间值应该是1.4G以上了，注意位数。20140721.1709
 	jc.m_datetime=time(NULL);
 	jc.m_validity=5;
@@ -212,11 +212,12 @@ TEST_F(jclmsCCBV11_Test,getDynaCode)
 {
 	//initCloseCode
 	jc.m_cmdtype=JCCMD_INIT_CLOSECODE;
+	JcLockDebugPrint(&jc);
 	int initCloseCode=JcLockGetDynaCode(&jc);
 	//检查初始闭锁码是否在正常范围内
 	EXPECT_GT(initCloseCode,0);
 	EXPECT_LT(initCloseCode,100000000);
-	printf("dynaCode=\t%d\n",initCloseCode);
+	printf("initCloseCode=\t%d\n",initCloseCode);
 	//dynaPass1
 	jc.m_cmdtype=JCCMD_CCB_DYPASS1;
 	jc.m_closecode=initCloseCode;
@@ -224,9 +225,11 @@ TEST_F(jclmsCCBV11_Test,getDynaCode)
 	EXPECT_GT(dynaPass1,0);
 	EXPECT_LT(dynaPass1,100000000);
 	printf("dynaPass1=\t%d\n",dynaPass1);
-	JCMATCH jcmatch= JcLockReverseVerifyDynaCode(&jc,dynaPass1);
-	EXPECT_GT(jcmatch.s_datetime,time(NULL)-60);
-	EXPECT_LT(jcmatch.s_datetime,time(NULL)+15);
+	JCMATCH myMatch= JcLockReverseVerifyDynaCode(&jc,dynaPass1);
+	EXPECT_GT(myMatch.s_datetime,1400*1000000)<<myMatch.s_datetime;
+	EXPECT_LT(myMatch.s_datetime,time(NULL)+15);
+	printf("current time=\t%d\n",time(NULL));
+	printf("Match Time =\t%d\tValidity=%d\n",myMatch.s_datetime,myMatch.s_validity);
 }
 
 

@@ -100,13 +100,14 @@ typedef struct JcLockInput
 	//	JcLockInput(void);
 	void JCLMSCCB2014_API JcLockNew(JCINPUT *pjc);
 	//	JCERROR CheckInput(void);
-	JCERROR JCLMSCCB2014_API JcLockCheckInput( const JCINPUT *lock );
+	JCERROR JCLMSCCB2014_API JcLockCheckInput(const JCINPUT *lock );
 	//lock结构体内部m_cmdtype决定了生成哪一类动态码；
 	int JCLMSCCB2014_API JcLockGetDynaCode(const JCINPUT *lock);
 	//验证动态码，返回反推出来的时间和有效期结果，失败的话，两者均为0；
 	JCMATCH JCLMSCCB2014_API JcLockReverseVerifyDynaCode( const JCINPUT *lock,const int dstCode );
 	//指明该算法是哪一天出的，当算法有运算结果上的变更时这个版本改变，一天最多只出一个版本；
 	int JCLMSCCB2014_API JcLockGetVersion(void);
+	void JCLMSCCB2014_API JcLockDebugPrint(const JCINPUT *jc);
 
 
 //}	//end of namespace jclms

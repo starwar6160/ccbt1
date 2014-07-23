@@ -122,8 +122,8 @@ unsigned int zwBinString2Int32(const char *data,const int len);
 		{
 			printf("JcLock Input Para Error!\n");
 		}	 		
-		//三个固定条件组合在一起
-		char mainstr[JC_ATMNO_MAXLEN+JC_LOCKNO_MAXLEN+JC_PSK_LEN+3];
+		//三个固定条件组合在一起,还要为NULL，连接符等留出余量
+		char mainstr[JC_ATMNO_MAXLEN+JC_LOCKNO_MAXLEN+JC_PSK_LEN+5];
 		memset(mainstr,0,sizeof(mainstr));		
 		sprintf(mainstr,"%s.%s.%s.",jc->m_atmno,jc->m_lockno,jc->m_psk);
 		//可变条件逐个化为字符串，组合到一起
@@ -133,7 +133,7 @@ unsigned int zwBinString2Int32(const char *data,const int len);
 		//allItems=allItems+buf;
 		char allStr[128];
 		memset(allStr,0,128);
-		strncpy(allStr,mainstr,JC_ATMNO_MAXLEN+JC_LOCKNO_MAXLEN+JC_PSK_LEN+3);
+		strncpy(allStr,mainstr,128);
 		strcat(allStr,vstr);
 		printf("All Items = %s \n",allStr);
 	}
@@ -184,7 +184,7 @@ unsigned int zwBinString2Int32(const char *data,const int len);
 
 	//生成各种类型的动态码
 	int myGetDynaCodeImplCCB201407a( const JCINPUT *lock )
-	{
+	{		
 		SM3 sm3;
 		char outHmac[ZW_SM3_DGST_SIZE];
 		SM3_init(&sm3);
@@ -232,7 +232,7 @@ unsigned int zwBinString2Int32(const char *data,const int len);
 	//离线模式匹配，时间点精度为取整到一个小时的零点，有效期精度为1小时起
 	//如果找到了，返回JCOFFLINE中是匹配的时间和有效期，否则其中的值都是0
 	JCMATCH JcLockReverseVerifyDynaCode( const JCINPUT *lock,const int dstCode )
-	{
+	{		
 		const int MIN_OF_HOUR=60;	//一小时的分钟数
 
 		JCMATCH jcoff;
@@ -240,15 +240,23 @@ unsigned int zwBinString2Int32(const char *data,const int len);
 		jcoff.s_datetime=0;
 		jcoff.s_validity=0;
 		
+		//出于某些步长配合的原因，搜索开始时间需要比当前时间再多60秒，
+		//也就是从将来60秒开始，然后步长暂时不能用60秒，而是用到10秒
+		//这样暂时没什么找不到匹配结果的问题，原因有待进一步调试；
 		int l_datetime=time(NULL);
+		l_datetime=myGetNormalTime(l_datetime,G_TIMEMOD)+60;
 		int tail=l_datetime % lock->m_stepoftime;
 		l_datetime-=tail;	//取整到数据结构中指定的步长
 		//结束时间，往前推数据结构所指定的一段时间，几分钟到一整天不等
 		int tend=l_datetime-lock->m_reverse_time_length;
 		
-		for (int tdate=l_datetime;tdate>=tend;tdate-=lock->m_stepoftime)
+		for (int tdate=l_datetime;tdate>=tend;tdate-=
+			//lock->m_stepoftime)
+			G_TIMEMOD)
 		{			
 			//printf("TDATE=\t%d\n",tdate);
+			//JcLockDebugPrint(lock);
+			printf("%d\t",tdate);
 			for (int v=0;v<NUM_VALIDITY;v++)
 			{
 				SM3 sm3;
@@ -283,7 +291,7 @@ foundMatch:
 		return jcoff;
 	}
 
-	JCERROR JcLockCheckInput( const JCINPUT *lock )
+	JCERROR JcLockCheckInput(const JCINPUT *lock )
 	{
 		const int ZWMEGA=1000*1000;
 		//假定这些数字字段在二进制层面都是等同于int的长度的，以便通过一个统一的函数进行HASH运算
@@ -314,7 +322,6 @@ foundMatch:
 		{
 			return EJC_CMDTYPE_INVALID;
 		}
-
 		return EJC_SUSSESS;
 	}
 
