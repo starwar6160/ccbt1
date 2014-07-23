@@ -33,6 +33,8 @@ typedef enum jc_error_code{
 	EJC_DATETIME_INVALID,	//日期时间非法
 	EJC_VALIDRANGE_INVALID,	//有效期非法
 	EJC_CLOSECODE_INVALID,	//闭锁码非法
+	EJC_CMDTYPE_TIMESTEP_INVALID,	//时间搜索步长非法
+	EJC_CMDTYPE_TIMELEN_INVALID,	//时间搜索长度非法
 	EJC_CMDTYPE_INVALID		//命令类型非法
 } JCERROR;
 

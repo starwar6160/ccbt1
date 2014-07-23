@@ -12,7 +12,7 @@
 
 
 //namespace jclms{
-	const int G_TIMEMOD=10;	//默认按照10秒取整进入的数据，用于防止一些1-3秒钟的错误
+	const int G_TIMEMOD=60;	//默认按照60秒取整进入的数据，用于防止一些1-3秒钟的错误
 	//实际上不限于AES,只是作为一个基本的块规整大小单位方便处理
 	//#define ZW_AES_BLOCK_SIZE	(128/8)	
 	//#define ZW_SM3_DGST_SIZE	(256/8)
@@ -102,7 +102,11 @@ unsigned int zwBinString2Int32(const char *data,const int len);
 		pjc->m_validity=JC_INVALID_VALUE;
 		pjc->m_closecode=JC_INVALID_VALUE;	
 		pjc->m_cmdtype=JCCMD_INVALID_START;
+#ifdef _DEBUG
+		pjc->m_stepoftime=6;	//调试模式采用6秒的步长，快速发现问题
+#else
 		pjc->m_stepoftime=60;	//默认在线模式，反推时间步长60秒
+#endif // _DEBUG
 		pjc->m_reverse_time_length=10*60;	//默认在线模式，反推10分钟
 		////将5分钟，4小时这样最常用到的有效期排列在前面，提高效率
 		//int valarr[]={5,MIN_OF_HOUR*4,MIN_OF_HOUR*8,MIN_OF_HOUR*12,15,30,60,MIN_OF_HOUR*24};
@@ -202,7 +206,7 @@ unsigned int zwBinString2Int32(const char *data,const int len);
 		mySm3Process(&sm3,lock->m_psk,sizeof(lock->m_psk));
 
 		//规格化时间到G_TIMEMOD这么多秒
-		int l_datetime=myGetNormalTime(lock->m_datetime,G_TIMEMOD);
+		int l_datetime=myGetNormalTime(lock->m_datetime,lock->m_stepoftime);
 		//有效期和闭锁码需要根据不同情况分别处理
 		int l_validity=lock->m_validity;
 		int l_closecode=lock->m_closecode;	
@@ -240,22 +244,16 @@ unsigned int zwBinString2Int32(const char *data,const int len);
 		jcoff.s_datetime=0;
 		jcoff.s_validity=0;
 		
-		//出于某些步长配合的原因，搜索开始时间需要比当前时间再多60秒，
-		//也就是从将来60秒开始，然后步长暂时不能用60秒，而是用到10秒
-		//这样暂时没什么找不到匹配结果的问题，原因有待进一步调试；
 		int l_datetime=time(NULL);
-		l_datetime=myGetNormalTime(l_datetime,G_TIMEMOD)+60;
+		//搜索时间的起始点必须落在m_stepoftime的整倍数上，否则就无法匹配
+		l_datetime=myGetNormalTime(l_datetime,lock->m_stepoftime);
 		int tail=l_datetime % lock->m_stepoftime;
 		l_datetime-=tail;	//取整到数据结构中指定的步长
 		//结束时间，往前推数据结构所指定的一段时间，几分钟到一整天不等
 		int tend=l_datetime-lock->m_reverse_time_length;
 		
-		for (int tdate=l_datetime;tdate>=tend;tdate-=
-			//lock->m_stepoftime)
-			G_TIMEMOD)
+		for (int tdate=l_datetime;tdate>=tend;tdate-=lock->m_stepoftime)			
 		{			
-			//printf("TDATE=\t%d\n",tdate);
-			//JcLockDebugPrint(lock);
 			printf("%d\t",tdate);
 			for (int v=0;v<NUM_VALIDITY;v++)
 			{
@@ -307,17 +305,26 @@ foundMatch:
 
 		//限度是小于14开头的时间(1.4G秒)或者快要超出2048M秒的话就是非法了
 		if (lock->m_datetime<(1400*ZWMEGA) || lock->m_datetime>((2048*ZWMEGA)-3))
-		{
+		{//日期时间秒数在2014年的某个1.4G秒之前的日子，或者超过2038年(32位有符号整数最大值)则无效
 			return EJC_DATETIME_INVALID;
 		}
 		if (lock->m_validity<0 || lock->m_validity>(24*60))
-		{
+		{//有效期分钟数为负数或者大于一整天则无效
 			return EJC_VALIDRANGE_INVALID;
 		}
 		if (lock->m_closecode<0 || lock->m_closecode>(100*ZWMEGA))
-		{
+		{//闭锁码为负数或者大于8位则无效
 			return EJC_CLOSECODE_INVALID;
 		}
+		if (lock->m_stepoftime<=0 || lock->m_stepoftime>=(24*60*60))
+		{//搜索步长为负数或者大于一整天则无效
+			return EJC_CMDTYPE_TIMESTEP_INVALID;
+		}
+		if (lock->m_reverse_time_length<=0 || lock->m_reverse_time_length>=(365*24*60*60))
+		{//往前搜索时间为负数或者大于一整年则无效
+			return EJC_CMDTYPE_TIMELEN_INVALID;
+		}
+
 		if (lock->m_cmdtype<=JCCMD_INVALID_START || lock->m_cmdtype>=JCCMD_INVALID_END)
 		{
 			return EJC_CMDTYPE_INVALID;
