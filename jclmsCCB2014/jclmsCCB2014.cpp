@@ -104,9 +104,9 @@ unsigned int zwBinString2Int32(const char *data,const int len);
 		memset(pjc->m_atmno,0,JC_ATMNO_MAXLEN+1);
 		memset(pjc->m_lockno,0,JC_LOCKNO_MAXLEN+1);
 		memset(pjc->m_psk,0,JC_PSK_LEN+1);
-		pjc->m_datetime=-1;
-		pjc->m_validity=-1;
-		pjc->m_closecode=-1;	
+		pjc->m_datetime=JC_INVALID_VALUE;
+		pjc->m_validity=JC_INVALID_VALUE;
+		pjc->m_closecode=JC_INVALID_VALUE;	
 		pjc->m_cmdtype=JCCMD_INVALID_START;
 		pjc->m_status=EJC_FAIL;
 		pjc->m_stepoftime=60;	//默认在线模式，反推时间步长60秒

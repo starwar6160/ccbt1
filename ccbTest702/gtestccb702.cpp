@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "zwEcies529.h"
+#include "jclmsCCB2014.h"
 void myJcLockInputTest1();
 
 namespace CcbV11Test722Ecies{
@@ -161,6 +162,14 @@ TEST_F(ECIES_Test,csEncDec)
 
 }
 
+TEST(jclmsCCBV11_Test,inputNew)
+{
+	JCINPUT jc;
+	zwNewJcInput(&jc);
+	//简单检查几个值，基本就可以判断是否初始化成功了
+	EXPECT_EQ(strlen(jc.m_atmno),0);
+	EXPECT_EQ(jc.m_datetime,JC_INVALID_VALUE);
+}
 
 //////////////////////////////////////////////////////////////////////////
 }	//namespace ccbtest722{

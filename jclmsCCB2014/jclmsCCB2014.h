@@ -72,10 +72,10 @@ typedef struct jcLockReverseMatchResult{
 #define JC_ATMNO_MAXLEN (16)	//ATM编号长度最大值
 #define JC_LOCKNO_MAXLEN (16)	//LOCK编号长度最大值
 #define JC_PSK_LEN (256/4)	//256bit HEX+NULL,这是定长值
+#define JC_INVALID_VALUE	(-1)
 
 typedef struct JcLockInput
 {
-//public:
 	//固定因素部分
 	char m_atmno[JC_ATMNO_MAXLEN+1];		//ATM号
 	char m_lockno[JC_LOCKNO_MAXLEN+1];	//锁号
@@ -94,19 +94,16 @@ typedef struct JcLockInput
 	//可以把最常用的有效期设置在更靠近开始处加快匹配速度
 	int m_validity_array[NUM_VALIDITY];
 	JCERROR m_status;
-//public:
-//	JcLockInput(void);
 //	void DebugPrint(void);	//
-
-//private:				
-
 }JCINPUT;
 
-//	void SetValidity(const int index,const int val);	//设置m_validity_array数组中某个值
-void JcLockSetValidity(JCINPUT *jc,const int index,const int val);
+
+//	JcLockInput(void);
+void JCLMSCCB2014_API zwNewJcInput(JCINPUT *pjc);
 //	JCERROR CheckInput(void);
-JCERROR JcLockCheckInput(const JCINPUT *jc);
-void zwNewJcInput(JCINPUT *pjc);
+JCERROR JCLMSCCB2014_API JcLockCheckInput(const JCINPUT *jc);
+//	void SetValidity(const int index,const int val);	//设置m_validity_array数组中某个值
+void JCLMSCCB2014_API JcLockSetValidity(JCINPUT *jc,const int index,const int val);
 	//lock结构体内部m_cmdtype决定了生成哪一类动态码；
 	int JCLMSCCB2014_API zwGetDynaCode(const JCINPUT *lock);
 	//验证动态码，返回反推出来的时间和有效期结果，失败的话，两者均为0；

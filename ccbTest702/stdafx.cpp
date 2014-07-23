@@ -13,3 +13,4 @@
 #pragma comment(lib,"gtest.lib")
 #pragma comment(lib,"gtest_main-md.lib")
 #endif // _DEBUG
+#pragma comment(lib,"jclmsCCB2014.lib")

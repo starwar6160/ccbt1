@@ -59,6 +59,7 @@
       <AdditionalDependencies>jclmsCCB2014.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(ZWBINJCLOCK)\$(Configuration)\$(TargetName)$(TargetExt)</OutputFile>
       <AdditionalLibraryDirectories>$(ZWBINJCLOCK)\$(Configuration)\;$(GTEST)\msvc\gtest-md\$(Configuration)</AdditionalLibraryDirectories>
+      <ShowProgress>LinkVerboseLib</ShowProgress>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
