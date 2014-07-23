@@ -166,6 +166,31 @@ TEST_F(ECIES_Test,NormalEnc_BadInput)
 	EXPECT_NE(eciesEncRet,ECIES_SUCCESS);
 }
 
+TEST_F(ECIES_Test,NormalDec_BadInput)
+{
+	char plainOut[ZW_ECIES_MESSAGE_MAXLEN];
+	memset(plainOut,0,sizeof(plainOut));
+	int eciesEncRet=ECIES_SUCCESS;
+	eciesEncRet=zwEciesDecrypt(NULL,plainOut,sizeof(plainOut),
+		s_syncKey,s_hash,s_crypt);
+	EXPECT_NE(eciesEncRet,ECIES_SUCCESS);
+	eciesEncRet=zwEciesDecrypt(s_priKey,NULL,sizeof(plainOut),
+		s_syncKey,s_hash,s_crypt);
+	EXPECT_NE(eciesEncRet,ECIES_SUCCESS);
+	eciesEncRet=zwEciesDecrypt(s_priKey,plainOut,0,
+		s_syncKey,s_hash,s_crypt);
+	EXPECT_NE(eciesEncRet,ECIES_SUCCESS);
+	eciesEncRet=zwEciesDecrypt(s_priKey,plainOut,sizeof(plainOut),
+		NULL,s_hash,s_crypt);
+	EXPECT_NE(eciesEncRet,ECIES_SUCCESS);
+	eciesEncRet=zwEciesDecrypt(s_priKey,plainOut,sizeof(plainOut),
+		s_syncKey,NULL,s_crypt);
+	EXPECT_NE(eciesEncRet,ECIES_SUCCESS);
+	eciesEncRet=zwEciesDecrypt(s_priKey,plainOut,sizeof(plainOut),
+		s_syncKey,s_hash,NULL);
+	EXPECT_NE(eciesEncRet,ECIES_SUCCESS);
+
+}
 
 TEST_F(ECIES_Test,csGenKeyPair)
 {
