@@ -102,7 +102,6 @@ unsigned int zwBinString2Int32(const char *data,const int len);
 		pjc->m_validity=JC_INVALID_VALUE;
 		pjc->m_closecode=JC_INVALID_VALUE;	
 		pjc->m_cmdtype=JCCMD_INVALID_START;
-		pjc->m_status=EJC_FAIL;
 		pjc->m_stepoftime=60;	//默认在线模式，反推时间步长60秒
 		pjc->m_reverse_time_length=10*60;	//默认在线模式，反推10分钟
 		////将5分钟，4小时这样最常用到的有效期排列在前面，提高效率

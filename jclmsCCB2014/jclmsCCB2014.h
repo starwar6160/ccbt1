@@ -93,7 +93,6 @@ typedef struct JcLockInput
 	//有效期，共有NUM_VALIDITY个,默认值是从5分钟到24小时那一系列，单位是分钟；可以自己设定
 	//可以把最常用的有效期设置在更靠近开始处加快匹配速度
 	int m_validity_array[NUM_VALIDITY];
-	JCERROR m_status;
 //	void DebugPrint(void);	//
 }JCINPUT;
 

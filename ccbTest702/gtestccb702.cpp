@@ -162,19 +162,36 @@ TEST_F(ECIES_Test,csEncDec)
 
 }
 
-TEST(jclmsCCBV11_Test,inputNew)
-{
+
+
+class jclmsCCBV11_Test : public testing::Test {
+	// Some expensive resource shared by all tests.
+	//	static T* shared_resource_;
+public:
 	JCINPUT jc;
+protected:
+	static void SetUpTestCase() {
+		//shared_resource_ = new ;
+		//memset(s_priKey,0,sizeof(s_priKey));
+		
+	}
+	static void TearDownTestCase() {
+		//delete shared_resource_;
+		//shared_resource_ = NULL;
+	}
+};
+
+/////////////////////////////////JCLMS算法测试/////////////////////////////////////////
+TEST_F(jclmsCCBV11_Test,inputNew)
+{		
 	JcLockNew(&jc);
 	//简单检查几个值，基本就可以判断是否初始化成功了
 	EXPECT_EQ(strlen(jc.m_atmno),0);
 	EXPECT_EQ(jc.m_datetime,JC_INVALID_VALUE);
 }
 
-TEST(jclmsCCBV11_Test,inputCheck)
+TEST_F(jclmsCCBV11_Test,inputCheck)
 {
-	JCINPUT jc;
-	JcLockNew(&jc);
 	strncpy(jc.m_atmno,"atmnodddd0123456789",JC_ATMNO_MAXLEN);
 	strncpy(jc.m_lockno,"locknossssssa1234",JC_LOCKNO_MAXLEN);
 	strncpy(jc.m_psk,"pskabcdefghijabcdefghijabcdefghijabcdefghijabcdefghijabcdefghij1234",JC_PSK_LEN);
@@ -183,10 +200,9 @@ TEST(jclmsCCBV11_Test,inputCheck)
 	jc.m_validity=5;
 	jc.m_closecode=87654325;
 	jc.m_cmdtype=JCCMD_CCB_DYPASS1;
-
 	//检查输入是否合法
 	EXPECT_EQ(EJC_SUSSESS,JcLockCheckInput(&jc));
-
 }
+
 //////////////////////////////////////////////////////////////////////////
 }	//namespace ccbtest722{

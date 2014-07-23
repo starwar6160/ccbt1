@@ -691,28 +691,6 @@ SWIGEXPORT void * SWIGSTDCALL CSharp_JCINPUT_m_validity_array_get(void * jarg1) 
 }
 
 
-SWIGEXPORT void SWIGSTDCALL CSharp_JCINPUT_m_status_set(void * jarg1, int jarg2) {
-  JcLockInput *arg1 = (JcLockInput *) 0 ;
-  JCERROR arg2 ;
-  
-  arg1 = (JcLockInput *)jarg1; 
-  arg2 = (JCERROR)jarg2; 
-  if (arg1) (arg1)->m_status = arg2;
-}
-
-
-SWIGEXPORT int SWIGSTDCALL CSharp_JCINPUT_m_status_get(void * jarg1) {
-  int jresult ;
-  JcLockInput *arg1 = (JcLockInput *) 0 ;
-  JCERROR result;
-  
-  arg1 = (JcLockInput *)jarg1; 
-  result = (JCERROR) ((arg1)->m_status);
-  jresult = (int)result; 
-  return jresult;
-}
-
-
 SWIGEXPORT void * SWIGSTDCALL CSharp_new_JCINPUT() {
   void * jresult ;
   JcLockInput *result = 0 ;
