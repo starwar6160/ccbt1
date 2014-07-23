@@ -76,26 +76,6 @@ cout<<"s_pubKey=\t"<<s_pubKey<<endl;
 #endif // _DEBUG
 }
 
-TEST_F(ECIES_Test,NormalKeyPairGen_BadInput)
-{
-	int keygenResult=ECIES_SUCCESS;
-	keygenResult=zwEciesKeyPairGen("",
-		s_priKey,ZW_ECIES_PRIKEY_LEN,s_pubKey,ZW_ECIES_PUBKEY_LEN);
-	EXPECT_NE(keygenResult,ECIES_SUCCESS);
-	keygenResult=zwEciesKeyPairGen("aaa",
-		NULL,ZW_ECIES_PRIKEY_LEN,s_pubKey,ZW_ECIES_PUBKEY_LEN);
-	EXPECT_NE(keygenResult,ECIES_SUCCESS);
-	keygenResult=zwEciesKeyPairGen("aaa",
-		s_priKey,0,s_pubKey,ZW_ECIES_PUBKEY_LEN);
-	EXPECT_NE(keygenResult,ECIES_SUCCESS);
-	keygenResult=zwEciesKeyPairGen("aaa",
-		s_priKey,ZW_ECIES_PRIKEY_LEN,NULL,ZW_ECIES_PUBKEY_LEN);
-	EXPECT_NE(keygenResult,ECIES_SUCCESS);
-	keygenResult=zwEciesKeyPairGen("aaa",
-		s_priKey,ZW_ECIES_PRIKEY_LEN,s_pubKey,0);
-	EXPECT_NE(keygenResult,ECIES_SUCCESS);
-
-}
 
 TEST_F(ECIES_Test,NormalEnc)
 {
@@ -117,6 +97,7 @@ cout<<"s_crypt=\t"<<s_crypt<<endl;
 #endif // _DEBUG
 }
 
+
 TEST_F(ECIES_Test,NormalDec)
 {
 	EXPECT_GT(strlen(s_syncKey),0);
@@ -132,6 +113,59 @@ TEST_F(ECIES_Test,NormalDec)
 	cout<<"plainOut=\t"<<plainOut<<endl;
 #endif // _DEBUG
 }
+
+TEST_F(ECIES_Test,NormalKeyPairGen_BadInput)
+{
+	int keygenResult=ECIES_SUCCESS;
+	keygenResult=zwEciesKeyPairGen("",
+		s_priKey,ZW_ECIES_PRIKEY_LEN,s_pubKey,ZW_ECIES_PUBKEY_LEN);
+	EXPECT_NE(keygenResult,ECIES_SUCCESS);
+	keygenResult=zwEciesKeyPairGen("aaa",
+		NULL,ZW_ECIES_PRIKEY_LEN,s_pubKey,ZW_ECIES_PUBKEY_LEN);
+	EXPECT_NE(keygenResult,ECIES_SUCCESS);
+	keygenResult=zwEciesKeyPairGen("aaa",
+		s_priKey,0,s_pubKey,ZW_ECIES_PUBKEY_LEN);
+	EXPECT_NE(keygenResult,ECIES_SUCCESS);
+	keygenResult=zwEciesKeyPairGen("aaa",
+		s_priKey,ZW_ECIES_PRIKEY_LEN,NULL,ZW_ECIES_PUBKEY_LEN);
+	EXPECT_NE(keygenResult,ECIES_SUCCESS);
+	keygenResult=zwEciesKeyPairGen("aaa",
+		s_priKey,ZW_ECIES_PRIKEY_LEN,s_pubKey,0);
+	EXPECT_NE(keygenResult,ECIES_SUCCESS);
+}
+
+TEST_F(ECIES_Test,NormalEnc_BadInput)
+{
+	memset(s_syncKey,0,sizeof(s_syncKey));
+	memset(s_hash,0,sizeof(s_hash));
+	memset(s_crypt,0,sizeof(s_crypt));
+	int eciesEncRet=ECIES_SUCCESS;
+	eciesEncRet=zwEciesEncrypt(NULL,s_PlainText,s_syncKey,sizeof(s_syncKey),
+		s_hash,sizeof(s_hash),s_crypt,sizeof(s_crypt));
+	EXPECT_NE(eciesEncRet,ECIES_SUCCESS);
+	eciesEncRet=zwEciesEncrypt(s_pubKey,NULL,s_syncKey,sizeof(s_syncKey),
+		s_hash,sizeof(s_hash),s_crypt,sizeof(s_crypt));
+	EXPECT_NE(eciesEncRet,ECIES_SUCCESS);
+	eciesEncRet=zwEciesEncrypt(s_pubKey,s_PlainText,NULL,sizeof(s_syncKey),
+		s_hash,sizeof(s_hash),s_crypt,sizeof(s_crypt));
+	EXPECT_NE(eciesEncRet,ECIES_SUCCESS);
+	eciesEncRet=zwEciesEncrypt(s_pubKey,s_PlainText,s_syncKey,0,
+		s_hash,sizeof(s_hash),s_crypt,sizeof(s_crypt));
+	EXPECT_NE(eciesEncRet,ECIES_SUCCESS);
+	eciesEncRet=zwEciesEncrypt(s_pubKey,s_PlainText,s_syncKey,sizeof(s_syncKey),
+		NULL,sizeof(s_hash),s_crypt,sizeof(s_crypt));
+	EXPECT_NE(eciesEncRet,ECIES_SUCCESS);
+	eciesEncRet=zwEciesEncrypt(s_pubKey,s_PlainText,s_syncKey,sizeof(s_syncKey),
+		s_hash,0,s_crypt,sizeof(s_crypt));
+	EXPECT_NE(eciesEncRet,ECIES_SUCCESS);
+	eciesEncRet=zwEciesEncrypt(s_pubKey,s_PlainText,s_syncKey,sizeof(s_syncKey),
+		s_hash,sizeof(s_hash),NULL,sizeof(s_crypt));
+	EXPECT_NE(eciesEncRet,ECIES_SUCCESS);
+	eciesEncRet=zwEciesEncrypt(s_pubKey,s_PlainText,s_syncKey,sizeof(s_syncKey),
+		s_hash,sizeof(s_hash),s_crypt,0);
+	EXPECT_NE(eciesEncRet,ECIES_SUCCESS);
+}
+
 
 TEST_F(ECIES_Test,csGenKeyPair)
 {
