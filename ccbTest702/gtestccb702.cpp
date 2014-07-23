@@ -165,11 +165,11 @@ TEST_F(ECIES_Test,csEncDec)
 
 
 
-class jclmsCCBV11_Test : public testing::Test {
+class jclmsCCBV11_Test:public testing::Test {
 	// Some expensive resource shared by all tests.
 	//	static T* shared_resource_;
 public:
-	JCINPUT jc;
+	static JCINPUT jc;
 protected:
 	static void SetUpTestCase() {
 		//shared_resource_ = new ;
@@ -181,6 +181,8 @@ protected:
 		//shared_resource_ = NULL;
 	}
 };
+
+JCINPUT jclmsCCBV11_Test::jc;
 
 /////////////////////////////////JCLMS算法测试/////////////////////////////////////////
 TEST_F(jclmsCCBV11_Test,inputNew)
@@ -204,6 +206,16 @@ TEST_F(jclmsCCBV11_Test,inputCheck)
 	//检查输入是否合法
 	EXPECT_EQ(EJC_SUSSESS,JcLockCheckInput(&jc));
 }
+
+TEST_F(jclmsCCBV11_Test,getDynaCode)
+{
+	int dyCode=JcLockGetDynaCode(&jc);
+	//检查输入是否合法
+	EXPECT_GT(dyCode,0);
+	EXPECT_LT(dyCode,100000000);
+	printf("dynaCode=%d\n",dyCode);
+}
+
 
 //////////////////////////////////////////////////////////////////////////
 }	//namespace ccbtest722{
