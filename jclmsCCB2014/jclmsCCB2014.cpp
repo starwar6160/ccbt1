@@ -19,7 +19,7 @@
 	const int ZW_AES_BLOCK_SIZE=(128/8)	;
 	const int ZW_SM3_DGST_SIZE=(256/8)	;	
 
-int myGetDynaCodeImplCCB201407a( const JcLockInput &lock );
+int myGetDynaCodeImplCCB201407a( const JCINPUT *lock );
 //从包含二进制数据的字符串输入，获得一个8位整数的输出
 unsigned int zwBinString2Int32(const char *data,const int len);
 
@@ -68,18 +68,6 @@ unsigned int zwBinString2Int32(const char *data,const int len);
 		return myGetDynaCodeImplCCB201407a(lock);
 	}
 
-	//jclms::JCERROR zwVerifyDynaCode( const JcLockInput &lock,const int dstDyCode )
-	//{
-	//	int calCode= myGetDynaCodeImplCCB201407a(lock);
-	//	if (calCode==dstDyCode)
-	//	{
-	//		return EJC_SUSSESS;
-	//	}
-	//	else
-	//	{
-	//		return EJC_FAIL;
-	//	}
-	//}
 
 	//从包含二进制数据的字符串输入，获得一个8位整数的输出
 	unsigned int zwBinString2Int32(const char *data,const int len)
@@ -103,101 +91,91 @@ unsigned int zwBinString2Int32(const char *data,const int len);
 		return sum;
 	}
 
-	void JcLockInput::SetValidity(const int index,const int val)
+	void JcLockSetValidity(JCINPUT *jc,const int index,const int val)
 	{
 		if (index>=0 && index<=NUM_VALIDITY)
 		{
-			m_validity_array[index]=val;
+			jc->m_validity_array[index]=val;
 		}		
 	}
 //////////////////////////////////////////////////////////////////////////
-	zwNewJcInput(JCINPUT *pJcInput)
+	void zwNewJcInput(JCINPUT *pjc)
 	{
-		memset(m_atmno,0,JC_ATMNO_MAXLEN+1);
-		memset(m_lockno,0,JC_LOCKNO_MAXLEN+1);
-		memset(m_psk,0,JC_PSK_LEN+1);
-		m_datetime=-1;
-		m_validity=-1;
-		m_closecode=-1;	
-		m_cmdtype=JCCMD_INVALID_START;
-		m_status=EJC_FAIL;
-		m_stepoftime=60;	//默认在线模式，反推时间步长60秒
-		m_reverse_time_length=10*60;	//默认在线模式，反推10分钟
+		memset(pjc->m_atmno,0,JC_ATMNO_MAXLEN+1);
+		memset(pjc->m_lockno,0,JC_LOCKNO_MAXLEN+1);
+		memset(pjc->m_psk,0,JC_PSK_LEN+1);
+		pjc->m_datetime=-1;
+		pjc->m_validity=-1;
+		pjc->m_closecode=-1;	
+		pjc->m_cmdtype=JCCMD_INVALID_START;
+		pjc->m_status=EJC_FAIL;
+		pjc->m_stepoftime=60;	//默认在线模式，反推时间步长60秒
+		pjc->m_reverse_time_length=10*60;	//默认在线模式，反推10分钟
 		////将5分钟，4小时这样最常用到的有效期排列在前面，提高效率
 		//int valarr[]={5,MIN_OF_HOUR*4,MIN_OF_HOUR*8,MIN_OF_HOUR*12,15,30,60,MIN_OF_HOUR*24};
-		m_validity_array[0]=5;
-		m_validity_array[1]=60*4;
-		m_validity_array[2]=60*8;
-		m_validity_array[3]=60*12;
-		m_validity_array[4]=15;
-		m_validity_array[5]=30;
-		m_validity_array[6]=60;
-		m_validity_array[7]=60*24;
+		pjc->m_validity_array[0]=5;
+		pjc->m_validity_array[1]=60*4;
+		pjc->m_validity_array[2]=60*8;
+		pjc->m_validity_array[3]=60*12;
+		pjc->m_validity_array[4]=15;
+		pjc->m_validity_array[5]=30;
+		pjc->m_validity_array[6]=60;
+		pjc->m_validity_array[7]=60*24;
 	}
 
-	void JcLockInput::DebugPrint()
+	void JcLockDebugPrint(const JCINPUT *jc)
 	{
-		if (EJC_SUSSESS!=CheckInput())
+		if (EJC_SUSSESS!=JcLockCheckInput(jc))
 		{
 			printf("JcLock Input Para Error!\n");
-		}
-		 
-		m_datetime=myGetNormalTime(m_datetime,G_TIMEMOD);
-		string conn=".";	//连字符号
+		}	 		
 		//三个固定条件组合在一起
-		string allItems=m_atmno+conn+m_lockno+conn+m_psk+conn;
+		char mainstr[JC_ATMNO_MAXLEN+JC_LOCKNO_MAXLEN+JC_PSK_LEN+3];
+		memset(mainstr,0,sizeof(mainstr));		
+		sprintf(mainstr,"%s.%s.%s.",jc->m_atmno,jc->m_lockno,jc->m_psk);
 		//可变条件逐个化为字符串，组合到一起
-#define BLEN (16)
-		char buf[BLEN];
-		memset(buf,0,BLEN);
-		sprintf(buf,"%d",m_datetime);
-		allItems=allItems+buf+conn;
-		memset(buf,0,BLEN);
-		sprintf(buf,"%d",m_validity);
-		allItems=allItems+buf+conn;
-		memset(buf,0,BLEN);
-		sprintf(buf,"%d",m_closecode);
-		allItems=allItems+buf+conn;
-		memset(buf,0,BLEN);
-		sprintf(buf,"%d",m_cmdtype);
-		allItems=allItems+buf;
-		printf("All Items = %s \n",allItems.c_str());
+		char vstr[11+5+9+3+3];	//大致把各个可变字段的位数估计一下
+		sprintf(vstr,"%d.%d.%d.%d",jc->m_datetime,jc->m_validity,
+			jc->m_closecode,jc->m_cmdtype);
+		//allItems=allItems+buf;
+		char allStr[128];
+		memset(allStr,0,128);
+		strncpy(allStr,mainstr,JC_ATMNO_MAXLEN+JC_LOCKNO_MAXLEN+JC_PSK_LEN+3);
+		strcat(allStr,vstr);
+		printf("All Items = %s \n",allStr);
 	}
 
-	JCERROR JcLockInput::CheckInput()
+	JCERROR JcLockCheckInput(const JCINPUT *jc)
 	{
 		JCERROR status=EJC_SUSSESS;
-		if (m_atmno=="")
+		if (strlen(jc->m_atmno)==0)
 		{
 			status=EJC_INPUT_NULL;
 		}
-		if (m_lockno=="")
+		if (strlen(jc->m_lockno)==0)
 		{
 			status=EJC_INPUT_NULL;
 		}
-		if (m_psk=="")
+		if (strlen(jc->m_psk)==0)
 		{
 			status=EJC_INPUT_NULL;
 		}
-		if (m_datetime<0)
+		if (jc->m_datetime<0)
 		{
 			status=EJC_INPUT_NULL;
 		}
-		if (m_validity<0)
+		if (jc->m_validity<0)
 		{
 			status=EJC_INPUT_NULL;
 		}
-		if (m_closecode<0)
+		if (jc->m_closecode<0)
 		{
 			status=EJC_INPUT_NULL;
 		}
-		if (m_cmdtype==JCCMD_INVALID_START)
+		if (jc->m_cmdtype==JCCMD_INVALID_START)
 		{
 			status=EJC_INPUT_NULL;
 		}
-		//时间秒数取整到G_TIMEMOD，以便消除一些1-2秒的RTC时钟误差造成无法开锁
-		m_datetime=myGetNormalTime(m_datetime,G_TIMEMOD);
-		m_status=status;
 		return status;
 	}
 

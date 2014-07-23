@@ -27,7 +27,7 @@ void myJcLockInputTest1()
 	aa.m_validity=5;
 	aa.m_closecode=87654325;
 	aa.m_cmdtype=JCCMD_CCB_DYPASS1;
-	aa.DebugPrint();
+	//aa.DebugPrint();
 	set <int> rset;
 	//基本上做到了40K个批量生成时重复在个位数，13K个无重复
 	//在1到9的字头分布方面，几千个时偏差在10%以内，

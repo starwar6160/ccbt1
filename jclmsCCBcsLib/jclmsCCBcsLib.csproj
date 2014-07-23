@@ -46,9 +46,9 @@
     <Compile Include="swigCode\ECIES_ITEMS.cs" />
     <Compile Include="swigCode\JCCMD.cs" />
     <Compile Include="swigCode\JCERROR.cs" />
+    <Compile Include="swigCode\JCINPUT.cs" />
     <Compile Include="swigCode\jclmsCCB2014.cs" />
     <Compile Include="swigCode\jclmsCCB2014PINVOKE.cs" />
-    <Compile Include="swigCode\JcLockInput.cs" />
     <Compile Include="swigCode\JCMATCH.cs" />
     <Compile Include="swigCode\SWIGTYPE_p_int.cs" />
     <Compile Include="swigCode\SWIGTYPE_p_int32_t.cs" />

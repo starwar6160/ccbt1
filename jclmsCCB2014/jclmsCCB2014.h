@@ -1,6 +1,6 @@
 #ifndef jclmsCCB2014_h__
 #define jclmsCCB2014_h__
-#include "zwstdafx.h"
+//#include "zwstdafx.h"
 
 // 下列 ifdef 块是创建使从 DLL 导出更简单的
 // 宏的标准方法。此 DLL 中的所有文件都是用命令行上定义的 JCLMSCCB2014_EXPORTS
@@ -68,7 +68,7 @@ typedef struct jcLockReverseMatchResult{
 
 //有效期数组大小；更改此处以后请对应更改源代码中JcLockInput类初始化代码中
 //为有效期数组m_validity_array赋予初值的相应语句
-#define NUM_VALIDITY (8);
+#define NUM_VALIDITY (8)
 #define JC_ATMNO_MAXLEN (16)	//ATM编号长度最大值
 #define JC_LOCKNO_MAXLEN (16)	//LOCK编号长度最大值
 #define JC_PSK_LEN (256/4)	//256bit HEX+NULL,这是定长值
@@ -92,18 +92,21 @@ typedef struct JcLockInput
 	int m_reverse_time_length;					
 	//有效期，共有NUM_VALIDITY个,默认值是从5分钟到24小时那一系列，单位是分钟；可以自己设定
 	//可以把最常用的有效期设置在更靠近开始处加快匹配速度
-//	int m_validity_array[NUM_VALIDITY];
+	int m_validity_array[NUM_VALIDITY];
 	JCERROR m_status;
 //public:
 //	JcLockInput(void);
 //	void DebugPrint(void);	//
-//	JCERROR CheckInput(void);
-//	void SetValidity(const int index,const int val);	//设置m_validity_array数组中某个值
+
 //private:				
 
 }JCINPUT;
 
-
+//	void SetValidity(const int index,const int val);	//设置m_validity_array数组中某个值
+void JcLockSetValidity(JCINPUT *jc,const int index,const int val);
+//	JCERROR CheckInput(void);
+JCERROR JcLockCheckInput(const JCINPUT *jc);
+void zwNewJcInput(JCINPUT *pjc);
 	//lock结构体内部m_cmdtype决定了生成哪一类动态码；
 	int JCLMSCCB2014_API zwGetDynaCode(const JCINPUT *lock);
 	//验证动态码，返回反推出来的时间和有效期结果，失败的话，两者均为0；
