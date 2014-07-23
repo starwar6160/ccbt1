@@ -62,7 +62,7 @@ namespace cstest702
             //以后每次算法如果有了不兼容的修改，或者出一个正式版本，
             //都会有一个版本号，就是一个整数，前8位是日期，最后一位是次版本号
             //一般为0，除非一天之内出了超过1个版本；有问题请先给我版本号；
-            int lmsver = jclmsCCB2014.getVersion();
+            int lmsver = jclmsCCB2014.JcLockGetVersion();
             Console.Out.WriteLine("Jclms DLL Version is {0}", lmsver);
 
             //锁具的模拟对象
@@ -104,22 +104,22 @@ namespace cstest702
             jcSrv.m_cmdtype = JCCMD.JCCMD_INIT_CLOSECODE;
             //有问题请给我这个字符串
             Console.Out.WriteLine("动态码输入条件调试信息字符串是");
-            jcLock.DebugPrint();
+            jclmsCCB2014.JcLockDebugPrint(jcSrv);
             //锁具产生初始闭锁码
-            int firstCloseCode = jclmsCCB2014.zwGetDynaCode(jcLock);
+            int firstCloseCode = jclmsCCB2014.JcLockGetDynaCode(jcLock);
             Console.Out.WriteLine("锁具产生的初始闭锁码是 {0}", firstCloseCode);
             //初始闭锁码输入到上位机DLL，其他条件已经准备好
             jcSrv.m_closecode = firstCloseCode;
             //获取第一开锁密码.注意，获得每一类动态码的方式都是这个调用，区别在于m_cmdtype
             //jcSrv.DebugPrint();
             jcSrv.m_cmdtype = JCCMD.JCCMD_CCB_DYPASS1;
-            int dyCode1 = jclmsCCB2014.zwGetDynaCode(jcSrv);
+            int dyCode1 = jclmsCCB2014.JcLockGetDynaCode(jcSrv);
             Console.Out.WriteLine("上位机产生的第一开锁动态码是 {0}", dyCode1);
 
             //锁具验证第一开锁动态码，实质上是在下位机把该动态码再次计算一次
             jcLock.m_closecode = firstCloseCode;
             jcLock.m_cmdtype = JCCMD.JCCMD_CCB_DYPASS1;
-            int dyCode1Verify = jclmsCCB2014.zwGetDynaCode(jcLock);
+            int dyCode1Verify = jclmsCCB2014.JcLockGetDynaCode(jcLock);
             if (dyCode1 == dyCode1Verify)
             {
                 Console.Out.WriteLine("锁具对于第一开锁密码验证成功，证实了上位机的身份");
@@ -132,13 +132,13 @@ namespace cstest702
             //锁具生成验证码
             jcLock.m_cmdtype = JCCMD.JCCMD_CCB_LOCK_VERCODE;
             //用第一开锁密码作为验证码的元素，以便适应建行的3个码环环相扣的要求
-            jcLock.m_closecode = dyCode1;   
-            int lockVerifyCode = jclmsCCB2014.zwGetDynaCode(jcLock);
+            jcLock.m_closecode = dyCode1;
+            int lockVerifyCode = jclmsCCB2014.JcLockGetDynaCode(jcLock);
             Console.Out.WriteLine("锁具产生的验证码是 {0}", lockVerifyCode);
             jcSrv.m_cmdtype = JCCMD.JCCMD_CCB_LOCK_VERCODE;
             //上位机也计算锁具应该返回的验证码的值，予以比对
             jcSrv.m_closecode = dyCode1;
-            int srvLockVerCode = jclmsCCB2014.zwGetDynaCode(jcSrv);
+            int srvLockVerCode = jclmsCCB2014.JcLockGetDynaCode(jcSrv);
             if (lockVerifyCode == srvLockVerCode)
             {
                 Console.Out.WriteLine("上位机对于锁具应该返回的验证码验证成功，证实了锁具的身份");
@@ -151,12 +151,12 @@ namespace cstest702
             //上位机计算第二开锁码
             jcSrv.m_cmdtype = JCCMD.JCCMD_CCB_DYPASS2;
             jcSrv.m_closecode = lockVerifyCode; //锁具验证码作为第二开锁码的计算要素
-            int dyCode2 = jclmsCCB2014.zwGetDynaCode(jcSrv);
+            int dyCode2 = jclmsCCB2014.JcLockGetDynaCode(jcSrv);
             Console.Out.WriteLine("上位机计算的第二开锁码是 {0}", dyCode2);
             jcLock.m_cmdtype = JCCMD.JCCMD_CCB_DYPASS2;
             //锁具计算第二开锁码，以便于上位机传来的第二开锁码比对
             jcLock.m_closecode = lockVerifyCode;//锁具验证码作为第二开锁码的计算要素
-            int dyCode2Verify = jclmsCCB2014.zwGetDynaCode(jcLock);
+            int dyCode2Verify = jclmsCCB2014.JcLockGetDynaCode(jcLock);
             if (dyCode2 == dyCode2Verify)
             {
                 Console.Out.WriteLine("锁具验证第二开锁码成功，开锁成功");
@@ -175,13 +175,13 @@ namespace cstest702
             //以后每次算法如果有了不兼容的修改，或者出一个正式版本，
             //都会有一个版本号，就是一个整数，前8位是日期，最后一位是次版本号
             //一般为0，除非一天之内出了超过1个版本；有问题请先给我版本号；
-            int lmsver = jclmsCCB2014.getVersion();
+            int lmsver = jclmsCCB2014.JcLockGetVersion();
             Console.Out.WriteLine("Jclms DLL Version is {0}", lmsver);
 
             //锁具的模拟对象
-            JcLockInput jcLock = new JcLockInput();
+            JCINPUT jcLock = new JCINPUT();
             //上位机的模拟对象
-            JcLockInput jcSrv = new JcLockInput();
+            JCINPUT jcSrv = new JCINPUT();
 
             //在此我特地用了普通的字符串，用意在于，这些字符串的字段内容是什么都可以，长度多长都可以
             //因为内部使用的C++的String，对于长度没有限制，只受内存大小限制；从几个字节
@@ -219,20 +219,20 @@ namespace cstest702
             jcSrv.m_cmdtype = JCCMD.JCCMD_INIT_CLOSECODE;
             //有问题请给我这个字符串
             Console.Out.WriteLine("动态码输入条件调试信息字符串是");
-            jcLock.DebugPrint();
+            jclmsCCB2014.JcLockDebugPrint(jcLock);
             //锁具产生初始闭锁码
-            int firstCloseCode = jclmsCCB2014.zwGetDynaCode(jcLock);
+            int firstCloseCode = jclmsCCB2014.JcLockGetDynaCode(jcLock);
             Console.Out.WriteLine("锁具产生的初始闭锁码是 {0}", firstCloseCode);
             //初始闭锁码输入到上位机DLL，其他条件已经准备好
             jcSrv.m_closecode = firstCloseCode;
             //获取第一开锁密码.注意，获得每一类动态码的方式都是这个调用，区别在于m_cmdtype
             //jcSrv.DebugPrint();
             jcSrv.m_cmdtype = JCCMD.JCCMD_CCB_DYPASS1;
-            int dyCode1 = jclmsCCB2014.zwGetDynaCode(jcSrv);
+            int dyCode1 = jclmsCCB2014.JcLockGetDynaCode(jcSrv);
             Console.Out.WriteLine("上位机产生的第一开锁动态码是 {0}", dyCode1);
 
             //jcSrv.SetValidity(2, 17);
-            JCMATCH jcoret= jclmsCCB2014.zwReverseVerifyDynaCode(jcSrv, dyCode1);
+            JCMATCH jcoret = jclmsCCB2014.JcLockReverseVerifyDynaCode(jcSrv, dyCode1);
             Console.Out.WriteLine("离线匹配的时间(GMT)和有效期(分钟)是 {0},\t{1}",
                 jcoret.s_datetime, jcoret.s_validity);
             if (jcoret.s_datetime == 0)
@@ -262,8 +262,8 @@ namespace cstest702
             myLock.m_closecode = 87654321;
             //要生成哪一类动态码，请看JCCMD的定义
             myLock.m_cmdtype = JCCMD.JCCMD_INIT_CLOSECODE;
-            myLock.DebugPrint();
-            dyCode = jclmsCCB2014.zwGetDynaCode(myLock);
+            jclmsCCB2014.JcLockDebugPrint(myLock);
+            dyCode = jclmsCCB2014.JcLockGetDynaCode(myLock);
             Console.Out.WriteLine("InitCloseCode={0}", dyCode);
             //验证动态码，同样填写完毕各项输入要素，然后把结构体连同动态码传入
             //返回值只有成功或者失败；请不要依赖于具体值，而是要用枚举量，
