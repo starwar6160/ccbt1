@@ -9,6 +9,8 @@
 #include "jclmsCCB2014.h"
 #include "hashalg\\sm3.h"
 
+
+
 //namespace jclms{
 	const int G_TIMEMOD=10;	//默认按照10秒取整进入的数据，用于防止一些1-3秒钟的错误
 	//实际上不限于AES,只是作为一个基本的块规整大小单位方便处理
@@ -61,7 +63,7 @@ unsigned int zwBinString2Int32(const char *data,const int len);
 		assert(td==0);
 	}
 
-	int zwGetDynaCode(const JcLockInput &lock)
+	int zwGetDynaCode(const JCINPUT *lock)
 	{
 		return myGetDynaCodeImplCCB201407a(lock);
 	}
@@ -109,7 +111,7 @@ unsigned int zwBinString2Int32(const char *data,const int len);
 		}		
 	}
 //////////////////////////////////////////////////////////////////////////
-	JcLockInput::JcLockInput()
+	zwNewJcInput(JCINPUT *pJcInput)
 	{
 		memset(m_atmno,0,JC_ATMNO_MAXLEN+1);
 		memset(m_lockno,0,JC_LOCKNO_MAXLEN+1);
@@ -200,7 +202,7 @@ unsigned int zwBinString2Int32(const char *data,const int len);
 	}
 
 	//生成各种类型的动态码
-	int myGetDynaCodeImplCCB201407a( const JcLockInput &lock )
+	int myGetDynaCodeImplCCB201407a( const JCINPUT *lock )
 	{
 		SM3 sm3;
 		char outHmac[ZW_SM3_DGST_SIZE];
@@ -214,18 +216,18 @@ unsigned int zwBinString2Int32(const char *data,const int len);
 		//限度是小于14开头的时间(1.4G秒)或者快要超出2048M秒的话就是非法了
 		/////////////////////////////逐个元素进行HASH运算/////////////////////////////////////////////
 		//首先处理固定字段的HASH值输入
-		mySm3Process(&sm3,lock.m_atmno,sizeof(lock.m_atmno));
-		mySm3Process(&sm3,lock.m_lockno,sizeof(lock.m_lockno));		
-		mySm3Process(&sm3,lock.m_psk,sizeof(lock.m_psk));
+		mySm3Process(&sm3,lock->m_atmno,sizeof(lock->m_atmno));
+		mySm3Process(&sm3,lock->m_lockno,sizeof(lock->m_lockno));		
+		mySm3Process(&sm3,lock->m_psk,sizeof(lock->m_psk));
 
 		//规格化时间到G_TIMEMOD这么多秒
-		int l_datetime=myGetNormalTime(lock.m_datetime,G_TIMEMOD);
+		int l_datetime=myGetNormalTime(lock->m_datetime,G_TIMEMOD);
 		//有效期和闭锁码需要根据不同情况分别处理
-		int l_validity=lock.m_validity;
-		int l_closecode=lock.m_closecode;	
+		int l_validity=lock->m_validity;
+		int l_closecode=lock->m_closecode;	
 		//计算初始闭锁码时，采用固定的时间，有效期，闭锁码的值
 		//以便对于特定的锁具和PSK来说，初始闭锁码是一个恒定值
-		if (JCCMD_INIT_CLOSECODE==lock.m_cmdtype)
+		if (JCCMD_INIT_CLOSECODE==lock->m_cmdtype)
 		{
 			l_datetime=myGetNormalTime(time(NULL),8*60*60);	//初始闭锁码采用8小时的取整时间
 			l_validity=(24*60)*365;	//初始有效期特选一个合法有效期之外的值,一整年
@@ -235,7 +237,7 @@ unsigned int zwBinString2Int32(const char *data,const int len);
 		mySm3Process(&sm3,l_datetime);
 		mySm3Process(&sm3,l_validity);
 		mySm3Process(&sm3,l_closecode);
-		mySm3Process(&sm3,lock.m_cmdtype);
+		mySm3Process(&sm3,lock->m_cmdtype);
 		//////////////////////////////HASH运算结束////////////////////////////////////////////
 		memset(outHmac,0,ZWSM3_DGST_LEN);
 		SM3_hash(&sm3,(char *)(outHmac));
@@ -248,7 +250,7 @@ unsigned int zwBinString2Int32(const char *data,const int len);
 
 	//离线模式匹配，时间点精度为取整到一个小时的零点，有效期精度为1小时起
 	//如果找到了，返回JCOFFLINE中是匹配的时间和有效期，否则其中的值都是0
-	JCMATCH zwReverseVerifyDynaCode( const JcLockInput &lock,const int dstCode )
+	JCMATCH zwReverseVerifyDynaCode( const JCINPUT &lock,const int dstCode )
 	{
 		const int MIN_OF_HOUR=60;	//一小时的分钟数
 
@@ -300,34 +302,34 @@ foundMatch:
 		return jcoff;
 	}
 
-	JCERROR CheckInputValid( const JcLockInput &lock )
+	JCERROR CheckInputValid( const JCINPUT *lock )
 	{
 		const int ZWMEGA=1000*1000;
 		//假定这些数字字段在二进制层面都是等同于int的长度的，以便通过一个统一的函数进行HASH运算
-		assert(sizeof(lock.m_datetime)==sizeof(int));
-		assert(sizeof(lock.m_validity)==sizeof(int));
-		assert(sizeof(lock.m_closecode)==sizeof(int));
-		assert(sizeof(lock.m_cmdtype)==sizeof(int));
+		assert(sizeof(lock->m_datetime)==sizeof(int));
+		assert(sizeof(lock->m_validity)==sizeof(int));
+		assert(sizeof(lock->m_closecode)==sizeof(int));
+		assert(sizeof(lock->m_cmdtype)==sizeof(int));
 
-		assert(lock.m_datetime>(1400*ZWMEGA) && lock.m_datetime<((2048*ZWMEGA)-3));
-		assert(lock.m_validity>=0 && lock.m_validity<=(24*60));
-		assert(lock.m_closecode>=0 && lock.m_closecode<=(100*ZWMEGA));
-		assert(lock.m_cmdtype>JCCMD_INVALID_START && lock.m_cmdtype<JCCMD_INVALID_END);
+		assert(lock->m_datetime>(1400*ZWMEGA) && lock->m_datetime<((2048*ZWMEGA)-3));
+		assert(lock->m_validity>=0 && lock->m_validity<=(24*60));
+		assert(lock->m_closecode>=0 && lock->m_closecode<=(100*ZWMEGA));
+		assert(lock->m_cmdtype>JCCMD_INVALID_START && lock->m_cmdtype<JCCMD_INVALID_END);
 
 		//限度是小于14开头的时间(1.4G秒)或者快要超出2048M秒的话就是非法了
-		if (lock.m_datetime<(1400*ZWMEGA) || lock.m_datetime>((2048*ZWMEGA)-3))
+		if (lock->m_datetime<(1400*ZWMEGA) || lock->m_datetime>((2048*ZWMEGA)-3))
 		{
 			return EJC_DATETIME_INVALID;
 		}
-		if (lock.m_validity<0 || lock.m_validity>(24*60))
+		if (lock->m_validity<0 || lock->m_validity>(24*60))
 		{
 			return EJC_VALIDRANGE_INVALID;
 		}
-		if (lock.m_closecode<0 || lock.m_closecode>(100*ZWMEGA))
+		if (lock->m_closecode<0 || lock->m_closecode>(100*ZWMEGA))
 		{
 			return EJC_CLOSECODE_INVALID;
 		}
-		if (lock.m_cmdtype<=JCCMD_INVALID_START || lock.m_cmdtype>=JCCMD_INVALID_END)
+		if (lock->m_cmdtype<=JCCMD_INVALID_START || lock->m_cmdtype>=JCCMD_INVALID_END)
 		{
 			return EJC_CMDTYPE_INVALID;
 		}

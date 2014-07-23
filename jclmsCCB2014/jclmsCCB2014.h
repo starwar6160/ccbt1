@@ -50,6 +50,15 @@ typedef enum jc_cmd_type{
 	JCCMD_INVALID_END
 } JCCMD;
 
+typedef enum jc_input_type{
+	JCI_ATMNO,
+	JCI_LOCKNO,
+	JCI_PSK,
+	JCI_DATETIME,
+	JCI_VALIDITY,
+	JCI_CLOSECODE
+};
+
 //离线匹配的返回值
 typedef struct jcLockReverseMatchResult{
 	int s_datetime;		//匹配结果秒数
@@ -59,49 +68,52 @@ typedef struct jcLockReverseMatchResult{
 
 //有效期数组大小；更改此处以后请对应更改源代码中JcLockInput类初始化代码中
 //为有效期数组m_validity_array赋予初值的相应语句
-const int NUM_VALIDITY=8;
-const int JC_ATMNO_MAXLEN=16;	//ATM编号长度最大值
-const int JC_LOCKNO_MAXLEN=16;	//LOCK编号长度最大值
-const int JC_PSK_LEN=256/4;	//256bit HEX+NULL,这是定长值
+#define NUM_VALIDITY (8);
+#define JC_ATMNO_MAXLEN (16)	//ATM编号长度最大值
+#define JC_LOCKNO_MAXLEN (16)	//LOCK编号长度最大值
+#define JC_PSK_LEN (256/4)	//256bit HEX+NULL,这是定长值
 
-	struct JCLMSCCB2014_API JcLockInput
-	{
-	public:
-		//固定因素部分
-		char m_atmno[JC_ATMNO_MAXLEN+1];		//ATM号
-		char m_lockno[JC_LOCKNO_MAXLEN+1];	//锁号
-		char m_psk[JC_PSK_LEN+1];			//PSK，上下位机共同持有的唯一机密因素
-		//可变因素部分
-		int m_datetime;		//日期时间
-		int m_validity;		//有效期
-		int m_closecode;	//闭锁码		
-		JCCMD m_cmdtype;		//模式代码，比如开锁模式，远程重置模式，建行的流程要求的各种模式等等
+typedef struct JcLockInput
+{
+//public:
+	//固定因素部分
+	char m_atmno[JC_ATMNO_MAXLEN+1];		//ATM号
+	char m_lockno[JC_LOCKNO_MAXLEN+1];	//锁号
+	char m_psk[JC_PSK_LEN+1];			//PSK，上下位机共同持有的唯一机密因素
+	//可变因素部分
+	int m_datetime;		//日期时间
+	int m_validity;		//有效期
+	int m_closecode;	//闭锁码		
+	JCCMD m_cmdtype;		//模式代码，比如开锁模式，远程重置模式，建行的流程要求的各种模式等等
 	///////////////////////////////////以下为配置算法运作模式的数据///////////////////////////////////////
-		//反推时间步长秒数，默认为在线模式，精度1分钟，值为60，离线模式请自己设置为3600秒或者其他数值
-		int m_stepoftime;	
-		//往前反推的时间长度秒数，默认为在线模式，10分钟，值为600，其他值比如离线24小时请自己设置
-		int m_reverse_time_length;					
-		//有效期，共有NUM_VALIDITY个,默认值是从5分钟到24小时那一系列，单位是分钟；可以自己设定
-		//可以把最常用的有效期设置在更靠近开始处加快匹配速度
-		int m_validity_array[NUM_VALIDITY];
-	public:
-		JcLockInput(void);
-		void DebugPrint(void);	//
-		JCERROR CheckInput(void);
-		void SetValidity(const int index,const int val);	//设置m_validity_array数组中某个值
-	private:				
-		JCERROR m_status;
-	};
+	//反推时间步长秒数，默认为在线模式，精度1分钟，值为60，离线模式请自己设置为3600秒或者其他数值
+	int m_stepoftime;	
+	//往前反推的时间长度秒数，默认为在线模式，10分钟，值为600，其他值比如离线24小时请自己设置
+	int m_reverse_time_length;					
+	//有效期，共有NUM_VALIDITY个,默认值是从5分钟到24小时那一系列，单位是分钟；可以自己设定
+	//可以把最常用的有效期设置在更靠近开始处加快匹配速度
+//	int m_validity_array[NUM_VALIDITY];
+	JCERROR m_status;
+//public:
+//	JcLockInput(void);
+//	void DebugPrint(void);	//
+//	JCERROR CheckInput(void);
+//	void SetValidity(const int index,const int val);	//设置m_validity_array数组中某个值
+//private:				
+
+}JCINPUT;
+
+
 	//lock结构体内部m_cmdtype决定了生成哪一类动态码；
-	int JCLMSCCB2014_API zwGetDynaCode(const JcLockInput &lock);
+	int JCLMSCCB2014_API zwGetDynaCode(const JCINPUT *lock);
 	//验证动态码，返回反推出来的时间和有效期结果，失败的话，两者均为0；
-	JCMATCH JCLMSCCB2014_API zwReverseVerifyDynaCode( const JcLockInput &lock,const int dstCode );
+	JCMATCH JCLMSCCB2014_API zwReverseVerifyDynaCode( const JCINPUT *lock,const int dstCode );
 	//指明该算法是哪一天出的，当算法有运算结果上的变更时这个版本改变，一天最多只出一个版本；
 	int JCLMSCCB2014_API getVersion(void);
 
-	JCERROR CheckInputValid( const JcLockInput &lock );
+	JCERROR CheckInputValid( const JCINPUT *lock );
 
 //}	//end of namespace jclms
-
+//////////////////////////////新设计的C接口////////////////////////////////////////////
 
 #endif // jclmsCCB2014_h__

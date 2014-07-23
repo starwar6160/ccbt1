@@ -44,7 +44,7 @@ void myJcLockInputTest1()
 		//所以测试结果大量重复，改为变更闭锁码的条件，结果就不重复了；
 		//周伟.20140722.
 		aa.m_closecode++;
-		int dycode=zwGetDynaCode(aa);
+		int dycode=zwGetDynaCode(&aa);
 		rset.insert(dycode);
 		if (i % (RCOUNT/32) ==0)
 		{

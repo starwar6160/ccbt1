@@ -1,3 +1,9 @@
+#include "..\stdafx.h"
+//#include <assert.h>
+#include <string>
+#include <vector>
+using std::string;
+using std::vector;
 #ifdef  __cplusplus
 extern "C" {
 #endif
@@ -5,12 +11,7 @@ extern "C" {
 #ifdef  __cplusplus
 }
 #endif
-#include "..\stdafx.h"
-//#include <assert.h>
-#include <string>
-#include <vector>
-using std::string;
-using std::vector;
+
 
 void zwRandSeedGen603(char *randBuf,const int randBufLen);
 

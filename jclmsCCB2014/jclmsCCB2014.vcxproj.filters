@@ -19,6 +19,9 @@
     <Filter Include="源文件\ECIES">
       <UniqueIdentifier>{08dad2fa-5f52-4ee9-90a7-1e3462674d96}</UniqueIdentifier>
     </Filter>
+    <Filter Include="源文件\src">
+      <UniqueIdentifier>{65922014-8a29-4f56-9c04-e25c270d9292}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="ReadMe.txt" />
@@ -45,9 +48,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="jclmsCCB2014.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="dllmain.cpp">
@@ -79,6 +79,12 @@
     </ClCompile>
     <ClCompile Include="ECIES708\sha2.c">
       <Filter>源文件\ECIES</Filter>
+    </ClCompile>
+    <ClCompile Include="jclmsCCB2014.cpp">
+      <Filter>源文件\src</Filter>
+    </ClCompile>
+    <ClCompile Include="zwtest1.c">
+      <Filter>源文件\src</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
