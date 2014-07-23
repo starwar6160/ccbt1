@@ -26,7 +26,7 @@ unsigned int zwBinString2Int32(const char *data,const int len);
 	int JcLockGetVersion(void)
 	{
 		//含义是是日期
-		return 20140721;	
+		return 20140723;	
 	}
 
 	//获得规格化的时间，也就是按照某个值取整的时间

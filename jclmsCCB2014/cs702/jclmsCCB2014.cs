@@ -23,36 +23,27 @@ public class jclmsCCB2014 {
     } 
   }
 
-  public static void JcLockSetValidity(JCINPUT jc, int index, int val) {
-    jclmsCCB2014PINVOKE.JcLockSetValidity(JCINPUT.getCPtr(jc), index, val);
+  public static void JcLockNew(JCINPUT pjc) {
+    jclmsCCB2014PINVOKE.JcLockNew(JCINPUT.getCPtr(pjc));
   }
 
-  public static JCERROR JcLockCheckInput(JCINPUT jc) {
-    JCERROR ret = (JCERROR)jclmsCCB2014PINVOKE.JcLockCheckInput(JCINPUT.getCPtr(jc));
+  public static JCERROR JcLockCheckInput(JCINPUT arg0) {
+    JCERROR ret = (JCERROR)jclmsCCB2014PINVOKE.JcLockCheckInput(JCINPUT.getCPtr(arg0));
     return ret;
   }
 
-  public static void zwNewJcInput(JCINPUT pjc) {
-    jclmsCCB2014PINVOKE.zwNewJcInput(JCINPUT.getCPtr(pjc));
-  }
-
-  public static int zwGetDynaCode(JCINPUT arg0) {
-    int ret = jclmsCCB2014PINVOKE.zwGetDynaCode(JCINPUT.getCPtr(arg0));
+  public static int JcLockGetDynaCode(JCINPUT arg0) {
+    int ret = jclmsCCB2014PINVOKE.JcLockGetDynaCode(JCINPUT.getCPtr(arg0));
     return ret;
   }
 
-  public static JCMATCH zwReverseVerifyDynaCode(JCINPUT arg0, int dstCode) {
-    JCMATCH ret = new JCMATCH(jclmsCCB2014PINVOKE.zwReverseVerifyDynaCode(JCINPUT.getCPtr(arg0), dstCode), true);
+  public static JCMATCH JcLockReverseVerifyDynaCode(JCINPUT arg0, int dstCode) {
+    JCMATCH ret = new JCMATCH(jclmsCCB2014PINVOKE.JcLockReverseVerifyDynaCode(JCINPUT.getCPtr(arg0), dstCode), true);
     return ret;
   }
 
-  public static int getVersion() {
-    int ret = jclmsCCB2014PINVOKE.getVersion();
-    return ret;
-  }
-
-  public static JCERROR CheckInputValid(JCINPUT arg0) {
-    JCERROR ret = (JCERROR)jclmsCCB2014PINVOKE.CheckInputValid(JCINPUT.getCPtr(arg0));
+  public static int JcLockGetVersion() {
+    int ret = jclmsCCB2014PINVOKE.JcLockGetVersion();
     return ret;
   }
 
@@ -165,6 +156,7 @@ public class jclmsCCB2014 {
   public static readonly int JC_ATMNO_MAXLEN = jclmsCCB2014PINVOKE.JC_ATMNO_MAXLEN_get();
   public static readonly int JC_LOCKNO_MAXLEN = jclmsCCB2014PINVOKE.JC_LOCKNO_MAXLEN_get();
   public static readonly int JC_PSK_LEN = jclmsCCB2014PINVOKE.JC_PSK_LEN_get();
+  public static readonly int JC_INVALID_VALUE = jclmsCCB2014PINVOKE.JC_INVALID_VALUE_get();
 }
 
 }

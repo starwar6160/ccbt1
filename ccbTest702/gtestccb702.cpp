@@ -170,6 +170,7 @@ class jclmsCCBV11_Test:public testing::Test {
 	//	static T* shared_resource_;
 public:
 	static JCINPUT jc;
+	static const int MY_DATETIME_TEST_VALUE=1400077751;
 protected:
 	static void SetUpTestCase() {
 		//shared_resource_ = new ;
@@ -199,21 +200,33 @@ TEST_F(jclmsCCBV11_Test,inputCheck)
 	strncpy(jc.m_lockno,"locknossssssa1234",JC_LOCKNO_MAXLEN);
 	strncpy(jc.m_psk,"pskabcdefghijabcdefghijabcdefghijabcdefghijabcdefghijabcdefghij1234",JC_PSK_LEN);
 	//注意现在合法的时间值应该是1.4G以上了，注意位数。20140721.1709
-	jc.m_datetime=1400077751;
+	jc.m_datetime=time(NULL);
 	jc.m_validity=5;
 	jc.m_closecode=87654325;
-	jc.m_cmdtype=JCCMD_CCB_DYPASS1;
+	jc.m_cmdtype=JCCMD_INIT_CLOSECODE;
 	//检查输入是否合法
 	EXPECT_EQ(EJC_SUSSESS,JcLockCheckInput(&jc));
 }
 
 TEST_F(jclmsCCBV11_Test,getDynaCode)
 {
-	int dyCode=JcLockGetDynaCode(&jc);
-	//检查输入是否合法
-	EXPECT_GT(dyCode,0);
-	EXPECT_LT(dyCode,100000000);
-	printf("dynaCode=%d\n",dyCode);
+	//initCloseCode
+	jc.m_cmdtype=JCCMD_INIT_CLOSECODE;
+	int initCloseCode=JcLockGetDynaCode(&jc);
+	//检查初始闭锁码是否在正常范围内
+	EXPECT_GT(initCloseCode,0);
+	EXPECT_LT(initCloseCode,100000000);
+	printf("dynaCode=\t%d\n",initCloseCode);
+	//dynaPass1
+	jc.m_cmdtype=JCCMD_CCB_DYPASS1;
+	jc.m_closecode=initCloseCode;
+	int dynaPass1=JcLockGetDynaCode(&jc);
+	EXPECT_GT(dynaPass1,0);
+	EXPECT_LT(dynaPass1,100000000);
+	printf("dynaPass1=\t%d\n",dynaPass1);
+	JCMATCH jcmatch= JcLockReverseVerifyDynaCode(&jc,dynaPass1);
+	EXPECT_GT(jcmatch.s_datetime,time(NULL)-60);
+	EXPECT_LT(jcmatch.s_datetime,time(NULL)+15);
 }
 
 
