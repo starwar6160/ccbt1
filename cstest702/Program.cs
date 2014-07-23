@@ -21,7 +21,7 @@ namespace cstest702
             //建行1.1版本动态码验证流程例子
             myV11DynaCodeTest();
             //建行1.1版本动态码NFC离线应急模式验证流程例子
-            myV11DynaOfflineCodeTest();
+            //myV11DynaOfflineCodeTest();
         }
 
         //安全初始化例子
@@ -69,6 +69,8 @@ namespace cstest702
             JCINPUT jcLock = new JCINPUT();
             //上位机的模拟对象
             JCINPUT jcSrv = new JCINPUT();
+            jclmsCCB2014.JcLockNew(jcSrv);
+            jclmsCCB2014.JcLockNew(jcLock);
 
             //在此我特地用了普通的字符串，用意在于，这些字符串的字段内容是什么都可以，
             //长度多长都可以,因为内部使用的C++的String，对于长度没有限制，只受内存大小限制；
@@ -116,13 +118,13 @@ namespace cstest702
             int dyCode1 = jclmsCCB2014.JcLockGetDynaCode(jcSrv);
             Console.Out.WriteLine("上位机产生的第一开锁动态码是 {0}", dyCode1);
 
-            //锁具验证第一开锁动态码，实质上是在下位机把该动态码再次计算一次
+            //锁具反推验证第一开锁动态码，
             jcLock.m_closecode = firstCloseCode;
             jcLock.m_cmdtype = JCCMD.JCCMD_CCB_DYPASS1;
-            int dyCode1Verify = jclmsCCB2014.JcLockGetDynaCode(jcLock);
-            if (dyCode1 == dyCode1Verify)
+            JCMATCH pass1Match = jclmsCCB2014.JcLockReverseVerifyDynaCode(jcLock, dyCode1);
+            if (pass1Match.s_datetime>0)
             {
-                Console.Out.WriteLine("锁具对于第一开锁密码验证成功，证实了上位机的身份");
+                Console.Out.WriteLine("锁具对于第一开锁密码验证成功，证实了上位机的身份,匹配结果时间为{0}", pass1Match.s_datetime);
             }
             else
             {
@@ -138,10 +140,10 @@ namespace cstest702
             jcSrv.m_cmdtype = JCCMD.JCCMD_CCB_LOCK_VERCODE;
             //上位机也计算锁具应该返回的验证码的值，予以比对
             jcSrv.m_closecode = dyCode1;
-            int srvLockVerCode = jclmsCCB2014.JcLockGetDynaCode(jcSrv);
-            if (lockVerifyCode == srvLockVerCode)
+            JCMATCH vercodeMatch = jclmsCCB2014.JcLockReverseVerifyDynaCode(jcSrv, lockVerifyCode);
+            if (vercodeMatch.s_datetime>0)
             {
-                Console.Out.WriteLine("上位机对于锁具应该返回的验证码验证成功，证实了锁具的身份");
+                Console.Out.WriteLine("上位机对于锁具应该返回的验证码验证成功，证实了锁具的身份,匹配结果时间为{0}",vercodeMatch.s_datetime);
             }
             else
             {
@@ -156,10 +158,10 @@ namespace cstest702
             jcLock.m_cmdtype = JCCMD.JCCMD_CCB_DYPASS2;
             //锁具计算第二开锁码，以便于上位机传来的第二开锁码比对
             jcLock.m_closecode = lockVerifyCode;//锁具验证码作为第二开锁码的计算要素
-            int dyCode2Verify = jclmsCCB2014.JcLockGetDynaCode(jcLock);
-            if (dyCode2 == dyCode2Verify)
+            JCMATCH pass2Match = jclmsCCB2014.JcLockReverseVerifyDynaCode(jcLock, dyCode2);
+            if (pass2Match.s_datetime>0)
             {
-                Console.Out.WriteLine("锁具验证第二开锁码成功，开锁成功");
+                Console.Out.WriteLine("锁具验证第二开锁码成功，开锁成功,匹配结果时间为{0}",pass2Match.s_datetime);
             }
             else
             {
