@@ -170,7 +170,9 @@ class jclmsCCBV11_Test:public testing::Test {
 	//	static T* shared_resource_;
 public:
 	static JCINPUT jc;
-	static const int MY_DATETIME_TEST_VALUE=1400077751;
+	static int pass1DyCode;
+	static int verifyCode;
+	static int pass2DyCode;
 protected:
 	static void SetUpTestCase() {
 		//shared_resource_ = new ;
@@ -184,6 +186,10 @@ protected:
 };
 
 JCINPUT jclmsCCBV11_Test::jc;
+int jclmsCCBV11_Test::pass1DyCode;
+int jclmsCCBV11_Test::verifyCode;
+int jclmsCCBV11_Test::pass2DyCode;
+
 
 /////////////////////////////////JCLMS算法测试/////////////////////////////////////////
 TEST_F(jclmsCCBV11_Test,inputNew)
@@ -221,11 +227,11 @@ TEST_F(jclmsCCBV11_Test,getDynaCodePass1)
 	//dynaPass1
 	jc.m_cmdtype=JCCMD_CCB_DYPASS1;
 	jc.m_closecode=initCloseCode;
-	int dynaPass1=JcLockGetDynaCode(&jc);
-	EXPECT_GT(dynaPass1,10*ZWMEGA);
-	EXPECT_LT(dynaPass1,100*ZWMEGA);
-	printf("dynaPass1=\t%d\n",dynaPass1);
-	JCMATCH pass1Match= JcLockReverseVerifyDynaCode(&jc,dynaPass1);
+	pass1DyCode=JcLockGetDynaCode(&jc);
+	EXPECT_GT(pass1DyCode,10*ZWMEGA);
+	EXPECT_LT(pass1DyCode,100*ZWMEGA);
+	printf("dynaPass1=\t%d\n",pass1DyCode);
+	JCMATCH pass1Match= JcLockReverseVerifyDynaCode(&jc,pass1DyCode);
 	EXPECT_GT(pass1Match.s_datetime,time(NULL)-60);
 	EXPECT_LT(pass1Match.s_datetime,time(NULL)+15);
 	printf("current time=\t%d\n",time(NULL));
@@ -236,11 +242,12 @@ TEST_F(jclmsCCBV11_Test,getDynaCodePass1)
 TEST_F(jclmsCCBV11_Test,getDynaCodeVerifyCode)
 {
 	jc.m_cmdtype=JCCMD_CCB_LOCK_VERCODE;
-	int verCode=JcLockGetDynaCode(&jc);
-	EXPECT_GT(verCode,10*ZWMEGA);
-	EXPECT_LT(verCode,100*ZWMEGA);
-	printf("verCode=\t%d\n",verCode);
-	JCMATCH verCodeMatch=JcLockReverseVerifyDynaCode(&jc,verCode);
+	jc.m_closecode=pass1DyCode;	//第一开锁码作为要素参与生成校验码
+	verifyCode=JcLockGetDynaCode(&jc);
+	EXPECT_GT(verifyCode,10*ZWMEGA);
+	EXPECT_LT(verifyCode,100*ZWMEGA);
+	printf("verCode=\t%d\n",verifyCode);
+	JCMATCH verCodeMatch=JcLockReverseVerifyDynaCode(&jc,verifyCode);
 	EXPECT_GT(verCodeMatch.s_datetime,time(NULL)-60);
 	EXPECT_LT(verCodeMatch.s_datetime,time(NULL)+15);
 	printf("current time=\t%d\n",time(NULL));
