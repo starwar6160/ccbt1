@@ -589,9 +589,10 @@ ZWECIES_API const char * EciesEncrypt( const char *pubKey,const char *plainText 
 //要求eciesHandle已经被设置了私钥才能成功，输入密文是3个元素的组合，不必理解其意义
 ZWECIES_API const char * EciesDecrypt( const char *priKey,const char *cryptText )
 {
-	if (priKey==NULL || strlen(priKey)==0)
+	if (priKey==NULL || strlen(priKey)==0
+		|| cryptText==NULL || strlen(cryptText)==0)
 	{
-		return "";
+		return NULL;
 	}
 
 	//首先把组合的3个项目切分开来

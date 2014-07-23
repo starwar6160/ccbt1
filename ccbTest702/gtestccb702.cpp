@@ -212,6 +212,7 @@ TEST_F(ECIES_Test,csGenKeyPair)
 	EciesDelete(hd);
 }
 
+//C#接口的非法输入测试
 TEST_F(ECIES_Test,cs_BadInput)
 {
 	int hd=0;
