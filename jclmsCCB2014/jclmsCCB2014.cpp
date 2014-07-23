@@ -228,7 +228,7 @@ unsigned int zwBinString2Int32(const char *data,const int len);
 
 	//离线模式匹配，时间点精度为取整到一个小时的零点，有效期精度为1小时起
 	//如果找到了，返回JCOFFLINE中是匹配的时间和有效期，否则其中的值都是0
-	JCMATCH zwReverseVerifyDynaCode( const JCINPUT &lock,const int dstCode )
+	JCMATCH zwReverseVerifyDynaCode( const JCINPUT *lock,const int dstCode )
 	{
 		const int MIN_OF_HOUR=60;	//一小时的分钟数
 
@@ -238,12 +238,12 @@ unsigned int zwBinString2Int32(const char *data,const int len);
 		jcoff.s_validity=0;
 		
 		int l_datetime=time(NULL);
-		int tail=l_datetime % lock.m_stepoftime;
+		int tail=l_datetime % lock->m_stepoftime;
 		l_datetime-=tail;	//取整到数据结构中指定的步长
 		//结束时间，往前推数据结构所指定的一段时间，几分钟到一整天不等
-		int tend=l_datetime-lock.m_reverse_time_length;
+		int tend=l_datetime-lock->m_reverse_time_length;
 		
-		for (int tdate=l_datetime;tdate>=tend;tdate-=lock.m_stepoftime)
+		for (int tdate=l_datetime;tdate>=tend;tdate-=lock->m_stepoftime)
 		{			
 			//printf("TDATE=\t%d\n",tdate);
 			for (int v=0;v<NUM_VALIDITY;v++)
@@ -253,14 +253,14 @@ unsigned int zwBinString2Int32(const char *data,const int len);
 
 				SM3_init(&sm3);
 				/////////////////////////////逐个元素进行HASH运算/////////////////////////////////////////////
-				mySm3Process(&sm3,lock.m_atmno,sizeof(lock.m_atmno));
-				mySm3Process(&sm3,lock.m_lockno,sizeof(lock.m_lockno));
-				mySm3Process(&sm3,lock.m_psk,sizeof(lock.m_psk));
+				mySm3Process(&sm3,lock->m_atmno,sizeof(lock->m_atmno));
+				mySm3Process(&sm3,lock->m_lockno,sizeof(lock->m_lockno));
+				mySm3Process(&sm3,lock->m_psk,sizeof(lock->m_psk));
 
 				mySm3Process(&sm3,tdate);
-				mySm3Process(&sm3,lock.m_validity_array[v]);
-				mySm3Process(&sm3,lock.m_closecode);
-				mySm3Process(&sm3,lock.m_cmdtype);
+				mySm3Process(&sm3,lock->m_validity_array[v]);
+				mySm3Process(&sm3,lock->m_closecode);
+				mySm3Process(&sm3,lock->m_cmdtype);
 				//////////////////////////////HASH运算结束////////////////////////////////////////////
 				memset(outHmac,0,ZWSM3_DGST_LEN);
 				SM3_hash(&sm3,(char *)(outHmac));
@@ -268,9 +268,9 @@ unsigned int zwBinString2Int32(const char *data,const int len);
 				if (dstCode==res)	//发现了匹配的时间和有效期
 				{
 					//填写匹配的时间和有效期到结果
-					printf("FOUND MATCH %d %d\n",tdate,lock.m_validity_array[v]);
+					printf("FOUND MATCH %d %d\n",tdate,lock->m_validity_array[v]);
 					jcoff.s_datetime=tdate;
-					jcoff.s_validity=lock.m_validity_array[v];
+					jcoff.s_validity=lock->m_validity_array[v];
 					goto foundMatch;
 				}
 			}	//END OF VALIDITY LOOP
