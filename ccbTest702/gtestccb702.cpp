@@ -165,11 +165,28 @@ TEST_F(ECIES_Test,csEncDec)
 TEST(jclmsCCBV11_Test,inputNew)
 {
 	JCINPUT jc;
-	zwNewJcInput(&jc);
+	JcLockNew(&jc);
 	//简单检查几个值，基本就可以判断是否初始化成功了
 	EXPECT_EQ(strlen(jc.m_atmno),0);
 	EXPECT_EQ(jc.m_datetime,JC_INVALID_VALUE);
 }
 
+TEST(jclmsCCBV11_Test,inputCheck)
+{
+	JCINPUT jc;
+	JcLockNew(&jc);
+	strncpy(jc.m_atmno,"atmnodddd0123456789",JC_ATMNO_MAXLEN);
+	strncpy(jc.m_lockno,"locknossssssa1234",JC_LOCKNO_MAXLEN);
+	strncpy(jc.m_psk,"pskabcdefghijabcdefghijabcdefghijabcdefghijabcdefghijabcdefghij1234",JC_PSK_LEN);
+	//注意现在合法的时间值应该是1.4G以上了，注意位数。20140721.1709
+	jc.m_datetime=1400077751;
+	jc.m_validity=5;
+	jc.m_closecode=87654325;
+	jc.m_cmdtype=JCCMD_CCB_DYPASS1;
+
+	//检查输入是否合法
+	EXPECT_EQ(EJC_SUSSESS,JcLockCheckInput(&jc));
+
+}
 //////////////////////////////////////////////////////////////////////////
 }	//namespace ccbtest722{

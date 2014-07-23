@@ -436,6 +436,16 @@ SWIGEXPORT int SWIGSTDCALL CSharp_JC_PSK_LEN_get() {
 }
 
 
+SWIGEXPORT int SWIGSTDCALL CSharp_JC_INVALID_VALUE_get() {
+  int jresult ;
+  int result;
+  
+  result = (int)((-1));
+  jresult = result; 
+  return jresult;
+}
+
+
 SWIGEXPORT void SWIGSTDCALL CSharp_JCINPUT_m_atmno_set(void * jarg1, char * jarg2) {
   JcLockInput *arg1 = (JcLockInput *) 0 ;
   char *arg2 ;
@@ -721,15 +731,11 @@ SWIGEXPORT void SWIGSTDCALL CSharp_delete_JCINPUT(void * jarg1) {
 }
 
 
-SWIGEXPORT void SWIGSTDCALL CSharp_JcLockSetValidity(void * jarg1, int jarg2, int jarg3) {
+SWIGEXPORT void SWIGSTDCALL CSharp_JcLockNew(void * jarg1) {
   JCINPUT *arg1 = (JCINPUT *) 0 ;
-  int arg2 ;
-  int arg3 ;
   
   arg1 = (JCINPUT *)jarg1; 
-  arg2 = (int)jarg2; 
-  arg3 = (int)jarg3; 
-  JcLockSetValidity(arg1,arg2,arg3);
+  JcLockNew(arg1);
 }
 
 
@@ -745,27 +751,19 @@ SWIGEXPORT int SWIGSTDCALL CSharp_JcLockCheckInput(void * jarg1) {
 }
 
 
-SWIGEXPORT void SWIGSTDCALL CSharp_zwNewJcInput(void * jarg1) {
-  JCINPUT *arg1 = (JCINPUT *) 0 ;
-  
-  arg1 = (JCINPUT *)jarg1; 
-  zwNewJcInput(arg1);
-}
-
-
-SWIGEXPORT int SWIGSTDCALL CSharp_zwGetDynaCode(void * jarg1) {
+SWIGEXPORT int SWIGSTDCALL CSharp_JcLockGetDynaCode(void * jarg1) {
   int jresult ;
   JCINPUT *arg1 = (JCINPUT *) 0 ;
   int result;
   
   arg1 = (JCINPUT *)jarg1; 
-  result = (int)zwGetDynaCode((JcLockInput const *)arg1);
+  result = (int)JcLockGetDynaCode((JcLockInput const *)arg1);
   jresult = result; 
   return jresult;
 }
 
 
-SWIGEXPORT void * SWIGSTDCALL CSharp_zwReverseVerifyDynaCode(void * jarg1, int jarg2) {
+SWIGEXPORT void * SWIGSTDCALL CSharp_JcLockReverseVerifyDynaCode(void * jarg1, int jarg2) {
   void * jresult ;
   JCINPUT *arg1 = (JCINPUT *) 0 ;
   int arg2 ;
@@ -773,30 +771,18 @@ SWIGEXPORT void * SWIGSTDCALL CSharp_zwReverseVerifyDynaCode(void * jarg1, int j
   
   arg1 = (JCINPUT *)jarg1; 
   arg2 = (int)jarg2; 
-  result = zwReverseVerifyDynaCode((JcLockInput const *)arg1,arg2);
+  result = JcLockReverseVerifyDynaCode((JcLockInput const *)arg1,arg2);
   jresult = new JCMATCH((const JCMATCH &)result); 
   return jresult;
 }
 
 
-SWIGEXPORT int SWIGSTDCALL CSharp_getVersion() {
+SWIGEXPORT int SWIGSTDCALL CSharp_JcLockGetVersion() {
   int jresult ;
   int result;
   
-  result = (int)getVersion();
+  result = (int)JcLockGetVersion();
   jresult = result; 
-  return jresult;
-}
-
-
-SWIGEXPORT int SWIGSTDCALL CSharp_CheckInputValid(void * jarg1) {
-  int jresult ;
-  JCINPUT *arg1 = (JCINPUT *) 0 ;
-  JCERROR result;
-  
-  arg1 = (JCINPUT *)jarg1; 
-  result = (JCERROR)CheckInputValid((JcLockInput const *)arg1);
-  jresult = (int)result; 
   return jresult;
 }
 

@@ -23,7 +23,7 @@ int myGetDynaCodeImplCCB201407a( const JCINPUT *lock );
 //从包含二进制数据的字符串输入，获得一个8位整数的输出
 unsigned int zwBinString2Int32(const char *data,const int len);
 
-	int getVersion(void)
+	int JcLockGetVersion(void)
 	{
 		//含义是是日期
 		return 20140721;	
@@ -63,7 +63,7 @@ unsigned int zwBinString2Int32(const char *data,const int len);
 		assert(td==0);
 	}
 
-	int zwGetDynaCode(const JCINPUT *lock)
+	int JcLockGetDynaCode(const JCINPUT *lock)
 	{
 		return myGetDynaCodeImplCCB201407a(lock);
 	}
@@ -91,15 +91,9 @@ unsigned int zwBinString2Int32(const char *data,const int len);
 		return sum;
 	}
 
-	void JcLockSetValidity(JCINPUT *jc,const int index,const int val)
-	{
-		if (index>=0 && index<=NUM_VALIDITY)
-		{
-			jc->m_validity_array[index]=val;
-		}		
-	}
+
 //////////////////////////////////////////////////////////////////////////
-	void zwNewJcInput(JCINPUT *pjc)
+	void JcLockNew(JCINPUT *pjc)
 	{
 		memset(pjc->m_atmno,0,JC_ATMNO_MAXLEN+1);
 		memset(pjc->m_lockno,0,JC_LOCKNO_MAXLEN+1);
@@ -145,7 +139,8 @@ unsigned int zwBinString2Int32(const char *data,const int len);
 		printf("All Items = %s \n",allStr);
 	}
 
-	JCERROR JcLockCheckInput(const JCINPUT *jc)
+#ifdef _DEBUG723
+	JCERROR JcLockCheckInputOld(const JCINPUT *jc)
 	{
 		JCERROR status=EJC_SUSSESS;
 		if (strlen(jc->m_atmno)==0)
@@ -179,6 +174,15 @@ unsigned int zwBinString2Int32(const char *data,const int len);
 		return status;
 	}
 
+	void JcLockSetOwnValidity(JCINPUT *jc,const int index,const int val)
+	{
+		if (index>=0 && index<=NUM_VALIDITY)
+		{
+			jc->m_validity_array[index]=val;
+		}		
+	}
+#endif // _DEBUG723
+
 	//生成各种类型的动态码
 	int myGetDynaCodeImplCCB201407a( const JCINPUT *lock )
 	{
@@ -186,7 +190,7 @@ unsigned int zwBinString2Int32(const char *data,const int len);
 		char outHmac[ZW_SM3_DGST_SIZE];
 		SM3_init(&sm3);
 
-		JCERROR err=CheckInputValid(lock);
+		JCERROR err=JcLockCheckInput(lock);
 		if (EJC_SUSSESS!=err)
 		{
 			return err;
@@ -228,7 +232,7 @@ unsigned int zwBinString2Int32(const char *data,const int len);
 
 	//离线模式匹配，时间点精度为取整到一个小时的零点，有效期精度为1小时起
 	//如果找到了，返回JCOFFLINE中是匹配的时间和有效期，否则其中的值都是0
-	JCMATCH zwReverseVerifyDynaCode( const JCINPUT *lock,const int dstCode )
+	JCMATCH JcLockReverseVerifyDynaCode( const JCINPUT *lock,const int dstCode )
 	{
 		const int MIN_OF_HOUR=60;	//一小时的分钟数
 
@@ -280,7 +284,7 @@ foundMatch:
 		return jcoff;
 	}
 
-	JCERROR CheckInputValid( const JCINPUT *lock )
+	JCERROR JcLockCheckInput( const JCINPUT *lock )
 	{
 		const int ZWMEGA=1000*1000;
 		//假定这些数字字段在二进制层面都是等同于int的长度的，以便通过一个统一的函数进行HASH运算
