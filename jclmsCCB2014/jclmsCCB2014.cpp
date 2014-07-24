@@ -19,7 +19,7 @@
 	const int ZW_AES_BLOCK_SIZE=(128/8)	;
 	const int ZW_SM3_DGST_SIZE=(256/8)	;	
 
-int myGetDynaCodeImplCCB201407a( const JCINPUT *lock );
+int myGetDynaCodeImplCCB201407a( const int handle );
 //从包含二进制数据的字符串输入，获得一个8位整数的输出
 unsigned int zwBinString2Int32(const char *data,const int len);
 
@@ -63,9 +63,9 @@ unsigned int zwBinString2Int32(const char *data,const int len);
 		assert(td==0);
 	}
 
-	int JcLockGetDynaCode(const JCINPUT *lock)
+	int JCLMSCCB2014_API JcLockGetDynaCode( const int handle )
 	{
-		return myGetDynaCodeImplCCB201407a(lock);
+		return myGetDynaCodeImplCCB201407a(handle);
 	}
 
 
@@ -191,8 +191,9 @@ unsigned int zwBinString2Int32(const char *data,const int len);
 #endif // _DEBUG723
 
 	//生成各种类型的动态码
-	int myGetDynaCodeImplCCB201407a( const JCINPUT *lock )
+	int myGetDynaCodeImplCCB201407a( const int handle )
 	{		
+		const JCINPUT *lock=(const JCINPUT *)handle;
 		SM3 sm3;
 		char outHmac[ZW_SM3_DGST_SIZE];
 		SM3_init(&sm3);

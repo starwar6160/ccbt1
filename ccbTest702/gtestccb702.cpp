@@ -411,7 +411,7 @@ TEST_F(jclmsCCBV11_Test,getDynaCodePass1)
 {
 	jc->m_cmdtype=JCCMD_INIT_CLOSECODE;
 	JcLockDebugPrint(jc);
-	int initCloseCode=JcLockGetDynaCode(jc);
+	int initCloseCode=JcLockGetDynaCode((int)jc);
 	//检查初始闭锁码是否在正常范围内
 	EXPECT_GT(initCloseCode,0);
 	EXPECT_LT(initCloseCode,100000000);
@@ -419,7 +419,7 @@ TEST_F(jclmsCCBV11_Test,getDynaCodePass1)
 	//dynaPass1
 	jc->m_cmdtype=JCCMD_CCB_DYPASS1;
 	jc->m_closecode=initCloseCode;
-	pass1DyCode=JcLockGetDynaCode(jc);
+	pass1DyCode=JcLockGetDynaCode((int)jc);
 	EXPECT_GT(pass1DyCode,10*ZWMEGA);
 	EXPECT_LT(pass1DyCode,100*ZWMEGA);
 	printf("dynaPass1=\t%d\n",pass1DyCode);
@@ -435,7 +435,7 @@ TEST_F(jclmsCCBV11_Test,getDynaCodeVerifyCode)
 {
 	jc->m_cmdtype=JCCMD_CCB_LOCK_VERCODE;
 	jc->m_closecode=pass1DyCode;	//第一开锁码作为要素参与生成校验码
-	verifyCode=JcLockGetDynaCode(jc);
+	verifyCode=JcLockGetDynaCode((int)jc);
 	EXPECT_GT(verifyCode,10*ZWMEGA);
 	EXPECT_LT(verifyCode,100*ZWMEGA);
 	printf("verCode=\t%d\n",verifyCode);
@@ -451,7 +451,7 @@ TEST_F(jclmsCCBV11_Test,getDynaCodePass2)
 {
 	jc->m_cmdtype=JCCMD_CCB_DYPASS2;
 	jc->m_closecode=verifyCode;	//校验码作为要素参与生成第二开锁码
-	pass2DyCode=JcLockGetDynaCode(jc);
+	pass2DyCode=JcLockGetDynaCode((int)jc);
 	EXPECT_GT(pass2DyCode,10*ZWMEGA);
 	EXPECT_LT(pass2DyCode,100*ZWMEGA);
 	printf("pass2DyCode=\t%d\n",pass2DyCode);

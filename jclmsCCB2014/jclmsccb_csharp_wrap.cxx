@@ -731,13 +731,13 @@ SWIGEXPORT int SWIGSTDCALL CSharp_JcLockCheckInput(int jarg1) {
 }
 
 
-SWIGEXPORT int SWIGSTDCALL CSharp_JcLockGetDynaCode(void * jarg1) {
+SWIGEXPORT int SWIGSTDCALL CSharp_JcLockGetDynaCode(int jarg1) {
   int jresult ;
-  JCINPUT *arg1 = (JCINPUT *) 0 ;
+  int arg1 ;
   int result;
   
-  arg1 = (JCINPUT *)jarg1; 
-  result = (int)JcLockGetDynaCode((JcLockInput const *)arg1);
+  arg1 = (int)jarg1; 
+  result = (int)JcLockGetDynaCode(arg1);
   jresult = result; 
   return jresult;
 }
