@@ -294,10 +294,10 @@ unsigned int zwBinString2Int32(const char *data,const int len);
 		return jcoff;
 	}
 
-	JCERROR JCLMSCCB2014_API JcLockCheckInput( const int jchandle )
+	JCERROR JCLMSCCB2014_API JcLockCheckInput( const int handle )
 	{
 		const int ZWMEGA=1000*1000;
-		JCINPUT *jcp=(JCINPUT *)jchandle;
+		JCINPUT *jcp=(JCINPUT *)handle;
 		//假定这些数字字段在二进制层面都是等同于int的长度的，以便通过一个统一的函数进行HASH运算
 		assert(sizeof(jcp->m_datetime)==sizeof(int));
 		assert(sizeof(jcp->m_validity)==sizeof(int));
@@ -337,6 +337,33 @@ unsigned int zwBinString2Int32(const char *data,const int len);
 		}
 		return EJC_SUSSESS;
 	}
+
+	//设置整数类型的值
+	JCERROR	JCLMSCCB2014_API JcLockSetInt(const int handle,const JCITYPE mtype,int value)
+	{
+		assert(handle>0);
+		assert(mtype>JCI_START && mtype<JCI_END );
+		assert(value>0);
+		if (handle<=0 || mtype<=JCI_START || mtype>=JCI_END || value <= 0)
+		{
+			return EJC_INPUT_NULL;
+		}
+		JCINPUT *jcp=(JCINPUT *)handle;
+		switch (mtype)
+		{
+		case JCI_DATETIME:
+			jcp->m_datetime=value;
+			break;
+		case JCI_VALIDITY:
+			jcp->m_validity=value;
+			break;
+		case JCI_CLOSECODE:
+			jcp->m_closecode=value;
+			break;
+		}
+		return EJC_SUSSESS;
+	}
+
 
 
 //}	//end of namespace jclms
