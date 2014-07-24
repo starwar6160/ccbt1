@@ -361,6 +361,7 @@ class jclmsCCBV11_Test:public testing::Test {
 	//	static T* shared_resource_;
 public:
 	static JCINPUT *jc;
+	static int handle;
 	static int pass1DyCode;
 	static int verifyCode;
 	static int pass2DyCode;
@@ -377,6 +378,7 @@ protected:
 };
 
 JCINPUT * jclmsCCBV11_Test::jc;
+int jclmsCCBV11_Test::handle;
 int jclmsCCBV11_Test::pass1DyCode;
 int jclmsCCBV11_Test::verifyCode;
 int jclmsCCBV11_Test::pass2DyCode;
@@ -385,10 +387,10 @@ int jclmsCCBV11_Test::pass2DyCode;
 /////////////////////////////////JCLMS算法测试/////////////////////////////////////////
 TEST_F(jclmsCCBV11_Test,inputNew)
 {		
-	int tt=JcLockNew();
-	jc=(JCINPUT *)(tt);
+	handle=JcLockNew();
+	jc=(JCINPUT *)(handle);
 	//简单检查几个值，基本就可以判断是否初始化成功了
-	EXPECT_GT(tt,0);
+	EXPECT_GT(handle,0);
 }
 
 TEST_F(jclmsCCBV11_Test,inputCheck)
@@ -397,9 +399,9 @@ TEST_F(jclmsCCBV11_Test,inputCheck)
 	strncpy(jc->m_lockno,"LOCKNO1430",JC_LOCKNO_MAXLEN);
 	strncpy(jc->m_psk,"PSKTESTJINCHU",JC_PSK_LEN);
 	//注意现在合法的时间值应该是1.4G以上了，注意位数。20140721.1709	
-	JcLockSetInt((int)jc,JCI_DATETIME,static_cast<int>(time(NULL)));
-	JcLockSetInt((int)jc,JCI_VALIDITY,5);
-	JcLockSetInt((int)jc,JCI_CLOSECODE,87654325);
+	JcLockSetInt(handle,JCI_DATETIME,static_cast<int>(time(NULL)));
+	JcLockSetInt(handle,JCI_VALIDITY,5);
+	JcLockSetInt(handle,JCI_CLOSECODE,87654325);
 	jc->m_cmdtype=JCCMD_INIT_CLOSECODE;
 	//检查输入是否合法
 	EXPECT_EQ(EJC_SUSSESS,JcLockCheckInput((const int)jc));
@@ -409,8 +411,8 @@ TEST_F(jclmsCCBV11_Test,inputCheck)
 TEST_F(jclmsCCBV11_Test,getDynaCodePass1)
 {
 	jc->m_cmdtype=JCCMD_INIT_CLOSECODE;
-	JcLockDebugPrint((int)jc);
-	int initCloseCode=JcLockGetDynaCode((int)jc);
+	JcLockDebugPrint(handle);
+	int initCloseCode=JcLockGetDynaCode(handle);
 	//检查初始闭锁码是否在正常范围内
 	EXPECT_GT(initCloseCode,0);
 	EXPECT_LT(initCloseCode,100000000);
@@ -418,12 +420,12 @@ TEST_F(jclmsCCBV11_Test,getDynaCodePass1)
 	//dynaPass1
 	jc->m_cmdtype=JCCMD_CCB_DYPASS1;
 	//jc->m_closecode=initCloseCode;
-	JcLockSetInt((int)jc,JCI_CLOSECODE,initCloseCode);
-	pass1DyCode=JcLockGetDynaCode((int)jc);
+	JcLockSetInt(handle,JCI_CLOSECODE,initCloseCode);
+	pass1DyCode=JcLockGetDynaCode(handle);
 	EXPECT_GT(pass1DyCode,10*ZWMEGA);
 	EXPECT_LT(pass1DyCode,100*ZWMEGA);
 	printf("dynaPass1=\t%d\n",pass1DyCode);
-	JCMATCH pass1Match= JcLockReverseVerifyDynaCode((int)jc,pass1DyCode);
+	JCMATCH pass1Match= JcLockReverseVerifyDynaCode(handle,pass1DyCode);
 	EXPECT_GT(pass1Match.s_datetime,time(NULL)-60);
 	EXPECT_LT(pass1Match.s_datetime,time(NULL)+15);
 	printf("current time=\t\t%d\n",time(NULL));
@@ -436,12 +438,12 @@ TEST_F(jclmsCCBV11_Test,getDynaCodeVerifyCode)
 	jc->m_cmdtype=JCCMD_CCB_LOCK_VERCODE;
 	//jc->m_closecode=pass1DyCode;	
 	//第一开锁码作为要素参与生成校验码
-	JcLockSetInt((int)jc,JCI_CLOSECODE,pass1DyCode);
-	verifyCode=JcLockGetDynaCode((int)jc);
+	JcLockSetInt(handle,JCI_CLOSECODE,pass1DyCode);
+	verifyCode=JcLockGetDynaCode(handle);
 	EXPECT_GT(verifyCode,10*ZWMEGA);
 	EXPECT_LT(verifyCode,100*ZWMEGA);
 	printf("verCode=\t%d\n",verifyCode);
-	JCMATCH verCodeMatch=JcLockReverseVerifyDynaCode((int)jc,verifyCode);
+	JCMATCH verCodeMatch=JcLockReverseVerifyDynaCode(handle,verifyCode);
 	EXPECT_GT(verCodeMatch.s_datetime,time(NULL)-60);
 	EXPECT_LT(verCodeMatch.s_datetime,time(NULL)+15);
 	printf("current time=\t\t%d\n",time(NULL));
@@ -454,12 +456,12 @@ TEST_F(jclmsCCBV11_Test,getDynaCodePass2)
 	jc->m_cmdtype=JCCMD_CCB_DYPASS2;
 	//jc->m_closecode=verifyCode;	
 	//校验码作为要素参与生成第二开锁码
-	JcLockSetInt((int)jc,JCI_CLOSECODE,verifyCode);
-	pass2DyCode=JcLockGetDynaCode((int)jc);
+	JcLockSetInt(handle,JCI_CLOSECODE,verifyCode);
+	pass2DyCode=JcLockGetDynaCode(handle);
 	EXPECT_GT(pass2DyCode,10*ZWMEGA);
 	EXPECT_LT(pass2DyCode,100*ZWMEGA);
 	printf("pass2DyCode=\t%d\n",pass2DyCode);
-	JCMATCH pass2Match=JcLockReverseVerifyDynaCode((int)jc,pass2DyCode);
+	JCMATCH pass2Match=JcLockReverseVerifyDynaCode(handle,pass2DyCode);
 	EXPECT_GT(pass2Match.s_datetime,time(NULL)-60);
 	EXPECT_LT(pass2Match.s_datetime,time(NULL)+15);
 	printf("current time=\t\t%d\n",time(NULL));
