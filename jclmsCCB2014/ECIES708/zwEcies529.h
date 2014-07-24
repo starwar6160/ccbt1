@@ -55,6 +55,8 @@ extern "C" {
 		ECIES_PLAIN_TOO_SHORT,
 		ECIES_PUBKEY_GEN_FAIL,
 		ECIES_INPUT_TOO_SHORT,
+		ECIES_PUBKEY_INVALID,
+		ECIES_PRIKEY_INVALID,
 		ECIES_INPUT_NULL,
 		ECIES_INIT_FLAG
 	};
@@ -92,8 +94,7 @@ extern "C" {
 //ECIES解密：
 //prikeyStr：编码过的私钥	outPlainText：输出明文缓冲区	plainLen：明文缓冲区长度
 //EncryptedSyncKeyStr，MsgHashStr，CryptedTextStr：含义同加密输出的3个项目
-	ZWECIES_API BOOL zwEciesDecrypt(const char *prikeyStr,char *outPlainText,const int plainLen, 
-		const char *EncryptedSyncKeyStr,const char *MsgHashStr,const char *CryptedTextStr);
+	ZWECIES_API int zwEciesDecrypt(const char *prikeyStr,char *outPlainText,const int plainLen, const char *EncryptedSyncKeyStr,const char *MsgHashStr,const char *CryptedTextStr);
 //int myTestEccMain();
 //////////////////////////////以下是适合包装给C#使用的接口////////////////////////////////////////////
 //生成ECIES公钥/私钥对，返回保存密钥对等等的内部数据结构句柄

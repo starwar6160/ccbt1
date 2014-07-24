@@ -279,20 +279,34 @@ TEST_F(ECIES_Test,cs_TooLongInput)
 	char *priKey=NULL;
 	const char *ts100="0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF"
 		"0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF"
+		"0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF"
+		"0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF"
 		"0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF";
 	pubKey=(char *)EciesGetPubKey(NULL);
 	priKey=(char *)EciesGetPriKey(NULL);
 	EXPECT_EQ(NULL,pubKey);
 	EXPECT_EQ(NULL,priKey);
 	char *crypt=NULL;
+	//超长公钥输入
 	crypt=(char *)EciesEncrypt(ts100,"palintext");
 	EXPECT_EQ(NULL,crypt);
+	//内容长度合法但是根本不是公钥的输入
+	crypt=(char *)EciesEncrypt("pubkey","plaintext");
+	EXPECT_EQ(NULL,crypt);
+	//超长明文输入
 	crypt=(char *)EciesEncrypt("pubkey",ts100);
 	EXPECT_EQ(NULL,crypt);
-	crypt=(char *)EciesDecrypt("pubkey",ts100);
-	EXPECT_EQ(NULL,crypt);
+
+	//超长私钥输入
 	crypt=(char *)EciesDecrypt(ts100,"crypttext");
 	EXPECT_EQ(NULL,crypt);
+	//内容长度合法但是根本不是私钥的输入
+	crypt=(char *)EciesDecrypt("myFakePrivateKey","crypt.text.333");
+	EXPECT_EQ(NULL,crypt);
+	//超长密文输入
+	crypt=(char *)EciesDecrypt("pubkey",ts100);
+	EXPECT_EQ(NULL,crypt);
+
 }
 
 

@@ -312,7 +312,13 @@ ZWECIES_API int zwEciesEncrypt( const char *pubkeyStr,const char *PlainText, cha
 	jcOctex oct_crypt(ZW_ECIES_MESSAGE_MAXLEN);
 	ECP_ECIES_ENCRYPT(&ecies_ctx,&KDF2Seed.Value(),&HmacSeed.Value(),&RNG,&oct_pubkey.Value(),
 		&oct_PlainText.Value(),oct_hash.Value().max/2,&oct_syncKey.Value(),&oct_crypt.Value(),&oct_hash.Value());
-	if (ECIES_SUCCESS!=ZWOCTET_TO_ASCII(&oct_syncKey.Value(),outEncryptedSyncKeyStr, syncKeyLen))
+	//据观察到的现象，非法内容的公钥，会造成HASH和加密结果长度为0
+	if (oct_hash.Value().len==0 || oct_crypt.Value().len==0)
+	{
+		return ECIES_PUBKEY_INVALID;
+	}
+	
+	if (oct_syncKey.Value().len==0 ||ECIES_SUCCESS!=ZWOCTET_TO_ASCII(&oct_syncKey.Value(),outEncryptedSyncKeyStr, syncKeyLen))
 	{
 		printf("EncryptedSyncKey Buffer Too Short\n");
 		return (ECIES_ENCEDSYNCKEY_TOO_SHORT);
@@ -333,7 +339,7 @@ ZWECIES_API int zwEciesEncrypt( const char *pubkeyStr,const char *PlainText, cha
 
 
 //出参PlainText需要自己保证足够长，不过鉴于一般都是加密对称密钥，所以某个不长的定长肯定就可以了
-ZWECIES_API BOOL zwEciesDecrypt( const char *prikeyStr,char *outPlainText,const int plainLen, const char *EncryptedSyncKeyStr,const char *MsgHashStr,const char *CryptedTextStr )
+ZWECIES_API int zwEciesDecrypt( const char *prikeyStr,char *outPlainText,const int plainLen, const char *EncryptedSyncKeyStr,const char *MsgHashStr,const char *CryptedTextStr )
 {
 	if (prikeyStr==NULL || strlen(prikeyStr)==0)
 	{
@@ -385,7 +391,12 @@ ZWECIES_API BOOL zwEciesDecrypt( const char *prikeyStr,char *outPlainText,const 
 	BOOL res=ECP_ECIES_DECRYPT(&ecies_ctx,&KDF2Seed.Value(),&HmacSeed.Value(),
 		&oct_sykey.Value(),&oct_crypted_bin.Value(),
 		&oct_hash.Value(),&oct_prikey.Value(),&oct_plain.Value());
-
+	//据观察到的现象，非法内容的私钥，会造成解密出来的明文结果长度为0
+	if (0==oct_plain.Value().len)
+	{
+		return ECIES_PRIKEY_INVALID;
+	}
+	
 	if (ECIES_SUCCESS!=ZWOCTET_OUTPUT_STRING(&oct_plain.Value(),outPlainText, plainLen))
 	{
 		printf("PlainText Buffer Too Short\n");
@@ -585,6 +596,11 @@ ZWECIES_API const char * EciesEncrypt( const char *pubKey,const char *plainText 
 		encSyncKey,SKELEN,msgHashBuf,HASHLEN,cryptText,CRLEN);
 	string dot=".";
 	static string retStr=encSyncKey+dot+msgHashBuf+dot+cryptText;
+	if (ECIES_SUCCESS!=res|| strlen(encSyncKey)==0 || 
+		strlen(msgHashBuf)==0 || strlen(cryptText)==0)
+	{
+		return NULL;
+	}
 	return retStr.c_str();
 }
 
@@ -610,9 +626,13 @@ ZWECIES_API const char * EciesDecrypt( const char *priKey,const char *cryptText 
 	}
 	static char g_plainTextBuf_decrypt[ZW_ECIES_MESSAGE_MAXLEN];
 	memset(g_plainTextBuf_decrypt,0,ZW_ECIES_MESSAGE_MAXLEN);
-
+	int res=
 	zwEciesDecrypt(priKey,g_plainTextBuf_decrypt,ZW_ECIES_MESSAGE_MAXLEN,
 		encout[0].c_str(),encout[1].c_str(),encout[2].c_str());
+	if (ECIES_SUCCESS!=res)
+	{
+		return NULL;
+	}
 	return g_plainTextBuf_decrypt;
 }
 
