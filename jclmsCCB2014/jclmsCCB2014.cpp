@@ -95,6 +95,10 @@ unsigned int zwBinString2Int32(const char *data,const int len);
 //////////////////////////////////////////////////////////////////////////
 	void JcLockNew(JCINPUT *pjc)
 	{
+		if (NULL==pjc)
+		{
+			return;
+		}
 		memset(pjc->m_atmno,0,JC_ATMNO_MAXLEN+1);
 		memset(pjc->m_lockno,0,JC_LOCKNO_MAXLEN+1);
 		memset(pjc->m_psk,0,JC_PSK_LEN+1);

@@ -238,6 +238,9 @@ TEST_F(ECIES_Test,cs_BadInput)
 
 }
 
+
+
+
 TEST_F(ECIES_Test,csEncDec)
 {
 	const char *csPlainText="C# Port Test plain text 20140722.1625";
@@ -253,12 +256,13 @@ TEST_F(ECIES_Test,csEncDec)
 	EXPECT_GT(strlen(pubkey),0);
 	EXPECT_GT(strlen(prikey),0);
 	char crypt[ZW_ECIES_CRYPT_TOTALLEN];
-	char outPlain[ZW_ECIES_CRYPT_TOTALLEN];
+	char outPlain[ZW_ECIES_CRYPT_TOTALLEN*2];
 	memset(crypt,0,sizeof(crypt));
 	memset(outPlain,0,sizeof(outPlain));
 	strcpy(crypt, EciesEncrypt(pubkey,csPlainText));
 	EXPECT_GT(strlen(crypt),0);
-	strcpy(outPlain,EciesDecrypt(prikey,crypt));
+	string crStr=EciesDecrypt(prikey,crypt);
+	strcpy(outPlain,crStr.c_str());
 	EXPECT_GT(strlen(outPlain),0);
 	EciesDelete(hd);
 #ifdef _DEBUG
@@ -267,6 +271,28 @@ TEST_F(ECIES_Test,csEncDec)
 	cout<<"ecies crypt combie result is"<<endl<<crypt<<endl;
 #endif // _DEBUG
 
+}
+
+TEST_F(ECIES_Test,cs_TooLongInput)
+{
+	char *pubKey=NULL;	
+	char *priKey=NULL;
+	const char *ts100="0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF"
+		"0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF"
+		"0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF";
+	pubKey=(char *)EciesGetPubKey(NULL);
+	priKey=(char *)EciesGetPriKey(NULL);
+	EXPECT_EQ(NULL,pubKey);
+	EXPECT_EQ(NULL,priKey);
+	char *crypt=NULL;
+	crypt=(char *)EciesEncrypt(ts100,"palintext");
+	EXPECT_EQ(NULL,crypt);
+	crypt=(char *)EciesEncrypt("pubkey",ts100);
+	EXPECT_EQ(NULL,crypt);
+	//crypt=(char *)EciesDecrypt("pubkey",ts100);
+	//EXPECT_EQ(NULL,crypt);
+	//crypt=(char *)EciesDecrypt(ts100,"crypttext");
+	//EXPECT_EQ(NULL,crypt);
 }
 
 

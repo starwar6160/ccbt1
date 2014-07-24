@@ -570,7 +570,9 @@ ZWECIES_API const char * EciesEncrypt( const char *pubKey,const char *plainText 
 #define SKELEN	(ZW_ECIES_ENCSYNCKEY_LEN*2)
 #define HASHLEN	(EFS*2+ZW_EXA)
 #define CRLEN	(ZW_ECIES_MESSAGE_MAXLEN*2)
-	if (NULL==pubKey || NULL==plainText)
+	if (NULL==pubKey || NULL==plainText
+		|| strlen(pubKey)>=ZW_ECIES_PUBKEY_LEN
+		|| strlen(plainText)>=ZW_ECIES_MESSAGE_MAXLEN)
 	{
 		return NULL;
 	}
@@ -590,7 +592,9 @@ ZWECIES_API const char * EciesEncrypt( const char *pubKey,const char *plainText 
 ZWECIES_API const char * EciesDecrypt( const char *priKey,const char *cryptText )
 {
 	if (priKey==NULL || strlen(priKey)==0
-		|| cryptText==NULL || strlen(cryptText)==0)
+		|| cryptText==NULL || strlen(cryptText)==0
+		||strlen(priKey)>=ZW_ECIES_PRIKEY_LEN
+		||strlen(cryptText)>=ZW_ECIES_CRYPT_TOTALLEN)
 	{
 		return NULL;
 	}

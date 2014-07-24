@@ -1,7 +1,7 @@
 #ifndef zwEcies529_h__
 #define zwEcies529_h__
-#include <string>
-using std::string;
+//#include <string>
+//using std::string;
 
 #ifndef ECDH_H
 //#define EFS 32 /* ECCSI Field Size - 256 bits */
@@ -15,18 +15,17 @@ const int ZW_EXA=4;
 //#define ZW_EXA	(4)
 //以下直接计算base64输出的字符串长度，所以*4/3
 //////////////////////////////////////////////////////////////////////////
-const int ZW_ECIES_PUBKEY_LEN=(ZWEFS*2+ZW_EXA)*4/3;	//公钥
-const int ZW_ECIES_PRIKEY_LEN=(ZWEFS*1+ZW_EXA)*4/3;	//私钥
+#define ZW_ECIES_PUBKEY_LEN	((ZWEFS*2+ZW_EXA)*4/3)	//公钥
+#define ZW_ECIES_PRIKEY_LEN ((ZWEFS*1+ZW_EXA)*4/3)	//私钥
 //////////////////////////////////////////////////////////////////////////
-const int ZW_ECIES_ENCSYNCKEY_LEN=(ZWEFS*2+ZW_EXA)*4/3;	//加密结果PART1,加密过的对称密钥
-const int ZW_ECIES_HASH_LEN=(ZWEFS*1+ZW_EXA)*4/3;	//加密结果PART2,HASH值
+#define ZW_ECIES_ENCSYNCKEY_LEN ((ZWEFS*2+ZW_EXA)*4/3)	//加密结果PART1,加密过的对称密钥
+#define ZW_ECIES_HASH_LEN		((ZWEFS*1+ZW_EXA)*4/3)	//加密结果PART2,HASH值
 //ECIES的作用就是用来加密对称密钥，已知最大的BLOWFISH是448bit，
 //SHA512的输出作为密钥的话是512bit，考虑可能加入其他一些开销，
 //所以最多768bit(EFS*3)应该足够了
-const int ZW_ECIES_MESSAGE_MAXLEN=ZWEFS*2*4/3;	//加密结果PART3，对称加密过的密文
+#define ZW_ECIES_MESSAGE_MAXLEN	(ZWEFS*2*4/3)			//加密结果PART3，对称加密过的密文
 //加密结果3部分长度之和
-const int ZW_ECIES_CRYPT_TOTALLEN=ZW_ECIES_ENCSYNCKEY_LEN+
-	ZW_ECIES_HASH_LEN+ZW_ECIES_MESSAGE_MAXLEN;
+#define ZW_ECIES_CRYPT_TOTALLEN	(ZW_ECIES_ENCSYNCKEY_LEN+ZW_ECIES_HASH_LEN+ZW_ECIES_MESSAGE_MAXLEN)
 //////////////////////////////////////////////////////////////////////////
 
 
