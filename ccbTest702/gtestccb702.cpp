@@ -289,10 +289,10 @@ TEST_F(ECIES_Test,cs_TooLongInput)
 	EXPECT_EQ(NULL,crypt);
 	crypt=(char *)EciesEncrypt("pubkey",ts100);
 	EXPECT_EQ(NULL,crypt);
-	//crypt=(char *)EciesDecrypt("pubkey",ts100);
-	//EXPECT_EQ(NULL,crypt);
-	//crypt=(char *)EciesDecrypt(ts100,"crypttext");
-	//EXPECT_EQ(NULL,crypt);
+	crypt=(char *)EciesDecrypt("pubkey",ts100);
+	EXPECT_EQ(NULL,crypt);
+	crypt=(char *)EciesDecrypt(ts100,"crypttext");
+	EXPECT_EQ(NULL,crypt);
 }
 
 

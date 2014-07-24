@@ -603,6 +603,11 @@ ZWECIES_API const char * EciesDecrypt( const char *priKey,const char *cryptText 
 	vector<string> encout;
 	string delm=".";
 	zwsplit(cryptText,delm,&encout);
+	if (encout.size()==1)
+	{
+		//如果不是可以切分的符合要求格式的合法密文，直接返回
+		return NULL;
+	}
 	static char g_plainTextBuf_decrypt[ZW_ECIES_MESSAGE_MAXLEN];
 	memset(g_plainTextBuf_decrypt,0,ZW_ECIES_MESSAGE_MAXLEN);
 
