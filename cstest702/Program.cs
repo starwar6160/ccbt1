@@ -109,9 +109,6 @@ namespace cstest702
             //此处不同的命令码指示生成不同的动态码
             jclmsCCB2014.JcLockSetCmdType(jcLock, JCITYPE.JCI_CMDTYPE, JCCMD.JCCMD_INIT_CLOSECODE);
             jclmsCCB2014.JcLockSetCmdType(jcSrv, JCITYPE.JCI_CMDTYPE, JCCMD.JCCMD_INIT_CLOSECODE);
-            //有问题请给我这个字符串
-            Console.Out.WriteLine("动态码输入条件调试信息字符串是");
-            jclmsCCB2014.JcLockDebugPrint(jcSrv);
             //锁具产生初始闭锁码
             int firstCloseCode = jclmsCCB2014.JcLockGetDynaCode(jcLock);
             Console.Out.WriteLine("锁具产生的初始闭锁码是 {0}", firstCloseCode);
@@ -122,6 +119,9 @@ namespace cstest702
             jclmsCCB2014.JcLockSetCmdType(jcSrv, JCITYPE.JCI_CMDTYPE, JCCMD.JCCMD_CCB_DYPASS1);
             int dyCode1 = jclmsCCB2014.JcLockGetDynaCode(jcSrv);
             Console.Out.WriteLine("上位机产生的第一开锁动态码是 {0}", dyCode1);
+            //有问题请给我这个字符串
+            Console.Out.WriteLine("动态码输入条件调试信息字符串是");
+            jclmsCCB2014.JcLockDebugPrint(jcSrv);
 
             //锁具反推验证第一开锁动态码，
             jclmsCCB2014.JcLockSetInt(jcLock, JCITYPE.JCI_CLOSECODE, firstCloseCode);
@@ -179,6 +179,8 @@ namespace cstest702
                 dr.AddSeconds(pass2Match.s_datetime).ToLocalTime().ToString());
 
             Console.Out.WriteLine("******************在线模式计算结束******************");
+            jclmsCCB2014.JcLockDelete(jcLock);
+            jclmsCCB2014.JcLockDelete(jcSrv);
         }
 
 

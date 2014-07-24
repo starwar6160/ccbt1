@@ -28,6 +28,11 @@ public class jclmsCCB2014 {
     return ret;
   }
 
+  public static int JcLockDelete(int handle) {
+    int ret = jclmsCCB2014PINVOKE.JcLockDelete(handle);
+    return ret;
+  }
+
   public static JCERROR JcLockSetInt(int handle, JCITYPE mtype, int num) {
     JCERROR ret = (JCERROR)jclmsCCB2014PINVOKE.JcLockSetInt(handle, (int)mtype, num);
     return ret;

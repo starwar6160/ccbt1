@@ -204,12 +204,6 @@ class jclmsCCB2014PINVOKE {
   [global::System.Runtime.InteropServices.DllImport("jclmsCCB2014", EntryPoint="CSharp_JCMATCH_s_validity_get")]
   public static extern int JCMATCH_s_validity_get(global::System.Runtime.InteropServices.HandleRef jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("jclmsCCB2014", EntryPoint="CSharp_JCMATCH_s_matchTimes_set")]
-  public static extern void JCMATCH_s_matchTimes_set(global::System.Runtime.InteropServices.HandleRef jarg1, int jarg2);
-
-  [global::System.Runtime.InteropServices.DllImport("jclmsCCB2014", EntryPoint="CSharp_JCMATCH_s_matchTimes_get")]
-  public static extern int JCMATCH_s_matchTimes_get(global::System.Runtime.InteropServices.HandleRef jarg1);
-
   [global::System.Runtime.InteropServices.DllImport("jclmsCCB2014", EntryPoint="CSharp_new_JCMATCH")]
   public static extern global::System.IntPtr new_JCMATCH();
 
@@ -233,6 +227,9 @@ class jclmsCCB2014PINVOKE {
 
   [global::System.Runtime.InteropServices.DllImport("jclmsCCB2014", EntryPoint="CSharp_JcLockNew")]
   public static extern int JcLockNew();
+
+  [global::System.Runtime.InteropServices.DllImport("jclmsCCB2014", EntryPoint="CSharp_JcLockDelete")]
+  public static extern int JcLockDelete(int jarg1);
 
   [global::System.Runtime.InteropServices.DllImport("jclmsCCB2014", EntryPoint="CSharp_JcLockSetInt")]
   public static extern int JcLockSetInt(int jarg1, int jarg2, int jarg3);

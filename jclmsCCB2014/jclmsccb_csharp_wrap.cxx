@@ -356,28 +356,6 @@ SWIGEXPORT int SWIGSTDCALL CSharp_JCMATCH_s_validity_get(void * jarg1) {
 }
 
 
-SWIGEXPORT void SWIGSTDCALL CSharp_JCMATCH_s_matchTimes_set(void * jarg1, int jarg2) {
-  jcLockReverseMatchResult *arg1 = (jcLockReverseMatchResult *) 0 ;
-  int arg2 ;
-  
-  arg1 = (jcLockReverseMatchResult *)jarg1; 
-  arg2 = (int)jarg2; 
-  if (arg1) (arg1)->s_matchTimes = arg2;
-}
-
-
-SWIGEXPORT int SWIGSTDCALL CSharp_JCMATCH_s_matchTimes_get(void * jarg1) {
-  int jresult ;
-  jcLockReverseMatchResult *arg1 = (jcLockReverseMatchResult *) 0 ;
-  int result;
-  
-  arg1 = (jcLockReverseMatchResult *)jarg1; 
-  result = (int) ((arg1)->s_matchTimes);
-  jresult = result; 
-  return jresult;
-}
-
-
 SWIGEXPORT void * SWIGSTDCALL CSharp_new_JCMATCH() {
   void * jresult ;
   jcLockReverseMatchResult *result = 0 ;
@@ -451,6 +429,18 @@ SWIGEXPORT int SWIGSTDCALL CSharp_JcLockNew() {
   int result;
   
   result = (int)JcLockNew();
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT int SWIGSTDCALL CSharp_JcLockDelete(int jarg1) {
+  int jresult ;
+  int arg1 ;
+  int result;
+  
+  arg1 = (int)jarg1; 
+  result = (int)JcLockDelete(arg1);
   jresult = result; 
   return jresult;
 }

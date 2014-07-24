@@ -58,16 +58,6 @@ public class JCMATCH : global::System.IDisposable {
     } 
   }
 
-  public int s_matchTimes {
-    set {
-      jclmsCCB2014PINVOKE.JCMATCH_s_matchTimes_set(swigCPtr, value);
-    } 
-    get {
-      int ret = jclmsCCB2014PINVOKE.JCMATCH_s_matchTimes_get(swigCPtr);
-      return ret;
-    } 
-  }
-
   public JCMATCH() : this(jclmsCCB2014PINVOKE.new_JCMATCH(), true) {
   }
 

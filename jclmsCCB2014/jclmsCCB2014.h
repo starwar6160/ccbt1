@@ -68,7 +68,7 @@ typedef enum jc_input_type{
 typedef struct jcLockReverseMatchResult{
 	int s_datetime;		//匹配结果秒数
 	int s_validity;		//匹配结果有效期分钟数
-	int s_matchTimes;	//匹配所用计算次数
+	//int s_matchTimes;	//匹配所用计算次数
 }JCMATCH;
 
 //有效期数组大小；更改此处以后请对应更改源代码中JcLockInput类初始化代码中
@@ -79,25 +79,25 @@ typedef struct jcLockReverseMatchResult{
 #define JC_PSK_LEN (256/4)	//256bit HEX+NULL,这是定长值
 #define JC_INVALID_VALUE	(-1)
 
-
-
-	//	JcLockInput(void);
+//分配一个内部数据结构，返回句柄，以后所有操作均以该句柄为对象
 int		JCLMSCCB2014_API JcLockNew(void);
+//删除内部数据结构，释放内存空间，请在所有JCLMS相关代码结束前调用
+int		JCLMSCCB2014_API JcLockDelete(const int handle);
 //设置整数类型的值
 JCERROR JCLMSCCB2014_API JcLockSetInt(const int handle,const JCITYPE mtype,int num);
 //设置字符串类型的值
 JCERROR	JCLMSCCB2014_API JcLockSetString(const int handle,const JCITYPE mtype,const char *str);
 //设置命令类型(第一开锁码，初始闭锁码等等)
 JCERROR	JCLMSCCB2014_API JcLockSetCmdType(const int handle,const JCITYPE mtype,const JCCMD cmd);
-
-	//	JCERROR CheckInput(void);
+//检查输入参数合法性
 JCERROR JCLMSCCB2014_API JcLockCheckInput(const int handle);
-	//lock结构体内部m_cmdtype决定了生成哪一类动态码；
+//lock结构体内部m_cmdtype决定了生成哪一类动态码；
 int		JCLMSCCB2014_API JcLockGetDynaCode(const int handle);
-	//验证动态码，返回反推出来的时间和有效期结果，失败的话，两者均为0；
+//验证动态码，返回反推出来的时间和有效期结果，失败的话，两者均为0；
 JCMATCH	JCLMSCCB2014_API JcLockReverseVerifyDynaCode( const int handle,const int dstCode );
-	//指明该算法是哪一天出的，当算法有运算结果上的变更时这个版本改变，一天最多只出一个版本；
+//指明该算法是哪一天出的，当算法有运算结果上的变更时这个版本改变，一天最多只出一个版本；
 int		JCLMSCCB2014_API JcLockGetVersion(void);
+//输出调试字符串
 void	JCLMSCCB2014_API JcLockDebugPrint(const int handle);
 
 

@@ -47,7 +47,7 @@ unsigned int zwBinString2Int32(const char *data,const int len);
 	int JcLockGetVersion(void)
 	{
 		//含义是是日期
-		return 20140723;	
+		return 20140724;	
 	}
 
 	//获得规格化的时间，也就是按照某个值取整的时间
@@ -143,6 +143,19 @@ unsigned int zwBinString2Int32(const char *data,const int len);
 		pjc->m_validity_array[6]=60;
 		pjc->m_validity_array[7]=60*24;
 		return (int)pjc;
+	}
+
+	int		JCLMSCCB2014_API JcLockDelete(const int handle)
+	{
+		JCINPUT *jcp=(JCINPUT *)handle;
+		assert(NULL!=jcp);
+		if (NULL==jcp)
+		{
+			return EJC_INPUT_NULL;
+		}
+		memset(jcp,0xCC,sizeof(JCINPUT));
+		delete jcp;
+
 	}
 
 	void JCLMSCCB2014_API JcLockDebugPrint( const int handle )
