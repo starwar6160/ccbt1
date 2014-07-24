@@ -39,7 +39,7 @@ typedef enum jc_error_code{
 } JCERROR;
 
 typedef enum jc_cmd_type{
-	JCCMD_INVALID_START,			//无效命令
+	JCCMD_START,			//无效命令
 	//初始闭锁码，此时仅有ATM编号，锁编号，PSK三者决定，其余可变因素为定值
 	JCCMD_INIT_CLOSECODE,	
 	JCCMD_CCB_DYPASS1,		//上位机第一开锁密码.此时“闭锁码”字段填写真正的闭锁码
@@ -49,7 +49,7 @@ typedef enum jc_cmd_type{
 	JCCMD_RESET_LOCKTIME,	//重设锁体时间
 	JCCMD_RESET_LOCKSYSTEM,	//锁系统重置
 	JCCMD_GET_LOCKLOG,		//提取锁体日志	
-	JCCMD_INVALID_END
+	JCCMD_END
 } JCCMD;
 
 typedef enum jc_input_type{
@@ -60,6 +60,7 @@ typedef enum jc_input_type{
 	JCI_DATETIME,
 	JCI_VALIDITY,
 	JCI_CLOSECODE,
+	JCI_CMDTYPE,
 	JCI_END
 }JCITYPE;
 
@@ -107,6 +108,8 @@ int		JCLMSCCB2014_API JcLockNew(void);
 JCERROR JCLMSCCB2014_API JcLockSetInt(const int handle,const JCITYPE mtype,int num);
 //设置字符串类型的值
 JCERROR	JCLMSCCB2014_API JcLockSetString(const int handle,const JCITYPE mtype,const char *str);
+//设置命令类型(第一开锁码，初始闭锁码等等)
+JCERROR	JCLMSCCB2014_API JcLockSetCmdType(const int handle,const JCITYPE mtype,const JCCMD cmd);
 
 	//	JCERROR CheckInput(void);
 JCERROR JCLMSCCB2014_API JcLockCheckInput(const int handle);

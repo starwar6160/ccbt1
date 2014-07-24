@@ -719,6 +719,54 @@ SWIGEXPORT int SWIGSTDCALL CSharp_JcLockNew() {
 }
 
 
+SWIGEXPORT int SWIGSTDCALL CSharp_JcLockSetInt(int jarg1, int jarg2, int jarg3) {
+  int jresult ;
+  int arg1 ;
+  JCITYPE arg2 ;
+  int arg3 ;
+  JCERROR result;
+  
+  arg1 = (int)jarg1; 
+  arg2 = (JCITYPE)jarg2; 
+  arg3 = (int)jarg3; 
+  result = (JCERROR)JcLockSetInt(arg1,arg2,arg3);
+  jresult = (int)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT int SWIGSTDCALL CSharp_JcLockSetString(int jarg1, int jarg2, char * jarg3) {
+  int jresult ;
+  int arg1 ;
+  JCITYPE arg2 ;
+  char *arg3 = (char *) 0 ;
+  JCERROR result;
+  
+  arg1 = (int)jarg1; 
+  arg2 = (JCITYPE)jarg2; 
+  arg3 = (char *)jarg3; 
+  result = (JCERROR)JcLockSetString(arg1,arg2,(char const *)arg3);
+  jresult = (int)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT int SWIGSTDCALL CSharp_JcLockSetCmdType(int jarg1, int jarg2, int jarg3) {
+  int jresult ;
+  int arg1 ;
+  JCITYPE arg2 ;
+  JCCMD arg3 ;
+  JCERROR result;
+  
+  arg1 = (int)jarg1; 
+  arg2 = (JCITYPE)jarg2; 
+  arg3 = (JCCMD)jarg3; 
+  result = (JCERROR)JcLockSetCmdType(arg1,arg2,arg3);
+  jresult = (int)result; 
+  return jresult;
+}
+
+
 SWIGEXPORT int SWIGSTDCALL CSharp_JcLockCheckInput(int jarg1) {
   int jresult ;
   int arg1 ;

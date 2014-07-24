@@ -104,7 +104,7 @@ unsigned int zwBinString2Int32(const char *data,const int len);
 		pjc->m_datetime=JC_INVALID_VALUE;
 		pjc->m_validity=JC_INVALID_VALUE;
 		pjc->m_closecode=JC_INVALID_VALUE;	
-		pjc->m_cmdtype=JCCMD_INVALID_START;
+		pjc->m_cmdtype=JCCMD_START;
 #ifdef _DEBUG
 		pjc->m_stepoftime=6;	//调试模式采用6秒的步长，快速发现问题
 #else
@@ -264,7 +264,7 @@ unsigned int zwBinString2Int32(const char *data,const int len);
 		assert(jcp->m_datetime>(1400*ZWMEGA) && jcp->m_datetime<((2048*ZWMEGA)-3));
 		assert(jcp->m_validity>=0 && jcp->m_validity<=(24*60));
 		assert(jcp->m_closecode>=0 && jcp->m_closecode<=(100*ZWMEGA));
-		assert(jcp->m_cmdtype>JCCMD_INVALID_START && jcp->m_cmdtype<JCCMD_INVALID_END);
+		assert(jcp->m_cmdtype>JCCMD_START && jcp->m_cmdtype<JCCMD_END);
 
 		//限度是小于14开头的时间(1.4G秒)或者快要超出2048M秒的话就是非法了
 		if (jcp->m_datetime<(1400*ZWMEGA) || jcp->m_datetime>((2048*ZWMEGA)-3))
@@ -288,7 +288,7 @@ unsigned int zwBinString2Int32(const char *data,const int len);
 			return EJC_CMDTYPE_TIMELEN_INVALID;
 		}
 
-		if (jcp->m_cmdtype<=JCCMD_INVALID_START || jcp->m_cmdtype>=JCCMD_INVALID_END)
+		if (jcp->m_cmdtype<=JCCMD_START || jcp->m_cmdtype>=JCCMD_END)
 		{
 			return EJC_CMDTYPE_INVALID;
 		}
@@ -347,6 +347,24 @@ unsigned int zwBinString2Int32(const char *data,const int len);
 		}
 		return EJC_SUSSESS;
 
+	}
+
+	//设置命令类型(第一开锁码，初始闭锁码等等)
+	JCERROR	JCLMSCCB2014_API JcLockSetCmdType(const int handle,const JCITYPE mtype,const JCCMD cmd)
+	{
+		assert(handle>0);
+		assert(mtype>JCI_START && mtype<JCI_END );
+		assert(cmd>JCCMD_START && cmd<JCCMD_END);
+		if (handle<=0 || mtype<=JCI_START || mtype>=JCI_END 
+			|| cmd<=JCCMD_START || cmd>=JCCMD_END)
+		{
+			return EJC_INPUT_NULL;
+		}
+		JCINPUT *jcp=(JCINPUT *)handle;
+
+		jcp->m_cmdtype=cmd;
+
+		return EJC_SUSSESS;
 	}
 
 
