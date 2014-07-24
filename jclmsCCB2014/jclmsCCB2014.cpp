@@ -296,12 +296,12 @@ unsigned int zwBinString2Int32(const char *data,const int len);
 	}
 
 	//设置整数类型的值
-	JCERROR	JCLMSCCB2014_API JcLockSetInt(const int handle,const JCITYPE mtype,int value)
+	JCERROR JCLMSCCB2014_API JcLockSetInt( const int handle,const JCITYPE mtype,int num )
 	{
 		assert(handle>0);
 		assert(mtype>JCI_START && mtype<JCI_END );
-		assert(value>0);
-		if (handle<=0 || mtype<=JCI_START || mtype>=JCI_END || value <= 0)
+		assert(num>0);
+		if (handle<=0 || mtype<=JCI_START || mtype>=JCI_END || num <= 0)
 		{
 			return EJC_INPUT_NULL;
 		}
@@ -309,18 +309,45 @@ unsigned int zwBinString2Int32(const char *data,const int len);
 		switch (mtype)
 		{
 		case JCI_DATETIME:
-			jcp->m_datetime=value;
+			jcp->m_datetime=num;
 			break;
 		case JCI_VALIDITY:
-			jcp->m_validity=value;
+			jcp->m_validity=num;
 			break;
 		case JCI_CLOSECODE:
-			jcp->m_closecode=value;
+			jcp->m_closecode=num;
 			break;
 		}
 		return EJC_SUSSESS;
 	}
 
+	//设置字符串类型的值
+	JCERROR	JCLMSCCB2014_API JcLockSetString(const int handle,const JCITYPE mtype,const char *str)
+	{
+		assert(handle>0);
+		assert(mtype>JCI_START && mtype<JCI_END );
+		assert(str!=NULL && strlen(str)>0);
+		if (handle<=0 || mtype<=JCI_START || mtype>=JCI_END 
+			|| str==NULL || strlen(str)==0)
+		{
+			return EJC_INPUT_NULL;
+		}
+		JCINPUT *jcp=(JCINPUT *)handle;
+		switch (mtype)
+		{
+		case JCI_ATMNO:
+			strncpy(jcp->m_atmno,str,sizeof(jcp->m_atmno));
+			break;
+		case JCI_LOCKNO:
+			strncpy(jcp->m_lockno,str,sizeof(jcp->m_lockno));
+			break;
+		case JCI_PSK:
+			strncpy(jcp->m_psk,str,sizeof(jcp->m_psk));
+			break;
+		}
+		return EJC_SUSSESS;
+
+	}
 
 
 //}	//end of namespace jclms

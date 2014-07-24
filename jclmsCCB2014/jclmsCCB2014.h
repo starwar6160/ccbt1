@@ -104,7 +104,10 @@ typedef struct JcLockInput
 	//	JcLockInput(void);
 int		JCLMSCCB2014_API JcLockNew(void);
 //设置整数类型的值
-JCERROR	JCLMSCCB2014_API JcLockSetInt(const int handle,const JCITYPE mtype,int value);
+JCERROR JCLMSCCB2014_API JcLockSetInt(const int handle,const JCITYPE mtype,int num);
+//设置字符串类型的值
+JCERROR	JCLMSCCB2014_API JcLockSetString(const int handle,const JCITYPE mtype,const char *str);
+
 	//	JCERROR CheckInput(void);
 JCERROR JCLMSCCB2014_API JcLockCheckInput(const int handle);
 	//lock结构体内部m_cmdtype决定了生成哪一类动态码；
