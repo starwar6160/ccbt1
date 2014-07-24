@@ -147,49 +147,6 @@ unsigned int zwBinString2Int32(const char *data,const int len);
 		printf("All Items = %s \n",allStr);
 	}
 
-#ifdef _DEBUG723
-	JCERROR JcLockCheckInputOld(const JCINPUT *jc)
-	{
-		JCERROR status=EJC_SUSSESS;
-		if (strlen(jc->m_atmno)==0)
-		{
-			status=EJC_INPUT_NULL;
-		}
-		if (strlen(jc->m_lockno)==0)
-		{
-			status=EJC_INPUT_NULL;
-		}
-		if (strlen(jc->m_psk)==0)
-		{
-			status=EJC_INPUT_NULL;
-		}
-		if (jc->m_datetime<0)
-		{
-			status=EJC_INPUT_NULL;
-		}
-		if (jc->m_validity<0)
-		{
-			status=EJC_INPUT_NULL;
-		}
-		if (jc->m_closecode<0)
-		{
-			status=EJC_INPUT_NULL;
-		}
-		if (jc->m_cmdtype==JCCMD_INVALID_START)
-		{
-			status=EJC_INPUT_NULL;
-		}
-		return status;
-	}
-
-	void JcLockSetOwnValidity(JCINPUT *jc,const int index,const int val)
-	{
-		if (index>=0 && index<=NUM_VALIDITY)
-		{
-			jc->m_validity_array[index]=val;
-		}		
-	}
-#endif // _DEBUG723
 
 	//生成各种类型的动态码
 	int myGetDynaCodeImplCCB201407a( const int handle )

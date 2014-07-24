@@ -12,7 +12,7 @@ void myBinString2intTest1();
 
 int main703(int argc, _TCHAR* argv[])
 {
-	myJcLockInputTest1();
+	//myJcLockInputTest1();
 	//zwSm3HmacTest2();
 	//myStringTest1();
 	//myBigNumModTest1();

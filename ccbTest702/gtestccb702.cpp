@@ -388,8 +388,7 @@ TEST_F(jclmsCCBV11_Test,inputNew)
 	int tt=JcLockNew();
 	jc=(JCINPUT *)(tt);
 	//简单检查几个值，基本就可以判断是否初始化成功了
-	EXPECT_EQ(strlen(jc->m_atmno),0);
-	EXPECT_EQ(jc->m_datetime,JC_INVALID_VALUE);
+	EXPECT_GT(tt,0);
 }
 
 TEST_F(jclmsCCBV11_Test,inputCheck)
@@ -397,10 +396,10 @@ TEST_F(jclmsCCBV11_Test,inputCheck)
 	strncpy(jc->m_atmno,"ATMNO723",JC_ATMNO_MAXLEN);
 	strncpy(jc->m_lockno,"LOCKNO1430",JC_LOCKNO_MAXLEN);
 	strncpy(jc->m_psk,"PSKTESTJINCHU",JC_PSK_LEN);
-	//注意现在合法的时间值应该是1.4G以上了，注意位数。20140721.1709
-	jc->m_datetime=static_cast<int>(time(NULL));
-	jc->m_validity=5;
-	jc->m_closecode=87654325;
+	//注意现在合法的时间值应该是1.4G以上了，注意位数。20140721.1709	
+	JcLockSetInt((int)jc,JCI_DATETIME,static_cast<int>(time(NULL)));
+	JcLockSetInt((int)jc,JCI_VALIDITY,5);
+	JcLockSetInt((int)jc,JCI_CLOSECODE,87654325);
 	jc->m_cmdtype=JCCMD_INIT_CLOSECODE;
 	//检查输入是否合法
 	EXPECT_EQ(EJC_SUSSESS,JcLockCheckInput((const int)jc));
@@ -418,7 +417,8 @@ TEST_F(jclmsCCBV11_Test,getDynaCodePass1)
 	printf("initCloseCode=\t%d\n",initCloseCode);
 	//dynaPass1
 	jc->m_cmdtype=JCCMD_CCB_DYPASS1;
-	jc->m_closecode=initCloseCode;
+	//jc->m_closecode=initCloseCode;
+	JcLockSetInt((int)jc,JCI_CLOSECODE,initCloseCode);
 	pass1DyCode=JcLockGetDynaCode((int)jc);
 	EXPECT_GT(pass1DyCode,10*ZWMEGA);
 	EXPECT_LT(pass1DyCode,100*ZWMEGA);
@@ -434,7 +434,9 @@ TEST_F(jclmsCCBV11_Test,getDynaCodePass1)
 TEST_F(jclmsCCBV11_Test,getDynaCodeVerifyCode)
 {
 	jc->m_cmdtype=JCCMD_CCB_LOCK_VERCODE;
-	jc->m_closecode=pass1DyCode;	//第一开锁码作为要素参与生成校验码
+	//jc->m_closecode=pass1DyCode;	
+	//第一开锁码作为要素参与生成校验码
+	JcLockSetInt((int)jc,JCI_CLOSECODE,pass1DyCode);
 	verifyCode=JcLockGetDynaCode((int)jc);
 	EXPECT_GT(verifyCode,10*ZWMEGA);
 	EXPECT_LT(verifyCode,100*ZWMEGA);
@@ -450,7 +452,9 @@ TEST_F(jclmsCCBV11_Test,getDynaCodeVerifyCode)
 TEST_F(jclmsCCBV11_Test,getDynaCodePass2)
 {
 	jc->m_cmdtype=JCCMD_CCB_DYPASS2;
-	jc->m_closecode=verifyCode;	//校验码作为要素参与生成第二开锁码
+	//jc->m_closecode=verifyCode;	
+	//校验码作为要素参与生成第二开锁码
+	JcLockSetInt((int)jc,JCI_CLOSECODE,verifyCode);
 	pass2DyCode=JcLockGetDynaCode((int)jc);
 	EXPECT_GT(pass2DyCode,10*ZWMEGA);
 	EXPECT_LT(pass2DyCode,100*ZWMEGA);

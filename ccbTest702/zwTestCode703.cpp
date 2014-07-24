@@ -15,6 +15,7 @@ using std::vector;
 using std::sort;
 
 
+#ifdef _DEBUG_DUPTEST724
 //基本的填写JcLockInput结构体并输出的测试
 void myJcLockInputTest1()
 {
@@ -63,6 +64,7 @@ void myJcLockInputTest1()
 		cout<<i<<":"<<head[i]*100.0f/(RCOUNT/9)<<"\n";
 	}
 }
+#endif // _DEBUG_DUPTEST724
 
 #ifdef _DEBUG_USE_OLD_SM3HMAC20140703
 //二进制的SM3HMAC测试
