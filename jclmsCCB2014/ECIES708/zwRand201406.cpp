@@ -1,6 +1,5 @@
 #include "sha2.h"
 #include <time.h>
-#include <stdio.h>
 #include <string.h>
 #include "zwEcies529.h"
 #ifdef WIN32
