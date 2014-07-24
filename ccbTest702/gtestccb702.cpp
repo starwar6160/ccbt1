@@ -360,7 +360,6 @@ class jclmsCCBV11_Test:public testing::Test {
 	// Some expensive resource shared by all tests.
 	//	static T* shared_resource_;
 public:
-	static JCINPUT *jc;
 	static int handle;
 	static int pass1DyCode;
 	static int verifyCode;
@@ -377,7 +376,6 @@ protected:
 	}
 };
 
-JCINPUT * jclmsCCBV11_Test::jc;
 int jclmsCCBV11_Test::handle;
 int jclmsCCBV11_Test::pass1DyCode;
 int jclmsCCBV11_Test::verifyCode;
@@ -388,7 +386,6 @@ int jclmsCCBV11_Test::pass2DyCode;
 TEST_F(jclmsCCBV11_Test,inputNew)
 {		
 	handle=JcLockNew();
-	jc=(JCINPUT *)(handle);
 	//简单检查几个值，基本就可以判断是否初始化成功了
 	EXPECT_GT(handle,0);
 }
@@ -402,15 +399,15 @@ TEST_F(jclmsCCBV11_Test,inputCheck)
 	JcLockSetInt(handle,JCI_DATETIME,static_cast<int>(time(NULL)));
 	JcLockSetInt(handle,JCI_VALIDITY,5);
 	JcLockSetInt(handle,JCI_CLOSECODE,87654325);
-	jc->m_cmdtype=JCCMD_INIT_CLOSECODE;
+	JcLockSetCmdType(handle,JCI_CMDTYPE,JCCMD_INIT_CLOSECODE);
 	//检查输入是否合法
-	EXPECT_EQ(EJC_SUSSESS,JcLockCheckInput((const int)jc));
+	EXPECT_EQ(EJC_SUSSESS,JcLockCheckInput(handle));
 }
 
 //第一开锁码测试
 TEST_F(jclmsCCBV11_Test,getDynaCodePass1)
 {
-	jc->m_cmdtype=JCCMD_INIT_CLOSECODE;
+	JcLockSetCmdType(handle,JCI_CMDTYPE,JCCMD_INIT_CLOSECODE);
 	JcLockDebugPrint(handle);
 	int initCloseCode=JcLockGetDynaCode(handle);
 	//检查初始闭锁码是否在正常范围内
@@ -418,7 +415,7 @@ TEST_F(jclmsCCBV11_Test,getDynaCodePass1)
 	EXPECT_LT(initCloseCode,100000000);
 	printf("initCloseCode=\t%d\n",initCloseCode);
 	//dynaPass1
-	jc->m_cmdtype=JCCMD_CCB_DYPASS1;
+	JcLockSetCmdType(handle,JCI_CMDTYPE,JCCMD_CCB_DYPASS1);
 	JcLockSetInt(handle,JCI_CLOSECODE,initCloseCode);
 	pass1DyCode=JcLockGetDynaCode(handle);
 	EXPECT_GT(pass1DyCode,10*ZWMEGA);
@@ -434,7 +431,7 @@ TEST_F(jclmsCCBV11_Test,getDynaCodePass1)
 //下位机校验码测试
 TEST_F(jclmsCCBV11_Test,getDynaCodeVerifyCode)
 {
-	jc->m_cmdtype=JCCMD_CCB_LOCK_VERCODE;
+	JcLockSetCmdType(handle,JCI_CMDTYPE,JCCMD_CCB_LOCK_VERCODE);
 	//第一开锁码作为要素参与生成校验码
 	JcLockSetInt(handle,JCI_CLOSECODE,pass1DyCode);
 	verifyCode=JcLockGetDynaCode(handle);
@@ -451,7 +448,7 @@ TEST_F(jclmsCCBV11_Test,getDynaCodeVerifyCode)
 //第二开锁码测试
 TEST_F(jclmsCCBV11_Test,getDynaCodePass2)
 {
-	jc->m_cmdtype=JCCMD_CCB_DYPASS2;
+	JcLockSetCmdType(handle,JCI_CMDTYPE,JCCMD_CCB_DYPASS2);
 	//校验码作为要素参与生成第二开锁码
 	JcLockSetInt(handle,JCI_CLOSECODE,verifyCode);
 	pass2DyCode=JcLockGetDynaCode(handle);
