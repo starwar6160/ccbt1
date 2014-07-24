@@ -743,15 +743,15 @@ SWIGEXPORT int SWIGSTDCALL CSharp_JcLockGetDynaCode(int jarg1) {
 }
 
 
-SWIGEXPORT void * SWIGSTDCALL CSharp_JcLockReverseVerifyDynaCode(void * jarg1, int jarg2) {
+SWIGEXPORT void * SWIGSTDCALL CSharp_JcLockReverseVerifyDynaCode(int jarg1, int jarg2) {
   void * jresult ;
-  JCINPUT *arg1 = (JCINPUT *) 0 ;
+  int arg1 ;
   int arg2 ;
   JCMATCH result;
   
-  arg1 = (JCINPUT *)jarg1; 
+  arg1 = (int)jarg1; 
   arg2 = (int)jarg2; 
-  result = JcLockReverseVerifyDynaCode((JcLockInput const *)arg1,arg2);
+  result = JcLockReverseVerifyDynaCode(arg1,arg2);
   jresult = new JCMATCH((const JCMATCH &)result); 
   return jresult;
 }

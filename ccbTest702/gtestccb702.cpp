@@ -423,7 +423,7 @@ TEST_F(jclmsCCBV11_Test,getDynaCodePass1)
 	EXPECT_GT(pass1DyCode,10*ZWMEGA);
 	EXPECT_LT(pass1DyCode,100*ZWMEGA);
 	printf("dynaPass1=\t%d\n",pass1DyCode);
-	JCMATCH pass1Match= JcLockReverseVerifyDynaCode(jc,pass1DyCode);
+	JCMATCH pass1Match= JcLockReverseVerifyDynaCode((int)jc,pass1DyCode);
 	EXPECT_GT(pass1Match.s_datetime,time(NULL)-60);
 	EXPECT_LT(pass1Match.s_datetime,time(NULL)+15);
 	printf("current time=\t\t%d\n",time(NULL));
@@ -439,7 +439,7 @@ TEST_F(jclmsCCBV11_Test,getDynaCodeVerifyCode)
 	EXPECT_GT(verifyCode,10*ZWMEGA);
 	EXPECT_LT(verifyCode,100*ZWMEGA);
 	printf("verCode=\t%d\n",verifyCode);
-	JCMATCH verCodeMatch=JcLockReverseVerifyDynaCode(jc,verifyCode);
+	JCMATCH verCodeMatch=JcLockReverseVerifyDynaCode((int)jc,verifyCode);
 	EXPECT_GT(verCodeMatch.s_datetime,time(NULL)-60);
 	EXPECT_LT(verCodeMatch.s_datetime,time(NULL)+15);
 	printf("current time=\t\t%d\n",time(NULL));
@@ -455,7 +455,7 @@ TEST_F(jclmsCCBV11_Test,getDynaCodePass2)
 	EXPECT_GT(pass2DyCode,10*ZWMEGA);
 	EXPECT_LT(pass2DyCode,100*ZWMEGA);
 	printf("pass2DyCode=\t%d\n",pass2DyCode);
-	JCMATCH pass2Match=JcLockReverseVerifyDynaCode(jc,pass2DyCode);
+	JCMATCH pass2Match=JcLockReverseVerifyDynaCode((int)jc,pass2DyCode);
 	EXPECT_GT(pass2Match.s_datetime,time(NULL)-60);
 	EXPECT_LT(pass2Match.s_datetime,time(NULL)+15);
 	printf("current time=\t\t%d\n",time(NULL));
