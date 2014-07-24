@@ -767,11 +767,11 @@ SWIGEXPORT int SWIGSTDCALL CSharp_JcLockGetVersion() {
 }
 
 
-SWIGEXPORT void SWIGSTDCALL CSharp_JcLockDebugPrint(void * jarg1) {
-  JCINPUT *arg1 = (JCINPUT *) 0 ;
+SWIGEXPORT void SWIGSTDCALL CSharp_JcLockDebugPrint(int jarg1) {
+  int arg1 ;
   
-  arg1 = (JCINPUT *)jarg1; 
-  JcLockDebugPrint((JcLockInput const *)arg1);
+  arg1 = (int)jarg1; 
+  JcLockDebugPrint(arg1);
 }
 
 

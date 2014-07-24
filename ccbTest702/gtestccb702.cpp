@@ -410,7 +410,7 @@ TEST_F(jclmsCCBV11_Test,inputCheck)
 TEST_F(jclmsCCBV11_Test,getDynaCodePass1)
 {
 	jc->m_cmdtype=JCCMD_INIT_CLOSECODE;
-	JcLockDebugPrint(jc);
+	JcLockDebugPrint((int)jc);
 	int initCloseCode=JcLockGetDynaCode((int)jc);
 	//检查初始闭锁码是否在正常范围内
 	EXPECT_GT(initCloseCode,0);

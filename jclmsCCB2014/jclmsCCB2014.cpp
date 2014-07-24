@@ -124,20 +124,21 @@ unsigned int zwBinString2Int32(const char *data,const int len);
 		return (int)pjc;
 	}
 
-	void JcLockDebugPrint(const JCINPUT *jc)
+	void JCLMSCCB2014_API JcLockDebugPrint( const int handle )
 	{
-		if (EJC_SUSSESS!=JcLockCheckInput((const int)jc))
+		JCINPUT *jcp=(JCINPUT *)handle;
+		if (EJC_SUSSESS!=JcLockCheckInput((const int)jcp))
 		{
 			printf("JcLock Input Para Error!\n");
 		}	 		
 		//三个固定条件组合在一起,还要为NULL，连接符等留出余量
 		char mainstr[JC_ATMNO_MAXLEN+JC_LOCKNO_MAXLEN+JC_PSK_LEN+5];
 		memset(mainstr,0,sizeof(mainstr));		
-		sprintf(mainstr,"%s.%s.%s.",jc->m_atmno,jc->m_lockno,jc->m_psk);
+		sprintf(mainstr,"%s.%s.%s.",jcp->m_atmno,jcp->m_lockno,jcp->m_psk);
 		//可变条件逐个化为字符串，组合到一起
 		char vstr[11+5+9+3+3];	//大致把各个可变字段的位数估计一下
-		sprintf(vstr,"%d.%d.%d.%d",jc->m_datetime,jc->m_validity,
-			jc->m_closecode,jc->m_cmdtype);
+		sprintf(vstr,"%d.%d.%d.%d",jcp->m_datetime,jcp->m_validity,
+			jcp->m_closecode,jcp->m_cmdtype);
 		//allItems=allItems+buf;
 		char allStr[128];
 		memset(allStr,0,128);

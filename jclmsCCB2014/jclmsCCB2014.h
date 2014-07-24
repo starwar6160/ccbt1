@@ -109,7 +109,7 @@ int JCLMSCCB2014_API JcLockGetDynaCode(const int handle);
 JCMATCH JCLMSCCB2014_API JcLockReverseVerifyDynaCode( const int handle,const int dstCode );
 	//指明该算法是哪一天出的，当算法有运算结果上的变更时这个版本改变，一天最多只出一个版本；
 	int JCLMSCCB2014_API JcLockGetVersion(void);
-	void JCLMSCCB2014_API JcLockDebugPrint(const JCINPUT *jc);
+	void JCLMSCCB2014_API JcLockDebugPrint(const int handle);
 
 
 //}	//end of namespace jclms
