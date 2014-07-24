@@ -395,9 +395,9 @@ TEST_F(jclmsCCBV11_Test,inputNew)
 
 TEST_F(jclmsCCBV11_Test,inputCheck)
 {
-	strncpy(jc->m_atmno,"ATMNO723",JC_ATMNO_MAXLEN);
-	strncpy(jc->m_lockno,"LOCKNO1430",JC_LOCKNO_MAXLEN);
-	strncpy(jc->m_psk,"PSKTESTJINCHU",JC_PSK_LEN);
+	JcLockSetString(handle,JCI_ATMNO,"ATMNO723");
+	JcLockSetString(handle,JCI_LOCKNO,"LOCKNO1430");
+	JcLockSetString(handle,JCI_PSK,"PSKTESTJINCHU");
 	//注意现在合法的时间值应该是1.4G以上了，注意位数。20140721.1709	
 	JcLockSetInt(handle,JCI_DATETIME,static_cast<int>(time(NULL)));
 	JcLockSetInt(handle,JCI_VALIDITY,5);
@@ -419,7 +419,6 @@ TEST_F(jclmsCCBV11_Test,getDynaCodePass1)
 	printf("initCloseCode=\t%d\n",initCloseCode);
 	//dynaPass1
 	jc->m_cmdtype=JCCMD_CCB_DYPASS1;
-	//jc->m_closecode=initCloseCode;
 	JcLockSetInt(handle,JCI_CLOSECODE,initCloseCode);
 	pass1DyCode=JcLockGetDynaCode(handle);
 	EXPECT_GT(pass1DyCode,10*ZWMEGA);
@@ -436,7 +435,6 @@ TEST_F(jclmsCCBV11_Test,getDynaCodePass1)
 TEST_F(jclmsCCBV11_Test,getDynaCodeVerifyCode)
 {
 	jc->m_cmdtype=JCCMD_CCB_LOCK_VERCODE;
-	//jc->m_closecode=pass1DyCode;	
 	//第一开锁码作为要素参与生成校验码
 	JcLockSetInt(handle,JCI_CLOSECODE,pass1DyCode);
 	verifyCode=JcLockGetDynaCode(handle);
@@ -454,7 +452,6 @@ TEST_F(jclmsCCBV11_Test,getDynaCodeVerifyCode)
 TEST_F(jclmsCCBV11_Test,getDynaCodePass2)
 {
 	jc->m_cmdtype=JCCMD_CCB_DYPASS2;
-	//jc->m_closecode=verifyCode;	
 	//校验码作为要素参与生成第二开锁码
 	JcLockSetInt(handle,JCI_CLOSECODE,verifyCode);
 	pass2DyCode=JcLockGetDynaCode(handle);
