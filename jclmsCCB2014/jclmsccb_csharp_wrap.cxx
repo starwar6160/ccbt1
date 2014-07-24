@@ -709,11 +709,13 @@ SWIGEXPORT void SWIGSTDCALL CSharp_delete_JCINPUT(void * jarg1) {
 }
 
 
-SWIGEXPORT void SWIGSTDCALL CSharp_JcLockNew(void * jarg1) {
-  JCINPUT *arg1 = (JCINPUT *) 0 ;
+SWIGEXPORT int SWIGSTDCALL CSharp_JcLockNew() {
+  int jresult ;
+  int result;
   
-  arg1 = (JCINPUT *)jarg1; 
-  JcLockNew(arg1);
+  result = (int)JcLockNew();
+  jresult = result; 
+  return jresult;
 }
 
 
@@ -793,66 +795,6 @@ SWIGEXPORT int SWIGSTDCALL CSharp_ZW_EXA_get() {
 }
 
 
-SWIGEXPORT int SWIGSTDCALL CSharp_ZW_ECIES_PUBKEY_LEN_get() {
-  int jresult ;
-  int result;
-  
-  result = (int)(int)ZW_ECIES_PUBKEY_LEN;
-  jresult = result; 
-  return jresult;
-}
-
-
-SWIGEXPORT int SWIGSTDCALL CSharp_ZW_ECIES_PRIKEY_LEN_get() {
-  int jresult ;
-  int result;
-  
-  result = (int)(int)ZW_ECIES_PRIKEY_LEN;
-  jresult = result; 
-  return jresult;
-}
-
-
-SWIGEXPORT int SWIGSTDCALL CSharp_ZW_ECIES_ENCSYNCKEY_LEN_get() {
-  int jresult ;
-  int result;
-  
-  result = (int)(int)ZW_ECIES_ENCSYNCKEY_LEN;
-  jresult = result; 
-  return jresult;
-}
-
-
-SWIGEXPORT int SWIGSTDCALL CSharp_ZW_ECIES_HASH_LEN_get() {
-  int jresult ;
-  int result;
-  
-  result = (int)(int)ZW_ECIES_HASH_LEN;
-  jresult = result; 
-  return jresult;
-}
-
-
-SWIGEXPORT int SWIGSTDCALL CSharp_ZW_ECIES_MESSAGE_MAXLEN_get() {
-  int jresult ;
-  int result;
-  
-  result = (int)(int)ZW_ECIES_MESSAGE_MAXLEN;
-  jresult = result; 
-  return jresult;
-}
-
-
-SWIGEXPORT int SWIGSTDCALL CSharp_ZW_ECIES_CRYPT_TOTALLEN_get() {
-  int jresult ;
-  int result;
-  
-  result = (int)(int)ZW_ECIES_CRYPT_TOTALLEN;
-  jresult = result; 
-  return jresult;
-}
-
-
 SWIGEXPORT int SWIGSTDCALL CSharp_zwEciesKeyPairGen(char * jarg1, char * jarg2, int jarg3, char * jarg4, int jarg5) {
   int jresult ;
   char *arg1 = (char *) 0 ;
@@ -907,7 +849,7 @@ SWIGEXPORT int SWIGSTDCALL CSharp_zwEciesDecrypt(char * jarg1, char * jarg2, int
   char *arg4 = (char *) 0 ;
   char *arg5 = (char *) 0 ;
   char *arg6 = (char *) 0 ;
-  BOOL result;
+  int result;
   
   arg1 = (char *)jarg1; 
   arg2 = (char *)jarg2; 
@@ -915,7 +857,7 @@ SWIGEXPORT int SWIGSTDCALL CSharp_zwEciesDecrypt(char * jarg1, char * jarg2, int
   arg4 = (char *)jarg4; 
   arg5 = (char *)jarg5; 
   arg6 = (char *)jarg6; 
-  result = (BOOL)zwEciesDecrypt((char const *)arg1,arg2,arg3,(char const *)arg4,(char const *)arg5,(char const *)arg6);
+  result = (int)zwEciesDecrypt((char const *)arg1,arg2,arg3,(char const *)arg4,(char const *)arg5,(char const *)arg6);
   jresult = result; 
   return jresult;
 }

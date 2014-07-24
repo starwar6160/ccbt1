@@ -298,7 +298,7 @@ class jclmsCCB2014PINVOKE {
   public static extern void delete_JCINPUT(global::System.Runtime.InteropServices.HandleRef jarg1);
 
   [global::System.Runtime.InteropServices.DllImport("jclmsCCB2014", EntryPoint="CSharp_JcLockNew")]
-  public static extern void JcLockNew(global::System.Runtime.InteropServices.HandleRef jarg1);
+  public static extern int JcLockNew();
 
   [global::System.Runtime.InteropServices.DllImport("jclmsCCB2014", EntryPoint="CSharp_JcLockCheckInput")]
   public static extern int JcLockCheckInput(global::System.Runtime.InteropServices.HandleRef jarg1);
@@ -320,24 +320,6 @@ class jclmsCCB2014PINVOKE {
 
   [global::System.Runtime.InteropServices.DllImport("jclmsCCB2014", EntryPoint="CSharp_ZW_EXA_get")]
   public static extern int ZW_EXA_get();
-
-  [global::System.Runtime.InteropServices.DllImport("jclmsCCB2014", EntryPoint="CSharp_ZW_ECIES_PUBKEY_LEN_get")]
-  public static extern int ZW_ECIES_PUBKEY_LEN_get();
-
-  [global::System.Runtime.InteropServices.DllImport("jclmsCCB2014", EntryPoint="CSharp_ZW_ECIES_PRIKEY_LEN_get")]
-  public static extern int ZW_ECIES_PRIKEY_LEN_get();
-
-  [global::System.Runtime.InteropServices.DllImport("jclmsCCB2014", EntryPoint="CSharp_ZW_ECIES_ENCSYNCKEY_LEN_get")]
-  public static extern int ZW_ECIES_ENCSYNCKEY_LEN_get();
-
-  [global::System.Runtime.InteropServices.DllImport("jclmsCCB2014", EntryPoint="CSharp_ZW_ECIES_HASH_LEN_get")]
-  public static extern int ZW_ECIES_HASH_LEN_get();
-
-  [global::System.Runtime.InteropServices.DllImport("jclmsCCB2014", EntryPoint="CSharp_ZW_ECIES_MESSAGE_MAXLEN_get")]
-  public static extern int ZW_ECIES_MESSAGE_MAXLEN_get();
-
-  [global::System.Runtime.InteropServices.DllImport("jclmsCCB2014", EntryPoint="CSharp_ZW_ECIES_CRYPT_TOTALLEN_get")]
-  public static extern int ZW_ECIES_CRYPT_TOTALLEN_get();
 
   [global::System.Runtime.InteropServices.DllImport("jclmsCCB2014", EntryPoint="CSharp_zwEciesKeyPairGen")]
   public static extern int zwEciesKeyPairGen(string jarg1, string jarg2, int jarg3, string jarg4, int jarg5);

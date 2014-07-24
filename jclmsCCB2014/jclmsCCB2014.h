@@ -100,7 +100,7 @@ typedef struct JcLockInput
 
 
 	//	JcLockInput(void);
-	void JCLMSCCB2014_API JcLockNew(JCINPUT *pjc);
+int JCLMSCCB2014_API JcLockNew(void);
 	//	JCERROR CheckInput(void);
 	JCERROR JCLMSCCB2014_API JcLockCheckInput(const JCINPUT *lock );
 	//lock结构体内部m_cmdtype决定了生成哪一类动态码；

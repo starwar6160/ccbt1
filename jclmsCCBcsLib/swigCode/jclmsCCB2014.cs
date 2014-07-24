@@ -23,8 +23,9 @@ public class jclmsCCB2014 {
     } 
   }
 
-  public static void JcLockNew(JCINPUT pjc) {
-    jclmsCCB2014PINVOKE.JcLockNew(JCINPUT.getCPtr(pjc));
+  public static int JcLockNew() {
+    int ret = jclmsCCB2014PINVOKE.JcLockNew();
+    return ret;
   }
 
   public static JCERROR JcLockCheckInput(JCINPUT arg0) {
@@ -61,48 +62,6 @@ public class jclmsCCB2014 {
   public static int ZW_EXA {
     get {
       int ret = jclmsCCB2014PINVOKE.ZW_EXA_get();
-      return ret;
-    } 
-  }
-
-  public static int ZW_ECIES_PUBKEY_LEN {
-    get {
-      int ret = jclmsCCB2014PINVOKE.ZW_ECIES_PUBKEY_LEN_get();
-      return ret;
-    } 
-  }
-
-  public static int ZW_ECIES_PRIKEY_LEN {
-    get {
-      int ret = jclmsCCB2014PINVOKE.ZW_ECIES_PRIKEY_LEN_get();
-      return ret;
-    } 
-  }
-
-  public static int ZW_ECIES_ENCSYNCKEY_LEN {
-    get {
-      int ret = jclmsCCB2014PINVOKE.ZW_ECIES_ENCSYNCKEY_LEN_get();
-      return ret;
-    } 
-  }
-
-  public static int ZW_ECIES_HASH_LEN {
-    get {
-      int ret = jclmsCCB2014PINVOKE.ZW_ECIES_HASH_LEN_get();
-      return ret;
-    } 
-  }
-
-  public static int ZW_ECIES_MESSAGE_MAXLEN {
-    get {
-      int ret = jclmsCCB2014PINVOKE.ZW_ECIES_MESSAGE_MAXLEN_get();
-      return ret;
-    } 
-  }
-
-  public static int ZW_ECIES_CRYPT_TOTALLEN {
-    get {
-      int ret = jclmsCCB2014PINVOKE.ZW_ECIES_CRYPT_TOTALLEN_get();
       return ret;
     } 
   }

@@ -93,12 +93,11 @@ unsigned int zwBinString2Int32(const char *data,const int len);
 
 
 //////////////////////////////////////////////////////////////////////////
-	void JcLockNew(JCINPUT *pjc)
+	int JCLMSCCB2014_API JcLockNew( void )
 	{
-		if (NULL==pjc)
-		{
-			return;
-		}
+		JCINPUT *pjc=new JCINPUT;
+		assert(pjc!=NULL);
+		memset(pjc,0,sizeof(JCINPUT));
 		memset(pjc->m_atmno,0,JC_ATMNO_MAXLEN+1);
 		memset(pjc->m_lockno,0,JC_LOCKNO_MAXLEN+1);
 		memset(pjc->m_psk,0,JC_PSK_LEN+1);
@@ -122,6 +121,7 @@ unsigned int zwBinString2Int32(const char *data,const int len);
 		pjc->m_validity_array[5]=30;
 		pjc->m_validity_array[6]=60;
 		pjc->m_validity_array[7]=60*24;
+		return (int)pjc;
 	}
 
 	void JcLockDebugPrint(const JCINPUT *jc)
