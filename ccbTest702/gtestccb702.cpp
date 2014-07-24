@@ -5,6 +5,14 @@ void myJcLockInputTest1();
 
 namespace CcbV11Test722Ecies{
 const int ZWMEGA=1000*1000;
+const char *ts100="0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF"
+	"0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF"
+	"0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF"
+	"0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF"
+	"0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF";
+const char *g_invalid_testkey="myInvalidPubkey";
+const char *g_invalid_prikey="myInvalidPrikey";
+
 #ifdef _DEBUG722
 int Foo(int a, int b)
 {
@@ -166,6 +174,27 @@ TEST_F(ECIES_Test,NormalEnc_BadInput)
 	EXPECT_NE(eciesEncRet,ECIES_SUCCESS);
 }
 
+TEST_F(ECIES_Test,NormalEnc_TooLongInput)
+{
+	memset(s_syncKey,0,sizeof(s_syncKey));
+	memset(s_hash,0,sizeof(s_hash));
+	memset(s_crypt,0,sizeof(s_crypt));
+	int eciesEncRet=ECIES_SUCCESS;
+	//超长公钥
+	eciesEncRet=zwEciesEncrypt(ts100,s_PlainText,s_syncKey,sizeof(s_syncKey),
+		s_hash,sizeof(s_hash),s_crypt,sizeof(s_crypt));
+	EXPECT_NE(eciesEncRet,ECIES_SUCCESS);
+	//不超长但是内容非法公钥
+	eciesEncRet=zwEciesEncrypt(g_invalid_testkey,s_PlainText,s_syncKey,sizeof(s_syncKey),
+		s_hash,sizeof(s_hash),s_crypt,sizeof(s_crypt));
+	EXPECT_NE(eciesEncRet,ECIES_SUCCESS);
+	//超长明文
+	eciesEncRet=zwEciesEncrypt(g_invalid_testkey,ts100,s_syncKey,sizeof(s_syncKey),
+		s_hash,sizeof(s_hash),s_crypt,sizeof(s_crypt));
+	EXPECT_NE(eciesEncRet,ECIES_SUCCESS);
+}
+
+
 TEST_F(ECIES_Test,NormalDec_BadInput)
 {
 	char plainOut[ZW_ECIES_MESSAGE_MAXLEN];
@@ -188,6 +217,26 @@ TEST_F(ECIES_Test,NormalDec_BadInput)
 	EXPECT_NE(eciesEncRet,ECIES_SUCCESS);
 	eciesEncRet=zwEciesDecrypt(s_priKey,plainOut,sizeof(plainOut),
 		s_syncKey,s_hash,NULL);
+	EXPECT_NE(eciesEncRet,ECIES_SUCCESS);
+
+}
+
+TEST_F(ECIES_Test,NormalDec_TooLongInput)
+{
+	char plainOut[ZW_ECIES_MESSAGE_MAXLEN];
+	memset(plainOut,0,sizeof(plainOut));
+	int eciesEncRet=ECIES_SUCCESS;
+	//超长私钥
+	eciesEncRet=zwEciesDecrypt(ts100,plainOut,sizeof(plainOut),
+		s_syncKey,s_hash,s_crypt);
+	EXPECT_NE(eciesEncRet,ECIES_SUCCESS);
+	//不超长但是内容非法私钥
+	eciesEncRet=zwEciesDecrypt(g_invalid_testkey,plainOut,sizeof(plainOut),
+		s_syncKey,s_hash,s_crypt);
+	EXPECT_NE(eciesEncRet,ECIES_SUCCESS);
+	//不超长但是内容非法syncKey,hash,crypt
+	eciesEncRet=zwEciesDecrypt(g_invalid_testkey,plainOut,sizeof(plainOut),
+		g_invalid_testkey,g_invalid_testkey,g_invalid_testkey);
 	EXPECT_NE(eciesEncRet,ECIES_SUCCESS);
 
 }
@@ -277,11 +326,7 @@ TEST_F(ECIES_Test,cs_TooLongInput)
 {
 	char *pubKey=NULL;	
 	char *priKey=NULL;
-	const char *ts100="0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF"
-		"0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF"
-		"0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF"
-		"0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF"
-		"0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF";
+
 	pubKey=(char *)EciesGetPubKey(NULL);
 	priKey=(char *)EciesGetPriKey(NULL);
 	EXPECT_EQ(NULL,pubKey);
