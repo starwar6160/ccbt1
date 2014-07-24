@@ -155,7 +155,7 @@ unsigned int zwBinString2Int32(const char *data,const int len);
 		}
 		memset(jcp,0xCC,sizeof(JCINPUT));
 		delete jcp;
-
+		return EJC_SUSSESS;
 	}
 
 	void JCLMSCCB2014_API JcLockDebugPrint( const int handle )
