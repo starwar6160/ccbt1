@@ -283,15 +283,21 @@ unsigned int zwBinString2Int32(const char *data,const int len);
 		assert(sizeof(jcp->m_cmdtype)==sizeof(int));
 
 		assert(jcp->m_datetime>(1400*ZWMEGA) && jcp->m_datetime<((2048*ZWMEGA)-3));
-		assert(jcp->m_validity>=0 && jcp->m_validity<=(24*60));
-		assert(jcp->m_closecode>=0 && jcp->m_closecode<=(100*ZWMEGA));
 		assert(jcp->m_cmdtype>JCCMD_START && jcp->m_cmdtype<JCCMD_END);
+if (JCCMD_INIT_CLOSECODE!=jcp->m_cmdtype)
+{	//生成初始闭锁码时，不检查有效期和闭锁码的值
+	assert(jcp->m_validity>=0 && jcp->m_validity<=(24*60));
+	assert(jcp->m_closecode>=0 && jcp->m_closecode<=(100*ZWMEGA));
+}
+
 
 		//限度是小于14开头的时间(1.4G秒)或者快要超出2048M秒的话就是非法了
 		if (jcp->m_datetime<(1400*ZWMEGA) || jcp->m_datetime>((2048*ZWMEGA)-3))
 		{//日期时间秒数在2014年的某个1.4G秒之前的日子，或者超过2038年(32位有符号整数最大值)则无效
 			return EJC_DATETIME_INVALID;
 		}
+		if (JCCMD_INIT_CLOSECODE!=jcp->m_cmdtype)
+		{	//生成初始闭锁码时，不检查有效期和闭锁码的值
 		if (jcp->m_validity<0 || jcp->m_validity>(24*60))
 		{//有效期分钟数为负数或者大于一整天则无效
 			return EJC_VALIDRANGE_INVALID;
@@ -300,6 +306,7 @@ unsigned int zwBinString2Int32(const char *data,const int len);
 		{//闭锁码为负数或者大于8位则无效
 			return EJC_CLOSECODE_INVALID;
 		}
+		}	//if (JCCMD_INIT_CLOSECODE!=jcp->m_cmdtype)
 		if (jcp->m_stepoftime<=0 || jcp->m_stepoftime>=(24*60*60))
 		{//搜索步长为负数或者大于一整天则无效
 			return EJC_CMDTYPE_TIMESTEP_INVALID;
