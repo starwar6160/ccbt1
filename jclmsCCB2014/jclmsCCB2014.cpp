@@ -126,7 +126,7 @@ unsigned int zwBinString2Int32(const char *data,const int len);
 
 	void JcLockDebugPrint(const JCINPUT *jc)
 	{
-		if (EJC_SUSSESS!=JcLockCheckInput(jc))
+		if (EJC_SUSSESS!=JcLockCheckInput((const int)jc))
 		{
 			printf("JcLock Input Para Error!\n");
 		}	 		
@@ -197,7 +197,7 @@ unsigned int zwBinString2Int32(const char *data,const int len);
 		char outHmac[ZW_SM3_DGST_SIZE];
 		SM3_init(&sm3);
 
-		JCERROR err=JcLockCheckInput(lock);
+		JCERROR err=JcLockCheckInput((const int)lock);
 		if (EJC_SUSSESS!=err)
 		{
 			return err;
@@ -293,43 +293,44 @@ foundMatch:
 		return jcoff;
 	}
 
-	JCERROR JcLockCheckInput(const JCINPUT *lock )
+	JCERROR JCLMSCCB2014_API JcLockCheckInput( const int jchandle )
 	{
 		const int ZWMEGA=1000*1000;
+		JCINPUT *jcp=(JCINPUT *)jchandle;
 		//假定这些数字字段在二进制层面都是等同于int的长度的，以便通过一个统一的函数进行HASH运算
-		assert(sizeof(lock->m_datetime)==sizeof(int));
-		assert(sizeof(lock->m_validity)==sizeof(int));
-		assert(sizeof(lock->m_closecode)==sizeof(int));
-		assert(sizeof(lock->m_cmdtype)==sizeof(int));
+		assert(sizeof(jcp->m_datetime)==sizeof(int));
+		assert(sizeof(jcp->m_validity)==sizeof(int));
+		assert(sizeof(jcp->m_closecode)==sizeof(int));
+		assert(sizeof(jcp->m_cmdtype)==sizeof(int));
 
-		assert(lock->m_datetime>(1400*ZWMEGA) && lock->m_datetime<((2048*ZWMEGA)-3));
-		assert(lock->m_validity>=0 && lock->m_validity<=(24*60));
-		assert(lock->m_closecode>=0 && lock->m_closecode<=(100*ZWMEGA));
-		assert(lock->m_cmdtype>JCCMD_INVALID_START && lock->m_cmdtype<JCCMD_INVALID_END);
+		assert(jcp->m_datetime>(1400*ZWMEGA) && jcp->m_datetime<((2048*ZWMEGA)-3));
+		assert(jcp->m_validity>=0 && jcp->m_validity<=(24*60));
+		assert(jcp->m_closecode>=0 && jcp->m_closecode<=(100*ZWMEGA));
+		assert(jcp->m_cmdtype>JCCMD_INVALID_START && jcp->m_cmdtype<JCCMD_INVALID_END);
 
 		//限度是小于14开头的时间(1.4G秒)或者快要超出2048M秒的话就是非法了
-		if (lock->m_datetime<(1400*ZWMEGA) || lock->m_datetime>((2048*ZWMEGA)-3))
+		if (jcp->m_datetime<(1400*ZWMEGA) || jcp->m_datetime>((2048*ZWMEGA)-3))
 		{//日期时间秒数在2014年的某个1.4G秒之前的日子，或者超过2038年(32位有符号整数最大值)则无效
 			return EJC_DATETIME_INVALID;
 		}
-		if (lock->m_validity<0 || lock->m_validity>(24*60))
+		if (jcp->m_validity<0 || jcp->m_validity>(24*60))
 		{//有效期分钟数为负数或者大于一整天则无效
 			return EJC_VALIDRANGE_INVALID;
 		}
-		if (lock->m_closecode<0 || lock->m_closecode>(100*ZWMEGA))
+		if (jcp->m_closecode<0 || jcp->m_closecode>(100*ZWMEGA))
 		{//闭锁码为负数或者大于8位则无效
 			return EJC_CLOSECODE_INVALID;
 		}
-		if (lock->m_stepoftime<=0 || lock->m_stepoftime>=(24*60*60))
+		if (jcp->m_stepoftime<=0 || jcp->m_stepoftime>=(24*60*60))
 		{//搜索步长为负数或者大于一整天则无效
 			return EJC_CMDTYPE_TIMESTEP_INVALID;
 		}
-		if (lock->m_reverse_time_length<=0 || lock->m_reverse_time_length>=(365*24*60*60))
+		if (jcp->m_reverse_time_length<=0 || jcp->m_reverse_time_length>=(365*24*60*60))
 		{//往前搜索时间为负数或者大于一整年则无效
 			return EJC_CMDTYPE_TIMELEN_INVALID;
 		}
 
-		if (lock->m_cmdtype<=JCCMD_INVALID_START || lock->m_cmdtype>=JCCMD_INVALID_END)
+		if (jcp->m_cmdtype<=JCCMD_INVALID_START || jcp->m_cmdtype>=JCCMD_INVALID_END)
 		{
 			return EJC_CMDTYPE_INVALID;
 		}

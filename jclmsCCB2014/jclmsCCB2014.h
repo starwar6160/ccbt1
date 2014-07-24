@@ -102,7 +102,7 @@ typedef struct JcLockInput
 	//	JcLockInput(void);
 int JCLMSCCB2014_API JcLockNew(void);
 	//	JCERROR CheckInput(void);
-	JCERROR JCLMSCCB2014_API JcLockCheckInput(const JCINPUT *lock );
+JCERROR JCLMSCCB2014_API JcLockCheckInput(const int jchandle);
 	//lock结构体内部m_cmdtype决定了生成哪一类动态码；
 	int JCLMSCCB2014_API JcLockGetDynaCode(const JCINPUT *lock);
 	//验证动态码，返回反推出来的时间和有效期结果，失败的话，两者均为0；

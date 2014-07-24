@@ -398,12 +398,12 @@ TEST_F(jclmsCCBV11_Test,inputCheck)
 	strncpy(jc->m_lockno,"LOCKNO1430",JC_LOCKNO_MAXLEN);
 	strncpy(jc->m_psk,"PSKTESTJINCHU",JC_PSK_LEN);
 	//注意现在合法的时间值应该是1.4G以上了，注意位数。20140721.1709
-	jc->m_datetime=time(NULL);
+	jc->m_datetime=static_cast<int>(time(NULL));
 	jc->m_validity=5;
 	jc->m_closecode=87654325;
 	jc->m_cmdtype=JCCMD_INIT_CLOSECODE;
 	//检查输入是否合法
-	EXPECT_EQ(EJC_SUSSESS,JcLockCheckInput(jc));
+	EXPECT_EQ(EJC_SUSSESS,JcLockCheckInput((const int)jc));
 }
 
 //第一开锁码测试
