@@ -8,13 +8,16 @@
 
 namespace jclms {
 
-public enum jc_input_type {
+public enum JCITYPE {
+  JCI_START,
   JCI_ATMNO,
   JCI_LOCKNO,
   JCI_PSK,
   JCI_DATETIME,
   JCI_VALIDITY,
-  JCI_CLOSECODE
+  JCI_CLOSECODE,
+  JCI_CMDTYPE,
+  JCI_END
 }
 
 }

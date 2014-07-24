@@ -28,18 +28,33 @@ public class jclmsCCB2014 {
     return ret;
   }
 
-  public static JCERROR JcLockCheckInput(JCINPUT arg0) {
-    JCERROR ret = (JCERROR)jclmsCCB2014PINVOKE.JcLockCheckInput(JCINPUT.getCPtr(arg0));
+  public static JCERROR JcLockSetInt(int handle, JCITYPE mtype, int num) {
+    JCERROR ret = (JCERROR)jclmsCCB2014PINVOKE.JcLockSetInt(handle, (int)mtype, num);
     return ret;
   }
 
-  public static int JcLockGetDynaCode(JCINPUT arg0) {
-    int ret = jclmsCCB2014PINVOKE.JcLockGetDynaCode(JCINPUT.getCPtr(arg0));
+  public static JCERROR JcLockSetString(int handle, JCITYPE mtype, string str) {
+    JCERROR ret = (JCERROR)jclmsCCB2014PINVOKE.JcLockSetString(handle, (int)mtype, str);
     return ret;
   }
 
-  public static JCMATCH JcLockReverseVerifyDynaCode(JCINPUT arg0, int dstCode) {
-    JCMATCH ret = new JCMATCH(jclmsCCB2014PINVOKE.JcLockReverseVerifyDynaCode(JCINPUT.getCPtr(arg0), dstCode), true);
+  public static JCERROR JcLockSetCmdType(int handle, JCITYPE mtype, JCCMD cmd) {
+    JCERROR ret = (JCERROR)jclmsCCB2014PINVOKE.JcLockSetCmdType(handle, (int)mtype, (int)cmd);
+    return ret;
+  }
+
+  public static JCERROR JcLockCheckInput(int handle) {
+    JCERROR ret = (JCERROR)jclmsCCB2014PINVOKE.JcLockCheckInput(handle);
+    return ret;
+  }
+
+  public static int JcLockGetDynaCode(int handle) {
+    int ret = jclmsCCB2014PINVOKE.JcLockGetDynaCode(handle);
+    return ret;
+  }
+
+  public static JCMATCH JcLockReverseVerifyDynaCode(int handle, int dstCode) {
+    JCMATCH ret = new JCMATCH(jclmsCCB2014PINVOKE.JcLockReverseVerifyDynaCode(handle, dstCode), true);
     return ret;
   }
 
@@ -48,8 +63,8 @@ public class jclmsCCB2014 {
     return ret;
   }
 
-  public static void JcLockDebugPrint(JCINPUT jc) {
-    jclmsCCB2014PINVOKE.JcLockDebugPrint(JCINPUT.getCPtr(jc));
+  public static void JcLockDebugPrint(int handle) {
+    jclmsCCB2014PINVOKE.JcLockDebugPrint(handle);
   }
 
   public static int ZWEFS {
