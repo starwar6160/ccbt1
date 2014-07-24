@@ -64,11 +64,11 @@ namespace cstest702
             Console.Out.WriteLine("Jclms DLL Version is {0}", lmsver);
 
             //锁具的模拟对象
-            JCINPUT jcLock = new JCINPUT();
+            int jcLock = 0;
             //上位机的模拟对象
-            JCINPUT jcSrv = new JCINPUT();
-            jclmsCCB2014.JcLockNew(jcSrv);
-            jclmsCCB2014.JcLockNew(jcLock);
+            int jcSrv = 0;
+            jcSrv= jclmsCCB2014.JcLockNew();
+            jcLock= jclmsCCB2014.JcLockNew();
 
             //离线模式只不过是把时间追溯长度和步长相应调整；
             //const int ZWHOUR=3600;
@@ -93,22 +93,38 @@ namespace cstest702
 
             //锁具和上位机填入相同的初始条件，暂时替代初始化过程
             //固定条件部分
-            jcLock.m_atmno = atmno;
-            jcSrv.m_atmno = atmno;
-            jcLock.m_lockno = lockno;
-            jcSrv.m_lockno = lockno;
-            jcLock.m_psk = psk;
-            jcSrv.m_psk = psk;
+            //jcLock.m_atmno = atmno;
+            //jcSrv.m_atmno = atmno;
+            //jcLock.m_lockno = lockno;
+            //jcSrv.m_lockno = lockno;
+            //jcLock.m_psk = psk;
+            //jcSrv.m_psk = psk;
+            jclmsCCB2014.JcLockSetString(jcLock, JCITYPE.JCI_ATMNO, atmno);
+            jclmsCCB2014.JcLockSetString(jcLock, JCITYPE.JCI_LOCKNO, lockno);
+            jclmsCCB2014.JcLockSetString(jcLock, JCITYPE.JCI_PSK, psk);
+            jclmsCCB2014.JcLockSetString(jcSrv, JCITYPE.JCI_ATMNO, atmno);
+            jclmsCCB2014.JcLockSetString(jcSrv, JCITYPE.JCI_LOCKNO, lockno);
+            jclmsCCB2014.JcLockSetString(jcSrv, JCITYPE.JCI_PSK, psk);
+
             //可变条件部分
-            jcLock.m_datetime = seconddiff;
-            jcSrv.m_datetime = seconddiff;
-            jcLock.m_validity = validity;
-            jcSrv.m_validity = validity;
-            jcLock.m_closecode = 0;
-            jcSrv.m_closecode = 0;
+            //jcLock.m_datetime = seconddiff;
+            //jcSrv.m_datetime = seconddiff;
+            //jcLock.m_validity = validity;
+            //jcSrv.m_validity = validity;
+            //jcLock.m_closecode = 0;
+            //jcSrv.m_closecode = 0;
+            jclmsCCB2014.JcLockSetInt(jcLock, JCITYPE.JCI_DATETIME, seconddiff);
+            jclmsCCB2014.JcLockSetInt(jcLock, JCITYPE.JCI_VALIDITY, validity);
+            //jclmsCCB2014.JcLockSetInt(jcLock, JCITYPE.JCI_CLOSECODE, 0);
+            jclmsCCB2014.JcLockSetInt(jcSrv, JCITYPE.JCI_DATETIME, seconddiff);
+            jclmsCCB2014.JcLockSetInt(jcSrv, JCITYPE.JCI_VALIDITY, validity);
+            //jclmsCCB2014.JcLockSetInt(jcSrv, JCITYPE.JCI_CLOSECODE, 0);
+
             //此处不同的命令码指示生成不同的动态码
-            jcLock.m_cmdtype = JCCMD.JCCMD_INIT_CLOSECODE;
-            jcSrv.m_cmdtype = JCCMD.JCCMD_INIT_CLOSECODE;
+            //jcLock.m_cmdtype = JCCMD.JCCMD_INIT_CLOSECODE;
+            //jcSrv.m_cmdtype = JCCMD.JCCMD_INIT_CLOSECODE;
+            jclmsCCB2014.JcLockSetCmdType(jcLock, JCITYPE.JCI_CMDTYPE, JCCMD.JCCMD_INIT_CLOSECODE);
+            jclmsCCB2014.JcLockSetCmdType(jcSrv, JCITYPE.JCI_CMDTYPE, JCCMD.JCCMD_INIT_CLOSECODE);
             //有问题请给我这个字符串
             Console.Out.WriteLine("动态码输入条件调试信息字符串是");
             jclmsCCB2014.JcLockDebugPrint(jcSrv);
@@ -116,16 +132,20 @@ namespace cstest702
             int firstCloseCode = jclmsCCB2014.JcLockGetDynaCode(jcLock);
             Console.Out.WriteLine("锁具产生的初始闭锁码是 {0}", firstCloseCode);
             //初始闭锁码输入到上位机DLL，其他条件已经准备好
-            jcSrv.m_closecode = firstCloseCode;
+            //jcSrv.m_closecode = firstCloseCode;
+            jclmsCCB2014.JcLockSetInt(jcSrv, JCITYPE.JCI_CLOSECODE, firstCloseCode);
             //获取第一开锁密码.注意，获得每一类动态码的方式都是这个调用，区别在于m_cmdtype
             //jcSrv.DebugPrint();
-            jcSrv.m_cmdtype = JCCMD.JCCMD_CCB_DYPASS1;
+            //jcSrv.m_cmdtype = JCCMD.JCCMD_CCB_DYPASS1;
+            jclmsCCB2014.JcLockSetCmdType(jcSrv, JCITYPE.JCI_CMDTYPE, JCCMD.JCCMD_CCB_DYPASS1);
             int dyCode1 = jclmsCCB2014.JcLockGetDynaCode(jcSrv);
             Console.Out.WriteLine("上位机产生的第一开锁动态码是 {0}", dyCode1);
 
             //锁具反推验证第一开锁动态码，
-            jcLock.m_closecode = firstCloseCode;
-            jcLock.m_cmdtype = JCCMD.JCCMD_CCB_DYPASS1;
+            //jcLock.m_closecode = firstCloseCode;
+            jclmsCCB2014.JcLockSetInt(jcLock, JCITYPE.JCI_CLOSECODE, firstCloseCode);
+            //jcLock.m_cmdtype = JCCMD.JCCMD_CCB_DYPASS1;
+            jclmsCCB2014.JcLockSetCmdType(jcLock, JCITYPE.JCI_CMDTYPE, JCCMD.JCCMD_CCB_DYPASS1);
             JCMATCH pass1Match = jclmsCCB2014.JcLockReverseVerifyDynaCode(jcLock, dyCode1);
             if (pass1Match.s_datetime>0)
             {
@@ -137,14 +157,18 @@ namespace cstest702
                 Environment.Exit(-1654);
             }
             //锁具生成验证码
-            jcLock.m_cmdtype = JCCMD.JCCMD_CCB_LOCK_VERCODE;
+            //jcLock.m_cmdtype = JCCMD.JCCMD_CCB_LOCK_VERCODE;
+            jclmsCCB2014.JcLockSetCmdType(jcLock, JCITYPE.JCI_CMDTYPE, JCCMD.JCCMD_CCB_LOCK_VERCODE);
             //用第一开锁密码作为验证码的元素，以便适应建行的3个码环环相扣的要求
-            jcLock.m_closecode = dyCode1;
+            //jcLock.m_closecode = dyCode1;
+            jclmsCCB2014.JcLockSetInt(jcLock, JCITYPE.JCI_CLOSECODE, dyCode1);
             int lockVerifyCode = jclmsCCB2014.JcLockGetDynaCode(jcLock);
             Console.Out.WriteLine("锁具产生的验证码是 {0}", lockVerifyCode);
-            jcSrv.m_cmdtype = JCCMD.JCCMD_CCB_LOCK_VERCODE;
+            //jcSrv.m_cmdtype = JCCMD.JCCMD_CCB_LOCK_VERCODE;
+            jclmsCCB2014.JcLockSetCmdType(jcSrv, JCITYPE.JCI_CMDTYPE, JCCMD.JCCMD_CCB_LOCK_VERCODE);
             //上位机也计算锁具应该返回的验证码的值，予以比对
-            jcSrv.m_closecode = dyCode1;
+            //jcSrv.m_closecode = dyCode1;
+            jclmsCCB2014.JcLockSetInt(jcSrv, JCITYPE.JCI_CLOSECODE, dyCode1);
             JCMATCH vercodeMatch = jclmsCCB2014.JcLockReverseVerifyDynaCode(jcSrv, lockVerifyCode);
             if (vercodeMatch.s_datetime>0)
             {
@@ -156,13 +180,19 @@ namespace cstest702
                 Environment.Exit(-1739);
             }
             //上位机计算第二开锁码
-            jcSrv.m_cmdtype = JCCMD.JCCMD_CCB_DYPASS2;
-            jcSrv.m_closecode = lockVerifyCode; //锁具验证码作为第二开锁码的计算要素
+            //jcSrv.m_cmdtype = JCCMD.JCCMD_CCB_DYPASS2;
+            jclmsCCB2014.JcLockSetCmdType(jcSrv, JCITYPE.JCI_CMDTYPE, JCCMD.JCCMD_CCB_DYPASS2);
+            //jcSrv.m_closecode = lockVerifyCode; 
+            //锁具验证码作为第二开锁码的计算要素
+            jclmsCCB2014.JcLockSetInt(jcSrv, JCITYPE.JCI_CLOSECODE, lockVerifyCode);
             int dyCode2 = jclmsCCB2014.JcLockGetDynaCode(jcSrv);
             Console.Out.WriteLine("上位机计算的第二开锁码是 {0}", dyCode2);
-            jcLock.m_cmdtype = JCCMD.JCCMD_CCB_DYPASS2;
+            //jcLock.m_cmdtype = JCCMD.JCCMD_CCB_DYPASS2;
+            jclmsCCB2014.JcLockSetCmdType(jcLock, JCITYPE.JCI_CMDTYPE, JCCMD.JCCMD_CCB_DYPASS2);
             //锁具计算第二开锁码，以便于上位机传来的第二开锁码比对
-            jcLock.m_closecode = lockVerifyCode;//锁具验证码作为第二开锁码的计算要素
+            //jcLock.m_closecode = lockVerifyCode;
+            //锁具验证码作为第二开锁码的计算要素
+            jclmsCCB2014.JcLockSetInt(jcLock, JCITYPE.JCI_CLOSECODE, lockVerifyCode);
             JCMATCH pass2Match = jclmsCCB2014.JcLockReverseVerifyDynaCode(jcLock, dyCode2);
             if (pass2Match.s_datetime>0)
             {

@@ -321,8 +321,8 @@ unsigned int zwBinString2Int32(const char *data,const int len);
 	{
 		assert(handle>0);
 		assert(mtype>JCI_START && mtype<JCI_END );
-		assert(num>0);
-		if (handle<=0 || mtype<=JCI_START || mtype>=JCI_END || num <= 0)
+		assert(num>JC_INVALID_VALUE);
+		if (handle<=0 || mtype<=JCI_START || mtype>=JCI_END || num <= JC_INVALID_VALUE)
 		{
 			return EJC_INPUT_NULL;
 		}
