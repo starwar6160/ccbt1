@@ -18,6 +18,7 @@ namespace zwCfg{
 //#endif // _DEBUG
 	//定义一个回调函数指针
 	RecvMsgRotine g_WarnCallback=NULL;
+	boost:: mutex io_mutex; 
 }
 
 
@@ -26,6 +27,7 @@ namespace zwCfg{
 
 CCBELOCK_API long Open(long lTimeOut)
 {
+	boost:: mutex:: scoped_lock lock( zwCfg::io_mutex); 
 	//必须大于0，小于JC_CCBDLL_TIMEOUT，限制在一个合理范围内
 	assert(lTimeOut>0 && lTimeOut<zwCfg::JC_CCBDLL_TIMEOUT);
 	if (lTimeOut<=0 || lTimeOut>=zwCfg::JC_CCBDLL_TIMEOUT)
@@ -37,11 +39,13 @@ CCBELOCK_API long Open(long lTimeOut)
 
 CCBELOCK_API long Close()
 {
+	boost:: mutex:: scoped_lock lock( zwCfg::io_mutex); 
 	return ELOCK_ERROR_SUCCESS;
 }
 
 CCBELOCK_API long Notify(const char *pszMsg)
 {
+	boost:: mutex:: scoped_lock lock( zwCfg::io_mutex); 
 	//输入必须有内容，但是最大不得长于下位机内存大小，做合理限制
 	assert(NULL!=pszMsg);
 	if (NULL==pszMsg)
@@ -64,6 +68,7 @@ CCBELOCK_API long Notify(const char *pszMsg)
 
 void cdecl myATMCRecvMsgRotine(const char *pszMsg)
 {
+	boost:: mutex:: scoped_lock lock( zwCfg::io_mutex); 
 	//输入必须有内容，但是最大不得长于下位机内存大小，做合理限制
 	assert(NULL!=pszMsg);
 	int inlen=strlen(pszMsg);
@@ -77,6 +82,7 @@ void cdecl myATMCRecvMsgRotine(const char *pszMsg)
 
 CCBELOCK_API int SetRecvMsgRotine(RecvMsgRotine pRecvMsgFun)
 {
+	boost:: mutex:: scoped_lock lock( zwCfg::io_mutex); 
 	assert(NULL!=pRecvMsgFun);
 	if (NULL==pRecvMsgFun)
 	{
