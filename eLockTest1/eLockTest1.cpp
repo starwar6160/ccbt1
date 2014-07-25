@@ -62,3 +62,25 @@ TEST(ccbElockDeathTest,SetRecvMsgRotineTestBad)
 {//Debug下会触发断言的非法输入测试，放到死亡测试中进行
 	EXPECT_DEBUG_DEATH(SetRecvMsgRotine(NULL),"");
 }
+
+
+//程序全局初始化和结束事件
+class ccbElockEnvironment : public testing::Environment
+{
+public:
+	virtual void SetUp()
+	{
+		std::cout << "Foo FooEnvironment SetUP" << std::endl;
+	}
+	virtual void TearDown()
+	{
+		std::cout << "Foo FooEnvironment TearDown" << std::endl;
+	}
+};
+
+int _tmain(int argc, _TCHAR* argv[])
+{
+	testing::AddGlobalTestEnvironment(new ccbElockEnvironment);
+	testing::InitGoogleTest(&argc, argv);
+	return RUN_ALL_TESTS();
+}
