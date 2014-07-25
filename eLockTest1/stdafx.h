@@ -13,3 +13,17 @@
 
 
 // TODO: 在此处引用程序需要的其他头文件
+#include <ctime>
+#include <string>
+#include <vector>
+#include <map>
+#include <stdint.h>
+#include <iostream>
+using std::cout;
+using std::endl;
+
+using std::string;
+using std::vector;
+using std::map;
+
+#include <gtest/gtest.h>
