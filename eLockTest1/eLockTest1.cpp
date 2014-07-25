@@ -35,6 +35,7 @@ TEST(ccbElockDeathTest,OpenTestBad)
 //Notify≤‚ ‘
 TEST(ccbElockTest,NotifyTest)
 {
+	//zwThrTest1(33);
 	EXPECT_EQ(ELOCK_ERROR_SUCCESS,Notify("mytestNotify"));	
 #ifdef NDEBUG
 	EXPECT_EQ(ELOCK_ERROR_PARAMINVALID,Notify(NULL));
@@ -72,7 +73,7 @@ class ccbElockEnvironment : public testing::Environment
 public:
 	virtual void SetUp()
 	{
-		std::cout << "ccbElockEnv SetUP" << std::endl;
+		std::cout << "ccbElockEnv SetUP" << std::endl;		
 	}
 	virtual void TearDown()
 	{
@@ -81,7 +82,7 @@ public:
 };
 
 int _tmain(int argc, _TCHAR* argv[])
-{
+{	
 	testing::AddGlobalTestEnvironment(new ccbElockEnvironment);
 	testing::InitGoogleTest(&argc, argv);
 	return RUN_ALL_TESTS();

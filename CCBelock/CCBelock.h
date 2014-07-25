@@ -12,10 +12,12 @@
 
 typedef void (cdecl *RecvMsgRotine)(const char *pszMsg);
 
-CCBELOCK_API long Open(long lTimeOut);
-CCBELOCK_API long Close();
-CCBELOCK_API long Notify(const char *pszMsg);
-CCBELOCK_API int SetRecvMsgRotine(RecvMsgRotine pRecvMsgFun);
+CCBELOCK_API long	Open(long lTimeOut);
+CCBELOCK_API long	Close();
+CCBELOCK_API long	Notify(const char *pszMsg);
+CCBELOCK_API int	SetRecvMsgRotine(RecvMsgRotine pRecvMsgFun);
+/////////////////////////////////测试用函数/////////////////////////////////////////
+CCBELOCK_API int	zwThrTest1(int num);
 
 enum JC_CCBELOCK_ERROR_CODE{
 	ELOCK_ERROR_SUCCESS=0,		//操作成功
