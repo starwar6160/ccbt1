@@ -7,9 +7,10 @@ const char *myLongMsg="0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF"
 	"0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF"
 	"0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF";
 
-void myRecvMsgRotine(const char *pszMsg)
+//测试性回调函数
+void myATMCRecvMsgRotine(const char *pszMsg)
 {
-
+	cout<<__FUNCTION__<<"["<<pszMsg<<"]"<<endl;
 }
 
 //Open,Close测试
@@ -52,7 +53,8 @@ TEST(ccbElockDeathTest,NotifyTestBad)
 //SetRecvMsgRotine测试
 TEST(ccbElockTest,SetRecvMsgRotineTest)
 {
-	EXPECT_EQ(ELOCK_ERROR_SUCCESS,SetRecvMsgRotine(myRecvMsgRotine));	
+	EXPECT_EQ(ELOCK_ERROR_SUCCESS,SetRecvMsgRotine(myATMCRecvMsgRotine));	
+	Notify("test20140725.1517forCallBack");
 #ifdef NDEBUG
 	EXPECT_EQ(ELOCK_ERROR_PARAMINVALID,SetRecvMsgRotine(NULL));
 #endif // NDEBUG
@@ -70,11 +72,11 @@ class ccbElockEnvironment : public testing::Environment
 public:
 	virtual void SetUp()
 	{
-		std::cout << "Foo FooEnvironment SetUP" << std::endl;
+		std::cout << "ccbElockEnv SetUP" << std::endl;
 	}
 	virtual void TearDown()
 	{
-		std::cout << "Foo FooEnvironment TearDown" << std::endl;
+		std::cout << "ccbElockEnv TearDown" << std::endl;
 	}
 };
 
