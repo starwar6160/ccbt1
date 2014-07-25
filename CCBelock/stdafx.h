@@ -15,3 +15,9 @@
 
 // TODO: 在此处引用程序需要的其他头文件
 #include <cassert>
+#include <boost/thread.hpp> 
+#include <iostream>
+using std::cout;
+using std::cerr;
+using std::cin;
+using std::endl;
