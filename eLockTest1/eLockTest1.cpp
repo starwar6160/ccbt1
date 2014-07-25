@@ -2,7 +2,7 @@
 //
 
 #include "stdafx.h"
-long Open(long lTimeOut);
+#include "CCBelock.h"
 
 #pragma comment(lib,"CCBELOCK.lib")
 

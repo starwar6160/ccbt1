@@ -10,3 +10,18 @@
 #define CCBELOCK_API __declspec(dllimport)
 #endif
 
+typedef void (cdecl *RecvMsgRotine)(const char *pszMsg);
+
+CCBELOCK_API long Open(long lTimeOut);
+CCBELOCK_API long Close();
+CCBELOCK_API long Notify(const char *pszMsg);
+CCBELOCK_API int SetRecvMsgRotine(RecvMsgRotine pRecvMsgFun);
+
+enum JC_CCBELOCK_ERROR_CODE{
+	ELOCK_ERROR_SUCCESS=0,		//操作成功
+	ELOCK_ERROR_NOTSUPPORT=1,	//不支持的接口
+	ELOCK_ERROR_HARDWAREERROR=2,//硬件故障
+	ELOCK_ERROR_PARAMINVALID=3,	//参数非法
+	ELOCK_ERROR_CONNECTLOST=4,	//失去设备连接
+	ELOCK_ERROR_TIMEOUT=5		//操作超时
+};
