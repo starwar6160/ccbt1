@@ -4,7 +4,7 @@
 #include "stdafx.h"
 long Open(long lTimeOut);
 
-#pragma comment(lib,"..\\YJHBIN\\CcbELockDll.lib")
+#pragma comment(lib,"CCBELOCK.lib")
 
 int _tmain(int argc, _TCHAR* argv[])
 {
