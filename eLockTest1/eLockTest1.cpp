@@ -3,11 +3,15 @@
 
 #include "stdafx.h"
 #include "CCBelock.h"
+const char *myLongMsg="0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF"
+	"0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF"
+	"0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF";
 
-
-TEST(ccbElockTest,OpenTest)
+//Open,Close≤‚ ‘
+TEST(ccbElockTest,OpenCloseTest)
 {
-	EXPECT_EQ(ELOCK_ERROR_SUCCESS,Open(60));
+	EXPECT_EQ(ELOCK_ERROR_SUCCESS,Open(25));
+	EXPECT_EQ(ELOCK_ERROR_SUCCESS,Close());
 #ifdef NDEBUG
 	EXPECT_EQ(ELOCK_ERROR_PARAMINVALID,Open(0));
 	EXPECT_EQ(ELOCK_ERROR_PARAMINVALID,Open(-30));
@@ -15,9 +19,27 @@ TEST(ccbElockTest,OpenTest)
 #endif // NDEBUG
 }
 
-TEST(ccbElockDeathTest,OpenTest)
+TEST(ccbElockDeathTest,OpenTestBad)
 {
 	EXPECT_DEBUG_DEATH(Open(0),"");
 	EXPECT_DEBUG_DEATH(Open(-30),"");
 	EXPECT_DEBUG_DEATH(Open(4000),"");
+}
+
+//Notify≤‚ ‘
+TEST(ccbElockTest,NotifyTest)
+{
+	EXPECT_EQ(ELOCK_ERROR_SUCCESS,Notify("mytestNotify"));	
+#ifdef NDEBUG
+	EXPECT_EQ(ELOCK_ERROR_PARAMINVALID,Notify(NULL));
+	EXPECT_EQ(ELOCK_ERROR_PARAMINVALID,Notify(""));
+	EXPECT_EQ(ELOCK_ERROR_PARAMINVALID,Notify(myLongMsg));
+#endif // NDEBUG
+}
+
+TEST(ccbElockDeathTest,NotifyTestBad)
+{
+	EXPECT_DEBUG_DEATH(Notify(myLongMsg),"");
+	EXPECT_DEBUG_DEATH(Notify(""),"");
+	EXPECT_DEBUG_DEATH(Notify(NULL),"");
 }
