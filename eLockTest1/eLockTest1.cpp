@@ -7,6 +7,11 @@ const char *myLongMsg="0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF"
 	"0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF"
 	"0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF";
 
+void myRecvMsgRotine(const char *pszMsg)
+{
+
+}
+
 //Open,Close测试
 TEST(ccbElockTest,OpenCloseTest)
 {
@@ -20,7 +25,7 @@ TEST(ccbElockTest,OpenCloseTest)
 }
 
 TEST(ccbElockDeathTest,OpenTestBad)
-{
+{//Debug下会触发断言的非法输入测试，放到死亡测试中进行
 	EXPECT_DEBUG_DEATH(Open(0),"");
 	EXPECT_DEBUG_DEATH(Open(-30),"");
 	EXPECT_DEBUG_DEATH(Open(4000),"");
@@ -38,8 +43,22 @@ TEST(ccbElockTest,NotifyTest)
 }
 
 TEST(ccbElockDeathTest,NotifyTestBad)
-{
+{//Debug下会触发断言的非法输入测试，放到死亡测试中进行
 	EXPECT_DEBUG_DEATH(Notify(myLongMsg),"");
 	EXPECT_DEBUG_DEATH(Notify(""),"");
 	EXPECT_DEBUG_DEATH(Notify(NULL),"");
+}
+
+//SetRecvMsgRotine测试
+TEST(ccbElockTest,SetRecvMsgRotineTest)
+{
+	EXPECT_EQ(ELOCK_ERROR_SUCCESS,SetRecvMsgRotine(myRecvMsgRotine));	
+#ifdef NDEBUG
+	EXPECT_EQ(ELOCK_ERROR_PARAMINVALID,SetRecvMsgRotine(NULL));
+#endif // NDEBUG
+}
+
+TEST(ccbElockDeathTest,SetRecvMsgRotineTestBad)
+{//Debug下会触发断言的非法输入测试，放到死亡测试中进行
+	EXPECT_DEBUG_DEATH(SetRecvMsgRotine(NULL),"");
 }
