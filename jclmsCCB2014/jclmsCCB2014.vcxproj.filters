@@ -42,7 +42,7 @@
     <ClInclude Include="zwstdafx.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="zwTools1.h">
+    <ClInclude Include="zwECIES\sm3.h">
       <Filter>源文件\hashalg</Filter>
     </ClInclude>
   </ItemGroup>
@@ -56,35 +56,32 @@
     <ClCompile Include="jclmsccb_csharp_wrap.cxx">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="hashalg\sm3_1407.c">
-      <Filter>源文件\hashalg</Filter>
-    </ClCompile>
-    <ClCompile Include="hashalg\sm3hmac_1407.cpp">
-      <Filter>源文件\hashalg</Filter>
-    </ClCompile>
-    <ClCompile Include="zwhextool.cpp">
-      <Filter>源文件\hashalg</Filter>
-    </ClCompile>
-    <ClCompile Include="ECIES708\ecdh.c">
-      <Filter>源文件\ECIES</Filter>
-    </ClCompile>
-    <ClCompile Include="ECIES708\octet.c">
-      <Filter>源文件\ECIES</Filter>
-    </ClCompile>
-    <ClCompile Include="ECIES708\zwEcies529.cpp">
-      <Filter>源文件\ECIES</Filter>
-    </ClCompile>
-    <ClCompile Include="ECIES708\zwRand201406.cpp">
-      <Filter>源文件\ECIES</Filter>
-    </ClCompile>
-    <ClCompile Include="ECIES708\sha2.c">
-      <Filter>源文件\ECIES</Filter>
-    </ClCompile>
-    <ClCompile Include="jclmsCCB2014.cpp">
+    <ClCompile Include="src\jclmsCCB2014.cpp">
       <Filter>源文件\src</Filter>
     </ClCompile>
-    <ClCompile Include="zwtest1.c">
+    <ClCompile Include="notuse\zwtest1.c">
       <Filter>源文件\src</Filter>
+    </ClCompile>
+    <ClCompile Include="zwECIES\sm3_1407.c">
+      <Filter>源文件\hashalg</Filter>
+    </ClCompile>
+    <ClCompile Include="zwECIES\sm3hmac_1407.cpp">
+      <Filter>源文件\hashalg</Filter>
+    </ClCompile>
+    <ClCompile Include="zwECIES\ecdh.c">
+      <Filter>源文件\ECIES</Filter>
+    </ClCompile>
+    <ClCompile Include="zwECIES\octet.c">
+      <Filter>源文件\ECIES</Filter>
+    </ClCompile>
+    <ClCompile Include="zwECIES\sha2.c">
+      <Filter>源文件\ECIES</Filter>
+    </ClCompile>
+    <ClCompile Include="zwECIES\zwEcies529.cpp">
+      <Filter>源文件\ECIES</Filter>
+    </ClCompile>
+    <ClCompile Include="zwECIES\zwRand201406.cpp">
+      <Filter>源文件\ECIES</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

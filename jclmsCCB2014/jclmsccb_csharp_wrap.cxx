@@ -284,8 +284,8 @@ SWIGEXPORT void SWIGSTDCALL SWIGRegisterStringCallback_jclmsCCB2014(SWIG_CSharpS
 
 
 #define _ZWUSE_AS_JNI
-#include "jclmsCCB2014.h"
-#include "ECIES708\zwEcies529.h"
+#include "src\jclmsCCB2014.h"
+#include "zwECIES\zwEcies529.h"
 
 
 #ifdef __cplusplus

@@ -7,7 +7,7 @@
 #include <string.h>
 #include <time.h>
 #include "jclmsCCB2014.h"
-#include "hashalg\\sm3.h"
+#include "sm3.h"
 
 typedef struct JcLockInput
 {
