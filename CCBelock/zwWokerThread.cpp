@@ -14,16 +14,16 @@ void thread()
 		OutputDebugStringA("20140725.1618");
 	} 
 } 
-boost::thread t(thread); 
+//boost::thread t(thread); 
 
 int	zwThrTest1(int num)
 {
 	
 	//t.join(); 
 	
-	t.start_thread();
-	cout<<__FUNCTION__<<" END"<<endl;
-	t.timed_join(boost::posix_time::seconds(1));
+	//t.start_thread();
+	//cout<<__FUNCTION__<<" END"<<endl;
+	//t.timed_join(boost::posix_time::seconds(1));
 	
 	return num+100;
 }

@@ -17,7 +17,7 @@ public:
 		std::ostream& ostr = response.send();
 		ostr << "<html>";
 		ostr << "<head>";
-		ostr << "<title>WebSocketServer</title>";
+		ostr << "<title>WebSocketServer727</title>";
 		ostr << "<script type=\"text/javascript\">";
 		ostr << "function WebSocketTest()";
 		ostr << "{";
@@ -79,12 +79,12 @@ public:
 				n = ws.receiveFrame(buffer, sizeof(buffer), flags);				
 				int outLen=0;
 				string outBuf;
-				//zwjclms_command_proc(buffer,outBuf);
+				//zwjclms_command_proc(buffer,outBuf);				
+				string cmdClient=buffer;				
+				cout<<"RECV 727 MSG=\t"<<cmdClient<<endl;
 				app.logger().information(Poco::format("Frame received (length=%d, flags=0x%x).", n, unsigned(flags)));				
-				//app.logger().information(Poco::format("msg=%s",buffer));				
-				//string cmdClient=buffer;				
-				//cout<<cmdClient<<endl;
-				//cmdClient+="ADD BY ws SERVER";
+				app.logger().information(Poco::format("msg=%s",cmdClient));				
+				cmdClient+="ADD BY ws SERVER";
 				ws.sendFrame(outBuf.data(), outBuf.size(), flags);				
 			}
 			while (n > 0 || (flags & WebSocket::FRAME_OP_BITMASK) != WebSocket::FRAME_OP_CLOSE);

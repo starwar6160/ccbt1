@@ -24,7 +24,6 @@ namespace zwCfg{
 
 
 
-
 CCBELOCK_API long Open(long lTimeOut)
 {
 	boost:: mutex:: scoped_lock lock( zwCfg::io_mutex); 

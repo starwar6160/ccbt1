@@ -78,6 +78,7 @@ public:
 	virtual void TearDown()
 	{
 		std::cout << "ccbElockEnv TearDown" << std::endl;
+		zwTestWebSocket();
 	}
 };
 
