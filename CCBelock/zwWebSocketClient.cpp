@@ -86,19 +86,23 @@ void zwTestWebSocket()
 	int n = 0;
 	std::string payload("x");
 
+//发送字符串测试
+#ifdef _DEBUG727ASTR
 	payload = "Hello, world!";
 	ws.sendFrame(payload.data(), (int) payload.size());
 	n = ws.receiveFrame(buffer, sizeof(buffer), flags);
 	assert (n == payload.size());
 	assert (payload.compare(0, payload.size(), buffer, 0, n) == 0);
 	assert (flags == WebSocket::FRAME_TEXT);
+#endif // _DEBUG727ASTR
 
-	//payload = "Hello, universe!";
-	//ws.sendFrame(payload.data(), (int) payload.size(), WebSocket::FRAME_BINARY);
-	//n = ws.receiveFrame(buffer, sizeof(buffer), flags);
-	//assert (n == payload.size());
-	//assert (payload.compare(0, payload.size(), buffer, 0, n) == 0);
-	//assert (flags == WebSocket::FRAME_BINARY);	
+//发送二进制数据测试
+	payload = "Hello, universe!";
+	ws.sendFrame(payload.data(), (int) payload.size(), WebSocket::FRAME_BINARY);
+	n = ws.receiveFrame(buffer, sizeof(buffer), flags);
+	assert (n == payload.size());
+	assert (payload.compare(0, payload.size(), buffer, 0, n) == 0);
+	assert (flags == WebSocket::FRAME_BINARY);	
 
 	ws.shutdown();
 	n = ws.receiveFrame(buffer, sizeof(buffer), flags);
