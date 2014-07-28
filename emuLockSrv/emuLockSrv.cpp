@@ -67,6 +67,7 @@ public:
 		try
 		{
 			WebSocket ws(request, response);
+			ws.setReceiveTimeout(Poco::Timespan(10, 0, 0, 0, 0));
 			printf("getReceiveTimeout %d\n", ws.getReceiveTimeout().totalSeconds());
 			app.logger().information("WebSocket connection established.");
 			char buffer[RECV_BUF_LEN];			

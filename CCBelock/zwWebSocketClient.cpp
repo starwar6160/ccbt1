@@ -71,18 +71,24 @@ typedef struct zwWebSocket{
 	WebSocket *ws;
 }ZWWS;
 
+void myPrintCurrentTime();
+
 int myWebSocketInit(ZWWS *pws,const char *host,const int port)
-{
+{	
 	pws->cs.setHost(host);
 	pws->cs.setPort(static_cast<unsigned int>(port));
 	pws->request.setMethod(HTTPRequest::HTTP_GET);
 	pws->request.setURI("/ws");
 	pws->ws=new WebSocket(pws->cs,pws->request,pws->response);
+	pws->ws->setReceiveTimeout(15);
+	pws->ws->setSendTimeout(10);
 	return 0;
 }
 
 void zwTestWebSocket()
 {
+	try
+	{
 	Poco::Thread::sleep(200);
 	ZWWS zws;
 	myWebSocketInit(&zws,"localhost",1425);
@@ -92,7 +98,7 @@ void zwTestWebSocket()
 	int flags=0;
 	int n = 0;
 	std::string payload("x");
-
+	myPrintCurrentTime();
 	//·¢ËÍ×Ö·û´®²âÊÔ
 	payload = "Hello, world!";
 	zws.ws->sendFrame(payload.data(), (int) payload.size());
@@ -106,4 +112,21 @@ void zwTestWebSocket()
 	n = zws.ws->receiveFrame(buffer, sizeof(buffer), flags);
 	//assert (n == 2);
 	assert ((flags & WebSocket::FRAME_OP_BITMASK) == WebSocket::FRAME_OP_CLOSE);
+	}
+	catch (...)
+	{
+		printf("CPP EXECEPTION!");
+		myPrintCurrentTime();
+	}
+
+}
+
+void myPrintCurrentTime()
+{
+	time_t now=time(NULL);
+	char buf[256];
+	memset(buf,0,256);
+	struct tm *tm_ptr=localtime(&now);
+	
+	printf("TIME=\t%d:%d:%d\n",tm_ptr->tm_hour,tm_ptr->tm_min,tm_ptr->tm_sec);
 }
