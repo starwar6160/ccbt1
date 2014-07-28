@@ -64,21 +64,28 @@ namespace{
 
 
 
+typedef struct zwWebSocket{
+	HTTPClientSession cs;
+	HTTPRequest request;
+	HTTPResponse response;
+	WebSocket *ws;
+}ZWWS;
 
+int myWebSocketInit(ZWWS *pws,const char *host,const int port)
+{
+	pws->cs.setHost(host);
+	pws->cs.setPort(static_cast<unsigned int>(port));
+	pws->request.setMethod(HTTPRequest::HTTP_GET);
+	pws->request.setURI("/ws");
+	pws->ws=new WebSocket(pws->cs,pws->request,pws->response);
+	return 0;
+}
 
 void zwTestWebSocket()
 {
-	//Poco::Net::ServerSocket ss(0);
-	//Poco::Net::HTTPServer server(new WebSocketRequestHandlerFactory, ss, new Poco::Net::HTTPServerParams);
-	//server.start();
-
 	Poco::Thread::sleep(200);
-
-	//HTTPClientSession cs("localhost", ss.address().port());
-	HTTPClientSession cs("localhost", 1425);
-	HTTPRequest request(HTTPRequest::HTTP_GET, "/ws");
-	HTTPResponse response;
-	WebSocket ws(cs, request, response);
+	ZWWS zws;
+	myWebSocketInit(&zws,"localhost",1425);
 
 	char buffer[1024];
 	memset(buffer,0,1024);
@@ -86,28 +93,17 @@ void zwTestWebSocket()
 	int n = 0;
 	std::string payload("x");
 
-//·¢ËÍ×Ö·û´®²âÊÔ
-#ifdef _DEBUG727ASTR
+	//·¢ËÍ×Ö·û´®²âÊÔ
 	payload = "Hello, world!";
-	ws.sendFrame(payload.data(), (int) payload.size());
-	n = ws.receiveFrame(buffer, sizeof(buffer), flags);
-	assert (n == payload.size());
-	assert (payload.compare(0, payload.size(), buffer, 0, n) == 0);
+	zws.ws->sendFrame(payload.data(), (int) payload.size());
+	n = zws.ws->receiveFrame(buffer, sizeof(buffer), flags);
+	//assert (n == payload.size());
+	//assert (payload.compare(0, payload.size(), buffer, 0, n) == 0);
 	assert (flags == WebSocket::FRAME_TEXT);
-#endif // _DEBUG727ASTR
+	cout<<"RECV728 \t"<<buffer<<endl;
 
-//·¢ËÍ¶þ½øÖÆÊý¾Ý²âÊÔ
-	payload = "Hello, universe!";
-	ws.sendFrame(payload.data(), (int) payload.size(), WebSocket::FRAME_BINARY);
-	n = ws.receiveFrame(buffer, sizeof(buffer), flags);
-	assert (n == payload.size());
-	assert (payload.compare(0, payload.size(), buffer, 0, n) == 0);
-	assert (flags == WebSocket::FRAME_BINARY);	
-
-	ws.shutdown();
-	n = ws.receiveFrame(buffer, sizeof(buffer), flags);
-	assert (n == 2);
+	//ws.shutdown();
+	n = zws.ws->receiveFrame(buffer, sizeof(buffer), flags);
+	//assert (n == 2);
 	assert ((flags & WebSocket::FRAME_OP_BITMASK) == WebSocket::FRAME_OP_CLOSE);
-
-	//server.stop();
 }

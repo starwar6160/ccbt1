@@ -85,7 +85,7 @@ public:
 				app.logger().information(Poco::format("Frame received (length=%d, flags=0x%x).", n, unsigned(flags)));				
 				app.logger().information(Poco::format("msg=%s",cmdClient));				
 				cmdClient+="ADD BY ws SERVER";
-				ws.sendFrame(outBuf.data(), outBuf.size(), flags);				
+				ws.sendFrame(cmdClient.data(), cmdClient.size(), flags);				
 			}
 			while (n > 0 || (flags & WebSocket::FRAME_OP_BITMASK) != WebSocket::FRAME_OP_CLOSE);
 			app.logger().information("WebSocket connection closed.");
