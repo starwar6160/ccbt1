@@ -392,11 +392,11 @@ TEST_F(jclmsCCBV11_Test,inputNew)
 
 TEST_F(jclmsCCBV11_Test,inputCheck)
 {
-	JcLockSetString(handle,JCI_ATMNO,"ATMNO723");
-	JcLockSetString(handle,JCI_LOCKNO,"LOCKNO1430");
-	JcLockSetString(handle,JCI_PSK,"PSKTESTJINCHU");
+	JcLockSetString(handle,JCI_ATMNO,"atm10455761");
+	JcLockSetString(handle,JCI_LOCKNO,"lock14771509");
+	JcLockSetString(handle,JCI_PSK,"jclmsdemopsk201407071509aajclmsdemopsk201407071509");
 	//注意现在合法的时间值应该是1.4G以上了，注意位数。20140721.1709	
-	JcLockSetInt(handle,JCI_DATETIME,static_cast<int>(time(NULL)));
+	//JcLockSetInt(handle,JCI_DATETIME,static_cast<int>(time(NULL)));
 	//生成初始闭锁码的时候，有效期和闭锁码字段都无效，随便填写，是正整数就可以
 	//JcLockSetInt(handle,JCI_VALIDITY,5);
 	//JcLockSetInt(handle,JCI_CLOSECODE,0);

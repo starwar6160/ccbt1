@@ -121,9 +121,10 @@ unsigned int zwBinString2Int32(const char *data,const int len);
 		memset(pjc->m_atmno,0,JC_ATMNO_MAXLEN+1);
 		memset(pjc->m_lockno,0,JC_LOCKNO_MAXLEN+1);
 		memset(pjc->m_psk,0,JC_PSK_LEN+1);
-		pjc->m_datetime=JC_INVALID_VALUE;
-		pjc->m_validity=5;
-		pjc->m_closecode=0;	
+		//为没有可变输入的初始闭锁码指定3个常量
+		pjc->m_datetime=1400*1000*1000;
+		pjc->m_validity=5;		//用的最多的是5分钟有效期，所以直接初始化为
+		pjc->m_closecode=0;		//防备初始闭锁码生成的时候此处未初始化
 		pjc->m_cmdtype=JCCMD_INIT_CLOSECODE;
 #ifdef _DEBUG
 		pjc->m_stepoftime=6;	//调试模式采用6秒的步长，快速发现问题
@@ -210,9 +211,9 @@ unsigned int zwBinString2Int32(const char *data,const int len);
 		//以便对于特定的锁具和PSK来说，初始闭锁码是一个恒定值
 		if (JCCMD_INIT_CLOSECODE==lock->m_cmdtype)
 		{
-			l_datetime=myGetNormalTime(time(NULL),8*60*60);	//初始闭锁码采用8小时的取整时间
-			l_validity=(24*60)*365;	//初始有效期特选一个合法有效期之外的值,一整年
-			l_closecode=100001111;	//初始闭锁码特选一个超范围的9位非法闭锁码			
+			//l_datetime=myGetNormalTime(time(NULL),8*60*60);	//初始闭锁码采用8小时的取整时间
+			//l_validity=(24*60)*365;	//初始有效期特选一个合法有效期之外的值,一整年
+			//l_closecode=100001111;	//初始闭锁码特选一个超范围的9位非法闭锁码			
 		}		
 		//继续输入各个可变字段的HASH值
 		mySm3Process(&sm3,l_datetime);
@@ -294,7 +295,7 @@ unsigned int zwBinString2Int32(const char *data,const int len);
 		assert(sizeof(jcp->m_closecode)==sizeof(int));
 		assert(sizeof(jcp->m_cmdtype)==sizeof(int));
 
-		assert(jcp->m_datetime>(1400*ZWMEGA) && jcp->m_datetime<((2048*ZWMEGA)-3));
+		assert(jcp->m_datetime>=(1400*ZWMEGA) && jcp->m_datetime<((2048*ZWMEGA)-3));
 		assert(jcp->m_cmdtype>JCCMD_START && jcp->m_cmdtype<JCCMD_END);
 if (JCCMD_INIT_CLOSECODE!=jcp->m_cmdtype)
 {	//生成初始闭锁码时，不检查有效期和闭锁码的值

@@ -100,12 +100,6 @@ namespace cstest702
             jclmsCCB2014.JcLockSetString(jcSrv, JCITYPE.JCI_LOCKNO, lockno);
             jclmsCCB2014.JcLockSetString(jcSrv, JCITYPE.JCI_PSK, psk);
 
-            //可变条件部分.
-            jclmsCCB2014.JcLockSetInt(jcLock, JCITYPE.JCI_DATETIME, seconddiff);
-            jclmsCCB2014.JcLockSetInt(jcLock, JCITYPE.JCI_VALIDITY, validity);
-            jclmsCCB2014.JcLockSetInt(jcSrv, JCITYPE.JCI_DATETIME, seconddiff);
-            jclmsCCB2014.JcLockSetInt(jcSrv, JCITYPE.JCI_VALIDITY, validity);
-
             //此处不同的命令码指示生成不同的动态码
             jclmsCCB2014.JcLockSetCmdType(jcLock, JCITYPE.JCI_CMDTYPE, JCCMD.JCCMD_INIT_CLOSECODE);
             jclmsCCB2014.JcLockSetCmdType(jcSrv, JCITYPE.JCI_CMDTYPE, JCCMD.JCCMD_INIT_CLOSECODE);
@@ -113,6 +107,13 @@ namespace cstest702
             int firstCloseCode = jclmsCCB2014.JcLockGetDynaCode(jcLock);
             jclmsCCB2014.JcLockDebugPrint(jcLock);
             Console.Out.WriteLine("锁具产生的初始闭锁码是 {0}", firstCloseCode);
+
+            //可变条件部分.
+            jclmsCCB2014.JcLockSetInt(jcLock, JCITYPE.JCI_DATETIME, seconddiff);
+            jclmsCCB2014.JcLockSetInt(jcLock, JCITYPE.JCI_VALIDITY, validity);
+            jclmsCCB2014.JcLockSetInt(jcSrv, JCITYPE.JCI_DATETIME, seconddiff);
+            jclmsCCB2014.JcLockSetInt(jcSrv, JCITYPE.JCI_VALIDITY, validity);
+
             //初始闭锁码输入到上位机DLL，其他条件已经准备好
             jclmsCCB2014.JcLockSetInt(jcSrv, JCITYPE.JCI_CLOSECODE, firstCloseCode);
             //获取第一开锁密码.注意，获得每一类动态码的方式都是这个调用，区别在于m_cmdtype
