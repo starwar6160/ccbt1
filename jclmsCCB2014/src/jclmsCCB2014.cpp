@@ -126,11 +126,11 @@ unsigned int zwBinString2Int32(const char *data,const int len);
 		pjc->m_validity=5;		//用的最多的是5分钟有效期，所以直接初始化为
 		pjc->m_closecode=0;		//防备初始闭锁码生成的时候此处未初始化
 		pjc->m_cmdtype=JCCMD_INIT_CLOSECODE;
-#ifdef _DEBUG
-		pjc->m_stepoftime=6;	//调试模式采用6秒的步长，快速发现问题
-#else
+//#ifdef _DEBUG
+//		pjc->m_stepoftime=6;	//调试模式采用6秒的步长，快速发现问题
+//#else
 		pjc->m_stepoftime=60;	//默认在线模式，反推时间步长60秒
-#endif // _DEBUG
+//#endif // _DEBUG
 		pjc->m_reverse_time_length=10*60;	//默认在线模式，反推10分钟
 		////将5分钟，4小时这样最常用到的有效期排列在前面，提高效率
 		//int valarr[]={5,MIN_OF_HOUR*4,MIN_OF_HOUR*8,MIN_OF_HOUR*12,15,30,60,MIN_OF_HOUR*24};
@@ -171,8 +171,9 @@ unsigned int zwBinString2Int32(const char *data,const int len);
 		sprintf(mainstr,"%s.%s.%s.",jcp->m_atmno,jcp->m_lockno,jcp->m_psk);
 		//可变条件逐个化为字符串，组合到一起
 		char vstr[11+5+9+3+3];	//大致把各个可变字段的位数估计一下
-		sprintf(vstr,"%d.%d.%d.%d",jcp->m_datetime,jcp->m_validity,
-			jcp->m_closecode,jcp->m_cmdtype);
+		sprintf(vstr,"%d.%d.%d.%d#%d.%d",jcp->m_datetime,jcp->m_validity,
+			jcp->m_closecode,jcp->m_cmdtype,
+			jcp->m_stepoftime,jcp->m_reverse_time_length);
 		//allItems=allItems+buf;
 		char allStr[128];
 		memset(allStr,0,128);
@@ -216,9 +217,9 @@ unsigned int zwBinString2Int32(const char *data,const int len);
 			//l_closecode=100001111;	//初始闭锁码特选一个超范围的9位非法闭锁码			
 		}		
 		//继续输入各个可变字段的HASH值
-		mySm3Process(&sm3,l_datetime);
-		mySm3Process(&sm3,l_validity);
-		mySm3Process(&sm3,l_closecode);
+		mySm3Process(&sm3,lock->m_datetime);
+		mySm3Process(&sm3,lock->m_validity);
+		mySm3Process(&sm3,lock->m_closecode);
 		mySm3Process(&sm3,lock->m_cmdtype);
 		//////////////////////////////HASH运算结束////////////////////////////////////////////
 		memset(outHmac,0,ZWSM3_DGST_LEN);

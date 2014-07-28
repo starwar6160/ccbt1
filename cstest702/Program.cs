@@ -11,7 +11,7 @@ namespace cstest702
 
         const String atmno = "atm10455761";
         const String lockno = "lock14771509";
-        const String psk = "jclmsdemopsk201407071509aajclmsdemopsk201407071509";
+        const String psk = "PSKDEMO728";
         const Int32 validity = 5;
 
         static void Main(string[] args)

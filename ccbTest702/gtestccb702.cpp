@@ -394,7 +394,7 @@ TEST_F(jclmsCCBV11_Test,inputCheck)
 {
 	JcLockSetString(handle,JCI_ATMNO,"atm10455761");
 	JcLockSetString(handle,JCI_LOCKNO,"lock14771509");
-	JcLockSetString(handle,JCI_PSK,"jclmsdemopsk201407071509aajclmsdemopsk201407071509");
+	JcLockSetString(handle,JCI_PSK,"PSKDEMO728");
 	//生成初始闭锁码的时候，有效期和闭锁码字段都无效，随便填写，是正整数就可以
 	//JcLockSetInt(handle,JCI_VALIDITY,5);
 	//JcLockSetInt(handle,JCI_CLOSECODE,0);
@@ -414,6 +414,7 @@ TEST_F(jclmsCCBV11_Test,getDynaCodePass1)
 	EXPECT_GT(initCloseCode,0);
 	EXPECT_LT(initCloseCode,100000000);
 	printf("initCloseCode=\t%d\n",initCloseCode);
+	EXPECT_EQ(16584380,initCloseCode);
 	//dynaPass1
 	//注意现在合法的时间值应该是1.4G以上了，注意位数。20140721.1709	
 	JcLockSetInt(handle,JCI_DATETIME,static_cast<int>(time(NULL)));
