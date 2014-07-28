@@ -120,10 +120,11 @@ namespace cstest702
             //jcSrv.DebugPrint();
             jclmsCCB2014.JcLockSetCmdType(jcSrv, JCITYPE.JCI_CMDTYPE, JCCMD.JCCMD_CCB_DYPASS1);
             int dyCode1 = jclmsCCB2014.JcLockGetDynaCode(jcSrv);
+            jclmsCCB2014.JcLockDebugPrint(jcSrv);
             Console.Out.WriteLine("上位机产生的第一开锁动态码是 {0}", dyCode1);
             //有问题请给我这个字符串
-            Console.Out.WriteLine("动态码输入条件调试信息字符串是");
-            jclmsCCB2014.JcLockDebugPrint(jcSrv);
+            //Console.Out.WriteLine("动态码输入条件调试信息字符串是");
+            //jclmsCCB2014.JcLockDebugPrint(jcSrv);
 
             //锁具反推验证第一开锁动态码，
             jclmsCCB2014.JcLockSetInt(jcLock, JCITYPE.JCI_CLOSECODE, firstCloseCode);
@@ -143,6 +144,7 @@ namespace cstest702
             //用第一开锁密码作为验证码的元素，以便适应建行的3个码环环相扣的要求
             jclmsCCB2014.JcLockSetInt(jcLock, JCITYPE.JCI_CLOSECODE, dyCode1);
             int lockVerifyCode = jclmsCCB2014.JcLockGetDynaCode(jcLock);
+            jclmsCCB2014.JcLockDebugPrint(jcLock);
             Console.Out.WriteLine("锁具产生的验证码是 {0}", lockVerifyCode);
             jclmsCCB2014.JcLockSetCmdType(jcSrv, JCITYPE.JCI_CMDTYPE, JCCMD.JCCMD_CCB_LOCK_VERCODE);
             //上位机也计算锁具应该返回的验证码的值，予以比对
@@ -162,6 +164,7 @@ namespace cstest702
             //锁具验证码作为第二开锁码的计算要素
             jclmsCCB2014.JcLockSetInt(jcSrv, JCITYPE.JCI_CLOSECODE, lockVerifyCode);
             int dyCode2 = jclmsCCB2014.JcLockGetDynaCode(jcSrv);
+            jclmsCCB2014.JcLockDebugPrint(jcSrv);
             Console.Out.WriteLine("上位机计算的第二开锁码是 {0}", dyCode2);
             jclmsCCB2014.JcLockSetCmdType(jcLock, JCITYPE.JCI_CMDTYPE, JCCMD.JCCMD_CCB_DYPASS2);
             //锁具计算第二开锁码，以便于上位机传来的第二开锁码比对

@@ -395,8 +395,6 @@ TEST_F(jclmsCCBV11_Test,inputCheck)
 	JcLockSetString(handle,JCI_ATMNO,"atm10455761");
 	JcLockSetString(handle,JCI_LOCKNO,"lock14771509");
 	JcLockSetString(handle,JCI_PSK,"jclmsdemopsk201407071509aajclmsdemopsk201407071509");
-	//注意现在合法的时间值应该是1.4G以上了，注意位数。20140721.1709	
-	//JcLockSetInt(handle,JCI_DATETIME,static_cast<int>(time(NULL)));
 	//生成初始闭锁码的时候，有效期和闭锁码字段都无效，随便填写，是正整数就可以
 	//JcLockSetInt(handle,JCI_VALIDITY,5);
 	//JcLockSetInt(handle,JCI_CLOSECODE,0);
@@ -417,11 +415,14 @@ TEST_F(jclmsCCBV11_Test,getDynaCodePass1)
 	EXPECT_LT(initCloseCode,100000000);
 	printf("initCloseCode=\t%d\n",initCloseCode);
 	//dynaPass1
+	//注意现在合法的时间值应该是1.4G以上了，注意位数。20140721.1709	
+	JcLockSetInt(handle,JCI_DATETIME,static_cast<int>(time(NULL)));
 	JcLockSetCmdType(handle,JCI_CMDTYPE,JCCMD_CCB_DYPASS1);
-	JcLockSetInt(handle,JCI_CLOSECODE,initCloseCode);
+	JcLockSetInt(handle,JCI_CLOSECODE,initCloseCode);	
 	pass1DyCode=JcLockGetDynaCode(handle);
 	EXPECT_GT(pass1DyCode,10*ZWMEGA);
 	EXPECT_LT(pass1DyCode,100*ZWMEGA);
+	JcLockDebugPrint(handle);
 	printf("dynaPass1=\t%d\n",pass1DyCode);
 	JCMATCH pass1Match= JcLockReverseVerifyDynaCode(handle,pass1DyCode);
 	EXPECT_GT(pass1Match.s_datetime,time(NULL)-60);
@@ -430,12 +431,14 @@ TEST_F(jclmsCCBV11_Test,getDynaCodePass1)
 	printf("pass1Match Time =\t%d\tValidity=%d\n",pass1Match.s_datetime,pass1Match.s_validity);
 }
 
+
 //下位机校验码测试
 TEST_F(jclmsCCBV11_Test,getDynaCodeVerifyCode)
 {
 	JcLockSetCmdType(handle,JCI_CMDTYPE,JCCMD_CCB_LOCK_VERCODE);
 	//第一开锁码作为要素参与生成校验码
 	JcLockSetInt(handle,JCI_CLOSECODE,pass1DyCode);
+	JcLockDebugPrint(handle);
 	verifyCode=JcLockGetDynaCode(handle);
 	EXPECT_GT(verifyCode,10*ZWMEGA);
 	EXPECT_LT(verifyCode,100*ZWMEGA);
@@ -453,6 +456,7 @@ TEST_F(jclmsCCBV11_Test,getDynaCodePass2)
 	JcLockSetCmdType(handle,JCI_CMDTYPE,JCCMD_CCB_DYPASS2);
 	//校验码作为要素参与生成第二开锁码
 	JcLockSetInt(handle,JCI_CLOSECODE,verifyCode);
+	JcLockDebugPrint(handle);
 	pass2DyCode=JcLockGetDynaCode(handle);
 	EXPECT_GT(pass2DyCode,10*ZWMEGA);
 	EXPECT_LT(pass2DyCode,100*ZWMEGA);
@@ -463,6 +467,7 @@ TEST_F(jclmsCCBV11_Test,getDynaCodePass2)
 	printf("current time=\t\t%d\n",time(NULL));
 	printf("pass2Match Time =\t%d\tValidity=%d\n",pass2Match.s_datetime,pass2Match.s_validity);
 }
+
 
 //////////////////////////////////////////////////////////////////////////
 }	//namespace ccbtest722{
