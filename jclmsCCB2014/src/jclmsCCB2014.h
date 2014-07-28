@@ -101,6 +101,7 @@ int		JCLMSCCB2014_API JcLockGetVersion(void);
 //输出调试字符串
 void	JCLMSCCB2014_API JcLockDebugPrint(const int handle);
 
+const int ZWMEGA=1000000;	//一百万
 
 //}	//end of namespace jclms
 //////////////////////////////新设计的C接口////////////////////////////////////////////

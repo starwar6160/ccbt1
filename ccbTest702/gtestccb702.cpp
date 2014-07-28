@@ -399,7 +399,7 @@ TEST_F(jclmsCCBV11_Test,inputCheck)
 	//JcLockSetInt(handle,JCI_VALIDITY,5);
 	//JcLockSetInt(handle,JCI_CLOSECODE,0);
 	JcLockSetCmdType(handle,JCI_CMDTYPE,JCCMD_INIT_CLOSECODE);
-	JcLockDebugPrint(handle);
+	//JcLockDebugPrint(handle);
 	//检查输入是否合法
 	EXPECT_EQ(EJC_SUSSESS,JcLockCheckInput(handle));
 }
@@ -414,7 +414,7 @@ TEST_F(jclmsCCBV11_Test,getDynaCodePass1)
 	EXPECT_GT(initCloseCode,0);
 	EXPECT_LT(initCloseCode,100000000);
 	printf("initCloseCode=\t%d\n",initCloseCode);
-	EXPECT_EQ(16584380,initCloseCode);
+	EXPECT_EQ(80498408,initCloseCode);
 	//dynaPass1
 	//注意现在合法的时间值应该是1.4G以上了，注意位数。20140721.1709	
 	JcLockSetInt(handle,JCI_DATETIME,static_cast<int>(time(NULL)));

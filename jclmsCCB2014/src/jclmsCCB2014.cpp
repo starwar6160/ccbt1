@@ -8,6 +8,10 @@
 #include "jclmsCCB2014.h"
 #include "sm3.h"
 
+//获取初始闭锁码的3个可变条件的“固定值”
+static void myGetInitCloseCodeVarItem(int *mdatetime,int *mvalidity,int *mclosecode);
+
+
 typedef struct JcLockInput
 {
 	//固定因素部分
@@ -170,16 +174,37 @@ unsigned int zwBinString2Int32(const char *data,const int len);
 		memset(mainstr,0,sizeof(mainstr));		
 		sprintf(mainstr,"%s.%s.%s.",jcp->m_atmno,jcp->m_lockno,jcp->m_psk);
 		//可变条件逐个化为字符串，组合到一起
-		char vstr[11+5+9+3+3];	//大致把各个可变字段的位数估计一下
-		sprintf(vstr,"%d.%d.%d.%d#%d.%d",jcp->m_datetime,jcp->m_validity,
-			jcp->m_closecode,jcp->m_cmdtype,
-			jcp->m_stepoftime,jcp->m_reverse_time_length);
+		char vstr[40];	//大致把各个可变字段的位数估计一下
+		int mdatetime=jcp->m_datetime;
+		int mvalidity=jcp->m_validity;
+		int mclosecode=jcp->m_closecode;
+		if (JCCMD_INIT_CLOSECODE== jcp->m_cmdtype)
+		{//如果是生成初始闭锁码，就用临时计算的值替代之
+			myGetInitCloseCodeVarItem(&mdatetime,&mvalidity,&mclosecode);
+		}		
+		sprintf(vstr,"%d.%d.%d.%d",mdatetime,mvalidity,
+			mclosecode,jcp->m_cmdtype
+			//,jcp->m_stepoftime,jcp->m_reverse_time_length
+			);
 		//allItems=allItems+buf;
 		char allStr[128];
 		memset(allStr,0,128);
 		strncpy(allStr,mainstr,128);
 		strcat(allStr,vstr);
 		printf("All Items = %s \n",allStr);
+	}
+
+	//获取初始闭锁码的3个可变条件的“固定值”
+	static void myGetInitCloseCodeVarItem(int *mdatetime,int *mvalidity,int *mclosecode)
+	{
+		assert(NULL!=mdatetime && NULL!=mvalidity && NULL!=mclosecode);
+		if (NULL==mdatetime || NULL==mvalidity || NULL==mclosecode)
+		{
+			return;
+		}
+		*mdatetime=myGetNormalTime(time(NULL),ZWMEGA);
+		*mvalidity=1000;
+		*mclosecode=10000000;
 	}
 
 
@@ -208,18 +233,19 @@ unsigned int zwBinString2Int32(const char *data,const int len);
 		//有效期和闭锁码需要根据不同情况分别处理
 		int l_validity=lock->m_validity;
 		int l_closecode=lock->m_closecode;	
-		//计算初始闭锁码时，采用固定的时间，有效期，闭锁码的值
-		//以便对于特定的锁具和PSK来说，初始闭锁码是一个恒定值
+		//计算初始闭锁码时，采用十天半月大致固定的时间，有效期，闭锁码的值
+		//以便对于特定的锁具和PSK来说，初始闭锁码是一个十天半月内的恒定值
 		if (JCCMD_INIT_CLOSECODE==lock->m_cmdtype)
 		{
-			//l_datetime=myGetNormalTime(time(NULL),8*60*60);	//初始闭锁码采用8小时的取整时间
-			//l_validity=(24*60)*365;	//初始有效期特选一个合法有效期之外的值,一整年
-			//l_closecode=100001111;	//初始闭锁码特选一个超范围的9位非法闭锁码			
+			//l_datetime=myGetNormalTime(time(NULL),ZWMEGA);	//初始闭锁码采用1M秒(大约12天)的取整时间
+			//l_validity=1000;	//初始有效期取一个有效范围内的规整值
+			//l_closecode=1000000;	//初始闭锁码特选一个有效范围内的规整值
+			myGetInitCloseCodeVarItem(&l_datetime,&l_validity,&l_closecode);
 		}		
 		//继续输入各个可变字段的HASH值
-		mySm3Process(&sm3,lock->m_datetime);
-		mySm3Process(&sm3,lock->m_validity);
-		mySm3Process(&sm3,lock->m_closecode);
+		mySm3Process(&sm3,l_datetime);
+		mySm3Process(&sm3,l_validity);
+		mySm3Process(&sm3,l_closecode);
 		mySm3Process(&sm3,lock->m_cmdtype);
 		//////////////////////////////HASH运算结束////////////////////////////////////////////
 		memset(outHmac,0,ZWSM3_DGST_LEN);
