@@ -353,15 +353,35 @@ if (JCCMD_INIT_CLOSECODE!=jcp->m_cmdtype)
 		{
 		case JCI_DATETIME:
 			//时间必须经过规格化
+			if (num<(1400*1000*1000))
+			{
+				return EJC_DATETIME_INVALID;
+			}
 			jcp->m_datetime=myGetNormalTime(num,jcp->m_stepoftime);
 			break;
 		case JCI_VALIDITY:
 			assert(num>0 && num<=1440*7);
+			if (num<=0 || num>(1440*7))
+			{
+				return EJC_VALIDRANGE_INVALID;
+			}
 			jcp->m_validity=num;
 			break;
 		case JCI_CLOSECODE:
 			assert(num>=10000000 && num<=99999999);
+			if (num<10000000 || num>99999999)
+			{
+				return EJC_CLOSECODE_INVALID;
+			}
 			jcp->m_closecode=num;
+			break;
+		case JCI_TIMESTEP:	//反推时间步长
+			assert(num>=3 && num<=3600);
+			if (num<0 || num > 3600)
+			{
+				return EJC_CMDTYPE_TIMESTEP_INVALID;
+			}
+			jcp->m_stepoftime=num;
 			break;
 		}
 		return EJC_SUSSESS;

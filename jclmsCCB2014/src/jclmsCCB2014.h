@@ -53,15 +53,16 @@ typedef enum jc_cmd_type{
 } JCCMD;
 
 typedef enum jc_input_type{
-	JCI_START,
-	JCI_ATMNO,
-	JCI_LOCKNO,
-	JCI_PSK,
-	JCI_DATETIME,
-	JCI_VALIDITY,
-	JCI_CLOSECODE,
-	JCI_CMDTYPE,
-	JCI_END
+	JCI_START,		//无效值，用于界定上下范围
+	JCI_ATMNO,		//ATM编号，初始化时设定
+	JCI_LOCKNO,		//锁号，初始化时设定
+	JCI_PSK,		//PSK，初始化时设定
+	JCI_DATETIME,	//时间日期，单位是秒，应该是GMT秒数
+	JCI_VALIDITY,	//有效期，单位是分钟
+	JCI_CLOSECODE,	//闭锁码
+	JCI_CMDTYPE,	//要生成什么类型的动态码
+	JCI_TIMESTEP,	//时间往前推算的间隔，单位为秒
+	JCI_END			//无效值，用于界定上下范围
 }JCITYPE;
 
 //离线匹配的返回值
