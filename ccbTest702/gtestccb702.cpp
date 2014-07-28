@@ -396,8 +396,8 @@ TEST_F(jclmsCCBV11_Test,inputCheck)
 	JcLockSetString(handle,JCI_LOCKNO,"lock14771509");
 	JcLockSetString(handle,JCI_PSK,"PSKDEMO728");
 	//生成初始闭锁码的时候，有效期和闭锁码字段都无效，随便填写，是正整数就可以
-	//JcLockSetInt(handle,JCI_VALIDITY,5);
-	//JcLockSetInt(handle,JCI_CLOSECODE,0);
+	JcLockSetInt(handle,JCI_VALIDITY,5);
+	JcLockSetInt(handle,JCI_CLOSECODE,0);
 	JcLockSetCmdType(handle,JCI_CMDTYPE,JCCMD_INIT_CLOSECODE);
 	//JcLockDebugPrint(handle);
 	//检查输入是否合法

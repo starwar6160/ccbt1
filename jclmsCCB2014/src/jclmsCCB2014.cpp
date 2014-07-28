@@ -314,7 +314,7 @@ unsigned int zwBinString2Int32(const char *data,const int len);
 
 	JCERROR JCLMSCCB2014_API JcLockCheckInput( const int handle )
 	{
-		const int ZWMEGA=1000*1000;
+		//const int ZWMEGA=1000*1000;
 		JCINPUT *jcp=(JCINPUT *)handle;
 		//假定这些数字字段在二进制层面都是等同于int的长度的，以便通过一个统一的函数进行HASH运算
 		assert(sizeof(jcp->m_datetime)==sizeof(int));
@@ -327,7 +327,8 @@ unsigned int zwBinString2Int32(const char *data,const int len);
 if (JCCMD_INIT_CLOSECODE!=jcp->m_cmdtype)
 {	//生成初始闭锁码时，不检查有效期和闭锁码的值
 	assert(jcp->m_validity>=0 && jcp->m_validity<=(24*60));
-	assert(jcp->m_closecode>=0 && jcp->m_closecode<=(100*ZWMEGA));
+	//10,000,000 8位数，也就是10-100M之间
+	assert(jcp->m_closecode>=10*ZWMEGA && jcp->m_closecode<=(100*ZWMEGA));
 }
 
 
@@ -342,8 +343,8 @@ if (JCCMD_INIT_CLOSECODE!=jcp->m_cmdtype)
 		{//有效期分钟数为负数或者大于一整天则无效
 			return EJC_VALIDRANGE_INVALID;
 		}
-		if (jcp->m_closecode<0 || jcp->m_closecode>(100*ZWMEGA))
-		{//闭锁码为负数或者大于8位则无效
+		if (jcp->m_closecode<10*ZWMEGA || jcp->m_closecode>(100*ZWMEGA))
+		{//闭锁码小于8位或者大于8位则无效
 			return EJC_CLOSECODE_INVALID;
 		}
 		}	//if (JCCMD_INIT_CLOSECODE!=jcp->m_cmdtype)
@@ -394,11 +395,11 @@ if (JCCMD_INIT_CLOSECODE!=jcp->m_cmdtype)
 			jcp->m_validity=num;
 			break;
 		case JCI_CLOSECODE:
-			assert(num>=10000000 && num<=99999999);
-			if (num<10000000 || num>99999999)
-			{
-				return EJC_CLOSECODE_INVALID;
-			}
+			//assert(num>=10000000 && num<=99999999);
+			//if (num<10000000 || num>99999999)
+			//{
+			//	return EJC_CLOSECODE_INVALID;
+			//}
 			jcp->m_closecode=num;
 			break;
 		case JCI_TIMESTEP:	//反推时间步长
