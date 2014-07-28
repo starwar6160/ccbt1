@@ -348,15 +348,19 @@ if (JCCMD_INIT_CLOSECODE!=jcp->m_cmdtype)
 			return EJC_INPUT_NULL;
 		}
 		JCINPUT *jcp=(JCINPUT *)handle;
+		assert(jcp->m_stepoftime>=6 && jcp->m_stepoftime<=24*3600);
 		switch (mtype)
 		{
 		case JCI_DATETIME:
-			jcp->m_datetime=num;
+			//时间必须经过规格化
+			jcp->m_datetime=myGetNormalTime(num,jcp->m_stepoftime);
 			break;
 		case JCI_VALIDITY:
+			assert(num>0 && num<=1440*7);
 			jcp->m_validity=num;
 			break;
 		case JCI_CLOSECODE:
+			assert(num>=10000000 && num<=99999999);
 			jcp->m_closecode=num;
 			break;
 		}

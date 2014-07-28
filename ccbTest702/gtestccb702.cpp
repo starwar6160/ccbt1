@@ -420,10 +420,10 @@ TEST_F(jclmsCCBV11_Test,getDynaCodePass1)
 	JcLockSetInt(handle,JCI_DATETIME,static_cast<int>(time(NULL)));
 	JcLockSetCmdType(handle,JCI_CMDTYPE,JCCMD_CCB_DYPASS1);
 	JcLockSetInt(handle,JCI_CLOSECODE,initCloseCode);	
-	pass1DyCode=JcLockGetDynaCode(handle);
+	JcLockDebugPrint(handle);
+	pass1DyCode=JcLockGetDynaCode(handle);	
 	EXPECT_GT(pass1DyCode,10*ZWMEGA);
 	EXPECT_LT(pass1DyCode,100*ZWMEGA);
-	JcLockDebugPrint(handle);
 	printf("dynaPass1=\t%d\n",pass1DyCode);
 	JCMATCH pass1Match= JcLockReverseVerifyDynaCode(handle,pass1DyCode);
 	EXPECT_GT(pass1Match.s_datetime,time(NULL)-60);
