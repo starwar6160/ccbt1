@@ -398,9 +398,10 @@ TEST_F(jclmsCCBV11_Test,inputCheck)
 	//注意现在合法的时间值应该是1.4G以上了，注意位数。20140721.1709	
 	JcLockSetInt(handle,JCI_DATETIME,static_cast<int>(time(NULL)));
 	//生成初始闭锁码的时候，有效期和闭锁码字段都无效，随便填写，是正整数就可以
-	JcLockSetInt(handle,JCI_VALIDITY,5);
-	JcLockSetInt(handle,JCI_CLOSECODE,0);
+	//JcLockSetInt(handle,JCI_VALIDITY,5);
+	//JcLockSetInt(handle,JCI_CLOSECODE,0);
 	JcLockSetCmdType(handle,JCI_CMDTYPE,JCCMD_INIT_CLOSECODE);
+	JcLockDebugPrint(handle);
 	//检查输入是否合法
 	EXPECT_EQ(EJC_SUSSESS,JcLockCheckInput(handle));
 }

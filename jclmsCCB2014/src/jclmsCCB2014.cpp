@@ -122,9 +122,9 @@ unsigned int zwBinString2Int32(const char *data,const int len);
 		memset(pjc->m_lockno,0,JC_LOCKNO_MAXLEN+1);
 		memset(pjc->m_psk,0,JC_PSK_LEN+1);
 		pjc->m_datetime=JC_INVALID_VALUE;
-		pjc->m_validity=JC_INVALID_VALUE;
-		pjc->m_closecode=JC_INVALID_VALUE;	
-		pjc->m_cmdtype=JCCMD_START;
+		pjc->m_validity=5;
+		pjc->m_closecode=0;	
+		pjc->m_cmdtype=JCCMD_INIT_CLOSECODE;
 #ifdef _DEBUG
 		pjc->m_stepoftime=6;	//调试模式采用6秒的步长，快速发现问题
 #else

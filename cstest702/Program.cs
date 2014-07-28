@@ -111,6 +111,7 @@ namespace cstest702
             jclmsCCB2014.JcLockSetCmdType(jcSrv, JCITYPE.JCI_CMDTYPE, JCCMD.JCCMD_INIT_CLOSECODE);
             //锁具产生初始闭锁码
             int firstCloseCode = jclmsCCB2014.JcLockGetDynaCode(jcLock);
+            jclmsCCB2014.JcLockDebugPrint(jcLock);
             Console.Out.WriteLine("锁具产生的初始闭锁码是 {0}", firstCloseCode);
             //初始闭锁码输入到上位机DLL，其他条件已经准备好
             jclmsCCB2014.JcLockSetInt(jcSrv, JCITYPE.JCI_CLOSECODE, firstCloseCode);
