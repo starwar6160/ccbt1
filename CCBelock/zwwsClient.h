@@ -8,7 +8,6 @@ class zwWebSocket{
 	HTTPRequest request;
 	HTTPResponse response;	
 	WebSocket *ws;
-	bool m_connected;
 	const static int RECV_BUF_LEN=1024;
 	char m_recvBuffer[RECV_BUF_LEN];	
 

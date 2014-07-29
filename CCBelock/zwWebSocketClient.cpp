@@ -63,7 +63,7 @@ namespace{
 	};
 }
 ////////////////////////////////////以下是我自己的代码部分//////////////////////////////////////
- 
+ using Poco::Net::NetException;
 
 zwWebSocket::zwWebSocket(const char *host,const int port)
 {	
@@ -72,8 +72,6 @@ zwWebSocket::zwWebSocket(const char *host,const int port)
 	request.setMethod(HTTPRequest::HTTP_GET);
 	request.setURI("/ws");
 	ws=NULL;
-	m_connected=false;
-	
 }
 
 void zwWebSocket::wsConnect(void)
@@ -82,11 +80,9 @@ void zwWebSocket::wsConnect(void)
 		ws=new WebSocket(cs,request,response);	
 	}
 	catch(...)
-	{
-		m_connected=false;
-		return;
+	{		
+		throw ("zwwsConnect Faild");
 	}
-	m_connected=true;
 }
 
 void zwWebSocket::wsClose(void)
@@ -96,7 +92,6 @@ void zwWebSocket::wsClose(void)
 		ws->shutdown();
 		delete ws;
 		ws=NULL;
-		m_connected=false;
 	}
 }
 
@@ -107,15 +102,15 @@ zwWebSocket::~zwWebSocket()
 		ws->shutdown();
 		delete ws;
 		ws=NULL;
-		m_connected=false;
 	}
 }
 
 int zwWebSocket::SendString(const string &str)
 {
-	if (false==m_connected)
+	if (NULL==ws)
 	{
-		return 0;
+		NetException nec("zwSendString NoConnect");
+		throw nec;
 	}
 	int flags=ws->sendFrame(str.data(),str.length(),WebSocket::FRAME_TEXT);
 	return flags;
@@ -123,9 +118,10 @@ int zwWebSocket::SendString(const string &str)
 
 int zwWebSocket::ReceiveString(string &str)
 {
-	if (false==m_connected)
+	if (NULL==ws)
 	{
-		return 0;
+		NetException nec("zwRecvString NoConnect");
+		throw nec;
 	}
 	int flags=0;
 	memset(m_recvBuffer,0,RECV_BUF_LEN);

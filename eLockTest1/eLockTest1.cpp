@@ -90,8 +90,51 @@ TEST(ccbElockDeathTest,NotifyTestBad)
 	EXPECT_DEBUG_DEATH(Notify(""),"");
 	EXPECT_DEBUG_DEATH(Notify(NULL),"");
 }
+///////////////////////////////服务器不在线时的测试///////////////////////////////////////////
 
+//测试套件初始化和结束事件
+class ccbElockTestNoServer : public testing::Test
+{
 
+protected:
+	virtual void SetUp() {
+		//shared_resource_ = new ;
+		//memset(s_priKey,0,sizeof(s_priKey));
+		cout<<__FUNCTION__<<endl;
+		//Open(25);
+	}
+	virtual void TearDown() {
+		cout<<__FUNCTION__<<endl;
+		//Close();
+	}
+};
+
+//SetRecvMsgRotine测试
+TEST_F(ccbElockTestNoServer,SetRecvMsgRotineTest)
+{
+	//Open(25);
+	EXPECT_EQ(ELOCK_ERROR_SUCCESS,SetRecvMsgRotine(myATMCRecvMsgRotine));	
+	EXPECT_EQ(ELOCK_ERROR_CONNECTLOST,Notify("test20140725.1517forCallBack"));	
+#ifdef NDEBUG
+	EXPECT_EQ(ELOCK_ERROR_PARAMINVALID,SetRecvMsgRotine(NULL));
+#endif // NDEBUG
+	//Close();
+}
+
+//Notify测试
+TEST_F(ccbElockTestNoServer,NotifyTest)
+{
+	//zwThrTest1(33);
+	//Open(25);
+	EXPECT_EQ(ELOCK_ERROR_CONNECTLOST,Notify("mytestNotify"));	
+
+#ifdef NDEBUG
+	EXPECT_EQ(ELOCK_ERROR_PARAMINVALID,Notify(NULL));
+	EXPECT_EQ(ELOCK_ERROR_PARAMINVALID,Notify(""));
+	EXPECT_EQ(ELOCK_ERROR_PARAMINVALID,Notify(myLongMsg));
+#endif // NDEBUG
+	//Close();
+}
 
 
 int _tmain(int argc, _TCHAR* argv[])
@@ -100,3 +143,4 @@ int _tmain(int argc, _TCHAR* argv[])
 	testing::InitGoogleTest(&argc, argv);
 	return RUN_ALL_TESTS();
 }
+
