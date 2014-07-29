@@ -43,7 +43,8 @@ CCBELOCK_API long Open(long lTimeOut)
 CCBELOCK_API long Close()
 {
 	boost:: mutex:: scoped_lock lock( zwCfg::io_mutex); 
-	zwCfg::zwsc.wsClose();
+	zwCfg::g_WarnCallback=NULL;
+	zwCfg::zwsc.wsClose();	
 	return ELOCK_ERROR_SUCCESS;
 }
 

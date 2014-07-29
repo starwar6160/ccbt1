@@ -31,11 +31,30 @@ protected:
 };
 
 
+
+//SetRecvMsgRotine测试
+TEST_F(ccbElockTest,SetRecvMsgRotineTest)
+{
+	//Open(25);
+	EXPECT_EQ(ELOCK_ERROR_SUCCESS,SetRecvMsgRotine(myATMCRecvMsgRotine));	
+	Notify("test20140725.1517forCallBack");
+#ifdef NDEBUG
+	EXPECT_EQ(ELOCK_ERROR_PARAMINVALID,SetRecvMsgRotine(NULL));
+#endif // NDEBUG
+	//Close();
+}
+
+TEST(ccbElockDeathTest,SetRecvMsgRotineTestBad)
+{//Debug下会触发断言的非法输入测试，放到死亡测试中进行
+	EXPECT_DEBUG_DEATH(SetRecvMsgRotine(NULL),"");
+}
+
+
 //Open,Close测试
 TEST_F(ccbElockTest,OpenCloseTest)
 {
-	//EXPECT_EQ(ELOCK_ERROR_SUCCESS,Open(25));
-	//EXPECT_EQ(ELOCK_ERROR_SUCCESS,Close());
+	EXPECT_EQ(ELOCK_ERROR_SUCCESS,Open(25));
+	EXPECT_EQ(ELOCK_ERROR_SUCCESS,Close());
 #ifdef NDEBUG
 	EXPECT_EQ(ELOCK_ERROR_PARAMINVALID,Open(0));
 	EXPECT_EQ(ELOCK_ERROR_PARAMINVALID,Open(-30));
@@ -72,22 +91,6 @@ TEST(ccbElockDeathTest,NotifyTestBad)
 	EXPECT_DEBUG_DEATH(Notify(NULL),"");
 }
 
-//SetRecvMsgRotine测试
-TEST_F(ccbElockTest,SetRecvMsgRotineTest)
-{
-	//Open(25);
-	EXPECT_EQ(ELOCK_ERROR_SUCCESS,SetRecvMsgRotine(myATMCRecvMsgRotine));	
-	Notify("test20140725.1517forCallBack");
-#ifdef NDEBUG
-	EXPECT_EQ(ELOCK_ERROR_PARAMINVALID,SetRecvMsgRotine(NULL));
-#endif // NDEBUG
-	//Close();
-}
-
-TEST(ccbElockDeathTest,SetRecvMsgRotineTestBad)
-{//Debug下会触发断言的非法输入测试，放到死亡测试中进行
-	EXPECT_DEBUG_DEATH(SetRecvMsgRotine(NULL),"");
-}
 
 
 
