@@ -398,6 +398,8 @@ TEST_F(jclmsCCBV11_Test,CloseCode)
 	//检查闭锁码是否在正常范围内
 	EXPECT_GT(CloseCode,10*ZWMEGA);
 	EXPECT_LT(CloseCode,100*ZWMEGA);
+	JCMATCH ccodeMatch= JcLockReverseVerifyDynaCode(handle,CloseCode);
+	EXPECT_GT(ccodeMatch.s_datetime,1400*ZWMEGA);
 }
 
 

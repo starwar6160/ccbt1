@@ -288,15 +288,27 @@ unsigned int zwBinString2Int32(const char *data,const int len);
 		jcoff.s_datetime=0;
 		jcoff.s_validity=0;
 
-		int l_datetime=time(NULL);
+		int l_datetime=time(NULL);		
+		int l_closecode=jcp->m_closecode;
+		int l_timestep=jcp->m_stepoftime;
+		if (JCCMD_CCB_CLOSECODE==jcp->m_cmdtype)
+		{
+			int l_validity=jcp->m_validity;	//此输入参数验证时无用，只是为了满足函数输入要求
+			//如果是验证闭锁码，就换一套参数
+			//验证闭锁码的时候，是否需要搜索更长时间呢？2014.0729.1509周伟
+			myGetCloseCodeVarItem(&l_datetime,&l_validity,&l_closecode);
+			l_timestep=ZW_CLOSECODE_STEP;
+			assert(ZW_CLOSECODE_STEP>0 && ZW_CLOSECODE_STEP<60);
+		}
+
 		//搜索时间的起始点必须落在m_stepoftime的整倍数上，否则就无法匹配
-		l_datetime=myGetNormalTime(l_datetime,jcp->m_stepoftime);
-		int tail=l_datetime % jcp->m_stepoftime;
+		l_datetime=myGetNormalTime(l_datetime,l_timestep);
+		int tail=l_datetime % l_timestep;
 		l_datetime-=tail;	//取整到数据结构中指定的步长
 		//结束时间，往前推数据结构所指定的一段时间，几分钟到一整天不等
 		int tend=l_datetime-jcp->m_reverse_time_length;
 
-		for (int tdate=l_datetime;tdate>=tend;tdate-=jcp->m_stepoftime)			
+		for (int tdate=l_datetime;tdate>=tend;tdate-=l_timestep)			
 		{			
 			printf("%d\t",tdate);
 			for (int v=0;v<NUM_VALIDITY;v++)
@@ -312,7 +324,7 @@ unsigned int zwBinString2Int32(const char *data,const int len);
 
 				mySm3Process(&sm3,tdate);
 				mySm3Process(&sm3,jcp->m_validity_array[v]);
-				mySm3Process(&sm3,jcp->m_closecode);
+				mySm3Process(&sm3,l_closecode);
 				mySm3Process(&sm3,jcp->m_cmdtype);
 				//////////////////////////////HASH运算结束////////////////////////////////////////////
 				memset(outHmac,0,ZWSM3_DGST_LEN);
