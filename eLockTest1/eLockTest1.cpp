@@ -19,8 +19,6 @@ class ccbElockTest : public testing::Test
 
 protected:
 	virtual void SetUp() {
-		//shared_resource_ = new ;
-		//memset(s_priKey,0,sizeof(s_priKey));
 		cout<<__FUNCTION__<<endl;
 		Open(25);
 	}
@@ -34,8 +32,8 @@ protected:
 //Open,Close²âÊÔ
 TEST_F(ccbElockTest,OpenCloseTest)
 {
-	//EXPECT_EQ(ELOCK_ERROR_SUCCESS,Open(25));
-	//EXPECT_EQ(ELOCK_ERROR_SUCCESS,Close());
+	EXPECT_EQ(ELOCK_ERROR_SUCCESS,Open(25));
+	EXPECT_EQ(ELOCK_ERROR_SUCCESS,Close());
 #ifdef NDEBUG
 	EXPECT_EQ(ELOCK_ERROR_PARAMINVALID,Open(0));
 	EXPECT_EQ(ELOCK_ERROR_PARAMINVALID,Open(-30));
@@ -53,8 +51,6 @@ TEST(ccbElockDeathTest,OpenTestBad)
 //Notify²âÊÔ
 TEST_F(ccbElockTest,NotifyTest)
 {
-	//zwThrTest1(33);
-	//Open(25);
 	EXPECT_EQ(ELOCK_ERROR_SUCCESS,Notify("mytestNotify"));	
 	
 #ifdef NDEBUG
@@ -62,7 +58,6 @@ TEST_F(ccbElockTest,NotifyTest)
 	EXPECT_EQ(ELOCK_ERROR_PARAMINVALID,Notify(""));
 	EXPECT_EQ(ELOCK_ERROR_PARAMINVALID,Notify(myLongMsg));
 #endif // NDEBUG
-	//Close();
 }
 
 TEST(ccbElockDeathTest,NotifyTestBad)
@@ -75,13 +70,11 @@ TEST(ccbElockDeathTest,NotifyTestBad)
 //SetRecvMsgRotine²âÊÔ
 TEST_F(ccbElockTest,SetRecvMsgRotineTest)
 {
-	//Open(25);
 	EXPECT_EQ(ELOCK_ERROR_SUCCESS,SetRecvMsgRotine(myATMCRecvMsgRotine));	
 	Notify("test20140725.1517forCallBack");
 #ifdef NDEBUG
 	EXPECT_EQ(ELOCK_ERROR_PARAMINVALID,SetRecvMsgRotine(NULL));
 #endif // NDEBUG
-	//Close();
 }
 
 TEST(ccbElockDeathTest,SetRecvMsgRotineTestBad)
@@ -93,7 +86,6 @@ TEST(ccbElockDeathTest,SetRecvMsgRotineTestBad)
 
 int _tmain(int argc, _TCHAR* argv[])
 {	
-	//testing::AddGlobalTestEnvironment(new ccbElockEnvironment);
 	testing::InitGoogleTest(&argc, argv);
 	return RUN_ALL_TESTS();
 }
