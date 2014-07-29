@@ -41,10 +41,13 @@ typedef enum jc_error_code{
 typedef enum jc_cmd_type{
 	JCCMD_START,			//无效命令
 	//初始闭锁码，此时仅有ATM编号，锁编号，PSK三者决定，其余可变因素为定值
-	JCCMD_INIT_CLOSECODE,	
+	//注意，初始闭锁码的生成，对于每个锁具仅有初始化时仅有一次，所以请仅仅在
+	//锁具初始化时生成一次初始闭锁码
+	JCCMD_INIT_CLOSECODE,		
 	JCCMD_CCB_DYPASS1,		//上位机第一开锁密码.此时“闭锁码”字段填写真正的闭锁码
 	JCCMD_CCB_LOCK_VERCODE,	//下位机验证码.产生验证码时，“闭锁码”字段必须填写第一开锁密码
 	JCCMD_CCB_DYPASS2,		//上位机第二开锁密码.产生第二开锁密码时，“闭锁码”字段填写验证码
+	JCCMD_CCB_CLOSECODE,	//生成真正的闭锁码
 	JCCMD_RESET_NFCKEY,		//重置NFC钥匙
 	JCCMD_RESET_LOCKTIME,	//重设锁体时间
 	JCCMD_RESET_LOCKSYSTEM,	//锁系统重置

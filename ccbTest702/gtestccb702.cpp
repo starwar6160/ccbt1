@@ -368,11 +368,18 @@ protected:
 	static void SetUpTestCase() {
 		//shared_resource_ = new ;
 		//memset(s_priKey,0,sizeof(s_priKey));
+		handle=JcLockNew();
+		JcLockSetString(handle,JCI_ATMNO,"atm10455761");
+		JcLockSetString(handle,JCI_LOCKNO,"lock14771509");
+		JcLockSetString(handle,JCI_PSK,"PSKDEMO728");
+
 		
 	}
 	static void TearDownTestCase() {
 		//delete shared_resource_;
 		//shared_resource_ = NULL;
+		JcLockDelete(handle);
+		handle=0;
 	}
 };
 
@@ -383,18 +390,25 @@ int jclmsCCBV11_Test::pass2DyCode;
 
 
 /////////////////////////////////JCLMS算法测试/////////////////////////////////////////
+TEST_F(jclmsCCBV11_Test,CloseCode)
+{
+	JcLockSetCmdType(handle,JCI_CMDTYPE,JCCMD_CCB_CLOSECODE);
+	int CloseCode=JcLockGetDynaCode(handle);
+	cout<<"CloseCode729=\t"<<CloseCode<<endl;
+	//检查闭锁码是否在正常范围内
+	EXPECT_GT(CloseCode,10*ZWMEGA);
+	EXPECT_LT(CloseCode,100*ZWMEGA);
+}
+
+
 TEST_F(jclmsCCBV11_Test,inputNew)
 {		
-	handle=JcLockNew();
 	//简单检查几个值，基本就可以判断是否初始化成功了
 	EXPECT_GT(handle,0);
 }
 
 TEST_F(jclmsCCBV11_Test,inputCheck)
 {
-	JcLockSetString(handle,JCI_ATMNO,"atm10455761");
-	JcLockSetString(handle,JCI_LOCKNO,"lock14771509");
-	JcLockSetString(handle,JCI_PSK,"PSKDEMO728");
 	//生成初始闭锁码的时候，有效期和闭锁码字段都无效，随便填写，是正整数就可以
 	JcLockSetInt(handle,JCI_VALIDITY,5);
 	JcLockSetInt(handle,JCI_CLOSECODE,0);
