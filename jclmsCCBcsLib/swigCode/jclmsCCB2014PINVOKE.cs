@@ -255,6 +255,9 @@ class jclmsCCB2014PINVOKE {
   [global::System.Runtime.InteropServices.DllImport("jclmsCCB2014", EntryPoint="CSharp_JcLockDebugPrint")]
   public static extern void JcLockDebugPrint(int jarg1);
 
+  [global::System.Runtime.InteropServices.DllImport("jclmsCCB2014", EntryPoint="CSharp_ZWMEGA_get")]
+  public static extern int ZWMEGA_get();
+
   [global::System.Runtime.InteropServices.DllImport("jclmsCCB2014", EntryPoint="CSharp_ZWEFS_get")]
   public static extern int ZWEFS_get();
 

@@ -72,6 +72,13 @@ public class jclmsCCB2014 {
     jclmsCCB2014PINVOKE.JcLockDebugPrint(handle);
   }
 
+  public static int ZWMEGA {
+    get {
+      int ret = jclmsCCB2014PINVOKE.ZWMEGA_get();
+      return ret;
+    } 
+  }
+
   public static int ZWEFS {
     get {
       int ret = jclmsCCB2014PINVOKE.ZWEFS_get();

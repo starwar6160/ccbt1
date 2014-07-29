@@ -550,6 +550,16 @@ SWIGEXPORT void SWIGSTDCALL CSharp_JcLockDebugPrint(int jarg1) {
 }
 
 
+SWIGEXPORT int SWIGSTDCALL CSharp_ZWMEGA_get() {
+  int jresult ;
+  int result;
+  
+  result = (int)(int)ZWMEGA;
+  jresult = result; 
+  return jresult;
+}
+
+
 SWIGEXPORT int SWIGSTDCALL CSharp_ZWEFS_get() {
   int jresult ;
   int result;
