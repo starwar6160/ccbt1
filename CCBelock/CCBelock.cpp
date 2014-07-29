@@ -63,7 +63,8 @@ CCBELOCK_API long Notify(const char *pszMsg)
 		return ELOCK_ERROR_PARAMINVALID;
 	}
 	//////////////////////////////////////////////////////////////////////////
-
+	string strSend=pszMsg;
+	zwCfg::zwsc.SendString(strSend);
 	string strRecv;
 	zwCfg::zwsc.ReceiveString(strRecv);
 	//////////////////////////////////////////////////////////////////////////
