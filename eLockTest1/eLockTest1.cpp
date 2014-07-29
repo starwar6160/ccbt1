@@ -32,23 +32,23 @@ protected:
 
 
 //Open,Close测试
-TEST_F(ccbElockTest,OpenCloseTest)
-{
-	//EXPECT_EQ(ELOCK_ERROR_SUCCESS,Open(25));
-	//EXPECT_EQ(ELOCK_ERROR_SUCCESS,Close());
-#ifdef NDEBUG
-	EXPECT_EQ(ELOCK_ERROR_PARAMINVALID,Open(0));
-	EXPECT_EQ(ELOCK_ERROR_PARAMINVALID,Open(-30));
-	EXPECT_EQ(ELOCK_ERROR_PARAMINVALID,Open(4000));
-#endif // NDEBUG
-}
+//TEST_F(ccbElockTest,OpenCloseTest)
+//{
+//	//EXPECT_EQ(ELOCK_ERROR_SUCCESS,Open(25));
+//	//EXPECT_EQ(ELOCK_ERROR_SUCCESS,Close());
+//#ifdef NDEBUG
+//	EXPECT_EQ(ELOCK_ERROR_PARAMINVALID,Open(0));
+//	EXPECT_EQ(ELOCK_ERROR_PARAMINVALID,Open(-30));
+//	EXPECT_EQ(ELOCK_ERROR_PARAMINVALID,Open(4000));
+//#endif // NDEBUG
+//}
 
-TEST(ccbElockDeathTest,OpenTestBad)
-{//Debug下会触发断言的非法输入测试，放到死亡测试中进行
-	EXPECT_DEBUG_DEATH(Open(0),"");
-	EXPECT_DEBUG_DEATH(Open(-30),"");
-	EXPECT_DEBUG_DEATH(Open(4000),"");
-}
+//TEST(ccbElockDeathTest,OpenTestBad)
+//{//Debug下会触发断言的非法输入测试，放到死亡测试中进行
+//	EXPECT_DEBUG_DEATH(Open(0),"");
+//	EXPECT_DEBUG_DEATH(Open(-30),"");
+//	EXPECT_DEBUG_DEATH(Open(4000),"");
+//}
 
 //Notify测试
 TEST_F(ccbElockTest,NotifyTest)
