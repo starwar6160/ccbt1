@@ -3,6 +3,7 @@
 
 #include "stdafx.h"
 #include "CCBelock.h"
+#include "zwwsClient.h"
 using namespace std;
 
 //回调函数指针类型定义
@@ -19,6 +20,8 @@ namespace zwCfg{
 	//定义一个回调函数指针
 	RecvMsgRotine g_WarnCallback=NULL;
 	boost:: mutex io_mutex; 
+	//建行给的接口，没有设置连接参数的地方，也就是说，完全可以写死IP和端口，抑或是从配置文件读取
+	zwWebSocket zwsc("localhost",1425);
 }
 
 
@@ -33,12 +36,14 @@ CCBELOCK_API long Open(long lTimeOut)
 	{
 		return ELOCK_ERROR_PARAMINVALID;
 	}	
+	zwCfg::zwsc.wsConnect();
 	return ELOCK_ERROR_SUCCESS;
 }
 
 CCBELOCK_API long Close()
 {
 	boost:: mutex:: scoped_lock lock( zwCfg::io_mutex); 
+	zwCfg::zwsc.wsClose();
 	return ELOCK_ERROR_SUCCESS;
 }
 
@@ -57,10 +62,15 @@ CCBELOCK_API long Notify(const char *pszMsg)
 	{
 		return ELOCK_ERROR_PARAMINVALID;
 	}
+	//////////////////////////////////////////////////////////////////////////
+
+	string strRecv;
+	zwCfg::zwsc.ReceiveString(strRecv);
+	//////////////////////////////////////////////////////////////////////////
 	//例子，利用Notify测试一下回调函数
 	if (NULL!=zwCfg::g_WarnCallback)
 	{
-		zwCfg::g_WarnCallback("MsgSend2ATMCThroughtCallBack");
+		zwCfg::g_WarnCallback(strRecv.c_str());
 	}
 	return ELOCK_ERROR_SUCCESS;
 }

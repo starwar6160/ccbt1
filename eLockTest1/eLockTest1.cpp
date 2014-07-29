@@ -13,8 +13,23 @@ void myATMCRecvMsgRotine(const char *pszMsg)
 	cout<<__FUNCTION__<<"["<<pszMsg<<"]"<<endl;
 }
 
+//测试套件初始化和结束事件
+class ccbElockTest : public testing::Test
+{
+protected:
+	virtual void SetUp() {
+		//shared_resource_ = new ;
+		//memset(s_priKey,0,sizeof(s_priKey));
+		cout<<__FUNCTION__<<endl;
+	}
+	virtual void TearDown() {
+		cout<<__FUNCTION__<<endl;
+	}
+};
+
+
 //Open,Close测试
-TEST(ccbElockTest,OpenCloseTest)
+TEST_F(ccbElockTest,OpenCloseTest)
 {
 	EXPECT_EQ(ELOCK_ERROR_SUCCESS,Open(25));
 	EXPECT_EQ(ELOCK_ERROR_SUCCESS,Close());
@@ -33,7 +48,7 @@ TEST(ccbElockDeathTest,OpenTestBad)
 }
 
 //Notify测试
-TEST(ccbElockTest,NotifyTest)
+TEST_F(ccbElockTest,NotifyTest)
 {
 	//zwThrTest1(33);
 	EXPECT_EQ(ELOCK_ERROR_SUCCESS,Notify("mytestNotify"));	
@@ -52,7 +67,7 @@ TEST(ccbElockDeathTest,NotifyTestBad)
 }
 
 //SetRecvMsgRotine测试
-TEST(ccbElockTest,SetRecvMsgRotineTest)
+TEST_F(ccbElockTest,SetRecvMsgRotineTest)
 {
 	EXPECT_EQ(ELOCK_ERROR_SUCCESS,SetRecvMsgRotine(myATMCRecvMsgRotine));	
 	Notify("test20140725.1517forCallBack");
@@ -67,24 +82,10 @@ TEST(ccbElockDeathTest,SetRecvMsgRotineTestBad)
 }
 
 
-//程序全局初始化和结束事件
-class ccbElockEnvironment : public testing::Environment
-{
-public:
-	virtual void SetUp()
-	{
-		std::cout << "ccbElockEnv SetUP" << std::endl;		
-	}
-	virtual void TearDown()
-	{
-		std::cout << "ccbElockEnv TearDown" << std::endl;
-		zwTestWebSocket();
-	}
-};
 
 int _tmain(int argc, _TCHAR* argv[])
 {	
-	testing::AddGlobalTestEnvironment(new ccbElockEnvironment);
+	//testing::AddGlobalTestEnvironment(new ccbElockEnvironment);
 	testing::InitGoogleTest(&argc, argv);
 	return RUN_ALL_TESTS();
 }
