@@ -14,7 +14,8 @@ const int ZW_CLOSECODE_STEP=12;	//闭锁码的计算步长时间精度
 const int ZW_CLOSECODE_BASEINPUT=20000000;	//计算正常的闭锁码时，m_closecode字段的固定值
 const int ZW_LOWEST_DATE=1400*ZWMEGA-24*3600;	//考虑到取整运算可能使得时间值低于1400M，所以把最低点时间提前一整天该足够了
 const int ZW_DIGI8_LOW=10*ZWMEGA;
-const int ZW_DIGI8_HIGH=10*ZWMEGA;
+const int ZW_DIGI8_HIGH=100*ZWMEGA;
+const int ZW_MAXDATA32=2048*ZWMEGA-3;	//32位有符号整数可能表示的最大时间值
 
 typedef struct JcLockInput
 {
@@ -357,18 +358,18 @@ unsigned int zwBinString2Int32(const char *data,const int len);
 		assert(sizeof(jcp->m_closecode)==sizeof(int));
 		assert(sizeof(jcp->m_cmdtype)==sizeof(int));
 
-		assert(jcp->m_datetime>=(ZW_LOWEST_DATE) && jcp->m_datetime<((2048*ZWMEGA)-3));
+		assert(jcp->m_datetime>=(ZW_LOWEST_DATE) && jcp->m_datetime<ZW_MAXDATA32);
 		assert(jcp->m_cmdtype>JCCMD_START && jcp->m_cmdtype<JCCMD_END);
 if (JCCMD_INIT_CLOSECODE!=jcp->m_cmdtype && JCCMD_CCB_CLOSECODE!=jcp->m_cmdtype)
 {	//生成初始闭锁码,以及真正闭锁码时，不检查有效期和闭锁码的值
 	assert(jcp->m_validity>=0 && jcp->m_validity<=(24*60));
 	//10,000,000 8位数，也就是10-100M之间
-	assert(jcp->m_closecode>=10*ZWMEGA && jcp->m_closecode<=(100*ZWMEGA));
+	assert(jcp->m_closecode>=ZW_DIGI8_LOW && jcp->m_closecode<=ZW_DIGI8_HIGH);
 }
 
 
-		//限度是小于14开头的时间(1.4G秒)或者快要超出2048M秒的话就是非法了
-		if (jcp->m_datetime<(ZW_LOWEST_DATE) || jcp->m_datetime>((2048*ZWMEGA)-3))
+		//限度是小于14开头的时间(1.4G秒)或者快要超出ZW_MAXDATA32秒的话就是非法了
+		if (jcp->m_datetime<(ZW_LOWEST_DATE) || jcp->m_datetime>ZW_MAXDATA32)
 		{//日期时间秒数在2014年的某个1.4G秒之前的日子，或者超过2038年(32位有符号整数最大值)则无效
 			return EJC_DATETIME_INVALID;
 		}
@@ -378,7 +379,7 @@ if (JCCMD_INIT_CLOSECODE!=jcp->m_cmdtype && JCCMD_CCB_CLOSECODE!=jcp->m_cmdtype)
 		{//有效期分钟数为负数或者大于一整天则无效
 			return EJC_VALIDRANGE_INVALID;
 		}
-		if (jcp->m_closecode<10*ZWMEGA || jcp->m_closecode>(100*ZWMEGA))
+		if (jcp->m_closecode<ZW_DIGI8_LOW || jcp->m_closecode>ZW_DIGI8_HIGH)
 		{//闭锁码小于8位或者大于8位则无效
 			return EJC_CLOSECODE_INVALID;
 		}
