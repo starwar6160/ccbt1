@@ -6,12 +6,13 @@ void myPrintCurrentTime();
 class zwWebSocket{
 	HTTPClientSession cs;
 	HTTPRequest request;
-	HTTPResponse response;
+	HTTPResponse response;	
 	WebSocket *ws;
+	bool m_connected;
 	const static int RECV_BUF_LEN=1024;
 	char m_recvBuffer[RECV_BUF_LEN];	
 
-public:
+public:	
 	zwWebSocket(const char *host,const int port);
 	~zwWebSocket();
 	int SendString(const string &str);

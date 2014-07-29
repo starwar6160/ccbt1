@@ -8,6 +8,7 @@ using namespace std;
 
 //回调函数指针类型定义
 typedef void (cdecl *RecvMsgRotine)(const char *pszMsg);
+using Poco::Net::NetException;
 
 namespace zwCfg{
 //#ifdef _DEBUG
@@ -36,7 +37,15 @@ CCBELOCK_API long Open(long lTimeOut)
 	{
 		return ELOCK_ERROR_PARAMINVALID;
 	}	
+try{
 	zwCfg::zwsc.wsConnect();
+}
+catch (NetException& exc)
+{
+	cout<<__FUNCTION__<<" \t"<<exc.displayText()<<endl;
+	return ELOCK_ERROR_CONNECTLOST;
+}
+
 	return ELOCK_ERROR_SUCCESS;
 }
 
@@ -51,30 +60,37 @@ CCBELOCK_API long Close()
 CCBELOCK_API long Notify(const char *pszMsg)
 {
 	boost:: mutex:: scoped_lock lock( zwCfg::io_mutex); 
-	//输入必须有内容，但是最大不得长于下位机内存大小，做合理限制
-	assert(NULL!=pszMsg);
-	if (NULL==pszMsg)
-	{
-		return ELOCK_ERROR_PARAMINVALID;
+	try{
+		//输入必须有内容，但是最大不得长于下位机内存大小，做合理限制
+		assert(NULL!=pszMsg);
+		if (NULL==pszMsg)
+		{
+			return ELOCK_ERROR_PARAMINVALID;
+		}
+		int inlen=strlen(pszMsg);
+		assert(inlen>0 && inlen<zwCfg::JC_MSG_MAXLEN);
+		if (inlen==0 || inlen>=zwCfg::JC_MSG_MAXLEN )
+		{
+			return ELOCK_ERROR_PARAMINVALID;
+		}
+		//////////////////////////////////////////////////////////////////////////
+		string strSend=pszMsg;
+		zwCfg::zwsc.SendString(strSend);
+		string strRecv;
+		zwCfg::zwsc.ReceiveString(strRecv);
+		//////////////////////////////////////////////////////////////////////////
+		//例子，利用Notify测试一下回调函数
+		if (NULL!=zwCfg::g_WarnCallback)
+		{
+			zwCfg::g_WarnCallback(strRecv.c_str());
+		}
+		return ELOCK_ERROR_SUCCESS;
 	}
-	int inlen=strlen(pszMsg);
-	assert(inlen>0 && inlen<zwCfg::JC_MSG_MAXLEN);
-	if (inlen==0 || inlen>=zwCfg::JC_MSG_MAXLEN )
+	catch (...)
 	{
-		return ELOCK_ERROR_PARAMINVALID;
+		///cout<<__FUNCTION__<<" \t"<<exc.displayText()<<endl;
+		return ELOCK_ERROR_CONNECTLOST;
 	}
-	//////////////////////////////////////////////////////////////////////////
-	string strSend=pszMsg;
-	zwCfg::zwsc.SendString(strSend);
-	string strRecv;
-	zwCfg::zwsc.ReceiveString(strRecv);
-	//////////////////////////////////////////////////////////////////////////
-	//例子，利用Notify测试一下回调函数
-	if (NULL!=zwCfg::g_WarnCallback)
-	{
-		zwCfg::g_WarnCallback(strRecv.c_str());
-	}
-	return ELOCK_ERROR_SUCCESS;
 }
 
 void cdecl myATMCRecvMsgRotine(const char *pszMsg)
