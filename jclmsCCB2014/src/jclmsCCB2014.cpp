@@ -12,6 +12,9 @@
 static void myGetInitCloseCodeVarItem(int *mdatetime,int *mvalidity,int *mclosecode);
 const int ZW_CLOSECODE_STEP=12;	//闭锁码的计算步长时间精度
 const int ZW_CLOSECODE_BASEINPUT=20000000;	//计算正常的闭锁码时，m_closecode字段的固定值
+const int ZW_LOWEST_DATE=1400*ZWMEGA-24*3600;	//考虑到取整运算可能使得时间值低于1400M，所以把最低点时间提前一整天该足够了
+const int ZW_DIGI8_LOW=10*ZWMEGA;
+const int ZW_DIGI8_HIGH=10*ZWMEGA;
 
 typedef struct JcLockInput
 {
@@ -354,7 +357,7 @@ unsigned int zwBinString2Int32(const char *data,const int len);
 		assert(sizeof(jcp->m_closecode)==sizeof(int));
 		assert(sizeof(jcp->m_cmdtype)==sizeof(int));
 
-		assert(jcp->m_datetime>=(1400*ZWMEGA) && jcp->m_datetime<((2048*ZWMEGA)-3));
+		assert(jcp->m_datetime>=(ZW_LOWEST_DATE) && jcp->m_datetime<((2048*ZWMEGA)-3));
 		assert(jcp->m_cmdtype>JCCMD_START && jcp->m_cmdtype<JCCMD_END);
 if (JCCMD_INIT_CLOSECODE!=jcp->m_cmdtype && JCCMD_CCB_CLOSECODE!=jcp->m_cmdtype)
 {	//生成初始闭锁码,以及真正闭锁码时，不检查有效期和闭锁码的值
@@ -365,7 +368,7 @@ if (JCCMD_INIT_CLOSECODE!=jcp->m_cmdtype && JCCMD_CCB_CLOSECODE!=jcp->m_cmdtype)
 
 
 		//限度是小于14开头的时间(1.4G秒)或者快要超出2048M秒的话就是非法了
-		if (jcp->m_datetime<(1400*ZWMEGA) || jcp->m_datetime>((2048*ZWMEGA)-3))
+		if (jcp->m_datetime<(ZW_LOWEST_DATE) || jcp->m_datetime>((2048*ZWMEGA)-3))
 		{//日期时间秒数在2014年的某个1.4G秒之前的日子，或者超过2038年(32位有符号整数最大值)则无效
 			return EJC_DATETIME_INVALID;
 		}
