@@ -118,29 +118,25 @@ int zwWebSocket::ReceiveString(string &str)
 
 //////////////////////////////////////////////////////////////////////////
 
-zwWebSocket zwc("localhost",1425);	
+
 void zwTestWebSocket()
 {
 	try
 	{
+zwWebSocket zwc("localhost",1425);	
 	Poco::Thread::sleep(200);
-
-	char buffer[1024];
-	memset(buffer,0,1024);
-	int flags=0;
-	int n = 0;
 	string strSend,strRecv;
 	myPrintCurrentTime();
 	//·¢ËÍ×Ö·û´®²âÊÔ
 	strSend = "Hello, world! ZWTESTSTR2014.0729.1116";
 	zwc.wsConnect();
-for (int i=0;i<5;i++)
+for (int i=0;i<3;i++)
 {
 	zwc.SendString(strSend);
 	cout<<"SEND729 \t"<<strSend<<endl;
 	zwc.ReceiveString(strRecv);
 	cout<<"RECV729 \t"<<strRecv<<endl;
-	Poco::Thread::sleep(2000);
+	Poco::Thread::sleep(1000);
 }
 zwc.wsClose();
 	}
