@@ -17,6 +17,9 @@
 #include <cassert>
 #include <boost/thread.hpp> 
 #include <boost/thread/mutex.hpp>
+#include <boost/property_tree/ptree.hpp>
+#include <boost/property_tree/xml_parser.hpp>
+#include <boost/property_tree/json_parser.hpp>
 #include <iostream>
 using std::cout;
 using std::cerr;
