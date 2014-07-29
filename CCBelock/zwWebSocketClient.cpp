@@ -61,57 +61,81 @@ namespace{
 		std::size_t _bufSize;
 	};
 }
+////////////////////////////////////以下是我自己的代码部分//////////////////////////////////////
 
+void myPrintCurrentTime();
 
-
-typedef struct zwWebSocket{
+class zwWebSocket{
 	HTTPClientSession cs;
 	HTTPRequest request;
 	HTTPResponse response;
 	WebSocket *ws;
-}ZWWS;
+	const static int RECV_BUF_LEN=1024;
+	char m_recvBuffer[RECV_BUF_LEN];	
 
-void myPrintCurrentTime();
+public:
+	zwWebSocket(const char *host,const int port);
+	~zwWebSocket();
+	int SendString(const string &str);
+	int ReceiveString(string &str);
+};
 
-int myWebSocketInit(ZWWS *pws,const char *host,const int port)
+
+
+zwWebSocket::zwWebSocket(const char *host,const int port)
 {	
-	pws->cs.setHost(host);
-	pws->cs.setPort(static_cast<unsigned int>(port));
-	pws->request.setMethod(HTTPRequest::HTTP_GET);
-	pws->request.setURI("/ws");
-	pws->ws=new WebSocket(pws->cs,pws->request,pws->response);
-	pws->ws->setReceiveTimeout(15);
-	pws->ws->setSendTimeout(10);
-	return 0;
+	cs.setHost(host);
+	cs.setPort(static_cast<unsigned int>(port));
+	request.setMethod(HTTPRequest::HTTP_GET);
+	request.setURI("/ws");
+	ws=new WebSocket(cs,request,response);	
 }
+
+
+zwWebSocket::~zwWebSocket()
+{
+	ws->shutdown();
+}
+
+int zwWebSocket::SendString(const string &str)
+{
+	int flags=ws->sendFrame(str.data(),str.length(),WebSocket::FRAME_TEXT);
+	return flags;
+}
+
+int zwWebSocket::ReceiveString(string &str)
+{
+	int flags=0;
+	memset(m_recvBuffer,0,RECV_BUF_LEN);
+	ws->receiveFrame(m_recvBuffer,RECV_BUF_LEN,flags);
+	str=m_recvBuffer;
+	return flags;
+}
+
+//////////////////////////////////////////////////////////////////////////
 
 void zwTestWebSocket()
 {
 	try
 	{
 	Poco::Thread::sleep(200);
-	ZWWS zws;
-	myWebSocketInit(&zws,"localhost",1425);
-
+	zwWebSocket zwc("localhost",1425);
 	char buffer[1024];
 	memset(buffer,0,1024);
 	int flags=0;
 	int n = 0;
-	std::string payload("x");
+	string strSend,strRecv;
 	myPrintCurrentTime();
 	//发送字符串测试
-	payload = "Hello, world!";
-	zws.ws->sendFrame(payload.data(), (int) payload.size());
-	n = zws.ws->receiveFrame(buffer, sizeof(buffer), flags);
-	//assert (n == payload.size());
-	//assert (payload.compare(0, payload.size(), buffer, 0, n) == 0);
-	assert (flags == WebSocket::FRAME_TEXT);
-	cout<<"RECV728 \t"<<buffer<<endl;
-
-	//ws.shutdown();
-	n = zws.ws->receiveFrame(buffer, sizeof(buffer), flags);
-	//assert (n == 2);
-	assert ((flags & WebSocket::FRAME_OP_BITMASK) == WebSocket::FRAME_OP_CLOSE);
+	strSend = "Hello, world! ZWTESTSTR2014.0729.1116";
+for (int i=0;i<5;i++)
+{
+	zwc.SendString(strSend);
+	cout<<"SEND729 \t"<<strSend<<endl;
+	zwc.ReceiveString(strRecv);
+	cout<<"RECV729 \t"<<strRecv<<endl;
+	Poco::Thread::sleep(2000);
+}
 	}
 	catch (...)
 	{
