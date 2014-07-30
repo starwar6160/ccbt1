@@ -60,10 +60,6 @@ TEST(ccbElockDeathTest,SetRecvMsgRotineTestBad)
 	EXPECT_DEBUG_DEATH(SetRecvMsgRotine(NULL),"");
 }
 
-TEST_F(ccbElockTest,CloseTest)
-{
-	Close();
-}
 
 //Open,Close≤‚ ‘
 TEST_F(ccbElockTest,OpenCloseTest)
@@ -120,6 +116,13 @@ TEST(ccbElockDeathTest,NotifyTestBad)
 	EXPECT_DEBUG_DEATH(Notify(""),"");
 	EXPECT_DEBUG_DEATH(Notify(NULL),"");
 }
+
+TEST_F(ccbElockTest,XMLTest730)
+{
+	Close();
+	zwTestXML730("myTestXMLfromATMC_On2014.0730.0942");
+}
+
 
 
 int _tmain(int argc, _TCHAR* argv[])

@@ -18,7 +18,8 @@ CCBELOCK_API long	Notify(const char *pszMsg);
 CCBELOCK_API int	SetRecvMsgRotine(RecvMsgRotine pRecvMsgFun);
 /////////////////////////////////测试用函数/////////////////////////////////////////
 CCBELOCK_API int	zwwsTest1(const char *pMsg);
-CCBELOCK_API void zwTestWebSocket();
+CCBELOCK_API void	zwTestWebSocket();
+CCBELOCK_API int	zwTestXML730(const char * atmcXML);
 
 enum JC_CCBELOCK_ERROR_CODE{
 	ELOCK_ERROR_SUCCESS=0,		//操作成功
