@@ -1,4 +1,5 @@
 #include "stdafx.h"
+#include "CCBelock.h"
 using namespace boost::property_tree;
 
 int zwTestXML730(const char * atmcXML)
@@ -9,4 +10,16 @@ int zwTestXML730(const char * atmcXML)
 //////////////////////////////////////////////////////////////////////////
 
 	return 0;
+}
+
+const int zwXML2Json(const string &inXML,string &outJson)
+{
+	ptree pt;
+	std::stringstream ss;
+	ss<<inXML;
+	read_xml(ss,pt);
+
+
+	outJson="testdemostr";
+	return JCMSG_LOCK_ACTIVE_REQUEST;
 }

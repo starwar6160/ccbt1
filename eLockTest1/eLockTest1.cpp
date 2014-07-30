@@ -4,6 +4,9 @@
 #include "stdafx.h"
 using namespace boost::property_tree;
 #include "CCBelock.h"
+
+//看看是否打开其他测试以便专一测试一件事
+//#define _ZWTEST730
 const char *myLongMsg="0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF"
 	"0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF"
 	"0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF";
@@ -35,6 +38,7 @@ protected:
 
 
 
+#ifdef _ZWTEST730
 //SetRecvMsgRotine测试
 TEST_F(ccbElockTest,SetRecvMsgRotineTest)
 {
@@ -117,6 +121,8 @@ TEST(ccbElockDeathTest,NotifyTestBad)
 	EXPECT_DEBUG_DEATH(Notify(""),"");
 	EXPECT_DEBUG_DEATH(Notify(NULL),"");
 }
+#endif // _ZWTEST730
+
 
 TEST_F(ccbElockTest,XMLTest730)
 {

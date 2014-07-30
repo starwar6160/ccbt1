@@ -23,7 +23,8 @@ namespace zwCfg{
 	boost:: mutex io_mutex; 
 	//建行给的接口，没有设置连接参数的地方，也就是说，完全可以写死IP和端口，抑或是从配置文件读取
 	zwWebSocket zwsc("localhost",1425);
-}
+
+}	//namespace zwCfg{
 
 
 
@@ -74,9 +75,12 @@ CCBELOCK_API long Notify(const char *pszMsg)
 			return ELOCK_ERROR_PARAMINVALID;
 		}
 		//////////////////////////////////////////////////////////////////////////
-		string strSend=pszMsg;
-		zwCfg::zwsc.SendString(strSend);
+		string strXMLSend=pszMsg;
+		string strJsonSend;
 		string strRecv;
+		int msgType=zwXML2Json(strXMLSend,strJsonSend);
+		cout<<"MESSAGE TYPE 730=\t"<<msgType<<endl;
+		zwCfg::zwsc.SendString(strJsonSend);		
 		zwCfg::zwsc.ReceiveString(strRecv);
 		//////////////////////////////////////////////////////////////////////////
 		//例子，利用Notify测试一下回调函数
