@@ -17,9 +17,12 @@ int zwjclms_command_proc(const string &inJson,string &outJson)
 	ss<<inJson;
 	read_json(ss,pt);
 
-	pt.put("LockMan","BeiJing JinChu");
-	pt.put("LockId","ZWFAKELOCKNO1548");
-	pt.put("LockPubKey","BJpnccGKE5muLO3RLOe+hDjUftMJJwpmnuxEir0P3ss5/sxpEKNQ5AXcSsW1CbC/pXlqAk9/NZoquFJXHW3n1Cw=,");
+	string transCode=pt.get<string>("TransCode");
+	if ("0000"==transCode)
+	{
+		myLockActive(JCMSG_LOCK_ACTIVE_REQUEST,pt);
+	}
+
 	std::stringstream ss2;
 	write_json(ss2,pt);
 	outJson=ss2.str();
@@ -28,10 +31,6 @@ int zwjclms_command_proc(const string &inJson,string &outJson)
 
 void myLockActive(const JC_MSG_TYPE type, ptree &pt )
 {
-	cout<<__FUNCTION__<<endl;
-	string myInStr=pt.get<string>("SpareString1");
-	//测试性的修改一个值,使得上面能看到效果
-	pt.put("SpareString1", myInStr+"ADD BY EMU SRV 730.1443");
 	pt.put("LockMan","BeiJing JinChu");
 	pt.put("LockId","ZWFAKELOCKNO1548");
 	pt.put("LockPubKey","BJpnccGKE5muLO3RLOe+hDjUftMJJwpmnuxEir0P3ss5/sxpEKNQ5AXcSsW1CbC/pXlqAk9/NZoquFJXHW3n1Cw=,");
