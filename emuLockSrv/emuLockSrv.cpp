@@ -55,6 +55,11 @@ public:
 	}
 };
 
+int zwjclms_command_proc(const string &inJson,string &outJson)
+{
+	outJson=inJson+"ZW730JSONEX1043";
+	return 0;
+}
 
 class WebSocketRequestHandler: public HTTPRequestHandler
 	/// Handle a WebSocket connection.
@@ -83,15 +88,16 @@ public:
 				string outBuf;
 				string cmdRecv=buffer;				
 				app.logger().information(Poco::format("Frame received (length=%d, flags=0x%x).", n, unsigned(flags)));										
-				string cmdSend=cmdRecv+"ADD BY ws SERVER";
-				ws.sendFrame(cmdSend.data(), cmdSend.size(), flags);				
+				string cmdSend;				
 				if(2==n || (flags & WebSocket::FRAME_OP_BITMASK) == WebSocket::FRAME_OP_CLOSE)
 				{	//收到了FRAME_OP_CLOSE的数据帧的话就不显示收到的数据了
 					continue;
 				}
+				zwjclms_command_proc(cmdRecv,cmdSend);				
+				ws.sendFrame(cmdSend.data(), cmdSend.size(), flags);				
 				app.logger().information(Poco::format("RECV msg=%s",cmdRecv));		
 				app.logger().information(Poco::format("SEND msg=%s",cmdSend));	
-				//zwjclms_command_proc(buffer,outBuf);				
+				
 			}
 			while (n > 0 || (flags & WebSocket::FRAME_OP_BITMASK) != WebSocket::FRAME_OP_CLOSE);
 			app.logger().information("WebSocket connection closed.");
