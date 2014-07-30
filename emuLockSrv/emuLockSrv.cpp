@@ -64,7 +64,7 @@ public:
 	void handleRequest(HTTPServerRequest& request, HTTPServerResponse& response)
 	{
 		ZWFUNCTRACK
-		const int RECV_BUF_LEN=1024;
+			const int RECV_BUF_LEN=1024;
 		Application& app = Application::instance();
 		try
 		{
@@ -82,21 +82,18 @@ public:
 				n = ws.receiveFrame(buffer, sizeof(buffer), flags);				
 				int outLen=0;
 				string outBuf;
-				string cmdRecv=buffer;								
+				string cmdRecv=buffer;				
+				app.logger().information(Poco::format("Frame received (length=%d, flags=0x%x).", n, unsigned(flags)));										
 				string cmdSend;				
-				if(n>=2 && (flags & WebSocket::FRAME_OP_BITMASK) != WebSocket::FRAME_OP_CLOSE)
+				if(2==n || (flags & WebSocket::FRAME_OP_BITMASK) == WebSocket::FRAME_OP_CLOSE)
 				{	//收到了FRAME_OP_CLOSE的数据帧的话就不显示收到的数据了
-					app.logger().information(Poco::format("Frame received (length=%d, flags=0x%x).", 
-						n, unsigned(flags)));										
-					zwjclms_command_proc(cmdRecv,cmdSend);					
-					ws.sendFrame(cmdSend.data(), cmdSend.size(), flags);				
-					app.logger().information(Poco::format("RECV msg=%s",cmdRecv));		
-					app.logger().information(Poco::format("SEND msg=%s",cmdSend));	
+					continue;
 				}
-				else
-				{
-					Poco::Thread::sleep(100);
-				}
+				zwjclms_command_proc(cmdRecv,cmdSend);				
+				ws.sendFrame(cmdSend.data(), cmdSend.size(), flags);				
+				app.logger().information(Poco::format("RECV msg=%s",cmdRecv));		
+				app.logger().information(Poco::format("SEND msg=%s",cmdSend));	
+
 			}
 			while (n > 0 || (flags & WebSocket::FRAME_OP_BITMASK) != WebSocket::FRAME_OP_CLOSE);
 			app.logger().information("WebSocket connection closed.");
