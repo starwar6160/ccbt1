@@ -20,6 +20,5 @@ const int zwXML2Json(const string &inXML,string &outJson)
 	std::stringstream ss2;
 	write_json(ss2,pt);
 	outJson= ss2.str();
-	cout<<"VERSION730:"<<pt.get<int>("app.version")<<endl;
 	return JCMSG_LOCK_ACTIVE_REQUEST;
 }

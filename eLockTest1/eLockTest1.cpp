@@ -17,7 +17,7 @@ void zwAtmcMsgLockActive(string &strXML);
 //测试性回调函数
 void myATMCRecvMsgRotine(const char *pszMsg)
 {
-	cout<<__FUNCTION__<<"["<<pszMsg<<"]"<<endl;
+	cout<<__FUNCTION__<<endl<<pszMsg<<endl;
 }
 
 //测试套件初始化和结束事件
