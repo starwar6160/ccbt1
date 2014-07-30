@@ -16,6 +16,7 @@ void myATMCRecvMsgRotine(const char *pszMsg)
 //测试套件初始化和结束事件
 class ccbElockTest : public testing::Test
 {
+public:
 	int m_connStatus;
 protected:
 	virtual void SetUp() {
@@ -38,7 +39,16 @@ TEST_F(ccbElockTest,SetRecvMsgRotineTest)
 {
 	//Open(25);
 	EXPECT_EQ(ELOCK_ERROR_SUCCESS,SetRecvMsgRotine(myATMCRecvMsgRotine));	
-	Notify("test20140725.1517forCallBack");
+	if (ELOCK_ERROR_SUCCESS==m_connStatus)
+	{
+		EXPECT_EQ(ELOCK_ERROR_SUCCESS,Notify("test20140725.1517forCallBack"));		
+	}
+	else
+	{
+		EXPECT_EQ(ELOCK_ERROR_CONNECTLOST,Notify("test20140725.1517forCallBack"));		
+		cout<<"Server not Start!"<<endl;
+	}
+	
 #ifdef NDEBUG
 	EXPECT_EQ(ELOCK_ERROR_PARAMINVALID,SetRecvMsgRotine(NULL));
 #endif // NDEBUG
@@ -54,8 +64,17 @@ TEST(ccbElockDeathTest,SetRecvMsgRotineTestBad)
 //Open,Close测试
 TEST_F(ccbElockTest,OpenCloseTest)
 {
+	if (ELOCK_ERROR_SUCCESS==m_connStatus)
+	{
 	EXPECT_EQ(ELOCK_ERROR_SUCCESS,Open(25));
 	EXPECT_EQ(ELOCK_ERROR_SUCCESS,Close());
+	}
+	else
+	{
+		EXPECT_EQ(ELOCK_ERROR_CONNECTLOST,Open(25));
+		EXPECT_EQ(ELOCK_ERROR_SUCCESS,Close());
+		cout<<"Server not Start!"<<endl;
+	}
 #ifdef NDEBUG
 	EXPECT_EQ(ELOCK_ERROR_PARAMINVALID,Open(0));
 	EXPECT_EQ(ELOCK_ERROR_PARAMINVALID,Open(-30));
@@ -73,9 +92,15 @@ TEST(ccbElockDeathTest,OpenTestBad)
 //Notify测试
 TEST_F(ccbElockTest,NotifyTest)
 {
-	//zwThrTest1(33);
-	//Open(25);
+	if (ELOCK_ERROR_SUCCESS==m_connStatus)
+	{
 	EXPECT_EQ(ELOCK_ERROR_SUCCESS,Notify("mytestNotify"));	
+	}
+	else
+	{
+		EXPECT_EQ(ELOCK_ERROR_CONNECTLOST,Notify("mytestNotify"));	
+		cout<<"Server not Start!"<<endl;
+	}
 	
 #ifdef NDEBUG
 	EXPECT_EQ(ELOCK_ERROR_PARAMINVALID,Notify(NULL));
