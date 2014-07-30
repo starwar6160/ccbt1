@@ -80,8 +80,8 @@ void zwWebSocket::wsConnect(void)
 		ws=new WebSocket(cs,request,response);	
 	}
 	catch(...)
-	{		
-		throw ("zwwsConnect Faild");
+	{				
+		throw;
 	}
 }
 

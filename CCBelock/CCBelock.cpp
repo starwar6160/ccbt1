@@ -8,7 +8,7 @@ using namespace std;
 
 //回调函数指针类型定义
 typedef void (cdecl *RecvMsgRotine)(const char *pszMsg);
-using Poco::Net::NetException;
+using Poco::Net::ConnectionRefusedException;
 
 namespace zwCfg{
 //#ifdef _DEBUG
@@ -40,9 +40,9 @@ CCBELOCK_API long Open(long lTimeOut)
 try{
 	zwCfg::zwsc.wsConnect();
 }
-catch (NetException& exc)
-{
-	cout<<__FUNCTION__<<" \t"<<exc.displayText()<<endl;
+catch (ConnectionRefusedException &exc)
+{	//一般最常见的也就是服务器不在线，所以连接拒绝(ConnectionRefusedException)异常
+cout<<__FUNCTION__<<" \t"<<exc.displayText()<<endl;
 	return ELOCK_ERROR_CONNECTLOST;
 }
 

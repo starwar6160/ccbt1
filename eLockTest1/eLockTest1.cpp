@@ -16,13 +16,14 @@ void myATMCRecvMsgRotine(const char *pszMsg)
 //测试套件初始化和结束事件
 class ccbElockTest : public testing::Test
 {
-
+	int m_connStatus;
 protected:
 	virtual void SetUp() {
 		//shared_resource_ = new ;
 		//memset(s_priKey,0,sizeof(s_priKey));
 		cout<<__FUNCTION__<<endl;
-		Open(25);
+		m_connStatus=ELOCK_ERROR_SUCCESS;
+		m_connStatus=Open(25);
 	}
 	virtual void TearDown() {
 		cout<<__FUNCTION__<<endl;
