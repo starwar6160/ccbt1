@@ -27,8 +27,6 @@ public:
 	int m_connStatus;
 protected:
 	virtual void SetUp() {
-		//shared_resource_ = new ;
-		//memset(s_priKey,0,sizeof(s_priKey));
 		cout<<__FUNCTION__<<endl;
 		m_connStatus=ELOCK_ERROR_SUCCESS;
 		m_connStatus=Open(25);
@@ -129,7 +127,6 @@ TEST(ccbElockDeathTest,NotifyTestBad)
 
 TEST_F(ccbElockTest,XMLTest730)
 {
-	//zwTestXML730(demoxml.str().c_str());
 	string strLockActiveXML;
 	zwAtmcMsgLockActive(strLockActiveXML);
 	SetRecvMsgRotine(myATMCRecvMsgRotine);
@@ -140,7 +137,6 @@ TEST_F(ccbElockTest,XMLTest730)
 
 int _tmain(int argc, _TCHAR* argv[])
 {	
-	//testing::AddGlobalTestEnvironment(new ccbElockEnvironment);
 	testing::InitGoogleTest(&argc, argv);
 	return RUN_ALL_TESTS();
 }
