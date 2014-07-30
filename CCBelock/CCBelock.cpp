@@ -78,12 +78,28 @@ CCBELOCK_API long Notify(const char *pszMsg)
 		string strXMLSend=pszMsg;
 		string strJsonSend;
 		string strRecv;
-		int msgType=zwXML2Json(strXMLSend,strJsonSend);
-		cout<<"MESSAGE TYPE 730=\t"<<msgType<<endl;
+		int msgTypeSend=zwXML2Json(strXMLSend,strJsonSend);
+		string msgTypeStrSend;
+		switch (msgTypeSend)
+		{
+		case JCMSG_LOCK_ACTIVE_REQUEST:
+			msgTypeStrSend="JCMSG_LOCK_ACTIVE_REQUEST";
+			break;
+		}
+		cout<<"MESSAGE FROM ATMC'S TYPE=\t"<<msgTypeStrSend<<endl;
 		zwCfg::zwsc.SendString(strJsonSend);		
 		zwCfg::zwsc.ReceiveString(strRecv);
 		string outXML;
-		zwJson2XML(strRecv,outXML);
+		int msgTypeRecv=zwJson2XML(strRecv,outXML);
+		string msgTypeStrRecv;
+		switch (msgTypeSend)
+		{
+		case JCMSG_LOCK_ACTIVE_REQUEST:
+			msgTypeStrSend="JCMSG_LOCK_ACTIVE_REQUEST";
+			break;
+		}
+		cout<<"MESSAGE FROM LOCK'S TYPE=\t"<<msgTypeStrSend<<endl;
+
 		//////////////////////////////////////////////////////////////////////////
 		//例子，利用Notify测试一下回调函数
 		if (NULL!=zwCfg::g_WarnCallback)

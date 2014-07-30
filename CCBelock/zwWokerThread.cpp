@@ -20,7 +20,12 @@ const int zwXML2Json(const string &inXML,string &outJson)
 	std::stringstream ss2;
 	write_json(ss2,pt);
 	outJson= ss2.str();
-	return JCMSG_LOCK_ACTIVE_REQUEST;
+	string transCode=pt.get<string>("TransCode");
+	if ("0000"==transCode)
+	{
+		return JCMSG_LOCK_ACTIVE_REQUEST;
+	}
+	return JCMSG_INVALID_TYPE;
 }
 
 const int zwJson2XML(const string &inJson,string &outXML)
@@ -32,5 +37,11 @@ const int zwJson2XML(const string &inJson,string &outXML)
 	std::stringstream ss2;
 	write_xml(ss2,pt);
 	outXML= ss2.str();
-	return JCMSG_LOCK_ACTIVE_REQUEST;
+	string transCode=pt.get<string>("TransCode");
+	if ("0000"==transCode)
+	{
+		return JCMSG_LOCK_ACTIVE_REQUEST;
+	}
+
+	return JCMSG_INVALID_TYPE;
 }
