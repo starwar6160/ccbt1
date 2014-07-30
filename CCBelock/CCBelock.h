@@ -21,6 +21,7 @@ CCBELOCK_API int	zwwsTest1(const char *pMsg);
 CCBELOCK_API void	zwTestWebSocket();
 CCBELOCK_API int	zwTestXML730(const char * atmcXML);
 const int zwXML2Json(const string &inXML,string &outJson);
+const int zwJson2XML(const string &inJson,string &outXML);
 
 enum JC_CCBELOCK_ERROR_CODE{
 	ELOCK_ERROR_SUCCESS=0,		//²Ù×÷³É¹¦

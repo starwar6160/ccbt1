@@ -82,11 +82,13 @@ CCBELOCK_API long Notify(const char *pszMsg)
 		cout<<"MESSAGE TYPE 730=\t"<<msgType<<endl;
 		zwCfg::zwsc.SendString(strJsonSend);		
 		zwCfg::zwsc.ReceiveString(strRecv);
+		string outXML;
+		zwJson2XML(strRecv,outXML);
 		//////////////////////////////////////////////////////////////////////////
 		//例子，利用Notify测试一下回调函数
 		if (NULL!=zwCfg::g_WarnCallback)
 		{
-			zwCfg::g_WarnCallback(strRecv.c_str());
+			zwCfg::g_WarnCallback(outXML.c_str());
 		}
 		return ELOCK_ERROR_SUCCESS;
 	}

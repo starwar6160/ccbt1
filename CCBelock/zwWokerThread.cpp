@@ -22,3 +22,15 @@ const int zwXML2Json(const string &inXML,string &outJson)
 	outJson= ss2.str();
 	return JCMSG_LOCK_ACTIVE_REQUEST;
 }
+
+const int zwJson2XML(const string &inJson,string &outXML)
+{
+	ptree pt;
+	std::stringstream ss;
+	ss<<inJson;
+	read_json(ss,pt);
+	std::stringstream ss2;
+	write_xml(ss2,pt);
+	outXML= ss2.str();
+	return JCMSG_LOCK_ACTIVE_REQUEST;
+}
