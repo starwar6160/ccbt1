@@ -129,6 +129,7 @@ TEST_F(ccbElockTest,XMLTest730)
 	std::ostringstream demoxml;
 	write_xml(demoxml,pt);
 	//zwTestXML730(demoxml.str().c_str());
+	SetRecvMsgRotine(myATMCRecvMsgRotine);
 	Notify(demoxml.str().c_str());
 }
 

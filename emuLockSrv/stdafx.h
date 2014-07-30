@@ -13,8 +13,7 @@
 
 
 // TODO: 在此处引用程序需要的其他头文件
-#include <boost/thread.hpp> 
-#include <boost/thread/mutex.hpp>
+
 
 #include "Poco/Net/HTTPServer.h"
 #include "Poco/Net/HTTPRequestHandler.h"
@@ -37,6 +36,7 @@ using std::cout;
 using std::endl;
 using std::string;
 
+
 using Poco::Net::ServerSocket;
 using Poco::Net::WebSocket;
 using Poco::Net::WebSocketException;
@@ -54,3 +54,9 @@ using Poco::Util::Application;
 using Poco::Util::Option;
 using Poco::Util::OptionSet;
 using Poco::Util::HelpFormatter;
+
+#include <boost/thread.hpp> 
+#include <boost/thread/mutex.hpp>
+#include <boost/property_tree/ptree.hpp>
+#include <boost/property_tree/xml_parser.hpp>
+#include <boost/property_tree/json_parser.hpp>

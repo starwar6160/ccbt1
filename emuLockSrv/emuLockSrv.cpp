@@ -3,6 +3,7 @@
 
 #include "stdafx.h"
 #define ZWFUNCTRACK	cout<<__FUNCTION__<<endl;
+using namespace boost::property_tree;
 
 class PageRequestHandler: public HTTPRequestHandler
 	/// Return a HTML document with some JavaScript creating
