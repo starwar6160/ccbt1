@@ -1,7 +1,24 @@
 #include "stdafx.h"
+#include "CCBelock.h"
+
+string & myAtmcMsgLockActive( string & strXML );
+
 using namespace boost::property_tree;
 
-void zwAtmcMsgLockActive(string &strXML)
+//生成模拟的ATMC XML消息的总入口，根据枚举生成相应那一条的XML消息
+void zwAtmcMsgGen( const JC_MSG_TYPE type,string &strXML )
+{
+	switch (type)
+	{
+	case JCMSG_LOCK_ACTIVE_REQUEST:
+		strXML = myAtmcMsgLockActive(strXML);
+		break;
+	}
+	
+}
+
+//生成锁具激活XML报文
+string & myAtmcMsgLockActive( string & strXML )
 {
 	ptree pt;
 	pt.put("TransCode","0000");
@@ -17,4 +34,5 @@ void zwAtmcMsgLockActive(string &strXML)
 	write_xml(ss,pt);
 	strXML=ss.str();
 	cout<<"ATMC XML Lock Active is"<<endl<<strXML<<endl;
+	return strXML;
 }
