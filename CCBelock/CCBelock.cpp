@@ -13,7 +13,7 @@ using Poco::Net::ConnectionRefusedException;
 namespace zwCfg{
 //#ifdef _DEBUG
 	const long	JC_CCBDLL_TIMEOUT=30;	//最长超时时间为30秒,用于测试目的尽快达到限制暴露问题
-	const int	JC_MSG_MAXLEN=128;	//最长为128字节,用于测试目的尽快达到限制暴露问题
+	const int	JC_MSG_MAXLEN=4*1024;	//最长为128字节,用于测试目的尽快达到限制暴露问题
 //#else
 //	const long	JC_CCBDLL_TIMEOUT=3600;	//最长超时时间为1个小时，更长也没有意义了
 //	const int	JC_MSG_MAXLEN=128*1024;	//最长为下位机RAM的大小，更大也没有意义了

@@ -2,6 +2,7 @@
 //
 
 #include "stdafx.h"
+using namespace boost::property_tree;
 #include "CCBelock.h"
 const char *myLongMsg="0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF"
 	"0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF"
@@ -94,11 +95,11 @@ TEST_F(ccbElockTest,NotifyTest)
 {
 	if (ELOCK_ERROR_SUCCESS==m_connStatus)
 	{
-	EXPECT_EQ(ELOCK_ERROR_SUCCESS,Notify("mytestNotify"));	
+	EXPECT_EQ(ELOCK_ERROR_SUCCESS,Notify("mytestNotify1014conn"));	
 	}
 	else
 	{
-		EXPECT_EQ(ELOCK_ERROR_CONNECTLOST,Notify("mytestNotify"));	
+		EXPECT_EQ(ELOCK_ERROR_CONNECTLOST,Notify("mytestNotify1014notConn"));	
 		cout<<"Server not Start!"<<endl;
 	}
 	
@@ -112,15 +113,23 @@ TEST_F(ccbElockTest,NotifyTest)
 
 TEST(ccbElockDeathTest,NotifyTestBad)
 {//Debug下会触发断言的非法输入测试，放到死亡测试中进行
-	EXPECT_DEBUG_DEATH(Notify(myLongMsg),"");
+	//EXPECT_DEBUG_DEATH(Notify(myLongMsg),"");
 	EXPECT_DEBUG_DEATH(Notify(""),"");
 	EXPECT_DEBUG_DEATH(Notify(NULL),"");
 }
 
 TEST_F(ccbElockTest,XMLTest730)
 {
-	Close();
-	zwTestXML730("myTestXMLfromATMC_On2014.0730.0942");
+	ptree pt;
+	pt.put("app.version", 101);
+	pt.put("app.theme", "blue");
+	pt.put("app.about.url", "http://www.jinchu.com.cn");
+	pt.put("app.about.email", "jinchu_zhouwei@126.com");
+	pt.put("app.about.content", "coryright (C) jinchu.com 2001-2014");
+	std::ostringstream demoxml;
+	write_xml(demoxml,pt);
+	//zwTestXML730(demoxml.str().c_str());
+	Notify(demoxml.str().c_str());
 }
 
 
