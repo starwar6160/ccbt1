@@ -2,14 +2,17 @@
 //
 
 #include "stdafx.h"
-using namespace boost::property_tree;
 #include "CCBelock.h"
 
 //看看是否打开其他测试以便专一测试一件事
-#define _ZWTEST730
+//#define _ZWTEST730
 const char *myLongMsg="0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF"
 	"0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF"
 	"0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF";
+
+void zwAtmcMsgLockActive(string &strXML);
+
+
 
 //测试性回调函数
 void myATMCRecvMsgRotine(const char *pszMsg)
@@ -126,17 +129,11 @@ TEST(ccbElockDeathTest,NotifyTestBad)
 
 TEST_F(ccbElockTest,XMLTest730)
 {
-	ptree pt;
-	pt.put("app.version", 101);
-	pt.put("app.theme", "blue");
-	pt.put("app.about.url", "http://www.jinchu.com.cn");
-	pt.put("app.about.email", "jinchu_zhouwei@126.com");
-	pt.put("app.about.content", "coryright (C) jinchu.com 2001-2014");
-	std::ostringstream demoxml;
-	write_xml(demoxml,pt);
 	//zwTestXML730(demoxml.str().c_str());
+	string strLockActiveXML;
+	zwAtmcMsgLockActive(strLockActiveXML);
 	SetRecvMsgRotine(myATMCRecvMsgRotine);
-	Notify(demoxml.str().c_str());
+	Notify(strLockActiveXML.c_str());
 }
 
 

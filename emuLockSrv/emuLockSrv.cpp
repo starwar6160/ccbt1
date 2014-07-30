@@ -61,8 +61,9 @@ int zwjclms_command_proc(const string &inJson,string &outJson)
 	std::stringstream ss;
 	ss<<inJson;
 	read_json(ss,pt);
-	cout<<"VERSION730EMUSRV:"<<pt.get<int>("app.version")<<endl;
-	pt.put("app.version", 113);
+	int inVersion=pt.get<int>("app.version");
+	cout<<"VERSION730EMUSRV:"<<inVersion<<endl;
+	pt.put("app.version", inVersion+9);
 	std::stringstream ss2;
 	write_json(ss2,pt);
 	outJson=ss2.str();
