@@ -57,7 +57,15 @@ public:
 
 int zwjclms_command_proc(const string &inJson,string &outJson)
 {
-	outJson=inJson+"ZW730JSONEX1043";
+	ptree pt;
+	std::stringstream ss;
+	ss<<inJson;
+	read_json(ss,pt);
+	cout<<"VERSION730EMUSRV:"<<pt.get<int>("app.version")<<endl;
+	pt.put("app.version", 113);
+	std::stringstream ss2;
+	write_json(ss2,pt);
+	outJson=ss2.str();
 	return 0;
 }
 
@@ -86,18 +94,21 @@ public:
 				n = ws.receiveFrame(buffer, sizeof(buffer), flags);				
 				int outLen=0;
 				string outBuf;
-				string cmdRecv=buffer;				
-				app.logger().information(Poco::format("Frame received (length=%d, flags=0x%x).", n, unsigned(flags)));										
+				string cmdRecv=buffer;								
 				string cmdSend;				
-				if(2==n || (flags & WebSocket::FRAME_OP_BITMASK) == WebSocket::FRAME_OP_CLOSE)
+				if(n>=2 && (flags & WebSocket::FRAME_OP_BITMASK) != WebSocket::FRAME_OP_CLOSE)
 				{	//收到了FRAME_OP_CLOSE的数据帧的话就不显示收到的数据了
-					continue;
+					app.logger().information(Poco::format("Frame received (length=%d, flags=0x%x).", 
+						n, unsigned(flags)));										
+					zwjclms_command_proc(cmdRecv,cmdSend);					
+					ws.sendFrame(cmdSend.data(), cmdSend.size(), flags);				
+					app.logger().information(Poco::format("RECV msg=%s",cmdRecv));		
+					app.logger().information(Poco::format("SEND msg=%s",cmdSend));	
 				}
-				zwjclms_command_proc(cmdRecv,cmdSend);				
-				ws.sendFrame(cmdSend.data(), cmdSend.size(), flags);				
-				app.logger().information(Poco::format("RECV msg=%s",cmdRecv));		
-				app.logger().information(Poco::format("SEND msg=%s",cmdSend));	
-				
+				else
+				{
+					Poco::Thread::sleep(100);
+				}
 			}
 			while (n > 0 || (flags & WebSocket::FRAME_OP_BITMASK) != WebSocket::FRAME_OP_CLOSE);
 			app.logger().information("WebSocket connection closed.");
