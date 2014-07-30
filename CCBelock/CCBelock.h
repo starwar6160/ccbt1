@@ -33,7 +33,7 @@ enum JC_CCBELOCK_ERROR_CODE{
 };
 
 //报文类型
-enum JC_MSG_TYPE{
+typedef enum jcmsg_ccb_elock_t{
 	JCMSG_INVALID_TYPE,	//无效报文类型
 	//ATMC TO LOCK MSG:	
 	JCMSG_LOCK_ACTIVE_REQUEST,
@@ -48,4 +48,4 @@ enum JC_MSG_TYPE{
 	JCMSG_SEND_UNLOCK_CERTCODE,
 	JCMSG_REQUEST_TIME_SYNC,
 	JCMSG_TEST730A1,	//测试用
-};
+}JC_MSG_TYPE;
