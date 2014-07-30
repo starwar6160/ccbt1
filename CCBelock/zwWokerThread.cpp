@@ -13,19 +13,22 @@ int zwTestXML730(const char * atmcXML)
 
 const int zwXML2Json(const string &inXML,string &outJson)
 {
+	int status=JCMSG_INVALID_TYPE;
 	ptree pt;
 	std::stringstream ss;
 	ss<<inXML;
 	read_xml(ss,pt);
-	std::stringstream ss2;
-	write_json(ss2,pt);
-	outJson= ss2.str();
 	string transCode=pt.get<string>("TransCode");
 	if ("0000"==transCode)
 	{
-		return JCMSG_LOCK_ACTIVE_REQUEST;
+		status= JCMSG_LOCK_ACTIVE_REQUEST;
+		//ptree pt2;
 	}
-	return JCMSG_INVALID_TYPE;
+
+	std::stringstream ss2;
+	write_json(ss2,pt);
+	outJson= ss2.str();
+	return status;
 }
 
 const int zwJson2XML(const string &inJson,string &outXML)
