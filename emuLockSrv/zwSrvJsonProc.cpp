@@ -1,5 +1,7 @@
 #include "stdafx.h"
+#include "CCBelock.h"
 using namespace boost::property_tree;
+void myLockActive(const JC_MSG_TYPE type, ptree &pt );
 
 int zwjclms_command_proc(const string &inJson,string &outJson)
 {
@@ -14,9 +16,7 @@ int zwjclms_command_proc(const string &inJson,string &outJson)
 	std::stringstream ss;
 	ss<<inJson;
 	read_json(ss,pt);
-	string myInStr=pt.get<string>("SpareString1");
-	//测试性的修改一个值,使得上面能看到效果
-	pt.put("SpareString1", myInStr+"ADD BY EMU SRV 730.1443");
+
 	pt.put("LockMan","BeiJing JinChu");
 	pt.put("LockId","ZWFAKELOCKNO1548");
 	pt.put("LockPubKey","BJpnccGKE5muLO3RLOe+hDjUftMJJwpmnuxEir0P3ss5/sxpEKNQ5AXcSsW1CbC/pXlqAk9/NZoquFJXHW3n1Cw=,");
@@ -24,4 +24,15 @@ int zwjclms_command_proc(const string &inJson,string &outJson)
 	write_json(ss2,pt);
 	outJson=ss2.str();
 	return 0;
+}
+
+void myLockActive(const JC_MSG_TYPE type, ptree &pt )
+{
+	cout<<__FUNCTION__<<endl;
+	string myInStr=pt.get<string>("SpareString1");
+	//测试性的修改一个值,使得上面能看到效果
+	pt.put("SpareString1", myInStr+"ADD BY EMU SRV 730.1443");
+	pt.put("LockMan","BeiJing JinChu");
+	pt.put("LockId","ZWFAKELOCKNO1548");
+	pt.put("LockPubKey","BJpnccGKE5muLO3RLOe+hDjUftMJJwpmnuxEir0P3ss5/sxpEKNQ5AXcSsW1CbC/pXlqAk9/NZoquFJXHW3n1Cw=,");
 }
