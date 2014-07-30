@@ -87,8 +87,12 @@ CCBELOCK_API long Notify(const char *pszMsg)
 		return ELOCK_ERROR_SUCCESS;
 	}
 	catch (...)
-	{
-		///cout<<__FUNCTION__<<" \t"<<exc.displayText()<<endl;
+	{//一切网络异常都直接返回错误。主要是为了捕捉未连接时
+		//WebSocket对象为空造成访问NULL指针的的SEH异常	
+		//为了使得底层Poco库与cceblock类解耦，从我的WS类
+		//发现WS对象因为未连接而是NULL时直接throw一个枚举
+		//然后在此，也就是上层捕获。暂时不知道捕获精确类型
+		//所以catch所有异常了
 		return ELOCK_ERROR_CONNECTLOST;
 	}
 }

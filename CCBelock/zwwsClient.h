@@ -3,6 +3,12 @@
 
 void myPrintCurrentTime();
 
+enum zwWebSocket_Error{
+	ZWWSERR_SUCCESS,
+	ZWWSERR_SERVER_OFFLINE,
+	ZWWSERR_NOTCONNECT
+};
+
 class zwWebSocket{
 	HTTPClientSession cs;
 	HTTPRequest request;

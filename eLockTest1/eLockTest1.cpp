@@ -60,6 +60,10 @@ TEST(ccbElockDeathTest,SetRecvMsgRotineTestBad)
 	EXPECT_DEBUG_DEATH(SetRecvMsgRotine(NULL),"");
 }
 
+TEST_F(ccbElockTest,CloseTest)
+{
+	Close();
+}
 
 //Open,Close≤‚ ‘
 TEST_F(ccbElockTest,OpenCloseTest)

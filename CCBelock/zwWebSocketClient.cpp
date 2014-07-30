@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "zwwsClient.h"
+using Poco::Net::ConnectionRefusedException;
 
 namespace{
 	class WebSocketRequestHandler: public Poco::Net::HTTPRequestHandler
@@ -76,13 +77,7 @@ zwWebSocket::zwWebSocket(const char *host,const int port)
 
 void zwWebSocket::wsConnect(void)
 {
-	try{
 		ws=new WebSocket(cs,request,response);	
-	}
-	catch(...)
-	{				
-		throw;
-	}
 }
 
 void zwWebSocket::wsClose(void)
@@ -109,8 +104,7 @@ int zwWebSocket::SendString(const string &str)
 {
 	if (NULL==ws)
 	{
-		NetException nec("zwSendString NoConnect");
-		throw nec;
+		throw ZWWSERR_NOTCONNECT;
 	}
 	int flags=ws->sendFrame(str.data(),str.length(),WebSocket::FRAME_TEXT);
 	return flags;
@@ -120,8 +114,7 @@ int zwWebSocket::ReceiveString(string &str)
 {
 	if (NULL==ws)
 	{
-		NetException nec("zwRecvString NoConnect");
-		throw nec;
+		throw ZWWSERR_NOTCONNECT;
 	}
 	int flags=0;
 	memset(m_recvBuffer,0,RECV_BUF_LEN);
@@ -154,7 +147,7 @@ for (int i=0;i<3;i++)
 }
 zwc.wsClose();
 	}
-	catch (...)
+	catch (ConnectionRefusedException &exc)
 	{
 		printf("CPP EXECEPTION!");
 		myPrintCurrentTime();
