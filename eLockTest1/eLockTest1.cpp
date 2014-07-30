@@ -5,7 +5,7 @@
 #include "CCBelock.h"
 
 //看看是否打开其他测试以便专一测试一件事
-//#define _ZWTEST730
+#define _ZWTEST730
 const char *myLongMsg="0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF"
 	"0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF"
 	"0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF";
@@ -41,17 +41,17 @@ protected:
 
 #ifdef _ZWTEST730
 //SetRecvMsgRotine测试
-TEST_F(ccbElockTest,SetRecvMsgRotineTest)
+TEST_F(ccbElockTest,SetRecvMsgRotineTestInvalidXML)
 {
 	//Open(25);
 	EXPECT_EQ(ELOCK_ERROR_SUCCESS,SetRecvMsgRotine(myATMCRecvMsgRotine));	
 	if (ELOCK_ERROR_SUCCESS==m_connStatus)
 	{
-		EXPECT_EQ(ELOCK_ERROR_SUCCESS,Notify("test20140725.1517forCallBack"));		
+		EXPECT_EQ(ELOCK_ERROR_CONNECTLOST,Notify("test20140730.1558forCallBack"));		
 	}
 	else
 	{
-		EXPECT_EQ(ELOCK_ERROR_CONNECTLOST,Notify("test20140725.1517forCallBack"));		
+		EXPECT_EQ(ELOCK_ERROR_CONNECTLOST,Notify("test20140730.1557NoConnforCallBack"));		
 		cout<<"Server not Start!"<<endl;
 	}
 	
@@ -66,28 +66,6 @@ TEST(ccbElockDeathTest,SetRecvMsgRotineTestBad)
 	EXPECT_DEBUG_DEATH(SetRecvMsgRotine(NULL),"");
 }
 
-
-//Open,Close测试
-TEST_F(ccbElockTest,OpenCloseTest)
-{
-	if (ELOCK_ERROR_SUCCESS==m_connStatus)
-	{
-	EXPECT_EQ(ELOCK_ERROR_SUCCESS,Open(25));
-	EXPECT_EQ(ELOCK_ERROR_SUCCESS,Close());
-	}
-	else
-	{
-		EXPECT_EQ(ELOCK_ERROR_CONNECTLOST,Open(25));
-		EXPECT_EQ(ELOCK_ERROR_SUCCESS,Close());
-		cout<<"Server not Start!"<<endl;
-	}
-#ifdef NDEBUG
-	EXPECT_EQ(ELOCK_ERROR_PARAMINVALID,Open(0));
-	EXPECT_EQ(ELOCK_ERROR_PARAMINVALID,Open(-30));
-	EXPECT_EQ(ELOCK_ERROR_PARAMINVALID,Open(4000));
-#endif // NDEBUG
-}
-
 TEST(ccbElockDeathTest,OpenTestBad)
 {//Debug下会触发断言的非法输入测试，放到死亡测试中进行
 	EXPECT_DEBUG_DEATH(Open(0),"");
@@ -96,11 +74,11 @@ TEST(ccbElockDeathTest,OpenTestBad)
 }
 
 //Notify测试
-TEST_F(ccbElockTest,NotifyTest)
+TEST_F(ccbElockTest,NotifyTestInvalidXML)
 {
 	if (ELOCK_ERROR_SUCCESS==m_connStatus)
 	{
-	EXPECT_EQ(ELOCK_ERROR_SUCCESS,Notify("mytestNotify1014conn"));	
+	EXPECT_EQ(ELOCK_ERROR_CONNECTLOST,Notify("mytestNotify1014conn"));	
 	}
 	else
 	{
@@ -111,7 +89,7 @@ TEST_F(ccbElockTest,NotifyTest)
 #ifdef NDEBUG
 	EXPECT_EQ(ELOCK_ERROR_PARAMINVALID,Notify(NULL));
 	EXPECT_EQ(ELOCK_ERROR_PARAMINVALID,Notify(""));
-	EXPECT_EQ(ELOCK_ERROR_PARAMINVALID,Notify(myLongMsg));
+	EXPECT_EQ(ELOCK_ERROR_CONNECTLOST,Notify(myLongMsg));
 #endif // NDEBUG
 	//Close();
 }
