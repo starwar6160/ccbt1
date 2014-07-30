@@ -16,4 +16,5 @@ void zwAtmcMsgLockActive(string &strXML)
 	std::ostringstream ss;
 	write_xml(ss,pt);
 	strXML=ss.str();
+	cout<<"ATMC XML Lock Active is"<<endl<<strXML<<endl;
 }
