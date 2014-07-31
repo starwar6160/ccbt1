@@ -3,10 +3,10 @@
 using namespace boost::property_tree;
 //把ATMC DLL的XML和JSON互转函数集中于此，便于单元测试；
 
-const int zwXML2Json(const string &inXML,string &outJson)
+const JC_MSG_TYPE zwXML2Json( const string &inXML,string &outJson )
 {
 	assert(inXML.length()>42);	//XML开头的固定内容38个字符，外加起码一个标签的两对尖括号合计4个字符
-	int status=JCMSG_INVALID_TYPE;
+	JC_MSG_TYPE msgType=JCMSG_INVALID_TYPE;
 	ptree pt;
 	std::stringstream ss;
 	ss<<inXML;
@@ -14,14 +14,14 @@ const int zwXML2Json(const string &inXML,string &outJson)
 	string transCode=pt.get<string>("TransCode");
 	if ("0000"==transCode)
 	{
-		status= JCMSG_LOCK_ACTIVE_REQUEST;
+		msgType= JCMSG_LOCK_ACTIVE_REQUEST;
 		//ptree pt2;
 	}
 
 	std::stringstream ss2;
 	write_json(ss2,pt);
 	outJson= ss2.str();
-	return status;
+	return msgType;
 }
 
 const int zwJson2XML(const string &inJson,string &outXML)

@@ -17,18 +17,6 @@ CCBELOCK_API long	Close();
 CCBELOCK_API long	Notify(const char *pszMsg);
 CCBELOCK_API int	SetRecvMsgRotine(RecvMsgRotine pRecvMsgFun);
 /////////////////////////////////测试用函数/////////////////////////////////////////
-const int zwXML2Json(const string &inXML,string &outJson);
-const int zwJson2XML(const string &inJson,string &outXML);
-
-enum JC_CCBELOCK_ERROR_CODE{
-	ELOCK_ERROR_SUCCESS=0,		//操作成功
-	ELOCK_ERROR_NOTSUPPORT=1,	//不支持的接口
-	ELOCK_ERROR_HARDWAREERROR=2,//硬件故障
-	ELOCK_ERROR_PARAMINVALID=3,	//参数非法
-	ELOCK_ERROR_CONNECTLOST=4,	//失去设备连接
-	ELOCK_ERROR_TIMEOUT=5		//操作超时
-};
-
 //报文类型
 typedef enum jcmsg_ccb_elock_t{
 	JCMSG_INVALID_TYPE,	//无效报文类型
@@ -46,3 +34,16 @@ typedef enum jcmsg_ccb_elock_t{
 	JCMSG_REQUEST_TIME_SYNC,
 	JCMSG_TEST730A1,	//测试用
 }JC_MSG_TYPE;
+
+const JC_MSG_TYPE zwXML2Json(const string &inXML,string &outJson);
+const int zwJson2XML(const string &inJson,string &outXML);
+
+enum JC_CCBELOCK_ERROR_CODE{
+	ELOCK_ERROR_SUCCESS=0,		//操作成功
+	ELOCK_ERROR_NOTSUPPORT=1,	//不支持的接口
+	ELOCK_ERROR_HARDWAREERROR=2,//硬件故障
+	ELOCK_ERROR_PARAMINVALID=3,	//参数非法
+	ELOCK_ERROR_CONNECTLOST=4,	//失去设备连接
+	ELOCK_ERROR_TIMEOUT=5		//操作超时
+};
+

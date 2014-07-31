@@ -110,10 +110,16 @@ TEST(ccbElockDeathTest,NotifyTestBad)
 
 TEST_F(ccbElockTest,XMLTestLockActive)
 {
-	string strLockActiveXML;
-	jcAtmcMsg::zwAtmcMsgGen(JCMSG_LOCK_ACTIVE_REQUEST,strLockActiveXML);
-	SetRecvMsgRotine(myATMCRecvMsgRotine);
-	Notify(strLockActiveXML.c_str());
+	const JC_MSG_TYPE msgType=JCMSG_LOCK_ACTIVE_REQUEST;	//设定消息类型
+	string strLockActiveXML;	//容纳生成的消息XML
+	//具体生成消息XML
+	jcAtmcMsg::zwAtmcMsgGen(msgType,strLockActiveXML);	
+	EXPECT_LT(42,strLockActiveXML.length());	//期望生成的XML至少42字节以上
+	string strLockActiveJson;	//容纳XML转换成的JSON
+	//期望XML和JSON中的消息类型字段是我们指定的消息类型
+	JC_MSG_TYPE rType=zwXML2Json(strLockActiveXML,strLockActiveJson);
+	EXPECT_EQ(msgType,rType);
+	EXPECT_LT(9,strLockActiveJson.length());	//期望转换出来的JSON至少9字节以上
 }
 
 
