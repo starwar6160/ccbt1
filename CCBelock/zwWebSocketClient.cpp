@@ -68,6 +68,7 @@ namespace{
 
 zwWebSocket::zwWebSocket(const char *host,const int port)
 {	
+	assert(host!=NULL && strlen(host)>0 && port>0 && port<(256*256));
 	cs.setHost(host);
 	cs.setPort(static_cast<unsigned int>(port));
 	request.setMethod(HTTPRequest::HTTP_GET);
@@ -102,6 +103,7 @@ zwWebSocket::~zwWebSocket()
 
 int zwWebSocket::SendString(const string &str)
 {
+	assert(str.length()>0);
 	if (NULL==ws)
 	{
 		throw ZWWSERR_NOTCONNECT;
@@ -120,6 +122,7 @@ int zwWebSocket::ReceiveString(string &str)
 	memset(m_recvBuffer,0,RECV_BUF_LEN);
 	ws->receiveFrame(m_recvBuffer,RECV_BUF_LEN,flags);
 	str=m_recvBuffer;
+	assert(str.length()>0);
 	return flags;
 }
 

@@ -60,6 +60,7 @@ CCBELOCK_API long Close()
 
 CCBELOCK_API long Notify(const char *pszMsg)
 {
+	assert(pszMsg!=NULL && strlen(pszMsg)>42);	//XML至少42字节
 	boost:: mutex:: scoped_lock lock( zwCfg::io_mutex); 
 	try{
 		//输入必须有内容，但是最大不得长于下位机内存大小，做合理限制
@@ -78,7 +79,9 @@ CCBELOCK_API long Notify(const char *pszMsg)
 		string strXMLSend=pszMsg;
 		string strJsonSend;
 		string strRecv;
+		assert(strXMLSend.length()>42);	//XML开头的固定内容38个字符，外加起码一个标签的两对尖括号合计4个字符
 		int msgTypeSend=zwXML2Json(strXMLSend,strJsonSend);
+		assert(strJsonSend.length()>9);	//json最基本的符号起码好像要9个字符左右
 		string msgTypeStrSend;
 		switch (msgTypeSend)
 		{
@@ -89,8 +92,10 @@ CCBELOCK_API long Notify(const char *pszMsg)
 		cout<<"MESSAGE FROM ATMC'S TYPE=\t"<<msgTypeStrSend<<endl;
 		zwCfg::zwsc.SendString(strJsonSend);		
 		zwCfg::zwsc.ReceiveString(strRecv);
+		assert(strRecv.length()>9);	//json最基本的符号起码好像要9个字符左右
 		string outXML;
 		int msgTypeRecv=zwJson2XML(strRecv,outXML);
+		assert(outXML.length()>42);	//XML开头的固定内容38个字符，外加起码一个标签的两对尖括号合计4个字符
 		string msgTypeStrRecv;
 		switch (msgTypeSend)
 		{
@@ -121,6 +126,7 @@ CCBELOCK_API long Notify(const char *pszMsg)
 
 void cdecl myATMCRecvMsgRotine(const char *pszMsg)
 {
+	assert(pszMsg!=NULL && strlen(pszMsg)>42);
 	boost:: mutex:: scoped_lock lock( zwCfg::io_mutex); 
 	//输入必须有内容，但是最大不得长于下位机内存大小，做合理限制
 	assert(NULL!=pszMsg);

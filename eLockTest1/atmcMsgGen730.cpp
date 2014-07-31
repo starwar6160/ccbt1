@@ -12,6 +12,7 @@ void zwAtmcMsgGen( const JC_MSG_TYPE type,string &strXML )
 	{
 	case JCMSG_LOCK_ACTIVE_REQUEST:
 		strXML = myAtmcMsgLockActive(strXML);
+		assert(strXML.length()>42);	//XML开头的固定内容38个字符，外加起码一个标签的两对尖括号合计4个字符
 		break;
 	}
 	
@@ -20,6 +21,7 @@ void zwAtmcMsgGen( const JC_MSG_TYPE type,string &strXML )
 //生成锁具激活XML报文
 string & myAtmcMsgLockActive( string & strXML )
 {
+	
 	ptree pt;
 	pt.put("TransCode","0000");
 	pt.put("TransType",0);
@@ -34,5 +36,6 @@ string & myAtmcMsgLockActive( string & strXML )
 	write_xml(ss,pt);
 	strXML=ss.str();
 	cout<<"ATMC XML Lock Active is"<<endl<<strXML<<endl;
+	assert(strXML.length()>42);	//XML开头的固定内容38个字符，外加起码一个标签的两对尖括号合计4个字符
 	return strXML;
 }

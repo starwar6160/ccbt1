@@ -12,12 +12,18 @@ int zwjclms_command_proc(const string &inJson,string &outJson)
 //cryptText:      BBkaJFP63beEM+FKVwna/qEMXoRe6KoJmPOKb8c9YGxFJtyImCVc8zZbcMJ3xnIM
 //				r1yY51Azq2YFSh5nWoDcpeM=.0/i40FFzWarIOWc2tYaI4TU7vwMgsL++.8lONn76e78R64gKXu85nCC
 //				6HpoRgtgZpkR9QJCHC6bSlJDUAqSVW5oSufccOjUkIBBJVGIkS9TrhBRsCbqDlwxXgT4aMvs+DXmAyriaw+Ko=
+	if (inJson.length()<=9)
+	{
+		return 0;
+	}
+	assert(inJson.length()>9);	//json最基本的符号起码好像要9个字符左右
 	ptree pt;
 	std::stringstream ss;
 	ss<<inJson;
 	read_json(ss,pt);
 
 	string transCode=pt.get<string>("TransCode");
+	assert(transCode.length()==4);	//按照建行的要求就是4位数
 	if ("0000"==transCode)
 	{
 		myLockActive(JCMSG_LOCK_ACTIVE_REQUEST,pt);
@@ -26,6 +32,7 @@ int zwjclms_command_proc(const string &inJson,string &outJson)
 	std::stringstream ss2;
 	write_json(ss2,pt);
 	outJson=ss2.str();
+	assert(outJson.length()>9);
 	return 0;
 }
 

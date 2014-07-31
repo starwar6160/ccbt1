@@ -47,11 +47,11 @@ TEST_F(ccbElockTest,SetRecvMsgRotineTestInvalidXML)
 	EXPECT_EQ(ELOCK_ERROR_SUCCESS,SetRecvMsgRotine(myATMCRecvMsgRotine));	
 	if (ELOCK_ERROR_SUCCESS==m_connStatus)
 	{
-		EXPECT_EQ(ELOCK_ERROR_CONNECTLOST,Notify("test20140730.1558forCallBack"));		
+		EXPECT_EQ(ELOCK_ERROR_CONNECTLOST,Notify("test20140730.1558forCallBackTESTFORCHAR42AND"));		
 	}
 	else
 	{
-		EXPECT_EQ(ELOCK_ERROR_CONNECTLOST,Notify("test20140730.1557NoConnforCallBack"));		
+		EXPECT_EQ(ELOCK_ERROR_CONNECTLOST,Notify("test20140730.1558forCallBackTESTFORCHAR42ANDNoConnforCallBack"));		
 		cout<<"Server not Start!"<<endl;
 	}
 	
@@ -78,11 +78,11 @@ TEST_F(ccbElockTest,NotifyTestInvalidXML)
 {
 	if (ELOCK_ERROR_SUCCESS==m_connStatus)
 	{
-	EXPECT_EQ(ELOCK_ERROR_CONNECTLOST,Notify("mytestNotify1014conn"));	
+	EXPECT_EQ(ELOCK_ERROR_CONNECTLOST,Notify("mytestNotify1014connmytestNotify1014connmytestNotify1014conn"));	
 	}
 	else
 	{
-		EXPECT_EQ(ELOCK_ERROR_CONNECTLOST,Notify("mytestNotify1014notConn"));	
+		EXPECT_EQ(ELOCK_ERROR_CONNECTLOST,Notify("mytestNotify1014notConnmytestNotify1014connmytestNotify1014conn"));	
 		cout<<"Server not Start!"<<endl;
 	}
 	
