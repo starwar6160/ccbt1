@@ -37,21 +37,23 @@ namespace cstest702
             Console.Out.WriteLine("CCB 1.1版本算法ECIES(椭圆曲线集成加密公钥算法)安全初始化演示开始");
             Console.Out.WriteLine("ECIES PubKey=\t{0},", ecPub);
             Console.Out.WriteLine("ECIES Prikey=\t{0}", ecPri);
-            //删除保存密钥对等等的内部数据结构.实践中密钥对生成只用做一次，以后就是            
-            //保存下来重复利用了；这里每次都生成新的公钥/私钥对，是因为测试程序的缘故
-            jclmsCCB2014.EciesDelete(hec);
-
-            String plainText = "myplaintext20140717.0918.012myplaintext20140717.0918.012end920;AAABBB";  //明文
+            String mypsk = jclmsCCB2014.zwMergePsk("testpsk1");
+            Console.Out.WriteLine("mypsk:\t{0}", mypsk);
+            //注意明文长度不能超出一定限度，目前是62字节左右，否则加解密运算结果将是错误的；
+            String plainText = "myplaintext20140717.0918.012myplaintext20140717.0918.012end920";  //明文
             //用对方的公钥加密后发给对方
             String cryptText = jclmsCCB2014.EciesEncrypt(ecPub, plainText);
             //对方使用自己的私钥解密，还原出来明文
             String decryptText = jclmsCCB2014.EciesDecrypt(ecPri, cryptText);
-            Console.Out.WriteLine("PlainText1:\t{0}", plainText);
+            Console.Out.WriteLine("PSK:\t{0}", plainText);
             Console.Out.WriteLine("cryptText:\t{0}", cryptText);
             Console.Out.WriteLine("decryptText:\t{0}", decryptText);
             Console.Out.WriteLine("*************************");
-            String mypsk = jclmsCCB2014.zwMergePsk("testpsk1");
-            Console.Out.WriteLine("mypsk:\t{0}", mypsk);
+            //删除保存密钥对等等的内部数据结构.实践中密钥对生成只用做一次，以后就是            
+            //保存下来重复利用了；这里每次都生成新的公钥/私钥对，是因为测试程序的缘故
+            //删除句柄必须放到程序末尾，否则解密运算就无法进行了
+            jclmsCCB2014.EciesDelete(hec);
+
         }
 
         //建行1.1版本动态码验证流程例子
@@ -236,6 +238,9 @@ namespace cstest702
             int firstCloseCode = jclmsCCB2014.JcLockGetDynaCode(jcLock);
             jclmsCCB2014.JcLockDebugPrint(jcLock);
             Console.Out.WriteLine("锁具产生的初始闭锁码是 {0}", firstCloseCode);
+            Console.WriteLine("请输入你的闭锁码");
+            firstCloseCode = int.Parse(Console.ReadLine());
+
 
             //可变条件部分.
             jclmsCCB2014.JcLockSetInt(jcLock, JCITYPE.JCI_DATETIME, seconddiff);
@@ -275,7 +280,8 @@ namespace cstest702
             int lockVerifyCode = jclmsCCB2014.JcLockGetDynaCode(jcLock);
             jclmsCCB2014.JcLockDebugPrint(jcLock);
             Console.Out.WriteLine("锁具产生的验证码是 {0}", lockVerifyCode);
-            int keyVerCode = int.Parse(Console.ReadLine());
+            Console.WriteLine("请输入你的验证码");
+            lockVerifyCode = int.Parse(Console.ReadLine());
             jclmsCCB2014.JcLockSetCmdType(jcSrv, JCITYPE.JCI_CMDTYPE, JCCMD.JCCMD_CCB_LOCK_VERCODE);
             //上位机也计算锁具应该返回的验证码的值，予以比对
             jclmsCCB2014.JcLockSetInt(jcSrv, JCITYPE.JCI_CLOSECODE, dyCode1);
