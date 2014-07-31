@@ -41,8 +41,8 @@ void zwRandSeedGen603(char *randBuf,const int randBufLen)
 }
 
 //此处static变量可能会有多线程安全问题，以后再说；20140716.1600.周伟
-static char g_zwPskBuf[SHA256_DIGEST_SIZE];
-static char g_zwPskAsc[SHA256_DIGEST_SIZE*2+1];
+char g_zwPskBuf[SHA256_DIGEST_SIZE];
+char g_zwPskAsc[SHA256_DIGEST_SIZE*2+1];
 ZWECIES_API const char * zwMergePsk(const char *pskInput)
 {
 	time_t rnd;
