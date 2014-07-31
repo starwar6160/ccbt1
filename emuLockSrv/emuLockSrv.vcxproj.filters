@@ -13,6 +13,9 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="源文件\ingtest">
+      <UniqueIdentifier>{ac44d1c1-ab59-4ae5-80bb-aa242fe91f87}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="ReadMe.txt" />
@@ -34,6 +37,9 @@
     </ClCompile>
     <ClCompile Include="zwSrvJsonProc.cpp">
       <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\eLockTest1\LockSrvJsonProc.cpp">
+      <Filter>源文件\ingtest</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
