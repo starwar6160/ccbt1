@@ -13,6 +13,9 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="源文件\ingtest">
+      <UniqueIdentifier>{0011dad8-91c2-4654-93bd-5c51aa6342cd}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="ReadMe.txt" />
@@ -49,6 +52,9 @@
     </ClCompile>
     <ClCompile Include="zwWebSocketClient.cpp">
       <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\eLockTest1\atmcDLLConvert731.cpp">
+      <Filter>源文件\ingtest</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

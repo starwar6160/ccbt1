@@ -89,7 +89,7 @@ CCBELOCK_API long Notify(const char *pszMsg)
 			msgTypeStrSend="JCMSG_LOCK_ACTIVE_REQUEST";
 			break;
 		}
-		cout<<"MESSAGE FROM ATMC'S TYPE=\t"<<msgTypeStrSend<<endl;
+		//cout<<"MESSAGE FROM ATMC'S TYPE=\t"<<msgTypeStrSend<<endl;
 		zwCfg::zwsc.SendString(strJsonSend);		
 		zwCfg::zwsc.ReceiveString(strRecv);
 		assert(strRecv.length()>9);	//json最基本的符号起码好像要9个字符左右
@@ -103,7 +103,7 @@ CCBELOCK_API long Notify(const char *pszMsg)
 			msgTypeStrSend="JCMSG_LOCK_ACTIVE_REQUEST";
 			break;
 		}
-		cout<<"MESSAGE FROM LOCK'S TYPE=\t"<<msgTypeStrSend<<endl;
+		//cout<<"MESSAGE FROM LOCK'S TYPE=\t"<<msgTypeStrSend<<endl;
 
 		//////////////////////////////////////////////////////////////////////////
 		//例子，利用Notify测试一下回调函数
