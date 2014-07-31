@@ -2,16 +2,6 @@
 #include "CCBelock.h"
 using namespace boost::property_tree;
 
-int zwTestXML730(const char * atmcXML)
-{
-	assert(atmcXML!=NULL && strlen(atmcXML)>42);
-	cout<<"*****************"<<__FUNCTION__<<"*******************START"<<endl;
-	cout<<"Demo on ATMC DLL \t"<<atmcXML<<endl;
-	cout<<"*****************"<<__FUNCTION__<<"*******************END"<<endl;
-
-	return 0;
-}
-
 const int zwXML2Json(const string &inXML,string &outJson)
 {
 	assert(inXML.length()>42);	//XML开头的固定内容38个字符，外加起码一个标签的两对尖括号合计4个字符

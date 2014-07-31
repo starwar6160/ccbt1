@@ -25,7 +25,6 @@ string & myAtmcMsgLockActive( string & strXML )
 	
 	ptree pt;
 	pt.put("TransCode","0000");
-	pt.put("TransType",0);
 	pt.put("TransName","CallForActInfo");
 	pt.put("TransDate","20140730");
 	pt.put("TransTime","142203");
