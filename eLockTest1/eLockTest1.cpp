@@ -112,8 +112,37 @@ TEST(ccbElockDeathTest,NotifyTestBad)
 }
 #endif // _ZWTEST730
 
+//锁具激活报文的在线测试
+TEST_F(ccbElockTest,LockActiveTestOnline)
+{
+	//Open(25);
+	EXPECT_EQ(ELOCK_ERROR_SUCCESS,SetRecvMsgRotine(myATMCRecvMsgRotine));	
+	const JC_MSG_TYPE msgType=JCMSG_LOCK_ACTIVE_REQUEST;	//设定消息类型
+	//ATMC生成XML消息
+	string strLockActiveXML;	//容纳生成的消息XML
+	//具体生成消息XML
+	ptree pt;
+	jcAtmcMsg::zwAtmcMsgGen(msgType,strLockActiveXML, pt);	
 
-TEST_F(ccbElockTest,XMLTestLockActive)
+	if (ELOCK_ERROR_SUCCESS==m_connStatus)
+	{
+		EXPECT_EQ(ELOCK_ERROR_SUCCESS,Notify(strLockActiveXML.c_str()));		
+	}
+	else
+	{
+		EXPECT_EQ(ELOCK_ERROR_CONNECTLOST,Notify(strLockActiveXML.c_str()));		
+		cout<<"Server not Start!"<<endl;
+	}
+
+#ifdef NDEBUG
+	EXPECT_EQ(ELOCK_ERROR_PARAMINVALID,SetRecvMsgRotine(NULL));
+#endif // NDEBUG
+	//Close();
+}
+
+
+//锁具激活报文的单元测试
+TEST_F(ccbElockTest,LockActiveTestUnit)
 {
 	const JC_MSG_TYPE msgType=JCMSG_LOCK_ACTIVE_REQUEST;	//设定消息类型
 	//////////////////////////////////////////////////////////////////////////
@@ -136,7 +165,6 @@ TEST_F(ccbElockTest,XMLTestLockActive)
 	EXPECT_EQ(msgType,mtypeL);
 
 }
-
 
 
 int _tmain(int argc, _TCHAR* argv[])
