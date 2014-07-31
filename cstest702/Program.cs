@@ -38,7 +38,6 @@ namespace cstest702
             Console.Out.WriteLine("ECIES PubKey=\t{0},", ecPub);
             Console.Out.WriteLine("ECIES Prikey=\t{0}", ecPri);
             String mypsk = jclmsCCB2014.zwMergePsk("testpsk1");
-            Console.Out.WriteLine("mypsk:\t{0}", mypsk);
             //注意明文长度不能超出一定限度，目前是62字节左右，否则加解密运算结果将是错误的；
             String plainText = mypsk;
                 //"myplaintext20140717.0918.012myplaintext20140717.0918.012end920";  //明文
@@ -46,9 +45,9 @@ namespace cstest702
             String cryptText = jclmsCCB2014.EciesEncrypt(ecPub, plainText);
             //对方使用自己的私钥解密，还原出来明文
             String decryptText = jclmsCCB2014.EciesDecrypt(ecPri, cryptText);
-            Console.Out.WriteLine("PSK:\t{0}", plainText);
+            Console.Out.WriteLine("PSK:\n{0}", plainText);
             Console.Out.WriteLine("cryptText:\t{0}", cryptText);
-            Console.Out.WriteLine("decryptText:\t{0}", decryptText);
+            Console.Out.WriteLine("decryptPSK:\n{0}", decryptText);
             Console.Out.WriteLine("*************************");
             //删除保存密钥对等等的内部数据结构.实践中密钥对生成只用做一次，以后就是            
             //保存下来重复利用了；这里每次都生成新的公钥/私钥对，是因为测试程序的缘故
