@@ -10,7 +10,10 @@ const char *myLongMsg="0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF"
 	"0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF"
 	"0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF";
 
+namespace jcAtmcMsg{
 void zwAtmcMsgGen(const JC_MSG_TYPE type,string &strXML);
+}
+
 
 
 
@@ -106,7 +109,7 @@ TEST(ccbElockDeathTest,NotifyTestBad)
 TEST_F(ccbElockTest,XMLTestLockActive)
 {
 	string strLockActiveXML;
-	zwAtmcMsgGen(JCMSG_LOCK_ACTIVE_REQUEST,strLockActiveXML);
+	jcAtmcMsg::zwAtmcMsgGen(JCMSG_LOCK_ACTIVE_REQUEST,strLockActiveXML);
 	SetRecvMsgRotine(myATMCRecvMsgRotine);
 	Notify(strLockActiveXML.c_str());
 }
