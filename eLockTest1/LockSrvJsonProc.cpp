@@ -4,7 +4,8 @@ using namespace boost::property_tree;
 //把锁具服务器端处理Json的函数集中于此，便于单元测试
 
 const JC_MSG_TYPE lockParseJson( const string & inJson, ptree &pt );
-void LockOutJson( ptree pt, string &outJson );
+void LockOutJson( const ptree &pt, string &outJson );
+//内部函数，不必暴露给外界
 void myLockActive(const JC_MSG_TYPE type, ptree &pt );
 
 //此函数没有实际功能，功能都在下级子函数中，便于单元测试；此函数在此是满足联网的单元测试的；
@@ -64,7 +65,7 @@ const JC_MSG_TYPE lockParseJson( const string & inJson, ptree &pt )
 }
 
 //把处理完毕的pt中的内容输出为Json输出
-void LockOutJson( ptree pt, string &outJson )
+void LockOutJson( const ptree &pt, string &outJson )
 {
 	std::stringstream ss2;
 	write_json(ss2,pt);

@@ -3,6 +3,11 @@
 
 #include "stdafx.h"
 #include "CCBelock.h"
+using namespace boost::property_tree;
+
+const JC_MSG_TYPE lockParseJson( const string & inJson, ptree &pt );
+void LockOutJson( const ptree &pt, string &outJson );
+
 
 //看看是否打开其他测试以便专一测试一件事
 #define _ZWTEST730
@@ -11,7 +16,7 @@ const char *myLongMsg="0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF"
 	"0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF";
 
 namespace jcAtmcMsg{
-void zwAtmcMsgGen(const JC_MSG_TYPE type,string &strXML);
+	void zwAtmcMsgGen(const JC_MSG_TYPE type,string &strXML,ptree &pt);
 }
 
 
@@ -111,15 +116,25 @@ TEST(ccbElockDeathTest,NotifyTestBad)
 TEST_F(ccbElockTest,XMLTestLockActive)
 {
 	const JC_MSG_TYPE msgType=JCMSG_LOCK_ACTIVE_REQUEST;	//设定消息类型
+	//////////////////////////////////////////////////////////////////////////
+	//ATMC生成XML消息
 	string strLockActiveXML;	//容纳生成的消息XML
 	//具体生成消息XML
-	jcAtmcMsg::zwAtmcMsgGen(msgType,strLockActiveXML);	
+	ptree pt;
+	jcAtmcMsg::zwAtmcMsgGen(msgType,strLockActiveXML, pt);	
 	EXPECT_LT(42,strLockActiveXML.length());	//期望生成的XML至少42字节以上
 	string strLockActiveJson;	//容纳XML转换成的JSON
+	//////////////////////////////////////////////////////////////////////////
+	//DLL把XML转换为JSON
 	//期望XML和JSON中的消息类型字段是我们指定的消息类型
 	JC_MSG_TYPE rType=zwXML2Json(strLockActiveXML,strLockActiveJson);
 	EXPECT_EQ(msgType,rType);
 	EXPECT_LT(9,strLockActiveJson.length());	//期望转换出来的JSON至少9字节以上
+	//////////////////////////////////////////////////////////////////////////
+	//锁具内部处理JSON
+	JC_MSG_TYPE mtypeL=lockParseJson(strLockActiveJson, pt);
+	EXPECT_EQ(msgType,mtypeL);
+
 }
 
 
