@@ -36,7 +36,7 @@ typedef enum jcmsg_ccb_elock_t{
 }JC_MSG_TYPE;
 
 const JC_MSG_TYPE zwXML2Json(const string &inXML,string &outJson);
-const int zwJson2XML(const string &inJson,string &outXML);
+const JC_MSG_TYPE zwJson2XML(const string &inJson,string &outXML);
 
 enum JC_CCBELOCK_ERROR_CODE{
 	ELOCK_ERROR_SUCCESS=0,		//²Ù×÷³É¹¦

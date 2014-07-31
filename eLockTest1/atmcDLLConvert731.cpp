@@ -24,7 +24,7 @@ const JC_MSG_TYPE zwXML2Json( const string &inXML,string &outJson )
 	return msgType;
 }
 
-const int zwJson2XML(const string &inJson,string &outXML)
+const JC_MSG_TYPE zwJson2XML( const string &inJson,string &outXML )
 {
 	assert(inJson.length()>9);	//json最基本的符号起码好像要9个字符左右
 	ptree pt;
