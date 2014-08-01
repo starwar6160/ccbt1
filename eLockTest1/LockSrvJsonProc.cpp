@@ -50,17 +50,13 @@ const JC_MSG_TYPE lockParseJson( const string & inJson, ptree &pt )
 
 	string transCode=pt.get<string>("TransCode");
 	assert(transCode.length()==4);	//按照建行的要求就是4位数
+	//按照transCode字符串确定做什么处理
 	if ("0000"==transCode)
 	{
 		mtype=JCMSG_LOCK_ACTIVE_REQUEST;
 		myLockActive(mtype,pt);
 	}
-	switch (mtype)
-	{
-	case JCMSG_LOCK_ACTIVE_REQUEST:
-		myLockActive(mtype,pt);
-		break;
-	}
+
 	return mtype;
 }
 

@@ -161,12 +161,24 @@ TEST_F(ccbElockTest,LockActiveTestUnit)
 	EXPECT_LT(9,strLockActiveJson.length());	//期望转换出来的JSON至少9字节以上
 	//////////////////////////////////////////////////////////////////////////
 	//锁具内部处理JSON
-	JC_MSG_TYPE mtypeL=lockParseJson(strLockActiveJson, pt);
+	ptree pt2;
+	JC_MSG_TYPE mtypeL=lockParseJson(strLockActiveJson, pt2);
 	EXPECT_EQ(msgType,mtypeL);
 	string outJson;
 	//把pt输出为json返回
-	LockOutJson(pt, outJson);
-	EXPECT_LT(9,outJson.length());
+	LockOutJson(pt2, outJson);
+//////////////////////////////////////////////////////////////////////////
+	//检查锁具内部处理完毕之后返回的内容是否具有大致正确的返回值
+	//不过也就只能大致检查长度而已
+	string lockMan=pt2.get<string>("LockMan");
+	string LockId=pt2.get<string>("LockId");
+	string LockPubKey=pt2.get<string>("LockPubKey");
+	EXPECT_LT(10,lockMan.length());
+	EXPECT_GT(20,lockMan.length());
+	EXPECT_LT(10,LockId.length());
+	EXPECT_GT(20,LockId.length());
+	EXPECT_LT(85,LockPubKey.length());
+	EXPECT_GT(100,LockPubKey.length());
 	//DLL把JSON转换为XML
 	string outXML;
 	zwJson2XML(outJson,outXML);
