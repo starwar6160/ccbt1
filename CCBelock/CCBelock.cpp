@@ -150,3 +150,5 @@ CCBELOCK_API int SetRecvMsgRotine(RecvMsgRotine pRecvMsgFun)
 	zwCfg::g_WarnCallback=pRecvMsgFun;
 	return ELOCK_ERROR_SUCCESS;
 }
+
+

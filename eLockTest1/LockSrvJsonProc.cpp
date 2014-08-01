@@ -6,7 +6,7 @@ using namespace boost::property_tree;
 const JC_MSG_TYPE lockParseJson( const string & inJson, ptree &pt );
 void LockOutJson( const ptree &pt, string &outJson );
 //内部函数，不必暴露给外界
-void myLockActive(const JC_MSG_TYPE type, ptree &pt );
+void myLockActive(ptree &pt );
 
 //此函数没有实际功能，功能都在下级子函数中，便于单元测试；此函数在此是满足联网的单元测试的；
 int zwjclms_command_proc(const string &inJson,string &outJson)
@@ -38,26 +38,7 @@ int zwjclms_command_proc(const string &inJson,string &outJson)
 	return mtype;
 }
 
-//锁具激活消息的具体处理函数。
-void myLockActive(const JC_MSG_TYPE type, ptree &pt )
-{
-	try{
-		string sCommand=pt.get<string>("command");	
-		if ("Lock_Secretkey"!=sCommand)
-		{//如果不是锁具激活请求，则直接返回
-			cout<<__FUNCTION__<<" not a Lock_Secretkey json 1431";
-			return;
-		}
-		pt.put("LockMan","BeiJing JinChu");
-		pt.put("LockId","ZWFAKELOCKNO1548");
-		pt.put("LockPubKey","BJpnccGKE5muLO3RLOe+hDjUftMJJwpmnuxEir0P3ss5/sxpEKNQ5AXcSsW1CbC/pXlqAk9/NZoquFJXHW3n1Cw=,");
-	}
-	catch(...)
-	{
-		cout<<"input json not found command item!20140801.1431"<<endl;
-		return ;
-	}
-}
+
 
 //进来的Json,对其分类，然后内容解析到pt中，并根据分类调用相应的底层函数进行组织相应的返回值的处理存入pt中，返回分类
 const JC_MSG_TYPE lockParseJson( const string & inJson, ptree &pt )
@@ -68,14 +49,20 @@ const JC_MSG_TYPE lockParseJson( const string & inJson, ptree &pt )
 	ss<<inJson;
 	read_json(ss,pt);
 
-	string transCode=pt.get<string>("TransCode");
-	assert(transCode.length()==4);	//按照建行的要求就是4位数
-	//按照transCode字符串确定做什么处理
-	if ("0000"==transCode)
-	{
-		mtype=JCMSG_LOCK_ACTIVE_REQUEST;
-		myLockActive(mtype,pt);
+	try{
+		string sCommand=pt.get<string>("command");	
+		if ("Lock_Secretkey"==sCommand)
+		{//是锁具激活请求，进行相关处理
+			myLockActive(pt);
+			return JCMSG_LOCK_ACTIVE_REQUEST;
+		}
 	}
+	catch(...)
+	{
+		cout<<"input json not found command item!20140801.1431"<<endl;
+		return JCMSG_INVALID_TYPE;
+	}
+
 
 	return mtype;
 }
@@ -87,4 +74,15 @@ void LockOutJson( const ptree &pt, string &outJson )
 	write_json(ss2,pt);
 	outJson=ss2.str();
 	assert(outJson.length()>9);
+}
+
+
+//锁具激活消息的具体处理函数。
+void myLockActive(ptree &pt )
+{
+	//pt.put("LockMan","BeiJing JinChu");
+	pt.put("Lock_Serial","ZWFAKELOCKNO1548");
+	pt.put("Public_Key","BJpnccGKE5muLO3RLOe+hDjUftMJJwpmnuxEir0P3ss5/sxpEKNQ5AXcSsW1CbC/pXlqAk9/NZoquFJXHW3n1Cw=,");
+	pt.put("State","get");
+
 }
