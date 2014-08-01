@@ -80,7 +80,7 @@ CCBELOCK_API long Notify(const char *pszMsg)
 		string strJsonSend;
 		string strRecv;
 		assert(strXMLSend.length()>42);	//XML开头的固定内容38个字符，外加起码一个标签的两对尖括号合计4个字符
-		int msgTypeSend=zwXML2Json(strXMLSend,strJsonSend);
+		int msgTypeSend=jcAtmcConvertDLL::zwXML2Json(strXMLSend,strJsonSend);
 		assert(strJsonSend.length()>9);	//json最基本的符号起码好像要9个字符左右
 		string msgTypeStrSend;
 		switch (msgTypeSend)
@@ -94,7 +94,7 @@ CCBELOCK_API long Notify(const char *pszMsg)
 		zwCfg::zwsc.ReceiveString(strRecv);
 		assert(strRecv.length()>9);	//json最基本的符号起码好像要9个字符左右
 		string outXML;
-		int msgTypeRecv=zwJson2XML(strRecv,outXML);
+		int msgTypeRecv=jcAtmcConvertDLL::zwJson2XML(strRecv,outXML);
 		assert(outXML.length()>42);	//XML开头的固定内容38个字符，外加起码一个标签的两对尖括号合计4个字符
 		string msgTypeStrRecv;
 		switch (msgTypeSend)

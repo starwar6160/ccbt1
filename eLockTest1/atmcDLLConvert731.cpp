@@ -2,6 +2,7 @@
 #include "CCBelock.h"
 using namespace boost::property_tree;
 //把ATMC DLL的XML和JSON互转函数集中于此，便于单元测试；
+namespace jcAtmcConvertDLL{
 
 const JC_MSG_TYPE zwXML2Json( const string &downXML,string &downJson )
 {
@@ -56,9 +57,6 @@ const JC_MSG_TYPE zwJson2XML( const string &upJson,string &upXML )
 	}
 	return JCMSG_INVALID_TYPE;
 }
-
-namespace jcAtmcConvertDLL{
-
 
 
 }	//namespace jcAtmcConvertDLL
