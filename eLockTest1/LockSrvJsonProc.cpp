@@ -23,6 +23,9 @@ int zwjclms_command_proc(const string &inJson,string &outJson)
 		return 0;
 	}
 	assert(inJson.length()>9);	//json最基本的符号起码好像要9个字符左右
+	cout<<__FUNCTION__<<"***EMUSRV IN JSON START***********************\n";
+	cout<<inJson;
+	cout<<"***EMUSRV IN JSON END  ***********************\n";
 	ptree pt;
 	//解析输入JSON，并对其处理，结果在pt中，类型返回在mtype中
 	JC_MSG_TYPE mtype=lockParseJson(inJson, pt);
@@ -35,6 +38,12 @@ int zwjclms_command_proc(const string &inJson,string &outJson)
 //锁具激活消息的具体处理函数。
 void myLockActive(const JC_MSG_TYPE type, ptree &pt )
 {
+	//string sCommand=pt.get<string>("command");	
+	//if ("Lock_Secretkey"!=sCommand)
+	//{//如果不是锁具激活请求，则直接返回
+	//	cout<<__FUNCTION__<<" not a Lock_Secretkey json";
+	//	//return;
+	//}
 	pt.put("LockMan","BeiJing JinChu");
 	pt.put("LockId","ZWFAKELOCKNO1548");
 	pt.put("LockPubKey","BJpnccGKE5muLO3RLOe+hDjUftMJJwpmnuxEir0P3ss5/sxpEKNQ5AXcSsW1CbC/pXlqAk9/NZoquFJXHW3n1Cw=,");
@@ -43,6 +52,10 @@ void myLockActive(const JC_MSG_TYPE type, ptree &pt )
 //进来的Json,对其分类，然后内容解析到pt中，并根据分类调用相应的底层函数进行组织相应的返回值的处理存入pt中，返回分类
 const JC_MSG_TYPE lockParseJson( const string & inJson, ptree &pt )
 {
+	cout<<__FUNCTION__<<"***EMUSRV IN JSON START***********************\n";
+	cout<<inJson;
+	cout<<"***EMUSRV IN JSON END  ***********************\n";
+
 	JC_MSG_TYPE mtype=JCMSG_INVALID_TYPE;
 	std::stringstream ss;
 	ss<<inJson;
