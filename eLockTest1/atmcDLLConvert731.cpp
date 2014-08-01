@@ -21,24 +21,20 @@ const JC_MSG_TYPE zwXML2Json( const string &downXML,string &downJson )
 	read_xml(ss,pt);
 	//判断消息类型
 	string transCode=pt.get<string>("TransCode");
-	if ("0000"==transCode)
-	{
-		msgType= JCMSG_LOCK_ACTIVE_REQUEST;
-		//ptree pt2;
-	}
-//////////////////////////////////////////////////////////////////////////
-	//根据消息类型调用不同函数处理，目前暂未分开为单个函数
-	//锁具激活
+	//根据消息类型调用不同函数处理		
 	ptree pt2;
-	zwconvLockActive(pt2);
-
-
-//////////////////////////////////////////////////////////////////////////
+	if ("0000"==transCode)
+	{//锁具激活
+		msgType= JCMSG_LOCK_ACTIVE_REQUEST;
+		zwconvLockActive(pt2);
+	}
+	//处理结果输出为Json供下位机使用
 	std::stringstream ss2;
 	write_json(ss2,pt2);
 	downJson= ss2.str();
-	cout<<"***ATMC DLL json down before convert by DLL Start********************\n"<<downJson;
-	cout<<"***ATMC DLL json down before convert by DLL End**********************\n";
+	cout<<"***ATMC DLL json down after convert by DLL Start********************\n"<<downJson;
+	cout<<"***ATMC DLL json down after convert by DLL End**********************\n";
+
 	return msgType;
 }
 
