@@ -25,6 +25,7 @@ namespace jcAtmcMsg{
 //测试性回调函数
 void myATMCRecvMsgRotine(const char *pszMsg)
 {
+	cout<<__FUNCTION__<<endl;
 	cout<<"*******************EMU SRV RETURN XML	Start*****************\n";
 	cout<<pszMsg<<endl;
 	cout<<"*******************EMU SRV RETURN XML	End*******************\n";
@@ -156,7 +157,7 @@ TEST_F(ccbElockTest,LockActiveTestUnit)
 	//////////////////////////////////////////////////////////////////////////
 	//DLL把XML转换为JSON
 	//期望XML和JSON中的消息类型字段是我们指定的消息类型
-	JC_MSG_TYPE rType=jcAtmcConvertDLL::zwXML2Json(strLockActiveXML,strLockActiveJson);
+	JC_MSG_TYPE rType=jcAtmcConvertDLL::zwCCBxml2JCjson(strLockActiveXML,strLockActiveJson);
 	EXPECT_EQ(msgType,rType);
 	EXPECT_LT(9,strLockActiveJson.length());	//期望转换出来的JSON至少9字节以上
 	//////////////////////////////////////////////////////////////////////////
@@ -181,7 +182,7 @@ TEST_F(ccbElockTest,LockActiveTestUnit)
 		EXPECT_GT(100,LockPubKey.length());
 	//DLL把JSON转换为XML
 	string outXML;
-	jcAtmcConvertDLL::zwJson2XML(outJson,outXML);
+	jcAtmcConvertDLL::zwJCjson2CCBxml(outJson,outXML);
 	EXPECT_LT(42,outXML.length());	//期望生成的XML至少42字节以上
 
 }

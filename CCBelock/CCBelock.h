@@ -36,8 +36,8 @@ typedef enum jcmsg_ccb_elock_t{
 }JC_MSG_TYPE;
 
 namespace jcAtmcConvertDLL{
-const JC_MSG_TYPE zwXML2Json(const string &inXML,string &outJson);
-const JC_MSG_TYPE zwJson2XML(const string &inJson,string &outXML);
+const JC_MSG_TYPE zwCCBxml2JCjson(const string &inXML,string &outJson);
+const JC_MSG_TYPE zwJCjson2CCBxml(const string &inJson,string &outXML);
 }	//namespace jcAtmcConvertDLL{
 
 enum JC_CCBELOCK_ERROR_CODE{
