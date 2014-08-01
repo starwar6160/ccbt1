@@ -35,9 +35,6 @@ string & myAtmcMsgLockActive( string & strXML ,ptree &pt )
 	std::ostringstream ss;
 	write_xml(ss,pt);
 	strXML=ss.str();
-	cout<<"*********************ATMC Lock Active XML Start	*********************\n";
-	cout<<strXML<<endl;
-	cout<<"*********************ATMC Lock Active XML End	*********************\n";
 	assert(strXML.length()>42);	//XML开头的固定内容38个字符，外加起码一个标签的两对尖括号合计4个字符
 	return strXML;
 }

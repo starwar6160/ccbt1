@@ -163,6 +163,14 @@ TEST_F(ccbElockTest,LockActiveTestUnit)
 	//锁具内部处理JSON
 	JC_MSG_TYPE mtypeL=lockParseJson(strLockActiveJson, pt);
 	EXPECT_EQ(msgType,mtypeL);
+	string outJson;
+	//把pt输出为json返回
+	LockOutJson(pt, outJson);
+	EXPECT_LT(9,outJson.length());
+	//DLL把JSON转换为XML
+	string outXML;
+	zwJson2XML(outJson,outXML);
+	EXPECT_LT(42,outXML.length());	//期望生成的XML至少42字节以上
 
 }
 
