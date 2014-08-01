@@ -91,8 +91,8 @@ public:
 				}
 				zwjclms_command_proc(cmdRecv,cmdSend);				
 				ws.sendFrame(cmdSend.data(), cmdSend.size(), flags);				
-				app.logger().information(Poco::format("RECV msg=%s",cmdRecv));		
-				app.logger().information(Poco::format("SEND msg=%s",cmdSend));	
+				//app.logger().information(Poco::format("RECV msg=%s",cmdRecv));		
+				//app.logger().information(Poco::format("SEND msg=%s",cmdSend));	
 
 			}
 			while (n > 0 || (flags & WebSocket::FRAME_OP_BITMASK) != WebSocket::FRAME_OP_CLOSE);

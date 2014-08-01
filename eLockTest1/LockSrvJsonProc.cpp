@@ -31,6 +31,9 @@ int zwjclms_command_proc(const string &inJson,string &outJson)
 	JC_MSG_TYPE mtype=lockParseJson(inJson, pt);
 	//把pt输出为json返回
 	LockOutJson(pt, outJson);
+	cout<<__FUNCTION__<<"***EMUSRV OUT JSON START***********************\n";
+	cout<<outJson;
+	cout<<"***EMUSRV OUT JSON END  ***********************\n";
 
 	return mtype;
 }
@@ -52,9 +55,6 @@ void myLockActive(const JC_MSG_TYPE type, ptree &pt )
 //进来的Json,对其分类，然后内容解析到pt中，并根据分类调用相应的底层函数进行组织相应的返回值的处理存入pt中，返回分类
 const JC_MSG_TYPE lockParseJson( const string & inJson, ptree &pt )
 {
-	cout<<__FUNCTION__<<"***EMUSRV IN JSON START***********************\n";
-	cout<<inJson;
-	cout<<"***EMUSRV IN JSON END  ***********************\n";
 
 	JC_MSG_TYPE mtype=JCMSG_INVALID_TYPE;
 	std::stringstream ss;
