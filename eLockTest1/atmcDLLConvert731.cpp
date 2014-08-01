@@ -108,7 +108,7 @@ void zwconvLockActiveDown( const ptree &ptccb, ptree &ptjc )
 //上传方向处理
 void zwconvLockActiveUp( const ptree &ptjc, ptree &ptccb )
 {
-	//无用的形式化部分,未完
+	//无用的形式化部分
 	ptccb.put("TransCode","0000");
 	ptccb.put("TransName",ns_ccbTransName);
 	ptccb.put("TransDate",ns_ccbDate);

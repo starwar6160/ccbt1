@@ -168,22 +168,26 @@ TEST_F(ccbElockTest,LockActiveTestUnit)
 	string outJson;
 	//把pt输出为json返回
 	LockOutJson(pt2, outJson);
-//////////////////////////////////////////////////////////////////////////
-	//检查锁具内部处理完毕之后返回的内容是否具有大致正确的返回值
-	//不过也就只能大致检查长度而已
-		string lockMan=pt2.get<string>("LockMan");
-		string LockId=pt2.get<string>("LockId");
-		string LockPubKey=pt2.get<string>("LockPubKey");
-		EXPECT_LT(10,lockMan.length());
-		EXPECT_GT(20,lockMan.length());
-		EXPECT_LT(10,LockId.length());
-		EXPECT_GT(20,LockId.length());
-		EXPECT_LT(85,LockPubKey.length());
-		EXPECT_GT(100,LockPubKey.length());
-	//DLL把JSON转换为XML
+	//DLL把JSON转换为XML返回给ATMC
 	string outXML;
 	jcAtmcConvertDLL::zwJCjson2CCBxml(outJson,outXML);
 	EXPECT_LT(42,outXML.length());	//期望生成的XML至少42字节以上
+	//////////////////////////////////////////////////////////////////////////
+	//检查锁具内部处理完毕之后返回的内容是否具有大致正确的返回值
+	//不过也就只能大致检查长度而已
+	ptree ptc;
+	std::stringstream ssc;
+	ssc<<outXML;
+	read_xml(ssc,ptc);
+	string lockMan=ptc.get<string>("LockMan");
+	string LockId=ptc.get<string>("LockId");
+	string LockPubKey=ptc.get<string>("LockPubKey");
+	EXPECT_LT(10,lockMan.length());
+	EXPECT_GT(20,lockMan.length());
+	EXPECT_LT(10,LockId.length());
+	EXPECT_GT(20,LockId.length());
+	EXPECT_LT(85,LockPubKey.length());
+	EXPECT_GT(100,LockPubKey.length());
 
 }
 
