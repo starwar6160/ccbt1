@@ -50,7 +50,6 @@ protected:
 };
 
 
-
 #ifdef _ZWTEST730
 //SetRecvMsgRotine测试
 TEST_F(ccbElockTest,SetRecvMsgRotineTestInvalidXML)
@@ -192,7 +191,6 @@ TEST_F(ccbElockTest,LockActiveTestUnit)
 
 }
 //////////////////////////////////////////////////////////////////////////
-
 //锁具发送激活信息(PSK)报文的在线测试
 TEST_F(ccbElockTest,LockSendActInfoTestOnline)
 {
@@ -220,6 +218,7 @@ TEST_F(ccbElockTest,LockSendActInfoTestOnline)
 #endif // NDEBUG
 	//Close();
 }
+
 
 
 

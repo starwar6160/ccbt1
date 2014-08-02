@@ -9,11 +9,13 @@ namespace jcAtmcConvertDLL{
 	void zwconvSendLockActInfoDown( const ptree &ptccb, ptree &ptjc );
 	//上传方向处理
 	void zwconvLockActiveUp(const ptree &ptjc, ptree &ptccb );
+	void zwconvLockInitUp( const ptree &ptjc, ptree &ptccb );
 	//以下4个字段，为的是在上下转换期间保存建行报文中冗余的，我们基本不用但又必须返回给建行的字段
 	string ns_ccbTransName;	//交易名称
 	string ns_ccbDate;		//日期
 	string ns_ccbTime;		//时间
 	string ns_ccbAtmno;		//ATM编号
+	string ns_jcLockno;		//锁具编号
 
 
 const JC_MSG_TYPE zwCCBxml2JCjson( const string &downXML,string &downJson )
@@ -74,7 +76,10 @@ const JC_MSG_TYPE zwJCjson2CCBxml( const string &upJson,string &upXML )
 	{
 		zwconvLockActiveUp(ptjc,ptccb);
 	}
-
+	if ("Lock_Init"==jcCmd)
+	{
+		zwconvLockInitUp(ptjc,ptccb);
+	}
 //////////////////////////////////////////////////////////////////////////
 	
 	std::stringstream sst1;
@@ -157,9 +162,43 @@ void zwconvLockActiveUp( const ptree &ptjc, ptree &ptccb )
 	ptccb.put("TransTime",ns_ccbTime);
 	ptccb.put("DevCode",ns_ccbAtmno);
 	//有用部分
-	ptccb.put("LockId",ptjc.get<string>("Lock_Serial"));
+	ns_jcLockno=ptjc.get<string>("Lock_Serial");
+	ptccb.put("LockId",ns_jcLockno);
 	ptccb.put("LockPubKey",ptjc.get<string>("Public_Key"));	
 	ptccb.put("LockMan",LOCKMAN_NAME);
 }
+
+void zwconvLockInitUp( const ptree &ptjc, ptree &ptccb )
+{
+	//无用的形式化部分
+	ptccb.put("TransCode","0001");
+	ptccb.put("TransName",ns_ccbTransName);
+	ptccb.put("TransDate",ns_ccbDate);
+	ptccb.put("TransTime",ns_ccbTime);
+	ptccb.put("DevCode",ns_ccbAtmno);
+	ptccb.put("LockMan",LOCKMAN_NAME);
+	//此处JC上传报文无此字段，需要解决,目前是从激活请求返回的值缓存以后保存在内存中，
+	//希望激活请求之后，在DLL被卸载之前，就是锁具初始化操作，否则就无从正确获得锁具编号而会出错了
+	ptccb.put("LockId",ns_jcLockno);	
+	//有用部分
+	int ActiveResult=0;	//建行定义该字段0为成功，1为失败；
+	string strState=ptjc.get<string>("State");
+	if ("ok"==strState)
+	{
+		ActiveResult=0;
+	}
+	else
+	{
+		ActiveResult=1;
+	}
+	ptccb.put("ActiveResult",ActiveResult);
+	//该字段下位机实际上没有返回，怎么取得还是问题
+	ptccb.put("ActInfo","77498EB7D7CE8B92D871791C99B85AB337FF73235A89E7A20764EFE6EA41E4CE");
+	ptccb.put("SpareString1","SendActInfoCCBReverse1");
+	ptccb.put("SpareString2","SendActInfoCCBReverse2");
+
+}
+
+
 ////////////////////////////每一条报文的具体处理函数结束//////////////////////////////////////////////
 }	//namespace jcAtmcConvertDLL

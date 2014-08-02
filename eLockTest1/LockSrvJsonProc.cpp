@@ -7,6 +7,7 @@ const JC_MSG_TYPE lockParseJson( const string & inJson, ptree &pt );
 void LockOutJson( const ptree &pt, string &outJson );
 //内部函数，不必暴露给外界
 void myLockActive(ptree &pt );
+void myLockInit(ptree &pt );
 
 //此函数没有实际功能，功能都在下级子函数中，便于单元测试；此函数在此是满足联网的单元测试的；
 int zwjclms_command_proc(const string &inJson,string &outJson)
@@ -49,6 +50,12 @@ const JC_MSG_TYPE lockParseJson( const string & inJson, ptree &pt )
 			myLockActive(pt);
 			return JCMSG_LOCK_ACTIVE_REQUEST;
 		}
+		if ("Lock_Init"==sCommand)
+		{//是锁具初始化请求，进行相关处理
+			myLockInit(pt);
+			return JCMSG_SEND_LOCK_ACTIVEINFO;
+		}
+
 	}
 	catch(...)
 	{
@@ -78,4 +85,13 @@ void myLockActive(ptree &pt )
 	pt.put("Public_Key","BJpnccGKE5muLO3RLOe+hDjUftMJJwpmnuxEir0P3ss5/sxpEKNQ5AXcSsW1CbC/pXlqAk9/NZoquFJXHW3n1Cw=,");
 	pt.put("State","get");
 
+}
+
+//锁具初始化的具体处理函数。
+void myLockInit(ptree &pt )
+{
+	ptree pt2;
+	pt2.put("command","Lock_Init");
+	pt2.put("State","ok");
+	pt=pt2;
 }
