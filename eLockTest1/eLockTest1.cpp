@@ -3,6 +3,7 @@
 
 #include "stdafx.h"
 #include "CCBelock.h"
+#include "zwCcbElockHdr.h"
 using namespace boost::property_tree;
 
 const JC_MSG_TYPE lockParseJson( const string & inJson, ptree &pt );

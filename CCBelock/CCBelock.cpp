@@ -3,6 +3,7 @@
 
 #include "stdafx.h"
 #include "CCBelock.h"
+#include "zwCcbElockHdr.h"
 #include "zwwsClient.h"
 using namespace std;
 

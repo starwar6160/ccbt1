@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "CCBelock.h"
+#include "zwCcbElockHdr.h"
 //把ATMC端的XML生成与结果XML解析集中于此，便于单元测试
 
 
