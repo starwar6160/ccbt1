@@ -6,6 +6,7 @@ namespace jcAtmcConvertDLL{
 	const char *LOCKMAN_NAME="BeiJing.JinChu";
 	//下发方向处理
 	void zwconvLockActiveDown(const ptree &ptccb, ptree &ptjc );
+	void zwconvSendLockActInfoDown( const ptree &ptccb, ptree &ptjc );
 	//上传方向处理
 	void zwconvLockActiveUp(const ptree &ptjc, ptree &ptccb );
 	//以下4个字段，为的是在上下转换期间保存建行报文中冗余的，我们基本不用但又必须返回给建行的字段
@@ -39,9 +40,14 @@ const JC_MSG_TYPE zwCCBxml2JCjson( const string &downXML,string &downJson )
 	//从建行的接口所需字段变为我们的JSON接口
 	ptree pt2;
 	if ("0000"==transCode)
-	{//锁具激活
+	{//锁具激活请求
 		msgType= JCMSG_LOCK_ACTIVE_REQUEST;
 		zwconvLockActiveDown(pt,pt2);
+	}
+	if ("0001"==transCode)
+	{//发送锁具激活信息(初始化)
+		msgType= JCMSG_SEND_LOCK_ACTIVEINFO;
+		zwconvSendLockActInfoDown(pt,pt2);
 	}
 	//处理结果输出为Json供下位机使用
 	std::stringstream ss2;
@@ -99,11 +105,47 @@ const JC_MSG_TYPE zwJCjson2CCBxml( const string &upJson,string &upXML )
 
 //下发方向处理
 void zwconvLockActiveDown( const ptree &ptccb, ptree &ptjc )
-{
+{	//发送锁具激活请求
 	ptjc.put("command","Lock_Secretkey");
 	ptjc.put("State","get");
 	ptjc.put("Public_Key","123456");	//该行其实无意义，但是json接口里面有，就写上
 }
+
+void zwconvSendLockActInfoDown( const ptree &ptccb, ptree &ptjc )
+{	//发送锁具激活信息(锁具初始化)
+	//锁具初始化
+
+	//>> 上位机下发
+	//{
+	//	"command": "Lock_Init",
+	//		"Lock_Init_Info": {
+	//			"Atm_Serial": "123456",
+	//				"Lms_Clock": "123456", 
+	//				"Lock_Psk": "123456"
+	//	},
+	//	"State": "set"
+	//}
+
+	//>> 锁具正确接收后，返回
+	//{
+	//	"command": "Lock_Init",
+	//		"State": "ok"
+	//}
+	//ptjc=ptccb;
+	ptjc.put("command","Lock_Init");
+	ptjc.put("State","set");
+	ptjc.put("Lock_Init_Info.Atm_Serial",ptccb.get<string>("DevCode"));	
+	//该字段，JC要的应该是PSK明文,CCB报文中只提供公钥加密过后的密文，不提供PSK明文
+	//此处用的值是atmc生成消息代码文件开头第一套值里面的PSK明文,实际使用时怎么办？从哪里取得？
+	ptjc.put("Lock_Init_Info.Lock_Psk","77498EB7D7CE8B92D871791C99B85AB337FF73235A89E7A20764EFE6EA41E4CE");
+	//以下字段(LMS时间)是JC特有，CCB没有
+	ptjc.put("Lock_Init_Info.Lms_Clock",time(NULL));
+	//以下字段是CCB有，JC没有
+	ptjc.put("ccb_Init_Info.LmsPubKey",ptccb.get<string>("PswSrvPubKey"));
+	ptjc.put("ccb_Init_Info.ActInfo",ptccb.get<string>("ActInfo"));
+	
+}
+
 
 //上传方向处理
 void zwconvLockActiveUp( const ptree &ptjc, ptree &ptccb )
