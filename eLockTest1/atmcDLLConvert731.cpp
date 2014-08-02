@@ -33,6 +33,15 @@ const JC_MSG_TYPE zwCCBxml2JCjson( const string &downXML,string &downJson )
 	std::stringstream ss;
 	ss<<downXML;
 	read_xml(ss,pt);
+//////////////////////////////////////////////////////////////////////////
+
+	std::stringstream ssccb;
+	write_json(ssccb,pt);
+	string ccbJson= ssccb.str();
+	cout<<"***ATMC DLL ccbjson down before convert by DLL Start********************\n"<<ccbJson;
+	cout<<"***ATMC DLL ccbjson down before convert by DLL End**********************\n";
+
+
 	//判断消息类型
 	string transCode=pt.get<string>("TransCode");
 	//保存建行冗余字段以便上传返回时提供给建行
@@ -76,6 +85,14 @@ const JC_MSG_TYPE zwJCjson2CCBxml( const string &upJson,string &upXML )
 	std::stringstream ss;
 	ss<<upJson;
 	read_json(ss,ptjc);
+//////////////////////////////////////////////////////////////////////////
+	std::stringstream ssjc;
+	write_json(ssjc,ptjc);
+	string jctJson= ssjc.str();
+	cout<<"***ATMC DLL jctJson up before convert by DLL Start********************\n"<<jctJson;
+	cout<<"***ATMC DLL jctJson up before convert by DLL End**********************\n";
+
+
 	//判断消息类型并从我们的JSON接口变为建行的接口所需字段
 	string jcCmd=ptjc.get<string>("command");
 	ptree ptccb;
