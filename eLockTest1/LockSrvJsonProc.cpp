@@ -111,7 +111,9 @@ void myReadCloseCode(ptree &pt )
 	//		"Lock_Close_code": "12345678",  //uint64_t
 	//		"State": "push"
 	//}
-	pt.put("Lock_Close_code","11112222");
-	pt.put("State","push");
-
+	ptree pt2;
+	pt2.put("command","Lock_Close_code");
+	pt2.put("Lock_Close_code","11112222");
+	pt2.put("State","push");
+	pt=pt2;
 }

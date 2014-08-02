@@ -172,7 +172,9 @@ void zwconvReadCloseCodeDown( const ptree &ptccb, ptree &ptjc )
 	//		"State": "push"
 	//}
 
-	ptjc=ptccb;
+	ptjc.put("command","Lock_Close_code");
+	ptjc.put("State","get");
+
 }
 
 
@@ -181,6 +183,7 @@ void zwconvLockActiveUp( const ptree &ptjc, ptree &ptccb )
 {
 	//无用的形式化部分
 	ptccb.put("TransCode","0000");
+	assert("CallForActInfo"==ns_ccbTransName);
 	ptccb.put("TransName",ns_ccbTransName);
 	ptccb.put("TransDate",ns_ccbDate);
 	ptccb.put("TransTime",ns_ccbTime);
@@ -197,6 +200,7 @@ void zwconvLockInitUp( const ptree &ptjc, ptree &ptccb )
 	//无用的形式化部分
 	ptccb.put("TransCode","0001");
 	ptccb.put("TransName",ns_ccbTransName);
+	assert("SendActInfo"==ns_ccbTransName);
 	ptccb.put("TransDate",ns_ccbDate);
 	ptccb.put("TransTime",ns_ccbTime);
 	ptccb.put("DevCode",ns_ccbAtmno);
@@ -225,7 +229,32 @@ void zwconvLockInitUp( const ptree &ptjc, ptree &ptccb )
 
 void zwconvReadCloseCodeUp( const ptree &ptjc, ptree &ptccb )
 {
-	ptccb=ptjc;
+	//读取闭锁码 应答
+	//	交易代码	TransCode	是	值：0004
+	//	交易名称	TransName	是	值：ReadShutLockCode
+	//	交易日期	TransDate	是	值：YYYYMMDD，如20140401
+	//	交易时间	TransTime	是	值：hhmmss，如134050
+	//	ATM设备编号	DevCode	是	值：我行12位设备编号
+	//	锁具厂商	LockMan	是	值：厂商自定与其他厂商不同的名称
+	//	锁具编号	LockId	是	值：厂商自定的锁具唯一编号
+	//	闭锁码	ShutLockcode	是	值：闭锁码
+	//	预留字段1	SpareString1	否	
+	//	预留字段2	SpareString2	否	
+	//无用的形式化部分
+	ptccb.put("TransCode","0004");
+	assert("ReadShutLockCode"==ns_ccbTransName);
+	ptccb.put("TransName",ns_ccbTransName);
+	ptccb.put("TransDate",ns_ccbDate);
+	ptccb.put("TransTime",ns_ccbTime);
+	ptccb.put("DevCode",ns_ccbAtmno);
+	ptccb.put("LockMan",LOCKMAN_NAME);
+	ptccb.put("LockId",ns_jcLockno);
+	ptccb.put("ShutLockcode",ptjc.get<string>("Lock_Close_code"));
+	ptccb.put("SpareString1","ReadShutLockCodeReverse1");
+	ptccb.put("SpareString2","ReadShutLockCodeReverse2");
+
+
+
 }
 
 

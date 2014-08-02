@@ -182,7 +182,6 @@ string & myAtmcMsgReadCloseCodeInfo( string & strXML ,ptree &pt )
 
 	//读取闭锁码 应答
 	//	交易代码	TransCode	是	值：0004
-	//	交易类型	TransType	是	值：1 （0为激活，1为正常开锁，2为锁状态，3为时间同步）
 	//	交易名称	TransName	是	值：ReadShutLockCode
 	//	交易日期	TransDate	是	值：YYYYMMDD，如20140401
 	//	交易时间	TransTime	是	值：hhmmss，如134050
