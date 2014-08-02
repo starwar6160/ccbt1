@@ -34,6 +34,7 @@ namespace jcAtmcMsg{
 	const char *ATMNO_CCBTEST="CCBATMNO1234";
 	string & myAtmcMsgLockActive( string & strXML ,ptree &pt);
 	string & myAtmcMsgSendActiveInfo( string & strXML ,ptree &pt );
+	string & myAtmcMsgReadCloseCodeInfo( string & strXML ,ptree &pt );
 //生成模拟的ATMC XML消息的总入口，根据枚举生成相应那一条的XML消息
 void zwAtmcMsgGen( const JC_MSG_TYPE type,string &strXML,ptree &pt )
 {
@@ -47,9 +48,14 @@ void zwAtmcMsgGen( const JC_MSG_TYPE type,string &strXML,ptree &pt )
 		strXML=myAtmcMsgSendActiveInfo(strXML,pt);
 		assert(strXML.length()>42);
 		break;
+	case JCMSG_GET_CLOSECODE:
+		strXML=myAtmcMsgReadCloseCodeInfo(strXML,pt);
+		assert(strXML.length()>42);
+		break;
 	}
-	
 }
+	
+
 
 //生成锁具激活XML报文，获取锁具编号和公钥
 string & myAtmcMsgLockActive( string & strXML ,ptree &pt )
@@ -143,5 +149,53 @@ string & myAtmcMsgSendActiveInfo( string & strXML ,ptree &pt )
 	//预留字段2	SpareString2	否	
 
 }
+
+
+//生成读取闭锁码报文
+string & myAtmcMsgReadCloseCodeInfo( string & strXML ,ptree &pt )
+{
+	//读取闭锁码 请求：
+	//	交易代码	TransCode	是	值：0004
+	//	交易名称	TransName	是	值：ReadShutLockCode
+	//	交易日期	TransDate	是	值：YYYYMMDD，如20140401
+	//	交易时间	TransTime	是	值：hhmmss，如134050
+	//	预留字段1	SpareString1	否	
+	//	预留字段2	SpareString2	否	
+	//开始生成请求报文
+	pt.put("TransCode","0004");
+	pt.put("TransName","ReadShutLockCode");
+	pt.put("TransDate","20140802");
+	pt.put("TransTime","140826");
+	//建行给出的报文里面没有这个字段，但是会导致后续流程很难处理
+	pt.put("DevCode",ATMNO_CCBTEST);
+	pt.put("SpareString1","ReadShutLockCodeReverse1");
+	pt.put("SpareString2","ReadShutLockCodeReverse2");
+	pt.put("command","Lock_Close_code");
+	std::ostringstream ss;
+	write_xml(ss,pt);
+	strXML=ss.str();
+	assert(strXML.length()>42);	//XML开头的固定内容38个字符，外加起码一个标签的两对尖括号合计4个字符
+	return strXML;
+	
+	
+	//推送闭锁码 
+
+	//读取闭锁码 应答
+	//	交易代码	TransCode	是	值：0004
+	//	交易类型	TransType	是	值：1 （0为激活，1为正常开锁，2为锁状态，3为时间同步）
+	//	交易名称	TransName	是	值：ReadShutLockCode
+	//	交易日期	TransDate	是	值：YYYYMMDD，如20140401
+	//	交易时间	TransTime	是	值：hhmmss，如134050
+	//	ATM设备编号	DevCode	是	值：我行12位设备编号
+	//	锁具厂商	LockMan	是	值：厂商自定与其他厂商不同的名称
+	//	锁具编号	LockId	是	值：厂商自定的锁具唯一编号
+	//	闭锁码	ShutLockcode	是	值：闭锁码
+	//	预留字段1	SpareString1	否	
+	//	预留字段2	SpareString2	否	
+	
+}
+
+
+
 
 }	//namespace jcAtmcMsg

@@ -8,6 +8,7 @@ void LockOutJson( const ptree &pt, string &outJson );
 //内部函数，不必暴露给外界
 void myLockActive(ptree &pt );
 void myLockInit(ptree &pt );
+void myReadCloseCode(ptree &pt );
 
 //此函数没有实际功能，功能都在下级子函数中，便于单元测试；此函数在此是满足联网的单元测试的；
 int zwjclms_command_proc(const string &inJson,string &outJson)
@@ -55,7 +56,11 @@ const JC_MSG_TYPE lockParseJson( const string & inJson, ptree &pt )
 			myLockInit(pt);
 			return JCMSG_SEND_LOCK_ACTIVEINFO;
 		}
-
+		if ("Lock_Close_code"==sCommand)
+		{//是锁具初始化请求，进行相关处理
+			myReadCloseCode(pt);
+			return JCMSG_GET_CLOSECODE;
+		}
 	}
 	catch(...)
 	{
@@ -94,4 +99,19 @@ void myLockInit(ptree &pt )
 	pt2.put("command","Lock_Init");
 	pt2.put("State","ok");
 	pt=pt2;
+}
+
+
+//读取闭锁码消息的具体处理函数
+void myReadCloseCode(ptree &pt )
+{
+	//>> 锁具推送闭锁码至上位机
+	//{
+	//	"command": "Lock_Close_code",
+	//		"Lock_Close_code": "12345678",  //uint64_t
+	//		"State": "push"
+	//}
+	pt.put("Lock_Close_code","11112222");
+	pt.put("State","push");
+
 }

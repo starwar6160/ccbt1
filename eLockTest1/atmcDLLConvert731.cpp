@@ -7,9 +7,11 @@ namespace jcAtmcConvertDLL{
 	//下发方向处理
 	void zwconvLockActiveDown(const ptree &ptccb, ptree &ptjc );
 	void zwconvSendLockActInfoDown( const ptree &ptccb, ptree &ptjc );
+	void zwconvReadCloseCodeDown( const ptree &ptccb, ptree &ptjc );
 	//上传方向处理
 	void zwconvLockActiveUp(const ptree &ptjc, ptree &ptccb );
 	void zwconvLockInitUp( const ptree &ptjc, ptree &ptccb );
+	void zwconvReadCloseCodeUp( const ptree &ptjc, ptree &ptccb );
 	//以下4个字段，为的是在上下转换期间保存建行报文中冗余的，我们基本不用但又必须返回给建行的字段
 	string ns_ccbTransName;	//交易名称
 	string ns_ccbDate;		//日期
@@ -51,6 +53,11 @@ const JC_MSG_TYPE zwCCBxml2JCjson( const string &downXML,string &downJson )
 		msgType= JCMSG_SEND_LOCK_ACTIVEINFO;
 		zwconvSendLockActInfoDown(pt,pt2);
 	}
+	if ("0004"==transCode)
+	{//读取闭锁码
+		msgType= JCMSG_GET_CLOSECODE;
+		zwconvReadCloseCodeDown(pt,pt2);
+	}
 	//处理结果输出为Json供下位机使用
 	std::stringstream ss2;
 	write_json(ss2,pt2);
@@ -79,6 +86,10 @@ const JC_MSG_TYPE zwJCjson2CCBxml( const string &upJson,string &upXML )
 	if ("Lock_Init"==jcCmd)
 	{
 		zwconvLockInitUp(ptjc,ptccb);
+	}
+	if ("Lock_Close_code"==jcCmd)
+	{
+		zwconvReadCloseCodeUp(ptjc,ptccb);
 	}
 //////////////////////////////////////////////////////////////////////////
 	
@@ -151,6 +162,19 @@ void zwconvSendLockActInfoDown( const ptree &ptccb, ptree &ptjc )
 	
 }
 
+//读取闭锁码
+void zwconvReadCloseCodeDown( const ptree &ptccb, ptree &ptjc )
+{
+	//>> 锁具推送闭锁码至上位机
+	//{
+	//	"command": "Lock_Close_code",
+	//		"Lock_Close_code": "12345678",  //uint64_t
+	//		"State": "push"
+	//}
+
+	ptjc=ptccb;
+}
+
 
 //上传方向处理
 void zwconvLockActiveUp( const ptree &ptjc, ptree &ptccb )
@@ -197,6 +221,11 @@ void zwconvLockInitUp( const ptree &ptjc, ptree &ptccb )
 	ptccb.put("SpareString1","SendActInfoCCBReverse1");
 	ptccb.put("SpareString2","SendActInfoCCBReverse2");
 
+}
+
+void zwconvReadCloseCodeUp( const ptree &ptjc, ptree &ptccb )
+{
+	ptccb=ptjc;
 }
 
 
