@@ -1,3 +1,6 @@
+#ifndef CCBelock_h__
+#define CCBelock_h__
+
 // 下列 ifdef 块是创建使从 DLL 导出更简单的
 // 宏的标准方法。此 DLL 中的所有文件都是用命令行上定义的 CCBELOCK_EXPORTS
 // 符号编译的。在使用此 DLL 的
@@ -16,3 +19,4 @@ CCBELOCK_API long	Open(long lTimeOut);
 CCBELOCK_API long	Close();
 CCBELOCK_API long	Notify(const char *pszMsg);
 CCBELOCK_API int	SetRecvMsgRotine(RecvMsgRotine pRecvMsgFun);
+#endif // CCBelock_h__

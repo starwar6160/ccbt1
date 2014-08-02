@@ -191,6 +191,36 @@ TEST_F(ccbElockTest,LockActiveTestUnit)
 	EXPECT_GT(100,LockPubKey.length());
 
 }
+//////////////////////////////////////////////////////////////////////////
+
+//锁具发送激活信息(PSK)报文的在线测试
+TEST_F(ccbElockTest,LockSendActInfoTestOnline)
+{
+	//Open(25);
+	EXPECT_EQ(ELOCK_ERROR_SUCCESS,SetRecvMsgRotine(myATMCRecvMsgRotine));	
+	const JC_MSG_TYPE msgType=JCMSG_SEND_LOCK_ACTIVEINFO;	//设定消息类型
+	//ATMC生成XML消息
+	string strSendLockActInfoXML;	//容纳生成的消息XML
+	//具体生成消息XML
+	ptree pt;
+	jcAtmcMsg::zwAtmcMsgGen(msgType,strSendLockActInfoXML, pt);	
+
+	if (ELOCK_ERROR_SUCCESS==m_connStatus)
+	{
+		EXPECT_EQ(ELOCK_ERROR_SUCCESS,Notify(strSendLockActInfoXML.c_str()));		
+	}
+	else
+	{
+		EXPECT_EQ(ELOCK_ERROR_CONNECTLOST,Notify(strSendLockActInfoXML.c_str()));		
+		cout<<"Server not Start!"<<endl;
+	}
+
+#ifdef NDEBUG
+	EXPECT_EQ(ELOCK_ERROR_PARAMINVALID,SetRecvMsgRotine(NULL));
+#endif // NDEBUG
+	//Close();
+}
+
 
 
 int _tmain(int argc, _TCHAR* argv[])
