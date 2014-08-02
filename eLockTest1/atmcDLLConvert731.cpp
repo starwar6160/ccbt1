@@ -222,9 +222,6 @@ void zwconvLockInitUp( const ptree &ptjc, ptree &ptccb )
 	ptccb.put("ActiveResult",ActiveResult);
 	//该字段下位机实际上没有返回，怎么取得还是问题
 	ptccb.put("ActInfo","77498EB7D7CE8B92D871791C99B85AB337FF73235A89E7A20764EFE6EA41E4CE");
-	ptccb.put("SpareString1","SendActInfoCCBReverse1");
-	ptccb.put("SpareString2","SendActInfoCCBReverse2");
-
 }
 
 void zwconvReadCloseCodeUp( const ptree &ptjc, ptree &ptccb )
@@ -238,8 +235,6 @@ void zwconvReadCloseCodeUp( const ptree &ptjc, ptree &ptccb )
 	//	锁具厂商	LockMan	是	值：厂商自定与其他厂商不同的名称
 	//	锁具编号	LockId	是	值：厂商自定的锁具唯一编号
 	//	闭锁码	ShutLockcode	是	值：闭锁码
-	//	预留字段1	SpareString1	否	
-	//	预留字段2	SpareString2	否	
 	//无用的形式化部分
 	ptccb.put("TransCode","0004");
 	assert("ReadShutLockCode"==ns_ccbTransName);
@@ -250,11 +245,6 @@ void zwconvReadCloseCodeUp( const ptree &ptjc, ptree &ptccb )
 	ptccb.put("LockMan",LOCKMAN_NAME);
 	ptccb.put("LockId",ns_jcLockno);
 	ptccb.put("ShutLockcode",ptjc.get<string>("Lock_Close_code"));
-	ptccb.put("SpareString1","ReadShutLockCodeReverse1");
-	ptccb.put("SpareString2","ReadShutLockCodeReverse2");
-
-
-
 }
 
 

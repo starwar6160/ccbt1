@@ -66,16 +66,12 @@ string & myAtmcMsgLockActive( string & strXML ,ptree &pt )
 	//	交易日期	TransDate	是	值：YYYYMMDD，如20140401
 	//	交易时间	TransTime	是	值：hhmmss，如134050
 	//	ATM设备编号	DevCode	是	值：我行12位设备编号
-	//	预留字段1	SpareString1	否	
-	//	预留字段2	SpareString2	否	
 	//开始生成请求报文
 	pt.put("TransCode","0000");
 	pt.put("TransName","CallForActInfo");
 	pt.put("TransDate","20140730");
 	pt.put("TransTime","142248");
 	pt.put("DevCode",ATMNO_CCBTEST);
-	pt.put("SpareString1","LockActiveRequestCCBReverse1");
-	pt.put("SpareString2","LockActiveRequestCCBReverse2");
 
 	std::ostringstream ss;
 	write_xml(ss,pt);
@@ -91,9 +87,6 @@ string & myAtmcMsgLockActive( string & strXML ,ptree &pt )
 	//	锁具厂商	LockMan	是	值：厂商自定与其他厂商不同的名称
 	//	锁具编号	LockId	是	值：厂商自定的锁具唯一编号
 	//	锁具公钥	LockPubKey	是	值：每把锁具生成的公私钥对中的公钥 16个字符
-	//	预留字段1	SpareString1	否	
-	//	预留字段2	SpareString2	否	
-
 }
 
 //生成发送锁具激活信息报文，发送用锁具公钥加密过后的PSK到锁具
@@ -109,8 +102,6 @@ string & myAtmcMsgSendActiveInfo( string & strXML ,ptree &pt )
 	//	锁具编号	LockId	是	值：厂商自定的锁具唯一编号
 	//	激活信息	ActInfo	是	密码和加密服务器分散产生，经过锁具公钥加密的激活信息 长度96个字符
 	//	密码和加密服务器公钥	PswSrvPubKey	是	密码和加密服务器的公钥，用于通信加密和验签
-	//	预留字段1	SpareString1	否	
-	//	预留字段2	SpareString2	否	
 	//开始生成请求报文
 	pt.put("TransCode","0001");
 	pt.put("TransName","SendActInfo");
@@ -125,9 +116,6 @@ string & myAtmcMsgSendActiveInfo( string & strXML ,ptree &pt )
 	"Ql2mr+CoJbZcc2uQS3oVEFBbwtAgspY+oC+lSJcKI62395wPYkSG+F+Rd1Bj66CaVyBk8I7KvO/R+ofR5BeeM=");
 	pt.put("PswSrvPubKey",	"BK4gbEtRRx+W3CVn96/V0zYzZOnhRrBAYGgNgBeRVRnWz1vaU4i4b0GdvA/yVR1i"
 							"JBEHmHyDBN8W93f+1kIx4jM=,");
-	pt.put("SpareString1","SendActInfoCCBReverse1");
-	pt.put("SpareString2","SendActInfoCCBReverse2");
-
 
 	std::ostringstream ss;
 	write_xml(ss,pt);
@@ -145,9 +133,6 @@ string & myAtmcMsgSendActiveInfo( string & strXML ,ptree &pt )
 	//锁具编号	LockId	是	值：厂商自定的锁具唯一编号
 	//激活标志	ActiveResult	是	值：0成功，1失败
 	//激活信息	ActInfo	是	值：请求中的激活信息，96位，经过锁具解密，传到ATMVH，以后用于计算开锁密码，激活完成后提交闭锁码
-	//预留字段1	SpareString1	否	
-	//预留字段2	SpareString2	否	
-
 }
 
 
@@ -159,8 +144,6 @@ string & myAtmcMsgReadCloseCodeInfo( string & strXML ,ptree &pt )
 	//	交易名称	TransName	是	值：ReadShutLockCode
 	//	交易日期	TransDate	是	值：YYYYMMDD，如20140401
 	//	交易时间	TransTime	是	值：hhmmss，如134050
-	//	预留字段1	SpareString1	否	
-	//	预留字段2	SpareString2	否	
 	//开始生成请求报文
 	pt.put("TransCode","0004");
 	pt.put("TransName","ReadShutLockCode");
@@ -168,8 +151,6 @@ string & myAtmcMsgReadCloseCodeInfo( string & strXML ,ptree &pt )
 	pt.put("TransTime","140826");
 	//建行给出的报文里面没有这个字段，但是会导致后续流程很难处理
 	pt.put("DevCode",ATMNO_CCBTEST);
-	pt.put("SpareString1","ReadShutLockCodeReverse1");
-	pt.put("SpareString2","ReadShutLockCodeReverse2");
 	pt.put("command","Lock_Close_code");
 	std::ostringstream ss;
 	write_xml(ss,pt);
@@ -189,9 +170,7 @@ string & myAtmcMsgReadCloseCodeInfo( string & strXML ,ptree &pt )
 	//	锁具厂商	LockMan	是	值：厂商自定与其他厂商不同的名称
 	//	锁具编号	LockId	是	值：厂商自定的锁具唯一编号
 	//	闭锁码	ShutLockcode	是	值：闭锁码
-	//	预留字段1	SpareString1	否	
-	//	预留字段2	SpareString2	否	
-	
+
 }
 
 
