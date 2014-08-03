@@ -35,4 +35,16 @@ enum JC_CCBELOCK_ERROR_CODE{
 	ELOCK_ERROR_TIMEOUT=5		//操作超时
 };
 
+//通讯线程运行状态控制
+enum{
+	//1145这个值随便取的，无意义，只是为了避免外部传入一个0或者1之类恰好符合枚举值的错误输入
+	ZWTHR_STOP=1145,	
+	ZWTHR_RUN,
+};
+
+namespace zwccbthr{
+void wait(int seconds);
+void zwStartLockCommThread(void);	//启动与锁具之间的通讯线程
+}	//namespace zwccbthr{
+
 #endif // zwCcbElockHdr_h__

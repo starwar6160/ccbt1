@@ -95,8 +95,7 @@ TEST_F(ccbElockTest,NotifyTestInvalidXML)
 	{
 		EXPECT_EQ(ELOCK_ERROR_CONNECTLOST,Notify("mytestNotify1014notConnmytestNotify1014connmytestNotify1014conn"));	
 		cout<<"Server not Start!"<<endl;
-	}
-	
+	}	
 #ifdef NDEBUG
 	EXPECT_EQ(ELOCK_ERROR_PARAMINVALID,Notify(NULL));
 	EXPECT_EQ(ELOCK_ERROR_PARAMINVALID,Notify(""));
@@ -135,7 +134,7 @@ TEST_F(ccbElockTest,ReadCloseCodeTestOnline)
 		EXPECT_EQ(ELOCK_ERROR_CONNECTLOST,Notify(strSendLockActInfoXML.c_str()));		
 		cout<<"Server not Start!"<<endl;
 	}
-
+	Sleep(7000);
 #ifdef NDEBUG
 	EXPECT_EQ(ELOCK_ERROR_PARAMINVALID,SetRecvMsgRotine(NULL));
 #endif // NDEBUG

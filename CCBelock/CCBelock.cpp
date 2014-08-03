@@ -40,6 +40,7 @@ CCBELOCK_API long Open(long lTimeOut)
 		return ELOCK_ERROR_PARAMINVALID;
 	}	
 try{
+	zwccbthr::zwStartLockCommThread();
 	zwCfg::zwsc.wsConnect();
 }
 catch (ConnectionRefusedException &exc)
