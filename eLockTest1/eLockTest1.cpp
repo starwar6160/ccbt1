@@ -11,7 +11,7 @@ void LockOutJson( const ptree &pt, string &outJson );
 
 
 //看看是否打开其他测试以便专一测试一件事
-#define _ZWTEST730
+//#define _ZWTEST730
 const char *myLongMsg="0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF"
 	"0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF"
 	"0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF";
@@ -110,7 +110,7 @@ TEST(ccbElockDeathTest,NotifyTestBad)
 	EXPECT_DEBUG_DEATH(Notify(""),"");
 	EXPECT_DEBUG_DEATH(Notify(NULL),"");
 }
-#endif // _ZWTEST730
+
 
 
 //读取闭锁码报文的在线测试
@@ -251,9 +251,12 @@ TEST_F(ccbElockTest,LockSendActInfoTestOnline)
 	//Close();
 }
 
+#endif // _ZWTEST730
 
-
-
+TEST_F(ccbElockTest,zwLongLoopForThread)
+{
+	Sleep(9000);
+}
 
 
 int _tmain(int argc, _TCHAR* argv[])

@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "zwCcbElockHdr.h"
+#include "zwwsClient.h"
 using namespace boost::property_tree;
 
 namespace zwccbthr{
@@ -18,6 +19,7 @@ namespace zwccbthr{
 	memset(sbuf,0,128);
 	sprintf(sbuf,"%s thread Start",__FUNCTION__);
 	OutputDebugStringA(sbuf);
+	zwscthr.wsConnect();
 		int i=0;
 		cout<<"####################Start \t"<<__FUNCTION__<<endl;
 		while(1)
@@ -30,12 +32,20 @@ namespace zwccbthr{
 			sprintf(sbuf,"%s Comm with Lock times %d",__FUNCTION__,i++);
 			cout<<sbuf<<endl;
 			OutputDebugStringA(sbuf);
+			//zwscthr.SendString("STRINGFROMZWLOCKCOMMTHREAD20140803.1403");
+			//string recstr;
+			//zwscthr.ReceiveString(recstr);
 			wait(150);
+			if (i>20)
+			{
+				break;
+			}
 		} 
 		memset(sbuf,0,128);
 		sprintf(sbuf,"%s thread End",__FUNCTION__);
 		OutputDebugStringA(sbuf);
 		cout<<"####################End \t"<<__FUNCTION__<<endl;
+		zwscthr.wsClose();
 	}
 
 	//线程对象作为一个全局静态变量，则不需要显示启动就能启动一个线程
@@ -49,6 +59,7 @@ namespace zwccbthr{
 	{
 		OutputDebugStringA(__FUNCTION__);
 		ns_thr_run=ZWTHR_STOP;
+		zwscthr.wsClose();
 	}
 
 
