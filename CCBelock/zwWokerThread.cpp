@@ -15,6 +15,7 @@ void zwPushString(const string &str)
 namespace zwccbthr{
 	int ns_thr_run=ZWTHR_RUN;	//控制通讯线程的开始和停止
 	boost:: mutex thr_mutex; 
+	//建行给的接口，没有设置连接参数的地方，也就是说，完全可以写死IP和端口，抑或是从配置文件读取
 	zwWebSocket zwscthr("localhost",1425);
 
 
@@ -46,12 +47,14 @@ namespace zwccbthr{
 			memset(sbuf,0,128);
 			sprintf(sbuf,"%s Comm with Lock times %d",__FUNCTION__,i++);
 			OutputDebugStringA(sbuf);
-			//cout<<sbuf<<endl;
-			//收到的字符串存入dqRecv
-			//cout<<recstr<<endl;
+			string outXML;
+			int msgTypeRecv=jcAtmcConvertDLL::zwJCjson2CCBxml(recstr,outXML);
+			assert(outXML.length()>42);	//XML开头的固定内容38个字符，外加起码一个标签的两对尖括号合计4个字符
+
+
 			if (NULL!=zwCfg::g_WarnCallback)
 			{
-				zwCfg::g_WarnCallback(recstr.c_str());
+				zwCfg::g_WarnCallback(outXML.c_str());
 			}
 			wait(150);
 			if (i>20)

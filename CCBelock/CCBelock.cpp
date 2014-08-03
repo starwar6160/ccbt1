@@ -20,9 +20,8 @@ namespace zwCfg{
 //#endif // _DEBUG
 	//定义一个回调函数指针
 	RecvMsgRotine g_WarnCallback=NULL;
-	boost:: mutex io_mutex; 
-	//建行给的接口，没有设置连接参数的地方，也就是说，完全可以写死IP和端口，抑或是从配置文件读取
-	zwWebSocket zwsc("localhost",1425);
+	boost:: mutex io_mutex; 	
+	//zwWebSocket zwsc("localhost",1425);
 
 }	//namespace zwCfg{
 
@@ -38,15 +37,15 @@ CCBELOCK_API long Open(long lTimeOut)
 	{
 		return ELOCK_ERROR_PARAMINVALID;
 	}	
-try{
-	//zwccbthr::zwStartLockCommThread();
-	zwCfg::zwsc.wsConnect();
-}
-catch (ConnectionRefusedException &exc)
-{	//一般最常见的也就是服务器不在线，所以连接拒绝(ConnectionRefusedException)异常
-cout<<__FUNCTION__<<" \t"<<exc.displayText()<<endl;
-	return ELOCK_ERROR_CONNECTLOST;
-}
+//try{
+//	zwccbthr::zwStartLockCommThread();
+//	zwCfg::zwsc.wsConnect();
+//}
+//catch (ConnectionRefusedException &exc)
+//{	//一般最常见的也就是服务器不在线，所以连接拒绝(ConnectionRefusedException)异常
+//cout<<__FUNCTION__<<" \t"<<exc.displayText()<<endl;
+//	return ELOCK_ERROR_CONNECTLOST;
+//}
 	return ELOCK_ERROR_SUCCESS;
 }
 
@@ -55,7 +54,7 @@ CCBELOCK_API long Close()
 	boost:: mutex:: scoped_lock lock( zwCfg::io_mutex); 
 	//zwccbthr::zwStopLockCommThread();
 	zwCfg::g_WarnCallback=NULL;
-	zwCfg::zwsc.wsClose();	
+	//zwCfg::zwsc.wsClose();	
 	return ELOCK_ERROR_SUCCESS;
 }
 
@@ -79,7 +78,7 @@ CCBELOCK_API long Notify(const char *pszMsg)
 		//////////////////////////////////////////////////////////////////////////
 		string strXMLSend=pszMsg;
 		string strJsonSend;
-		string strRecv;
+		//string strRecv;
 		assert(strXMLSend.length()>42);	//XML开头的固定内容38个字符，外加起码一个标签的两对尖括号合计4个字符
 		int msgTypeSend=jcAtmcConvertDLL::zwCCBxml2JCjson(strXMLSend,strJsonSend);
 		assert(strJsonSend.length()>9);	//json最基本的符号起码好像要9个字符左右
@@ -91,27 +90,25 @@ CCBELOCK_API long Notify(const char *pszMsg)
 			break;
 		}
 		//cout<<"MESSAGE FROM ATMC'S TYPE=\t"<<msgTypeStrSend<<endl;
-		zwCfg::zwsc.SendString(strJsonSend);		
-		zwCfg::zwsc.ReceiveString(strRecv);
-		assert(strRecv.length()>9);	//json最基本的符号起码好像要9个字符左右
-		string outXML;
-		int msgTypeRecv=jcAtmcConvertDLL::zwJCjson2CCBxml(strRecv,outXML);
-		assert(outXML.length()>42);	//XML开头的固定内容38个字符，外加起码一个标签的两对尖括号合计4个字符
-		string msgTypeStrRecv;
-		switch (msgTypeSend)
-		{
-		case JCMSG_LOCK_ACTIVE_REQUEST:
-			msgTypeStrSend="JCMSG_LOCK_ACTIVE_REQUEST";
-			break;
-		}
+		//zwCfg::zwsc.SendString(strJsonSend);		
+		zwPushString(strJsonSend);
+		//zwCfg::zwsc.ReceiveString(strRecv);
+		//assert(strRecv.length()>9);	//json最基本的符号起码好像要9个字符左右
+		//string msgTypeStrRecv;
+		//switch (msgTypeSend)
+		//{
+		//case JCMSG_LOCK_ACTIVE_REQUEST:
+		//	msgTypeStrSend="JCMSG_LOCK_ACTIVE_REQUEST";
+		//	break;
+		//}
 		//cout<<"MESSAGE FROM LOCK'S TYPE=\t"<<msgTypeStrSend<<endl;
 
 		//////////////////////////////////////////////////////////////////////////
 		//例子，利用Notify测试一下回调函数
-		if (NULL!=zwCfg::g_WarnCallback)
-		{
-			zwCfg::g_WarnCallback(outXML.c_str());
-		}
+		//if (NULL!=zwCfg::g_WarnCallback)
+		//{
+		//	zwCfg::g_WarnCallback(outXML.c_str());
+		//}
 		return ELOCK_ERROR_SUCCESS;
 	}
 	catch (...)

@@ -220,7 +220,7 @@ TEST_F(ccbElockTest,LockActiveTestUnit)
 
 }
 
-
+#endif // _ZWTEST730
 //////////////////////////////////////////////////////////////////////////
 //锁具发送激活信息(PSK)报文的在线测试
 TEST_F(ccbElockTest,LockSendActInfoTestOnline)
@@ -251,7 +251,7 @@ TEST_F(ccbElockTest,LockSendActInfoTestOnline)
 	//Close();
 }
 
-#endif // _ZWTEST730
+
 
 TEST_F(ccbElockTest,zwLongLoopForThread)
 {
