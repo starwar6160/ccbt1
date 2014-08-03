@@ -10,26 +10,45 @@ namespace zwccbthr{
 		boost::this_thread::sleep(boost::posix_time::milliseconds(milliseconds));		
 	} 
 
-	int ns_thrindex=0;
-
 	//与锁具之间的通讯线程
 	void ThreadLockComm()
 	{		
-		boost:: mutex:: scoped_lock lock( thr_mutex); 
+	boost:: mutex:: scoped_lock lock( thr_mutex); 
+	char sbuf[128];
+	memset(sbuf,0,128);
+	sprintf(sbuf,"%s thread Start",__FUNCTION__);
+	OutputDebugStringA(sbuf);
 		int i=0;
+		cout<<"####################Start \t"<<__FUNCTION__<<endl;
 		while(1)
-		{
-			cout<<__FUNCTION__<<" \tComm with Lock"<<ns_thrindex<<" "<<i<<endl;
-			i++;
+		{			
+			if (ZWTHR_STOP==ns_thr_run)
+			{
+				break;
+			}
+			memset(sbuf,0,128);
+			sprintf(sbuf,"%s Comm with Lock times %d",__FUNCTION__,i++);
+			cout<<sbuf<<endl;
+			OutputDebugStringA(sbuf);
 			wait(150);
 		} 
+		memset(sbuf,0,128);
+		sprintf(sbuf,"%s thread End",__FUNCTION__);
+		OutputDebugStringA(sbuf);
+		cout<<"####################End \t"<<__FUNCTION__<<endl;
 	}
 
-
+	//线程对象作为一个全局静态变量，则不需要显示启动就能启动一个线程
+	boost::thread t(ThreadLockComm); 
 	void zwStartLockCommThread(void)
 	{
-		ns_thrindex++;
-		boost::thread t(ThreadLockComm); 
+		OutputDebugStringA(__FUNCTION__);
+	}
+
+	void zwStopLockCommThread(void)
+	{
+		OutputDebugStringA(__FUNCTION__);
+		ns_thr_run=ZWTHR_STOP;
 	}
 
 

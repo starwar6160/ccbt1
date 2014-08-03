@@ -40,7 +40,7 @@ CCBELOCK_API long Open(long lTimeOut)
 		return ELOCK_ERROR_PARAMINVALID;
 	}	
 try{
-	zwccbthr::zwStartLockCommThread();
+	//zwccbthr::zwStartLockCommThread();
 	zwCfg::zwsc.wsConnect();
 }
 catch (ConnectionRefusedException &exc)
@@ -48,13 +48,13 @@ catch (ConnectionRefusedException &exc)
 cout<<__FUNCTION__<<" \t"<<exc.displayText()<<endl;
 	return ELOCK_ERROR_CONNECTLOST;
 }
-
 	return ELOCK_ERROR_SUCCESS;
 }
 
 CCBELOCK_API long Close()
 {
 	boost:: mutex:: scoped_lock lock( zwCfg::io_mutex); 
+	//zwccbthr::zwStopLockCommThread();
 	zwCfg::g_WarnCallback=NULL;
 	zwCfg::zwsc.wsClose();	
 	return ELOCK_ERROR_SUCCESS;
