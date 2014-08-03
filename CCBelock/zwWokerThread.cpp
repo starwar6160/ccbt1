@@ -8,21 +8,6 @@ namespace zwccbthr{
 	boost:: mutex thr_mutex; 
 	zwWebSocket zwscthr("localhost",1425);
 
-	deque<string> dqSend;
-	deque<string> dqRecv;
-
-	void pushString(const string &str)
-	{
-		dqSend.push_back(str);
-	}
-
-	const string getString(void)
-	{
-		string r=dqRecv[dqRecv.size()];
-		dqRecv.pop_front();
-		return r;
-	}
-
 	void wait(int milliseconds)
 	{ 
 		boost::this_thread::sleep(boost::posix_time::milliseconds(milliseconds));		
@@ -46,23 +31,13 @@ namespace zwccbthr{
 				break;
 			}
 			memset(sbuf,0,128);
-			sprintf(sbuf,"%s Comm with Lock times %d",__FUNCTION__,i++);
-			cout<<sbuf<<endl;
+			//sprintf(sbuf,"%s Comm with Lock times %d",__FUNCTION__,i++);
+			//cout<<sbuf<<endl;
 			OutputDebugStringA(sbuf);
-			string tSend;
-			if (dqSend.size()>0)
-			{
-				tSend=dqSend[0];
-				dqSend.pop_front();
-				zwscthr.SendString(tSend);
-			}
-			else{
-				zwscthr.SendString("STRINGFROMZWLOCKCOMMTHREAD20140803.1403");
-			}
-			
-			
+			zwscthr.SendString("S");
 			string recstr;
 			zwscthr.ReceiveString(recstr);
+			//收到的字符串存入dqRecv
 			//cout<<recstr<<endl;
 			if (NULL!=zwCfg::g_WarnCallback)
 			{

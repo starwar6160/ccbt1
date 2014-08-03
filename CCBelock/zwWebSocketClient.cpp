@@ -121,6 +121,7 @@ int zwWebSocket::ReceiveString(string &str)
 	int flags=0;
 	memset(m_recvBuffer,0,RECV_BUF_LEN);
 	ws->receiveFrame(m_recvBuffer,RECV_BUF_LEN,flags);
+	//cout<<__FUNCTION__<<"\t"<<flags<<endl;
 	str=m_recvBuffer;
 	assert(str.length()>0);
 	return flags;
