@@ -134,7 +134,7 @@ TEST_F(ccbElockTest,ReadCloseCodeTestOnline)
 		EXPECT_EQ(ELOCK_ERROR_CONNECTLOST,Notify(strSendLockActInfoXML.c_str()));		
 		cout<<"Server not Start!"<<endl;
 	}
-	Sleep(7000);
+	
 #ifdef NDEBUG
 	EXPECT_EQ(ELOCK_ERROR_PARAMINVALID,SetRecvMsgRotine(NULL));
 #endif // NDEBUG
@@ -226,6 +226,7 @@ TEST_F(ccbElockTest,LockActiveTestUnit)
 TEST_F(ccbElockTest,LockSendActInfoTestOnline)
 {
 	//Open(25);
+	Sleep(2000);
 	EXPECT_EQ(ELOCK_ERROR_SUCCESS,SetRecvMsgRotine(myATMCRecvMsgRotine));	
 	const JC_MSG_TYPE msgType=JCMSG_SEND_LOCK_ACTIVEINFO;	//设定消息类型
 	//ATMC生成XML消息
