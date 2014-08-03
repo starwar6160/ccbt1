@@ -7,6 +7,22 @@ namespace zwccbthr{
 	int ns_thr_run=ZWTHR_RUN;	//控制通讯线程的开始和停止
 	boost:: mutex thr_mutex; 
 	zwWebSocket zwscthr("localhost",1425);
+
+	deque<string> dqSend;
+	deque<string> dqRecv;
+
+	void pushString(const string &str)
+	{
+		dqSend.push_back(str);
+	}
+
+	const string getString(void)
+	{
+		string r=dqRecv[dqRecv.size()];
+		dqRecv.pop_front();
+		return r;
+	}
+
 	void wait(int milliseconds)
 	{ 
 		boost::this_thread::sleep(boost::posix_time::milliseconds(milliseconds));		
@@ -33,7 +49,18 @@ namespace zwccbthr{
 			sprintf(sbuf,"%s Comm with Lock times %d",__FUNCTION__,i++);
 			cout<<sbuf<<endl;
 			OutputDebugStringA(sbuf);
-			zwscthr.SendString("STRINGFROMZWLOCKCOMMTHREAD20140803.1403");
+			string tSend;
+			if (dqSend.size()>0)
+			{
+				tSend=dqSend[0];
+				dqSend.pop_front();
+				zwscthr.SendString(tSend);
+			}
+			else{
+				zwscthr.SendString("STRINGFROMZWLOCKCOMMTHREAD20140803.1403");
+			}
+			
+			
 			string recstr;
 			zwscthr.ReceiveString(recstr);
 			//cout<<recstr<<endl;

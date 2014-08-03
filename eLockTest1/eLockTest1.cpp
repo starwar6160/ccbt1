@@ -26,10 +26,10 @@ namespace jcAtmcMsg{
 //测试性回调函数
 void myATMCRecvMsgRotine(const char *pszMsg)
 {
-	cout<<__FUNCTION__<<"Running"<<endl;
-	cout<<"*******************EMU SRV RETURN XML	Start*****************\n";
+	cout<<__FUNCTION__<<"Running\t";
+//	cout<<"*******************EMU SRV RETURN XML	Start*****************\n";
 	cout<<pszMsg<<endl;
-	cout<<"*******************EMU SRV RETURN XML	End*******************\n";
+//	cout<<"*******************EMU SRV RETURN XML	End*******************\n";
 }
 
 //测试套件初始化和结束事件
@@ -256,6 +256,7 @@ TEST_F(ccbElockTest,LockSendActInfoTestOnline)
 TEST_F(ccbElockTest,zwLongLoopForThread)
 {
 	SetRecvMsgRotine(myATMCRecvMsgRotine);
+	
 	Sleep(9000);
 }
 
