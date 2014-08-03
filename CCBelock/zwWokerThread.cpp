@@ -6,6 +6,7 @@ using namespace boost::property_tree;
 namespace zwccbthr{
 	int ns_thr_run=ZWTHR_RUN;	//控制通讯线程的开始和停止
 	boost:: mutex thr_mutex; 
+	zwWebSocket zwscthr("localhost",1425);
 	void wait(int milliseconds)
 	{ 
 		boost::this_thread::sleep(boost::posix_time::milliseconds(milliseconds));		
