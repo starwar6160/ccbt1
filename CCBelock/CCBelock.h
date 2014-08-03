@@ -19,4 +19,8 @@ CCBELOCK_API long	Open(long lTimeOut);
 CCBELOCK_API long	Close();
 CCBELOCK_API long	Notify(const char *pszMsg);
 CCBELOCK_API int	SetRecvMsgRotine(RecvMsgRotine pRecvMsgFun);
+
+//////////////////////////////////////////////////////////////////////////
+CCBELOCK_API void zwPushString(const string &str);
+
 #endif // CCBelock_h__

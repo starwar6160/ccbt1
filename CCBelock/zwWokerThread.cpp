@@ -2,11 +2,21 @@
 #include "zwCcbElockHdr.h"
 #include "zwwsClient.h"
 using namespace boost::property_tree;
+namespace zwccbthr{
+	extern zwWebSocket zwscthr;
+}
+
+void zwPushString(const string &str)
+{
+	zwccbthr::zwscthr.SendString(str);
+}
+
 
 namespace zwccbthr{
 	int ns_thr_run=ZWTHR_RUN;	//控制通讯线程的开始和停止
 	boost:: mutex thr_mutex; 
 	zwWebSocket zwscthr("localhost",1425);
+
 
 	void wait(int milliseconds)
 	{ 
@@ -30,13 +40,13 @@ namespace zwccbthr{
 			{
 				break;
 			}
-			memset(sbuf,0,128);
-			//sprintf(sbuf,"%s Comm with Lock times %d",__FUNCTION__,i++);
-			//cout<<sbuf<<endl;
-			OutputDebugStringA(sbuf);
-			zwscthr.SendString("S");
+			
 			string recstr;
 			zwscthr.ReceiveString(recstr);
+			memset(sbuf,0,128);
+			sprintf(sbuf,"%s Comm with Lock times %d",__FUNCTION__,i++);
+			OutputDebugStringA(sbuf);
+			//cout<<sbuf<<endl;
 			//收到的字符串存入dqRecv
 			//cout<<recstr<<endl;
 			if (NULL!=zwCfg::g_WarnCallback)

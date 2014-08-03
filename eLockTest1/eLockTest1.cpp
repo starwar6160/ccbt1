@@ -256,8 +256,13 @@ TEST_F(ccbElockTest,LockSendActInfoTestOnline)
 TEST_F(ccbElockTest,zwLongLoopForThread)
 {
 	SetRecvMsgRotine(myATMCRecvMsgRotine);
-	
-	Sleep(9000);
+	zwPushString("test1547");
+	Sleep(4000);
+	zwPushString("test1547A1");
+	Sleep(2000);
+	zwPushString("test1547A2");
+	Sleep(2000);
+
 }
 
 
