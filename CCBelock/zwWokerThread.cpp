@@ -33,9 +33,10 @@ namespace zwccbthr{
 			sprintf(sbuf,"%s Comm with Lock times %d",__FUNCTION__,i++);
 			cout<<sbuf<<endl;
 			OutputDebugStringA(sbuf);
-			//zwscthr.SendString("STRINGFROMZWLOCKCOMMTHREAD20140803.1403");
-			//string recstr;
-			//zwscthr.ReceiveString(recstr);
+			zwscthr.SendString("STRINGFROMZWLOCKCOMMTHREAD20140803.1403");
+			string recstr;
+			zwscthr.ReceiveString(recstr);
+			cout<<recstr<<endl;
 			wait(150);
 			if (i>20)
 			{
