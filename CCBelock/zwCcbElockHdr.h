@@ -48,4 +48,9 @@ void zwStartLockCommThread(void);	//启动与锁具之间的通讯线程
 void zwStopLockCommThread(void);	//停止与锁具之间的通讯线程
 }	//namespace zwccbthr{
 
+typedef void (cdecl *RecvMsgRotine)(const char *pszMsg);
+namespace zwCfg{
+	extern RecvMsgRotine g_WarnCallback;
+}
+
 #endif // zwCcbElockHdr_h__

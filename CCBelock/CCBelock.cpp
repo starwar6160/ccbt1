@@ -8,7 +8,6 @@
 using namespace std;
 
 //回调函数指针类型定义
-typedef void (cdecl *RecvMsgRotine)(const char *pszMsg);
 using Poco::Net::ConnectionRefusedException;
 
 namespace zwCfg{

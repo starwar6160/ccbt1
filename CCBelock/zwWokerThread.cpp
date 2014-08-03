@@ -36,7 +36,11 @@ namespace zwccbthr{
 			zwscthr.SendString("STRINGFROMZWLOCKCOMMTHREAD20140803.1403");
 			string recstr;
 			zwscthr.ReceiveString(recstr);
-			cout<<recstr<<endl;
+			//cout<<recstr<<endl;
+			if (NULL!=zwCfg::g_WarnCallback)
+			{
+				zwCfg::g_WarnCallback(recstr.c_str());
+			}
 			wait(150);
 			if (i>20)
 			{
