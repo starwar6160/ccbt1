@@ -28,9 +28,9 @@ void myATMCRecvMsgRotine(const char *pszMsg)
 {
 	assert(pszMsg!=NULL && strlen(pszMsg)>42);
 	EXPECT_LT(42,strlen(pszMsg));
-	cout<<"*******************"<<__FUNCTION__<<" Start*****************\n";	
+	cout<<"*******************建行ATMC回调函数开始*******************\n";	
 	cout<<pszMsg<<endl;
-	cout<<"*******************"<<__FUNCTION__<<" End  *****************\n";
+	cout<<"*******************建行ATMC回调函数结束*******************\n";
 	s_retstr=pszMsg;
 }
 
@@ -87,25 +87,6 @@ TEST(ccbElockDeathTest,OpenTestBad)
 	EXPECT_DEBUG_DEATH(Open(4000),"");
 }
 
-//Notify测试
-TEST_F(ccbElockTest,NotifyTestInvalidXML)
-{
-	if (ELOCK_ERROR_SUCCESS==m_connStatus)
-	{
-	EXPECT_EQ(ELOCK_ERROR_CONNECTLOST,Notify("mytestNotify1014connmytestNotify1014connmytestNotify1014conn"));	
-	}
-	else
-	{
-		EXPECT_EQ(ELOCK_ERROR_CONNECTLOST,Notify("mytestNotify1014notConnmytestNotify1014connmytestNotify1014conn"));	
-		cout<<"Server not Start!"<<endl;
-	}	
-#ifdef NDEBUG
-	EXPECT_EQ(ELOCK_ERROR_PARAMINVALID,Notify(NULL));
-	EXPECT_EQ(ELOCK_ERROR_PARAMINVALID,Notify(""));
-	EXPECT_EQ(ELOCK_ERROR_CONNECTLOST,Notify(myLongMsg));
-#endif // NDEBUG
-	//Close();
-}
 
 TEST(ccbElockDeathTest,NotifyTestBad)
 {//Debug下会触发断言的非法输入测试，放到死亡测试中进行
@@ -115,11 +96,7 @@ TEST(ccbElockDeathTest,NotifyTestBad)
 }
 
 
-
-
-
-
-
+#ifdef _DEBUG_USE_UNITTEST804
 //锁具激活报文的单元测试
 TEST_F(ccbElockTest,LockActiveTestUnit)
 {
@@ -169,6 +146,7 @@ TEST_F(ccbElockTest,LockActiveTestUnit)
 	EXPECT_GT(100,LockPubKey.length());
 	//该单元测试跳过了网络，所以不适用验证回调函数收到的内容长度；
 }
+#endif // _DEBUG_USE_UNITTEST804
 
 
 #endif // _ZWTEST730
@@ -264,19 +242,6 @@ TEST_F(ccbElockTest,LockSendActInfoTestOnline)
 	EXPECT_LT(42,s_retstr.length());
 
 }
-
-
-//TEST_F(ccbElockTest,zwLongLoopForThread)
-//{
-//	SetRecvMsgRotine(myATMCRecvMsgRotine);
-//	zwPushString("test1547");
-//	Sleep(4000);
-//	zwPushString("test1547A1");
-//	Sleep(2000);
-//	zwPushString("test1547A2");
-//	Sleep(2000);
-//
-//}
 
 
 int _tmain(int argc, _TCHAR* argv[])

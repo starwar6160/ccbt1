@@ -1,5 +1,10 @@
 // CCBelock.cpp : 定义 DLL 应用程序的导出函数。
 //
+//20140804.1346.目前存在的问题：
+//1.发送锁具激活请求：请求报文中没有"State","get"的字段了？没有无用的"Public_Key","123456"字段了？
+//2.发送锁具激活信息：JC的应答报文无LOCKNO字段，需要解决；
+//JC的应答报文的"激活信息"内容是否是已经解密的PSK?
+
 
 #include "stdafx.h"
 #include "CCBelock.h"
