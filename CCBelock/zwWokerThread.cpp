@@ -56,10 +56,10 @@ namespace zwccbthr{
 			{
 				zwCfg::g_WarnCallback(outXML.c_str());
 			}
-			wait(150);
+			wait(100);
 			if (i>20)
 			{
-				break;
+				//break;
 			}
 		} 
 		memset(sbuf,0,128);

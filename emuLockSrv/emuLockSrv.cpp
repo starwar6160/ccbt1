@@ -89,8 +89,8 @@ public:
 				{	//收到了FRAME_OP_CLOSE的数据帧的话就不显示收到的数据了
 					continue;
 				}
-				//zwjclms_command_proc(cmdRecv,cmdSend);				
-				cmdSend=cmdRecv+" ADD BY EMUSRV 20140803.1412";
+				zwjclms_command_proc(cmdRecv,cmdSend);				
+				//cmdSend=cmdRecv+" ADD BY EMUSRV 20140803.1412";
 				ws.sendFrame(cmdSend.data(), cmdSend.size(), flags);				
 				//app.logger().information(Poco::format("RECV msg=%s",cmdRecv));		
 				//app.logger().information(Poco::format("SEND msg=%s",cmdSend));	
