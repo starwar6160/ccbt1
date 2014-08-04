@@ -46,7 +46,7 @@ const JC_MSG_TYPE lockParseJson( const string & inJson, ptree &pt )
 
 	try{
 		string sCommand=pt.get<string>("command");	
-		if ("Lock_Secretkey"==sCommand)
+		if ("Lock_Secret_Key"==sCommand)
 		{//是锁具激活请求，进行相关处理
 			myLockActive(pt);
 			return JCMSG_LOCK_ACTIVE_REQUEST;
@@ -90,8 +90,8 @@ void myLockActive(ptree &pt )
 	cout<<"锁具激活请求"<<endl;
 	//pt.put("LockMan","BeiJing JinChu");
 	pt.put("Lock_Serial","ZWFAKELOCKNO1548");
-	pt.put("Public_Key","BJpnccGKE5muLO3RLOe+hDjUftMJJwpmnuxEir0P3ss5/sxpEKNQ5AXcSsW1CbC/pXlqAk9/NZoquFJXHW3n1Cw=,");
-	pt.put("State","get");
+	pt.put("Lock_Public_Key","BJpnccGKE5muLO3RLOe+hDjUftMJJwpmnuxEir0P3ss5/sxpEKNQ5AXcSsW1CbC/pXlqAk9/NZoquFJXHW3n1Cw=,");
+	//pt.put("State","get");
 
 }
 

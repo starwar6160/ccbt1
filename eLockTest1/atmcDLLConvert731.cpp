@@ -96,7 +96,7 @@ namespace jcAtmcConvertDLL{
 		//判断消息类型并从我们的JSON接口变为建行的接口所需字段
 		string jcCmd=ptJC.get<string>("command");
 		ptree ptCCB;
-		if ("Lock_Secretkey"==jcCmd)
+		if ("Lock_Secret_Key"==jcCmd)
 		{//发送锁具激活请求
 			zwconvLockActiveUp(ptJC,ptCCB);
 		}
@@ -139,9 +139,9 @@ namespace jcAtmcConvertDLL{
 	//发送锁具激活请求
 	void zwconvLockActiveDown( const ptree &ptccb, ptree &ptjc )
 	{	
-		ptjc.put("command","Lock_Secretkey");
-		ptjc.put("State","get");
-		ptjc.put("Public_Key","123456");	//该行其实无意义，但是json接口里面有，就写上
+		ptjc.put("command","Lock_Secret_Key");
+//		ptjc.put("State","get");
+//		ptjc.put("Public_Key","123456");	//该行其实无意义，但是json接口里面有，就写上
 	}
 
 	void zwconvLockActiveUp( const ptree &ptjc, ptree &ptccb )
@@ -156,7 +156,7 @@ namespace jcAtmcConvertDLL{
 		//有用部分
 		ns_jcLockno=ptjc.get<string>("Lock_Serial");
 		ptccb.put("LockId",ns_jcLockno);
-		ptccb.put("LockPubKey",ptjc.get<string>("Public_Key"));	
+		ptccb.put("LockPubKey",ptjc.get<string>("Lock_Public_Key"));	
 		ptccb.put("LockMan",LOCKMAN_NAME);
 	}
 	//////////////////////////////////////////////////////////////////////////
