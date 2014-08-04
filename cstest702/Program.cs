@@ -263,7 +263,7 @@ namespace cstest702
             //jclmsCCB2014.JcLockDebugPrint(jcSrv);
 
             //锁具反推验证第一开锁动态码，
-            jclmsCCB2014.JcLockSetInt(jcLock, JCITYPE.JCI_CLOSECODE, firstCloseCode);
+            jclmsCCB2014.JcLockSetInt(jcLock, JCITYPE.JCI_CLOSECODE, 11111111);
             jclmsCCB2014.JcLockSetCmdType(jcLock, JCITYPE.JCI_CMDTYPE, JCCMD.JCCMD_CCB_DYPASS1);
             JCMATCH pass1Match = jclmsCCB2014.JcLockReverseVerifyDynaCode(jcLock, dyCode1);
             if (pass1Match.s_datetime > 0)
