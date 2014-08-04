@@ -151,7 +151,7 @@ string & myAtmcMsgReadCloseCodeInfo( string & strXML ,ptree &pt )
 	pt.put("TransTime","140826");
 	//建行给出的报文里面没有这个字段，但是会导致后续流程很难处理
 	pt.put("DevCode",ATMNO_CCBTEST);
-	pt.put("command","Lock_Close_code");
+	pt.put("command",jcAtmcConvertDLL::JCSTR_READ_CLOSECODE);
 	std::ostringstream ss;
 	write_xml(ss,pt);
 	strXML=ss.str();

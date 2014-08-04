@@ -51,12 +51,12 @@ const JC_MSG_TYPE lockParseJson( const string & inJson, ptree &pt )
 			myLockActive(pt);
 			return JCMSG_LOCK_ACTIVE_REQUEST;
 		}
-		if ("Lock_Init"==sCommand)
+		if (jcAtmcConvertDLL::JCSTR_LOCK_INIT==sCommand)
 		{//是锁具初始化请求，进行相关处理
 			myLockInit(pt);
 			return JCMSG_SEND_LOCK_ACTIVEINFO;
 		}
-		if ("Lock_Close_code"==sCommand)
+		if (jcAtmcConvertDLL::JCSTR_READ_CLOSECODE==sCommand)
 		{//是锁具初始化请求，进行相关处理
 			myReadCloseCode(pt);
 			return JCMSG_GET_CLOSECODE;
@@ -100,7 +100,7 @@ void myLockInit(ptree &pt )
 {
 	cout<<"锁具初始化"<<endl;
 	ptree pt2;
-	pt2.put("command","Lock_Init");
+	pt2.put("command",jcAtmcConvertDLL::JCSTR_LOCK_INIT);
 	pt2.put("State","ok");
 	pt=pt2;
 }
@@ -112,13 +112,13 @@ void myReadCloseCode(ptree &pt )
 	cout<<"读取闭锁码"<<endl;
 	//>> 锁具推送闭锁码至上位机
 	//{
-	//	"command": "Lock_Close_code",
-	//		"Lock_Close_code": "12345678",  //uint64_t
+	//	"command": JCSTR_READ_CLOSECODE,
+	//		JCSTR_READ_CLOSECODE: "12345678",  //uint64_t
 	//		"State": "push"
 	//}
 	ptree pt2;
-	pt2.put("command","Lock_Close_code");
-	pt2.put("Lock_Close_code","11112222");
+	pt2.put("command",jcAtmcConvertDLL::JCSTR_READ_CLOSECODE);
+	pt2.put(jcAtmcConvertDLL::JCSTR_READ_CLOSECODE,"11112222");
 	pt2.put("State","push");
 	pt=pt2;
 }

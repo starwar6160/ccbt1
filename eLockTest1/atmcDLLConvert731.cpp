@@ -103,11 +103,11 @@ namespace jcAtmcConvertDLL{
 		{//发送锁具激活请求
 			zwconvLockActiveUp(ptJC,ptCCB);
 		}
-		if ("Lock_Init"==jcCmd)
+		if (JCSTR_LOCK_INIT==jcCmd)
 		{//发送锁具激活信息(锁具初始化)
 			zwconvLockInitUp(ptJC,ptCCB);
 		}
-		if ("Lock_Close_code"==jcCmd)
+		if (JCSTR_READ_CLOSECODE==jcCmd)
 		{//读取闭锁码
 			zwconvReadCloseCodeUp(ptJC,ptCCB);
 		}
@@ -171,7 +171,7 @@ namespace jcAtmcConvertDLL{
 
 		//>> 上位机下发
 		//{
-		//	"command": "Lock_Init",
+		//	"command": JCSTR_LOCK_INIT,
 		//		"Lock_Init_Info": {
 		//			"Atm_Serial": "123456",
 		//				"Lms_Clock": "123456", 
@@ -182,11 +182,11 @@ namespace jcAtmcConvertDLL{
 
 		//>> 锁具正确接收后，返回
 		//{
-		//	"command": "Lock_Init",
+		//	"command": JCSTR_LOCK_INIT,
 		//		"State": "ok"
 		//}
 		//ptjc=ptccb;
-		ptjc.put("command","Lock_Init");
+		ptjc.put("command",JCSTR_LOCK_INIT);
 		ptjc.put("State","set");
 		ptjc.put("Lock_Init_Info.Atm_Serial",ptccb.get<string>("DevCode"));	
 		//该字段，JC要的应该是PSK明文,CCB报文中只提供公钥加密过后的密文，不提供PSK明文
@@ -235,12 +235,12 @@ namespace jcAtmcConvertDLL{
 	{
 		//>> 锁具推送闭锁码至上位机
 		//{
-		//	"command": "Lock_Close_code",
-		//		"Lock_Close_code": "12345678",  //uint64_t
+		//	"command": JCSTR_READ_CLOSECODE,
+		//		JCSTR_READ_CLOSECODE: "12345678",  //uint64_t
 		//		"State": "push"
 		//}
 
-		ptjc.put("command","Lock_Close_code");
+		ptjc.put("command",JCSTR_READ_CLOSECODE);
 		ptjc.put("State","get");
 
 	}
@@ -265,7 +265,7 @@ namespace jcAtmcConvertDLL{
 		ptccb.put("DevCode",ns_ccbAtmno);
 		ptccb.put("LockMan",LOCKMAN_NAME);
 		ptccb.put("LockId",ns_jcLockno);
-		ptccb.put("ShutLockcode",ptjc.get<string>("Lock_Close_code"));
+		ptccb.put("ShutLockcode",ptjc.get<string>(JCSTR_READ_CLOSECODE));
 	}
 
 
