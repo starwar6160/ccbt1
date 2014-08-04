@@ -14,12 +14,33 @@ const char *myLongMsg="0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF"
 	"0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF"
 	"0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF";
 
+const int ZW_END_WAIT=500;
+
 namespace jcAtmcMsg{
 	void zwAtmcMsgGen(const JC_MSG_TYPE type,string &strXML,ptree &pt);
 }
 
 
 string s_retstr;	//临时保存回调函数获取到的结果，以便验证；
+
+//获得一条XML报文的交易代码和交易名字
+void zwGetCCBMsgType(const string &inXML,string &outOpCode,string &outOpName)
+{
+	try{
+		std::stringstream ss;
+		ss<<inXML;
+		ptree pt;
+		read_xml(ss,pt);
+		outOpCode=pt.get<string>("TransCode");
+		outOpName=pt.get<string>("TransName");
+	}
+	catch(...)
+	{
+		outOpCode="";
+		outOpName="";
+	}
+}
+
 
 //测试性回调函数
 void myATMCRecvMsgRotine(const char *pszMsg)
@@ -150,34 +171,6 @@ TEST_F(ccbElockTest,LockActiveTestUnit)
 #endif // _ZWTEST730
 //////////////////////////////////////////////////////////////////////////
 
-//读取闭锁码报文的在线测试
-TEST_F(ccbElockTest,ReadCloseCodeTestOnline)
-{
-	//Open(25);
-	EXPECT_EQ(ELOCK_ERROR_SUCCESS,SetRecvMsgRotine(myATMCRecvMsgRotine));	
-	const JC_MSG_TYPE msgType=JCMSG_GET_CLOSECODE;	//设定消息类型
-	//ATMC生成XML消息
-	string strSendLockActInfoXML;	//容纳生成的消息XML
-	//具体生成消息XML
-	ptree pt;
-	jcAtmcMsg::zwAtmcMsgGen(msgType,strSendLockActInfoXML, pt);	
-
-	if (ELOCK_ERROR_SUCCESS==m_connStatus)
-	{
-		EXPECT_EQ(ELOCK_ERROR_SUCCESS,Notify(strSendLockActInfoXML.c_str()));		
-	}
-	else
-	{
-		EXPECT_EQ(ELOCK_ERROR_CONNECTLOST,Notify(strSendLockActInfoXML.c_str()));		
-		cout<<"Server not Start!"<<endl;
-	}
-
-#ifdef NDEBUG
-	EXPECT_EQ(ELOCK_ERROR_PARAMINVALID,SetRecvMsgRotine(NULL));
-#endif // NDEBUG
-	Sleep(200);
-	EXPECT_LT(42,s_retstr.length());
-}
 
 
 
@@ -206,8 +199,18 @@ TEST_F(ccbElockTest,LockActiveTestOnline)
 #ifdef NDEBUG
 	EXPECT_EQ(ELOCK_ERROR_PARAMINVALID,SetRecvMsgRotine(NULL));
 #endif // NDEBUG
-	Sleep(200);
+	Sleep(ZW_END_WAIT);
 	EXPECT_LT(42,s_retstr.length());
+
+	while (s_retstr.length()==0)
+	{
+		Sleep(200);
+	}
+	string ccbop,ccbname;
+	zwGetCCBMsgType(s_retstr,ccbop,ccbname);
+	EXPECT_EQ("0000",ccbop);
+	EXPECT_EQ("CallForActInfo",ccbname);
+
 }
 
 
@@ -237,12 +240,58 @@ TEST_F(ccbElockTest,LockSendActInfoTestOnline)
 #ifdef NDEBUG
 	EXPECT_EQ(ELOCK_ERROR_PARAMINVALID,SetRecvMsgRotine(NULL));
 #endif // NDEBUG
-	Sleep(200);
+	Sleep(ZW_END_WAIT);
 	EXPECT_LT(42,s_retstr.length());
+	while (s_retstr.length()==0)
+	{
+		Sleep(200);
+	}
+	string ccbop,ccbname;
+	zwGetCCBMsgType(s_retstr,ccbop,ccbname);
+	EXPECT_EQ("0001",ccbop);
+	EXPECT_EQ("SendActInfo",ccbname);
 
 }
 
 
+//读取闭锁码报文的在线测试
+TEST_F(ccbElockTest,ReadCloseCodeTestOnline)
+{
+	//Open(25);
+	EXPECT_EQ(ELOCK_ERROR_SUCCESS,SetRecvMsgRotine(myATMCRecvMsgRotine));	
+	const JC_MSG_TYPE msgType=JCMSG_GET_CLOSECODE;	//设定消息类型
+	//ATMC生成XML消息
+	string strSendLockActInfoXML;	//容纳生成的消息XML
+	//具体生成消息XML
+	ptree pt;
+	jcAtmcMsg::zwAtmcMsgGen(msgType,strSendLockActInfoXML, pt);	
+
+	if (ELOCK_ERROR_SUCCESS==m_connStatus)
+	{
+		EXPECT_EQ(ELOCK_ERROR_SUCCESS,Notify(strSendLockActInfoXML.c_str()));		
+	}
+	else
+	{
+		EXPECT_EQ(ELOCK_ERROR_CONNECTLOST,Notify(strSendLockActInfoXML.c_str()));		
+		cout<<"Server not Start!"<<endl;
+	}
+
+#ifdef NDEBUG
+	EXPECT_EQ(ELOCK_ERROR_PARAMINVALID,SetRecvMsgRotine(NULL));
+#endif // NDEBUG
+	Sleep(ZW_END_WAIT);
+	EXPECT_LT(42,s_retstr.length());
+
+	while (s_retstr.length()==0)
+	{
+		Sleep(200);
+	}
+	string ccbop,ccbname;
+	zwGetCCBMsgType(s_retstr,ccbop,ccbname);
+	EXPECT_EQ("0004",ccbop);
+	EXPECT_EQ("ReadShutLockCode",ccbname);
+
+}
 
 
 int _tmain(int argc, _TCHAR* argv[])
