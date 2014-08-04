@@ -105,8 +105,11 @@ string & myAtmcMsgSendActiveInfo( string & strXML ,ptree &pt )
 	//开始生成请求报文
 	pt.put("TransCode","0001");
 	pt.put("TransName","SendActInfo");
-	pt.put("TransDate","20140802");
-	pt.put("TransTime","120845");
+	string zwDate,zwTime;
+	zwGetDateTimeString(time(NULL),zwDate,zwTime);
+
+	pt.put("TransDate",zwDate);
+	pt.put("TransTime",zwTime);
 	pt.put("DevCode",ATMNO_CCBTEST);
 	pt.put("LockMan",jcAtmcConvertDLL::LOCKMAN_NAME);
 	pt.put("LockId","ZWFAKELOCKNO1548");

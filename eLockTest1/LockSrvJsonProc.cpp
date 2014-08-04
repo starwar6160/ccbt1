@@ -7,7 +7,7 @@ const JC_MSG_TYPE lockParseJson( const string & inJson, ptree &pt );
 void LockOutJson( const ptree &pt, string &outJson );
 //内部函数，不必暴露给外界
 void myLockActive(ptree &pt );
-void myLockInit(ptree &pt );
+void myLockInit(ptree &ptIn );
 void myReadCloseCode(ptree &pt );
 
 //此函数没有实际功能，功能都在下级子函数中，便于单元测试；此函数在此是满足联网的单元测试的；
@@ -43,6 +43,7 @@ const JC_MSG_TYPE lockParseJson( const string & inJson, ptree &pt )
 	std::stringstream ss;
 	ss<<inJson;
 	read_json(ss,pt);
+	ptree ptOut;
 
 	try{
 		string sCommand=pt.get<string>("command");	
@@ -85,28 +86,32 @@ void LockOutJson( const ptree &pt, string &outJson )
 
 
 //锁具激活消息的具体处理函数。
-void myLockActive(ptree &pt )
+void myLockActive(ptree &ptInOut )
 {
 	cout<<"锁具激活请求"<<endl;
-	pt.put("Lock_Serial","ZWFAKELOCKNO1548");
-	pt.put("Lock_Public_Key","BJpnccGKE5muLO3RLOe+hDjUftMJJwpmnuxEir0P3ss5/sxpEKNQ5AXcSsW1CbC/pXlqAk9/NZoquFJXHW3n1Cw=,");
-	pt.put("Lock_Time",time(NULL));
+	ptInOut.put("Lock_Serial","ZWFAKELOCKNO1548");
+	ptInOut.put("Lock_Public_Key","BJpnccGKE5muLO3RLOe+hDjUftMJJwpmnuxEir0P3ss5/sxpEKNQ5AXcSsW1CbC/pXlqAk9/NZoquFJXHW3n1Cw=,");
+	ptInOut.put("Lock_Time",time(NULL));
 
 }
 
 //锁具初始化的具体处理函数。
-void myLockInit(ptree &pt )
+void myLockInit( ptree &ptInOut  )
 {
+	ptree ptOut;
 	cout<<"锁具初始化"<<endl;
-	ptree pt2;
-	pt2.put("command",jcAtmcConvertDLL::JCSTR_LOCK_INIT);
-	pt2.put("State","ok");
-	pt=pt2;
+	ptOut.put("command",jcAtmcConvertDLL::JCSTR_LOCK_INIT);
+	ptOut.put("Lock_Time",time(NULL));
+	ptOut.put("Lock_Serial",ptInOut.get<string>("Atm_Serial"));
+	ptOut.put("State","ok");
+	//在此暂不计算，直接返回预先计算好的第一套密文数据里面的PSK
+	ptOut.put("Lock_Init_Info","77498EB7D7CE8B92D871791C99B85AB337FF73235A89E7A20764EFE6EA41E4CE");
+	ptInOut=ptOut;
 }
 
 
 //读取闭锁码消息的具体处理函数
-void myReadCloseCode(ptree &pt )
+void myReadCloseCode(ptree &ptInOut )
 {
 	cout<<"读取闭锁码"<<endl;
 	//>> 锁具推送闭锁码至上位机
@@ -115,9 +120,9 @@ void myReadCloseCode(ptree &pt )
 	//		JCSTR_READ_CLOSECODE: "12345678",  //uint64_t
 	//		"State": "push"
 	//}
-	ptree pt2;
-	pt2.put("command",jcAtmcConvertDLL::JCSTR_READ_CLOSECODE);
-	pt2.put(jcAtmcConvertDLL::JCSTR_READ_CLOSECODE,"11112222");
-	pt2.put("State","push");
-	pt=pt2;
+	ptree ptOut;
+	ptOut.put("command",jcAtmcConvertDLL::JCSTR_READ_CLOSECODE);
+	ptOut.put(jcAtmcConvertDLL::JCSTR_READ_CLOSECODE,"11112222");
+	ptOut.put("State","push");
+	ptInOut=ptOut;
 }

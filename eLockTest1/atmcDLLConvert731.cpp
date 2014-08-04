@@ -176,48 +176,42 @@ namespace jcAtmcConvertDLL{
 		//锁具初始化
 
 		//>> 上位机下发
-		//{
 		//	"command": JCSTR_LOCK_INIT,
-		//		"Lock_Init_Info": {
-		//			"Atm_Serial": "123456",
-		//				"Lms_Clock": "123456", 
-		//				"Lock_Psk": "123456"
-		//	},
-		//	"State": "set"
-		//}
+		//		"Lock_Time"
+		//		"Atm_Serial"
+		//		"Lock_Init_Info":"ECIES加密过的PSK"
 
 		//>> 锁具正确接收后，返回
-		//{
 		//	"command": JCSTR_LOCK_INIT,
-		//		"State": "ok"
-		//}
-		//ptjc=ptccb;
+		//	"Lock_Time"
+		//	"Lock_Serial"
+		//	"State"
+		//	"Lock_Init_Info":"锁具ECIES解密出来的PSK明文,用于ATMVH存档"
+
 		ptjc.put("command",JCSTR_LOCK_INIT);
-		ptjc.put("State","set");
-		ptjc.put("Lock_Init_Info.Atm_Serial",ptccb.get<string>("DevCode"));	
-		//该字段，JC要的应该是PSK明文,CCB报文中只提供公钥加密过后的密文，不提供PSK明文
-		//此处用的值是atmc生成消息代码文件开头第一套值里面的PSK明文,实际使用时怎么办？从哪里取得？
-		ptjc.put("Lock_Init_Info.Lock_Psk","77498EB7D7CE8B92D871791C99B85AB337FF73235A89E7A20764EFE6EA41E4CE");
-		//以下字段(LMS时间)是JC特有，CCB没有
-		ptjc.put("Lock_Init_Info.Lms_Clock",time(NULL));
+		//以下字段(LMS时间)是JC特有，CCB没有,时间或许还应该用建行报文中的时间来转换
+		ptjc.put("Lock_Time",time(NULL));
+		ptjc.put("Atm_Serial",ptccb.get<string>("DevCode"));	
+		//此处1.1版本已经支持ECIES加密过的PSK输入了，使用第一套密文
+		ptjc.put("Lock_Init_Info",ptccb.get<string>("ActInfo"));
 		//以下字段是CCB有，JC没有
-		ptjc.put("ccb_Init_Info.LmsPubKey",ptccb.get<string>("PswSrvPubKey"));
-		ptjc.put("ccb_Init_Info.ActInfo",ptccb.get<string>("ActInfo"));
+		ptjc.put("PswSrvPubKey",ptccb.get<string>("PswSrvPubKey"));
+		
 	}
 
 	void zwconvLockInitUp( const ptree &ptjc, ptree &ptccb )
 	{
 		//无用的形式化部分
 		ptccb.put("TransCode","0001");
-		ptccb.put("TransName",ns_ccbTransName);
+		ptccb.put("TransName",ns_ccbTransName);	//使用缓存在内存中的值
 		assert("SendActInfo"==ns_ccbTransName);
-		ptccb.put("TransDate",ns_ccbDate);
-		ptccb.put("TransTime",ns_ccbTime);
-		ptccb.put("DevCode",ns_ccbAtmno);
+		string zwDate,zwTime;
+		zwGetDateTimeString(ptjc.get<time_t>("Lock_Time"),zwDate,zwTime);
+		ptccb.put("TransDate",zwDate);
+		ptccb.put("TransTime",zwTime);
+		ptccb.put("DevCode",ns_ccbAtmno);	//使用缓存在内存中的值
 		ptccb.put("LockMan",LOCKMAN_NAME);
-		//此处JC上传报文无此字段，需要解决,目前是从激活请求返回的值缓存以后保存在内存中，
-		//希望激活请求之后，在DLL被卸载之前，就是锁具初始化操作，否则就无从正确获得锁具编号而会出错了
-		ptccb.put("LockId",ns_jcLockno);	
+		ptccb.put("LockId",ptjc.get<string>("Lock_Serial"));	
 		//有用部分
 		int ActiveResult=0;	//建行定义该字段0为成功，1为失败；
 		string strState=ptjc.get<string>("State");
@@ -230,8 +224,8 @@ namespace jcAtmcConvertDLL{
 			ActiveResult=1;
 		}
 		ptccb.put("ActiveResult",ActiveResult);
-		//该字段下位机实际上没有返回，怎么取得还是问题
-		ptccb.put("ActInfo","77498EB7D7CE8B92D871791C99B85AB337FF73235A89E7A20764EFE6EA41E4CE");
+		//1.1版本里面下位机解密了ECIES加密的PSK并在Lock_Init_Info字段返回
+		ptccb.put("ActInfo",ptjc.get<string>("Lock_Init_Info"));
 	}
 
 	//////////////////////////////////////////////////////////////////////////
