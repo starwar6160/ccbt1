@@ -18,17 +18,17 @@ int zwjclms_command_proc(const string &inJson,string &outJson)
 		return 0;
 	}
 	assert(inJson.length()>9);	//json最基本的符号起码好像要9个字符左右
-	cout<<__FUNCTION__<<"***EMUSRV IN JSON START***********************\n";
+	cout<<"***模拟锁具收到的JSON请求开始***********************\n";
 	cout<<inJson;
-	cout<<"***EMUSRV IN JSON END  ***********************\n";
+	cout<<"***模拟锁具收到的JSON请求结束***********************\n";
 	ptree pt;
 	//解析输入JSON，并对其处理，结果在pt中，类型返回在mtype中
 	JC_MSG_TYPE mtype=lockParseJson(inJson, pt);
 	//把pt输出为json返回
 	LockOutJson(pt, outJson);
-	cout<<__FUNCTION__<<"***EMUSRV OUT JSON START***********************\n";
+	cout<<"***模拟锁具生成的JSON应答开始***********************\n";
 	cout<<outJson;
-	cout<<"***EMUSRV OUT JSON END  ***********************\n";
+	cout<<"***模拟锁具生成的JSON应答结束***********************\n";
 
 	return mtype;
 }
@@ -87,6 +87,7 @@ void LockOutJson( const ptree &pt, string &outJson )
 //锁具激活消息的具体处理函数。
 void myLockActive(ptree &pt )
 {
+	cout<<"锁具激活请求"<<endl;
 	//pt.put("LockMan","BeiJing JinChu");
 	pt.put("Lock_Serial","ZWFAKELOCKNO1548");
 	pt.put("Public_Key","BJpnccGKE5muLO3RLOe+hDjUftMJJwpmnuxEir0P3ss5/sxpEKNQ5AXcSsW1CbC/pXlqAk9/NZoquFJXHW3n1Cw=,");
@@ -97,6 +98,7 @@ void myLockActive(ptree &pt )
 //锁具初始化的具体处理函数。
 void myLockInit(ptree &pt )
 {
+	cout<<"锁具初始化"<<endl;
 	ptree pt2;
 	pt2.put("command","Lock_Init");
 	pt2.put("State","ok");
@@ -107,6 +109,7 @@ void myLockInit(ptree &pt )
 //读取闭锁码消息的具体处理函数
 void myReadCloseCode(ptree &pt )
 {
+	cout<<"读取闭锁码"<<endl;
 	//>> 锁具推送闭锁码至上位机
 	//{
 	//	"command": "Lock_Close_code",
