@@ -88,6 +88,7 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\CCBelock\jcJsonCommandDefine.cpp" />
     <ClCompile Include="..\eLockTest1\LockSrvJsonProc.cpp" />
     <ClCompile Include="emuLockSrv.cpp" />
     <ClCompile Include="stdafx.cpp">

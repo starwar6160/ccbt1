@@ -1,5 +1,8 @@
 #include "stdafx.h"
 #include "zwCcbElockHdr.h"
+
+
+
 using namespace boost::property_tree;
 //把ATMC DLL的XML和JSON互转函数集中于此，便于单元测试；
 namespace jcAtmcConvertDLL{
@@ -96,7 +99,7 @@ namespace jcAtmcConvertDLL{
 		//判断消息类型并从我们的JSON接口变为建行的接口所需字段
 		string jcCmd=ptJC.get<string>("command");
 		ptree ptCCB;
-		if ("Lock_Secret_Key"==jcCmd)
+		if (JCSTR_LOCK_ACTIVE_REQUEST==jcCmd)
 		{//发送锁具激活请求
 			zwconvLockActiveUp(ptJC,ptCCB);
 		}
@@ -139,7 +142,7 @@ namespace jcAtmcConvertDLL{
 	//发送锁具激活请求
 	void zwconvLockActiveDown( const ptree &ptccb, ptree &ptjc )
 	{	
-		ptjc.put("command","Lock_Secret_Key");
+		ptjc.put("command",JCSTR_LOCK_ACTIVE_REQUEST);
 //		ptjc.put("State","get");
 //		ptjc.put("Public_Key","123456");	//该行其实无意义，但是json接口里面有，就写上
 	}

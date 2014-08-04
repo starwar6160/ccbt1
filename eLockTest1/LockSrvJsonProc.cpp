@@ -46,7 +46,7 @@ const JC_MSG_TYPE lockParseJson( const string & inJson, ptree &pt )
 
 	try{
 		string sCommand=pt.get<string>("command");	
-		if ("Lock_Secret_Key"==sCommand)
+		if (jcAtmcConvertDLL::JCSTR_LOCK_ACTIVE_REQUEST==sCommand)
 		{//是锁具激活请求，进行相关处理
 			myLockActive(pt);
 			return JCMSG_LOCK_ACTIVE_REQUEST;
