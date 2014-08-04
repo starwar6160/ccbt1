@@ -55,7 +55,7 @@ unsigned int zwBinString2Int32(const char *data,const int len);
 	int JcLockGetVersion(void)
 	{
 		//含义是是日期
-		return 20140724;	
+		return 20140804;	
 	}
 
 	//获得规格化的时间，也就是按照某个值取整的时间
@@ -233,7 +233,9 @@ unsigned int zwBinString2Int32(const char *data,const int len);
 		char outHmac[ZW_SM3_DGST_SIZE];
 
 		//规格化时间到G_TIMEMOD这么多秒
-		int l_datetime=myGetNormalTime(lock->m_datetime,lock->m_stepoftime);
+		int l_datetime=myGetNormalTime(lock->m_datetime,
+			//lock->m_stepoftime);
+			60*5);	//20140804.1717.应张靖钰的测试需求，暂时改为5分钟取整
 		//有效期和闭锁码需要根据不同情况分别处理
 		int l_validity=lock->m_validity;
 		int l_closecode=lock->m_closecode;	
