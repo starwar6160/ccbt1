@@ -624,7 +624,10 @@ ZWECIES_API const char * EciesDecrypt( const char *priKey,const char *cryptText 
 		//如果不是可以切分的符合要求格式的合法密文，直接返回
 		return NULL;
 	}
-	char g_plainTextBuf_decrypt[ZW_ECIES_MESSAGE_MAXLEN];
+	//此处不能返回栈上的内容，前两天应万敏的要求去掉了static，在公司没出问题，
+	//但是到家运行就出问题了，返回的是乱码。所以还得其他方法来节省这点内存占用
+	//在嵌入式系统上的开销。20140802.1223.周伟
+	static char g_plainTextBuf_decrypt[ZW_ECIES_MESSAGE_MAXLEN];
 	memset(g_plainTextBuf_decrypt,0,ZW_ECIES_MESSAGE_MAXLEN);
 	int res=
 	zwEciesDecrypt(priKey,g_plainTextBuf_decrypt,ZW_ECIES_MESSAGE_MAXLEN,
