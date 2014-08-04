@@ -64,6 +64,8 @@ const JC_MSG_TYPE lockParseJson( const string & inJson, ptree &pt )
 	}
 	catch(...)
 	{
+		OutputDebugStringA("CPPEXECPTION804");
+		OutputDebugStringA(__FUNCTION__);
 		cout<<"input json not found command item!20140801.1431"<<endl;
 		return JCMSG_INVALID_TYPE;
 	}

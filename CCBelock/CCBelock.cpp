@@ -37,15 +37,6 @@ CCBELOCK_API long Open(long lTimeOut)
 	{
 		return ELOCK_ERROR_PARAMINVALID;
 	}	
-//try{
-//	zwccbthr::zwStartLockCommThread();
-//	zwCfg::zwsc.wsConnect();
-//}
-//catch (ConnectionRefusedException &exc)
-//{	//一般最常见的也就是服务器不在线，所以连接拒绝(ConnectionRefusedException)异常
-//cout<<__FUNCTION__<<" \t"<<exc.displayText()<<endl;
-//	return ELOCK_ERROR_CONNECTLOST;
-//}
 	return ELOCK_ERROR_SUCCESS;
 }
 
@@ -62,6 +53,7 @@ CCBELOCK_API long Notify(const char *pszMsg)
 {
 	assert(pszMsg!=NULL && strlen(pszMsg)>42);	//XML至少42字节
 	boost:: mutex:: scoped_lock lock( zwCfg::io_mutex); 
+	string strJsonSend;
 	try{
 		//输入必须有内容，但是最大不得长于下位机内存大小，做合理限制
 		assert(NULL!=pszMsg);
@@ -76,8 +68,7 @@ CCBELOCK_API long Notify(const char *pszMsg)
 			return ELOCK_ERROR_PARAMINVALID;
 		}
 		//////////////////////////////////////////////////////////////////////////
-		string strXMLSend=pszMsg;
-		string strJsonSend;
+		string strXMLSend=pszMsg;		
 		//string strRecv;
 		assert(strXMLSend.length()>42);	//XML开头的固定内容38个字符，外加起码一个标签的两对尖括号合计4个字符
 		int msgTypeSend=jcAtmcConvertDLL::zwCCBxml2JCjson(strXMLSend,strJsonSend);
@@ -118,6 +109,10 @@ CCBELOCK_API long Notify(const char *pszMsg)
 		//发现WS对象因为未连接而是NULL时直接throw一个枚举
 		//然后在此，也就是上层捕获。暂时不知道捕获精确类型
 		//所以catch所有异常了
+		OutputDebugStringA("CPPEXECPTION804");
+		OutputDebugStringA(__FUNCTION__);
+		OutputDebugStringA(pszMsg);
+		OutputDebugStringA(strJsonSend.c_str());
 		return ELOCK_ERROR_CONNECTLOST;
 	}
 }

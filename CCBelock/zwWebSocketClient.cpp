@@ -27,6 +27,8 @@ namespace{
 			}
 			catch (WebSocketException& exc)
 			{
+				OutputDebugStringA("CPPEXECPTION804");
+				OutputDebugStringA(__FUNCTION__);
 				switch (exc.code())
 				{
 				case WebSocket::WS_ERR_HANDSHAKE_UNSUPPORTED_VERSION:
