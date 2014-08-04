@@ -147,15 +147,21 @@ namespace jcAtmcConvertDLL{
 //		ptjc.put("Public_Key","123456");	//该行其实无意义，但是json接口里面有，就写上
 	}
 
+
 	void zwconvLockActiveUp( const ptree &ptjc, ptree &ptccb )
 	{
 		//无用的形式化部分
 		ptccb.put("TransCode","0000");
 		assert("CallForActInfo"==ns_ccbTransName);
 		ptccb.put("TransName",ns_ccbTransName);
-		ptccb.put("TransDate",ns_ccbDate);
-		ptccb.put("TransTime",ns_ccbTime);
 		ptccb.put("DevCode",ns_ccbAtmno);
+//////////////////////////////////////////////////////////////////////////
+		string zwDate,zwTime;
+		zwGetDateTimeString(ptjc.get<time_t>("Lock_Time"),zwDate,zwTime);
+		ptccb.put("TransDate",zwDate);
+		ptccb.put("TransTime",zwTime);
+
+//////////////////////////////////////////////////////////////////////////
 		//有用部分
 		ns_jcLockno=ptjc.get<string>("Lock_Serial");
 		ptccb.put("LockId",ns_jcLockno);

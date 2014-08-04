@@ -88,10 +88,9 @@ void LockOutJson( const ptree &pt, string &outJson )
 void myLockActive(ptree &pt )
 {
 	cout<<"Ëø¾ß¼¤»îÇëÇó"<<endl;
-	//pt.put("LockMan","BeiJing JinChu");
 	pt.put("Lock_Serial","ZWFAKELOCKNO1548");
 	pt.put("Lock_Public_Key","BJpnccGKE5muLO3RLOe+hDjUftMJJwpmnuxEir0P3ss5/sxpEKNQ5AXcSsW1CbC/pXlqAk9/NZoquFJXHW3n1Cw=,");
-	//pt.put("State","get");
+	pt.put("Lock_Time",time(NULL));
 
 }
 

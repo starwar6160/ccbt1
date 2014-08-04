@@ -60,4 +60,8 @@ namespace zwCfg{
 	extern RecvMsgRotine g_WarnCallback;
 }
 
+//从给定的时间秒数，获取日期(YYYYMMDD)和时间(HHMMSS)字符串
+void zwGetDateTimeString(time_t inTime,string &outDate,string &outTime);
+
+
 #endif // zwCcbElockHdr_h__
