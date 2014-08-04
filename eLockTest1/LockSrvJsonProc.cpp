@@ -46,7 +46,7 @@ const JC_MSG_TYPE lockParseJson( const string & inJson, ptree &pt )
 	ptree ptOut;
 
 	try{
-		string sCommand=pt.get<string>("command");	
+		string sCommand=pt.get<string>(jcAtmcConvertDLL::JCSTR_CMDTITLE);	
 		if (jcAtmcConvertDLL::JCSTR_LOCK_ACTIVE_REQUEST==sCommand)
 		{//是锁具激活请求，进行相关处理
 			myLockActive(pt);
@@ -100,7 +100,7 @@ void myLockInit( ptree &ptInOut  )
 {
 	ptree ptOut;
 	cout<<"锁具初始化"<<endl;
-	ptOut.put("command",jcAtmcConvertDLL::JCSTR_LOCK_INIT);
+	ptOut.put(jcAtmcConvertDLL::JCSTR_CMDTITLE,jcAtmcConvertDLL::JCSTR_LOCK_INIT);
 	ptOut.put("Lock_Time",time(NULL));
 	ptOut.put("Lock_Serial",ptInOut.get<string>("Atm_Serial"));
 	ptOut.put("State","ok");
@@ -114,15 +114,14 @@ void myLockInit( ptree &ptInOut  )
 void myReadCloseCode(ptree &ptInOut )
 {
 	cout<<"读取闭锁码"<<endl;
-	//>> 锁具推送闭锁码至上位机
+	//>> 锁具返回闭锁码至上位机
 	//{
 	//	"command": JCSTR_READ_CLOSECODE,
 	//		JCSTR_READ_CLOSECODE: "12345678",  //uint64_t
-	//		"State": "push"
-	//}
 	ptree ptOut;
-	ptOut.put("command",jcAtmcConvertDLL::JCSTR_READ_CLOSECODE);
-	ptOut.put(jcAtmcConvertDLL::JCSTR_READ_CLOSECODE,"11112222");
-	ptOut.put("State","push");
+	ptOut.put(jcAtmcConvertDLL::JCSTR_CMDTITLE,jcAtmcConvertDLL::JCSTR_READ_CLOSECODE);
+	ptOut.put("Lock_Time",time(NULL));
+	ptOut.put("Lock_Serial","ZWFAKELOCKNO1548");	
+	ptOut.put("Code","11112222");	
 	ptInOut=ptOut;
 }

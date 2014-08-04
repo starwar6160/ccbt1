@@ -97,7 +97,7 @@ namespace jcAtmcConvertDLL{
 
 
 		//判断消息类型并从我们的JSON接口变为建行的接口所需字段
-		string jcCmd=ptJC.get<string>("command");
+		string jcCmd=ptJC.get<string>(jcAtmcConvertDLL::JCSTR_CMDTITLE);
 		ptree ptCCB;
 		if (JCSTR_LOCK_ACTIVE_REQUEST==jcCmd)
 		{//发送锁具激活请求
@@ -142,7 +142,7 @@ namespace jcAtmcConvertDLL{
 	//发送锁具激活请求
 	void zwconvLockActiveDown( const ptree &ptccb, ptree &ptjc )
 	{	
-		ptjc.put("command",JCSTR_LOCK_ACTIVE_REQUEST);
+		ptjc.put(jcAtmcConvertDLL::JCSTR_CMDTITLE,JCSTR_LOCK_ACTIVE_REQUEST);
 //		ptjc.put("State","get");
 //		ptjc.put("Public_Key","123456");	//该行其实无意义，但是json接口里面有，就写上
 	}
@@ -188,7 +188,7 @@ namespace jcAtmcConvertDLL{
 		//	"State"
 		//	"Lock_Init_Info":"锁具ECIES解密出来的PSK明文,用于ATMVH存档"
 
-		ptjc.put("command",JCSTR_LOCK_INIT);
+		ptjc.put(jcAtmcConvertDLL::JCSTR_CMDTITLE,JCSTR_LOCK_INIT);
 		//以下字段(LMS时间)是JC特有，CCB没有,时间或许还应该用建行报文中的时间来转换
 		ptjc.put("Lock_Time",time(NULL));
 		ptjc.put("Atm_Serial",ptccb.get<string>("DevCode"));	
@@ -233,16 +233,16 @@ namespace jcAtmcConvertDLL{
 	//读取闭锁码
 	void zwconvReadCloseCodeDown( const ptree &ptccb, ptree &ptjc )
 	{
-		//>> 锁具推送闭锁码至上位机
-		//{
+		//>> 读取闭锁码
+		//请求
 		//	"command": JCSTR_READ_CLOSECODE,
-		//		JCSTR_READ_CLOSECODE: "12345678",  //uint64_t
-		//		"State": "push"
-		//}
+		//	"Lock_Time"	
+		//应答
+		//"Command":JCSTR_READ_CLOSECODE
 
-		ptjc.put("command",JCSTR_READ_CLOSECODE);
-		ptjc.put("State","get");
 
+		ptjc.put(jcAtmcConvertDLL::JCSTR_CMDTITLE,JCSTR_READ_CLOSECODE);
+		ptjc.put("Lock_Time",time(NULL));
 	}
 
 	void zwconvReadCloseCodeUp( const ptree &ptjc, ptree &ptccb )
@@ -265,7 +265,7 @@ namespace jcAtmcConvertDLL{
 		ptccb.put("DevCode",ns_ccbAtmno);
 		ptccb.put("LockMan",LOCKMAN_NAME);
 		ptccb.put("LockId",ns_jcLockno);
-		ptccb.put("ShutLockcode",ptjc.get<string>(JCSTR_READ_CLOSECODE));
+		ptccb.put("ShutLockcode",ptjc.get<int>("Code"));
 	}
 
 

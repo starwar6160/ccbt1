@@ -22,6 +22,7 @@ typedef enum jcmsg_ccb_elock_t{
 
 namespace jcAtmcConvertDLL{
 	//JSON命令字符串定义
+	extern const char *JCSTR_CMDTITLE;
 	extern const char *JCSTR_LOCK_ACTIVE_REQUEST;	//锁具激活请求
 	extern const char *JCSTR_LOCK_INIT;				//锁具初始化
 	extern const char *JCSTR_READ_CLOSECODE;		//读取闭锁码
