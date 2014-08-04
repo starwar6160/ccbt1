@@ -26,7 +26,9 @@ string s_retstr;	//临时保存回调函数获取到的结果，以便验证；
 //测试性回调函数
 void myATMCRecvMsgRotine(const char *pszMsg)
 {
-	cout<<"*******************"<<__FUNCTION__<<" Start*****************\n";
+	assert(pszMsg!=NULL && strlen(pszMsg)>42);
+	EXPECT_LT(42,strlen(pszMsg));
+	cout<<"*******************"<<__FUNCTION__<<" Start*****************\n";	
 	cout<<pszMsg<<endl;
 	cout<<"*******************"<<__FUNCTION__<<" End  *****************\n";
 	s_retstr=pszMsg;
@@ -198,7 +200,7 @@ TEST_F(ccbElockTest,ReadCloseCodeTestOnline)
 #ifdef NDEBUG
 	EXPECT_EQ(ELOCK_ERROR_PARAMINVALID,SetRecvMsgRotine(NULL));
 #endif // NDEBUG
-	Sleep(100);
+	Sleep(200);
 	EXPECT_LT(42,s_retstr.length());
 }
 
