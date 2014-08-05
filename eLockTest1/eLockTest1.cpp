@@ -177,6 +177,25 @@ TEST_F(ccbElockTest,LockActiveTestUnit)
 
 
 #ifdef _USE_STAGE1_TEST805
+
+//发送初始闭锁码测试
+TEST_F(ccbElockTest,SendInitCloseOnline)
+{
+	EXPECT_EQ(ELOCK_ERROR_SUCCESS,SetRecvMsgRotine(myATMCRecvMsgRotine));	
+	Sleep(ZW_END_WAIT);
+	EXPECT_LT(42,s_retstr.length());
+
+	while (s_retstr.length()==0)
+	{
+		Sleep(200);
+	}
+	//string ccbop,ccbname;
+	//zwGetCCBMsgType(s_retstr,ccbop,ccbname);
+	//EXPECT_EQ("0000",ccbop);
+	//EXPECT_EQ("CallForActInfo",ccbname);
+
+}
+
 //锁具激活请求报文的在线测试
 TEST_F(ccbElockTest,LockActiveTestOnline)
 {

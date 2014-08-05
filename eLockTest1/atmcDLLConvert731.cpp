@@ -129,12 +129,17 @@ namespace jcAtmcConvertDLL{
 		cout<<"*********************金储应答XML开始**********************\n";
 		cout<<upXML<<endl;
 		cout<<"*********************金储应答XML结束**********************\n";
-
+try{
 		string transCode=ptCCB.get<string>("TransCode");
 		if ("0000"==transCode)
 		{
 			return JCMSG_LOCK_ACTIVE_REQUEST;
 		}
+}
+catch(...)
+{
+	return JCMSG_INVALID_TYPE;
+}
 		return JCMSG_INVALID_TYPE;
 	}
 

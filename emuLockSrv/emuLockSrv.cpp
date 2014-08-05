@@ -78,7 +78,7 @@ public:
 			string myInitCloseCodeJson;
 			myGenInitCloseCodeJson(myInitCloseCodeJson);
 			//app.logger().information(Poco::format("INITCLOSECODE805=%s",myInitCloseCodeJson));		
-			//ws.sendFrame(myInitCloseCodeJson.data(),myInitCloseCodeJson.length(),0);
+			ws.sendFrame(myInitCloseCodeJson.data(),myInitCloseCodeJson.length(),0);
 			do
 			{
 				memset(buffer,0,RECV_BUF_LEN);
