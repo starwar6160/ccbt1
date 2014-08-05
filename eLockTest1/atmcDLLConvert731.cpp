@@ -16,7 +16,10 @@ namespace jcAtmcConvertDLL{
 	void zwconvLockInitUp( const ptree &ptjc, ptree &ptccb );
 	void zwconvReadCloseCodeUp( const ptree &ptjc, ptree &ptccb );
 	//以下4个字段，为的是在上下转换期间保存建行报文中冗余的，我们基本不用但又必须返回给建行的字段
-	string ns_ccbTransName;	//交易名称
+	string ns_ActReqName;
+	string ns_LockInitName;
+	string ns_ReadCloseCodeName;
+
 	string ns_ccbDate;		//日期
 	string ns_ccbTime;		//时间
 	string ns_ccbAtmno;		//ATM编号
@@ -48,7 +51,7 @@ namespace jcAtmcConvertDLL{
 		//判断消息类型
 		string transCode=pt.get<string>("TransCode");
 		//保存建行冗余字段以便上传返回时提供给建行
-		ns_ccbTransName=pt.get<string>("TransName");
+		
 		ns_ccbDate=pt.get<string>("TransDate");
 		ns_ccbTime=pt.get<string>("TransTime");
 		ns_ccbAtmno=pt.get<string>("DevCode");
@@ -57,16 +60,19 @@ namespace jcAtmcConvertDLL{
 		ptree pt2;
 		if ("0000"==transCode)
 		{//锁具激活请求
+		ns_ActReqName=pt.get<string>("TransName");
 			msgType= JCMSG_LOCK_ACTIVE_REQUEST;
 			zwconvLockActiveDown(pt,pt2);
 		}
 		if ("0001"==transCode)
 		{//发送锁具激活信息(初始化)
+			ns_LockInitName=pt.get<string>("TransName");
 			msgType= JCMSG_SEND_LOCK_ACTIVEINFO;
 			zwconvLockInitDown(pt,pt2);
 		}
 		if ("0004"==transCode)
 		{//读取闭锁码
+			ns_ReadCloseCodeName=pt.get<string>("TransName");
 			msgType= JCMSG_GET_CLOSECODE;
 			zwconvReadCloseCodeDown(pt,pt2);
 		}
@@ -152,8 +158,8 @@ namespace jcAtmcConvertDLL{
 	{
 		//无用的形式化部分
 		ptccb.put("TransCode","0000");
-		assert("CallForActInfo"==ns_ccbTransName);
-		ptccb.put("TransName",ns_ccbTransName);
+		assert("CallForActInfo"==ns_ActReqName);
+		ptccb.put("TransName",ns_ActReqName);
 		ptccb.put("DevCode",ns_ccbAtmno);
 //////////////////////////////////////////////////////////////////////////
 		string zwDate,zwTime;
@@ -203,8 +209,8 @@ namespace jcAtmcConvertDLL{
 	{
 		//无用的形式化部分
 		ptccb.put("TransCode","0001");
-		ptccb.put("TransName",ns_ccbTransName);	//使用缓存在内存中的值
-		assert("SendActInfo"==ns_ccbTransName);
+		ptccb.put("TransName",ns_LockInitName);	//使用缓存在内存中的值
+		assert("SendActInfo"==ns_LockInitName);
 		string zwDate,zwTime;
 		zwGetDateTimeString(ptjc.get<time_t>("Lock_Time"),zwDate,zwTime);
 		ptccb.put("TransDate",zwDate);
@@ -258,8 +264,8 @@ namespace jcAtmcConvertDLL{
 		//	闭锁码	ShutLockcode	是	值：闭锁码
 		//无用的形式化部分
 		ptccb.put("TransCode","0004");
-		assert("ReadShutLockCode"==ns_ccbTransName);
-		ptccb.put("TransName",ns_ccbTransName);
+		assert("ReadShutLockCode"==ns_ReadCloseCodeName);
+		ptccb.put("TransName",ns_ReadCloseCodeName);
 		ptccb.put("TransDate",ns_ccbDate);
 		ptccb.put("TransTime",ns_ccbTime);
 		ptccb.put("DevCode",ns_ccbAtmno);

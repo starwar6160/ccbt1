@@ -5,7 +5,7 @@
 #include "CCBelock.h"
 #include "zwCcbElockHdr.h"
 //看看是否打开其他测试以便专一测试一件事
-#define _ZWTEST730
+//#define _ZWTEST730
 using namespace boost::property_tree;
 const JC_MSG_TYPE lockParseJson( const string & inJson, ptree &pt );
 void LockOutJson( const ptree &pt, string &outJson );
