@@ -19,11 +19,7 @@ namespace jcAtmcConvertDLL{
 	string ns_ActReqName;
 	string ns_LockInitName;
 	string ns_ReadCloseCodeName;
-
-	string ns_ccbDate;		//日期
-	string ns_ccbTime;		//时间
 	string ns_ccbAtmno;		//ATM编号
-	string ns_jcLockno;		//锁具编号
 
 
 	const JC_MSG_TYPE zwCCBxml2JCjson( const string &downXML,string &downJson )
@@ -50,10 +46,7 @@ namespace jcAtmcConvertDLL{
 
 		//判断消息类型
 		string transCode=pt.get<string>("TransCode");
-		//保存建行冗余字段以便上传返回时提供给建行
-		
-		ns_ccbDate=pt.get<string>("TransDate");
-		ns_ccbTime=pt.get<string>("TransTime");
+		//保存建行冗余字段以便上传返回时提供给建行		
 		ns_ccbAtmno=pt.get<string>("DevCode");
 		//根据消息类型调用不同函数处理	
 		//从建行的接口所需字段变为我们的JSON接口
@@ -169,8 +162,8 @@ namespace jcAtmcConvertDLL{
 
 //////////////////////////////////////////////////////////////////////////
 		//有用部分
-		ns_jcLockno=ptjc.get<string>("Lock_Serial");
-		ptccb.put("LockId",ns_jcLockno);
+		
+		ptccb.put("LockId",ptjc.get<string>("Lock_Serial"));
 		ptccb.put("LockPubKey",ptjc.get<string>("Lock_Public_Key"));	
 		ptccb.put("LockMan",LOCKMAN_NAME);
 	}
@@ -266,11 +259,14 @@ namespace jcAtmcConvertDLL{
 		ptccb.put("TransCode","0004");
 		assert("ReadShutLockCode"==ns_ReadCloseCodeName);
 		ptccb.put("TransName",ns_ReadCloseCodeName);
-		ptccb.put("TransDate",ns_ccbDate);
-		ptccb.put("TransTime",ns_ccbTime);
+		string zwDate,zwTime;
+		zwGetDateTimeString(time(NULL),zwDate,zwTime);
+		ptccb.put("TransDate",zwDate);
+		ptccb.put("TransTime",zwTime);
+
 		ptccb.put("DevCode",ns_ccbAtmno);
 		ptccb.put("LockMan",LOCKMAN_NAME);
-		ptccb.put("LockId",ns_jcLockno);
+		ptccb.put("LockId",ptjc.get<string>("Lock_Serial"));
 		ptccb.put("ShutLockcode",ptjc.get<int>("Code"));
 	}
 
