@@ -8,6 +8,8 @@
 #include "jclmsCCB2014.h"
 #include "sm3.h"
 
+
+ 
 //获取初始闭锁码的3个可变条件的“固定值”
 static void myGetInitCloseCodeVarItem(int *mdatetime,int *mvalidity,int *mclosecode);
 const int ZW_CLOSECODE_STEP=12;	//闭锁码的计算步长时间精度
@@ -96,8 +98,7 @@ unsigned int zwBinString2Int32(const char *data,const int len);
 	{
 		return myGetDynaCodeImplCCB201407a(handle);
 	}
-
-
+	
 	//从包含二进制数据的字符串输入，获得一个8位整数的输出
 	unsigned int zwBinString2Int32(const char *data,const int len)
 	{
@@ -120,6 +121,7 @@ unsigned int zwBinString2Int32(const char *data,const int len);
 		return sum;
 	}
 
+	
 
 //////////////////////////////////////////////////////////////////////////
 	int JCLMSCCB2014_API JcLockNew( void )
