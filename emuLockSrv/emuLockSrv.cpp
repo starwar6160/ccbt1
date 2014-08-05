@@ -78,6 +78,7 @@ public:
 			int flags;
 			int n;
 //////////////////////////////////////////////////////////////////////////
+#ifdef _DEBUG_SRV805TEST
 			//锁具主动发送初始闭锁码，以及验证码，找不到哪里好放，就放到开头处
 			//因为不适合放到循环里面；
 			//发送初始闭锁码
@@ -92,6 +93,7 @@ public:
 			app.logger().information(Poco::format("JinChu Lock Send VerifyClose=%s",
 				outVerifyCodeJson));		
 			ws.sendFrame(outVerifyCodeJson.data(),outVerifyCodeJson.length(),0);
+#endif // _DEBUG_SRV805TEST
 //////////////////////////////////////////////////////////////////////////
 			
 			do

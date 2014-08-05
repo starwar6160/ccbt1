@@ -7,7 +7,16 @@
 //看看是否打开其他测试以便专一测试一件事
 //#define _ZWTEST730
 //第一阶段的3条测试是否打开
-#define _USE_STAGE1_TEST805
+
+//#define _DEBUG_RECV_INIT_CLOSECODE
+//#define _DEBUG_RECV_VERIFY_CODE
+
+#define _DEBUG_ACTREQ
+//#define _DEBUG_SEND_ACTINFO
+//#define _DEBUG_READ_CLOSE_CODE
+
+
+
 using namespace boost::property_tree;
 const JC_MSG_TYPE lockParseJson( const string & inJson, ptree &pt );
 void LockOutJson( const ptree &pt, string &outJson );
@@ -202,6 +211,7 @@ TEST_F(ccbElockTest,LockActiveTestUnit)
 #endif // _ZWTEST730
 //////////////////////////////////////////////////////////////////////////
 
+#ifdef _DEBUG_RECV_INIT_CLOSECODE
 //接收锁具主动发送的初始闭锁码测试
 TEST_F(ccbElockTest,RecvInitClose1000)
 {
@@ -217,7 +227,9 @@ TEST_F(ccbElockTest,RecvInitClose1000)
 	EXPECT_EQ("1000",ccbop);
 	EXPECT_EQ("SendShutLockCode",ccbname);
 }
+#endif // _DEBUG_RECV_INIT_CLOSECODE
 
+#ifdef _DEBUG_RECV_VERIFY_CODE
 //接收锁具主动发送的验证码测试
 TEST_F(ccbElockTest,RecvVerifyClose1002)
 {
@@ -233,12 +245,11 @@ TEST_F(ccbElockTest,RecvVerifyClose1002)
 	EXPECT_EQ("1002",ccbop);
 	EXPECT_EQ("SendUnLockIdent",ccbname);
 }
+#endif // _DEBUG_RECV_VERIFY_CODE
 
 
 
-#ifdef _USE_STAGE1_TEST805
-
-
+#ifdef _DEBUG_ACTREQ
 //锁具激活请求报文的在线测试
 TEST_F(ccbElockTest,LockActiveTest0000)
 {
@@ -277,8 +288,10 @@ TEST_F(ccbElockTest,LockActiveTest0000)
 	EXPECT_EQ("CallForActInfo",ccbname);
 
 }
+#endif // _DEBUG_ACTREQ
 
 
+#ifdef _DEBUG_SEND_ACTINFO
 //锁具发送激活信息(PSK)报文(初始化)的在线测试
 TEST_F(ccbElockTest,LockSendActInfoTest0001)
 {
@@ -317,8 +330,10 @@ TEST_F(ccbElockTest,LockSendActInfoTest0001)
 	EXPECT_EQ("SendActInfo",ccbname);
 
 }
+#endif // _DEBUG_SEND_ACTINFO
 
 
+#ifdef _DEBUG_READ_CLOSE_CODE
 //读取闭锁码报文的在线测试
 TEST_F(ccbElockTest,ReadCloseCodeTest0004)
 {
@@ -356,7 +371,8 @@ TEST_F(ccbElockTest,ReadCloseCodeTest0004)
 	EXPECT_EQ("0004",ccbop);
 	EXPECT_EQ("ReadShutLockCode",ccbname);
 }
-#endif // _USE_STAGE1_TEST805
+#endif // _DEBUG_READ_CLOSE_CODE
+
 
 
 
