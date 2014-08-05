@@ -58,6 +58,8 @@ namespace zwccbthr{
 			string outXML;
 			int msgTypeRecv=jcAtmcConvertDLL::zwJCjson2CCBxml(recstr,outXML);
 			assert(outXML.length()>42);	//XML开头的固定内容38个字符，外加起码一个标签的两对尖括号合计4个字符
+			//OutputDebugStringA(__FUNCTION__);
+			//OutputDebugStringA(outXML.c_str());
 
 
 			if (NULL!=zwCfg::g_WarnCallback)

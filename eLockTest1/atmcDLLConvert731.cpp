@@ -95,8 +95,8 @@ namespace jcAtmcConvertDLL{
 		std::stringstream sst1;
 		write_json(sst1,ptJC);
 		string jsonJc= sst1.str();
-		cout<<"***金储锁具返回的JSON应答开始*****************************\n"<<jsonJc;
-		cout<<"***金储锁具返回的JSON应答结束*****************************\n";
+		cout<<"***金储锁具返回的JSON应答开始*************************####\n"<<jsonJc;
+		cout<<"***金储锁具返回的JSON应答结束*************************####\n";
 
 
 		//判断消息类型并从我们的JSON接口变为建行的接口所需字段
@@ -130,17 +130,17 @@ namespace jcAtmcConvertDLL{
 		write_json(sst2,ptCCB);
 		string jsonCcb=sst2.str();
 		//////////////////////////////////////////////////////////////////////////
-		cout<<"***金储锁具应答JSON处理为建行所需元素 开始****************\n"<<jsonCcb;
-		cout<<"***金储锁具应答JSON处理为建行所需元素 结束****************\n";
+		cout<<"***金储锁具应答JSON处理为建行所需元素 开始************####\n"<<jsonCcb;
+		cout<<"***金储锁具应答JSON处理为建行所需元素 结束************####\n";
 
 		//转换JSON为XML供ATMC使用
 		std::stringstream ss2;
 		write_xml(ss2,ptCCB);
 		upXML= ss2.str();
 
-		cout<<"*********************金储应答XML开始**********************\n";
+		cout<<"*********************金储应答XML开始******************####\n";
 		cout<<upXML<<endl;
-		cout<<"*********************金储应答XML结束**********************\n";
+		cout<<"*********************金储应答XML结束******************####\n";
 try{
 		string transCode=ptCCB.get<string>("root.TransCode");
 		if ("0000"==transCode)

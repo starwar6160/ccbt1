@@ -12,8 +12,8 @@
 //#define _DEBUG_RECV_VERIFY_CODE
 
 #define _DEBUG_ACTREQ
-#define _DEBUG_SEND_ACTINFO
-#define _DEBUG_READ_CLOSE_CODE
+//#define _DEBUG_SEND_ACTINFO
+//#define _DEBUG_READ_CLOSE_CODE
 
 
 
@@ -66,9 +66,11 @@ void myATMCRecvMsgRotine(const char *pszMsg)
 	string ccbop,ccbname;
 	string rmsg=pszMsg;
 	zwGetCCBMsgType(rmsg,ccbop,ccbname);
-	cout<<"*******************建行ATMC回调函数开始*******************\n";	
+	cout<<"*******************建行ATMC回调函数开始***************####\n";	
 	cout<<pszMsg<<endl;
-	cout<<"*******************建行ATMC回调函数结束*******************\n";
+	cout<<"*******************建行ATMC回调函数结束***************####\n";
+	OutputDebugStringA(__FUNCTION__);
+	OutputDebugStringA(pszMsg);
 	if ("0000"==ccbop)
 	{
 		s_retActReq=rmsg;
@@ -84,12 +86,14 @@ void myATMCRecvMsgRotine(const char *pszMsg)
 	if ("1000"==ccbop)
 	{
 		s_retInitCloseCode=rmsg;
+		//Sleep(300);
 	}
 	if ("1002"==ccbop)
 	{
 		cout<<"VERIFYCODE 0805"<<endl;
 		cout<<s_retVerifyCode<<endl;
 		s_retVerifyCode=rmsg;
+		//Sleep(300);
 	}
 }
 
@@ -285,7 +289,8 @@ TEST_F(ccbElockTest,LockActiveTest0000)
 	{
 		Sleep(200);
 	}
-	//Sleep(ZW_END_WAIT);
+
+	Sleep(ZW_END_WAIT);
 	EXPECT_LT(42,s_retActReq.length());
 
 	string ccbop,ccbname;
