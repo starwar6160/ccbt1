@@ -13,6 +13,7 @@ namespace cstest702
         const String lockno = "lock14771509";
         const String psk = "PSKDEMO728";
         const Int32 validity = 5;
+        const int ZW_FAKE_PASS1 = 11111111;
 
         static void Main(string[] args)
         {
@@ -145,15 +146,15 @@ namespace cstest702
                 Environment.Exit(-1654);
             }
             //锁具生成验证码
-            jclmsCCB2014.JcLockSetCmdType(jcLock, JCITYPE.JCI_CMDTYPE, JCCMD.JCCMD_CCB_LOCK_VERCODE);
+            jclmsCCB2014.JcLockSetCmdType(jcLock, JCITYPE.JCI_CMDTYPE, JCCMD.JCCMD_CCB_LOCK_VERCODE);            
             //用第一开锁密码作为验证码的元素，以便适应建行的3个码环环相扣的要求
-            jclmsCCB2014.JcLockSetInt(jcLock, JCITYPE.JCI_CLOSECODE, dyCode1);
+            jclmsCCB2014.JcLockSetInt(jcLock, JCITYPE.JCI_CLOSECODE, ZW_FAKE_PASS1);
             int lockVerifyCode = jclmsCCB2014.JcLockGetDynaCode(jcLock);
             jclmsCCB2014.JcLockDebugPrint(jcLock);
             Console.Out.WriteLine("锁具产生的验证码是 {0}", lockVerifyCode);
             jclmsCCB2014.JcLockSetCmdType(jcSrv, JCITYPE.JCI_CMDTYPE, JCCMD.JCCMD_CCB_LOCK_VERCODE);
             //上位机也计算锁具应该返回的验证码的值，予以比对
-            jclmsCCB2014.JcLockSetInt(jcSrv, JCITYPE.JCI_CLOSECODE, dyCode1);
+            jclmsCCB2014.JcLockSetInt(jcSrv, JCITYPE.JCI_CLOSECODE, ZW_FAKE_PASS1);
             JCMATCH vercodeMatch = jclmsCCB2014.JcLockReverseVerifyDynaCode(jcSrv, lockVerifyCode);
             if (vercodeMatch.s_datetime>0)
             {
@@ -263,7 +264,7 @@ namespace cstest702
             //jclmsCCB2014.JcLockDebugPrint(jcSrv);
 
             //锁具反推验证第一开锁动态码，
-            jclmsCCB2014.JcLockSetInt(jcLock, JCITYPE.JCI_CLOSECODE, 11111111);
+            jclmsCCB2014.JcLockSetInt(jcLock, JCITYPE.JCI_CLOSECODE, firstCloseCode);
             jclmsCCB2014.JcLockSetCmdType(jcLock, JCITYPE.JCI_CMDTYPE, JCCMD.JCCMD_CCB_DYPASS1);
             JCMATCH pass1Match = jclmsCCB2014.JcLockReverseVerifyDynaCode(jcLock, dyCode1);
             if (pass1Match.s_datetime > 0)
@@ -278,7 +279,7 @@ namespace cstest702
             //锁具生成验证码
             jclmsCCB2014.JcLockSetCmdType(jcLock, JCITYPE.JCI_CMDTYPE, JCCMD.JCCMD_CCB_LOCK_VERCODE);
             //用第一开锁密码作为验证码的元素，以便适应建行的3个码环环相扣的要求
-            jclmsCCB2014.JcLockSetInt(jcLock, JCITYPE.JCI_CLOSECODE, dyCode1);
+            jclmsCCB2014.JcLockSetInt(jcLock, JCITYPE.JCI_CLOSECODE, ZW_FAKE_PASS1);
             int lockVerifyCode = jclmsCCB2014.JcLockGetDynaCode(jcLock);
             jclmsCCB2014.JcLockDebugPrint(jcLock);
             Console.Out.WriteLine("锁具产生的验证码是 {0}", lockVerifyCode);
@@ -286,7 +287,7 @@ namespace cstest702
             lockVerifyCode = int.Parse(Console.ReadLine());
             jclmsCCB2014.JcLockSetCmdType(jcSrv, JCITYPE.JCI_CMDTYPE, JCCMD.JCCMD_CCB_LOCK_VERCODE);
             //上位机也计算锁具应该返回的验证码的值，予以比对
-            jclmsCCB2014.JcLockSetInt(jcSrv, JCITYPE.JCI_CLOSECODE, dyCode1);
+            jclmsCCB2014.JcLockSetInt(jcSrv, JCITYPE.JCI_CLOSECODE, ZW_FAKE_PASS1);
             JCMATCH vercodeMatch = jclmsCCB2014.JcLockReverseVerifyDynaCode(jcSrv, lockVerifyCode);
             if (vercodeMatch.s_datetime > 0)
             {
