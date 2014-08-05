@@ -28,6 +28,7 @@ string s_retInitCloseCode;
 string s_retActReq;
 string s_retLockInit;
 string s_retReadCloseCode;
+string s_retVerifyCode;
 
 //获得一条XML报文的交易代码和交易名字
 void zwGetCCBMsgType(const string &inXML,string &outOpCode,string &outOpName)
@@ -74,6 +75,10 @@ void myATMCRecvMsgRotine(const char *pszMsg)
 	if ("1000"==ccbop)
 	{
 		s_retInitCloseCode=rmsg;
+	}
+	if ("1002"==ccbop)
+	{
+		s_retVerifyCode=rmsg;
 	}
 }
 
@@ -200,22 +205,6 @@ TEST_F(ccbElockTest,LockActiveTestUnit)
 
 #ifdef _USE_STAGE1_TEST805
 
-//发送初始闭锁码测试
-TEST_F(ccbElockTest,SendInitClose1000)
-{
-	EXPECT_EQ(ELOCK_ERROR_SUCCESS,SetRecvMsgRotine(myATMCRecvMsgRotine));	
-	while (s_retInitCloseCode.length()==0)
-	{
-		Sleep(200);
-	}
-	//Sleep(ZW_END_WAIT);
-	EXPECT_LT(42,s_retInitCloseCode.length());
-	string ccbop,ccbname;
-	zwGetCCBMsgType(s_retInitCloseCode,ccbop,ccbname);
-	EXPECT_EQ("1000",ccbop);
-	EXPECT_EQ("SendShutLockCode",ccbname);
-
-}
 
 //锁具激活请求报文的在线测试
 TEST_F(ccbElockTest,LockActiveTest0000)
@@ -335,6 +324,24 @@ TEST_F(ccbElockTest,ReadCloseCodeTest0004)
 	EXPECT_EQ("ReadShutLockCode",ccbname);
 }
 #endif // _USE_STAGE1_TEST805
+
+
+//发送初始闭锁码测试
+TEST_F(ccbElockTest,SendInitClose1000)
+{
+	EXPECT_EQ(ELOCK_ERROR_SUCCESS,SetRecvMsgRotine(myATMCRecvMsgRotine));	
+	while (s_retInitCloseCode.length()==0)
+	{
+		Sleep(200);
+	}
+	//Sleep(ZW_END_WAIT);
+	EXPECT_LT(42,s_retInitCloseCode.length());
+	string ccbop,ccbname;
+	zwGetCCBMsgType(s_retInitCloseCode,ccbop,ccbname);
+	EXPECT_EQ("1000",ccbop);
+	EXPECT_EQ("SendShutLockCode",ccbname);
+
+}
 
 
 int _tmain(int argc, _TCHAR* argv[])

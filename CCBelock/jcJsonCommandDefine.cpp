@@ -8,6 +8,7 @@ namespace jcAtmcConvertDLL{
 	const char *JCSTR_LOCK_INIT="Lock_System_Init";
 	const char *JCSTR_READ_CLOSECODE="Lock_Close_Code_ATM";
 	const char *JCSTR_SEND_INITCLOSECODE="Lock_Close_Code_Lock";
+	const char *JCMSG_SEND_UNLOCK_CERTCODE="Lock_Open_Ident";
 }
 
 //从给定的时间秒数，获取日期(YYYYMMDD)和时间(HHMMSS)字符串

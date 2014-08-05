@@ -17,6 +17,8 @@ namespace jcAtmcConvertDLL{
 	void zwconvReadCloseCodeUp( const ptree &ptjc, ptree &ptccb );
 	//接收锁具主动发送的初始闭锁码，只有上传方向
 	void zwconvRecvInitCloseCodeUp(const ptree &ptjc, ptree &ptccb);
+	//接收锁具主动发送的验证码，只有上传方向
+	void zwconvRecvVerifyCodeUp(const ptree &ptjc, ptree &ptccb);
 	//以下4个字段，为的是在上下转换期间保存建行报文中冗余的，我们基本不用但又必须返回给建行的字段
 	string ns_ActReqName;
 	string ns_LockInitName;
@@ -117,6 +119,10 @@ namespace jcAtmcConvertDLL{
 		if (JCSTR_SEND_INITCLOSECODE==jcCmd)
 		{//接收下位机主动发来的初始闭锁码
 			zwconvRecvInitCloseCodeUp(ptJC,ptCCB);
+		}		
+		if (JCMSG_SEND_UNLOCK_CERTCODE==jcCmd)
+		{//接收下位机主动发来的初始闭锁码
+			zwconvRecvVerifyCodeUp(ptJC,ptCCB);
 		}
 
 		//////////////////////////////////////////////////////////////////////////
@@ -297,6 +303,24 @@ catch(...)
 		ptccb.put("DevCode",ns_ccbAtmno);	
 		ptccb.put("LockMan",LOCKMAN_NAME);
 		ptccb.put("ShutLockcode",ptjc.get<int>("Code"));
+	}
+
+	
+	void zwconvRecvVerifyCodeUp(const ptree &ptjc, ptree &ptccb)
+	{
+		ptccb.put("TransCode","1002");
+		ptccb.put("TransName","SendUnLockIdent");
+		string zwDate,zwTime;
+		zwGetDateTimeString(time(NULL),zwDate,zwTime);
+		ptccb.put("TransDate",zwDate);
+		ptccb.put("TransTime",zwTime);
+		//锁具发送初始闭锁码时，ATM编号应该已经在激活请求中获得，但是
+		//1.1版本报文里面没有给出，所以此处可能会有问题
+		ptccb.put("DevCode",ns_ccbAtmno);	
+		ptccb.put("LockMan",LOCKMAN_NAME);
+		ptccb.put("LockId",ptjc.get<string>("Lock_Serial"));
+		//关键的验证码本体
+		ptccb.put("UnLockIdentInfo",ptjc.get<int>("Lock_Ident_Info"));
 	}
 
 
