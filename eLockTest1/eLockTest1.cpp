@@ -12,8 +12,8 @@
 //#define _DEBUG_RECV_VERIFY_CODE
 
 #define _DEBUG_ACTREQ
-//#define _DEBUG_SEND_ACTINFO
-//#define _DEBUG_READ_CLOSE_CODE
+#define _DEBUG_SEND_ACTINFO
+#define _DEBUG_READ_CLOSE_CODE
 
 
 
@@ -104,7 +104,7 @@ protected:
 		cout<<__FUNCTION__<<endl;
 		m_connStatus=ELOCK_ERROR_SUCCESS;
 		m_connStatus=Open(25);
-		Sleep(500);	//等待通讯线程把网络连接建立起来
+		Sleep(300);	//等待通讯线程把网络连接建立起来
 	}
 	virtual void TearDown() {
 		cout<<__FUNCTION__<<endl;

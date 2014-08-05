@@ -209,27 +209,24 @@ catch(...)
 		ptjc.put(jcAtmcConvertDLL::JCSTR_CMDTITLE,JCSTR_LOCK_INIT);
 		//以下字段(LMS时间)是JC特有，CCB没有,时间或许还应该用建行报文中的时间来转换
 		ptjc.put("Lock_Time",time(NULL));
-		ptjc.put("Atm_Serial",ptccb.get<string>("DevCode"));	
+		ptjc.put("Atm_Serial",ptccb.get<string>("root.DevCode"));	
 		//此处1.1版本已经支持ECIES加密过的PSK输入了，使用第一套密文
-		ptjc.put("Lock_Init_Info",ptccb.get<string>("ActInfo"));
-		//以下字段是CCB有，JC没有
-		ptjc.put("PswSrvPubKey",ptccb.get<string>("PswSrvPubKey"));
-		
+		ptjc.put("Lock_Init_Info",ptccb.get<string>("root.ActInfo"));		
 	}
 
 	void zwconvLockInitUp( const ptree &ptjc, ptree &ptccb )
 	{
 		//无用的形式化部分
-		ptccb.put("TransCode","0001");
-		ptccb.put("TransName",ns_LockInitName);	//使用缓存在内存中的值
+		ptccb.put("root.TransCode","0001");
+		ptccb.put("root.TransName",ns_LockInitName);	//使用缓存在内存中的值
 		assert("SendActInfo"==ns_LockInitName);
 		string zwDate,zwTime;
 		zwGetDateTimeString(ptjc.get<time_t>("Lock_Time"),zwDate,zwTime);
-		ptccb.put("TransDate",zwDate);
-		ptccb.put("TransTime",zwTime);
-		ptccb.put("DevCode",ns_ccbAtmno);	//使用缓存在内存中的值
-		ptccb.put("LockMan",LOCKMAN_NAME);
-		ptccb.put("LockId",ptjc.get<string>("Lock_Serial"));	
+		ptccb.put("root.TransDate",zwDate);
+		ptccb.put("root.TransTime",zwTime);
+		ptccb.put("root.DevCode",ns_ccbAtmno);	//使用缓存在内存中的值
+		ptccb.put("root.LockMan",LOCKMAN_NAME);
+		ptccb.put("root.LockId",ptjc.get<string>("Lock_Serial"));	
 		//有用部分
 		int ActiveResult=0;	//建行定义该字段0为成功，1为失败；
 		string strState=ptjc.get<string>("State");
@@ -241,9 +238,9 @@ catch(...)
 		{
 			ActiveResult=1;
 		}
-		ptccb.put("ActiveResult",ActiveResult);
+		ptccb.put("root.ActiveResult",ActiveResult);
 		//1.1版本里面下位机解密了ECIES加密的PSK并在Lock_Init_Info字段返回
-		ptccb.put("ActInfo",ptjc.get<string>("Lock_Init_Info"));
+		ptccb.put("root.ActInfo",ptjc.get<string>("Lock_Init_Info"));
 	}
 
 	//////////////////////////////////////////////////////////////////////////
@@ -275,51 +272,51 @@ catch(...)
 		//	锁具编号	LockId	是	值：厂商自定的锁具唯一编号
 		//	闭锁码	ShutLockcode	是	值：闭锁码
 		//无用的形式化部分
-		ptccb.put("TransCode","0004");
+		ptccb.put("root.TransCode","0004");
 		assert("ReadShutLockCode"==ns_ReadCloseCodeName);
-		ptccb.put("TransName",ns_ReadCloseCodeName);
+		ptccb.put("root.TransName",ns_ReadCloseCodeName);
 		string zwDate,zwTime;
 		zwGetDateTimeString(time(NULL),zwDate,zwTime);
-		ptccb.put("TransDate",zwDate);
-		ptccb.put("TransTime",zwTime);
+		ptccb.put("root.TransDate",zwDate);
+		ptccb.put("root.TransTime",zwTime);
 
-		ptccb.put("DevCode",ns_ccbAtmno);
-		ptccb.put("LockMan",LOCKMAN_NAME);
-		ptccb.put("LockId",ptjc.get<string>("Lock_Serial"));
-		ptccb.put("ShutLockcode",ptjc.get<int>("Code"));
+		ptccb.put("root.DevCode",ns_ccbAtmno);
+		ptccb.put("root.LockMan",LOCKMAN_NAME);
+		ptccb.put("root.LockId",ptjc.get<string>("Lock_Serial"));
+		ptccb.put("root.ShutLockcode",ptjc.get<int>("Code"));
 	}
 
 	void zwconvRecvInitCloseCodeUp(const ptree &ptjc, ptree &ptccb)
 	{
-		ptccb.put("TransCode","1000");
-		ptccb.put("TransName","SendShutLockCode");
+		ptccb.put("root.TransCode","1000");
+		ptccb.put("root.TransName","SendShutLockCode");
 		string zwDate,zwTime;
 		zwGetDateTimeString(time(NULL),zwDate,zwTime);
-		ptccb.put("TransDate",zwDate);
-		ptccb.put("TransTime",zwTime);
+		ptccb.put("root.TransDate",zwDate);
+		ptccb.put("root.TransTime",zwTime);
 		//锁具发送初始闭锁码时，ATM编号应该已经在激活请求中获得，但是
 		//1.1版本报文里面没有给出，所以此处可能会有问题
-		ptccb.put("DevCode",ns_ccbAtmno);	
-		ptccb.put("LockMan",LOCKMAN_NAME);
-		ptccb.put("ShutLockcode",ptjc.get<int>("Code"));
+		ptccb.put("root.DevCode",ns_ccbAtmno);	
+		ptccb.put("root.LockMan",LOCKMAN_NAME);
+		ptccb.put("root.ShutLockcode",ptjc.get<int>("Code"));
 	}
 
 	
 	void zwconvRecvVerifyCodeUp(const ptree &ptjc, ptree &ptccb)
 	{
-		ptccb.put("TransCode","1002");
-		ptccb.put("TransName","SendUnLockIdent");
+		ptccb.put("root.TransCode","1002");
+		ptccb.put("root.TransName","SendUnLockIdent");
 		string zwDate,zwTime;
 		zwGetDateTimeString(time(NULL),zwDate,zwTime);
-		ptccb.put("TransDate",zwDate);
-		ptccb.put("TransTime",zwTime);
+		ptccb.put("root.TransDate",zwDate);
+		ptccb.put("root.TransTime",zwTime);
 		//锁具发送初始闭锁码时，ATM编号应该已经在激活请求中获得，但是
 		//1.1版本报文里面没有给出，所以此处可能会有问题
-		ptccb.put("DevCode",ns_ccbAtmno);	
-		ptccb.put("LockMan",LOCKMAN_NAME);
-		ptccb.put("LockId",ptjc.get<string>("Lock_Serial"));
+		ptccb.put("root.DevCode",ns_ccbAtmno);	
+		ptccb.put("root.LockMan",LOCKMAN_NAME);
+		ptccb.put("root.LockId",ptjc.get<string>("Lock_Serial"));
 		//关键的验证码本体
-		ptccb.put("UnLockIdentInfo",ptjc.get<int>("Lock_Ident_Info"));
+		ptccb.put("root.UnLockIdentInfo",ptjc.get<int>("Lock_Ident_Info"));
 	}
 
 

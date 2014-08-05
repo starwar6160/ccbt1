@@ -101,24 +101,21 @@ string & myAtmcMsgSendActiveInfo( string & strXML ,ptree &pt )
 	//	锁具厂商	LockMan	是	值：厂商自定与其他厂商不同的名称
 	//	锁具编号	LockId	是	值：厂商自定的锁具唯一编号
 	//	激活信息	ActInfo	是	密码和加密服务器分散产生，经过锁具公钥加密的激活信息 长度96个字符
-	//	密码和加密服务器公钥	PswSrvPubKey	是	密码和加密服务器的公钥，用于通信加密和验签
 	//开始生成请求报文
-	pt.put("TransCode","0001");
-	pt.put("TransName","SendActInfo");
+	pt.put("root.TransCode","0001");
+	pt.put("root.TransName","SendActInfo");
 	string zwDate,zwTime;
 	zwGetDateTimeString(time(NULL),zwDate,zwTime);
 
-	pt.put("TransDate",zwDate);
-	pt.put("TransTime",zwTime);
-	pt.put("DevCode",ATMNO_CCBTEST);
-	pt.put("LockMan",jcAtmcConvertDLL::LOCKMAN_NAME);
-	pt.put("LockId","ZWFAKELOCKNO1548");
-	//使用第一套激活信息,提供"ActInfo"和"PswSrvPubKey"的值
-	pt.put("ActInfo","BG3j9JZxpssY0bdb1oMwg4obKmZ93GTvbbnY8VZnQIglLGO8m7JvhTlnvKPnsuBv"
+	pt.put("root.TransDate",zwDate);
+	pt.put("root.TransTime",zwTime);
+	pt.put("root.DevCode",ATMNO_CCBTEST);
+	pt.put("root.LockMan",jcAtmcConvertDLL::LOCKMAN_NAME);
+	pt.put("root.LockId","ZWFAKELOCKNO1548");
+	//使用第一套激活信息,提供"ActInfo"的值
+	pt.put("root.ActInfo","BG3j9JZxpssY0bdb1oMwg4obKmZ93GTvbbnY8VZnQIglLGO8m7JvhTlnvKPnsuBv"
 	"1vAySJell1QrrkiMhsob1oc=.StjumFvZi4W4j2n/NUliN/72PY72IHjT.7tnYku3DAGnbsAas0+E98i"
 	"Ql2mr+CoJbZcc2uQS3oVEFBbwtAgspY+oC+lSJcKI62395wPYkSG+F+Rd1Bj66CaVyBk8I7KvO/R+ofR5BeeM=");
-	pt.put("PswSrvPubKey",	"BK4gbEtRRx+W3CVn96/V0zYzZOnhRrBAYGgNgBeRVRnWz1vaU4i4b0GdvA/yVR1i"
-							"JBEHmHyDBN8W93f+1kIx4jM=,");
 
 	std::ostringstream ss;
 	write_xml(ss,pt);
@@ -148,12 +145,12 @@ string & myAtmcMsgReadCloseCodeInfo( string & strXML ,ptree &pt )
 	//	交易日期	TransDate	是	值：YYYYMMDD，如20140401
 	//	交易时间	TransTime	是	值：hhmmss，如134050
 	//开始生成请求报文
-	pt.put("TransCode","0004");
-	pt.put("TransName","ReadShutLockCode");
-	pt.put("TransDate","20140802");
-	pt.put("TransTime","140826");
+	pt.put("root.TransCode","0004");
+	pt.put("root.TransName","ReadShutLockCode");
+	pt.put("root.TransDate","20140802");
+	pt.put("root.TransTime","140826");
 	//建行给出的报文里面没有这个字段，但是会导致后续流程很难处理
-	pt.put("DevCode",ATMNO_CCBTEST);
+	pt.put("root.DevCode",ATMNO_CCBTEST);
 	pt.put(jcAtmcConvertDLL::JCSTR_CMDTITLE,jcAtmcConvertDLL::JCSTR_READ_CLOSECODE);
 	std::ostringstream ss;
 	write_xml(ss,pt);
