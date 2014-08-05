@@ -104,6 +104,7 @@ protected:
 		cout<<__FUNCTION__<<endl;
 		m_connStatus=ELOCK_ERROR_SUCCESS;
 		m_connStatus=Open(25);
+		Sleep(500);	//等待通讯线程把网络连接建立起来
 	}
 	virtual void TearDown() {
 		cout<<__FUNCTION__<<endl;
@@ -210,6 +211,11 @@ TEST_F(ccbElockTest,LockActiveTestUnit)
 
 #endif // _ZWTEST730
 //////////////////////////////////////////////////////////////////////////
+//TEST_F(ccbElockTest,zwWaitForCommThreadStart)
+//{//该测试无意义,只是为了等待通讯线程启动的临时解决方法,20140805.1630.周伟
+//	Sleep(1000);
+//}
+
 
 #ifdef _DEBUG_RECV_INIT_CLOSECODE
 //接收锁具主动发送的初始闭锁码测试

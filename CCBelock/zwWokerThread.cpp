@@ -8,7 +8,15 @@ namespace zwccbthr{
 
 void zwPushString(const string &str)
 {
-	zwccbthr::zwscthr.SendString(str);
+	assert(str.length()>0);
+	try{
+		zwccbthr::zwscthr.SendString(str);
+	}
+	catch(...)
+	{
+		cout<<__FUNCTION__<<"\t zwWebSocket Send String Exeception!20140805.1626";
+	}
+	
 }
 
 
