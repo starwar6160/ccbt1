@@ -78,6 +78,8 @@ void myATMCRecvMsgRotine(const char *pszMsg)
 	}
 	if ("1002"==ccbop)
 	{
+		cout<<"VERIFYCODE 0805"<<endl;
+		cout<<s_retVerifyCode<<endl;
 		s_retVerifyCode=rmsg;
 	}
 }
@@ -200,6 +202,37 @@ TEST_F(ccbElockTest,LockActiveTestUnit)
 #endif // _ZWTEST730
 //////////////////////////////////////////////////////////////////////////
 
+//接收锁具主动发送的初始闭锁码测试
+TEST_F(ccbElockTest,RecvInitClose1000)
+{
+	EXPECT_EQ(ELOCK_ERROR_SUCCESS,SetRecvMsgRotine(myATMCRecvMsgRotine));	
+	while (s_retInitCloseCode.length()==0)
+	{
+		Sleep(200);
+	}
+	//Sleep(ZW_END_WAIT);
+	EXPECT_LT(42,s_retInitCloseCode.length());
+	string ccbop,ccbname;
+	zwGetCCBMsgType(s_retInitCloseCode,ccbop,ccbname);
+	EXPECT_EQ("1000",ccbop);
+	EXPECT_EQ("SendShutLockCode",ccbname);
+}
+
+//接收锁具主动发送的验证码测试
+TEST_F(ccbElockTest,RecvVerifyClose1002)
+{
+	EXPECT_EQ(ELOCK_ERROR_SUCCESS,SetRecvMsgRotine(myATMCRecvMsgRotine));	
+	while (s_retVerifyCode.length()==0)
+	{
+		Sleep(200);
+	}
+	//Sleep(ZW_END_WAIT);
+	EXPECT_LT(42,s_retVerifyCode.length());
+	string ccbop,ccbname;
+	zwGetCCBMsgType(s_retVerifyCode,ccbop,ccbname);
+	EXPECT_EQ("1002",ccbop);
+	EXPECT_EQ("SendUnLockIdent",ccbname);
+}
 
 
 
@@ -326,22 +359,6 @@ TEST_F(ccbElockTest,ReadCloseCodeTest0004)
 #endif // _USE_STAGE1_TEST805
 
 
-//发送初始闭锁码测试
-TEST_F(ccbElockTest,SendInitClose1000)
-{
-	EXPECT_EQ(ELOCK_ERROR_SUCCESS,SetRecvMsgRotine(myATMCRecvMsgRotine));	
-	while (s_retInitCloseCode.length()==0)
-	{
-		Sleep(200);
-	}
-	//Sleep(ZW_END_WAIT);
-	EXPECT_LT(42,s_retInitCloseCode.length());
-	string ccbop,ccbname;
-	zwGetCCBMsgType(s_retInitCloseCode,ccbop,ccbname);
-	EXPECT_EQ("1000",ccbop);
-	EXPECT_EQ("SendShutLockCode",ccbname);
-
-}
 
 
 int _tmain(int argc, _TCHAR* argv[])

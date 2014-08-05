@@ -85,13 +85,15 @@ public:
 			myGenInitCloseCodeJson(myInitCloseCodeJson);
 			app.logger().information(Poco::format("JinChu Lock Send InitClose=%s",
 				myInitCloseCodeJson));		
+			ws.sendFrame(myInitCloseCodeJson.data(),myInitCloseCodeJson.length(),0);
 			//·¢ËÍÑéÖ¤Âë
 			string outVerifyCodeJson;
 			myGenVerifyCodeJson(outVerifyCodeJson);
 			app.logger().information(Poco::format("JinChu Lock Send VerifyClose=%s",
 				outVerifyCodeJson));		
+			ws.sendFrame(outVerifyCodeJson.data(),outVerifyCodeJson.length(),0);
 //////////////////////////////////////////////////////////////////////////
-			ws.sendFrame(myInitCloseCodeJson.data(),myInitCloseCodeJson.length(),0);
+			
 			do
 			{
 				memset(buffer,0,RECV_BUF_LEN);
