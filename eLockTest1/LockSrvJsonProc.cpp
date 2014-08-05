@@ -134,6 +134,17 @@ void myGenInitCloseCodeJson(string &outInitCloseCodeJson)
 	ptOut.put(jcAtmcConvertDLL::JCSTR_CMDTITLE,"Lock_Close_Code_Lock");
 	ptOut.put("Lock_Time",time(NULL));
 	ptOut.put("Lock_Serial","ZWFAKELOCKNO1548");	
-	ptOut.put("Code","11112222");	
+	ptOut.put("Code","10007777");	
 	LockOutJson(ptOut,outInitCloseCodeJson);
+}
+
+//生成验证码报文
+void myGenVerifyCodeJson(string &outVerifyCodeJson)
+{
+	ptree ptOut;
+	ptOut.put(jcAtmcConvertDLL::JCSTR_CMDTITLE,"Lock_Open_Ident");
+	ptOut.put("Lock_Time",time(NULL));
+	ptOut.put("Lock_Serial","ZWFAKELOCKNO1548");	
+	ptOut.put("Lock_Ident_Info","10028888");	
+	LockOutJson(ptOut,outVerifyCodeJson);
 }

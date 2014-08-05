@@ -5,6 +5,8 @@
 #define ZWFUNCTRACK	cout<<__FUNCTION__<<endl;
 int zwjclms_command_proc(const string &inJson,string &outJson);
 void myGenInitCloseCodeJson(string &outInitCloseCodeJson);
+void myGenVerifyCodeJson(string &outVerifyCodeJson);
+
 class PageRequestHandler: public HTTPRequestHandler
 	/// Return a HTML document with some JavaScript creating
 	/// a WebSocket connection.
@@ -75,9 +77,20 @@ public:
 			char buffer[RECV_BUF_LEN];			
 			int flags;
 			int n;
+//////////////////////////////////////////////////////////////////////////
+			//锁具主动发送初始闭锁码，以及验证码，找不到哪里好放，就放到开头处
+			//因为不适合放到循环里面；
+			//发送初始闭锁码
 			string myInitCloseCodeJson;
 			myGenInitCloseCodeJson(myInitCloseCodeJson);
-			//app.logger().information(Poco::format("INITCLOSECODE805=%s",myInitCloseCodeJson));		
+			app.logger().information(Poco::format("JinChu Lock Send InitClose=%s",
+				myInitCloseCodeJson));		
+			//发送验证码
+			string outVerifyCodeJson;
+			myGenVerifyCodeJson(outVerifyCodeJson);
+			app.logger().information(Poco::format("JinChu Lock Send VerifyClose=%s",
+				outVerifyCodeJson));		
+//////////////////////////////////////////////////////////////////////////
 			ws.sendFrame(myInitCloseCodeJson.data(),myInitCloseCodeJson.length(),0);
 			do
 			{
