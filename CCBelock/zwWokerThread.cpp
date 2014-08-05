@@ -60,17 +60,11 @@ namespace zwccbthr{
 			assert(outXML.length()>42);	//XML开头的固定内容38个字符，外加起码一个标签的两对尖括号合计4个字符
 			//OutputDebugStringA(__FUNCTION__);
 			//OutputDebugStringA(outXML.c_str());
-
-
 			if (NULL!=zwCfg::g_WarnCallback)
 			{
 				zwCfg::g_WarnCallback(outXML.c_str());
 			}
-			wait(100);
-			if (i>20)
-			{
-				//break;
-			}
+
 		} 
 		memset(sbuf,0,128);
 		sprintf(sbuf,"%s thread End",__FUNCTION__);

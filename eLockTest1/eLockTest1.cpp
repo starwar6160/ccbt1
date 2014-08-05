@@ -8,12 +8,12 @@
 //#define _ZWTEST730
 //第一阶段的3条测试是否打开
 
-//#define _DEBUG_RECV_INIT_CLOSECODE
+#define _DEBUG_RECV_INIT_CLOSECODE
 //#define _DEBUG_RECV_VERIFY_CODE
 
 #define _DEBUG_ACTREQ
-//#define _DEBUG_SEND_ACTINFO
-//#define _DEBUG_READ_CLOSE_CODE
+#define _DEBUG_SEND_ACTINFO
+#define _DEBUG_READ_CLOSE_CODE
 
 
 
@@ -86,14 +86,10 @@ void myATMCRecvMsgRotine(const char *pszMsg)
 	if ("1000"==ccbop)
 	{
 		s_retInitCloseCode=rmsg;
-		//Sleep(300);
 	}
 	if ("1002"==ccbop)
 	{
-		cout<<"VERIFYCODE 0805"<<endl;
-		cout<<s_retVerifyCode<<endl;
 		s_retVerifyCode=rmsg;
-		//Sleep(300);
 	}
 }
 
