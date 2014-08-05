@@ -98,6 +98,7 @@ namespace jcAtmcConvertDLL{
 		//判断消息类型并从我们的JSON接口变为建行的接口所需字段
 		string jcCmd=ptJC.get<string>(jcAtmcConvertDLL::JCSTR_CMDTITLE);
 		ptree ptCCB;
+		ptCCB=ptJC;	//如果不符合以下任何一条，则保持原样
 		if (JCSTR_LOCK_ACTIVE_REQUEST==jcCmd)
 		{//发送锁具激活请求
 			zwconvLockActiveUp(ptJC,ptCCB);
@@ -110,6 +111,7 @@ namespace jcAtmcConvertDLL{
 		{//读取闭锁码
 			zwconvReadCloseCodeUp(ptJC,ptCCB);
 		}
+
 		//////////////////////////////////////////////////////////////////////////
 
 		std::stringstream sst2;

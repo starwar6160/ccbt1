@@ -6,6 +6,8 @@
 #include "zwCcbElockHdr.h"
 //看看是否打开其他测试以便专一测试一件事
 //#define _ZWTEST730
+//第一阶段的3条测试是否打开
+#define _USE_STAGE1_TEST805
 using namespace boost::property_tree;
 const JC_MSG_TYPE lockParseJson( const string & inJson, ptree &pt );
 void LockOutJson( const ptree &pt, string &outJson );
@@ -174,6 +176,7 @@ TEST_F(ccbElockTest,LockActiveTestUnit)
 
 
 
+#ifdef _USE_STAGE1_TEST805
 //锁具激活请求报文的在线测试
 TEST_F(ccbElockTest,LockActiveTestOnline)
 {
@@ -290,8 +293,8 @@ TEST_F(ccbElockTest,ReadCloseCodeTestOnline)
 	zwGetCCBMsgType(s_retstr,ccbop,ccbname);
 	EXPECT_EQ("0004",ccbop);
 	EXPECT_EQ("ReadShutLockCode",ccbname);
-
 }
+#endif // _USE_STAGE1_TEST805
 
 
 int _tmain(int argc, _TCHAR* argv[])

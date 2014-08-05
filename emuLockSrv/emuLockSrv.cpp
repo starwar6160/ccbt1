@@ -4,7 +4,7 @@
 #include "stdafx.h"
 #define ZWFUNCTRACK	cout<<__FUNCTION__<<endl;
 int zwjclms_command_proc(const string &inJson,string &outJson);
-
+void myGenInitCloseCodeJson(string &outInitCloseCodeJson);
 class PageRequestHandler: public HTTPRequestHandler
 	/// Return a HTML document with some JavaScript creating
 	/// a WebSocket connection.
@@ -75,6 +75,10 @@ public:
 			char buffer[RECV_BUF_LEN];			
 			int flags;
 			int n;
+			string myInitCloseCodeJson;
+			myGenInitCloseCodeJson(myInitCloseCodeJson);
+			//app.logger().information(Poco::format("INITCLOSECODE805=%s",myInitCloseCodeJson));		
+			//ws.sendFrame(myInitCloseCodeJson.data(),myInitCloseCodeJson.length(),0);
 			do
 			{
 				memset(buffer,0,RECV_BUF_LEN);
