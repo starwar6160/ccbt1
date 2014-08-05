@@ -23,7 +23,11 @@ namespace jcAtmcMsg{
 }
 
 
-string s_retstr;	//临时保存回调函数获取到的结果，以便验证；
+//临时保存回调函数获取到的结果，以便验证；
+string s_retInitCloseCode;
+string s_retActReq;
+string s_retLockInit;
+string s_retReadCloseCode;
 
 //获得一条XML报文的交易代码和交易名字
 void zwGetCCBMsgType(const string &inXML,string &outOpCode,string &outOpName)
@@ -49,10 +53,28 @@ void myATMCRecvMsgRotine(const char *pszMsg)
 {
 	assert(pszMsg!=NULL && strlen(pszMsg)>42);
 	EXPECT_LT(42,strlen(pszMsg));
+	string ccbop,ccbname;
+	string rmsg=pszMsg;
+	zwGetCCBMsgType(rmsg,ccbop,ccbname);
 	cout<<"*******************建行ATMC回调函数开始*******************\n";	
 	cout<<pszMsg<<endl;
 	cout<<"*******************建行ATMC回调函数结束*******************\n";
-	s_retstr=pszMsg;
+	if ("0000"==ccbop)
+	{
+		s_retActReq=rmsg;
+	}
+	if ("0001"==ccbop)
+	{
+		s_retLockInit=rmsg;
+	}
+	if ("0004"==ccbop)
+	{
+		s_retReadCloseCode=rmsg;
+	}
+	if ("1000"==ccbop)
+	{
+		s_retInitCloseCode=rmsg;
+	}
 }
 
 //测试套件初始化和结束事件
@@ -179,25 +201,24 @@ TEST_F(ccbElockTest,LockActiveTestUnit)
 #ifdef _USE_STAGE1_TEST805
 
 //发送初始闭锁码测试
-TEST_F(ccbElockTest,SendInitCloseOnline)
+TEST_F(ccbElockTest,SendInitClose1000)
 {
 	EXPECT_EQ(ELOCK_ERROR_SUCCESS,SetRecvMsgRotine(myATMCRecvMsgRotine));	
-	Sleep(ZW_END_WAIT);
-	EXPECT_LT(42,s_retstr.length());
-
-	while (s_retstr.length()==0)
+	while (s_retInitCloseCode.length()==0)
 	{
 		Sleep(200);
 	}
-	//string ccbop,ccbname;
-	//zwGetCCBMsgType(s_retstr,ccbop,ccbname);
-	//EXPECT_EQ("0000",ccbop);
-	//EXPECT_EQ("CallForActInfo",ccbname);
+	//Sleep(ZW_END_WAIT);
+	EXPECT_LT(42,s_retInitCloseCode.length());
+	string ccbop,ccbname;
+	zwGetCCBMsgType(s_retInitCloseCode,ccbop,ccbname);
+	EXPECT_EQ("1000",ccbop);
+	EXPECT_EQ("SendShutLockCode",ccbname);
 
 }
 
 //锁具激活请求报文的在线测试
-TEST_F(ccbElockTest,LockActiveTestOnline)
+TEST_F(ccbElockTest,LockActiveTest0000)
 {
 	//Open(25);
 	EXPECT_EQ(ELOCK_ERROR_SUCCESS,SetRecvMsgRotine(myATMCRecvMsgRotine));	
@@ -221,15 +242,15 @@ TEST_F(ccbElockTest,LockActiveTestOnline)
 #ifdef NDEBUG
 	EXPECT_EQ(ELOCK_ERROR_PARAMINVALID,SetRecvMsgRotine(NULL));
 #endif // NDEBUG
-	Sleep(ZW_END_WAIT);
-	EXPECT_LT(42,s_retstr.length());
-
-	while (s_retstr.length()==0)
+	while (s_retActReq.length()==0)
 	{
 		Sleep(200);
 	}
+	//Sleep(ZW_END_WAIT);
+	EXPECT_LT(42,s_retActReq.length());
+
 	string ccbop,ccbname;
-	zwGetCCBMsgType(s_retstr,ccbop,ccbname);
+	zwGetCCBMsgType(s_retActReq,ccbop,ccbname);
 	EXPECT_EQ("0000",ccbop);
 	EXPECT_EQ("CallForActInfo",ccbname);
 
@@ -237,7 +258,7 @@ TEST_F(ccbElockTest,LockActiveTestOnline)
 
 
 //锁具发送激活信息(PSK)报文(初始化)的在线测试
-TEST_F(ccbElockTest,LockSendActInfoTestOnline)
+TEST_F(ccbElockTest,LockSendActInfoTest0001)
 {
 	//Open(25);
 	//Sleep(2000);
@@ -262,14 +283,14 @@ TEST_F(ccbElockTest,LockSendActInfoTestOnline)
 #ifdef NDEBUG
 	EXPECT_EQ(ELOCK_ERROR_PARAMINVALID,SetRecvMsgRotine(NULL));
 #endif // NDEBUG
-	Sleep(ZW_END_WAIT);
-	EXPECT_LT(42,s_retstr.length());
-	while (s_retstr.length()==0)
+	while (s_retLockInit.length()==0)
 	{
 		Sleep(200);
 	}
+	//Sleep(ZW_END_WAIT);
+	EXPECT_LT(42,s_retLockInit.length());
 	string ccbop,ccbname;
-	zwGetCCBMsgType(s_retstr,ccbop,ccbname);
+	zwGetCCBMsgType(s_retLockInit,ccbop,ccbname);
 	EXPECT_EQ("0001",ccbop);
 	EXPECT_EQ("SendActInfo",ccbname);
 
@@ -277,7 +298,7 @@ TEST_F(ccbElockTest,LockSendActInfoTestOnline)
 
 
 //读取闭锁码报文的在线测试
-TEST_F(ccbElockTest,ReadCloseCodeTestOnline)
+TEST_F(ccbElockTest,ReadCloseCodeTest0004)
 {
 	//Open(25);
 	EXPECT_EQ(ELOCK_ERROR_SUCCESS,SetRecvMsgRotine(myATMCRecvMsgRotine));	
@@ -301,15 +322,15 @@ TEST_F(ccbElockTest,ReadCloseCodeTestOnline)
 #ifdef NDEBUG
 	EXPECT_EQ(ELOCK_ERROR_PARAMINVALID,SetRecvMsgRotine(NULL));
 #endif // NDEBUG
-	Sleep(ZW_END_WAIT);
-	EXPECT_LT(42,s_retstr.length());
-
-	while (s_retstr.length()==0)
+	while (s_retReadCloseCode.length()==0)
 	{
 		Sleep(200);
 	}
+	//Sleep(ZW_END_WAIT);
+	EXPECT_LT(42,s_retReadCloseCode.length());
+
 	string ccbop,ccbname;
-	zwGetCCBMsgType(s_retstr,ccbop,ccbname);
+	zwGetCCBMsgType(s_retReadCloseCode,ccbop,ccbname);
 	EXPECT_EQ("0004",ccbop);
 	EXPECT_EQ("ReadShutLockCode",ccbname);
 }
