@@ -137,8 +137,9 @@ unsigned int zwBinString2Int32(const char *data,const int len);
 		pjc->m_cmdtype=JCCMD_INIT_CLOSECODE;
 //#ifdef _DEBUG
 //		pjc->m_stepoftime=6;	//调试模式采用6秒的步长，快速发现问题
-//#else
-		pjc->m_stepoftime=60;	//默认在线模式，反推时间步长60秒
+//#else		
+		pjc->m_stepoftime=60*5;	//默认在线模式，反推时间步长60秒.
+		//20140805.0903.按照昨天张靖钰的要求，暂时改为5分钟默认值
 //#endif // _DEBUG
 		pjc->m_reverse_time_length=10*60;	//默认在线模式，反推10分钟
 		////将5分钟，4小时这样最常用到的有效期排列在前面，提高效率
@@ -234,8 +235,8 @@ unsigned int zwBinString2Int32(const char *data,const int len);
 
 		//规格化时间到G_TIMEMOD这么多秒
 		int l_datetime=myGetNormalTime(lock->m_datetime,
-			//lock->m_stepoftime);
-			60*5);	//20140804.1717.应张靖钰的测试需求，暂时改为5分钟取整
+			lock->m_stepoftime);
+			//60*5);	//20140804.1717.应张靖钰的测试需求，暂时改为5分钟取整
 		//有效期和闭锁码需要根据不同情况分别处理
 		int l_validity=lock->m_validity;
 		int l_closecode=lock->m_closecode;	

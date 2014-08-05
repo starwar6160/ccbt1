@@ -5,6 +5,8 @@ void myJcLockInputTest1();
 
 namespace CcbV11Test722Ecies{
 const int ZWMEGA=1000*1000;
+const int ZW_MATCHTIME_DIFF_START	=60*15;	//判断匹配结果时间往早允许的误差
+const int ZW_MATCHTIME_DIFF_END		=60*5;	//判断匹配结果时间往晚允许的误差
 const char *ts100="0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF"
 	"0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF"
 	"0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF"
@@ -430,7 +432,10 @@ TEST_F(jclmsCCBV11_Test,getDynaCodePass1)
 	EXPECT_GT(initCloseCode,0);
 	EXPECT_LT(initCloseCode,100000000);
 	printf("initCloseCode=\t%d\n",initCloseCode);
-	EXPECT_EQ(80498408,initCloseCode);
+	//此处期待值由于时间秒数按照一百万秒取整的原因，每隔12天需要更新一次
+	//这里是一个自检测试，如果失败，就说明有比较大的问题了，比如类似发生过的
+	//ARM编译器优化级别问题导致的生成错误的二进制代码等等
+	EXPECT_EQ(33428981,initCloseCode);
 	//dynaPass1
 	//注意现在合法的时间值应该是1.4G以上了，注意位数。20140721.1709	
 	JcLockSetInt(handle,JCI_DATETIME,static_cast<int>(time(NULL)));
@@ -442,8 +447,8 @@ TEST_F(jclmsCCBV11_Test,getDynaCodePass1)
 	EXPECT_LT(pass1DyCode,100*ZWMEGA);
 	printf("dynaPass1=\t%d\n",pass1DyCode);
 	JCMATCH pass1Match= JcLockReverseVerifyDynaCode(handle,pass1DyCode);
-	EXPECT_GT(pass1Match.s_datetime,time(NULL)-60);
-	EXPECT_LT(pass1Match.s_datetime,time(NULL)+15);
+	EXPECT_GT(pass1Match.s_datetime,time(NULL)-ZW_MATCHTIME_DIFF_START);
+	EXPECT_LT(pass1Match.s_datetime,time(NULL)+ZW_MATCHTIME_DIFF_END);
 	printf("current time=\t\t%d\n",time(NULL));
 	printf("pass1Match Time =\t%d\tValidity=%d\n",pass1Match.s_datetime,pass1Match.s_validity);
 }
@@ -461,8 +466,8 @@ TEST_F(jclmsCCBV11_Test,getDynaCodeVerifyCode)
 	EXPECT_LT(verifyCode,100*ZWMEGA);
 	printf("verCode=\t%d\n",verifyCode);
 	JCMATCH verCodeMatch=JcLockReverseVerifyDynaCode(handle,verifyCode);
-	EXPECT_GT(verCodeMatch.s_datetime,time(NULL)-60);
-	EXPECT_LT(verCodeMatch.s_datetime,time(NULL)+15);
+	EXPECT_GT(verCodeMatch.s_datetime,time(NULL)-ZW_MATCHTIME_DIFF_START);
+	EXPECT_LT(verCodeMatch.s_datetime,time(NULL)+ZW_MATCHTIME_DIFF_END);
 	printf("current time=\t\t%d\n",time(NULL));
 	printf("verCodeMatch Time =\t%d\tValidity=%d\n",verCodeMatch.s_datetime,verCodeMatch.s_validity);
 }
@@ -479,8 +484,8 @@ TEST_F(jclmsCCBV11_Test,getDynaCodePass2)
 	EXPECT_LT(pass2DyCode,100*ZWMEGA);
 	printf("pass2DyCode=\t%d\n",pass2DyCode);
 	JCMATCH pass2Match=JcLockReverseVerifyDynaCode(handle,pass2DyCode);
-	EXPECT_GT(pass2Match.s_datetime,time(NULL)-60);
-	EXPECT_LT(pass2Match.s_datetime,time(NULL)+15);
+	EXPECT_GT(pass2Match.s_datetime,time(NULL)-ZW_MATCHTIME_DIFF_START);
+	EXPECT_LT(pass2Match.s_datetime,time(NULL)+ZW_MATCHTIME_DIFF_END);
 	printf("current time=\t\t%d\n",time(NULL));
 	printf("pass2Match Time =\t%d\tValidity=%d\n",pass2Match.s_datetime,pass2Match.s_validity);
 }
