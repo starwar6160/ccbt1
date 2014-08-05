@@ -67,11 +67,11 @@ string & myAtmcMsgLockActive( string & strXML ,ptree &pt )
 	//	交易时间	TransTime	是	值：hhmmss，如134050
 	//	ATM设备编号	DevCode	是	值：我行12位设备编号
 	//开始生成请求报文
-	pt.put("TransCode","0000");
-	pt.put("TransName","CallForActInfo");
-	pt.put("TransDate","20140730");
-	pt.put("TransTime","142248");
-	pt.put("DevCode",ATMNO_CCBTEST);
+	pt.put("root.TransCode","0000");
+	pt.put("root.TransName","CallForActInfo");
+	pt.put("root.TransDate","20140730");
+	pt.put("root.TransTime","142248");
+	pt.put("root.DevCode",ATMNO_CCBTEST);
 
 	std::ostringstream ss;
 	write_xml(ss,pt);

@@ -49,27 +49,27 @@ namespace jcAtmcConvertDLL{
 
 
 		//判断消息类型
-		string transCode=pt.get<string>("TransCode");
+		string transCode=pt.get<string>("root.TransCode");
 		//保存建行冗余字段以便上传返回时提供给建行		
-		ns_ccbAtmno=pt.get<string>("DevCode");
+		ns_ccbAtmno=pt.get<string>("root.DevCode");
 		//根据消息类型调用不同函数处理	
 		//从建行的接口所需字段变为我们的JSON接口
 		ptree pt2;
 		if ("0000"==transCode)
 		{//锁具激活请求
-		ns_ActReqName=pt.get<string>("TransName");
+		ns_ActReqName=pt.get<string>("root.TransName");
 			msgType= JCMSG_LOCK_ACTIVE_REQUEST;
 			zwconvLockActiveDown(pt,pt2);
 		}
 		if ("0001"==transCode)
 		{//发送锁具激活信息(初始化)
-			ns_LockInitName=pt.get<string>("TransName");
+			ns_LockInitName=pt.get<string>("root.TransName");
 			msgType= JCMSG_SEND_LOCK_ACTIVEINFO;
 			zwconvLockInitDown(pt,pt2);
 		}
 		if ("0004"==transCode)
 		{//读取闭锁码
-			ns_ReadCloseCodeName=pt.get<string>("TransName");
+			ns_ReadCloseCodeName=pt.get<string>("root.TransName");
 			msgType= JCMSG_GET_CLOSECODE;
 			zwconvReadCloseCodeDown(pt,pt2);
 		}
@@ -102,7 +102,6 @@ namespace jcAtmcConvertDLL{
 		//判断消息类型并从我们的JSON接口变为建行的接口所需字段
 		string jcCmd=ptJC.get<string>(jcAtmcConvertDLL::JCSTR_CMDTITLE);
 		ptree ptCCB;
-		ptCCB=ptJC;	//如果不符合以下任何一条，则保持原样
 		if (JCSTR_LOCK_ACTIVE_REQUEST==jcCmd)
 		{//发送锁具激活请求
 			zwconvLockActiveUp(ptJC,ptCCB);
@@ -121,7 +120,7 @@ namespace jcAtmcConvertDLL{
 			zwconvRecvInitCloseCodeUp(ptJC,ptCCB);
 		}		
 		if (JCMSG_SEND_UNLOCK_CERTCODE==jcCmd)
-		{//接收下位机主动发来的初始闭锁码
+		{//接收下位机主动发来的验证码
 			zwconvRecvVerifyCodeUp(ptJC,ptCCB);
 		}
 
@@ -143,7 +142,7 @@ namespace jcAtmcConvertDLL{
 		cout<<upXML<<endl;
 		cout<<"*********************金储应答XML结束**********************\n";
 try{
-		string transCode=ptCCB.get<string>("TransCode");
+		string transCode=ptCCB.get<string>("root.TransCode");
 		if ("0000"==transCode)
 		{
 			return JCMSG_LOCK_ACTIVE_REQUEST;
@@ -170,22 +169,22 @@ catch(...)
 	void zwconvLockActiveUp( const ptree &ptjc, ptree &ptccb )
 	{
 		//无用的形式化部分
-		ptccb.put("TransCode","0000");
+		ptccb.put("root.TransCode","0000");
 		assert("CallForActInfo"==ns_ActReqName);
-		ptccb.put("TransName",ns_ActReqName);
-		ptccb.put("DevCode",ns_ccbAtmno);
+		ptccb.put("root.TransName",ns_ActReqName);
+		ptccb.put("root.DevCode",ns_ccbAtmno);
 //////////////////////////////////////////////////////////////////////////
 		string zwDate,zwTime;
 		zwGetDateTimeString(ptjc.get<time_t>("Lock_Time"),zwDate,zwTime);
-		ptccb.put("TransDate",zwDate);
-		ptccb.put("TransTime",zwTime);
+		ptccb.put("root.TransDate",zwDate);
+		ptccb.put("root.TransTime",zwTime);
 
 //////////////////////////////////////////////////////////////////////////
 		//有用部分
 		
-		ptccb.put("LockId",ptjc.get<string>("Lock_Serial"));
-		ptccb.put("LockPubKey",ptjc.get<string>("Lock_Public_Key"));	
-		ptccb.put("LockMan",LOCKMAN_NAME);
+		ptccb.put("root.LockId",ptjc.get<string>("Lock_Serial"));
+		ptccb.put("root.LockPubKey",ptjc.get<string>("Lock_Public_Key"));	
+		ptccb.put("root.LockMan",LOCKMAN_NAME);
 	}
 	//////////////////////////////////////////////////////////////////////////
 

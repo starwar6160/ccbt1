@@ -47,8 +47,8 @@ void zwGetCCBMsgType(const string &inXML,string &outOpCode,string &outOpName)
 		ss<<inXML;
 		ptree pt;
 		read_xml(ss,pt);
-		outOpCode=pt.get<string>("TransCode");
-		outOpName=pt.get<string>("TransName");
+		outOpCode=pt.get<string>("root.TransCode");
+		outOpName=pt.get<string>("root.TransName");
 	}
 	catch(...)
 	{
