@@ -64,7 +64,7 @@ public:
 	void handleRequest(HTTPServerRequest& request, HTTPServerResponse& response)
 	{
 		ZWFUNCTRACK
-			const int RECV_BUF_LEN=1024;
+		const int RECV_BUF_LEN=1024;
 		Application& app = Application::instance();
 		try
 		{
@@ -78,7 +78,6 @@ public:
 			do
 			{
 				memset(buffer,0,RECV_BUF_LEN);
-
 				n = ws.receiveFrame(buffer, sizeof(buffer), flags);				
 				int outLen=0;
 				string outBuf;
@@ -90,11 +89,9 @@ public:
 					continue;
 				}
 				zwjclms_command_proc(cmdRecv,cmdSend);				
-				//cmdSend=cmdRecv+" ADD BY EMUSRV 20140803.1412";
 				ws.sendFrame(cmdSend.data(), cmdSend.size(), flags);				
 				//app.logger().information(Poco::format("RECV msg=%s",cmdRecv));		
 				//app.logger().information(Poco::format("SEND msg=%s",cmdSend));	
-
 			}
 			while (n > 0 || (flags & WebSocket::FRAME_OP_BITMASK) != WebSocket::FRAME_OP_CLOSE);
 			app.logger().information("WebSocket connection closed.");

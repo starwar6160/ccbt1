@@ -35,7 +35,8 @@ namespace jcAtmcMsg{
 	string & myAtmcMsgLockActive( string & strXML ,ptree &pt);
 	string & myAtmcMsgSendActiveInfo( string & strXML ,ptree &pt );
 	string & myAtmcMsgReadCloseCodeInfo( string & strXML ,ptree &pt );
-	string & myTestMsgRecvCloseCodeInfo( string & strXML ,ptree &pt );
+	string & myTestMsgRecvCloseCode( string & strXML ,ptree &pt );
+	string & myTestMsgRecvVerifyCode( string & strXML ,ptree &pt );
 //生成模拟的ATMC XML消息的总入口，根据枚举生成相应那一条的XML消息
 void zwAtmcMsgGen( const JC_MSG_TYPE type,string &strXML,ptree &pt )
 {
@@ -53,10 +54,16 @@ void zwAtmcMsgGen( const JC_MSG_TYPE type,string &strXML,ptree &pt )
 		strXML=myAtmcMsgReadCloseCodeInfo(strXML,pt);
 		assert(strXML.length()>42);
 		break;
+//以下是配合锁具主动上传信息的测试性下发消息,建行并无这些下发报文
 	case JCMSG_SEND_INITCLOSECODE:
-		strXML=myTestMsgRecvCloseCodeInfo(strXML,pt);
+		strXML=myTestMsgRecvCloseCode(strXML,pt);
 		assert(strXML.length()>42);
 		break;
+	case JCMSG_SEND_UNLOCK_CERTCODE:
+		strXML=myTestMsgRecvVerifyCode(strXML,pt);
+		assert(strXML.length()>42);
+		break;
+
 	}
 }
 	
@@ -179,7 +186,7 @@ string & myAtmcMsgReadCloseCodeInfo( string & strXML ,ptree &pt )
 }
 
 //生成测试用的接收初始闭锁码报文，实际上建行并无此报文，只是为了形成一问一答方便测试
-string & myTestMsgRecvCloseCodeInfo( string & strXML ,ptree &pt )
+string & myTestMsgRecvCloseCode( string & strXML ,ptree &pt )
 {
 	//开始生成请求报文
 	pt.put("root.TransCode","1000");
@@ -189,6 +196,20 @@ string & myTestMsgRecvCloseCodeInfo( string & strXML ,ptree &pt )
 	strXML=ss.str();
 	return strXML;
 }
+
+//生成测试用的接收验证码报文，实际上建行并无此报文，只是为了形成一问一答方便测试
+string & myTestMsgRecvVerifyCode( string & strXML ,ptree &pt )
+{
+	//开始生成请求报文
+	pt.put("root.TransCode","1002");
+	pt.put("root.TransName","SendUnLockIdent");
+	std::ostringstream ss;
+	write_xml(ss,pt);
+	strXML=ss.str();
+	return strXML;
+}
+
+
 
 
 }	//namespace jcAtmcMsg

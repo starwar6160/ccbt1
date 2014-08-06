@@ -27,7 +27,7 @@ namespace jcAtmcConvertDLL{
 	extern const char *JCSTR_LOCK_INIT;				//锁具初始化
 	extern const char *JCSTR_READ_CLOSECODE;		//读取闭锁码
 	extern const char *JCSTR_SEND_INITCLOSECODE;	//下位机主动发送初始闭锁码
-	extern const char *JCMSG_SEND_UNLOCK_CERTCODE;	//下位机主动发送验证码
+	extern const char *JCSTR_SEND_UNLOCK_CERTCODE;	//下位机主动发送验证码
 	
 
 	const JC_MSG_TYPE zwCCBxml2JCjson(const string &inXML,string &outJson);

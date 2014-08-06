@@ -5,15 +5,15 @@
 #include "CCBelock.h"
 #include "zwCcbElockHdr.h"
 //看看是否打开其他测试以便专一测试一件事
-//#define _ZWTEST730
+#define _ZWTEST730
 //第一阶段的3条测试是否打开
 
 #define _DEBUG_RECV_INIT_CLOSECODE
-//#define _DEBUG_RECV_VERIFY_CODE
+#define _DEBUG_RECV_VERIFY_CODE
 
-//#define _DEBUG_ACTREQ
-//#define _DEBUG_SEND_ACTINFO
-//#define _DEBUG_READ_CLOSE_CODE
+#define _DEBUG_ACTREQ
+#define _DEBUG_SEND_ACTINFO
+#define _DEBUG_READ_CLOSE_CODE
 
 
 
@@ -237,6 +237,15 @@ TEST_F(ccbElockTest,RecvInitClose1000)
 TEST_F(ccbElockTest,RecvVerifyClose1002)
 {
 	EXPECT_EQ(ELOCK_ERROR_SUCCESS,SetRecvMsgRotine(myATMCRecvMsgRotine));	
+	const JC_MSG_TYPE msgType=JCMSG_SEND_UNLOCK_CERTCODE;	//设定消息类型
+	//ATMC生成XML消息
+	string strLockActiveXML;	//容纳生成的消息XML
+	//具体生成消息XML
+	ptree pt;
+	jcAtmcMsg::zwAtmcMsgGen(msgType,strLockActiveXML, pt);	
+
+	Notify(strLockActiveXML.c_str());
+
 	while (s_retVerifyCode.length()==0)
 	{
 		Sleep(200);

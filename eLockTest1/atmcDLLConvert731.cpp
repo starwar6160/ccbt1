@@ -19,6 +19,7 @@ namespace jcAtmcConvertDLL{
 	void zwconvRecvInitCloseCodeDown(const ptree &ptccb, ptree &ptjc );
 	void zwconvRecvInitCloseCodeUp(const ptree &ptjc, ptree &ptccb);
 	//接收锁具主动发送的验证码，只有上传方向
+	void zwconvRecvVerifyCodeDown(const ptree &ptccb, ptree &ptjc );
 	void zwconvRecvVerifyCodeUp(const ptree &ptjc, ptree &ptccb);
 	//以下4个字段，为的是在上下转换期间保存建行报文中冗余的，我们基本不用但又必须返回给建行的字段
 	string ns_ActReqName;
@@ -82,10 +83,16 @@ namespace jcAtmcConvertDLL{
 //////////////////////////////////////////////////////////////////////////
 		//锁具单向上传消息的配合一问一答测试消息：
 		if ("1000"==transCode)
-		{//读取闭锁码
+		{//接收初始闭锁码
 			msgType= JCMSG_SEND_INITCLOSECODE;
 			zwconvRecvInitCloseCodeDown(ptCCB,ptJC);
 		}
+		if ("1002"==transCode)
+		{//接收验证码
+			msgType= JCMSG_SEND_UNLOCK_CERTCODE;
+			zwconvRecvVerifyCodeDown(ptCCB,ptJC);
+		}
+		
 		//处理结果输出为Json供下位机使用
 		std::stringstream ss2;
 		write_json(ss2,ptJC);
@@ -132,7 +139,7 @@ namespace jcAtmcConvertDLL{
 		{//接收下位机主动发来的初始闭锁码
 			zwconvRecvInitCloseCodeUp(ptJC,ptCCB);
 		}		
-		if (JCMSG_SEND_UNLOCK_CERTCODE==jcCmd)
+		if (JCSTR_SEND_UNLOCK_CERTCODE==jcCmd)
 		{//接收下位机主动发来的验证码
 			zwconvRecvVerifyCodeUp(ptJC,ptCCB);
 		}
@@ -320,7 +327,13 @@ catch(...)
 		ptccb.put("root.ShutLockcode",ptjc.get<int>("Code"));
 	}
 
+	void zwconvRecvVerifyCodeDown(const ptree &ptccb, ptree &ptjc )
+	{
+		ptjc.put(jcAtmcConvertDLL::JCSTR_CMDTITLE,"Lock_Open_Ident");
+	}
+
 	
+
 	void zwconvRecvVerifyCodeUp(const ptree &ptjc, ptree &ptccb)
 	{
 		ptccb.put("root.TransCode","1002");
@@ -338,7 +351,7 @@ catch(...)
 		ptccb.put("root.UnLockIdentInfo",ptjc.get<int>("Lock_Ident_Info"));
 	}
 
-
+	
 
 	////////////////////////////每一条报文的具体处理函数结束//////////////////////////////////////////////
-}	//namespace jcAtmcConvertDLL
+}	//namespace jcAtmcConvertDLLLock_Open_Ident
