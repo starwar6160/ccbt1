@@ -16,6 +16,7 @@ namespace jcAtmcConvertDLL{
 	void zwconvLockInitUp( const ptree &ptjc, ptree &ptccb );
 	void zwconvReadCloseCodeUp( const ptree &ptjc, ptree &ptccb );
 	//接收锁具主动发送的初始闭锁码，只有上传方向
+	void zwconvRecvInitCloseCodeDown(const ptree &ptccb, ptree &ptjc );
 	void zwconvRecvInitCloseCodeUp(const ptree &ptjc, ptree &ptccb);
 	//接收锁具主动发送的验证码，只有上传方向
 	void zwconvRecvVerifyCodeUp(const ptree &ptjc, ptree &ptccb);
@@ -35,47 +36,59 @@ namespace jcAtmcConvertDLL{
 		cout<<"******************建行ATMC下发XML结束*********************\n";
 
 		JC_MSG_TYPE msgType=JCMSG_INVALID_TYPE;
-		ptree pt;
+		ptree ptCCB;
 		std::stringstream ss;
 		ss<<downXML;
-		read_xml(ss,pt);
+		read_xml(ss,ptCCB);
 		//////////////////////////////////////////////////////////////////////////
 
 		std::stringstream ssccb;
-		write_json(ssccb,pt);
+		write_json(ssccb,ptCCB);
 		string ccbJson= ssccb.str();
 		cout<<"***建行XML转换后的JSON开始********************************\n"<<ccbJson;
 		cout<<"***建行XML转换后的JSON结束********************************\n";
 
 
 		//判断消息类型
-		string transCode=pt.get<string>("root.TransCode");
-		//保存建行冗余字段以便上传返回时提供给建行		
-		ns_ccbAtmno=pt.get<string>("root.DevCode");
+		string transCode=ptCCB.get<string>("root.TransCode");
+		//保存建行冗余字段以便上传返回时提供给建行	
+			 //ns_ccbAtmno
+			//optionl<ptree> nsk_atmno	 =
+			//	ptCCB.get_optional("root.DevCode");		
+		//boost::optional<string> v = ptCCB.get_optional<string>("root.DevCode");
+		
+		ns_ccbAtmno=ptCCB.get("root.DevCode","CCBATMFAKE88");
 		//根据消息类型调用不同函数处理	
 		//从建行的接口所需字段变为我们的JSON接口
-		ptree pt2;
+		ptree ptJC;
 		if ("0000"==transCode)
 		{//锁具激活请求
-		ns_ActReqName=pt.get<string>("root.TransName");
+		ns_ActReqName=ptCCB.get<string>("root.TransName");
 			msgType= JCMSG_LOCK_ACTIVE_REQUEST;
-			zwconvLockActiveDown(pt,pt2);
+			zwconvLockActiveDown(ptCCB,ptJC);
 		}
 		if ("0001"==transCode)
 		{//发送锁具激活信息(初始化)
-			ns_LockInitName=pt.get<string>("root.TransName");
+			ns_LockInitName=ptCCB.get<string>("root.TransName");
 			msgType= JCMSG_SEND_LOCK_ACTIVEINFO;
-			zwconvLockInitDown(pt,pt2);
+			zwconvLockInitDown(ptCCB,ptJC);
 		}
 		if ("0004"==transCode)
 		{//读取闭锁码
-			ns_ReadCloseCodeName=pt.get<string>("root.TransName");
+			ns_ReadCloseCodeName=ptCCB.get<string>("root.TransName");
 			msgType= JCMSG_GET_CLOSECODE;
-			zwconvReadCloseCodeDown(pt,pt2);
+			zwconvReadCloseCodeDown(ptCCB,ptJC);
+		}
+//////////////////////////////////////////////////////////////////////////
+		//锁具单向上传消息的配合一问一答测试消息：
+		if ("1000"==transCode)
+		{//读取闭锁码
+			msgType= JCMSG_SEND_INITCLOSECODE;
+			zwconvRecvInitCloseCodeDown(ptCCB,ptJC);
 		}
 		//处理结果输出为Json供下位机使用
 		std::stringstream ss2;
-		write_json(ss2,pt2);
+		write_json(ss2,ptJC);
 		downJson= ss2.str();
 		cout<<"***金储JSON下发请求开始***********************************\n"<<downJson;
 		cout<<"***金储JSON下发请求结束***********************************\n";
@@ -286,6 +299,12 @@ catch(...)
 		ptccb.put("root.ShutLockcode",ptjc.get<int>("Code"));
 	}
 
+	void zwconvRecvInitCloseCodeDown(const ptree &ptccb, ptree &ptjc )
+	{
+		ptjc.put(jcAtmcConvertDLL::JCSTR_CMDTITLE,"Lock_Close_Code_Lock");
+	}
+
+
 	void zwconvRecvInitCloseCodeUp(const ptree &ptjc, ptree &ptccb)
 	{
 		ptccb.put("root.TransCode","1000");
@@ -318,6 +337,7 @@ catch(...)
 		//关键的验证码本体
 		ptccb.put("root.UnLockIdentInfo",ptjc.get<int>("Lock_Ident_Info"));
 	}
+
 
 
 	////////////////////////////每一条报文的具体处理函数结束//////////////////////////////////////////////

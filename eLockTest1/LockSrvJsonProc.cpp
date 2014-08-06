@@ -9,7 +9,7 @@ void LockOutJson( const ptree &pt, string &outJson );
 void myLockActive(ptree &pt );
 void myLockInit(ptree &ptIn );
 void myReadCloseCode(ptree &pt );
-
+void myGenInitCloseCodeJson( ptree &ptInOut );
 
 //此函数没有实际功能，功能都在下级子函数中，便于单元测试；此函数在此是满足联网的单元测试的；
 int zwjclms_command_proc(const string &inJson,string &outJson)
@@ -63,6 +63,12 @@ const JC_MSG_TYPE lockParseJson( const string & inJson, ptree &pt )
 			myReadCloseCode(pt);
 			return JCMSG_GET_CLOSECODE;
 		}
+		if (jcAtmcConvertDLL::JCSTR_SEND_INITCLOSECODE==sCommand)
+		{//是测试用的要求锁具“主动”发送初始闭锁码的消息
+			myGenInitCloseCodeJson(pt);
+			return JCMSG_SEND_INITCLOSECODE;
+		}
+
 	}
 	catch(...)
 	{
@@ -128,14 +134,14 @@ void myReadCloseCode(ptree &ptInOut )
 }
 
 //生成初始闭锁码报文
-void myGenInitCloseCodeJson(string &outInitCloseCodeJson)
+void myGenInitCloseCodeJson( ptree &ptInOut )
 {
 	ptree ptOut;
 	ptOut.put(jcAtmcConvertDLL::JCSTR_CMDTITLE,"Lock_Close_Code_Lock");
 	ptOut.put("Lock_Time",time(NULL));
 	ptOut.put("Lock_Serial","ZWFAKELOCKNO1548");	
 	ptOut.put("Code","10007777");	
-	LockOutJson(ptOut,outInitCloseCodeJson);
+	ptInOut=ptOut;
 }
 
 //生成验证码报文
