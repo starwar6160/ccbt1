@@ -24,7 +24,8 @@ namespace zwccbthr{
 	int ns_thr_run=ZWTHR_RUN;	//控制通讯线程的开始和停止
 	boost:: mutex thr_mutex; 
 	//建行给的接口，没有设置连接参数的地方，也就是说，完全可以写死IP和端口，抑或是从配置文件读取
-	zwWebSocket zwscthr("localhost",1425);
+	zwWebSocket zwscthr("10.0.0.10",8088);
+	//zwWebSocket zwscthr("localhost",1425);
 
 
 	void wait(int milliseconds)

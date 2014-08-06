@@ -5,7 +5,7 @@
 #include "CCBelock.h"
 #include "zwCcbElockHdr.h"
 //看看是否打开其他测试以便专一测试一件事
-#define _ZWTEST730
+//#define _ZWTEST730
 //第一阶段的3条测试是否打开
 
 #define _DEBUG_RECV_INIT_CLOSECODE
