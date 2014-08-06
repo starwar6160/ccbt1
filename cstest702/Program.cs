@@ -33,8 +33,11 @@ namespace cstest702
             //从句柄所指向的内部数据结构获取前面生成好的公钥和私钥，是Base64格式字符串，
             //不必理解其含义，原样透传即可，把公钥发给对方，私钥保存在断电后不丢失的
             //存储器中比如磁盘或者FLASH中
-            String ecPub = jclmsCCB2014.EciesGetPubKey(hec);
-            String ecPri = jclmsCCB2014.EciesGetPriKey(hec);
+            //String ecPub = jclmsCCB2014.EciesGetPubKey(hec);
+            //String ecPri = jclmsCCB2014.EciesGetPriKey(hec);
+            String ecPub = "BNtNCJWl769SUMXlAA9zgO0G2OgqOscwU15rJ29GsUpJWdFw+OISxJz5s2+Xe9mXnzHxrvkdAxLOcTRjT9LWm8U=,";
+            String ecPri = "vKikXLMXWZPK831V021NiMVSC4YPGlYT/j2BFHhtpYE=";
+
             Console.Out.WriteLine("CCB 1.1版本算法ECIES(椭圆曲线集成加密公钥算法)安全初始化演示开始");
             Console.Out.WriteLine("ECIES PubKey=\t{0},", ecPub);
             Console.Out.WriteLine("ECIES Prikey=\t{0}", ecPri);
@@ -52,6 +55,12 @@ namespace cstest702
             Console.Out.WriteLine("cryptText:\t{0}", cryptText);
             Console.Out.WriteLine("decryptPSK:\n{0}", decryptText);
             Console.Out.WriteLine("*************************");
+            String cryptText2 = jclmsCCB2014.EciesEncrypt(ecPub, plainText);
+            Console.Out.WriteLine("cryptText2:\t{0}", cryptText2);
+            if (cryptText == cryptText2)
+            {
+                Console.WriteLine("同一个ECIES对象两次加密同样的内容输出是一样的！,必须改正\n");
+            }
             //删除保存密钥对等等的内部数据结构.实践中密钥对生成只用做一次，以后就是            
             //保存下来重复利用了；这里每次都生成新的公钥/私钥对，是因为测试程序的缘故
             //删除句柄必须放到程序末尾，否则解密运算就无法进行了
