@@ -500,7 +500,7 @@ ZWECIES_API int EciesGenKeyPair(void)
 	char PubKey[ZWPUBLEN];
 	memset(PriKey,0,ZWPRILEN);
 	memset(PubKey,0,ZWPUBLEN);
-	zwEciesKeyPairGen("randpassword",PriKey,ZWPRILEN,PubKey,ZWPUBLEN);
+	zwEciesKeyPairGen("password",PriKey,ZWPRILEN,PubKey,ZWPUBLEN);
 	stu->pubKey=PubKey;
 	stu->priKey=PriKey;
 	return (int)stu;
@@ -595,7 +595,7 @@ ZWECIES_API const char * EciesEncrypt( const char *pubKey,const char *plainText 
 	int res=zwEciesEncrypt(pubKey,plainText,
 		encSyncKey,SKELEN,msgHashBuf,HASHLEN,cryptText,CRLEN);
 	string dot=".";
-	static string retStr=encSyncKey+dot+msgHashBuf+dot+cryptText;
+	string retStr=encSyncKey+dot+msgHashBuf+dot+cryptText;
 	if (ECIES_SUCCESS!=res|| strlen(encSyncKey)==0 || 
 		strlen(msgHashBuf)==0 || strlen(cryptText)==0)
 	{

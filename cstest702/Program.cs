@@ -19,9 +19,11 @@ namespace cstest702
         {
             //安全初始化例子
             myECIEStest();
+            //String aa = Console.ReadLine();
+            myECIEStest2();
             //建行1.1版本动态码验证流程例子
             //myV11DynaCodeTest();
-            myV11DynaCodeTestKeyBoardInput();
+            //myV11DynaCodeTestKeyBoardInput();
         }
 
         //安全初始化例子
@@ -55,7 +57,46 @@ namespace cstest702
             Console.Out.WriteLine("cryptText:\t{0}", cryptText);
             Console.Out.WriteLine("decryptPSK:\n{0}", decryptText);
             Console.Out.WriteLine("*************************");
-            String cryptText2 = jclmsCCB2014.EciesEncrypt(ecPub, plainText);
+            //String aa = Console.ReadLine();
+            String cryptText2 = jclmsCCB2014.EciesEncrypt(ecPub, plainText+"test806");
+            Console.Out.WriteLine("cryptText2:\t{0}", cryptText2);
+            if (cryptText == cryptText2)
+            {
+                Console.WriteLine("同一个ECIES对象两次加密不同的内容输出是一样的！,必须改正\n");
+            }
+            //删除保存密钥对等等的内部数据结构.实践中密钥对生成只用做一次，以后就是            
+            //保存下来重复利用了；这里每次都生成新的公钥/私钥对，是因为测试程序的缘故
+            //删除句柄必须放到程序末尾，否则解密运算就无法进行了
+            jclmsCCB2014.EciesDelete(hec);
+
+        }
+
+        private static void myECIEStest2()
+        {
+            //生成ECIES公钥/私钥对，返回保存密钥对等等的内部数据结构句柄
+            //1为模拟的上位机，2为模拟的下位机
+            int hec = jclmsCCB2014.EciesGenKeyPair();
+            String ecPub = "BNtNCJWl769SUMXlAA9zgO0G2OgqOscwU15rJ29GsUpJWdFw+OISxJz5s2+Xe9mXnzHxrvkdAxLOcTRjT9LWm8U=,";
+            String ecPri = "vKikXLMXWZPK831V021NiMVSC4YPGlYT/j2BFHhtpYE=";
+
+            Console.Out.WriteLine("CCB 1.1版本算法ECIES(椭圆曲线集成加密公钥算法)安全初始化演示开始");
+            Console.Out.WriteLine("ECIES PubKey=\t{0},", ecPub);
+            Console.Out.WriteLine("ECIES Prikey=\t{0}", ecPri);
+            String mypsk = jclmsCCB2014.zwMergePsk("testpsk1");
+            //注意明文长度不能超出一定限度，目前是62字节左右，否则加解密运算结果将是错误的；
+            String plainText =
+                //mypsk;
+                //"myplaintext20140717.0918.012myplaintext20140717.0918.012end920";  //明文
+            "77498EB7D7CE8B92D871791C99B85AB337FF73235A89E7A20764EFE6EA41E4CE";
+            //用对方的公钥加密后发给对方
+            String cryptText = jclmsCCB2014.EciesEncrypt(ecPub, plainText);
+            //对方使用自己的私钥解密，还原出来明文
+            String decryptText = jclmsCCB2014.EciesDecrypt(ecPri, cryptText);
+            Console.Out.WriteLine("PSK:\n{0}", plainText);
+            Console.Out.WriteLine("cryptText:\t{0}", cryptText);
+            Console.Out.WriteLine("decryptPSK:\n{0}", decryptText);
+            Console.Out.WriteLine("*************************");
+            String cryptText2 = jclmsCCB2014.EciesEncrypt(ecPub, plainText+"806");
             Console.Out.WriteLine("cryptText2:\t{0}", cryptText2);
             if (cryptText == cryptText2)
             {
@@ -67,6 +108,7 @@ namespace cstest702
             jclmsCCB2014.EciesDelete(hec);
 
         }
+
 
         //建行1.1版本动态码验证流程例子
         private static void myV11DynaCodeTest()
