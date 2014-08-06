@@ -74,7 +74,7 @@ zwWebSocket::zwWebSocket(const char *host,const int port)
 	cs.setHost(host);
 	cs.setPort(static_cast<unsigned int>(port));
 	request.setMethod(HTTPRequest::HTTP_GET);
-	request.setURI("/ws");
+	request.setURI("/");
 	ws=NULL;
 }
 

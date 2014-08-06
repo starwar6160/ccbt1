@@ -7,12 +7,12 @@
 //看看是否打开其他测试以便专一测试一件事
 //#define _ZWTEST730
 //第一阶段的3条测试是否打开
-
-#define _DEBUG_RECV_INIT_CLOSECODE
-#define _DEBUG_RECV_VERIFY_CODE
-
+//锁具可以正确反应的2个测试
 #define _DEBUG_ACTREQ
 #define _DEBUG_SEND_ACTINFO
+//锁具内部由于缺乏数据而无法做出反应的测试
+#define _DEBUG_RECV_INIT_CLOSECODE
+#define _DEBUG_RECV_VERIFY_CODE
 #define _DEBUG_READ_CLOSE_CODE
 
 
@@ -162,48 +162,6 @@ TEST(ccbElockDeathTest,NotifyTestBad)
 //	Sleep(1000);
 //}
 
-#ifdef _DEBUG_ACTREQ
-//锁具激活请求报文的在线测试
-TEST_F(ccbElockTest,LockActiveTest0000)
-{
-	//Open(25);
-	EXPECT_EQ(ELOCK_ERROR_SUCCESS,SetRecvMsgRotine(myATMCRecvMsgRotine));	
-	const JC_MSG_TYPE msgType=JCMSG_LOCK_ACTIVE_REQUEST;	//设定消息类型
-	//ATMC生成XML消息
-	string strLockActiveXML;	//容纳生成的消息XML
-	//具体生成消息XML
-	ptree pt;
-	jcAtmcMsg::zwAtmcMsgGen(msgType,strLockActiveXML, pt);	
-
-	if (ELOCK_ERROR_SUCCESS==m_connStatus)
-	{
-		EXPECT_EQ(ELOCK_ERROR_SUCCESS,Notify(strLockActiveXML.c_str()));		
-	}
-	else
-	{
-		EXPECT_EQ(ELOCK_ERROR_CONNECTLOST,Notify(strLockActiveXML.c_str()));		
-		cout<<"Server not Start!"<<endl;
-	}
-
-#ifdef NDEBUG
-	EXPECT_EQ(ELOCK_ERROR_PARAMINVALID,SetRecvMsgRotine(NULL));
-#endif // NDEBUG
-	while (s_retActReq.length()==0)
-	{
-		Sleep(200);
-	}
-
-	Sleep(ZW_END_WAIT);
-	EXPECT_LT(42,s_retActReq.length());
-
-	string ccbop,ccbname;
-	zwGetCCBMsgType(s_retActReq,ccbop,ccbname);
-	EXPECT_EQ("0000",ccbop);
-	EXPECT_EQ("CallForActInfo",ccbname);
-
-}
-#endif // _DEBUG_ACTREQ
-
 
 #ifdef _DEBUG_RECV_INIT_CLOSECODE
 //接收锁具主动发送的初始闭锁码测试
@@ -260,6 +218,48 @@ TEST_F(ccbElockTest,RecvVerifyClose1002)
 #endif // _DEBUG_RECV_VERIFY_CODE
 
 
+
+#ifdef _DEBUG_ACTREQ
+//锁具激活请求报文的在线测试
+TEST_F(ccbElockTest,LockActiveTest0000)
+{
+	//Open(25);
+	EXPECT_EQ(ELOCK_ERROR_SUCCESS,SetRecvMsgRotine(myATMCRecvMsgRotine));	
+	const JC_MSG_TYPE msgType=JCMSG_LOCK_ACTIVE_REQUEST;	//设定消息类型
+	//ATMC生成XML消息
+	string strLockActiveXML;	//容纳生成的消息XML
+	//具体生成消息XML
+	ptree pt;
+	jcAtmcMsg::zwAtmcMsgGen(msgType,strLockActiveXML, pt);	
+
+	if (ELOCK_ERROR_SUCCESS==m_connStatus)
+	{
+		EXPECT_EQ(ELOCK_ERROR_SUCCESS,Notify(strLockActiveXML.c_str()));		
+	}
+	else
+	{
+		EXPECT_EQ(ELOCK_ERROR_CONNECTLOST,Notify(strLockActiveXML.c_str()));		
+		cout<<"Server not Start!"<<endl;
+	}
+
+#ifdef NDEBUG
+	EXPECT_EQ(ELOCK_ERROR_PARAMINVALID,SetRecvMsgRotine(NULL));
+#endif // NDEBUG
+	while (s_retActReq.length()==0)
+	{
+		Sleep(200);
+	}
+
+	Sleep(ZW_END_WAIT);
+	EXPECT_LT(42,s_retActReq.length());
+
+	string ccbop,ccbname;
+	zwGetCCBMsgType(s_retActReq,ccbop,ccbname);
+	EXPECT_EQ("0000",ccbop);
+	EXPECT_EQ("CallForActInfo",ccbname);
+
+}
+#endif // _DEBUG_ACTREQ
 
 
 

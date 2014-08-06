@@ -3,14 +3,14 @@
 #include "zwwsClient.h"
 using namespace boost::property_tree;
 namespace zwccbthr{
-	extern zwWebSocket zwscthr;
+	extern zwWebSocket *zwscthr;
 }
 
 void zwPushString(const string &str)
 {
 	assert(str.length()>0);
 	try{
-		zwccbthr::zwscthr.SendString(str);
+		zwccbthr::zwscthr->SendString(str);
 	}
 	catch(...)
 	{
@@ -24,8 +24,8 @@ namespace zwccbthr{
 	int ns_thr_run=ZWTHR_RUN;	//控制通讯线程的开始和停止
 	boost:: mutex thr_mutex; 
 	//建行给的接口，没有设置连接参数的地方，也就是说，完全可以写死IP和端口，抑或是从配置文件读取
-	zwWebSocket zwscthr("10.0.0.10",8088);
-	//zwWebSocket zwscthr("localhost",1425);
+	//zwWebSocket zwscthr("10.0.0.10",8088);
+	zwWebSocket * zwscthr = NULL;
 
 
 	void wait(int milliseconds)
@@ -41,7 +41,8 @@ namespace zwccbthr{
 	memset(sbuf,0,128);
 	sprintf(sbuf,"%s thread Start",__FUNCTION__);
 	OutputDebugStringA(sbuf);
-	zwscthr.wsConnect();
+	zwscthr=new zwWebSocket("localhost",1425);
+	zwscthr->wsConnect();
 		int i=0;
 		cout<<"####################Start \t"<<__FUNCTION__<<endl;
 		while(1)
@@ -52,7 +53,7 @@ namespace zwccbthr{
 			}
 			
 			string recstr;
-			zwscthr.ReceiveString(recstr);
+			zwscthr->ReceiveString(recstr);
 			memset(sbuf,0,128);
 			sprintf(sbuf,"%s Comm with Lock times %d",__FUNCTION__,i++);
 			OutputDebugStringA(sbuf);
@@ -71,7 +72,7 @@ namespace zwccbthr{
 		sprintf(sbuf,"%s thread End",__FUNCTION__);
 		OutputDebugStringA(sbuf);
 		cout<<"####################End \t"<<__FUNCTION__<<endl;
-		zwscthr.wsClose();
+		zwscthr->wsClose();
 	}
 
 	//线程对象作为一个全局静态变量，则不需要显示启动就能启动一个线程
@@ -85,7 +86,7 @@ namespace zwccbthr{
 	{
 		OutputDebugStringA(__FUNCTION__);
 		ns_thr_run=ZWTHR_STOP;
-		zwscthr.wsClose();
+		zwscthr->wsClose();
 	}
 
 

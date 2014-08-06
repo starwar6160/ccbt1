@@ -24,7 +24,8 @@ public:
 		ostr << "{";
 		ostr << "  if (\"WebSocket\" in window)";
 		ostr << "  {";
-		ostr << "    var ws = new WebSocket(\"ws://" << request.serverAddress().toString() << "/ws\");";
+		//这里是决定到底是"/ws"还是"/"
+		ostr << "    var ws = new WebSocket(\"ws://" << request.serverAddress().toString() << "/\");";
 		ostr << "    ws.onopen = function()";
 		ostr << "      {";
 		ostr << "        ws.send(\"Hello, world!\");";
@@ -141,8 +142,8 @@ public:
 		{
 			app.logger().information(it->first + ": " + it->second);
 		}
-
-		if (request.getURI() == "/ws")
+		//这里是决定到底是"/ws"还是"/"
+		if (request.getURI() == "/")
 			return new WebSocketRequestHandler;
 		else
 			return new PageRequestHandler;
