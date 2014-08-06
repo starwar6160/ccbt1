@@ -1,12 +1,14 @@
 // dllmain.cpp : 定义 DLL 应用程序的入口点。
 #include "stdafx.h"
 
+void zwOutDebugString(const char *pszStr);
+
 static void myShowDLLVersion(const char * fnName)
 {
-	char version[128];
-	memset(version,0,128);
+	char version[256];
+	memset(version,0,256);
 	sprintf(version,"%s Version is %s %s\n",fnName,__DATE__,__TIME__);
-	printf(version);
+	zwOutDebugString(version);
 }
  
 BOOL APIENTRY DllMain( HMODULE hModule,

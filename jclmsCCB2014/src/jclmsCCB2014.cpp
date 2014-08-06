@@ -8,7 +8,6 @@
 #include "jclmsCCB2014.h"
 #include "sm3.h"
 
-
  
 //获取初始闭锁码的3个可变条件的“固定值”
 static void myGetInitCloseCodeVarItem(int *mdatetime,int *mvalidity,int *mclosecode);
@@ -18,6 +17,8 @@ const int ZW_LOWEST_DATE=1400*ZWMEGA-24*3600;	//考虑到取整运算可能使得时间值低于
 const int ZW_DIGI8_LOW=10*ZWMEGA;
 const int ZW_DIGI8_HIGH=100*ZWMEGA;
 const int ZW_MAXDATA32=2048*ZWMEGA-3;	//32位有符号整数可能表示的最大时间值
+
+
 
 typedef struct JcLockInput
 {

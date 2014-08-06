@@ -83,5 +83,8 @@
     <ClCompile Include="zwECIES\zwRand201406.cpp">
       <Filter>源文件\ECIES</Filter>
     </ClCompile>
+    <ClCompile Include="zwOutputDebugString.cpp">
+      <Filter>源文件\src</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
