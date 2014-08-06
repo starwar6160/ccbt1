@@ -574,7 +574,7 @@ static string myMergeEncOutItems(int eciesHandle)
 			stu->encoutCryptText;
 }
 
-
+string g_retStr;
 //要求eciesHandle已经被设置了公钥才能成功，返回值是3个元素的组合，不必理解其意义
 ZWECIES_API const char * EciesEncrypt( const char *pubKey,const char *plainText )
 {
@@ -595,13 +595,13 @@ ZWECIES_API const char * EciesEncrypt( const char *pubKey,const char *plainText 
 	int res=zwEciesEncrypt(pubKey,plainText,
 		encSyncKey,SKELEN,msgHashBuf,HASHLEN,cryptText,CRLEN);
 	string dot=".";
-	string retStr=encSyncKey+dot+msgHashBuf+dot+cryptText;
+	g_retStr=encSyncKey+dot+msgHashBuf+dot+cryptText;
 	if (ECIES_SUCCESS!=res|| strlen(encSyncKey)==0 || 
 		strlen(msgHashBuf)==0 || strlen(cryptText)==0)
 	{
 		return NULL;
 	}
-	return retStr.c_str();
+	return g_retStr.c_str();
 }
 
 //要求eciesHandle已经被设置了私钥才能成功，输入密文是3个元素的组合，不必理解其意义
