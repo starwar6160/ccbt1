@@ -45,9 +45,15 @@ public:
 	//不然就会在每个测试新建一个新的类实例，变量被重新初始化，中间值不保留
 	static char s_priKey[ZW_ECIES_PRIKEY_LEN];
 	static char s_pubKey[ZW_ECIES_PUBKEY_LEN];
+
 	static char s_syncKey[ZW_ECIES_ENCSYNCKEY_LEN];
 	static char s_hash[ZW_ECIES_HASH_LEN];
 	static char s_crypt[ZW_ECIES_MESSAGE_MAXLEN];
+	//为了验证是否内存中同一个ECIES对象对于不同的明文确实加密出来不同的密文
+	static char s_syncKey2[ZW_ECIES_ENCSYNCKEY_LEN];
+	static char s_hash2[ZW_ECIES_HASH_LEN];
+	static char s_crypt2[ZW_ECIES_MESSAGE_MAXLEN];
+
 	static char *s_PlainText;
 
 protected:
@@ -61,9 +67,15 @@ protected:
 };
 char ECIES_Test::s_priKey[ZW_ECIES_PRIKEY_LEN];
 char ECIES_Test::s_pubKey[ZW_ECIES_PUBKEY_LEN];
+
 char ECIES_Test::s_syncKey[ZW_ECIES_ENCSYNCKEY_LEN];
 char ECIES_Test::s_hash[ZW_ECIES_HASH_LEN];
 char ECIES_Test::s_crypt[ZW_ECIES_MESSAGE_MAXLEN];
+//为了验证是否内存中同一个ECIES对象对于不同的明文确实加密出来不同的密文
+char ECIES_Test::s_syncKey2[ZW_ECIES_ENCSYNCKEY_LEN];
+char ECIES_Test::s_hash2[ZW_ECIES_HASH_LEN];
+char ECIES_Test::s_crypt2[ZW_ECIES_MESSAGE_MAXLEN];
+
 char * ECIES_Test::s_PlainText;
 
 
@@ -100,11 +112,24 @@ EXPECT_EQ(eciesEncRet,ECIES_SUCCESS);
 EXPECT_GT(strlen(s_syncKey),0);
 EXPECT_GT(strlen(s_hash),0);
 EXPECT_GT(strlen(s_crypt),0);
+//试试看同一个对象两次加密不同的明文，结果是否不同
+string myPlainText2=s_PlainText;
+myPlainText2=myPlainText2+"aaa";
+zwEciesEncrypt(s_pubKey,myPlainText2.c_str(),s_syncKey2,sizeof(s_syncKey2),
+	s_hash2,sizeof(s_hash2),s_crypt2,sizeof(s_crypt2));
+EXPECT_NE(s_syncKey,s_syncKey2);
+EXPECT_NE(s_hash,s_hash2);
+EXPECT_NE(s_crypt,s_crypt2);
 #ifdef _DEBUG
 cout<<"syncKey=\t"<<s_syncKey<<endl;
 cout<<"s_hash=\t"<<s_hash<<endl;
 cout<<"s_crypt=\t"<<s_crypt<<endl;
+cout<<"syncKey2=\t"<<s_syncKey2<<endl;
+cout<<"s_hash2=\t"<<s_hash2<<endl;
+cout<<"s_crypt2=\t"<<s_crypt2<<endl;
+
 #endif // _DEBUG
+
 }
 
 
@@ -307,11 +332,14 @@ TEST_F(ECIES_Test,csEncDec)
 	EXPECT_GT(strlen(pubkey),0);
 	EXPECT_GT(strlen(prikey),0);
 	char crypt[ZW_ECIES_CRYPT_TOTALLEN];
+	char crypt2[ZW_ECIES_CRYPT_TOTALLEN];
 	char outPlain[ZW_ECIES_CRYPT_TOTALLEN*2];
 	memset(crypt,0,sizeof(crypt));
 	memset(outPlain,0,sizeof(outPlain));
 	strcpy(crypt, EciesEncrypt(pubkey,csPlainText));
+	strcpy(crypt2, EciesEncrypt(pubkey,csPlainText));
 	EXPECT_GT(strlen(crypt),0);
+	EXPECT_NE(0,memcmp(crypt,crypt2,ZW_ECIES_CRYPT_TOTALLEN));
 	string crStr=EciesDecrypt(prikey,crypt);
 	strcpy(outPlain,crStr.c_str());
 	EXPECT_GT(strlen(outPlain),0);
@@ -320,6 +348,7 @@ TEST_F(ECIES_Test,csEncDec)
 	cout<<"pubkey=\t"<<pubkey<<endl;
 	cout<<"prikey=\t"<<prikey<<endl;
 	cout<<"ecies crypt combie result is"<<endl<<crypt<<endl;
+	cout<<"ecies crypt2 combie result is"<<endl<<crypt2<<endl;
 #endif // _DEBUG
 
 }
