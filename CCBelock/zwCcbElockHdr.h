@@ -67,5 +67,13 @@ namespace zwCfg{
 //从给定的时间秒数，获取日期(YYYYMMDD)和时间(HHMMSS)字符串
 void zwGetDateTimeString(time_t inTime,string &outDate,string &outTime);
 
+class zw_trace
+{
+	string m_str;
+public:
+	zw_trace(const char *funcName);
+	~zw_trace();
+};
+#define ZWFUNCTRACE	zw_trace fntr(__FUNCTION__);
 
 #endif // zwCcbElockHdr_h__

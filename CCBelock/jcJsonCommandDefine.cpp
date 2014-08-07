@@ -11,9 +11,24 @@ namespace jcAtmcConvertDLL{
 	const char *JCSTR_SEND_UNLOCK_CERTCODE="Lock_Open_Ident";
 }
 
+zw_trace::zw_trace(const char *funcName)
+{
+	m_str=funcName;
+	OutputDebugStringA(m_str.c_str());
+	cout<<m_str<<endl;
+}
+
+zw_trace::~zw_trace()
+{
+	OutputDebugStringA(m_str.c_str());
+	cout<<m_str<<endl;
+}
+
+
 //从给定的时间秒数，获取日期(YYYYMMDD)和时间(HHMMSS)字符串
 void zwGetDateTimeString(time_t inTime,string &outDate,string &outTime)
 {
+	ZWFUNCTRACE
 	char zwDate[16];	//YYYYMMDD+NULL
 	char zwTime[16];	//HHMMSS+NULL
 	memset(zwDate,0,16);

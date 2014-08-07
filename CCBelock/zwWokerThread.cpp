@@ -2,12 +2,15 @@
 #include "zwCcbElockHdr.h"
 #include "zwwsClient.h"
 using namespace boost::property_tree;
+
+
 namespace zwccbthr{
 	extern zwWebSocket *zwscthr;
 }
 
 void zwPushString(const string &str)
 {
+	ZWFUNCTRACE
 	assert(str.length()>0);
 	try{
 		zwccbthr::zwscthr->SendString(str);
@@ -36,6 +39,7 @@ namespace zwccbthr{
 	//与锁具之间的通讯线程
 	void ThreadLockComm()
 	{		
+	ZWFUNCTRACE
 	boost:: mutex:: scoped_lock lock( thr_mutex); 
 	char sbuf[128];
 	memset(sbuf,0,128);
@@ -80,11 +84,13 @@ namespace zwccbthr{
 	boost::thread t(ThreadLockComm); 
 	void zwStartLockCommThread(void)
 	{
+		ZWFUNCTRACE
 		OutputDebugStringA(__FUNCTION__);
 	}
 
 	void zwStopLockCommThread(void)
 	{
+		ZWFUNCTRACE
 		OutputDebugStringA(__FUNCTION__);
 		ns_thr_run=ZWTHR_STOP;
 		zwscthr->wsClose();

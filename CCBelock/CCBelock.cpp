@@ -41,6 +41,7 @@ namespace zwCfg{
 
 CCBELOCK_API long JCAPISTD Open(long lTimeOut)
 {
+	ZWFUNCTRACE
 	boost:: mutex:: scoped_lock lock( zwCfg::io_mutex); 
 	//必须大于0，小于JC_CCBDLL_TIMEOUT，限制在一个合理范围内
 	assert(lTimeOut>0 && lTimeOut<zwCfg::JC_CCBDLL_TIMEOUT);
@@ -53,6 +54,7 @@ CCBELOCK_API long JCAPISTD Open(long lTimeOut)
 
 CCBELOCK_API long JCAPISTD Close()
 {
+	ZWFUNCTRACE
 	boost:: mutex:: scoped_lock lock( zwCfg::io_mutex); 
 	//zwccbthr::zwStopLockCommThread();
 	zwCfg::g_WarnCallback=NULL;
@@ -62,6 +64,7 @@ CCBELOCK_API long JCAPISTD Close()
 
 CCBELOCK_API long JCAPISTD Notify(const char *pszMsg)
 {
+	ZWFUNCTRACE
 	assert(pszMsg!=NULL && strlen(pszMsg)>42);	//XML至少42字节
 	boost:: mutex:: scoped_lock lock( zwCfg::io_mutex); 
 	string strJsonSend;
@@ -124,6 +127,7 @@ CCBELOCK_API long JCAPISTD Notify(const char *pszMsg)
 
 void cdecl myATMCRecvMsgRotine(const char *pszMsg)
 {
+	ZWFUNCTRACE
 	assert(pszMsg!=NULL && strlen(pszMsg)>42);
 	boost:: mutex:: scoped_lock lock( zwCfg::io_mutex); 
 	//输入必须有内容，但是最大不得长于下位机内存大小，做合理限制
@@ -139,6 +143,7 @@ void cdecl myATMCRecvMsgRotine(const char *pszMsg)
 
 CCBELOCK_API int JCAPISTD SetRecvMsgRotine(RecvMsgRotine pRecvMsgFun)
 {
+	ZWFUNCTRACE
 	boost:: mutex:: scoped_lock lock( zwCfg::io_mutex); 
 	assert(NULL!=pRecvMsgFun);
 	if (NULL==pRecvMsgFun)
