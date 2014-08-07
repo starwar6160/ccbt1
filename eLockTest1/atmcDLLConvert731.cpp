@@ -1,9 +1,6 @@
 #include "stdafx.h"
 #include "zwCcbElockHdr.h"
 
-//#define ZWTRACE(x) OutputDebugStringA(x)
-
-
 using namespace boost::property_tree;
 //把ATMC DLL的XML和JSON互转函数集中于此，便于单元测试；
 namespace jcAtmcConvertDLL{

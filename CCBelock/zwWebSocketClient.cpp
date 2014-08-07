@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "zwwsClient.h"
+#include "zwCcbElockHdr.h"
 using Poco::Net::ConnectionRefusedException;
 
 namespace{
@@ -27,8 +28,8 @@ namespace{
 			}
 			catch (WebSocketException& exc)
 			{
-				OutputDebugStringA("CPPEXECPTION804B");
-				OutputDebugStringA(__FUNCTION__);
+				ZWTRACE("CPPEXECPTION804B");
+				ZWTRACE(__FUNCTION__);
 				switch (exc.code())
 				{
 				case WebSocket::WS_ERR_HANDSHAKE_UNSUPPORTED_VERSION:

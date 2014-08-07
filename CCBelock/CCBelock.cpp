@@ -120,10 +120,10 @@ CCBELOCK_API long JCAPISTD Notify(const char *pszMsg)
 		//发现WS对象因为未连接而是NULL时直接throw一个枚举
 		//然后在此，也就是上层捕获。暂时不知道捕获精确类型
 		//所以catch所有异常了
-		OutputDebugStringA("CPPEXECPTION804A OTHER ERROR");
-		OutputDebugStringA(__FUNCTION__);
-		OutputDebugStringA(pszMsg);
-		OutputDebugStringA(strJsonSend.c_str());
+		ZWTRACE("CPPEXECPTION804A OTHER ERROR");
+		ZWTRACE(__FUNCTION__);
+		ZWTRACE(pszMsg);
+		ZWTRACE(strJsonSend.c_str());
 		return ELOCK_ERROR_CONNECTLOST;
 	}
 }

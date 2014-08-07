@@ -77,13 +77,13 @@ namespace zwccbthr{
 	void zwStartLockCommThread(void)
 	{
 		ZWFUNCTRACE
-		OutputDebugStringA(__FUNCTION__);
+		ZWTRACE(__FUNCTION__);
 	}
 
 	void zwStopLockCommThread(void)
 	{
 		ZWFUNCTRACE
-		OutputDebugStringA(__FUNCTION__);
+		ZWTRACE(__FUNCTION__);
 		ns_thr_run=ZWTHR_STOP;
 		zwscthr->wsClose();
 	}
