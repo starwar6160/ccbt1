@@ -236,7 +236,7 @@ protected:
 		{
 			// get parameters from configuration file
 			unsigned short port = (unsigned short) 
-				config().getInt("WebSocketServer.port", 1425);
+				config().getInt("WebSocketServer.port", 8088);
 
 			// set-up a server socket
 			ServerSocket svs(port);

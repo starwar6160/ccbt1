@@ -32,7 +32,7 @@ namespace zwCfg{
 	//定义一个回调函数指针
 	RecvMsgRotine g_WarnCallback=NULL;
 	boost:: mutex io_mutex; 	
-	//zwWebSocket zwsc("localhost",1425);
+	//zwWebSocket zwsc("localhost",8088);
 
 }	//namespace zwCfg{
 
