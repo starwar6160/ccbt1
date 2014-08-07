@@ -84,6 +84,7 @@ string & myAtmcMsgLockActive( string & strXML ,ptree &pt )
 	pt.put("root.TransDate","20140730");
 	pt.put("root.TransTime","142248");
 	pt.put("root.DevCode",ATMNO_CCBTEST);
+	//pt.put("root.DevCode","12345678");
 
 	std::ostringstream ss;
 	write_xml(ss,pt);

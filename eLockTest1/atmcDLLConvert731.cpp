@@ -1,7 +1,12 @@
 #include "stdafx.h"
 #include "zwCcbElockHdr.h"
 
-#define ZWTRACE(x) OutputDebugStringA(x)
+//#define ZWTRACE(x) OutputDebugStringA(x)
+void ZWTRACE(const char *x)
+{
+	cout<<x<<endl;
+	OutputDebugStringA(x);
+}
 
 using namespace boost::property_tree;
 //把ATMC DLL的XML和JSON互转函数集中于此，便于单元测试；
@@ -189,6 +194,7 @@ catch(...)
 	//发送锁具激活请求
 	void zwconvLockActiveDown( const ptree &ptccb, ptree &ptjc )
 	{	
+		ZWTRACE(__FUNCTION__);
 		ptjc.put(jcAtmcConvertDLL::JCSTR_CMDTITLE,JCSTR_LOCK_ACTIVE_REQUEST);
 //		ptjc.put("State","get");
 //		ptjc.put("Public_Key","123456");	//该行其实无意义，但是json接口里面有，就写上
@@ -197,6 +203,7 @@ catch(...)
 
 	void zwconvLockActiveUp( const ptree &ptjc, ptree &ptccb )
 	{
+		ZWTRACE(__FUNCTION__);
 		//无用的形式化部分
 		ptccb.put("root.TransCode","0000");
 		assert("CallForActInfo"==ns_ActReqName);
@@ -220,6 +227,7 @@ catch(...)
 	//发送锁具激活信息(锁具初始化)
 	void zwconvLockInitDown( const ptree &ptccb, ptree &ptjc )
 	{	
+		ZWTRACE(__FUNCTION__);
 		//锁具初始化
 
 		//>> 上位机下发
@@ -245,6 +253,7 @@ catch(...)
 
 	void zwconvLockInitUp( const ptree &ptjc, ptree &ptccb )
 	{
+		ZWTRACE(__FUNCTION__);
 		//无用的形式化部分
 		ptccb.put("root.TransCode","0001");
 		ptccb.put("root.TransName",ns_LockInitName);	//使用缓存在内存中的值
@@ -277,6 +286,7 @@ catch(...)
 	//读取闭锁码
 	void zwconvReadCloseCodeDown( const ptree &ptccb, ptree &ptjc )
 	{
+		ZWTRACE(__FUNCTION__);
 		//>> 读取闭锁码
 		//请求
 		//	"command": JCSTR_READ_CLOSECODE,
@@ -291,6 +301,7 @@ catch(...)
 
 	void zwconvReadCloseCodeUp( const ptree &ptjc, ptree &ptccb )
 	{
+		ZWTRACE(__FUNCTION__);
 		//读取闭锁码 应答
 		//	交易代码	TransCode	是	值：0004
 		//	交易名称	TransName	是	值：ReadShutLockCode
@@ -317,12 +328,14 @@ catch(...)
 
 	void zwconvRecvInitCloseCodeDown(const ptree &ptccb, ptree &ptjc )
 	{
+		ZWTRACE(__FUNCTION__);
 		ptjc.put(jcAtmcConvertDLL::JCSTR_CMDTITLE,"Lock_Close_Code_Lock");
 	}
 
 
 	void zwconvRecvInitCloseCodeUp(const ptree &ptjc, ptree &ptccb)
 	{
+		ZWTRACE(__FUNCTION__);
 		ptccb.put("root.TransCode","1000");
 		ptccb.put("root.TransName","SendShutLockCode");
 		string zwDate,zwTime;
@@ -338,6 +351,7 @@ catch(...)
 
 	void zwconvRecvVerifyCodeDown(const ptree &ptccb, ptree &ptjc )
 	{
+		ZWTRACE(__FUNCTION__);
 		ptjc.put(jcAtmcConvertDLL::JCSTR_CMDTITLE,"Lock_Open_Ident");
 	}
 
@@ -345,6 +359,7 @@ catch(...)
 
 	void zwconvRecvVerifyCodeUp(const ptree &ptjc, ptree &ptccb)
 	{
+		ZWTRACE(__FUNCTION__);
 		ptccb.put("root.TransCode","1002");
 		ptccb.put("root.TransName","SendUnLockIdent");
 		string zwDate,zwTime;
