@@ -1,6 +1,10 @@
 #include "stdafx.h"
 #include "zwCcbElockHdr.h"
 using jcAtmcConvertDLL::CCBSTR_CODE;
+using jcAtmcConvertDLL::CCBSTR_NAME;
+using jcAtmcConvertDLL::CCBSTR_DATE;
+using jcAtmcConvertDLL::CCBSTR_TIME;
+using jcAtmcConvertDLL::CCBSTR_DEVCODE;
 //把ATMC端的XML生成与结果XML解析集中于此，便于单元测试
 //第一套激活信息
 //CCB 1.1版本算法ECIES(椭圆曲线集成加密公钥算法)安全初始化演示开始
@@ -81,11 +85,11 @@ string & myAtmcMsgLockActive( string & strXML ,ptree &pt )
 	//	ATM设备编号	DevCode	是	值：我行12位设备编号
 	//开始生成请求报文
 	pt.put(CCBSTR_CODE,"0000");
-	pt.put("root.TransName","CallForActInfo");
-	pt.put("root.TransDate","20140730");
-	pt.put("root.TransTime","142248");
-	pt.put("root.DevCode",ATMNO_CCBTEST);
-	//pt.put("root.DevCode","12345678");
+	pt.put(CCBSTR_NAME,"CallForActInfo");
+	pt.put(CCBSTR_DATE,"20140730");
+	pt.put(CCBSTR_TIME,"142248");
+	pt.put(CCBSTR_DEVCODE,ATMNO_CCBTEST);
+	//pt.put(CCBSTR_DEVCODE,"12345678");
 
 	std::ostringstream ss;
 	write_xml(ss,pt);
@@ -117,13 +121,13 @@ string & myAtmcMsgSendActiveInfo( string & strXML ,ptree &pt )
 	//	激活信息	ActInfo	是	密码和加密服务器分散产生，经过锁具公钥加密的激活信息 长度96个字符
 	//开始生成请求报文
 	pt.put(CCBSTR_CODE,"0001");
-	pt.put("root.TransName","SendActInfo");
+	pt.put(CCBSTR_NAME,"SendActInfo");
 	string zwDate,zwTime;
 	zwGetDateTimeString(time(NULL),zwDate,zwTime);
 
-	pt.put("root.TransDate",zwDate);
-	pt.put("root.TransTime",zwTime);
-	pt.put("root.DevCode",ATMNO_CCBTEST);
+	pt.put(CCBSTR_DATE,zwDate);
+	pt.put(CCBSTR_TIME,zwTime);
+	pt.put(CCBSTR_DEVCODE,ATMNO_CCBTEST);
 	pt.put("root.LockMan",jcAtmcConvertDLL::LOCKMAN_NAME);
 	pt.put("root.LockId","ZWFAKELOCKNO1548");
 	//使用第一套激活信息,提供"ActInfo"的值
@@ -160,11 +164,11 @@ string & myAtmcMsgReadCloseCodeInfo( string & strXML ,ptree &pt )
 	//	交易时间	TransTime	是	值：hhmmss，如134050
 	//开始生成请求报文
 	pt.put(CCBSTR_CODE,"0004");
-	pt.put("root.TransName","ReadShutLockCode");
-	pt.put("root.TransDate","20140802");
-	pt.put("root.TransTime","140826");
+	pt.put(CCBSTR_NAME,"ReadShutLockCode");
+	pt.put(CCBSTR_DATE,"20140802");
+	pt.put(CCBSTR_TIME,"140826");
 	//建行给出的报文里面没有这个字段，但是会导致后续流程很难处理
-	pt.put("root.DevCode",ATMNO_CCBTEST);
+	pt.put(CCBSTR_DEVCODE,ATMNO_CCBTEST);
 	pt.put(jcAtmcConvertDLL::JCSTR_CMDTITLE,jcAtmcConvertDLL::JCSTR_READ_CLOSECODE);
 	std::ostringstream ss;
 	write_xml(ss,pt);
@@ -192,7 +196,7 @@ string & myTestMsgRecvCloseCode( string & strXML ,ptree &pt )
 {
 	//开始生成请求报文
 	pt.put(CCBSTR_CODE,"1000");
-	pt.put("root.TransName","SendShutLockCode");
+	pt.put(CCBSTR_NAME,"SendShutLockCode");
 	std::ostringstream ss;
 	write_xml(ss,pt);
 	strXML=ss.str();
@@ -204,7 +208,7 @@ string & myTestMsgRecvVerifyCode( string & strXML ,ptree &pt )
 {
 	//开始生成请求报文
 	pt.put(CCBSTR_CODE,"1002");
-	pt.put("root.TransName","SendUnLockIdent");
+	pt.put(CCBSTR_NAME,"SendUnLockIdent");
 	std::ostringstream ss;
 	write_xml(ss,pt);
 	strXML=ss.str();
