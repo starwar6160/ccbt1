@@ -97,21 +97,24 @@ CCBELOCK_API long JCAPISTD Notify(const char *pszMsg)
 		zwPushString(strJsonSend);
 		return ELOCK_ERROR_SUCCESS;
 	}
-	catch(ptree_error &e)
-	{
-		
-		ZWTRACE("XML2JSON ERROR PERROR");
-		ZWTRACE(e.what());
-	}
 	catch(ptree_bad_data &e)
 	{
 		ZWTRACE("XML2JSON BAD DATA:");
 		ZWTRACE(e.what());
+		return ELOCK_ERROR_CONNECTLOST;
 	}
 	catch(ptree_bad_path &e)
 	{
 		ZWTRACE("XML2JSON BAD DATA:");
 		ZWTRACE(e.what());
+		return ELOCK_ERROR_CONNECTLOST;
+	}
+	catch(ptree_error &e)
+	{
+		
+		ZWTRACE("XML2JSON ERROR PERROR");
+		ZWTRACE(e.what());
+		return ELOCK_ERROR_CONNECTLOST;
 	}
 	catch (...)
 	{//一切网络异常都直接返回错误。主要是为了捕捉未连接时
