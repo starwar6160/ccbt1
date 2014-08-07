@@ -29,24 +29,23 @@ namespace jcAtmcConvertDLL{
 	const JC_MSG_TYPE zwCCBxml2JCjson( const string &downXML,string &downJson )
 	{
 		ZWFUNCTRACE
-		ZWTRACE("CCB XML2JCSON START");
 		//接受ATMC下发的XML，转化为中间形式ptree
 		assert(downXML.length()>42);	//XML开头的固定内容38个字符，外加起码一个标签的两对尖括号合计4个字符
 		ZWTRACE("******************建行ATMC下发XML开始*********************\n");
 		ZWTRACE(downXML.c_str());
 		ZWTRACE("******************建行ATMC下发XML结束*********************\n");
-		ZWTRACE("CCB ATM XML 1");
+		ZWTRACE("CCB2JC.1");
 		JC_MSG_TYPE msgType=JCMSG_INVALID_TYPE;
 		ptree ptCCB;
 		std::stringstream ss;
 		ss<<downXML;
 		read_xml(ss,ptCCB);
-		ZWTRACE("CCB ATM XML 2");
+		ZWTRACE("CCB2JC.2");
 		//////////////////////////////////////////////////////////////////////////
 
 		std::stringstream ssccb;
 		write_json(ssccb,ptCCB);
-		ZWTRACE("CCB ATM XML 3");
+		ZWTRACE("CCB2JC.3");
 		string ccbJson= ssccb.str();
 		ZWTRACE("***建行XML转换后的JSON开始********************************\n");
 		ZWTRACE(ccbJson.c_str());
@@ -55,10 +54,10 @@ namespace jcAtmcConvertDLL{
 
 		//判断消息类型
 		string transCode=ptCCB.get<string>("root.TransCode");
-		ZWTRACE("CCB ATM XML 4");
+		ZWTRACE("CCB2JC.4");
 		//保存建行冗余字段以便上传返回时提供给建行			
 		ns_ccbAtmno=ptCCB.get("root.DevCode","CCBATMFAKE88");
-		ZWTRACE("CCB ATM XML 5");
+		ZWTRACE("CCB2JC.5");
 		//根据消息类型调用不同函数处理	
 		//从建行的接口所需字段变为我们的JSON接口
 		ptree ptJC;
@@ -92,11 +91,11 @@ namespace jcAtmcConvertDLL{
 			msgType= JCMSG_SEND_UNLOCK_CERTCODE;
 			zwconvRecvVerifyCodeDown(ptCCB,ptJC);
 		}
-		ZWTRACE("CCB ATM XML 6");
+		ZWTRACE("CCB2JC.6");
 		//处理结果输出为Json供下位机使用
 		std::stringstream ss2;
 		write_json(ss2,ptJC);
-		ZWTRACE("CCB ATM XML 7");
+		ZWTRACE("CCB2JC.7");
 		downJson= ss2.str();
 		ZWTRACE("***金储JSON下发请求开始***********************************\n");
 		ZWTRACE(downJson.c_str());
@@ -108,18 +107,17 @@ namespace jcAtmcConvertDLL{
 	const JC_MSG_TYPE zwJCjson2CCBxml( const string &upJson,string &upXML )
 	{
 		ZWFUNCTRACE
-		ZWTRACE("JCJSON2CCBXML START");
 		//从下位机接收而来的json结果字符串，解码为中间形式ptree
 		assert(upJson.length()>9);	//json最基本的符号起码好像要9个字符左右
 		ptree ptJC;
 		std::stringstream ss;
 		ss<<upJson;
 		read_json(ss,ptJC);
-		ZWTRACE("JC2CCBJSON.1");
+		ZWTRACE("JC2CCB.1");
 		//////////////////////////////////////////////////////////////////////////
 		std::stringstream sst1;
 		write_json(sst1,ptJC);
-		ZWTRACE("JC2CCBJSON.2");
+		ZWTRACE("JC2CCB.2");
 		string jsonJc= sst1.str();
 		ZWTRACE("***金储锁具返回的JSON应答开始*************************####\n");
 		ZWTRACE(jsonJc.c_str());
@@ -128,7 +126,7 @@ namespace jcAtmcConvertDLL{
 
 		//判断消息类型并从我们的JSON接口变为建行的接口所需字段
 		string jcCmd=ptJC.get<string>(jcAtmcConvertDLL::JCSTR_CMDTITLE);
-		ZWTRACE("JC2CCBJSON.3");
+		ZWTRACE("JC2CCB.3");
 		ptree ptCCB;
 		if (JCSTR_LOCK_ACTIVE_REQUEST==jcCmd)
 		{//发送锁具激活请求
@@ -153,10 +151,10 @@ namespace jcAtmcConvertDLL{
 		}
 
 		//////////////////////////////////////////////////////////////////////////
-		ZWTRACE("JC2CCBJSON.4");
+		ZWTRACE("JC2CCB.4");
 		std::stringstream sst2;
 		write_json(sst2,ptCCB);
-		ZWTRACE("JC2CCBJSON.5");
+		ZWTRACE("JC2CCB.5");
 		string jsonCcb=sst2.str();
 		//////////////////////////////////////////////////////////////////////////
 		ZWTRACE("***金储锁具应答JSON处理为建行所需元素 开始************####\n");
@@ -167,13 +165,13 @@ namespace jcAtmcConvertDLL{
 		std::stringstream ss2;
 		write_xml(ss2,ptCCB);
 		upXML= ss2.str();
-		ZWTRACE("JC2CCBJSON.6");
+		ZWTRACE("JC2CCB.6");
 		ZWTRACE("*********************金储应答XML开始******************####\n");
 		ZWTRACE(upXML.c_str());
 		ZWTRACE("*********************金储应答XML结束******************####\n");
 try{
 		string transCode=ptCCB.get<string>("root.TransCode");
-		ZWTRACE("JC2CCBJSON.7");
+		ZWTRACE("JC2CCB.7");
 		if ("0000"==transCode)
 		{
 			return JCMSG_LOCK_ACTIVE_REQUEST;
@@ -193,8 +191,6 @@ catch(...)
 	{	
 		ZWFUNCTRACE
 		ptjc.put(jcAtmcConvertDLL::JCSTR_CMDTITLE,JCSTR_LOCK_ACTIVE_REQUEST);
-//		ptjc.put("State","get");
-//		ptjc.put("Public_Key","123456");	//该行其实无意义，但是json接口里面有，就写上
 	}
 
 
@@ -352,8 +348,6 @@ catch(...)
 		ptjc.put(jcAtmcConvertDLL::JCSTR_CMDTITLE,"Lock_Open_Ident");
 	}
 
-	
-
 	void zwconvRecvVerifyCodeUp(const ptree &ptjc, ptree &ptccb)
 	{
 		ZWFUNCTRACE
@@ -371,8 +365,6 @@ catch(...)
 		//关键的验证码本体
 		ptccb.put("root.UnLockIdentInfo",ptjc.get<int>("Lock_Ident_Info"));
 	}
-
-	
 
 	////////////////////////////每一条报文的具体处理函数结束//////////////////////////////////////////////
 }	//namespace jcAtmcConvertDLLLock_Open_Ident

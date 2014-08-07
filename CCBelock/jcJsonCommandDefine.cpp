@@ -9,6 +9,12 @@ namespace jcAtmcConvertDLL{
 	const char *JCSTR_READ_CLOSECODE="Lock_Close_Code_ATM";
 	const char *JCSTR_SEND_INITCLOSECODE="Lock_Close_Code_Lock";
 	const char *JCSTR_SEND_UNLOCK_CERTCODE="Lock_Open_Ident";
+	
+	const char *CCBSTR_CODE="root.TransCode";
+	const char *CCBSTR_NAME="root.TransName";
+	const char *CCBSTR_DATE="root.TransDate";
+	const char *CCBSTR_TIME="root.TransTime";
+	const char *CCBSTR_DEVCODE="root.DevCode";
 }
 
 void ZWTRACE(const char *x)
