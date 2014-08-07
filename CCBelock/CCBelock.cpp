@@ -36,7 +36,7 @@ namespace zwCfg{
 
 
 
-CCBELOCK_API long Open(long lTimeOut)
+CCBELOCK_API long JCAPISTD Open(long lTimeOut)
 {
 	boost:: mutex:: scoped_lock lock( zwCfg::io_mutex); 
 	//必须大于0，小于JC_CCBDLL_TIMEOUT，限制在一个合理范围内
@@ -48,7 +48,7 @@ CCBELOCK_API long Open(long lTimeOut)
 	return ELOCK_ERROR_SUCCESS;
 }
 
-CCBELOCK_API long Close()
+CCBELOCK_API long JCAPISTD Close()
 {
 	boost:: mutex:: scoped_lock lock( zwCfg::io_mutex); 
 	//zwccbthr::zwStopLockCommThread();
@@ -57,7 +57,7 @@ CCBELOCK_API long Close()
 	return ELOCK_ERROR_SUCCESS;
 }
 
-CCBELOCK_API long Notify(const char *pszMsg)
+CCBELOCK_API long JCAPISTD Notify(const char *pszMsg)
 {
 	assert(pszMsg!=NULL && strlen(pszMsg)>42);	//XML至少42字节
 	boost:: mutex:: scoped_lock lock( zwCfg::io_mutex); 
@@ -121,7 +121,7 @@ void cdecl myATMCRecvMsgRotine(const char *pszMsg)
 }
 
 
-CCBELOCK_API int SetRecvMsgRotine(RecvMsgRotine pRecvMsgFun)
+CCBELOCK_API int JCAPISTD SetRecvMsgRotine(RecvMsgRotine pRecvMsgFun)
 {
 	boost:: mutex:: scoped_lock lock( zwCfg::io_mutex); 
 	assert(NULL!=pRecvMsgFun);
