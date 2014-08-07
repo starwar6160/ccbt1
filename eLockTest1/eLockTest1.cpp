@@ -11,9 +11,9 @@
 #define _DEBUG_ACTREQ
 #define _DEBUG_SEND_ACTINFO
 //锁具内部由于缺乏数据而无法做出反应的测试
-#define _DEBUG_RECV_INIT_CLOSECODE
-#define _DEBUG_RECV_VERIFY_CODE
-#define _DEBUG_READ_CLOSE_CODE
+//#define _DEBUG_RECV_INIT_CLOSECODE
+//#define _DEBUG_RECV_VERIFY_CODE
+//#define _DEBUG_READ_CLOSE_CODE
 
 
 
@@ -163,59 +163,6 @@ TEST(ccbElockDeathTest,NotifyTestBad)
 //}
 
 
-#ifdef _DEBUG_RECV_INIT_CLOSECODE
-//接收锁具主动发送的初始闭锁码测试
-TEST_F(ccbElockTest,RecvInitClose1000)
-{
-	EXPECT_EQ(ELOCK_ERROR_SUCCESS,SetRecvMsgRotine(myATMCRecvMsgRotine));	
-	const JC_MSG_TYPE msgType=JCMSG_SEND_INITCLOSECODE;	//设定消息类型
-	//ATMC生成XML消息
-	string strLockActiveXML;	//容纳生成的消息XML
-	//具体生成消息XML
-	ptree pt;
-	jcAtmcMsg::zwAtmcMsgGen(msgType,strLockActiveXML, pt);	
-
-	Notify(strLockActiveXML.c_str());
-
-	while (s_retInitCloseCode.length()==0)
-	{
-		Sleep(200);
-	}
-	//Sleep(ZW_END_WAIT);
-	EXPECT_LT(42,s_retInitCloseCode.length());
-	string ccbop,ccbname;
-	zwGetCCBMsgType(s_retInitCloseCode,ccbop,ccbname);
-	EXPECT_EQ("1000",ccbop);
-	EXPECT_EQ("SendShutLockCode",ccbname);
-}
-#endif // _DEBUG_RECV_INIT_CLOSECODE
-
-#ifdef _DEBUG_RECV_VERIFY_CODE
-//接收锁具主动发送的验证码测试
-TEST_F(ccbElockTest,RecvVerifyClose1002)
-{
-	EXPECT_EQ(ELOCK_ERROR_SUCCESS,SetRecvMsgRotine(myATMCRecvMsgRotine));	
-	const JC_MSG_TYPE msgType=JCMSG_SEND_UNLOCK_CERTCODE;	//设定消息类型
-	//ATMC生成XML消息
-	string strLockActiveXML;	//容纳生成的消息XML
-	//具体生成消息XML
-	ptree pt;
-	jcAtmcMsg::zwAtmcMsgGen(msgType,strLockActiveXML, pt);	
-
-	Notify(strLockActiveXML.c_str());
-
-	while (s_retVerifyCode.length()==0)
-	{
-		Sleep(200);
-	}
-	//Sleep(ZW_END_WAIT);
-	EXPECT_LT(42,s_retVerifyCode.length());
-	string ccbop,ccbname;
-	zwGetCCBMsgType(s_retVerifyCode,ccbop,ccbname);
-	EXPECT_EQ("1002",ccbop);
-	EXPECT_EQ("SendUnLockIdent",ccbname);
-}
-#endif // _DEBUG_RECV_VERIFY_CODE
 
 
 
@@ -345,6 +292,59 @@ TEST_F(ccbElockTest,ReadCloseCodeTest0004)
 }
 #endif // _DEBUG_READ_CLOSE_CODE
 
+#ifdef _DEBUG_RECV_INIT_CLOSECODE
+//接收锁具主动发送的初始闭锁码测试
+TEST_F(ccbElockTest,RecvInitClose1000)
+{
+	EXPECT_EQ(ELOCK_ERROR_SUCCESS,SetRecvMsgRotine(myATMCRecvMsgRotine));	
+	const JC_MSG_TYPE msgType=JCMSG_SEND_INITCLOSECODE;	//设定消息类型
+	//ATMC生成XML消息
+	string strLockActiveXML;	//容纳生成的消息XML
+	//具体生成消息XML
+	ptree pt;
+	jcAtmcMsg::zwAtmcMsgGen(msgType,strLockActiveXML, pt);	
+
+	Notify(strLockActiveXML.c_str());
+
+	while (s_retInitCloseCode.length()==0)
+	{
+		Sleep(200);
+	}
+	//Sleep(ZW_END_WAIT);
+	EXPECT_LT(42,s_retInitCloseCode.length());
+	string ccbop,ccbname;
+	zwGetCCBMsgType(s_retInitCloseCode,ccbop,ccbname);
+	EXPECT_EQ("1000",ccbop);
+	EXPECT_EQ("SendShutLockCode",ccbname);
+}
+#endif // _DEBUG_RECV_INIT_CLOSECODE
+
+#ifdef _DEBUG_RECV_VERIFY_CODE
+//接收锁具主动发送的验证码测试
+TEST_F(ccbElockTest,RecvVerifyClose1002)
+{
+	EXPECT_EQ(ELOCK_ERROR_SUCCESS,SetRecvMsgRotine(myATMCRecvMsgRotine));	
+	const JC_MSG_TYPE msgType=JCMSG_SEND_UNLOCK_CERTCODE;	//设定消息类型
+	//ATMC生成XML消息
+	string strLockActiveXML;	//容纳生成的消息XML
+	//具体生成消息XML
+	ptree pt;
+	jcAtmcMsg::zwAtmcMsgGen(msgType,strLockActiveXML, pt);	
+
+	Notify(strLockActiveXML.c_str());
+
+	while (s_retVerifyCode.length()==0)
+	{
+		Sleep(200);
+	}
+	//Sleep(ZW_END_WAIT);
+	EXPECT_LT(42,s_retVerifyCode.length());
+	string ccbop,ccbname;
+	zwGetCCBMsgType(s_retVerifyCode,ccbop,ccbname);
+	EXPECT_EQ("1002",ccbop);
+	EXPECT_EQ("SendUnLockIdent",ccbname);
+}
+#endif // _DEBUG_RECV_VERIFY_CODE
 
 
 

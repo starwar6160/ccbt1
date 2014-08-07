@@ -41,7 +41,8 @@ namespace zwccbthr{
 	memset(sbuf,0,128);
 	sprintf(sbuf,"%s thread Start",__FUNCTION__);
 	OutputDebugStringA(sbuf);
-	zwscthr=new zwWebSocket("localhost",1425);
+	//zwscthr=new zwWebSocket("localhost",1425);
+	zwscthr=new zwWebSocket("10.0.0.10",8088);
 	zwscthr->wsConnect();
 		int i=0;
 		cout<<"####################Start \t"<<__FUNCTION__<<endl;
