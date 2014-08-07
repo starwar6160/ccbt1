@@ -8,17 +8,19 @@
 // CCBELOCK_API 函数视为是从 DLL 导入的，而此 DLL 则将用此宏定义的
 // 符号视为是被导出的。
 #ifdef CCBELOCK_EXPORTS
-#define CCBELOCK_API __declspec(dllexport)
+#define CCBELOCK_API __declspec(dllexport) 
 #else
 #define CCBELOCK_API __declspec(dllimport)
 #endif
 
+#define JCAPISTD	__stdcall
+
 typedef void (cdecl *RecvMsgRotine)(const char *pszMsg);
 
-CCBELOCK_API long	Open(long lTimeOut);
-CCBELOCK_API long	Close();
-CCBELOCK_API long	Notify(const char *pszMsg);
-CCBELOCK_API int	SetRecvMsgRotine(RecvMsgRotine pRecvMsgFun);
+CCBELOCK_API long	JCAPISTD Open(long lTimeOut);
+CCBELOCK_API long	JCAPISTD Close();
+CCBELOCK_API long	JCAPISTD Notify(const char *pszMsg);
+CCBELOCK_API int	JCAPISTD SetRecvMsgRotine(RecvMsgRotine pRecvMsgFun);
 
 //////////////////////////////////////////////////////////////////////////
 CCBELOCK_API void zwPushString(const string &str);
