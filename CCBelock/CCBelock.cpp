@@ -100,15 +100,18 @@ CCBELOCK_API long JCAPISTD Notify(const char *pszMsg)
 	catch(ptree_error &e)
 	{
 		
-		cout<<"XML2JSON ERROR PERROR"<<e.what()<<endl;;
+		ZWTRACE("XML2JSON ERROR PERROR");
+		ZWTRACE(e.what());
 	}
 	catch(ptree_bad_data &e)
 	{
-		cout<<"XML2JSON BAD DATA:"<<e.what()<<endl;
+		ZWTRACE("XML2JSON BAD DATA:");
+		ZWTRACE(e.what());
 	}
 	catch(ptree_bad_path &e)
 	{
-		cout<<"XML2JSON BAD DATA:"<<e.what()<<endl;
+		ZWTRACE("XML2JSON BAD DATA:");
+		ZWTRACE(e.what());
 	}
 	catch (...)
 	{//一切网络异常都直接返回错误。主要是为了捕捉未连接时

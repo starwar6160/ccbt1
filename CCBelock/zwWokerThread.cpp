@@ -17,7 +17,8 @@ void zwPushString(const string &str)
 	}
 	catch(...)
 	{
-		cout<<__FUNCTION__<<"\t zwWebSocket Send String Exeception!20140805.1626";
+		ZWTRACE(__FUNCTION__);
+		ZWTRACE("\t zwWebSocket Send String Exeception!20140805.1626");
 	}
 	
 }
@@ -41,15 +42,10 @@ namespace zwccbthr{
 	{		
 	ZWFUNCTRACE
 	boost:: mutex:: scoped_lock lock( thr_mutex); 
-	char sbuf[128];
-	memset(sbuf,0,128);
-	sprintf(sbuf,"%s thread Start",__FUNCTION__);
-	OutputDebugStringA(sbuf);
 	zwscthr=new zwWebSocket("localhost",1425);
 	//zwscthr=new zwWebSocket("10.0.0.10",8088);
 	zwscthr->wsConnect();
 		int i=0;
-		cout<<"####################Start \t"<<__FUNCTION__<<endl;
 		while(1)
 		{			
 			if (ZWTHR_STOP==ns_thr_run)
@@ -59,24 +55,20 @@ namespace zwccbthr{
 			
 			string recstr;
 			zwscthr->ReceiveString(recstr);
+			char sbuf[128];
 			memset(sbuf,0,128);
 			sprintf(sbuf,"%s Comm with Lock times %d",__FUNCTION__,i++);
-			OutputDebugStringA(sbuf);
+			ZWTRACE(sbuf);
 			string outXML;
 			int msgTypeRecv=jcAtmcConvertDLL::zwJCjson2CCBxml(recstr,outXML);
 			assert(outXML.length()>42);	//XML开头的固定内容38个字符，外加起码一个标签的两对尖括号合计4个字符
-			//OutputDebugStringA(__FUNCTION__);
-			//OutputDebugStringA(outXML.c_str());
+			ZWTRACE(outXML.c_str());
 			if (NULL!=zwCfg::g_WarnCallback)
 			{
 				zwCfg::g_WarnCallback(outXML.c_str());
 			}
 
-		} 
-		memset(sbuf,0,128);
-		sprintf(sbuf,"%s thread End",__FUNCTION__);
-		OutputDebugStringA(sbuf);
-		cout<<"####################End \t"<<__FUNCTION__<<endl;
+		} 		
 		zwscthr->wsClose();
 	}
 

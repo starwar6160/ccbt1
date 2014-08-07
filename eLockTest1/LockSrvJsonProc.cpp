@@ -20,17 +20,17 @@ int zwjclms_command_proc(const string &inJson,string &outJson)
 		return 0;
 	}
 	assert(inJson.length()>9);	//json最基本的符号起码好像要9个字符左右
-	cout<<"***模拟锁具收到的JSON请求开始***********************\n";
-	cout<<inJson;
-	cout<<"***模拟锁具收到的JSON请求结束***********************\n";
+	ZWTRACE("***模拟锁具收到的JSON请求开始***********************\n");
+	ZWTRACE(inJson.c_str());
+	ZWTRACE("***模拟锁具收到的JSON请求结束***********************\n");
 	ptree pt;
 	//解析输入JSON，并对其处理，结果在pt中，类型返回在mtype中
 	JC_MSG_TYPE mtype=lockParseJson(inJson, pt);
 	//把pt输出为json返回
 	LockOutJson(pt, outJson);
-	cout<<"***模拟锁具生成的JSON应答开始***********************\n";
-	cout<<outJson;
-	cout<<"***模拟锁具生成的JSON应答结束***********************\n";
+	ZWTRACE("***模拟锁具生成的JSON应答开始***********************\n");
+	ZWTRACE(outJson.c_str());
+	ZWTRACE("***模拟锁具生成的JSON应答结束***********************\n");
 
 	return mtype;
 }
