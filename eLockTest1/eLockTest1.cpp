@@ -178,6 +178,14 @@ TEST_F(ccbElockTest,LockActiveTest0000)
 	//具体生成消息XML
 	ptree pt;
 	jcAtmcMsg::zwAtmcMsgGen(msgType,strLockActiveXML, pt);	
+	strLockActiveXML="<?xml version=\"1.0\" encoding=\"utf-8\"?>"
+		"<root><TransCode>0000</TransCode>"
+		"<TransName>CallForActInfo</TransName>"
+		"<TransDate>20140807</TransDate>"
+		"<TransTime>153235</TransTime>"
+		"<DevCode>12345698</DevCode>"
+		"<SpareString1>NULL</SpareString1>"
+		"<SpareString2>NULL</SpareString2></root>";
 
 	if (ELOCK_ERROR_SUCCESS==m_connStatus)
 	{
