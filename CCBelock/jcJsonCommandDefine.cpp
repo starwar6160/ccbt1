@@ -11,17 +11,26 @@ namespace jcAtmcConvertDLL{
 	const char *JCSTR_SEND_UNLOCK_CERTCODE="Lock_Open_Ident";
 }
 
+void ZWTRACE(const char *x)
+{
+	OutputDebugStringA(x);
+	cout<<x<<endl;	
+}
+
 zw_trace::zw_trace(const char *funcName)
 {
 	m_str=funcName;
-	OutputDebugStringA(m_str.c_str());
-	cout<<m_str<<endl;
+	m_start=m_str+"\tSTART";
+	m_end=m_str+"\tEND";
+	OutputDebugStringA(m_start.c_str());
+	cout<<m_start<<endl;
 }
 
 zw_trace::~zw_trace()
 {
-	OutputDebugStringA(m_str.c_str());
-	cout<<m_str<<endl;
+	
+	OutputDebugStringA(m_end.c_str());
+	cout<<m_end<<endl;
 }
 
 

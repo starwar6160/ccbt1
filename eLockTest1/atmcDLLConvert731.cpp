@@ -2,11 +2,7 @@
 #include "zwCcbElockHdr.h"
 
 //#define ZWTRACE(x) OutputDebugStringA(x)
-void ZWTRACE(const char *x)
-{
-	OutputDebugStringA(x);
-	cout<<x<<endl;	
-}
+
 
 using namespace boost::property_tree;
 //把ATMC DLL的XML和JSON互转函数集中于此，便于单元测试；
