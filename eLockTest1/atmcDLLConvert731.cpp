@@ -53,7 +53,7 @@ namespace jcAtmcConvertDLL{
 
 
 		//判断消息类型
-		string transCode=ptCCB.get<string>("root.TransCode");
+		string transCode=ptCCB.get<string>(CCBSTR_CODE);
 		ZWTRACE("CCB2JC.4");
 		//保存建行冗余字段以便上传返回时提供给建行			
 		ns_ccbAtmno=ptCCB.get("root.DevCode","CCBATMFAKE88");
@@ -170,7 +170,7 @@ namespace jcAtmcConvertDLL{
 		ZWTRACE(upXML.c_str());
 		ZWTRACE("*********************金储应答XML结束******************####\n");
 try{
-		string transCode=ptCCB.get<string>("root.TransCode");
+		string transCode=ptCCB.get<string>(CCBSTR_CODE);
 		ZWTRACE("JC2CCB.7");
 		if ("0000"==transCode)
 		{
@@ -198,7 +198,7 @@ catch(...)
 	{
 		ZWFUNCTRACE
 		//无用的形式化部分
-		ptccb.put("root.TransCode","0000");
+		ptccb.put(CCBSTR_CODE,"0000");
 		assert("CallForActInfo"==ns_ActReqName);
 		ptccb.put("root.TransName",ns_ActReqName);
 		ptccb.put("root.DevCode",ns_ccbAtmno);
@@ -248,7 +248,7 @@ catch(...)
 	{
 		ZWFUNCTRACE
 		//无用的形式化部分
-		ptccb.put("root.TransCode","0001");
+		ptccb.put(CCBSTR_CODE,"0001");
 		ptccb.put("root.TransName",ns_LockInitName);	//使用缓存在内存中的值
 		assert("SendActInfo"==ns_LockInitName);
 		string zwDate,zwTime;
@@ -305,7 +305,7 @@ catch(...)
 		//	锁具编号	LockId	是	值：厂商自定的锁具唯一编号
 		//	闭锁码	ShutLockcode	是	值：闭锁码
 		//无用的形式化部分
-		ptccb.put("root.TransCode","0004");
+		ptccb.put(CCBSTR_CODE,"0004");
 		assert("ReadShutLockCode"==ns_ReadCloseCodeName);
 		ptccb.put("root.TransName",ns_ReadCloseCodeName);
 		string zwDate,zwTime;
@@ -329,7 +329,7 @@ catch(...)
 	void zwconvRecvInitCloseCodeUp(const ptree &ptjc, ptree &ptccb)
 	{
 		ZWFUNCTRACE
-		ptccb.put("root.TransCode","1000");
+		ptccb.put(CCBSTR_CODE,"1000");
 		ptccb.put("root.TransName","SendShutLockCode");
 		string zwDate,zwTime;
 		zwGetDateTimeString(time(NULL),zwDate,zwTime);
@@ -351,7 +351,7 @@ catch(...)
 	void zwconvRecvVerifyCodeUp(const ptree &ptjc, ptree &ptccb)
 	{
 		ZWFUNCTRACE
-		ptccb.put("root.TransCode","1002");
+		ptccb.put(CCBSTR_CODE,"1002");
 		ptccb.put("root.TransName","SendUnLockIdent");
 		string zwDate,zwTime;
 		zwGetDateTimeString(time(NULL),zwDate,zwTime);

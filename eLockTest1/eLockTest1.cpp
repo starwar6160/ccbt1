@@ -4,6 +4,7 @@
 #include "stdafx.h"
 #include "CCBelock.h"
 #include "zwCcbElockHdr.h"
+using jcAtmcConvertDLL::CCBSTR_CODE;
 //看看是否打开其他测试以便专一测试一件事
 //#define _ZWTEST730
 //第一阶段的3条测试是否打开
@@ -47,7 +48,7 @@ void zwGetCCBMsgType(const string &inXML,string &outOpCode,string &outOpName)
 		ss<<inXML;
 		ptree pt;
 		read_xml(ss,pt);
-		outOpCode=pt.get<string>("root.TransCode");
+		outOpCode=pt.get<string>(CCBSTR_CODE);
 		outOpName=pt.get<string>("root.TransName");
 	}
 	catch(...)
