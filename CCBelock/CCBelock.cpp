@@ -14,6 +14,9 @@
 #include "zwCcbElockHdr.h"
 #include "zwwsClient.h"
 using namespace std;
+using boost::property_tree::ptree_error;
+using boost::property_tree::ptree_bad_data;
+using boost::property_tree::ptree_bad_path;
 
 //回调函数指针类型定义
 using Poco::Net::ConnectionRefusedException;
@@ -91,6 +94,19 @@ CCBELOCK_API long JCAPISTD Notify(const char *pszMsg)
 		zwPushString(strJsonSend);
 		return ELOCK_ERROR_SUCCESS;
 	}
+	catch(ptree_error &e)
+	{
+		
+		cout<<"XML2JSON ERROR PERROR"<<e.what()<<endl;;
+	}
+	catch(ptree_bad_data &e)
+	{
+		cout<<"XML2JSON BAD DATA:"<<e.what()<<endl;
+	}
+	catch(ptree_bad_path &e)
+	{
+		cout<<"XML2JSON BAD DATA:"<<e.what()<<endl;
+	}
 	catch (...)
 	{//一切网络异常都直接返回错误。主要是为了捕捉未连接时
 		//WebSocket对象为空造成访问NULL指针的的SEH异常	
@@ -98,7 +114,7 @@ CCBELOCK_API long JCAPISTD Notify(const char *pszMsg)
 		//发现WS对象因为未连接而是NULL时直接throw一个枚举
 		//然后在此，也就是上层捕获。暂时不知道捕获精确类型
 		//所以catch所有异常了
-		OutputDebugStringA("CPPEXECPTION804");
+		OutputDebugStringA("CPPEXECPTION804A OTHER ERROR");
 		OutputDebugStringA(__FUNCTION__);
 		OutputDebugStringA(pszMsg);
 		OutputDebugStringA(strJsonSend.c_str());

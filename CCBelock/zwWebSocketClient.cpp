@@ -27,7 +27,7 @@ namespace{
 			}
 			catch (WebSocketException& exc)
 			{
-				OutputDebugStringA("CPPEXECPTION804");
+				OutputDebugStringA("CPPEXECPTION804B");
 				OutputDebugStringA(__FUNCTION__);
 				switch (exc.code())
 				{

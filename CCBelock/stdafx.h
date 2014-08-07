@@ -73,6 +73,7 @@ using Poco::Util::HelpFormatter;
 #include <boost/property_tree/ptree.hpp>
 #include <boost/property_tree/xml_parser.hpp>
 #include <boost/property_tree/json_parser.hpp>
+#include <boost/property_tree/exceptions.hpp>
 
 using std::cout;
 using std::cin;

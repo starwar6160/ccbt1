@@ -99,7 +99,7 @@ public:
 		}
 		catch (WebSocketException& exc)
 		{
-			OutputDebugStringA("CPPEXECPTION804");
+			OutputDebugStringA("CPPEXECPTION804D");
 			OutputDebugStringA(__FUNCTION__);
 			app.logger().log(exc);
 			switch (exc.code())
@@ -271,7 +271,7 @@ int main(int argc,char *argv[])
 	}								
 	catch (Poco::Exception& exc)	
 	{								
-		OutputDebugStringA("CPPEXECPTION804");
+		OutputDebugStringA("CPPEXECPTION804E");
 		OutputDebugStringA(__FUNCTION__);
 		std::cerr << exc.displayText() << std::endl;	
 		return Poco::Util::Application::EXIT_SOFTWARE; 	
