@@ -20,8 +20,8 @@ using jcAtmcConvertDLL::CCBSTR_NAME;
 
 
 using namespace boost::property_tree;
-const JC_MSG_TYPE lockParseJson( const string & inJson, ptree &pt );
-void LockOutJson( const ptree &pt, string &outJson );
+const JC_MSG_TYPE lockParseInJson( const string & inJson, ptree &pt );
+void LockGenOutputJson( const ptree &pt, string &outJson );
 
 const char *myLongMsg="0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF"
 	"0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF"
@@ -30,16 +30,16 @@ const char *myLongMsg="0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF"
 const int ZW_END_WAIT=500;
 
 namespace jcAtmcMsg{
-	void zwAtmcMsgGen(const JC_MSG_TYPE type,string &strXML,ptree &pt);
+	void zwAtmcTestMsgGen(const JC_MSG_TYPE type,string &strXML,ptree &pt);
 }
 
 
 //临时保存回调函数获取到的结果，以便验证；
-string s_retInitCloseCode;
-string s_retActReq;
-string s_retLockInit;
-string s_retReadCloseCode;
-string s_retVerifyCode;
+string s_repInitCloseCodeXML;
+string s_repActReqXML;
+string s_repLockInitXML;
+string s_repReadCloseCodeXML;
+string s_repVerifyCodeXML;
 
 //获得一条XML报文的交易代码和交易名字
 void zwGetCCBMsgType(const string &inXML,string &outOpCode,string &outOpName)
@@ -61,37 +61,37 @@ void zwGetCCBMsgType(const string &inXML,string &outOpCode,string &outOpName)
 
 
 //测试性回调函数
-void myATMCRecvMsgRotine(const char *pszMsg)
+void myATMCRecvMsgRotine(const char *jcLockResponseXML)
 {
-	assert(pszMsg!=NULL && strlen(pszMsg)>42);
-	EXPECT_LT(42,strlen(pszMsg));
+	assert(jcLockResponseXML!=NULL && strlen(jcLockResponseXML)>42);
+	EXPECT_LT(42,strlen(jcLockResponseXML));
 	string ccbop,ccbname;
-	string rmsg=pszMsg;
+	string rmsg=jcLockResponseXML;
 	zwGetCCBMsgType(rmsg,ccbop,ccbname);
 	cout<<"*******************建行ATMC回调函数开始***************####\n";	
-	cout<<pszMsg<<endl;
+	cout<<jcLockResponseXML<<endl;
 	cout<<"*******************建行ATMC回调函数结束***************####\n";
 	OutputDebugStringA(__FUNCTION__);
-	OutputDebugStringA(pszMsg);
+	OutputDebugStringA(jcLockResponseXML);
 	if ("0000"==ccbop)
 	{
-		s_retActReq=rmsg;
+		s_repActReqXML=rmsg;
 	}
 	if ("0001"==ccbop)
 	{
-		s_retLockInit=rmsg;
+		s_repLockInitXML=rmsg;
 	}
 	if ("0004"==ccbop)
 	{
-		s_retReadCloseCode=rmsg;
+		s_repReadCloseCodeXML=rmsg;
 	}
 	if ("1000"==ccbop)
 	{
-		s_retInitCloseCode=rmsg;
+		s_repInitCloseCodeXML=rmsg;
 	}
 	if ("1002"==ccbop)
 	{
-		s_retVerifyCode=rmsg;
+		s_repVerifyCodeXML=rmsg;
 	}
 }
 
@@ -106,7 +106,6 @@ protected:
 		cout<<__FUNCTION__<<endl;
 		m_connStatus=ELOCK_ERROR_SUCCESS;
 		m_connStatus=Open(25);
-		Sleep(300);	//等待通讯线程把网络连接建立起来
 	}
 	virtual void TearDown() {
 		cout<<__FUNCTION__<<endl;
@@ -146,7 +145,7 @@ TEST(ccbElockDeathTest,OpenTestBad)
 {//Debug下会触发断言的非法输入测试，放到死亡测试中进行
 	EXPECT_DEBUG_DEATH(Open(0),"");
 	EXPECT_DEBUG_DEATH(Open(-30),"");
-	EXPECT_DEBUG_DEATH(Open(4000),"");
+	EXPECT_DEBUG_DEATH(Open(90000),"");
 }
 
 
@@ -179,7 +178,7 @@ TEST_F(ccbElockTest,LockActiveTest0000)
 	string strLockActiveXML;	//容纳生成的消息XML
 	//具体生成消息XML
 	ptree pt;
-	jcAtmcMsg::zwAtmcMsgGen(msgType,strLockActiveXML, pt);	
+	jcAtmcMsg::zwAtmcTestMsgGen(msgType,strLockActiveXML, pt);	
 	strLockActiveXML=
 		//"<?xml version=\"1.0\" encoding=\"utf-8\"?>"
 		//"<root><TransCode>0000</TransCode>"
@@ -204,16 +203,16 @@ TEST_F(ccbElockTest,LockActiveTest0000)
 #ifdef NDEBUG
 	EXPECT_EQ(ELOCK_ERROR_PARAMINVALID,SetRecvMsgRotine(NULL));
 #endif // NDEBUG
-	while (s_retActReq.length()==0)
+	while (s_repActReqXML.length()==0)
 	{
 		Sleep(200);
 	}
 
 	Sleep(ZW_END_WAIT);
-	EXPECT_LT(42,s_retActReq.length());
+	EXPECT_LT(42,s_repActReqXML.length());
 
 	string ccbop,ccbname;
-	zwGetCCBMsgType(s_retActReq,ccbop,ccbname);
+	zwGetCCBMsgType(s_repActReqXML,ccbop,ccbname);
 	EXPECT_EQ("0000",ccbop);
 	EXPECT_EQ("CallForActInfo",ccbname);
 
@@ -234,7 +233,7 @@ TEST_F(ccbElockTest,LockSendActInfoTest0001)
 	string strSendLockActInfoXML;	//容纳生成的消息XML
 	//具体生成消息XML
 	ptree pt;
-	jcAtmcMsg::zwAtmcMsgGen(msgType,strSendLockActInfoXML, pt);	
+	jcAtmcMsg::zwAtmcTestMsgGen(msgType,strSendLockActInfoXML, pt);	
 
 	if (ELOCK_ERROR_SUCCESS==m_connStatus)
 	{
@@ -249,14 +248,14 @@ TEST_F(ccbElockTest,LockSendActInfoTest0001)
 #ifdef NDEBUG
 	EXPECT_EQ(ELOCK_ERROR_PARAMINVALID,SetRecvMsgRotine(NULL));
 #endif // NDEBUG
-	while (s_retLockInit.length()==0)
+	while (s_repLockInitXML.length()==0)
 	{
 		Sleep(200);
 	}
 	//Sleep(ZW_END_WAIT);
-	EXPECT_LT(42,s_retLockInit.length());
+	EXPECT_LT(42,s_repLockInitXML.length());
 	string ccbop,ccbname;
-	zwGetCCBMsgType(s_retLockInit,ccbop,ccbname);
+	zwGetCCBMsgType(s_repLockInitXML,ccbop,ccbname);
 	EXPECT_EQ("0001",ccbop);
 	EXPECT_EQ("SendActInfo",ccbname);
 
@@ -275,7 +274,7 @@ TEST_F(ccbElockTest,ReadCloseCodeTest0004)
 	string strSendLockActInfoXML;	//容纳生成的消息XML
 	//具体生成消息XML
 	ptree pt;
-	jcAtmcMsg::zwAtmcMsgGen(msgType,strSendLockActInfoXML, pt);	
+	jcAtmcMsg::zwAtmcTestMsgGen(msgType,strSendLockActInfoXML, pt);	
 
 	if (ELOCK_ERROR_SUCCESS==m_connStatus)
 	{
@@ -290,15 +289,15 @@ TEST_F(ccbElockTest,ReadCloseCodeTest0004)
 #ifdef NDEBUG
 	EXPECT_EQ(ELOCK_ERROR_PARAMINVALID,SetRecvMsgRotine(NULL));
 #endif // NDEBUG
-	while (s_retReadCloseCode.length()==0)
+	while (s_repReadCloseCodeXML.length()==0)
 	{
 		Sleep(200);
 	}
 	//Sleep(ZW_END_WAIT);
-	EXPECT_LT(42,s_retReadCloseCode.length());
+	EXPECT_LT(42,s_repReadCloseCodeXML.length());
 
 	string ccbop,ccbname;
-	zwGetCCBMsgType(s_retReadCloseCode,ccbop,ccbname);
+	zwGetCCBMsgType(s_repReadCloseCodeXML,ccbop,ccbname);
 	EXPECT_EQ("0004",ccbop);
 	EXPECT_EQ("ReadShutLockCode",ccbname);
 }
@@ -314,18 +313,18 @@ TEST_F(ccbElockTest,RecvInitClose1000)
 	string strLockActiveXML;	//容纳生成的消息XML
 	//具体生成消息XML
 	ptree pt;
-	jcAtmcMsg::zwAtmcMsgGen(msgType,strLockActiveXML, pt);	
+	jcAtmcMsg::zwAtmcTestMsgGen(msgType,strLockActiveXML, pt);	
 
 	Notify(strLockActiveXML.c_str());
 
-	while (s_retInitCloseCode.length()==0)
+	while (s_repInitCloseCodeXML.length()==0)
 	{
 		Sleep(200);
 	}
 	//Sleep(ZW_END_WAIT);
-	EXPECT_LT(42,s_retInitCloseCode.length());
+	EXPECT_LT(42,s_repInitCloseCodeXML.length());
 	string ccbop,ccbname;
-	zwGetCCBMsgType(s_retInitCloseCode,ccbop,ccbname);
+	zwGetCCBMsgType(s_repInitCloseCodeXML,ccbop,ccbname);
 	EXPECT_EQ("1000",ccbop);
 	EXPECT_EQ("SendShutLockCode",ccbname);
 }
@@ -341,18 +340,18 @@ TEST_F(ccbElockTest,RecvVerifyClose1002)
 	string strLockActiveXML;	//容纳生成的消息XML
 	//具体生成消息XML
 	ptree pt;
-	jcAtmcMsg::zwAtmcMsgGen(msgType,strLockActiveXML, pt);	
+	jcAtmcMsg::zwAtmcTestMsgGen(msgType,strLockActiveXML, pt);	
 
 	Notify(strLockActiveXML.c_str());
 
-	while (s_retVerifyCode.length()==0)
+	while (s_repVerifyCodeXML.length()==0)
 	{
 		Sleep(200);
 	}
 	//Sleep(ZW_END_WAIT);
-	EXPECT_LT(42,s_retVerifyCode.length());
+	EXPECT_LT(42,s_repVerifyCodeXML.length());
 	string ccbop,ccbname;
-	zwGetCCBMsgType(s_retVerifyCode,ccbop,ccbname);
+	zwGetCCBMsgType(s_repVerifyCodeXML,ccbop,ccbname);
 	EXPECT_EQ("1002",ccbop);
 	EXPECT_EQ("SendUnLockIdent",ccbname);
 }

@@ -3,8 +3,8 @@
 using namespace boost::property_tree;
 //把锁具服务器端处理Json的函数集中于此，便于单元测试
 
-const JC_MSG_TYPE lockParseJson( const string & inJson, ptree &pt );
-void LockOutJson( const ptree &pt, string &outJson );
+const JC_MSG_TYPE lockParseInJson( const string & inJson, ptree &pt );
+void LockGenOutputJson( const ptree &pt, string &outJson );
 //内部函数，不必暴露给外界
 void myLockActive(ptree &pt );
 void myLockInit(ptree &ptIn );
@@ -25,9 +25,9 @@ int zwjclms_command_proc(const string &inJson,string &outJson)
 	ZWTRACE("***模拟锁具收到的JSON请求结束***********************\n");
 	ptree pt;
 	//解析输入JSON，并对其处理，结果在pt中，类型返回在mtype中
-	JC_MSG_TYPE mtype=lockParseJson(inJson, pt);
+	JC_MSG_TYPE mtype=lockParseInJson(inJson, pt);
 	//把pt输出为json返回
-	LockOutJson(pt, outJson);
+	LockGenOutputJson(pt, outJson);
 	ZWTRACE("***模拟锁具生成的JSON应答开始***********************\n");
 	ZWTRACE(outJson.c_str());
 	ZWTRACE("***模拟锁具生成的JSON应答结束***********************\n");
@@ -38,7 +38,7 @@ int zwjclms_command_proc(const string &inJson,string &outJson)
 
 
 //进来的Json,对其分类，然后内容解析到pt中，并根据分类调用相应的底层函数进行组织相应的返回值的处理存入pt中，返回分类
-const JC_MSG_TYPE lockParseJson( const string & inJson, ptree &pt )
+const JC_MSG_TYPE lockParseInJson( const string & inJson, ptree &pt )
 {
 
 	JC_MSG_TYPE mtype=JCMSG_INVALID_TYPE;
@@ -88,7 +88,7 @@ const JC_MSG_TYPE lockParseJson( const string & inJson, ptree &pt )
 }
 
 //把处理完毕的pt中的内容输出为Json输出
-void LockOutJson( const ptree &pt, string &outJson )
+void LockGenOutputJson( const ptree &pt, string &outJson )
 {
 	std::stringstream ss2;
 	write_json(ss2,pt);

@@ -24,18 +24,11 @@ using Poco::Net::ConnectionRefusedException;
 
 
 namespace zwCfg{
-//#ifdef _DEBUG
-	const long	JC_CCBDLL_TIMEOUT=30;	//最长超时时间为30秒,用于测试目的尽快达到限制暴露问题
+	const long	JC_CCBDLL_TIMEOUT=86400;	//最长超时时间为30秒,用于测试目的尽快达到限制暴露问题
 	const int	JC_MSG_MAXLEN=4*1024;	//最长为128字节,用于测试目的尽快达到限制暴露问题
-//#else
-//	const long	JC_CCBDLL_TIMEOUT=3600;	//最长超时时间为1个小时，更长也没有意义了
-//	const int	JC_MSG_MAXLEN=128*1024;	//最长为下位机RAM的大小，更大也没有意义了
-//#endif // _DEBUG
 	//定义一个回调函数指针
 	RecvMsgRotine g_WarnCallback=NULL;
-	boost:: mutex io_mutex; 	
-	//zwWebSocket zwsc("localhost",8088);
-
+	boost:: mutex ws_mutex; 	//用于保护WebSocket连接对象
 }	//namespace zwCfg{
 
 
@@ -44,23 +37,22 @@ namespace zwCfg{
 CCBELOCK_API long JCAPISTD Open(long lTimeOut)
 {
 	ZWFUNCTRACE
-	boost:: mutex:: scoped_lock lock( zwCfg::io_mutex); 
+	boost:: mutex:: scoped_lock lock( zwCfg::ws_mutex); 
 	//必须大于0，小于JC_CCBDLL_TIMEOUT，限制在一个合理范围内
 	assert(lTimeOut>0 && lTimeOut<zwCfg::JC_CCBDLL_TIMEOUT);
 	if (lTimeOut<=0 || lTimeOut>=zwCfg::JC_CCBDLL_TIMEOUT)
 	{
 		return ELOCK_ERROR_PARAMINVALID;
 	}	
+	Sleep(300);	//等待起码300毫秒，等待建立和锁具的WebSocket连接
 	return ELOCK_ERROR_SUCCESS;
 }
 
 CCBELOCK_API long JCAPISTD Close()
 {
 	ZWFUNCTRACE
-	boost:: mutex:: scoped_lock lock( zwCfg::io_mutex); 
-	//zwccbthr::zwStopLockCommThread();
+	boost:: mutex:: scoped_lock lock( zwCfg::ws_mutex); 
 	zwCfg::g_WarnCallback=NULL;
-	//zwCfg::zwsc.wsClose();	
 	return ELOCK_ERROR_SUCCESS;
 }
 
@@ -68,7 +60,7 @@ CCBELOCK_API long JCAPISTD Notify(const char *pszMsg)
 {
 	ZWFUNCTRACE
 	assert(pszMsg!=NULL && strlen(pszMsg)>42);	//XML至少42字节
-	boost:: mutex:: scoped_lock lock( zwCfg::io_mutex); 
+	boost:: mutex:: scoped_lock lock( zwCfg::ws_mutex); 
 	string strJsonSend;
 	try{
 		//输入必须有内容，但是最大不得长于下位机内存大小，做合理限制
@@ -142,7 +134,7 @@ void cdecl myATMCRecvMsgRotine(const char *pszMsg)
 {
 	ZWFUNCTRACE
 	assert(pszMsg!=NULL && strlen(pszMsg)>42);
-	boost:: mutex:: scoped_lock lock( zwCfg::io_mutex); 
+	boost:: mutex:: scoped_lock lock( zwCfg::ws_mutex); 
 	//输入必须有内容，但是最大不得长于下位机内存大小，做合理限制
 	assert(NULL!=pszMsg);
 	int inlen=strlen(pszMsg);
@@ -157,7 +149,7 @@ void cdecl myATMCRecvMsgRotine(const char *pszMsg)
 CCBELOCK_API int JCAPISTD SetRecvMsgRotine(RecvMsgRotine pRecvMsgFun)
 {
 	ZWFUNCTRACE
-	boost:: mutex:: scoped_lock lock( zwCfg::io_mutex); 
+	boost:: mutex:: scoped_lock lock( zwCfg::ws_mutex); 
 	assert(NULL!=pRecvMsgFun);
 	if (NULL==pRecvMsgFun)
 	{

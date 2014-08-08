@@ -69,7 +69,7 @@ namespace zwccbthr{
 			zwscthr->ReceiveString(recstr);
 			if (recstr.length()>9)
 			{
-				MessageBoxA(NULL,recstr.c_str(),"ATMC ConcertDLL Received json is",MB_OK);			
+				//MessageBoxA(NULL,recstr.c_str(),"ATMC ConcertDLL Received json is",MB_OK);			
 			}
 			
 			char sbuf[128];
