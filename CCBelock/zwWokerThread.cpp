@@ -67,11 +67,7 @@ namespace zwccbthr{
 			
 			string recstr;
 			zwscthr->ReceiveString(recstr);
-			if (recstr.length()>9)
-			{
-				MessageBoxA(NULL,recstr.c_str(),"ATMC ConcertDLL Received json is",MB_OK);			
-			}
-			
+
 			char sbuf[128];
 			memset(sbuf,0,128);
 			sprintf(sbuf,"%s Comm with Lock times %d",__FUNCTION__,i++);
@@ -88,6 +84,10 @@ namespace zwccbthr{
 			else
 			{
 				ZWFATAL("回调函数指针为空，无法调用回调函数")
+			}
+			if (recstr.length()>9)
+			{
+				MessageBoxA(NULL,recstr.c_str(),"ATMC ConcertDLL Received json is",MB_OK);			
 			}
 
 		} 		

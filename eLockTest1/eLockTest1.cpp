@@ -7,7 +7,7 @@
 using jcAtmcConvertDLL::CCBSTR_CODE;
 using jcAtmcConvertDLL::CCBSTR_NAME;
 //看看是否打开其他测试以便专一测试一件事
-#define _ZWTEST730
+//#define _ZWTEST730
 //第一阶段的3条测试是否打开
 //锁具可以正确反应的2个测试
 #define _DEBUG_ACTREQ
@@ -200,9 +200,6 @@ TEST_F(ccbElockTest,LockActiveTest0000)
 		cout<<"Server not Start!"<<endl;
 	}
 
-#ifdef NDEBUG
-	EXPECT_EQ(ELOCK_ERROR_PARAMINVALID,SetRecvMsgRotine(NULL));
-#endif // NDEBUG
 	while (s_repActReqXML.length()==0)
 	{
 		Sleep(200);
@@ -245,9 +242,6 @@ TEST_F(ccbElockTest,LockSendActInfoTest0001)
 		cout<<"Server not Start!"<<endl;
 	}
 
-#ifdef NDEBUG
-	EXPECT_EQ(ELOCK_ERROR_PARAMINVALID,SetRecvMsgRotine(NULL));
-#endif // NDEBUG
 	while (s_repLockInitXML.length()==0)
 	{
 		Sleep(200);
@@ -285,10 +279,6 @@ TEST_F(ccbElockTest,ReadCloseCodeTest0004)
 		EXPECT_EQ(ELOCK_ERROR_CONNECTLOST,Notify(strSendLockActInfoXML.c_str()));		
 		cout<<"Server not Start!"<<endl;
 	}
-
-#ifdef NDEBUG
-	EXPECT_EQ(ELOCK_ERROR_PARAMINVALID,SetRecvMsgRotine(NULL));
-#endif // NDEBUG
 	while (s_repReadCloseCodeXML.length()==0)
 	{
 		Sleep(200);
