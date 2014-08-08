@@ -10,24 +10,58 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "eLockTest1", "eLockTest1\eL
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "emuLockSrv", "emuLockSrv\emuLockSrv.vcxproj", "{EFEC23B9-782B-43EF-8853-6444CEBCCAD8}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "elockcstest808", "elockcstest808\elockcstest808.csproj", "{713409EC-494F-44DA-8665-42587438DC6D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Mixed Platforms = Debug|Mixed Platforms
 		Debug|Win32 = Debug|Win32
+		Debug|x86 = Debug|x86
+		Release|Mixed Platforms = Release|Mixed Platforms
 		Release|Win32 = Release|Win32
+		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{2466CA9D-28E7-4156-B35E-B1D595ED5F99}.Debug|Mixed Platforms.ActiveCfg = Debug|Win32
+		{2466CA9D-28E7-4156-B35E-B1D595ED5F99}.Debug|Mixed Platforms.Build.0 = Debug|Win32
 		{2466CA9D-28E7-4156-B35E-B1D595ED5F99}.Debug|Win32.ActiveCfg = Debug|Win32
 		{2466CA9D-28E7-4156-B35E-B1D595ED5F99}.Debug|Win32.Build.0 = Debug|Win32
+		{2466CA9D-28E7-4156-B35E-B1D595ED5F99}.Debug|x86.ActiveCfg = Debug|Win32
+		{2466CA9D-28E7-4156-B35E-B1D595ED5F99}.Release|Mixed Platforms.ActiveCfg = Release|Win32
+		{2466CA9D-28E7-4156-B35E-B1D595ED5F99}.Release|Mixed Platforms.Build.0 = Release|Win32
 		{2466CA9D-28E7-4156-B35E-B1D595ED5F99}.Release|Win32.ActiveCfg = Release|Win32
 		{2466CA9D-28E7-4156-B35E-B1D595ED5F99}.Release|Win32.Build.0 = Release|Win32
+		{2466CA9D-28E7-4156-B35E-B1D595ED5F99}.Release|x86.ActiveCfg = Release|Win32
+		{F5F5FDD3-71E8-4878-BB6A-9B295C790FC4}.Debug|Mixed Platforms.ActiveCfg = Debug|Win32
+		{F5F5FDD3-71E8-4878-BB6A-9B295C790FC4}.Debug|Mixed Platforms.Build.0 = Debug|Win32
 		{F5F5FDD3-71E8-4878-BB6A-9B295C790FC4}.Debug|Win32.ActiveCfg = Debug|Win32
 		{F5F5FDD3-71E8-4878-BB6A-9B295C790FC4}.Debug|Win32.Build.0 = Debug|Win32
+		{F5F5FDD3-71E8-4878-BB6A-9B295C790FC4}.Debug|x86.ActiveCfg = Debug|Win32
+		{F5F5FDD3-71E8-4878-BB6A-9B295C790FC4}.Release|Mixed Platforms.ActiveCfg = Release|Win32
+		{F5F5FDD3-71E8-4878-BB6A-9B295C790FC4}.Release|Mixed Platforms.Build.0 = Release|Win32
 		{F5F5FDD3-71E8-4878-BB6A-9B295C790FC4}.Release|Win32.ActiveCfg = Release|Win32
 		{F5F5FDD3-71E8-4878-BB6A-9B295C790FC4}.Release|Win32.Build.0 = Release|Win32
+		{F5F5FDD3-71E8-4878-BB6A-9B295C790FC4}.Release|x86.ActiveCfg = Release|Win32
+		{EFEC23B9-782B-43EF-8853-6444CEBCCAD8}.Debug|Mixed Platforms.ActiveCfg = Debug|Win32
+		{EFEC23B9-782B-43EF-8853-6444CEBCCAD8}.Debug|Mixed Platforms.Build.0 = Debug|Win32
 		{EFEC23B9-782B-43EF-8853-6444CEBCCAD8}.Debug|Win32.ActiveCfg = Debug|Win32
 		{EFEC23B9-782B-43EF-8853-6444CEBCCAD8}.Debug|Win32.Build.0 = Debug|Win32
+		{EFEC23B9-782B-43EF-8853-6444CEBCCAD8}.Debug|x86.ActiveCfg = Debug|Win32
+		{EFEC23B9-782B-43EF-8853-6444CEBCCAD8}.Release|Mixed Platforms.ActiveCfg = Release|Win32
+		{EFEC23B9-782B-43EF-8853-6444CEBCCAD8}.Release|Mixed Platforms.Build.0 = Release|Win32
 		{EFEC23B9-782B-43EF-8853-6444CEBCCAD8}.Release|Win32.ActiveCfg = Release|Win32
 		{EFEC23B9-782B-43EF-8853-6444CEBCCAD8}.Release|Win32.Build.0 = Release|Win32
+		{EFEC23B9-782B-43EF-8853-6444CEBCCAD8}.Release|x86.ActiveCfg = Release|Win32
+		{713409EC-494F-44DA-8665-42587438DC6D}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
+		{713409EC-494F-44DA-8665-42587438DC6D}.Debug|Mixed Platforms.Build.0 = Debug|x86
+		{713409EC-494F-44DA-8665-42587438DC6D}.Debug|Win32.ActiveCfg = Debug|x86
+		{713409EC-494F-44DA-8665-42587438DC6D}.Debug|x86.ActiveCfg = Debug|x86
+		{713409EC-494F-44DA-8665-42587438DC6D}.Debug|x86.Build.0 = Debug|x86
+		{713409EC-494F-44DA-8665-42587438DC6D}.Release|Mixed Platforms.ActiveCfg = Release|x86
+		{713409EC-494F-44DA-8665-42587438DC6D}.Release|Mixed Platforms.Build.0 = Release|x86
+		{713409EC-494F-44DA-8665-42587438DC6D}.Release|Win32.ActiveCfg = Release|x86
+		{713409EC-494F-44DA-8665-42587438DC6D}.Release|x86.ActiveCfg = Release|x86
+		{713409EC-494F-44DA-8665-42587438DC6D}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
