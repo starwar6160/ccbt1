@@ -86,6 +86,6 @@ public:
 };
 #define ZWFUNCTRACE	zw_trace fntr(__FUNCTION__);
 
-#define ZWFATAL(x)	MessageBox(NULL,TEXT("jcError"),TEXT(x),MB_OK);
+#define ZWFATAL(x)	MessageBoxA(NULL,x,"jcError",MB_OK);
 
 #endif // zwCcbElockHdr_h__

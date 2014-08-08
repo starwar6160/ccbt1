@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "zwCcbElockHdr.h"
 #include "zwwsClient.h"
+#include <stdio.h>
 using namespace boost::property_tree;
 
 
@@ -66,6 +67,11 @@ namespace zwccbthr{
 			
 			string recstr;
 			zwscthr->ReceiveString(recstr);
+			if (recstr.length()>9)
+			{
+				MessageBoxA(NULL,recstr.c_str(),"ATMC ConcertDLL Received json is",MB_OK);			
+			}
+			
 			char sbuf[128];
 			memset(sbuf,0,128);
 			sprintf(sbuf,"%s Comm with Lock times %d",__FUNCTION__,i++);
@@ -74,6 +80,7 @@ namespace zwccbthr{
 			int msgTypeRecv=jcAtmcConvertDLL::zwJCjson2CCBxml(recstr,outXML);
 			assert(outXML.length()>42);	//XML开头的固定内容38个字符，外加起码一个标签的两对尖括号合计4个字符
 			ZWTRACE(outXML.c_str());
+			
 			if (NULL!=zwCfg::g_WarnCallback)
 			{
 				zwCfg::g_WarnCallback(outXML.c_str());
