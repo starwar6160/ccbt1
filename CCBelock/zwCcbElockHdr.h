@@ -1,6 +1,5 @@
 #ifndef zwCcbElockHdr_h__
 #define zwCcbElockHdr_h__
-
 /////////////////////////////////测试用函数/////////////////////////////////////////
 //报文类型
 typedef enum jcmsg_ccb_elock_t{
@@ -50,13 +49,6 @@ enum JC_CCBELOCK_ERROR_CODE{
 	ELOCK_ERROR_TIMEOUT=5		//操作超时
 };
 
-//通讯线程运行状态控制
-enum{
-	//1145这个值随便取的，无意义，只是为了避免外部传入一个0或者1之类恰好符合枚举值的错误输入
-	ZWTHR_STOP=1145,	
-	ZWTHR_RUN,
-};
-
 namespace zwccbthr{
 void wait(int milliseconds);
 const string getString(void);
@@ -64,7 +56,7 @@ const string getString(void);
 
 typedef void (cdecl *RecvMsgRotine)(const char *pszMsg);
 namespace zwCfg{
-	extern RecvMsgRotine g_WarnCallback;
+	extern RecvMsgRotine g_WarnCallback;	
 }
 
 //从给定的时间秒数，获取日期(YYYYMMDD)和时间(HHMMSS)字符串

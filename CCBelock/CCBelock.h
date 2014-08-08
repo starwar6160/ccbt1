@@ -1,6 +1,10 @@
 #ifndef CCBelock_h__
 #define CCBelock_h__
 
+#ifdef  __cplusplus
+extern "C" {
+#endif
+
 // 下列 ifdef 块是创建使从 DLL 导出更简单的
 // 宏的标准方法。此 DLL 中的所有文件都是用命令行上定义的 CCBELOCK_EXPORTS
 // 符号编译的。在使用此 DLL 的
@@ -13,7 +17,7 @@
 #define CCBELOCK_API __declspec(dllimport)
 #endif
 
-#define JCAPISTD	__stdcall
+#define JCAPISTD
 
 typedef void (cdecl *RecvMsgRotine)(const char *pszMsg);
 
@@ -23,6 +27,11 @@ CCBELOCK_API long	JCAPISTD Notify(const char *pszMsg);
 CCBELOCK_API int	JCAPISTD SetRecvMsgRotine(RecvMsgRotine pRecvMsgFun);
 
 //////////////////////////////////////////////////////////////////////////
+
+#ifdef  __cplusplus
+}	//extern "C" {
+#endif
+
 CCBELOCK_API void zwPushString(const string &str);
 
 #endif // CCBelock_h__
