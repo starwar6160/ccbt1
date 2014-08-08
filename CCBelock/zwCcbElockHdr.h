@@ -88,4 +88,6 @@ public:
 
 #define ZWFATAL(x)	MessageBoxA(NULL,x,"jcError",MB_OK);
 
+
+
 #endif // zwCcbElockHdr_h__

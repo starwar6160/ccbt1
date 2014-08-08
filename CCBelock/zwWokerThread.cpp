@@ -7,6 +7,8 @@ using namespace boost::property_tree;
 
 namespace zwccbthr{
 	extern zwWebSocket *zwscthr;
+	extern boost:: mutex recv_mutex; 
+	extern string s_dbgReturn;
 }
 
 void zwPushString(const string &str)
@@ -25,6 +27,16 @@ void zwPushString(const string &str)
 	
 }
 
+string zwRecvLockData(void)
+{
+	boost:: mutex:: scoped_lock lock( zwccbthr::recv_mutex); 
+	while (zwccbthr::s_dbgReturn.length()<42)
+	{
+		Sleep(100);
+	}
+	return zwccbthr::s_dbgReturn;
+}
+
 
 namespace zwccbthr{
 	int ns_thr_run=ZWTHR_RUN;	//控制通讯线程的开始和停止
@@ -32,7 +44,8 @@ namespace zwccbthr{
 	//建行给的接口，没有设置连接参数的地方，也就是说，完全可以写死IP和端口，抑或是从配置文件读取
 	//zwWebSocket zwscthr("10.0.0.10",8088);
 	zwWebSocket * zwscthr = NULL;
-
+	string s_dbgReturn="";
+	boost:: mutex recv_mutex; 
 
 	void wait(int milliseconds)
 	{ 
@@ -77,6 +90,12 @@ namespace zwccbthr{
 			assert(outXML.length()>42);	//XML开头的固定内容38个字符，外加起码一个标签的两对尖括号合计4个字符
 			ZWTRACE(outXML.c_str());		
 
+			{
+				boost:: mutex:: scoped_lock lock( recv_mutex); 
+				s_dbgReturn=outXML;
+			}
+			
+
 			if (NULL!=zwCfg::g_WarnCallback)
 			{
 				zwCfg::g_WarnCallback(outXML.c_str());
@@ -87,7 +106,7 @@ namespace zwccbthr{
 			}
 			if (recstr.length()>9)
 			{
-				MessageBoxA(NULL,recstr.c_str(),"ATMC ConcertDLL Received json is",MB_OK);			
+				//MessageBoxA(NULL,recstr.c_str(),"ATMC ConcertDLL Received json is",MB_OK);			
 			}
 
 		} 		

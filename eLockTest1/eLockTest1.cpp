@@ -204,6 +204,8 @@ TEST_F(ccbElockTest,LockActiveTest0000)
 	{
 		Sleep(200);
 	}
+	string ret808=zwRecvLockData();
+	cout<<"RET808"<<ret808<<endl;
 
 	Sleep(ZW_END_WAIT);
 	EXPECT_LT(42,s_repActReqXML.length());
