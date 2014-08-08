@@ -27,10 +27,11 @@ void zwPushString(const string &str)
 
 
 namespace zwccbthr{
-	int ns_thr_run=ZWTHR_RUN;	//控制通讯线程的开始和停止
-	boost:: mutex thr_mutex; 
+	void ThreadLockComm();
+	//线程对象作为一个全局静态变量，则不需要显示启动就能启动一个线程
+	boost::thread t(ThreadLockComm); 
+	boost:: mutex thr_mutex; //用互斥保护WebSocket连接对象
 	//建行给的接口，没有设置连接参数的地方，也就是说，完全可以写死IP和端口，抑或是从配置文件读取
-	//zwWebSocket zwscthr("10.0.0.10",8088);
 	zwWebSocket * zwscthr = NULL;
 
 
@@ -52,19 +53,12 @@ namespace zwccbthr{
 		ZWTRACE(LockHost);
 		myLockIp=LockHost;	//如果设置了JCLOCKIP环境变量，就用该值替代
 	}
-	
-
 
 	zwscthr=new zwWebSocket(myLockIp.c_str(),8088);
 	zwscthr->wsConnect();
 		int i=0;
 		while(1)
 		{			
-			if (ZWTHR_STOP==ns_thr_run)
-			{
-				break;
-			}
-			
 			string recstr;
 			zwscthr->ReceiveString(recstr);
 			if (recstr.length()>9)
@@ -93,32 +87,6 @@ namespace zwccbthr{
 		} 		
 		zwscthr->wsClose();
 	}
-
-	//线程对象作为一个全局静态变量，则不需要显示启动就能启动一个线程
-	boost::thread t(ThreadLockComm); 
-	void zwStartLockCommThread(void)
-	{
-		ZWFUNCTRACE
-		ZWTRACE(__FUNCTION__);
-	}
-
-	void zwStopLockCommThread(void)
-	{
-		ZWFUNCTRACE
-		ZWTRACE(__FUNCTION__);
-		ns_thr_run=ZWTHR_STOP;
-		zwscthr->wsClose();
-	}
-
-
-
-
-
-
-
-
-
-
 
 //////////////////////////////////////////////////////////////////////////
 }	//namespace zwccbthr{
