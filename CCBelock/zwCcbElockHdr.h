@@ -58,8 +58,11 @@ enum{
 };
 
 namespace zwccbthr{
-void wait(int milliseconds);
+	void wait(int milliseconds);
+void zwStartLockCommThread(void);	//启动与锁具之间的通讯线程
+void zwStopLockCommThread(void);	//停止与锁具之间的通讯线程
 const string getString(void);
+
 }	//namespace zwccbthr{
 
 typedef void (cdecl *RecvMsgRotine)(const char *pszMsg);
