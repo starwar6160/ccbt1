@@ -7,15 +7,15 @@
 using jcAtmcConvertDLL::CCBSTR_CODE;
 using jcAtmcConvertDLL::CCBSTR_NAME;
 //看看是否打开其他测试以便专一测试一件事
-//#define _ZWTEST730
+#define _ZWTEST730
 //第一阶段的3条测试是否打开
 //锁具可以正确反应的2个测试
 #define _DEBUG_ACTREQ
 #define _DEBUG_SEND_ACTINFO
 //锁具内部由于缺乏数据而无法做出反应的测试
-//#define _DEBUG_RECV_INIT_CLOSECODE
-//#define _DEBUG_RECV_VERIFY_CODE
-//#define _DEBUG_READ_CLOSE_CODE
+#define _DEBUG_RECV_INIT_CLOSECODE
+#define _DEBUG_RECV_VERIFY_CODE
+#define _DEBUG_READ_CLOSE_CODE
 
 
 

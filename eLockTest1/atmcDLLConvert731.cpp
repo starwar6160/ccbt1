@@ -179,6 +179,7 @@ try{
 }
 catch(...)
 {
+	ZWFATAL("金储JSON补全为CCB所需字段过程中有缺失")
 	return JCMSG_INVALID_TYPE;
 }
 		return JCMSG_INVALID_TYPE;

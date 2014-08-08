@@ -30,6 +30,7 @@ namespace{
 			{
 				ZWTRACE("CPPEXECPTION804B");
 				ZWTRACE(__FUNCTION__);
+				ZWFATAL("webSocket类连接服务器异常")
 				switch (exc.code())
 				{
 				case WebSocket::WS_ERR_HANDSHAKE_UNSUPPORTED_VERSION:

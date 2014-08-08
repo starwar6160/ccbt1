@@ -19,6 +19,7 @@ void zwPushString(const string &str)
 	{
 		ZWTRACE(__FUNCTION__);
 		ZWTRACE("\t zwWebSocket Send String Exeception!20140805.1626");
+		ZWFATAL("通过WebSocket发送数据到锁具异常，可能是未连接")
 	}
 	
 }

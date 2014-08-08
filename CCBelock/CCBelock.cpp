@@ -21,6 +21,8 @@ using boost::property_tree::ptree_bad_path;
 //回调函数指针类型定义
 using Poco::Net::ConnectionRefusedException;
 
+
+
 namespace zwCfg{
 //#ifdef _DEBUG
 	const long	JC_CCBDLL_TIMEOUT=30;	//最长超时时间为30秒,用于测试目的尽快达到限制暴露问题
@@ -97,23 +99,26 @@ CCBELOCK_API long JCAPISTD Notify(const char *pszMsg)
 		zwPushString(strJsonSend);
 		return ELOCK_ERROR_SUCCESS;
 	}
-	catch(ptree_bad_data &e)
-	{
-		ZWTRACE("XML2JSON BAD DATA:");
-		ZWTRACE(e.what());
-		return ELOCK_ERROR_CONNECTLOST;
-	}
 	catch(ptree_bad_path &e)
 	{
 		ZWTRACE("XML2JSON BAD DATA:");
 		ZWTRACE(e.what());
+		ZWFATAL("CCB下发XML有错误节点路径")
 		return ELOCK_ERROR_CONNECTLOST;
+	}
+	catch(ptree_bad_data &e)
+	{
+		ZWTRACE("XML2JSON BAD DATA:");
+		ZWTRACE(e.what());
+		ZWFATAL("CCB下发XML有错误数据内容")
+			return ELOCK_ERROR_CONNECTLOST;
 	}
 	catch(ptree_error &e)
 	{
 		
 		ZWTRACE("XML2JSON ERROR PERROR");
 		ZWTRACE(e.what());
+		ZWFATAL("CCB下发XML有其他未知错误")
 		return ELOCK_ERROR_CONNECTLOST;
 	}
 	catch (...)
@@ -127,6 +132,8 @@ CCBELOCK_API long JCAPISTD Notify(const char *pszMsg)
 		ZWTRACE(__FUNCTION__);
 		ZWTRACE(pszMsg);
 		ZWTRACE(strJsonSend.c_str());
+		//MessageBox(NULL,TEXT("jcError"),TEXT(),MB_OK);
+		ZWFATAL("通过WebSocket发送数据异常，可能网络故障")
 		return ELOCK_ERROR_CONNECTLOST;
 	}
 }
