@@ -69,7 +69,7 @@ namespace zwccbthr{
 			zwscthr->ReceiveString(recstr);
 			if (recstr.length()>9)
 			{
-				//MessageBoxA(NULL,recstr.c_str(),"ATMC ConcertDLL Received json is",MB_OK);			
+				MessageBoxA(NULL,recstr.c_str(),"ATMC ConcertDLL Received json is",MB_OK);			
 			}
 			
 			char sbuf[128];
@@ -79,11 +79,15 @@ namespace zwccbthr{
 			string outXML;
 			int msgTypeRecv=jcAtmcConvertDLL::zwJCjson2CCBxml(recstr,outXML);
 			assert(outXML.length()>42);	//XML开头的固定内容38个字符，外加起码一个标签的两对尖括号合计4个字符
-			ZWTRACE(outXML.c_str());
-			
+			ZWTRACE(outXML.c_str());		
+
 			if (NULL!=zwCfg::g_WarnCallback)
 			{
 				zwCfg::g_WarnCallback(outXML.c_str());
+			}
+			else
+			{
+				ZWFATAL("回调函数指针为空，无法调用回调函数")
 			}
 
 		} 		

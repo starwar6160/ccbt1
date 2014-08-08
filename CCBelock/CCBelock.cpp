@@ -153,6 +153,7 @@ CCBELOCK_API int JCAPISTD SetRecvMsgRotine(RecvMsgRotine pRecvMsgFun)
 	assert(NULL!=pRecvMsgFun);
 	if (NULL==pRecvMsgFun)
 	{
+		ZWFATAL("注册回调函数不能传入空指针0952")
 		return ELOCK_ERROR_PARAMINVALID;
 	}
 	zwCfg::g_WarnCallback=pRecvMsgFun;
