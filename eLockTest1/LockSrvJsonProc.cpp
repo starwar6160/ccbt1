@@ -101,7 +101,7 @@ void LockGenOutputJson( const ptree &pt, string &outJson )
 void myLockActive(ptree &ptInOut )
 {
 	cout<<"Ëø¾ß¼¤»îÇëÇó"<<endl;
-	ptInOut.put("Lock_Serial","ZWFAKELOCKNO1548");
+	ptInOut.put("Lock_Serial","ZWFAKELOCKNO1631");
 	ptInOut.put("Lock_Public_Key","BJpnccGKE5muLO3RLOe+hDjUftMJJwpmnuxEir0P3ss5/sxpEKNQ5AXcSsW1CbC/pXlqAk9/NZoquFJXHW3n1Cw=,");
 	ptInOut.put("Lock_Time",time(NULL));
 

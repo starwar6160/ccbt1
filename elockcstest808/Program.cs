@@ -30,15 +30,10 @@ namespace elockcstest808
         static void Main(string[] args)
         {
             //string ty = P_function.TX1(TextBox6.Text);//生成XML 取得lock号
-            string ty = "zwfakexmlzwfakexmlzwfakexmlzwfakexmlzwfakexmlzwfakexmlzwfakexmlzwfakexml";
+            string ty = "<?xml version=\"1.0\" encoding=\"utf-8\"?><root><TransCode>0000</TransCode><TransName>CallForActInfo</TransName><TransDate>20140807</TransDate><TransTime>173828</TransTime><DevCode>12345698Z</DevCode><SpareString1>zwtest808.1623</SpareString1><SpareString2>NULL</SpareString2></root>";
             int t = SetRecvMsgRotine(dle1);
             Open(45);
             int y = 0;
-            //for (Int64 i = 0; i <= 2000000000; i++)
-            //{
-            //    y = y + 1;
-            //}
-
             Notify(ty);
         }
     }

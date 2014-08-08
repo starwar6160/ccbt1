@@ -44,7 +44,7 @@ CCBELOCK_API long JCAPISTD Open(long lTimeOut)
 	{
 		return ELOCK_ERROR_PARAMINVALID;
 	}	
-	Sleep(300);	//等待起码300毫秒，等待建立和锁具的WebSocket连接
+	Sleep(1300);	//等待起码300毫秒，等待建立和锁具的WebSocket连接
 	return ELOCK_ERROR_SUCCESS;
 }
 
