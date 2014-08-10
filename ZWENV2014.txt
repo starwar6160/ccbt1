@@ -1,0 +1,8 @@
+BOOST=		C:\zwLibs\boostMini725
+CRYPTOPP=	C:\zwLibs\Cryptopp562VC10Lite
+GTEST		C:\zwLibs\gtest-1.7.0VC10Bin
+JCLOCKIP	localhost
+MIRACL		C:\zwLibs\zwMiracl2014.hg\MIRACL2014\miraclSrc\include
+POCO		C:\zwLibs\poco-1.4.6p4
+SWIG_LIB	C:\zwLibs\swigwin-3.0.2\Lib
+ZWBINJCLOCK	C:\zwLibs\exe
