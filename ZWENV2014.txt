@@ -40,3 +40,5 @@ Properties:
 
 2014/8/12 16:50:58 bcp裁剪了1.56的两个库,thread和property_tree，可以编译过去；
 bcp property_tree C:\zwLibs\boost156Mini812
+
+2014/8/12 18:37:08 今天紫金的刘工给力我们上次已经拿到过的那个OCX测试工具，开始的时候怎么都不被调用，没有反应，后来regsvr32注册了该OCX之后才被调用，但是一LOAD我们的DLL，IE9就会停止工作，还需要调试；

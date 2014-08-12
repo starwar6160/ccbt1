@@ -5,4 +5,10 @@
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
     <LocalDebuggerWorkingDirectory>F:\mydocL\binOut\jcLocks\Debug</LocalDebuggerWorkingDirectory>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='IEOcxDebug|Win32'">
+    <LocalDebuggerCommand>C:\Program Files\Internet Explorer\iexplore.exe</LocalDebuggerCommand>
+    <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
+    <LocalDebuggerWorkingDirectory>D:\ccbwk08\EXE\BIN\</LocalDebuggerWorkingDirectory>
+    <LocalDebuggerCommandArguments>D:\ccbwk08\EXE\BIN\ZJELock单体测试工具.html</LocalDebuggerCommandArguments>
+  </PropertyGroup>
 </Project>
