@@ -9,4 +9,15 @@ ZWBINJCLOCK	C:\zwLibs\exe
 
 11:04 2014/8/12 ATMC安装VC2010 REDIST之后系统异常，需要编译一个纯静态版本，没有任何VCREDIST的安装包；
 11:10 2014/8/12 回去做一个开发用VHD文件，可以方便的放到其他机器上；
-11:12 2014/8/12 ATMC平台是紫金技术的。
+11:12 2014/8/12 ATMC平台是紫金技术的。他们用VC6写的平台；按照我之前测试过的，编译为静态的，就没问题了；
+11:23 2014/8/12 还需要一个3G/4G无线网卡；BOOST/POCO等所有依赖库的源代码都应该准备好；张靖钰的QQ号码；
+11:32 2014/8/12 b2 --toolset=msvc-10.0 --build-type=complete --with-thread --with-chrono --with-date_time --with-random --with-system
+Properties:
+  toolset=toolset         Indicate the toolset to build with.
+  variant=debug|release   Select the build variant
+  link=static|shared      Whether to build static or shared libraries
+  threading=single|multi  Whether to build single or multithreaded binaries
+  runtime-link=static|shared
+                          Whether to link to static or shared C and C++
+                          runtime.
+13:05 2014/8/12	LIBCMT.LIB;LIBCPMT.LIB;MSVCRT.LIB;MSVCPRT.LIB
