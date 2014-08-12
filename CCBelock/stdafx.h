@@ -11,6 +11,6 @@
 // Windows 头文件:
 #include <windows.h>
 
-
+#define ZWFUNCTRACE	OutputDebugStringA(__FUNCTION__);
 
 // TODO: 在此处引用程序需要的其他头文件
