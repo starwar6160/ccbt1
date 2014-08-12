@@ -10,7 +10,7 @@ using jcAtmcConvertDLL::CCBSTR_NAME;
 //#define _ZWTEST730
 //第一阶段的3条测试是否打开
 //锁具可以正确反应的2个测试
-//#define _DEBUG_ACTREQ
+#define _DEBUG_ACTREQ
 #define _DEBUG_SEND_ACTINFO
 //锁具内部由于缺乏数据而无法做出反应的测试
 #define _DEBUG_RECV_INIT_CLOSECODE
@@ -204,8 +204,8 @@ TEST_F(ccbElockTest,LockActiveTest0000)
 	{
 		Sleep(200);
 	}
-	string ret808=zwRecvLockData();
-	cout<<"RET808"<<ret808<<endl;
+	//string ret808=zwRecvLockData();
+	//cout<<"RET808"<<ret808<<endl;
 
 	Sleep(ZW_END_WAIT);
 	EXPECT_LT(42,s_repActReqXML.length());
