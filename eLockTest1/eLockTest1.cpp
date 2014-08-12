@@ -10,7 +10,7 @@ using jcAtmcConvertDLL::CCBSTR_NAME;
 //#define _ZWTEST730
 //第一阶段的3条测试是否打开
 //锁具可以正确反应的2个测试
-#define _DEBUG_ACTREQ
+//#define _DEBUG_ACTREQ
 #define _DEBUG_SEND_ACTINFO
 //锁具内部由于缺乏数据而无法做出反应的测试
 #define _DEBUG_RECV_INIT_CLOSECODE
@@ -179,7 +179,7 @@ TEST_F(ccbElockTest,LockActiveTest0000)
 	//具体生成消息XML
 	ptree pt;
 	jcAtmcMsg::zwAtmcTestMsgGen(msgType,strLockActiveXML, pt);	
-	strLockActiveXML=
+	//strLockActiveXML=
 		//"<?xml version=\"1.0\" encoding=\"utf-8\"?>"
 		//"<root><TransCode>0000</TransCode>"
 		//"<TransName>CallForActInfo</TransName>"
@@ -188,7 +188,7 @@ TEST_F(ccbElockTest,LockActiveTest0000)
 		//"<DevCode>12345698</DevCode>"
 		//"<SpareString1>NULL</SpareString1>"
 		//"<SpareString2>NULL</SpareString2></root>";
-"<?xml version=\"1.0\" encoding=\"utf-8\"?><root><TransCode>0000</TransCode><TransName>CallForActInfo</TransName><TransDate>20140807</TransDate><TransTime>173828</TransTime><DevCode>12345698Z</DevCode><SpareString1>NULL</SpareString1><SpareString2>NULL</SpareString2></root>";
+//"<?xml version=\"1.0\" encoding=\"utf-8\"?><root><TransCode>0000</TransCode><TransName>CallForActInfo</TransName><TransDate>20140807</TransDate><TransTime>173828</TransTime><DevCode>12345698Z</DevCode><SpareString1>NULL</SpareString1><SpareString2>NULL</SpareString2></root>";
 
 	if (ELOCK_ERROR_SUCCESS==m_connStatus)
 	{

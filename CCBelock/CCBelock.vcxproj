@@ -55,7 +55,7 @@
       <AdditionalIncludeDirectories>$(BOOST)\;$(POCO)\Foundation\include;$(POCO)\Net\include;$(POCO)\Util\include;.\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <ExceptionHandling>Sync</ExceptionHandling>
       <AdditionalOptions>-Zm113 %(AdditionalOptions)</AdditionalOptions>
-      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -74,7 +74,7 @@
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;POCO_STATIC;CCBELOCK_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(BOOST)\;$(POCO)\Foundation\include;$(POCO)\Net\include;$(POCO)\Util\include;.\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalOptions>-Zm113 %(AdditionalOptions)</AdditionalOptions>
-      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
