@@ -27,16 +27,6 @@ void zwPushString(const string &str)
 	
 }
 
-string zwRecvLockData(void)
-{
-	boost:: mutex:: scoped_lock lock( zwccbthr::recv_mutex); 
-	while (zwccbthr::s_dbgReturn.length()<42)
-	{
-		Sleep(100);
-	}
-	return zwccbthr::s_dbgReturn;
-}
-
 
 namespace zwccbthr{
 	int ns_thr_run=ZWTHR_RUN;	//控制通讯线程的开始和停止
