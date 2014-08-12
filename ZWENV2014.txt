@@ -6,3 +6,7 @@ MIRACL		C:\zwLibs\zwMiracl2014.hg\MIRACL2014\miraclSrc\include
 POCO		C:\zwLibs\poco-1.4.6p4
 SWIG_LIB	C:\zwLibs\swigwin-3.0.2\Lib
 ZWBINJCLOCK	C:\zwLibs\exe
+
+11:04 2014/8/12 ATMC安装VC2010 REDIST之后系统异常，需要编译一个纯静态版本，没有任何VCREDIST的安装包；
+11:10 2014/8/12 回去做一个开发用VHD文件，可以方便的放到其他机器上；
+11:12 2014/8/12 ATMC平台是紫金技术的。

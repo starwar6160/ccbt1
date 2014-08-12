@@ -63,6 +63,7 @@ namespace zwccbthr{
 	if (NULL!=LockHost)
 	{
 		ZWTRACE(LockHost);
+	
 		myLockIp=LockHost;	//如果设置了JCLOCKIP环境变量，就用该值替代
 	}
 	

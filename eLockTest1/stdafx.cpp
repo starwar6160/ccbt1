@@ -15,4 +15,5 @@
 #endif // _DEBUG
 #pragma comment(lib,"jclmsCCB2014.lib")
 
-#pragma comment(lib,"CCBELOCK.lib")
+//#pragma comment(lib,"CCBELOCK.lib")
+#pragma comment(lib,"HidProtocol.lib")

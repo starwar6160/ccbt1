@@ -14,6 +14,7 @@
     <ProjectGuid>{2466CA9D-28E7-4156-B35E-B1D595ED5F99}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>CCBelock</RootNamespace>
+    <ProjectName>HidProtocol</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
