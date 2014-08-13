@@ -35,7 +35,13 @@
 #include "Poco/Util/OptionSet.h"
 #include "Poco/Util/HelpFormatter.h"
 
-
+#include "Poco/AutoPtr.h"  
+#include "Poco/Logger.h"  
+#include "Poco/ConsoleChannel.h"  
+#include "Poco/LogStream.h"  
+#include "Poco/PatternFormatter.h"  
+#include "Poco/FileChannel.h"  
+#include "Poco/FormattingChannel.h"  
 
 using Poco::Net::SocketStream;
 using Poco::Net::HTTPRequest;
