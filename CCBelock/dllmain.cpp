@@ -9,16 +9,9 @@ BOOL APIENTRY DllMain( HMODULE hModule,
 	switch (ul_reason_for_call)
 	{
 	case DLL_PROCESS_ATTACH:
-		OutputDebugStringA("JCATMCDLL812.1806 PROCESS ATTACHED");
-		break;
 	case DLL_THREAD_ATTACH:
-		OutputDebugStringA("JCATMCDLL812.1806 THREAD ATTACHED");
-		break;
 	case DLL_THREAD_DETACH:
-		OutputDebugStringA("JCATMCDLL812.1806 THREAD DETACH");
-		break;
 	case DLL_PROCESS_DETACH:
-		OutputDebugStringA("JCATMCDLL812.1806 PROCESS DETACH");
 		break;
 	}
 	return TRUE;
