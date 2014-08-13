@@ -48,31 +48,22 @@ namespace zwccbthr{
 	ZWFUNCTRACE
 	boost:: mutex:: scoped_lock lock( thr_mutex); 
 	try{
-	char *LockHost=getenv("JCLOCKIP");
 	string myLockIp="10.0.0.10";	//默认值是真实锁具IP
-	myLockIp="127.0.0.1";
-	if (NULL!=LockHost && strlen(LockHost)>0)
-	{
-		myLockIp=LockHost;	//如果设置了JCLOCKIP环境变量，就用该值替代
-	}
+	//myLockIp="127.0.0.1";	//临时测试用模拟器IP
 	ZWTRACE("USED JCLOCKIP=");
 	ZWTRACE(myLockIp.c_str());
-	OutputDebugStringA("ZWTHR1");
-
 
 	zwscthr=new zwWebSocket(myLockIp.c_str(),8088);
-	OutputDebugStringA("ZWTHR1.1");
+	OutputDebugStringA("ZWTHR2");
 	zwscthr->wsConnect();
-	OutputDebugStringA("ZWTHR1.2");
 		int i=0;
 		while(1)
 		{			
-			OutputDebugStringA("ZWTHR1.3");
+			OutputDebugStringA("ZWTHR3");
 			if (ZWTHR_STOP==ns_thr_run)
 			{
 				break;
 			}
-			OutputDebugStringA("ZWTHR2");
 			string recstr;
 			zwscthr->ReceiveString(recstr);
 
