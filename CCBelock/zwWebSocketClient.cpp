@@ -90,7 +90,7 @@ void zwWebSocket::wsConnect(void)
 	catch (...)
 	{
 		OutputDebugStringA("JC WebSocket Connect Failed 20140813.1955!");
-		throw 1956;
+		throw;
 	}
 		
 }

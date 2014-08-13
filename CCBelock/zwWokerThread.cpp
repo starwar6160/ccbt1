@@ -109,7 +109,7 @@ namespace zwccbthr{
 	}	//try
 	catch(...){
 		OutputDebugStringA("JC CCB ELOCK THREAD CONNECT FAIL! 20140812");
-		exit(-1956);
+		return;
 	}
 	}
 
