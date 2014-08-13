@@ -50,13 +50,13 @@ namespace zwccbthr{
 	try{
 	char *LockHost=getenv("JCLOCKIP");
 	string myLockIp="10.0.0.10";	//默认值是真实锁具IP
-	ZWTRACE("JCLOCKIP=");
-	if (NULL!=LockHost)
+	myLockIp="127.0.0.1";
+	if (NULL!=LockHost && strlen(LockHost)>0)
 	{
-		ZWTRACE(LockHost);
-	
 		myLockIp=LockHost;	//如果设置了JCLOCKIP环境变量，就用该值替代
 	}
+	ZWTRACE("USED JCLOCKIP=");
+	ZWTRACE(myLockIp.c_str());
 	OutputDebugStringA("ZWTHR1");
 
 
