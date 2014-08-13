@@ -13,7 +13,6 @@ BOOL APIENTRY DllMain( HMODULE hModule,
 	switch (ul_reason_for_call)
 	{
 	case DLL_PROCESS_ATTACH:
-		OutputDebugStringA("JinChu.CCB.Elock.DLL Load 20140813.2123");
 		g_log->notice("JINCHU ELOCK DLL_PROCESS_ATTACH");
 		break;
 	case DLL_THREAD_ATTACH:
@@ -26,6 +25,7 @@ BOOL APIENTRY DllMain( HMODULE hModule,
 		g_log->notice("JINCHU ELOCK DLL_PROCESS_DETACH");
 		break;
 	}
+	//g_log->notice()<<33<<"hello"<<endl;
 	return TRUE;
 }
 
@@ -46,6 +46,7 @@ int PocoLogInit(void)
 
 	Poco::Logger::root().setChannel(channel.get());  
 	Poco::Logger& logger = Poco::Logger::get("JinChuElock");  
+	logger.setLevel(Poco::Message::PRIO_TRACE);
 	g_log=new Poco::LogStream(logger); 
 	return 0;  
 }  

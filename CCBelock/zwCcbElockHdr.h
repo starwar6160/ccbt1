@@ -1,6 +1,6 @@
 #ifndef zwCcbElockHdr_h__
 #define zwCcbElockHdr_h__
-
+#include "stdafx.h"
 /////////////////////////////////测试用函数/////////////////////////////////////////
 //报文类型
 typedef enum jcmsg_ccb_elock_t{
@@ -86,9 +86,9 @@ public:
 	~zw_trace();
 };
 #define ZWFUNCTRACE	zw_trace fntr(__FUNCTION__);
-
-#define ZWFATAL(x)	OutputDebugStringA("ZWFATAL"); OutputDebugStringA(x);
-
+extern Poco::LogStream *g_log;
+//#define ZWFATAL(x)	OutputDebugStringA("ZWFATAL"); OutputDebugStringA(x);
+#define ZWFATAL(x) g_log->fatal(x);
 
 
 #endif // zwCcbElockHdr_h__

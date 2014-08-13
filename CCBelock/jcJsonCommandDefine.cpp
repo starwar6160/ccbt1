@@ -20,7 +20,8 @@ namespace jcAtmcConvertDLL{
 void ZWTRACE(const char *x)
 {
 	OutputDebugStringA(x);
-	cout<<x<<endl;	
+	//cout<<x<<endl;	
+	g_log->trace(x);
 }
 
 zw_trace::zw_trace(const char *funcName)
@@ -29,14 +30,16 @@ zw_trace::zw_trace(const char *funcName)
 	m_start=m_str+"\tSTART";
 	m_end=m_str+"\tEND";
 	OutputDebugStringA(m_start.c_str());
-	cout<<m_start<<endl;
+	//cout<<m_start<<endl;
+	g_log->trace(m_start);
 }
 
 zw_trace::~zw_trace()
 {
 	
 	OutputDebugStringA(m_end.c_str());
-	cout<<m_end<<endl;
+	//cout<<m_end<<endl;
+	g_log->trace(m_end);
 }
 
 
