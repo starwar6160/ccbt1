@@ -105,7 +105,7 @@ namespace zwccbthr{
 	}
 
 	//线程对象作为一个全局静态变量，则不需要显示启动就能启动一个线程
-	boost::thread t(ThreadLockComm); 
+	//boost::thread t(ThreadLockComm); 
 	void zwStartLockCommThread(void)
 	{
 		ZWFUNCTRACE

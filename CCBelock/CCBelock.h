@@ -13,7 +13,7 @@
 #define CCBELOCK_API __declspec(dllimport)
 #endif
 
-#define JCAPISTD	__stdcall
+#define JCAPISTD
 
 typedef void (cdecl *RecvMsgRotine)(const char *pszMsg);
 
