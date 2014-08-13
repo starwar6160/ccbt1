@@ -87,7 +87,7 @@ public:
 };
 #define ZWFUNCTRACE	zw_trace fntr(__FUNCTION__);
 
-#define ZWFATAL(x)	MessageBoxA(NULL,x,"jcError",MB_OK);
+#define ZWFATAL(x)	OutputDebugStringA("ZWFATAL"); OutputDebugStringA(x);
 
 
 
