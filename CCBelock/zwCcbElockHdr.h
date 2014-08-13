@@ -61,6 +61,7 @@ namespace zwccbthr{
 	void wait(int milliseconds);
 void zwStartLockCommThread(void);	//启动与锁具之间的通讯线程
 void zwStopLockCommThread(void);	//停止与锁具之间的通讯线程
+void ThreadLockComm();				//与锁具之间的通讯线程
 const string getString(void);
 
 }	//namespace zwccbthr{

@@ -47,6 +47,7 @@ namespace zwccbthr{
 	{		
 	ZWFUNCTRACE
 	boost:: mutex:: scoped_lock lock( thr_mutex); 
+	try{
 	char *LockHost=getenv("JCLOCKIP");
 	string myLockIp="10.0.0.10";	//默认值是真实锁具IP
 	ZWTRACE("JCLOCKIP=");
@@ -56,19 +57,22 @@ namespace zwccbthr{
 	
 		myLockIp=LockHost;	//如果设置了JCLOCKIP环境变量，就用该值替代
 	}
-	
+	OutputDebugStringA("ZWTHR1");
 
 
 	zwscthr=new zwWebSocket(myLockIp.c_str(),8088);
+	OutputDebugStringA("ZWTHR1.1");
 	zwscthr->wsConnect();
+	OutputDebugStringA("ZWTHR1.2");
 		int i=0;
 		while(1)
 		{			
+			OutputDebugStringA("ZWTHR1.3");
 			if (ZWTHR_STOP==ns_thr_run)
 			{
 				break;
 			}
-			
+			OutputDebugStringA("ZWTHR2");
 			string recstr;
 			zwscthr->ReceiveString(recstr);
 
@@ -86,7 +90,6 @@ namespace zwccbthr{
 				s_dbgReturn=outXML;
 			}
 			
-
 			if (NULL!=zwCfg::g_WarnCallback)
 			{
 				zwCfg::g_WarnCallback(outXML.c_str());
@@ -102,10 +105,15 @@ namespace zwccbthr{
 
 		} 		
 		zwscthr->wsClose();
+
+	}	//try
+	catch(...){
+		OutputDebugStringA("JC CCB ELOCK THREAD CONNECT FAIL! 20140812");
+		exit(-1956);
+	}
 	}
 
-	//线程对象作为一个全局静态变量，则不需要显示启动就能启动一个线程
-	//boost::thread t(ThreadLockComm); 
+
 	void zwStartLockCommThread(void)
 	{
 		ZWFUNCTRACE

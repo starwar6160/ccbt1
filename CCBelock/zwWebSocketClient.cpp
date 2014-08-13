@@ -83,7 +83,16 @@ zwWebSocket::zwWebSocket(const char *host,const int port)
 
 void zwWebSocket::wsConnect(void)
 {
+	try
+	{
 		ws=new WebSocket(cs,request,response);	
+	}
+	catch (...)
+	{
+		OutputDebugStringA("JC WebSocket Connect Failed 20140813.1955!");
+		throw 1956;
+	}
+		
 }
 
 void zwWebSocket::wsClose(void)

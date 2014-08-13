@@ -29,9 +29,18 @@ namespace zwCfg{
 	//定义一个回调函数指针
 	RecvMsgRotine g_WarnCallback=NULL;
 	boost:: mutex ws_mutex; 	//用于保护WebSocket连接对象
+	//线程对象作为一个全局静态变量，则不需要显示启动就能启动一个线程
+	boost::thread *thr=NULL;
 }	//namespace zwCfg{
 
-
+void zwFakeThread(void)
+{
+	for (int i=0;i<10;i++)
+	{
+		OutputDebugStringA("ZWFAKETHREAD");
+		Sleep(1000);
+	}
+}
 
 
 CCBELOCK_API long JCAPISTD Open(long lTimeOut)
@@ -44,6 +53,9 @@ CCBELOCK_API long JCAPISTD Open(long lTimeOut)
 	{
 		return ELOCK_ERROR_PARAMINVALID;
 	}	
+ boost::thread thr(zwccbthr::ThreadLockComm);
+	//boost::thread thr(zwFakeThread);
+	
 	Sleep(300);	//等待起码300毫秒，等待建立和锁具的WebSocket连接
 	return ELOCK_ERROR_SUCCESS;
 }
