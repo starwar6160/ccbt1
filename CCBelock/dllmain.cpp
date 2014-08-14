@@ -34,7 +34,7 @@ int PocoLogInit(void)
 	Poco::AutoPtr<Poco::Channel> channel;  
 	{  
 		Poco::AutoPtr<Poco::Channel> fileChannel(new Poco::FileChannel());  
-		fileChannel->setProperty("path", "jinchu2014.log");  
+		fileChannel->setProperty("path", "c:\\wsap\\bin\\tmp\\jinchuElock2014.txt");  
 		fileChannel->setProperty("archive", "timestamp");  
 		fileChannel->setProperty("compress", "true");  
 
