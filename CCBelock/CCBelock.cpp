@@ -13,6 +13,7 @@
 #include "CCBelock.h"
 #include "zwCcbElockHdr.h"
 #include "zwwsClient.h"
+#include "zwPocoLog.h"
 using namespace std;
 using boost::property_tree::ptree_error;
 using boost::property_tree::ptree_bad_data;
@@ -72,6 +73,10 @@ CCBELOCK_API long JCAPISTD Notify(const char *pszMsg)
 {
 	ZWFUNCTRACE
 	assert(pszMsg!=NULL && strlen(pszMsg)>42);	//XML至少42字节
+	if (NULL!=pszMsg && strlen(pszMsg)>0)
+	{
+		g_log->information()<<"CCB下发XML="<<endl<<pszMsg<<endl;
+	}
 	boost:: mutex:: scoped_lock lock( zwCfg::ws_mutex); 
 	string strJsonSend;
 	try{

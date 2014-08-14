@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "zwCcbElockHdr.h"
 #include "zwwsClient.h"
+#include "zwPocoLog.h"
 #include <stdio.h>
 using namespace boost::property_tree;
 

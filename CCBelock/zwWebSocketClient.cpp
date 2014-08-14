@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "zwwsClient.h"
 #include "zwCcbElockHdr.h"
+#include "zwPocoLog.h"
 using Poco::Net::ConnectionRefusedException;
 
 namespace{

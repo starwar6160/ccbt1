@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "zwCcbElockHdr.h"
+#include "zwPocoLog.h"
 
 namespace jcAtmcConvertDLL{
 	//JSONÃüÁî×Ö·û´®
