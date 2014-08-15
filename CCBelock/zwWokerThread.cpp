@@ -114,8 +114,9 @@ namespace zwccbthr{
 
 	}	//try
 	catch(...){
+		zwscthr->wsClose();	//异常就主动关闭连接防止下一次正常连接无法连上
 		OutputDebugStringA("JC CCB ELOCK THREAD CONNECT FAIL! 20140815");
-		ZWFATAL("JC CCB ELOCK THREAD CONNECT FAIL! 20140815");
+		ZWFATAL("##########JC CCB ELOCK THREAD CONNECT FAIL! 20140815");
 		return;
 	}
 	}

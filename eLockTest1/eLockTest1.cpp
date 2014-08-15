@@ -14,9 +14,9 @@ using jcAtmcConvertDLL::CCBSTR_NAME;
 #define _DEBUG_ACTREQ
 #define _DEBUG_SEND_ACTINFO
 //锁具内部由于缺乏数据而无法做出反应的测试
-#define _DEBUG_RECV_INIT_CLOSECODE
-#define _DEBUG_RECV_VERIFY_CODE
-#define _DEBUG_READ_CLOSE_CODE
+//#define _DEBUG_RECV_INIT_CLOSECODE
+//#define _DEBUG_RECV_VERIFY_CODE
+//#define _DEBUG_READ_CLOSE_CODE
 
 
 
@@ -193,7 +193,7 @@ TEST_F(ccbElockTest,LockActiveTest0000)
 //下面一行是一整行原生XML，方便网页测试使用，没有转义字符
 // <?xml version="1.0" encoding="utf-8"?><root><TransCode>0000</TransCode><TransName>CallForActInfo</TransName><TransDate>20140807</TransDate><TransTime>173828</TransTime><DevCode>12345698Z</DevCode><SpareString1>NULL</SpareString1><SpareString2>NULL</SpareString2></root>
 	cout<<"Sleep 65 seconds,please wait"<<endl;
-	Sleep(6*1000);
+
 	if (ELOCK_ERROR_SUCCESS==m_connStatus)
 	{
 		EXPECT_EQ(ELOCK_ERROR_SUCCESS,Notify(strLockActiveXML.c_str()));		
@@ -216,7 +216,7 @@ TEST_F(ccbElockTest,LockActiveTest0000)
 	zwGetCCBMsgType(s_repActReqXML,ccbop,ccbname);
 	EXPECT_EQ("0000",ccbop);
 	EXPECT_EQ("CallForActInfo",ccbname);
-
+	Sleep(6*1000);
 }
 #endif // _DEBUG_ACTREQ
 
@@ -237,7 +237,7 @@ TEST_F(ccbElockTest,LockSendActInfoTest0001)
 	jcAtmcMsg::zwAtmcTestMsgGen(msgType,strSendLockActInfoXML, pt);	
 
 	cout<<"Sleep 65 seconds,please wait"<<endl;
-	Sleep(5*1000);
+	//Sleep(5*1000);
 	if (ELOCK_ERROR_SUCCESS==m_connStatus)
 	{
 		EXPECT_EQ(ELOCK_ERROR_SUCCESS,Notify(strSendLockActInfoXML.c_str()));		
