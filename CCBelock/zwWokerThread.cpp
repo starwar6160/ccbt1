@@ -16,6 +16,15 @@ void zwPushString(const string &str)
 {
 	ZWFUNCTRACE
 	assert(str.length()>0);
+	if (str.length()==0)
+	{
+		return;
+	}
+	if (NULL==zwccbthr::zwscthr)
+	{
+		ZWFATAL("WebSocket对象指针为空！");
+		return;
+	}
 	try{
 		zwccbthr::zwscthr->SendString(str);
 	}
@@ -72,7 +81,7 @@ namespace zwccbthr{
 
 			char sbuf[128];
 			memset(sbuf,0,128);
-			sprintf(sbuf,"%s Comm with Lock times %d",__FUNCTION__,i++);
+			sprintf(sbuf,"JCCOMM THREAD Comm with Lock times %d",i++);
 			ZWTRACE(sbuf);
 			string outXML;
 			int msgTypeRecv=jcAtmcConvertDLL::zwJCjson2CCBxml(recstr,outXML);
@@ -99,10 +108,12 @@ namespace zwccbthr{
 
 		} 		
 		zwscthr->wsClose();
+		ZWTRACE("JCLOCK COMM THREAD NORMAL CLOSE WS CONNECT 20140815");
 
 	}	//try
 	catch(...){
-		OutputDebugStringA("JC CCB ELOCK THREAD CONNECT FAIL! 20140812");
+		OutputDebugStringA("JC CCB ELOCK THREAD CONNECT FAIL! 20140815");
+		ZWFATAL("JC CCB ELOCK THREAD CONNECT FAIL! 20140815");
 		return;
 	}
 	}
