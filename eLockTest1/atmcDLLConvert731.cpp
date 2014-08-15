@@ -5,7 +5,7 @@
 using namespace boost::property_tree;
 //把ATMC DLL的XML和JSON互转函数集中于此，便于单元测试；
 namespace jcAtmcConvertDLL{
-	const char *LOCKMAN_NAME="JINCHU";
+	const char *LOCKMAN_NAME="BeiJing.JinChu";
 	//下发方向处理
 	void zwconvLockActiveDown(const ptree &ptccb, ptree &ptjc );
 	void zwconvLockInitDown( const ptree &ptccb, ptree &ptjc );
@@ -262,15 +262,7 @@ catch(...)
 		ptccb.put("root.LockId",ptjc.get<string>("Lock_Serial"));	
 		//有用部分
 		int ActiveResult=0;	//建行定义该字段0为成功，1为失败；
-		string strState=ptjc.get<string>("State");
-		if ("ok"==strState)
-		{
-			ActiveResult=0;
-		}
-		else
-		{
-			ActiveResult=1;
-		}
+		ActiveResult=ptjc.get<int>("State");
 		ptccb.put("root.ActiveResult",ActiveResult);
 		//1.1版本里面下位机解密了ECIES加密的PSK并在Lock_Init_Info字段返回
 		ptccb.put("root.ActInfo",ptjc.get<string>("Lock_Init_Info"));

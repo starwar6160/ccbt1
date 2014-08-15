@@ -118,7 +118,7 @@ string & myAtmcMsgLockActive( string & strXML ,ptree &pt )
 //生成发送锁具激活信息报文，发送用锁具公钥加密过后的PSK到锁具
 string & myAtmcMsgSendActiveInfo( string & strXML ,ptree &pt )
 {
-	const char *LOCKMAN_NAMEG="JINCHU";
+	const char *LOCKMAN_NAMEG="BeiJing.JinChu";
 	//请求
 	//	交易代码	TransCode	是	值：0001
 	//	交易名称	TransName	是	值：SendActInfo
