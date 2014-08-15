@@ -63,7 +63,7 @@
       <ModuleDefinitionFile>ccbElock.def</ModuleDefinitionFile>
       <AdditionalLibraryDirectories>$(BOOST)\lib;$(POCO)\lib</AdditionalLibraryDirectories>
       <GenerateMapFile>false</GenerateMapFile>
-      <MapExports>true</MapExports>
+      <MapExports>false</MapExports>
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
     </Link>
   </ItemDefinitionGroup>

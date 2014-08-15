@@ -1,6 +1,7 @@
 // dllmain.cpp : 定义 DLL 应用程序的入口点。
 #include "stdafx.h"
-
+#include <direct.h>
+#include "zwCcbElockHdr.h"
 Poco::LogStream *g_log=NULL;
 int PocoLogInit(void)  ;
 
@@ -29,13 +30,27 @@ BOOL APIENTRY DllMain( HMODULE hModule,
 	return TRUE;
 }
 
+string zwGetLogFileName(void)
+{
+	const string jcLogPath=".\\JinChuLog815";
+	string logdate,logtime;
+	_mkdir(jcLogPath.c_str());
+	time_t now=time(NULL);
+	time_t tail=now % 60;
+	now=now-tail;
+	zwGetDateTimeString(now,logdate,logtime);
+	return jcLogPath+"\\"+logdate+"."+logtime+".txt";
+}
+
+
 int PocoLogInit(void)  
 {  
 	Poco::AutoPtr<Poco::Channel> channel;  
 	{  
+
 		Poco::AutoPtr<Poco::Channel> fileChannel(new Poco::FileChannel());  
-		fileChannel->setProperty("path", 
-			"c:\\wsap\\bin\\tmp\\jinchuElock201408151047.txt");  
+		fileChannel->setProperty("path", zwGetLogFileName());
+			//"c:\\wsap\\bin\\tmp\\jinchuElock201408151047.txt");  
 		//"jinchuElock2014081510.txt");  
 		fileChannel->setProperty("archive", "timestamp");  
 		fileChannel->setProperty("compress", "true");  
