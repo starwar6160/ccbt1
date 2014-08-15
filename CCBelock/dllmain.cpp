@@ -51,7 +51,9 @@ int PocoLogInit(void)
 		Poco::AutoPtr<Poco::Channel> fileChannel(new Poco::FileChannel());  
 		fileChannel->setProperty("path", zwGetLogFileName()); 
 		fileChannel->setProperty("archive", "timestamp");  
-		fileChannel->setProperty("compress", "true");  
+		//fileChannel->setProperty("compress", "true");  
+		fileChannel->setProperty("rotation", "64 K");  
+		fileChannel->setProperty("times", "local"); 
 
 		Poco::AutoPtr<Poco::PatternFormatter> patternFormatter(new Poco::PatternFormatter());  
 		patternFormatter->setProperty("pattern", "%H:%M:%S:%i %s(%l): %t");  

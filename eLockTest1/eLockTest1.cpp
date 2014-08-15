@@ -192,7 +192,7 @@ TEST_F(ccbElockTest,LockActiveTest0000)
 //"<?xml version=\"1.0\" encoding=\"utf-8\"?><root><TransCode>0000</TransCode><TransName>CallForActInfo</TransName><TransDate>20140807</TransDate><TransTime>173828</TransTime><DevCode>12345698Z</DevCode><SpareString1>NULL</SpareString1><SpareString2>NULL</SpareString2></root>";
 //下面一行是一整行原生XML，方便网页测试使用，没有转义字符
 // <?xml version="1.0" encoding="utf-8"?><root><TransCode>0000</TransCode><TransName>CallForActInfo</TransName><TransDate>20140807</TransDate><TransTime>173828</TransTime><DevCode>12345698Z</DevCode><SpareString1>NULL</SpareString1><SpareString2>NULL</SpareString2></root>
-	cout<<"Sleep 65 seconds,please wait"<<endl;
+	//cout<<"Sleep 65 seconds,please wait"<<endl;
 
 	if (ELOCK_ERROR_SUCCESS==m_connStatus)
 	{
@@ -216,7 +216,7 @@ TEST_F(ccbElockTest,LockActiveTest0000)
 	zwGetCCBMsgType(s_repActReqXML,ccbop,ccbname);
 	EXPECT_EQ("0000",ccbop);
 	EXPECT_EQ("CallForActInfo",ccbname);
-	Sleep(6*1000);
+	//Sleep(6*1000);
 }
 #endif // _DEBUG_ACTREQ
 
@@ -236,7 +236,7 @@ TEST_F(ccbElockTest,LockSendActInfoTest0001)
 	ptree pt;
 	jcAtmcMsg::zwAtmcTestMsgGen(msgType,strSendLockActInfoXML, pt);	
 
-	cout<<"Sleep 65 seconds,please wait"<<endl;
+	//cout<<"Sleep 65 seconds,please wait"<<endl;
 	//Sleep(5*1000);
 	if (ELOCK_ERROR_SUCCESS==m_connStatus)
 	{

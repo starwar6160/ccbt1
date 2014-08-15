@@ -121,7 +121,7 @@ void myLockInit( ptree &ptInOut  )
 	ptOut.put(jcAtmcConvertDLL::JCSTR_CMDTITLE,jcAtmcConvertDLL::JCSTR_LOCK_INIT);
 	ptOut.put("Lock_Time",time(NULL));
 	ptOut.put("Lock_Serial",ptInOut.get<string>("Atm_Serial"));
-	ptOut.put("State","ok");
+	ptOut.put("State","0");
 	//在此暂不计算，直接返回预先计算好的第一套密文数据里面的PSK
 	ptOut.put("Lock_Init_Info","77498EB7D7CE8B92D871791C99B85AB337FF73235A89E7A20764EFE6EA41E4CE");
 	ptInOut=ptOut;
