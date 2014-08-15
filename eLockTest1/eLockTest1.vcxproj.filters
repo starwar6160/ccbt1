@@ -35,14 +35,11 @@
     <ClCompile Include="eLockTest1.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="LockSrvJsonProc.cpp">
+    <ClCompile Include="..\CCBelock\jcJsonCommandDefine.cpp">
       <Filter>源文件\shareSrc</Filter>
     </ClCompile>
     <ClCompile Include="atmcMsgGen730.cpp">
-      <Filter>源文件\shareSrc</Filter>
-    </ClCompile>
-    <ClCompile Include="..\CCBelock\jcJsonCommandDefine.cpp">
-      <Filter>源文件\shareSrc</Filter>
+      <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

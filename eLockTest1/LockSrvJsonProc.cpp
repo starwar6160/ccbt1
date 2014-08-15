@@ -12,6 +12,12 @@ void myReadCloseCode(ptree &pt );
 void myGenInitCloseCodeJson( ptree &ptInOut );
 void myGenVerifyCodeJson(ptree &ptInOut);
 
+void ZWTRACES(const char *x)
+{
+	OutputDebugStringA(x);
+	//cout<<x<<endl;	
+}
+
 //此函数没有实际功能，功能都在下级子函数中，便于单元测试；此函数在此是满足联网的单元测试的；
 int zwjclms_command_proc(const string &inJson,string &outJson)
 {
@@ -20,17 +26,17 @@ int zwjclms_command_proc(const string &inJson,string &outJson)
 		return 0;
 	}
 	assert(inJson.length()>9);	//json最基本的符号起码好像要9个字符左右
-	ZWTRACE("***模拟锁具收到的JSON请求开始***********************\n");
-	ZWTRACE(inJson.c_str());
-	ZWTRACE("***模拟锁具收到的JSON请求结束***********************\n");
+	ZWTRACES("***模拟锁具收到的JSON请求开始***********************\n");
+	ZWTRACES(inJson.c_str());
+	ZWTRACES("***模拟锁具收到的JSON请求结束***********************\n");
 	ptree pt;
 	//解析输入JSON，并对其处理，结果在pt中，类型返回在mtype中
 	JC_MSG_TYPE mtype=lockParseInJson(inJson, pt);
 	//把pt输出为json返回
 	LockGenOutputJson(pt, outJson);
-	ZWTRACE("***模拟锁具生成的JSON应答开始***********************\n");
-	ZWTRACE(outJson.c_str());
-	ZWTRACE("***模拟锁具生成的JSON应答结束***********************\n");
+	ZWTRACES("***模拟锁具生成的JSON应答开始***********************\n");
+	ZWTRACES(outJson.c_str());
+	ZWTRACES("***模拟锁具生成的JSON应答结束***********************\n");
 
 	return mtype;
 }

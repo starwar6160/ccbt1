@@ -38,11 +38,11 @@
     <ClCompile Include="zwSrvJsonProc.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="..\eLockTest1\LockSrvJsonProc.cpp">
-      <Filter>源文件\ingtest</Filter>
-    </ClCompile>
     <ClCompile Include="..\CCBelock\jcJsonCommandDefine.cpp">
       <Filter>源文件\ingtest</Filter>
+    </ClCompile>
+    <ClCompile Include="..\eLockTest1\LockSrvJsonProc.cpp">
+      <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -62,11 +62,11 @@
     <ClCompile Include="zwWebSocketClient.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="..\eLockTest1\atmcDLLConvert731.cpp">
-      <Filter>源文件\ingtest</Filter>
-    </ClCompile>
     <ClCompile Include="jcJsonCommandDefine.cpp">
       <Filter>源文件\ingtest</Filter>
+    </ClCompile>
+    <ClCompile Include="..\eLockTest1\atmcDLLConvert731.cpp">
+      <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
