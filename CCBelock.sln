@@ -4,6 +4,9 @@ Microsoft Visual Studio Solution File, Format Version 11.00
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "HidProtocol", "CCBelock\CCBelock.vcxproj", "{2466CA9D-28E7-4156-B35E-B1D595ED5F99}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "eLockTest1", "eLockTest1\eLockTest1.vcxproj", "{F5F5FDD3-71E8-4878-BB6A-9B295C790FC4}"
+	ProjectSection(ProjectDependencies) = postProject
+		{2466CA9D-28E7-4156-B35E-B1D595ED5F99} = {2466CA9D-28E7-4156-B35E-B1D595ED5F99}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "emuLockSrv", "emuLockSrv\emuLockSrv.vcxproj", "{EFEC23B9-782B-43EF-8853-6444CEBCCAD8}"
 EndProject
