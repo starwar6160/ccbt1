@@ -49,10 +49,12 @@ int PocoLogInit(void)
 	{  
 
 		Poco::AutoPtr<Poco::Channel> fileChannel(new Poco::FileChannel());  
-		fileChannel->setProperty("path", zwGetLogFileName()); 
-		fileChannel->setProperty("archive", "timestamp");  
-		//fileChannel->setProperty("compress", "true");  
-		fileChannel->setProperty("rotation", "64 K");  
+		fileChannel->setProperty("compress", "true");  
+		fileChannel->setProperty("path", 
+			zwGetLogFileName()); 
+		fileChannel->setProperty("archive", "number");  
+		fileChannel->setProperty("purgeAge", "3 days");  
+		fileChannel->setProperty("rotation", "1 hours");  
 		fileChannel->setProperty("times", "local"); 
 
 		Poco::AutoPtr<Poco::PatternFormatter> patternFormatter(new Poco::PatternFormatter());  
@@ -62,7 +64,7 @@ int PocoLogInit(void)
 
 
 	Poco::Logger::root().setChannel(channel.get());  
-	Poco::Logger& logger = Poco::Logger::get("JinChuElock");  
+	Poco::Logger& logger = Poco::Logger::get("LockDLL");  
 	logger.setLevel(Poco::Message::PRIO_TRACE);
 	g_log=new Poco::LogStream(logger); 
 	return 0;  
