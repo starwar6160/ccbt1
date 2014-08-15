@@ -50,7 +50,9 @@ namespace zwccbthr{
 	boost:: mutex:: scoped_lock lock( thr_mutex); 
 	try{
 	string myLockIp="10.0.0.10";	//默认值是真实锁具IP
-	//myLockIp="127.0.0.1";	//临时测试用模拟器IP
+#ifdef _DEBUG
+	myLockIp="127.0.0.1";	//临时测试用模拟器IP
+#endif // _DEBUG
 	ZWTRACE("USED JCLOCKIP=");
 	ZWTRACE(myLockIp.c_str());
 
