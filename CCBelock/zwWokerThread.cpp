@@ -95,7 +95,10 @@ namespace zwccbthr{
 			
 			if (NULL!=zwCfg::g_WarnCallback)
 			{
+				//调用回调函数传回信息，然后就关闭连接，结束通信线程；
 				zwCfg::g_WarnCallback(outXML.c_str());
+				zwscthr->wsClose();
+				break;
 			}
 			else
 			{
@@ -107,7 +110,6 @@ namespace zwccbthr{
 			}
 
 		} 		
-		zwscthr->wsClose();
 		ZWTRACE("JCLOCK COMM THREAD NORMAL CLOSE WS CONNECT 20140815");
 
 	}	//try
