@@ -2,6 +2,7 @@
 //
 
 #include "stdafx.h"
+#include <gtest/gtest.h>
 #include "CCBelock.h"
 #include "zwCcbElockHdr.h"
 using jcAtmcConvertDLL::CCBSTR_CODE;
