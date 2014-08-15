@@ -22,7 +22,30 @@ using boost::property_tree::ptree_bad_path;
 //回调函数指针类型定义
 using Poco::Net::ConnectionRefusedException;
 
+void ZWTRACE(const char *x)
+{
+	OutputDebugStringA(x);
+	//cout<<x<<endl;	
+	g_log->trace(x);
+}
 
+zw_trace::zw_trace(const char *funcName)
+{
+	m_str=funcName;
+	m_start=m_str+"\tSTART";
+	m_end=m_str+"\tEND";
+	OutputDebugStringA(m_start.c_str());
+	//cout<<m_start<<endl;
+	g_log->trace(m_start);
+}
+
+zw_trace::~zw_trace()
+{
+
+	OutputDebugStringA(m_end.c_str());
+	//cout<<m_end<<endl;
+	g_log->trace(m_end);
+}
 
 namespace zwCfg{
 	const long	JC_CCBDLL_TIMEOUT=86400;	//最长超时时间为30秒,用于测试目的尽快达到限制暴露问题

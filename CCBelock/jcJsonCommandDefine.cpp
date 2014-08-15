@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "zwCcbElockHdr.h"
-#include "zwPocoLog.h"
 
 namespace jcAtmcConvertDLL{
 	//JSON命令字符串
@@ -18,36 +17,10 @@ namespace jcAtmcConvertDLL{
 	const char *CCBSTR_DEVCODE="root.DevCode";
 }
 
-void ZWTRACE(const char *x)
-{
-	OutputDebugStringA(x);
-	//cout<<x<<endl;	
-	g_log->trace(x);
-}
-
-zw_trace::zw_trace(const char *funcName)
-{
-	m_str=funcName;
-	m_start=m_str+"\tSTART";
-	m_end=m_str+"\tEND";
-	OutputDebugStringA(m_start.c_str());
-	//cout<<m_start<<endl;
-	g_log->trace(m_start);
-}
-
-zw_trace::~zw_trace()
-{
-	
-	OutputDebugStringA(m_end.c_str());
-	//cout<<m_end<<endl;
-	g_log->trace(m_end);
-}
-
 
 //从给定的时间秒数，获取日期(YYYYMMDD)和时间(HHMMSS)字符串
 void zwGetDateTimeString(time_t inTime,string &outDate,string &outTime)
 {
-	ZWFUNCTRACE
 	char zwDate[16];	//YYYYMMDD+NULL
 	char zwTime[16];	//HHMMSS+NULL
 	memset(zwDate,0,16);

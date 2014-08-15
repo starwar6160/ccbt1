@@ -35,6 +35,14 @@ using jcAtmcConvertDLL::CCBSTR_DEVCODE;
 //77498EB7D7CE8B92D871791C99B85AB337FF73235A89E7A20764EFE6EA41E4CE
 
 using namespace boost::property_tree;
+
+
+void ZWTRACE(const char *x)
+{
+	OutputDebugStringA(x);
+	//cout<<x<<endl;	
+}
+
 namespace jcAtmcMsg{
 	const char *ATMNO_CCBTEST="CCBATMNO1234";
 	string & myAtmcMsgLockActive( string & strXML ,ptree &pt);
@@ -110,6 +118,7 @@ string & myAtmcMsgLockActive( string & strXML ,ptree &pt )
 //生成发送锁具激活信息报文，发送用锁具公钥加密过后的PSK到锁具
 string & myAtmcMsgSendActiveInfo( string & strXML ,ptree &pt )
 {
+	const char *LOCKMAN_NAMEG="BeiJing.JinChu";
 	//请求
 	//	交易代码	TransCode	是	值：0001
 	//	交易名称	TransName	是	值：SendActInfo
@@ -128,7 +137,7 @@ string & myAtmcMsgSendActiveInfo( string & strXML ,ptree &pt )
 	pt.put(CCBSTR_DATE,zwDate);
 	pt.put(CCBSTR_TIME,zwTime);
 	pt.put(CCBSTR_DEVCODE,ATMNO_CCBTEST);
-	pt.put("root.LockMan",jcAtmcConvertDLL::LOCKMAN_NAME);
+	pt.put("root.LockMan",LOCKMAN_NAMEG);
 	pt.put("root.LockId","ZWFAKELOCKNO1548");
 	//使用第一套激活信息,提供"ActInfo"的值
 	pt.put("root.ActInfo","BG3j9JZxpssY0bdb1oMwg4obKmZ93GTvbbnY8VZnQIglLGO8m7JvhTlnvKPnsuBv"
