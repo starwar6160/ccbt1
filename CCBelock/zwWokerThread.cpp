@@ -32,11 +32,10 @@ namespace zwccbthr{
 				{
 					if (NULL!=zwscthr)
 					{
-						zwscthr->SendString("     ");
-						string recstr;
-						zwscthr->ReceiveString(recstr);
+						Sleep(1000*18);	//最多不超过60秒，否则就断了连接；
+						zwscthr->SendString("HEARTJUMP");
 						OutputDebugStringA("HEART JUMP PACKAGE OVER ATMC DLL AND JINCHU ELOCK");
-						Sleep(5000);	//最多不超过60秒，否则就断了连接；
+						
 					}
 				}
 		}
@@ -74,6 +73,12 @@ namespace zwccbthr{
 			}
 			string recstr;
 			zwscthr->ReceiveString(recstr);
+			//检查是否为心跳包
+			if (recstr=="HEARTJUMP")
+			{
+				//如果是心跳包的返回字符串，就直接忽略；
+				continue;
+			}
 
 			char sbuf[128];
 			memset(sbuf,0,128);
@@ -106,13 +111,13 @@ namespace zwccbthr{
 			}
 
 		} 		
-		ZWTRACE("JCLOCK COMM THREAD NORMAL CLOSE WS CONNECT 20140815");
+		ZWTRACE("JCLOCK COMM THREAD NORMAL EXIT 20140817");
 
 	}	//try
 	catch(...){
 		zwscthr->wsClose();	//异常就主动关闭连接防止下一次正常连接无法连上
-		OutputDebugStringA("JC CCB ELOCK THREAD CONNECT FAIL! 20140815");
-		ZWFATAL("##########JC CCB ELOCK THREAD CONNECT FAIL! 20140815");
+		OutputDebugStringA("JC CCB ELOCK THREAD CONNECT FAIL! 20140817");
+		ZWFATAL("##########JC CCB ELOCK THREAD CONNECT FAIL! 20140817");
 		return;
 	}
 	}

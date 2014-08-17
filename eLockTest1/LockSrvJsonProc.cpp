@@ -21,6 +21,11 @@ void ZWTRACES(const char *x)
 //此函数没有实际功能，功能都在下级子函数中，便于单元测试；此函数在此是满足联网的单元测试的；
 int zwjclms_command_proc(const string &inJson,string &outJson)
 {
+	if (inJson=="HEARTJUMP")
+	{
+		outJson=inJson;
+		return 0 ;	//心跳包特殊处理，直接原样返回；
+	}
 	if (inJson.length()<=9)
 	{
 		return 0;
