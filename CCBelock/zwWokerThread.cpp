@@ -17,6 +17,7 @@ namespace zwccbthr{
 	string s_dbgReturn="";
 	boost:: mutex recv_mutex; 
 	std::string s_LockIp;
+	bool s_wsioing=false;
 
 	void wait(int milliseconds)
 	{ 
@@ -32,11 +33,16 @@ namespace zwccbthr{
 				{
 					if (NULL!=zwscthr)
 					{
-						Sleep(1000*30);	//最多不超过60秒，否则就断了连接；
+						//如果另一个线程正在做WS输入输出，就暂时等待
+						while(true==s_wsioing)
+						{
+							Sleep(100);
+							OutputDebugStringA("HEART.");
+						}
 						zwscthr->SendString("HEARTJUMP");
-						OutputDebugStringA("HEART JUMP PACKAGE OVER ATMC DLL AND JINCHU ELOCK");
-						
+						OutputDebugStringA("HEART JUMP PACKAGE OVER ATMC DLL AND JINCHU ELOCK");					
 					}
+					Sleep(1000*30);	//最多不超过60秒，否则就断了连接；
 				}
 		}
 		catch(...)
@@ -72,7 +78,12 @@ namespace zwccbthr{
 				break;
 			}
 			string recstr;
-			zwscthr->ReceiveString(recstr);
+			{
+				s_wsioing=true;
+				zwscthr->ReceiveString(recstr);
+				s_wsioing=false;
+			}
+			
 			//检查是否为心跳包
 			if (recstr=="HEARTJUMP")
 			{
@@ -85,7 +96,7 @@ namespace zwccbthr{
 			sprintf(sbuf,"JCCOMM THREAD Comm with Lock times %d",i++);
 			ZWTRACE(sbuf);
 			string outXML;
-			int msgTypeRecv=jcAtmcConvertDLL::zwJCjson2CCBxml(recstr,outXML);
+			jcAtmcConvertDLL::zwJCjson2CCBxml(recstr,outXML);
 			assert(outXML.length()>42);	//XML开头的固定内容38个字符，外加起码一个标签的两对尖括号合计4个字符
 			ZWTRACE(outXML.c_str());		
 
