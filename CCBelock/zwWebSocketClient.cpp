@@ -82,13 +82,18 @@ zwWebSocket::zwWebSocket(const char *host,const int port)
 	request.setURI("/");
 	request.setVersion("1.1");
 	ws=NULL;
+	m_connect=false;
 }
 
 void zwWebSocket::wsConnect(void)
 {
 	try
 	{
-		ws=new WebSocket(cs,request,response);	
+		if (false==m_connect)
+		{
+			ws=new WebSocket(cs,request,response);	
+			m_connect=true;
+		}
 	}
 	catch (...)
 	{
@@ -105,6 +110,7 @@ void zwWebSocket::wsClose(void)
 		ws->shutdown();
 		delete ws;
 		ws=NULL;
+		m_connect=false;
 	}
 }
 
@@ -115,7 +121,13 @@ zwWebSocket::~zwWebSocket()
 		ws->shutdown();
 		delete ws;
 		ws=NULL;
+		m_connect=false;
 	}
+}
+
+bool zwWebSocket::isConnected()
+{
+	return m_connect;
 }
 
 int zwWebSocket::SendString(const string &str)

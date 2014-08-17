@@ -16,6 +16,7 @@ class zwWebSocket{
 	WebSocket *ws;
 	const static int RECV_BUF_LEN=1024*16;
 	char m_recvBuffer[RECV_BUF_LEN];	
+	bool m_connect;
 public:	
 	zwWebSocket(const char *host,const int port);
 	~zwWebSocket();
@@ -23,6 +24,7 @@ public:
 	int ReceiveString(string &str);
 	void wsConnect(void);
 	void wsClose(void);
+	bool isConnected(void);
 };
 
 

@@ -25,11 +25,26 @@ namespace zwccbthr{
 		boost::this_thread::sleep(boost::posix_time::milliseconds(milliseconds));		
 	} 
 
+	string zwGetLockIP(void)
+	{
+		string myLockIp="10.0.0.10";	//默认值是真实锁具IP
+		if (s_LockIp.length()>0)
+		{
+			myLockIp=s_LockIp;	//如果有配置文件的IP值，就使用之；
+		}
+		return myLockIp;
+	}
+
 	//发送心跳包的线程
 	void ThreadHeartJump()
 	{
 		ZWFUNCTRACE
 			try{
+				if (NULL==zwscthr)
+				{
+					zwscthr=new zwWebSocket(zwGetLockIP().c_str(),8088);
+					zwscthr->wsConnect();
+				}
 				while(1)
 				{
 					if (NULL!=zwscthr)
@@ -38,7 +53,6 @@ namespace zwccbthr{
 						while(true==s_wsioing)
 						{
 							Sleep(100);
-							OutputDebugStringA("HEART.");
 						}
 						zwscthr->SendString(s_HeartJump);
 						OutputDebugStringA("HEART JUMP PACKAGE OVER ATMC DLL AND JINCHU ELOCK");					
@@ -59,17 +73,14 @@ namespace zwccbthr{
 	ZWFUNCTRACE
 	boost:: mutex:: scoped_lock lock( thr_mutex); 
 	try{
-	string myLockIp="10.0.0.10";	//默认值是真实锁具IP
-	if (s_LockIp.length()>0)
-	{
-		myLockIp=s_LockIp;	//如果有配置文件的IP值，就使用之；
-	}
+	string myLockIp=zwGetLockIP();
 	ZWTRACE("USED JCLOCKIP=");
 	ZWTRACE(myLockIp.c_str());
-
-	zwscthr=new zwWebSocket(myLockIp.c_str(),8088);
-	zwscthr->wsConnect();
-		int i=0;
+	if (NULL==zwscthr)
+	{
+			zwscthr=new zwWebSocket(myLockIp.c_str(),8088);
+			zwscthr->wsConnect();
+	}
 		while(1)
 		{			
 			if (ZWTHR_STOP==ns_thr_run)
