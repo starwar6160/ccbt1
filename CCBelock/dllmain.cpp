@@ -36,10 +36,10 @@ string zwGetLogFileName(void)
 	string logdate,logtime;
 	_mkdir(jcLogPath.c_str());
 	time_t now=time(NULL);
-	time_t tail=now % 60;
+	time_t tail=now % 10;
 	now=now-tail;
 	zwGetDateTimeString(now,logdate,logtime);
-	return jcLogPath+"\\"+logdate+"."+logtime+".txt";
+	return jcLogPath+"\\"+logdate+"."+logtime+"JinChuLog.txt";
 }
 
 
