@@ -17,6 +17,8 @@ namespace{
 			try
 			{
 				WebSocket ws(request, response);
+				ws.setSendTimeout(Poco::Timespan(30,0));
+				ws.setReceiveTimeout(Poco::Timespan(300,0));
 				std::auto_ptr<char> pBuffer(new char[_bufSize]);
 				int flags;
 				int n;

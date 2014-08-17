@@ -77,7 +77,7 @@ CCBELOCK_API long JCAPISTD Open(long lTimeOut)
 	//{
 	//	return ELOCK_ERROR_PARAMINVALID;
 	//}	
- //boost::thread thr(zwccbthr::ThreadLockComm);
+ boost::thread thr(zwccbthr::ThreadHeartJump);
 	//boost::thread thr(zwFakeThread);
 	
 	Sleep(300);	//等待起码300毫秒，等待建立和锁具的WebSocket连接

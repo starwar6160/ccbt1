@@ -23,6 +23,30 @@ namespace zwccbthr{
 		boost::this_thread::sleep(boost::posix_time::milliseconds(milliseconds));		
 	} 
 
+	//发送心跳包的线程
+	void ThreadHeartJump()
+	{
+		ZWFUNCTRACE
+			try{
+				while(1)
+				{
+					if (NULL!=zwscthr)
+					{
+						zwscthr->SendString("     ");
+						string recstr;
+						zwscthr->ReceiveString(recstr);
+						OutputDebugStringA("HEART JUMP PACKAGE OVER ATMC DLL AND JINCHU ELOCK");
+						Sleep(5000);	//最多不超过60秒，否则就断了连接；
+					}
+				}
+		}
+		catch(...)
+		{
+			OutputDebugStringA("HEART JUMP THREAD FAIL!");
+			return;
+		}
+	}
+
 	//与锁具之间的通讯线程
 	void ThreadLockComm()
 	{		
@@ -69,7 +93,7 @@ namespace zwccbthr{
 			{
 				//调用回调函数传回信息，然后就关闭连接，结束通信线程；
 				zwCfg::g_WarnCallback(outXML.c_str());
-				zwscthr->wsClose();
+				//zwscthr->wsClose();
 				break;
 			}
 			else

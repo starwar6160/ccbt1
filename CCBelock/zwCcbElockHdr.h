@@ -59,6 +59,7 @@ enum{
 
 namespace zwccbthr{
 void ThreadLockComm();				//与锁具之间的通讯线程
+void ThreadHeartJump();				//发送心跳包的线程；
 const string getString(void);
 void myLoadConfig(const string &cfgFileName);
 extern string s_dbgReturn;
