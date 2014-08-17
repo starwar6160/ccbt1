@@ -5,6 +5,7 @@
 Poco::LogStream *g_log=NULL;
 int PocoLogInit(void)  ;
 
+
 BOOL APIENTRY DllMain( HMODULE hModule,
                        DWORD  ul_reason_for_call,
                        LPVOID lpReserved
@@ -27,6 +28,7 @@ BOOL APIENTRY DllMain( HMODULE hModule,
 		break;
 	}
 	//g_log->notice()<<33<<"hello"<<endl;
+	zwccbthr::myLoadConfig("jcElock817.ini");
 	return TRUE;
 }
 
@@ -69,4 +71,6 @@ int PocoLogInit(void)
 	g_log=new Poco::LogStream(logger); 
 	return 0;  
 }  
+
+
 

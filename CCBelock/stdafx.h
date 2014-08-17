@@ -34,6 +34,7 @@
 #include "Poco/Util/Option.h"
 #include "Poco/Util/OptionSet.h"
 #include "Poco/Util/HelpFormatter.h"
+#include "Poco/Util/IniFileConfiguration.h"
 
 #include "Poco/AutoPtr.h"  
 #include "Poco/Logger.h"  

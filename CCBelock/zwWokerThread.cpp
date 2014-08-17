@@ -4,38 +4,8 @@
 #include "zwPocoLog.h"
 #include <stdio.h>
 using namespace boost::property_tree;
-
-
-namespace zwccbthr{
-	extern zwWebSocket *zwscthr;
-	extern boost:: mutex recv_mutex; 
-	extern string s_dbgReturn;
-}
-
-void zwPushString(const string &str)
-{
-	ZWFUNCTRACE
-	assert(str.length()>0);
-	if (str.length()==0)
-	{
-		return;
-	}
-	if (NULL==zwccbthr::zwscthr)
-	{
-		ZWFATAL("WebSocket对象指针为空！");
-		return;
-	}
-	try{
-		zwccbthr::zwscthr->SendString(str);
-	}
-	catch(...)
-	{
-		ZWTRACE(__FUNCTION__);
-		ZWTRACE("\t zwWebSocket Send String Exeception!20140805.1626");
-		ZWFATAL("通过WebSocket发送数据到锁具异常，可能是未连接")
-	}
-	
-}
+using Poco::AutoPtr;
+using Poco::Util::IniFileConfiguration;
 
 
 namespace zwccbthr{
@@ -46,6 +16,7 @@ namespace zwccbthr{
 	zwWebSocket * zwscthr = NULL;
 	string s_dbgReturn="";
 	boost:: mutex recv_mutex; 
+	std::string s_LockIp;
 
 	void wait(int milliseconds)
 	{ 
@@ -59,9 +30,10 @@ namespace zwccbthr{
 	boost:: mutex:: scoped_lock lock( thr_mutex); 
 	try{
 	string myLockIp="10.0.0.10";	//默认值是真实锁具IP
-#ifdef _DEBUG
-	myLockIp="127.0.0.1";	//临时测试用模拟器IP
-#endif // _DEBUG
+	if (s_LockIp.length()>0)
+	{
+		myLockIp=s_LockIp;	//如果有配置文件的IP值，就使用之；
+	}
 	ZWTRACE("USED JCLOCKIP=");
 	ZWTRACE(myLockIp.c_str());
 
@@ -136,7 +108,21 @@ namespace zwccbthr{
 		zwscthr->wsClose();
 	}
 
+	void myLoadConfig(const string &cfgFileName)
+	{
+		try{
+		// 1. 载入配置文件  
+		AutoPtr<IniFileConfiguration> cfg(new IniFileConfiguration(cfgFileName));  
 
+		// 2. 获取节点的值  
+		s_LockIp = cfg->getString("ELock.LockIp");  
+		int  ThreadNum= cfg->getInt("ELock.ThreadNum");
+		}
+		catch(Poco::Exception e)
+		{
+			g_log->warning()<<"ini config file"<<cfgFileName<<" not found"<<endl;
+		}
+	}
 
 
 
@@ -148,3 +134,28 @@ namespace zwccbthr{
 
 //////////////////////////////////////////////////////////////////////////
 }	//namespace zwccbthr{
+
+void zwPushString(const string &str)
+{
+	ZWFUNCTRACE
+		assert(str.length()>0);
+	if (str.length()==0)
+	{
+		return;
+	}
+	if (NULL==zwccbthr::zwscthr)
+	{
+		ZWFATAL("WebSocket对象指针为空！");
+		return;
+	}
+	try{
+		zwccbthr::zwscthr->SendString(str);
+	}
+	catch(...)
+	{
+		ZWTRACE(__FUNCTION__);
+		ZWTRACE("\t zwWebSocket Send String Exeception!20140805.1626");
+		ZWFATAL("通过WebSocket发送数据到锁具异常，可能是未连接")
+	}
+
+}
