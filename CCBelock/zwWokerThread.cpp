@@ -32,7 +32,7 @@ namespace zwccbthr{
 				{
 					if (NULL!=zwscthr)
 					{
-						Sleep(1000*18);	//最多不超过60秒，否则就断了连接；
+						Sleep(1000*30);	//最多不超过60秒，否则就断了连接；
 						zwscthr->SendString("HEARTJUMP");
 						OutputDebugStringA("HEART JUMP PACKAGE OVER ATMC DLL AND JINCHU ELOCK");
 						

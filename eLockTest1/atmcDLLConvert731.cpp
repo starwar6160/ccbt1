@@ -35,18 +35,15 @@ namespace jcAtmcConvertDLL{
 		ZWTRACE("******************建行ATMC下发XML开始*********************\n");
 		ZWTRACE(downXML.c_str());
 		ZWTRACE("******************建行ATMC下发XML结束*********************\n");
-		ZWTRACE("CCB2JC.1");
 		JC_MSG_TYPE msgType=JCMSG_INVALID_TYPE;
 		ptree ptCCB;
 		std::stringstream ss;
 		ss<<downXML;
 		read_xml(ss,ptCCB);
-		ZWTRACE("CCB2JC.2");
 		//////////////////////////////////////////////////////////////////////////
 
 		std::stringstream ssccb;
 		write_json(ssccb,ptCCB);
-		ZWTRACE("CCB2JC.3");
 		string ccbJson= ssccb.str();
 		ZWTRACE("***建行XML转换后的JSON开始********************************\n");
 		ZWTRACE(ccbJson.c_str());
@@ -55,10 +52,8 @@ namespace jcAtmcConvertDLL{
 
 		//判断消息类型
 		string transCode=ptCCB.get<string>(CCBSTR_CODE);
-		ZWTRACE("CCB2JC.4");
 		//保存建行冗余字段以便上传返回时提供给建行			
 		ns_ccbAtmno=ptCCB.get(CCBSTR_DEVCODE,"CCBATMFAKE88");
-		ZWTRACE("CCB2JC.5");
 		//根据消息类型调用不同函数处理	
 		//从建行的接口所需字段变为我们的JSON接口
 		ptree ptJC;
@@ -92,11 +87,9 @@ namespace jcAtmcConvertDLL{
 			msgType= JCMSG_SEND_UNLOCK_CERTCODE;
 			zwconvRecvVerifyCodeDown(ptCCB,ptJC);
 		}
-		ZWTRACE("CCB2JC.6");
 		//处理结果输出为Json供下位机使用
 		std::stringstream ss2;
 		write_json(ss2,ptJC);
-		ZWTRACE("CCB2JC.7");
 		downJson= ss2.str();
 		ZWTRACE("***金储JSON下发请求开始***********************************\n");
 		ZWTRACE(downJson.c_str());

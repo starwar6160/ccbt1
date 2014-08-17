@@ -14,9 +14,8 @@ class zwWebSocket{
 	HTTPRequest request;
 	HTTPResponse response;	
 	WebSocket *ws;
-	const static int RECV_BUF_LEN=1024;
+	const static int RECV_BUF_LEN=1024*16;
 	char m_recvBuffer[RECV_BUF_LEN];	
-
 public:	
 	zwWebSocket(const char *host,const int port);
 	~zwWebSocket();
