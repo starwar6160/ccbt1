@@ -107,11 +107,9 @@ namespace jcAtmcConvertDLL{
 		std::stringstream ss;
 		ss<<upJson;
 		read_json(ss,ptJC);
-		ZWTRACE("JC2CCB.1");
 		//////////////////////////////////////////////////////////////////////////
 		std::stringstream sst1;
 		write_json(sst1,ptJC);
-		ZWTRACE("JC2CCB.2");
 		string jsonJc= sst1.str();
 		ZWTRACE("***金储锁具返回的JSON应答开始*************************####\n");
 		ZWTRACE(jsonJc.c_str());
@@ -120,7 +118,6 @@ namespace jcAtmcConvertDLL{
 
 		//判断消息类型并从我们的JSON接口变为建行的接口所需字段
 		string jcCmd=ptJC.get<string>(jcAtmcConvertDLL::JCSTR_CMDTITLE);
-		ZWTRACE("JC2CCB.3");
 		ptree ptCCB;
 		if (JCSTR_LOCK_ACTIVE_REQUEST==jcCmd)
 		{//发送锁具激活请求
@@ -145,10 +142,8 @@ namespace jcAtmcConvertDLL{
 		}
 
 		//////////////////////////////////////////////////////////////////////////
-		ZWTRACE("JC2CCB.4");
 		std::stringstream sst2;
 		write_json(sst2,ptCCB);
-		ZWTRACE("JC2CCB.5");
 		string jsonCcb=sst2.str();
 		//////////////////////////////////////////////////////////////////////////
 		ZWTRACE("***金储锁具应答JSON处理为建行所需元素 开始************####\n");
@@ -159,13 +154,11 @@ namespace jcAtmcConvertDLL{
 		std::stringstream ss2;
 		write_xml(ss2,ptCCB);
 		upXML= ss2.str();
-		ZWTRACE("JC2CCB.6");
 		ZWTRACE("*********************金储应答XML开始******************####\n");
 		ZWTRACE(upXML.c_str());
 		ZWTRACE("*********************金储应答XML结束******************####\n");
 try{
 		string transCode=ptCCB.get<string>(CCBSTR_CODE);
-		ZWTRACE("JC2CCB.7");
 		if ("0000"==transCode)
 		{
 			return JCMSG_LOCK_ACTIVE_REQUEST;

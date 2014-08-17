@@ -67,12 +67,10 @@ namespace zwccbthr{
 	ZWTRACE(myLockIp.c_str());
 
 	zwscthr=new zwWebSocket(myLockIp.c_str(),8088);
-	OutputDebugStringA("ZWTHR2");
 	zwscthr->wsConnect();
 		int i=0;
 		while(1)
 		{			
-			OutputDebugStringA("ZWTHR3");
 			if (ZWTHR_STOP==ns_thr_run)
 			{
 				break;
@@ -91,10 +89,6 @@ namespace zwccbthr{
 				continue;
 			}
 
-			char sbuf[128];
-			memset(sbuf,0,128);
-			sprintf(sbuf,"JCCOMM THREAD Comm with Lock times %d",i++);
-			ZWTRACE(sbuf);
 			string outXML;
 			jcAtmcConvertDLL::zwJCjson2CCBxml(recstr,outXML);
 			assert(outXML.length()>42);	//XML开头的固定内容38个字符，外加起码一个标签的两对尖括号合计4个字符
