@@ -18,7 +18,7 @@ namespace zwccbthr{
 	boost:: mutex recv_mutex; 
 	std::string s_LockIp;
 	bool s_wsioing=false;
-	const string s_HeartJump="HEARTJUMP";
+	string s_HeartJump="HEARTJUMP";
 
 	void wait(int milliseconds)
 	{ 
@@ -55,7 +55,8 @@ namespace zwccbthr{
 							Sleep(100);
 						}
 						zwscthr->SendString(s_HeartJump);
-						OutputDebugStringA("HEART JUMP PACKAGE OVER ATMC DLL AND JINCHU ELOCK");					
+						//OutputDebugStringA("HEART JUMP PACKAGE OVER ATMC DLL AND JINCHU ELOCK");		
+						OutputDebugStringA(s_HeartJump.c_str());
 					}
 					Sleep(1000*30);	//最多不超过60秒，否则就断了连接；
 				}
@@ -162,7 +163,10 @@ namespace zwccbthr{
 
 		// 2. 获取节点的值  
 		s_LockIp = cfg->getString("ELock.LockIp");  
+		assert(s_LockIp.length()>0);
 		int  ThreadNum= cfg->getInt("ELock.ThreadNum");
+		s_HeartJump=cfg->getString("ELock.HeartJump");
+		assert(s_HeartJump.length()>0);
 		}
 		catch(Poco::Exception e)
 		{
