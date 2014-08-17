@@ -18,6 +18,7 @@ namespace zwccbthr{
 	boost:: mutex recv_mutex; 
 	std::string s_LockIp;
 	bool s_wsioing=false;
+	const string s_HeartJump="HEARTJUMP";
 
 	void wait(int milliseconds)
 	{ 
@@ -39,7 +40,7 @@ namespace zwccbthr{
 							Sleep(100);
 							OutputDebugStringA("HEART.");
 						}
-						zwscthr->SendString("HEARTJUMP");
+						zwscthr->SendString(s_HeartJump);
 						OutputDebugStringA("HEART JUMP PACKAGE OVER ATMC DLL AND JINCHU ELOCK");					
 					}
 					Sleep(1000*30);	//最多不超过60秒，否则就断了连接；
@@ -83,7 +84,7 @@ namespace zwccbthr{
 			}
 			
 			//检查是否为心跳包
-			if (recstr=="HEARTJUMP")
+			if (s_HeartJump==recstr)
 			{
 				//如果是心跳包的返回字符串，就直接忽略；
 				continue;
