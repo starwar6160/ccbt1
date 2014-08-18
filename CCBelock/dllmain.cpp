@@ -43,7 +43,7 @@ string zwGetConfigFileName(void)
 	char dllName[256];
 	memset(dllName,0,256);
 	GetModuleFileNameA(hdl,dllName,256);
-	OutputDebugStringA(dllName);
+	//OutputDebugStringA(dllName);
 	char * tt=strstr(dllName,".dll");
 	strcpy(tt,".ini");
 	string cfgFileName=dllName;
