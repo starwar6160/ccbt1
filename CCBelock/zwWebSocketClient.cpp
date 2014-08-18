@@ -17,8 +17,6 @@ namespace{
 			try
 			{
 				WebSocket ws(request, response);
-				ws.setSendTimeout(Poco::Timespan(30,0));
-				ws.setReceiveTimeout(Poco::Timespan(300,0));
 				std::auto_ptr<char> pBuffer(new char[_bufSize]);
 				int flags;
 				int n;
@@ -125,8 +123,13 @@ zwWebSocket::~zwWebSocket()
 	}
 }
 
-bool zwWebSocket::isConnected()
+//设置接收超时
+bool zwWebSocket::zwSetLongTimeOut()
 {
+	//设置一整天的超时时间
+	ws->setReceiveTimeout(Poco::Timespan(1,0,0,0,0));
+	Poco::Timespan rtm2=ws->getReceiveTimeout();
+	cout<<"RecvTimeOut2 Seconds="<<rtm2.totalSeconds()<<endl;
 	return m_connect;
 }
 

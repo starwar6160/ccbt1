@@ -77,6 +77,7 @@ namespace zwccbthr{
 	{
 			zwscthr=new zwWebSocket(myLockIp.c_str(),8088);
 			zwscthr->wsConnect();
+			zwscthr->zwSetLongTimeOut();
 	}
 		while(1)
 		{			
