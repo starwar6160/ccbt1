@@ -63,11 +63,18 @@ namespace zwccbthr{
 		}
 	}
 
+	bool s_CommThrRunning=false;	
+
 	//与锁具之间的通讯线程
 	void ThreadLockComm()
 	{		
 	ZWFUNCTRACE
 	boost:: mutex:: scoped_lock lock( thr_mutex); 
+	if (true==s_CommThrRunning)
+	{
+		return;	//如果已经有一个通信线程运行中了，就不重复启动通信线程了
+	}
+	s_CommThrRunning=true;
 	string myLockIp;
 	try{
 	myLockIp=zwGetLockIP();

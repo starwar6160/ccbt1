@@ -17,7 +17,7 @@ using jcAtmcConvertDLL::CCBSTR_NAME;
 //#define _DEBUG_RECV_INIT_CLOSECODE
 //#define _DEBUG_RECV_VERIFY_CODE
 #define _DEBUG_READ_CLOSE_CODE
-#define _DEBUG_TIMESYNC
+//#define _DEBUG_TIMESYNC
 
 
 
@@ -324,6 +324,8 @@ TEST_F(ccbElockTest,ReadCloseCodeTest0004)
 
 	if (ELOCK_ERROR_SUCCESS==m_connStatus)
 	{
+		EXPECT_EQ(ELOCK_ERROR_SUCCESS,Notify(strSendLockActInfoXML.c_str()));
+		EXPECT_EQ(ELOCK_ERROR_SUCCESS,Notify(strSendLockActInfoXML.c_str()));
 		EXPECT_EQ(ELOCK_ERROR_SUCCESS,Notify(strSendLockActInfoXML.c_str()));
 	}
 	else
