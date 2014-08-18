@@ -305,7 +305,7 @@ TEST_F(ccbElockTest,TimeSyncTest0003)
 		EXPECT_EQ(ELOCK_ERROR_CONNECTLOST,Notify(strSendLockActInfoXML.c_str()));		
 		cout<<"Server not Start!"<<endl;
 	}
-	Sleep(1*1000);
+	Sleep(63*1000);
 }
 #endif // _DEBUG_TIMESYNC
 

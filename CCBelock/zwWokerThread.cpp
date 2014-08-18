@@ -68,8 +68,9 @@ namespace zwccbthr{
 	{		
 	ZWFUNCTRACE
 	boost:: mutex:: scoped_lock lock( thr_mutex); 
+	string myLockIp;
 	try{
-	string myLockIp=zwGetLockIP();
+	myLockIp=zwGetLockIP();
 	ZWTRACE("USED JCLOCKIP=");
 	ZWTRACE(myLockIp.c_str());
 	if (NULL==zwscthr)
@@ -129,6 +130,8 @@ namespace zwccbthr{
 	}	//try
 	catch(...){
 		zwscthr->wsClose();	//异常就主动关闭连接防止下一次正常连接无法连上
+		delete zwscthr;
+		zwscthr=NULL;
 		OutputDebugStringA("JC CCB ELOCK THREAD CONNECT FAIL! 20140817");
 		ZWFATAL("##########JC CCB ELOCK THREAD CONNECT FAIL! 20140817");
 		return;
