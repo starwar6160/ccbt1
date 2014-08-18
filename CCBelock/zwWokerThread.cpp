@@ -165,9 +165,6 @@ namespace zwccbthr{
 		// 2. 获取节点的值  
 		s_LockIp = cfg->getString("ELock.LockIp");  
 		assert(s_LockIp.length()>0);
-		int  ThreadNum= cfg->getInt("ELock.ThreadNum");
-		//s_HeartJump=cfg->getString("ELock.HeartJump");
-		//assert(s_HeartJump.length()>0);
 		}
 		catch(Poco::Exception e)
 		{
