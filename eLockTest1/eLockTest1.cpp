@@ -165,15 +165,34 @@ TEST(ccbElockDeathTest,NotifyTestBad)
 //}
 
 
-
+string zwCode8ToHex(int Code8)
+{
+	//8位动态码转换为字符串，然后字符串8字节转换为HEX，以便满足3DES的
+	//64bit输入要求，估计这样就满足建行的要求可以被正确解密了；
+	const int BUFLEN=32;
+	char buf[BUFLEN];
+	memset(buf,0,BUFLEN);
+	sprintf(buf,"%08d",Code8);
+	assert(strlen(buf)==8);
+	char hexbuf[BUFLEN];
+	memset(hexbuf,0,BUFLEN);
+	for (int i=0;i<8;i++)
+	{
+		unsigned char ch=buf[i] % 256;
+		sprintf(hexbuf+i*2,"%02X",ch);
+	}
+	string retHexStr=hexbuf;
+	return retHexStr;
+}
 
 
 #ifdef _DEBUG_ACTREQ
 //锁具激活请求报文的在线测试
 TEST_F(ccbElockTest,LockActiveTest0000)
 {
-	printf("%d HEX=%016X\n",67386086,67386086);
+	printf("%d HEX=%s\n",67386086,zwCode8ToHex(67386086).c_str());
 	printf("%s HEX=%016X\n","67386086","67386086");
+
 	//Open(25);
 	EXPECT_EQ(ELOCK_ERROR_SUCCESS,SetRecvMsgRotine(myATMCRecvMsgRotine));	
 	const JC_MSG_TYPE msgType=JCMSG_LOCK_ACTIVE_REQUEST;	//设定消息类型
