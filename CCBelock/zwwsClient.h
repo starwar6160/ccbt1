@@ -24,7 +24,7 @@ public:
 	int ReceiveString(string &str);
 	void wsConnect(void);
 	void wsClose(void);
-	bool zwSetLongTimeOut(void);
+	bool isConnected(void);
 };
 
 
