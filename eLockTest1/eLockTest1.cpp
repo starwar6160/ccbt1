@@ -16,7 +16,7 @@ using jcAtmcConvertDLL::CCBSTR_NAME;
 //锁具内部由于缺乏数据而无法做出反应的测试
 //#define _DEBUG_RECV_INIT_CLOSECODE
 //#define _DEBUG_RECV_VERIFY_CODE
-//#define _DEBUG_READ_CLOSE_CODE
+#define _DEBUG_READ_CLOSE_CODE
 #define _DEBUG_TIMESYNC
 
 
@@ -298,16 +298,14 @@ TEST_F(ccbElockTest,TimeSyncTest0003)
 
 	if (ELOCK_ERROR_SUCCESS==m_connStatus)
 	{
-		EXPECT_EQ(ELOCK_ERROR_SUCCESS,Notify(strSendLockActInfoXML.c_str()));
-		cout<<"sleep 61 seconds"<<endl;
-		Sleep(1000*61);
-		EXPECT_EQ(ELOCK_ERROR_SUCCESS,Notify(strSendLockActInfoXML.c_str()));		
+		EXPECT_EQ(ELOCK_ERROR_SUCCESS,Notify(strSendLockActInfoXML.c_str()));	
 	}
 	else
 	{
 		EXPECT_EQ(ELOCK_ERROR_CONNECTLOST,Notify(strSendLockActInfoXML.c_str()));		
 		cout<<"Server not Start!"<<endl;
 	}
+	Sleep(61*1000);
 }
 #endif // _DEBUG_TIMESYNC
 
@@ -327,7 +325,6 @@ TEST_F(ccbElockTest,ReadCloseCodeTest0004)
 	if (ELOCK_ERROR_SUCCESS==m_connStatus)
 	{
 		EXPECT_EQ(ELOCK_ERROR_SUCCESS,Notify(strSendLockActInfoXML.c_str()));
-		Sleep(1000*61);
 		EXPECT_EQ(ELOCK_ERROR_SUCCESS,Notify(strSendLockActInfoXML.c_str()));		
 	}
 	else
