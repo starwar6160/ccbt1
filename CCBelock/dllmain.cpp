@@ -1,9 +1,11 @@
 // dllmain.cpp : 定义 DLL 应用程序的入口点。
 #include "stdafx.h"
 #include <direct.h>
+#include <WinBase.h>
 #include "zwCcbElockHdr.h"
 Poco::LogStream *g_log=NULL;
 int PocoLogInit(void)  ;
+string zwGetConfigFileName(void);
 
 
 BOOL APIENTRY DllMain( HMODULE hModule,
@@ -11,6 +13,9 @@ BOOL APIENTRY DllMain( HMODULE hModule,
                        LPVOID lpReserved
 					 )
 {
+	//在DLL的同一个目录下寻找同名的INI文件载入
+	zwccbthr::myLoadConfig(zwGetConfigFileName());
+	
 	PocoLogInit();
 	switch (ul_reason_for_call)
 	{
@@ -28,8 +33,21 @@ BOOL APIENTRY DllMain( HMODULE hModule,
 		break;
 	}
 	//g_log->notice()<<33<<"hello"<<endl;
-	zwccbthr::myLoadConfig("jcElock817.ini");
 	return TRUE;
+}
+
+
+string zwGetConfigFileName(void)
+{
+	HMODULE hdl=GetModuleHandleA("HidProtocol.dll");
+	char dllName[256];
+	memset(dllName,0,256);
+	GetModuleFileNameA(hdl,dllName,256);
+	OutputDebugStringA(dllName);
+	char * tt=strstr(dllName,".dll");
+	strcpy(tt,".ini");
+	string cfgFileName=dllName;
+	return cfgFileName;
 }
 
 string zwGetLogFileName(void)
