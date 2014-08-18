@@ -10,6 +10,7 @@ namespace jcAtmcConvertDLL{
 	void zwconvLockActiveDown(const ptree &ptccb, ptree &ptjc );
 	void zwconvLockInitDown( const ptree &ptccb, ptree &ptjc );
 	void zwconvReadCloseCodeDown( const ptree &ptccb, ptree &ptjc );
+	void zwconvTimeSyncDown( const ptree &ptccb, ptree &ptjc );
 	//上传方向处理
 	void zwconvLockActiveUp(const ptree &ptjc, ptree &ptccb );
 	void zwconvLockInitUp( const ptree &ptjc, ptree &ptccb );
@@ -68,6 +69,11 @@ namespace jcAtmcConvertDLL{
 			ns_LockInitName=ptCCB.get<string>(CCBSTR_NAME);
 			msgType= JCMSG_SEND_LOCK_ACTIVEINFO;
 			zwconvLockInitDown(ptCCB,ptJC);
+		}
+		if ("0003"==transCode)
+		{//时间同步
+			zwconvTimeSyncDown(ptCCB,ptJC);
+			msgType=JCMSG_TIMESYNC;
 		}
 		if ("0004"==transCode)
 		{//读取闭锁码
@@ -252,6 +258,19 @@ catch(...)
 		ptccb.put("root.ActiveResult",ActiveResult);
 		//1.1版本里面下位机解密了ECIES加密的PSK并在Lock_Init_Info字段返回
 		ptccb.put("root.ActInfo",ptjc.get<string>("Lock_Init_Info"));
+	}
+
+	//////////////////////////////////////////////////////////////////////////
+	//时间同步
+	void zwconvTimeSyncDown( const ptree &ptccb, ptree &ptjc )
+	{
+		ZWFUNCTRACE
+			string zwDate,zwTime;
+		zwGetDateTimeString(time(NULL),zwDate,zwTime);
+		ptjc=ptccb;
+		ptjc.put(CCBSTR_DATE,zwDate);
+		ptjc.put(CCBSTR_TIME,zwTime);
+
 	}
 
 	//////////////////////////////////////////////////////////////////////////

@@ -50,6 +50,7 @@ namespace jcAtmcMsg{
 	string & myAtmcMsgReadCloseCodeInfo( string & strXML ,ptree &pt );
 	string & myTestMsgRecvCloseCode( string & strXML ,ptree &pt );
 	string & myTestMsgRecvVerifyCode( string & strXML ,ptree &pt );
+	string & myTestMsgTimeSync( string & strXML ,ptree &pt );
 //生成模拟的ATMC XML消息的总入口，根据枚举生成相应那一条的XML消息
 void zwAtmcTestMsgGen( const JC_MSG_TYPE type,string &strXML,ptree &pt )
 {
@@ -76,7 +77,10 @@ void zwAtmcTestMsgGen( const JC_MSG_TYPE type,string &strXML,ptree &pt )
 		strXML=myTestMsgRecvVerifyCode(strXML,pt);
 		assert(strXML.length()>42);
 		break;
-
+	case JCMSG_TIME_SYNC:
+		strXML=myTestMsgTimeSync(strXML,pt);
+		assert(strXML.length()>42);
+		break;
 	}
 }
 	
@@ -218,6 +222,18 @@ string & myTestMsgRecvVerifyCode( string & strXML ,ptree &pt )
 	//开始生成请求报文
 	pt.put(CCBSTR_CODE,"1002");
 	pt.put(CCBSTR_NAME,"SendUnLockIdent");
+	std::ostringstream ss;
+	write_xml(ss,pt);
+	strXML=ss.str();
+	return strXML;
+}
+
+//生成测试用的0003时间同步报文，目的在于模拟建行ATM机器的行为
+string & myTestMsgTimeSync( string & strXML ,ptree &pt )
+{
+	//开始生成请求报文
+	pt.put(CCBSTR_CODE,"0003");
+	pt.put(CCBSTR_NAME,"TimeSync");
 	std::ostringstream ss;
 	write_xml(ss,pt);
 	strXML=ss.str();

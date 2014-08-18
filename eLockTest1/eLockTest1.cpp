@@ -16,7 +16,8 @@ using jcAtmcConvertDLL::CCBSTR_NAME;
 //锁具内部由于缺乏数据而无法做出反应的测试
 //#define _DEBUG_RECV_INIT_CLOSECODE
 //#define _DEBUG_RECV_VERIFY_CODE
-#define _DEBUG_READ_CLOSE_CODE
+//#define _DEBUG_READ_CLOSE_CODE
+#define _DEBUG_TIMESYNC
 
 
 
@@ -284,6 +285,32 @@ TEST_F(ccbElockTest,LockSendActInfoTest0001)
 #endif // _DEBUG_SEND_ACTINFO
 
 
+#ifdef _DEBUG_TIMESYNC
+TEST_F(ccbElockTest,TimeSyncTest0003)
+{
+	EXPECT_EQ(ELOCK_ERROR_SUCCESS,SetRecvMsgRotine(myATMCRecvMsgRotine));	
+	const JC_MSG_TYPE msgType=JCMSG_TIME_SYNC;	//设定消息类型
+	//ATMC生成XML消息
+	string strSendLockActInfoXML;	//容纳生成的消息XML
+	//具体生成消息XML
+	ptree pt;
+	jcAtmcMsg::zwAtmcTestMsgGen(msgType,strSendLockActInfoXML, pt);	
+
+	if (ELOCK_ERROR_SUCCESS==m_connStatus)
+	{
+		EXPECT_EQ(ELOCK_ERROR_SUCCESS,Notify(strSendLockActInfoXML.c_str()));
+		cout<<"sleep 61 seconds"<<endl;
+		Sleep(1000*61);
+		EXPECT_EQ(ELOCK_ERROR_SUCCESS,Notify(strSendLockActInfoXML.c_str()));		
+	}
+	else
+	{
+		EXPECT_EQ(ELOCK_ERROR_CONNECTLOST,Notify(strSendLockActInfoXML.c_str()));		
+		cout<<"Server not Start!"<<endl;
+	}
+}
+#endif // _DEBUG_TIMESYNC
+
 #ifdef _DEBUG_READ_CLOSE_CODE
 //读取闭锁码报文的在线测试
 TEST_F(ccbElockTest,ReadCloseCodeTest0004)
@@ -300,7 +327,6 @@ TEST_F(ccbElockTest,ReadCloseCodeTest0004)
 	if (ELOCK_ERROR_SUCCESS==m_connStatus)
 	{
 		EXPECT_EQ(ELOCK_ERROR_SUCCESS,Notify(strSendLockActInfoXML.c_str()));
-		cout<<"sleep 61 seconds"<<endl;
 		Sleep(1000*61);
 		EXPECT_EQ(ELOCK_ERROR_SUCCESS,Notify(strSendLockActInfoXML.c_str()));		
 	}

@@ -12,6 +12,7 @@ typedef enum jcmsg_ccb_elock_t{
 	JCMSG_TIME_SYNC,
 	JCMSG_GET_CLOSECODE,		//»ñÈ¡±ÕËøÂë
 	JCMSG_GET_LOCK_LOG,
+	JCMSG_TIMESYNC,
 	//LOCK TO ATMC MSG:
 	JCMSG_SEND_INITCLOSECODE,		//·¢ËÍ±ÕËøÂë
 	JCMSG_PUSH_WARNING,
