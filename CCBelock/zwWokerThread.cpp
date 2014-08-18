@@ -49,17 +49,11 @@ namespace zwccbthr{
 				{
 					if (NULL!=zwscthr)
 					{
-						Sleep(1000*30);	//最多不超过60秒，否则就断了连接；
-						//如果另一个线程正在做WS输入输出，就暂时等待
-						//while(true==s_wsioing)
-						//{
-						//	Sleep(100);
-						//}
+						Sleep(1000*15);	//最多不超过60秒，否则就断了连接；
 						zwscthr->SendString(s_HeartJump);
 						//OutputDebugStringA("HEART JUMP PACKAGE OVER ATMC DLL AND JINCHU ELOCK");		
 						OutputDebugStringA(s_HeartJump.c_str());
-					}
-					
+					}			
 				}
 		}
 		catch(...)

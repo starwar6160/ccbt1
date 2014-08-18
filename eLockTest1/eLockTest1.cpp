@@ -305,7 +305,7 @@ TEST_F(ccbElockTest,TimeSyncTest0003)
 		EXPECT_EQ(ELOCK_ERROR_CONNECTLOST,Notify(strSendLockActInfoXML.c_str()));		
 		cout<<"Server not Start!"<<endl;
 	}
-	Sleep(61*1000);
+	Sleep(1*1000);
 }
 #endif // _DEBUG_TIMESYNC
 
@@ -325,7 +325,6 @@ TEST_F(ccbElockTest,ReadCloseCodeTest0004)
 	if (ELOCK_ERROR_SUCCESS==m_connStatus)
 	{
 		EXPECT_EQ(ELOCK_ERROR_SUCCESS,Notify(strSendLockActInfoXML.c_str()));
-		EXPECT_EQ(ELOCK_ERROR_SUCCESS,Notify(strSendLockActInfoXML.c_str()));		
 	}
 	else
 	{
