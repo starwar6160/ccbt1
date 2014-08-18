@@ -66,7 +66,7 @@ void zwFakeThread(void)
 	}
 }
 
- boost::thread thr(zwccbthr::ThreadHeartJump);
+
 
 CCBELOCK_API long JCAPISTD Open(long lTimeOut)
 {
@@ -75,7 +75,7 @@ CCBELOCK_API long JCAPISTD Open(long lTimeOut)
 	//必须大于0，小于JC_CCBDLL_TIMEOUT，限制在一个合理范围内
 	assert(lTimeOut>0 && lTimeOut<zwCfg::JC_CCBDLL_TIMEOUT);
 
-	
+	boost::thread thr(zwccbthr::ThreadHeartJump);
 	Sleep(300);	//等待起码300毫秒，等待建立和锁具的WebSocket连接
 	g_log->notice()<<"Open Return "<<ELOCK_ERROR_SUCCESS<<endl;
 	return ELOCK_ERROR_SUCCESS;

@@ -14,9 +14,9 @@ using jcAtmcConvertDLL::CCBSTR_NAME;
 #define _DEBUG_ACTREQ
 #define _DEBUG_SEND_ACTINFO
 //锁具内部由于缺乏数据而无法做出反应的测试
-#define _DEBUG_RECV_INIT_CLOSECODE
-#define _DEBUG_RECV_VERIFY_CODE
-#define _DEBUG_READ_CLOSE_CODE
+//#define _DEBUG_RECV_INIT_CLOSECODE
+//#define _DEBUG_RECV_VERIFY_CODE
+//#define _DEBUG_READ_CLOSE_CODE
 
 
 
@@ -172,6 +172,8 @@ TEST(ccbElockDeathTest,NotifyTestBad)
 //锁具激活请求报文的在线测试
 TEST_F(ccbElockTest,LockActiveTest0000)
 {
+	printf("%d HEX=%016X\n",67386086,67386086);
+	printf("%s HEX=%016X\n","67386086","67386086");
 	//Open(25);
 	EXPECT_EQ(ELOCK_ERROR_SUCCESS,SetRecvMsgRotine(myATMCRecvMsgRotine));	
 	const JC_MSG_TYPE msgType=JCMSG_LOCK_ACTIVE_REQUEST;	//设定消息类型

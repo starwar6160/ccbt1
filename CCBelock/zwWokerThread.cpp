@@ -18,7 +18,7 @@ namespace zwccbthr{
 	boost:: mutex recv_mutex; 
 	std::string s_LockIp;
 	bool s_wsioing=false;
-	string s_HeartJump="HEARTJUMP";
+	string s_HeartJump="HEART1054";
 
 	void wait(int milliseconds)
 	{ 
@@ -165,8 +165,8 @@ namespace zwccbthr{
 		s_LockIp = cfg->getString("ELock.LockIp");  
 		assert(s_LockIp.length()>0);
 		int  ThreadNum= cfg->getInt("ELock.ThreadNum");
-		s_HeartJump=cfg->getString("ELock.HeartJump");
-		assert(s_HeartJump.length()>0);
+		//s_HeartJump=cfg->getString("ELock.HeartJump");
+		//assert(s_HeartJump.length()>0);
 		}
 		catch(Poco::Exception e)
 		{

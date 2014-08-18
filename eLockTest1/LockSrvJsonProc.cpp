@@ -22,7 +22,7 @@ void ZWTRACES(const char *x)
 int zwjclms_command_proc(const string &inJson,string &outJson)
 {
 	//此处的心跳包必须和DLL发来的保持一致
-	if (inJson=="HEARTJUMP2256")
+	if (inJson=="HEART1054")
 	{
 		outJson=inJson;
 		return 0 ;	//心跳包特殊处理，直接原样返回；
