@@ -342,6 +342,7 @@ TEST_F(ccbElockTest,ReadCloseCodeTest0004)
 	zwGetCCBMsgType(s_repReadCloseCodeXML,ccbop,ccbname);
 	EXPECT_EQ("0004",ccbop);
 	EXPECT_EQ("ReadShutLockCode",ccbname);
+	Sleep(63*1000);
 }
 #endif // _DEBUG_READ_CLOSE_CODE
 

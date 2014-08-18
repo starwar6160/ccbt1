@@ -113,7 +113,7 @@ namespace zwccbthr{
 				//调用回调函数传回信息，然后就关闭连接，结束通信线程；
 				zwCfg::g_WarnCallback(outXML.c_str());
 				//zwscthr->wsClose();
-				break;
+				//break;
 			}
 			else
 			{
