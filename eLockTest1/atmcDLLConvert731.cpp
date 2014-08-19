@@ -17,6 +17,7 @@ namespace jcAtmcConvertDLL{
 	void zwconvLockInitUp( const ptree &ptjc, ptree &ptccb );
 	void zwconvReadCloseCodeUp( const ptree &ptjc, ptree &ptccb );
 	void zwconvTimeSyncUp( const ptree &ptjc, ptree &ptccb );
+	void zwconvCheckLockStatusUp( const ptree &ptjc, ptree &ptccb );
 	//接收锁具主动发送的初始闭锁码，只有上传方向
 	void zwconvRecvInitCloseCodeDown(const ptree &ptccb, ptree &ptjc );
 	void zwconvRecvInitCloseCodeUp(const ptree &ptjc, ptree &ptccb);
@@ -140,6 +141,10 @@ namespace jcAtmcConvertDLL{
 		{//发送锁具激活信息(锁具初始化)
 			zwconvLockInitUp(ptJC,ptCCB);
 		}
+		if (JCSTR_QUERY_LOCK_STATUS==jcCmd)
+		{//查询锁具状态
+			zwconvCheckLockStatusUp(ptJC,ptCCB);
+		}	
 		if (JCSTR_TIME_SYNC==jcCmd)
 		{//时间同步
 			zwconvTimeSyncUp(ptJC,ptCCB);
@@ -277,6 +282,12 @@ catch(...)
 	{
 		ZWFUNCTRACE
 		ptjc.put(jcAtmcConvertDLL::JCSTR_CMDTITLE,JCSTR_QUERY_LOCK_STATUS);
+	}
+
+	void zwconvCheckLockStatusUp( const ptree &ptjc, ptree &ptccb )
+	{
+		ZWFUNCTRACE
+		ptccb=ptjc;
 	}
 
 	//////////////////////////////////////////////////////////////////////////
