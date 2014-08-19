@@ -6,7 +6,7 @@
 Poco::LogStream *g_log=NULL;
 int PocoLogInit(void)  ;
 string zwGetConfigFileName(void);
-
+void testjson819(void);
 
 BOOL APIENTRY DllMain( HMODULE hModule,
                        DWORD  ul_reason_for_call,
@@ -33,6 +33,7 @@ BOOL APIENTRY DllMain( HMODULE hModule,
 		break;
 	}
 	//g_log->notice()<<33<<"hello"<<endl;
+	testjson819();
 	return TRUE;
 }
 

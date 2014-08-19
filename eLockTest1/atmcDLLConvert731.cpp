@@ -3,6 +3,19 @@
 #include "zwPocoLog.h"
 
 using namespace boost::property_tree;
+
+void testjson819(void)
+{
+	const char *jstest1="{\"Command\": \"Lock_Time_Sync_ATM\",\"Lock_Time\": 1408443318 }";
+	ptree ptt;
+	std::stringstream ss;
+	ss<<jstest1;
+	read_json(ss,ptt);
+	write_json(ss,ptt);
+	cout<<__FUNCTION__<<" "<<ss.str()<<endl;
+}
+
+
 //把ATMC DLL的XML和JSON互转函数集中于此，便于单元测试；
 namespace jcAtmcConvertDLL{
 	const char *LOCKMAN_NAME="BeiJing.JinChu";
@@ -12,12 +25,15 @@ namespace jcAtmcConvertDLL{
 	void zwconvReadCloseCodeDown( const ptree &ptccb, ptree &ptjc );
 	void zwconvQueryLockStatusDown( const ptree &ptccb, ptree &ptjc );
 	void zwconvTimeSyncDown( const ptree &ptccb, ptree &ptjc );
+	void zwconvGetLockLogDown( const ptree &ptccb, ptree &ptjc );
+	
 	//上传方向处理
 	void zwconvLockActiveUp(const ptree &ptjc, ptree &ptccb );
 	void zwconvLockInitUp( const ptree &ptjc, ptree &ptccb );
 	void zwconvReadCloseCodeUp( const ptree &ptjc, ptree &ptccb );
 	void zwconvTimeSyncUp( const ptree &ptjc, ptree &ptccb );
 	void zwconvCheckLockStatusUp( const ptree &ptjc, ptree &ptccb );
+	void zwconvGetLockLogUp( const ptree &ptjc, ptree &ptccb );
 	//接收锁具主动发送的初始闭锁码，只有上传方向
 	void zwconvRecvInitCloseCodeDown(const ptree &ptccb, ptree &ptjc );
 	void zwconvRecvInitCloseCodeUp(const ptree &ptjc, ptree &ptccb);
@@ -29,7 +45,6 @@ namespace jcAtmcConvertDLL{
 	string ns_LockInitName;
 	string ns_ReadCloseCodeName;
 	string ns_ccbAtmno;		//ATM编号
-
 
 	const JC_MSG_TYPE zwCCBxml2JCjson( const string &downXML,string &downJson )
 	{
@@ -88,6 +103,11 @@ namespace jcAtmcConvertDLL{
 			ns_ReadCloseCodeName=ptCCB.get<string>(CCBSTR_NAME);
 			msgType= JCMSG_GET_CLOSECODE;
 			zwconvReadCloseCodeDown(ptCCB,ptJC);
+		}
+		if ("0005"==transCode)
+		{//读取日志
+			msgType= JCMSG_GET_LOCK_LOG;
+			zwconvGetLockLogDown(ptCCB,ptJC);
 		}
 //////////////////////////////////////////////////////////////////////////
 		//锁具单向上传消息的配合一问一答测试消息：
@@ -153,7 +173,11 @@ namespace jcAtmcConvertDLL{
 		{//读取闭锁码
 			zwconvReadCloseCodeUp(ptJC,ptCCB);
 		}
-		
+		if (JCSTR_GET_LOCK_LOG==jcCmd)
+		{//读取闭锁码
+			zwconvGetLockLogUp(ptJC,ptCCB);
+		}
+
 		if (JCSTR_SEND_INITCLOSECODE==jcCmd)
 		{//接收下位机主动发来的初始闭锁码
 			zwconvRecvInitCloseCodeUp(ptJC,ptCCB);
@@ -341,8 +365,7 @@ catch(...)
 	{
 		ZWFUNCTRACE
 		ptjc.put(jcAtmcConvertDLL::JCSTR_CMDTITLE,JCSTR_TIME_SYNC);
-		ptjc.put("Lock_Time",time(NULL));
-
+		ptjc.put<time_t>("Lock_Time",time(NULL));
 	}
 
 		//时间同步
@@ -413,6 +436,30 @@ catch(...)
 		ptccb.put("root.LockId",ptjc.get<string>("Lock_Serial"));
 		ptccb.put("root.ShutLockcode",ptjc.get<int>("Code"));
 	}
+
+
+
+	//读取日志
+	void zwconvGetLockLogDown( const ptree &ptccb, ptree &ptjc )
+	{
+		ZWFUNCTRACE
+		ptjc.put(jcAtmcConvertDLL::JCSTR_CMDTITLE,JCSTR_GET_LOCK_LOG);
+		ptjc.put("Begin_No",ptccb.get<int>("BeginNo"));
+		ptjc.put("End_No",ptccb.get<int>("EndNo"));
+	}
+
+	void zwconvGetLockLogUp( const ptree &ptjc, ptree &ptccb )
+	{
+		ZWFUNCTRACE
+		ptccb.put(CCBSTR_CODE,"0005");
+		ptccb.put(CCBSTR_NAME,"ReadLog");
+		string zwDate,zwTime;
+		zwGetDateTimeString(time(NULL),zwDate,zwTime);
+		ptccb.put(CCBSTR_DATE,zwDate);
+		ptccb.put(CCBSTR_TIME,zwTime);
+
+	}
+
 
 	void zwconvRecvInitCloseCodeDown(const ptree &ptccb, ptree &ptjc )
 	{
