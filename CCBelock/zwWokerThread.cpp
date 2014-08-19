@@ -67,6 +67,7 @@ namespace zwccbthr{
 	void ThreadLockComm()
 	{		
 	ZWFUNCTRACE
+	OutputDebugStringA("COMM1");
 	boost:: mutex:: scoped_lock lock( thr_mutex); 
 	string myLockIp;
 	try{
@@ -75,32 +76,46 @@ namespace zwccbthr{
 	ZWTRACE(myLockIp.c_str());
 	if (NULL==zwscthr)
 	{
+		OutputDebugStringA("COMM2");
 			zwscthr=new zwWebSocket(myLockIp.c_str(),8088);
 			zwscthr->wsConnect();
 			zwscthr->zwSetLongTimeOut();
 	}
 		while(1)
 		{			
-			if (ZWTHR_STOP==ns_thr_run)
-			{
-				break;
-			}
+			OutputDebugStringA("COMM3");
 			string recstr;
 			{
 				s_wsioing=true;
-				zwscthr->ReceiveString(recstr);
+				OutputDebugStringA("COMM4");
+				try{
+					zwscthr->ReceiveString(recstr);
+				}
+				catch(...)
+				{
+					ZWFATAL("WS CONNECT TO LOCK DISCONNECTED,TRY TO RECONNECT");
+					OutputDebugStringA("WS CONNECT TO LOCK DISCONNECTED,TRY TO RECONNECT");
+					Sleep(10*1000);
+					OutputDebugStringA("SLEEP 10 SEC END");
+					continue;
+				}
+				OutputDebugStringA(recstr.c_str());
 				s_wsioing=false;
+				OutputDebugStringA("COMM5");
 			}
 			
 			//检查是否为心跳包
 			if (s_HeartJump==recstr)
 			{
+				OutputDebugStringA("COMM6");
 				//如果是心跳包的返回字符串，就直接忽略；
 				continue;
 			}
 
 			string outXML;
+			OutputDebugStringA("COMM7.1");
 			jcAtmcConvertDLL::zwJCjson2CCBxml(recstr,outXML);
+			OutputDebugStringA("COMM7.2");
 			assert(outXML.length()>42);	//XML开头的固定内容38个字符，外加起码一个标签的两对尖括号合计4个字符
 			ZWTRACE(outXML.c_str());		
 
@@ -111,6 +126,7 @@ namespace zwccbthr{
 			
 			if (NULL!=zwCfg::g_WarnCallback)
 			{
+				OutputDebugStringA("COMM8");
 				//调用回调函数传回信息，然后就关闭连接，结束通信线程；
 				zwCfg::g_WarnCallback(outXML.c_str());
 				//zwscthr->wsClose();
@@ -118,18 +134,15 @@ namespace zwccbthr{
 			}
 			else
 			{
+				OutputDebugStringA("COMM8.1");
 				ZWFATAL("回调函数指针为空，无法调用回调函数")
 			}
-			if (recstr.length()>9)
-			{
-				//MessageBoxA(NULL,recstr.c_str(),"ATMC ConcertDLL Received json is",MB_OK);			
-			}
-
 		} 		
 		ZWTRACE("JCLOCK COMM THREAD NORMAL EXIT 20140817");
 
 	}	//try
 	catch(...){
+		OutputDebugStringA("COMM9");
 		zwscthr->wsClose();	//异常就主动关闭连接防止下一次正常连接无法连上
 		delete zwscthr;
 		zwscthr=NULL;
