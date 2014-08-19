@@ -234,6 +234,10 @@ string & myTestMsgTimeSync( string & strXML ,ptree &pt )
 	//开始生成请求报文
 	pt.put(CCBSTR_CODE,"0003");
 	pt.put(CCBSTR_NAME,"TimeSync");
+	string zwDate,zwTime;
+	zwGetDateTimeString(time(NULL),zwDate,zwTime);
+	pt.put(CCBSTR_DATE,zwDate);
+	pt.put(CCBSTR_TIME,zwTime);
 	std::ostringstream ss;
 	write_xml(ss,pt);
 	strXML=ss.str();
