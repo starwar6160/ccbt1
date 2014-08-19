@@ -5,6 +5,7 @@ using jcAtmcConvertDLL::CCBSTR_NAME;
 using jcAtmcConvertDLL::CCBSTR_DATE;
 using jcAtmcConvertDLL::CCBSTR_TIME;
 using jcAtmcConvertDLL::CCBSTR_DEVCODE;
+const char *G_LOCKMAN_NAMEG="BeiJing.JinChu";
 //把ATMC端的XML生成与结果XML解析集中于此，便于单元测试
 //第一套激活信息
 //CCB 1.1版本算法ECIES(椭圆曲线集成加密公钥算法)安全初始化演示开始
@@ -51,6 +52,7 @@ namespace jcAtmcMsg{
 	string & myTestMsgRecvCloseCode( string & strXML ,ptree &pt );
 	string & myTestMsgRecvVerifyCode( string & strXML ,ptree &pt );
 	string & myTestMsgTimeSync( string & strXML ,ptree &pt );
+	string & myTestMsgCheckLockStatus( string & strXML ,ptree &pt );
 //生成模拟的ATMC XML消息的总入口，根据枚举生成相应那一条的XML消息
 void zwAtmcTestMsgGen( const JC_MSG_TYPE type,string &strXML,ptree &pt )
 {
@@ -79,6 +81,10 @@ void zwAtmcTestMsgGen( const JC_MSG_TYPE type,string &strXML,ptree &pt )
 		break;
 	case JCMSG_TIME_SYNC:
 		strXML=myTestMsgTimeSync(strXML,pt);
+		assert(strXML.length()>42);
+		break;
+	case JCMSG_QUERY_LOCK_STATUS:
+		strXML=myTestMsgCheckLockStatus(strXML,pt);
 		assert(strXML.length()>42);
 		break;
 	}
@@ -122,7 +128,7 @@ string & myAtmcMsgLockActive( string & strXML ,ptree &pt )
 //生成发送锁具激活信息报文，发送用锁具公钥加密过后的PSK到锁具
 string & myAtmcMsgSendActiveInfo( string & strXML ,ptree &pt )
 {
-	const char *LOCKMAN_NAMEG="BeiJing.JinChu";
+	
 	//请求
 	//	交易代码	TransCode	是	值：0001
 	//	交易名称	TransName	是	值：SendActInfo
@@ -141,7 +147,7 @@ string & myAtmcMsgSendActiveInfo( string & strXML ,ptree &pt )
 	pt.put(CCBSTR_DATE,zwDate);
 	pt.put(CCBSTR_TIME,zwTime);
 	pt.put(CCBSTR_DEVCODE,ATMNO_CCBTEST);
-	pt.put("root.LockMan",LOCKMAN_NAMEG);
+	pt.put("root.LockMan",G_LOCKMAN_NAMEG);
 	pt.put("root.LockId","ZWFAKELOCKNO1548");
 	//使用第一套激活信息,提供"ActInfo"的值
 	pt.put("root.ActInfo","BG3j9JZxpssY0bdb1oMwg4obKmZ93GTvbbnY8VZnQIglLGO8m7JvhTlnvKPnsuBv"
@@ -222,6 +228,25 @@ string & myTestMsgRecvVerifyCode( string & strXML ,ptree &pt )
 	//开始生成请求报文
 	pt.put(CCBSTR_CODE,"1002");
 	pt.put(CCBSTR_NAME,"SendUnLockIdent");
+	std::ostringstream ss;
+	write_xml(ss,pt);
+	strXML=ss.str();
+	return strXML;
+}
+
+//生成测试用的0002查询锁具状态
+string & myTestMsgCheckLockStatus( string & strXML ,ptree &pt )
+{
+	//开始生成请求报文
+	pt.put(CCBSTR_CODE,"0002");
+	pt.put(CCBSTR_NAME,"QueryForLockStatus");
+	string zwDate,zwTime;
+	zwGetDateTimeString(time(NULL),zwDate,zwTime);
+	pt.put(CCBSTR_DATE,zwDate);
+	pt.put(CCBSTR_TIME,zwTime);
+	pt.put(CCBSTR_DEVCODE,ATMNO_CCBTEST);
+	pt.put("root.LockMan",G_LOCKMAN_NAMEG);
+	pt.put("root.LockId","ZWFAKELOCKNO1548");
 	std::ostringstream ss;
 	write_xml(ss,pt);
 	strXML=ss.str();
