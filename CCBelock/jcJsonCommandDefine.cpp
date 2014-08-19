@@ -6,6 +6,7 @@ namespace jcAtmcConvertDLL{
 	const char *JCSTR_CMDTITLE="Command";
 	const char *JCSTR_LOCK_ACTIVE_REQUEST="Lock_Secret_Key";
 	const char *JCSTR_LOCK_INIT="Lock_System_Init";
+	const char *JCSTR_QUERY_LOCK_STATUS="Lock_Now_Info";
 	const char *JCSTR_TIME_SYNC="Lock_Time_Sync";
 	const char *JCSTR_READ_CLOSECODE="Lock_Close_Code_ATM";
 	const char *JCSTR_SEND_INITCLOSECODE="Lock_Close_Code_Lock";

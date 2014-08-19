@@ -10,6 +10,7 @@ namespace jcAtmcConvertDLL{
 	void zwconvLockActiveDown(const ptree &ptccb, ptree &ptjc );
 	void zwconvLockInitDown( const ptree &ptccb, ptree &ptjc );
 	void zwconvReadCloseCodeDown( const ptree &ptccb, ptree &ptjc );
+	void zwconvQueryLockStatusDown( const ptree &ptccb, ptree &ptjc );
 	void zwconvTimeSyncDown( const ptree &ptccb, ptree &ptjc );
 	//上传方向处理
 	void zwconvLockActiveUp(const ptree &ptjc, ptree &ptccb );
@@ -70,6 +71,11 @@ namespace jcAtmcConvertDLL{
 			ns_LockInitName=ptCCB.get<string>(CCBSTR_NAME);
 			msgType= JCMSG_SEND_LOCK_ACTIVEINFO;
 			zwconvLockInitDown(ptCCB,ptJC);
+		}
+		if ("0002"==transCode)
+		{//查询锁具状态
+			zwconvQueryLockStatusDown(ptCCB,ptJC);
+			msgType=JCMSG_QUERY_LOCK_STATUS;
 		}
 		if ("0003"==transCode)
 		{//时间同步
@@ -263,6 +269,14 @@ catch(...)
 		ptccb.put("root.ActiveResult",ActiveResult);
 		//1.1版本里面下位机解密了ECIES加密的PSK并在Lock_Init_Info字段返回
 		ptccb.put("root.ActInfo",ptjc.get<string>("Lock_Init_Info"));
+	}
+
+	
+	//查询锁具状态
+	void zwconvQueryLockStatusDown( const ptree &ptccb, ptree &ptjc )
+	{
+		ZWFUNCTRACE
+		ptjc.put(jcAtmcConvertDLL::JCSTR_CMDTITLE,JCSTR_QUERY_LOCK_STATUS);
 	}
 
 	//////////////////////////////////////////////////////////////////////////
