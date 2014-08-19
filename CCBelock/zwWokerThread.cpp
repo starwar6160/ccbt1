@@ -35,34 +35,6 @@ namespace zwccbthr{
 		return myLockIp;
 	}
 
-	//发送心跳包的线程
-	void ThreadHeartJump()
-	{
-		ZWFUNCTRACE
-			try{
-				if (NULL==zwscthr)
-				{
-					zwscthr=new zwWebSocket(zwGetLockIP().c_str(),8088);
-					zwscthr->wsConnect();
-				}
-				while(1)
-				{
-					if (NULL!=zwscthr)
-					{
-						Sleep(1000*15);	//最多不超过60秒，否则就断了连接；
-						zwscthr->SendString(s_HeartJump);
-						//OutputDebugStringA("HEART JUMP PACKAGE OVER ATMC DLL AND JINCHU ELOCK");		
-						OutputDebugStringA(s_HeartJump.c_str());
-					}			
-				}
-		}
-		catch(...)
-		{
-			OutputDebugStringA("HEART JUMP THREAD FAIL!");
-			return;
-		}
-	}
-
 	//与锁具之间的通讯线程
 	void ThreadLockComm()
 	{		
@@ -74,13 +46,11 @@ namespace zwccbthr{
 	myLockIp=zwGetLockIP();
 	ZWTRACE("USED JCLOCKIP=");
 	ZWTRACE(myLockIp.c_str());
-	if (NULL==zwscthr)
-	{
 		OutputDebugStringA("COMM2");
-			zwscthr=new zwWebSocket(myLockIp.c_str(),8088);
-			zwscthr->wsConnect();
-			zwscthr->zwSetLongTimeOut();
-	}
+			zwWebSocket wsconn(myLockIp.c_str(),8088);
+			zwscthr=&wsconn;
+			wsconn.wsConnect();
+			wsconn.zwSetLongTimeOut();
 		while(1)
 		{			
 			OutputDebugStringA("COMM3");
@@ -89,7 +59,7 @@ namespace zwccbthr{
 				s_wsioing=true;
 				OutputDebugStringA("COMM4");
 				try{
-					zwscthr->ReceiveString(recstr);
+					wsconn.ReceiveString(recstr);
 				}
 				catch(...)
 				{
@@ -143,29 +113,12 @@ namespace zwccbthr{
 	}	//try
 	catch(...){
 		OutputDebugStringA("COMM9");
-		zwscthr->wsClose();	//异常就主动关闭连接防止下一次正常连接无法连上
-		delete zwscthr;
-		zwscthr=NULL;
 		OutputDebugStringA("JC CCB ELOCK THREAD CONNECT FAIL! 20140817");
 		ZWFATAL("##########JC CCB ELOCK THREAD CONNECT FAIL! 20140817");
 		return;
 	}
 	}
 
-
-	void zwStartLockCommThread(void)
-	{
-		ZWFUNCTRACE
-		ZWTRACE(__FUNCTION__);
-	}
-
-	void zwStopLockCommThread(void)
-	{
-		ZWFUNCTRACE
-		ZWTRACE(__FUNCTION__);
-		ns_thr_run=ZWTHR_STOP;
-		zwscthr->wsClose();
-	}
 
 	void myLoadConfig(const string &cfgFileName)
 	{
