@@ -11,6 +11,8 @@ namespace jcAtmcConvertDLL{
 	const char *JCSTR_READ_CLOSECODE="Lock_Close_Code_ATM";
 	const char *JCSTR_SEND_INITCLOSECODE="Lock_Close_Code_Lock";
 	const char *JCSTR_SEND_UNLOCK_CERTCODE="Lock_Open_Ident";
+	const char *JCSTR_GET_LOCK_LOG="Lock_System_Journal";
+	
 	
 	const char *CCBSTR_CODE="root.TransCode";
 	const char *CCBSTR_NAME="root.TransName";

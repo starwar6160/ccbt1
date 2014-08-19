@@ -30,6 +30,7 @@ namespace jcAtmcConvertDLL{
 	extern const char *JCSTR_READ_CLOSECODE;		//读取闭锁码
 	extern const char *JCSTR_SEND_INITCLOSECODE;	//下位机主动发送初始闭锁码
 	extern const char *JCSTR_SEND_UNLOCK_CERTCODE;	//下位机主动发送验证码
+	extern const char *JCSTR_GET_LOCK_LOG;			//读取日志
 	
 	extern const char *CCBSTR_CODE;
 	extern const char *CCBSTR_NAME;

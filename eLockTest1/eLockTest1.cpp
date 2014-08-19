@@ -17,10 +17,10 @@ using jcAtmcConvertDLL::CCBSTR_NAME;
 //#define _DEBUG_RECV_INIT_CLOSECODE
 //#define _DEBUG_RECV_VERIFY_CODE
 
-#define _DEBUG_QUERY_LOCK_STATUS
-#define _DEBUG_READ_CLOSE_CODE
-
-#define _DEBUG_TIMESYNC
+//#define _DEBUG_QUERY_LOCK_STATUS
+//#define _DEBUG_READ_CLOSE_CODE
+//#define _DEBUG_TIMESYNC
+#define _DEBUG_GET_LOCK_LOG
 
 
 
@@ -372,6 +372,31 @@ TEST_F(ccbElockTest,ReadCloseCodeTest0004)
 	Sleep(1*1000);
 }
 #endif // _DEBUG_READ_CLOSE_CODE
+
+
+#ifdef _DEBUG_GET_LOCK_LOG
+TEST_F(ccbElockTest,GetLockLogTest0005)
+{
+	EXPECT_EQ(ELOCK_ERROR_SUCCESS,SetRecvMsgRotine(myATMCRecvMsgRotine));	
+	const JC_MSG_TYPE msgType=JCMSG_GET_LOCK_LOG;	//设定消息类型
+	//ATMC生成XML消息
+	string strSendLockActInfoXML;	//容纳生成的消息XML
+	//具体生成消息XML
+	ptree pt;
+	jcAtmcMsg::zwAtmcTestMsgGen(msgType,strSendLockActInfoXML, pt);	
+
+	if (ELOCK_ERROR_SUCCESS==m_connStatus)
+	{
+		EXPECT_EQ(ELOCK_ERROR_SUCCESS,Notify(strSendLockActInfoXML.c_str()));	
+	}
+	else
+	{
+		EXPECT_EQ(ELOCK_ERROR_CONNECTLOST,Notify(strSendLockActInfoXML.c_str()));		
+		cout<<"Server not Start!"<<endl;
+	}
+	Sleep(1*1000);
+}
+#endif // _DEBUG_GET_LOCK_LOG
 
 #ifdef _DEBUG_RECV_INIT_CLOSECODE
 //接收锁具主动发送的初始闭锁码测试

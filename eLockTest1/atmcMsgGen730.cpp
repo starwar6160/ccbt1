@@ -53,6 +53,7 @@ namespace jcAtmcMsg{
 	string & myTestMsgRecvVerifyCode( string & strXML ,ptree &pt );
 	string & myTestMsgTimeSync( string & strXML ,ptree &pt );
 	string & myTestMsgCheckLockStatus( string & strXML ,ptree &pt );
+	string & myTestMsgGetLockLog( string & strXML ,ptree &pt );
 //生成模拟的ATMC XML消息的总入口，根据枚举生成相应那一条的XML消息
 void zwAtmcTestMsgGen( const JC_MSG_TYPE type,string &strXML,ptree &pt )
 {
@@ -85,6 +86,10 @@ void zwAtmcTestMsgGen( const JC_MSG_TYPE type,string &strXML,ptree &pt )
 		break;
 	case JCMSG_QUERY_LOCK_STATUS:
 		strXML=myTestMsgCheckLockStatus(strXML,pt);
+		assert(strXML.length()>42);
+		break;
+	case JCMSG_GET_LOCK_LOG:
+		strXML=myTestMsgGetLockLog(strXML,pt);
 		assert(strXML.length()>42);
 		break;
 	}
@@ -269,6 +274,25 @@ string & myTestMsgTimeSync( string & strXML ,ptree &pt )
 	return strXML;
 }
 
+
+
+//生成测试用的0005读取日志报文，目的在于模拟建行ATM机器的行为
+string & myTestMsgGetLockLog( string & strXML ,ptree &pt )
+{
+	//开始生成请求报文
+	pt.put(CCBSTR_CODE,"0005");
+	pt.put(CCBSTR_NAME,"ReadLog");
+	string zwDate,zwTime;
+	zwGetDateTimeString(time(NULL),zwDate,zwTime);
+	pt.put(CCBSTR_DATE,zwDate);
+	pt.put(CCBSTR_TIME,zwTime);
+	pt.put("root.BeginNo",0);
+	pt.put("root.EndNo",23);
+	std::ostringstream ss;
+	write_xml(ss,pt);
+	strXML=ss.str();
+	return strXML;
+}
 
 
 
