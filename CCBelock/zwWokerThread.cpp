@@ -65,9 +65,9 @@ namespace zwccbthr{
 				{
 					ZWFATAL("WS CONNECT TO LOCK DISCONNECTED,TRY TO RECONNECT");
 					OutputDebugStringA("WS CONNECT TO LOCK DISCONNECTED,TRY TO RECONNECT");
-					Sleep(10*1000);
+					//Sleep(10*1000);
 					OutputDebugStringA("SLEEP 10 SEC END");
-					continue;
+					return;
 				}
 				OutputDebugStringA(recstr.c_str());
 				s_wsioing=false;

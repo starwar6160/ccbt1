@@ -18,9 +18,9 @@ using jcAtmcConvertDLL::CCBSTR_NAME;
 //#define _DEBUG_RECV_VERIFY_CODE
 
 //#define _DEBUG_QUERY_LOCK_STATUS
-//#define _DEBUG_READ_CLOSE_CODE
+#define _DEBUG_READ_CLOSE_CODE
 //#define _DEBUG_TIMESYNC
-#define _DEBUG_GET_LOCK_LOG
+//#define _DEBUG_GET_LOCK_LOG
 
 
 
@@ -352,6 +352,8 @@ TEST_F(ccbElockTest,ReadCloseCodeTest0004)
 	if (ELOCK_ERROR_SUCCESS==m_connStatus)
 	{
 		EXPECT_EQ(ELOCK_ERROR_SUCCESS,Notify(strSendLockActInfoXML.c_str()));
+		Sleep(15000);
+		EXPECT_EQ(ELOCK_ERROR_SUCCESS,Notify(strSendLockActInfoXML.c_str()));
 	}
 	else
 	{
@@ -369,7 +371,7 @@ TEST_F(ccbElockTest,ReadCloseCodeTest0004)
 	zwGetCCBMsgType(s_repReadCloseCodeXML,ccbop,ccbname);
 	EXPECT_EQ("0004",ccbop);
 	EXPECT_EQ("ReadShutLockCode",ccbname);
-	Sleep(1*1000);
+	Sleep(61*1000);
 }
 #endif // _DEBUG_READ_CLOSE_CODE
 
@@ -388,13 +390,15 @@ TEST_F(ccbElockTest,GetLockLogTest0005)
 	if (ELOCK_ERROR_SUCCESS==m_connStatus)
 	{
 		EXPECT_EQ(ELOCK_ERROR_SUCCESS,Notify(strSendLockActInfoXML.c_str()));	
+		Sleep(20000);
+		EXPECT_EQ(ELOCK_ERROR_SUCCESS,Notify(strSendLockActInfoXML.c_str()));	
 	}
 	else
 	{
 		EXPECT_EQ(ELOCK_ERROR_CONNECTLOST,Notify(strSendLockActInfoXML.c_str()));		
 		cout<<"Server not Start!"<<endl;
 	}
-	Sleep(1*1000);
+	Sleep(60*1000);
 }
 #endif // _DEBUG_GET_LOCK_LOG
 
