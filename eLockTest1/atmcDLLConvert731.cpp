@@ -15,6 +15,7 @@ namespace jcAtmcConvertDLL{
 	void zwconvLockActiveUp(const ptree &ptjc, ptree &ptccb );
 	void zwconvLockInitUp( const ptree &ptjc, ptree &ptccb );
 	void zwconvReadCloseCodeUp( const ptree &ptjc, ptree &ptccb );
+	void zwconvTimeSyncUp( const ptree &ptjc, ptree &ptccb );
 	//接收锁具主动发送的初始闭锁码，只有上传方向
 	void zwconvRecvInitCloseCodeDown(const ptree &ptccb, ptree &ptjc );
 	void zwconvRecvInitCloseCodeUp(const ptree &ptjc, ptree &ptccb);
@@ -132,6 +133,10 @@ namespace jcAtmcConvertDLL{
 		if (JCSTR_LOCK_INIT==jcCmd)
 		{//发送锁具激活信息(锁具初始化)
 			zwconvLockInitUp(ptJC,ptCCB);
+		}
+		if (JCSTR_TIME_SYNC==jcCmd)
+		{//时间同步
+			zwconvTimeSyncUp(ptJC,ptCCB);
 		}
 		if (JCSTR_READ_CLOSECODE==jcCmd)
 		{//读取闭锁码
@@ -268,6 +273,30 @@ catch(...)
 		ptjc.put(jcAtmcConvertDLL::JCSTR_CMDTITLE,JCSTR_TIME_SYNC);
 		ptjc.put("Lock_Time",time(NULL));
 
+	}
+
+		//时间同步
+	void zwconvTimeSyncUp( const ptree &ptjc, ptree &ptccb )
+	{
+		ZWFUNCTRACE
+		//无用的形式化部分
+		ptccb.put(CCBSTR_CODE,"0003");
+		ptccb.put(CCBSTR_NAME,"TimeSync");	//使用缓存在内存中的值
+		string zwDate,zwTime;
+		zwGetDateTimeString(ptjc.get<time_t>("Lock_Time"),zwDate,zwTime);
+		ptccb.put(CCBSTR_DATE,zwDate);
+		ptccb.put(CCBSTR_TIME,zwTime);
+		//////////////////////////////////////////////////////////////////////////
+		ptccb.put(CCBSTR_DEVCODE,ns_ccbAtmno);	//使用缓存在内存中的值
+		ptccb.put("root.LockMan",LOCKMAN_NAME);
+		ptccb.put("root.LockId",ptjc.get<string>("Lock_Serial"));	
+		//////////////////////////////////////////////////////////////////////////
+		//有用部分
+		time_t exTimeValue=ptjc.get<time_t>("Ex_Syn_Time");
+		string exDate,exTime;
+		zwGetDateTimeString(exTimeValue,exDate,exTime);
+		ptccb.put("root.ExSynDate",exDate);
+		ptccb.put("root.ExSynTime",exTime);
 	}
 
 	//////////////////////////////////////////////////////////////////////////
