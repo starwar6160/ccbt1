@@ -287,7 +287,44 @@ catch(...)
 	void zwconvCheckLockStatusUp( const ptree &ptjc, ptree &ptccb )
 	{
 		ZWFUNCTRACE
-		ptccb=ptjc;
+			//"Command": "Lock_Now_Info",
+			//"Lock_Time": "1408434961",
+			//"Lock_Serial": "A3KE2OK256EO2SPE",
+			//"Lock_Status": "0,0,0,1,100,0,1,20,100,0,0"
+			//无用的形式化部分
+		ptccb.put(CCBSTR_CODE,"0002");
+		ptccb.put(CCBSTR_NAME,"QueryForLockStatus");
+		string zwDate,zwTime;
+		zwGetDateTimeString(ptjc.get<time_t>("Lock_Time"),zwDate,zwTime);
+		ptccb.put(CCBSTR_DATE,zwDate);
+		ptccb.put(CCBSTR_TIME,zwTime);
+		//////////////////////////////////////////////////////////////////////////
+		ptccb.put(CCBSTR_DEVCODE,ns_ccbAtmno);	//使用缓存在内存中的值
+		ptccb.put("root.LockMan",LOCKMAN_NAME);
+		ptccb.put("root.LockId",ptjc.get<string>("Lock_Serial"));	
+		string LockStatusStr=ptjc.get<string>("Lock_Status");
+		//格式：ActiveStatus,EnableStatus,LockStatus,DoorStatus,
+		//BatteryStatus,ShockAlert,TempAlert,PswTryAlert,LockOverTime
+		int ActiveStatus=0;
+		int EnableStatus=0;
+		int LockStatus=0;
+		int DoorStatus=0;
+		int BatteryStatus=0;
+		int ShockAlert=0;
+		int ShockValue=0;
+		int TempAlert=0;
+		int nodeTemp=0;
+		int PswTryAlert=0;
+		int LockOverTime=0;
+		//0,0,0,1,100,0,1,20,100,0,0
+		sscanf(LockStatusStr.c_str(),"%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d",
+			&ActiveStatus,&EnableStatus,&LockStatus,&DoorStatus,
+			&BatteryStatus,&ShockAlert,&ShockValue,
+			&TempAlert,&nodeTemp,
+			&PswTryAlert,&LockOverTime);
+		char tbuf[256];
+		memset(tbuf,0,256);
+
 	}
 
 	//////////////////////////////////////////////////////////////////////////
