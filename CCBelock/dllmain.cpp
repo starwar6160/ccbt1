@@ -33,7 +33,7 @@ BOOL APIENTRY DllMain( HMODULE hModule,
 		break;
 	}
 	//g_log->notice()<<33<<"hello"<<endl;
-	testjson819();
+	//testjson819();
 	return TRUE;
 }
 

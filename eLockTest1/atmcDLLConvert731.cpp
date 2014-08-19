@@ -444,8 +444,8 @@ catch(...)
 	{
 		ZWFUNCTRACE
 		ptjc.put(jcAtmcConvertDLL::JCSTR_CMDTITLE,JCSTR_GET_LOCK_LOG);
-		ptjc.put("Begin_No",ptccb.get<int>("BeginNo"));
-		ptjc.put("End_No",ptccb.get<int>("EndNo"));
+		ptjc.put("Begin_No",ptccb.get<int>("root.BeginNo"));
+		ptjc.put("End_No",ptccb.get<int>("root.EndNo"));
 	}
 
 	void zwconvGetLockLogUp( const ptree &ptjc, ptree &ptccb )
@@ -454,10 +454,11 @@ catch(...)
 		ptccb.put(CCBSTR_CODE,"0005");
 		ptccb.put(CCBSTR_NAME,"ReadLog");
 		string zwDate,zwTime;
-		zwGetDateTimeString(time(NULL),zwDate,zwTime);
+		zwGetDateTimeString(ptjc.get<time_t>("Lock_Time"),zwDate,zwTime);
 		ptccb.put(CCBSTR_DATE,zwDate);
 		ptccb.put(CCBSTR_TIME,zwTime);
-
+		ptccb.put("root.RevResult",ptjc.get<int>("State"));
+		ptccb.put("root.Log",ptjc.get<string>("Journal"));
 	}
 
 
