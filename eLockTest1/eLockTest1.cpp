@@ -16,9 +16,9 @@ using jcAtmcConvertDLL::CCBSTR_NAME;
 //锁具内部由于缺乏数据而无法做出反应的测试
 //#define _DEBUG_RECV_INIT_CLOSECODE
 //#define _DEBUG_RECV_VERIFY_CODE
-//#define _DEBUG_READ_CLOSE_CODE
-//#define _DEBUG_TIMESYNC
+#define _DEBUG_READ_CLOSE_CODE
 #define _DEBUG_QUERY_LOCK_STATUS
+//# #define _DEBUG_TIMESYNC
 
 
 
@@ -306,7 +306,7 @@ TEST_F(ccbElockTest,QueryLockStatusTest0002)
 		EXPECT_EQ(ELOCK_ERROR_CONNECTLOST,Notify(strSendLockActInfoXML.c_str()));		
 		cout<<"Server not Start!"<<endl;
 	}
-	Sleep(63*1000);
+	Sleep(1*1000);
 }
 #endif // _DEBUG_QUERY_LOCK_STATUS
 
@@ -330,7 +330,7 @@ TEST_F(ccbElockTest,TimeSyncTest0003)
 		EXPECT_EQ(ELOCK_ERROR_CONNECTLOST,Notify(strSendLockActInfoXML.c_str()));		
 		cout<<"Server not Start!"<<endl;
 	}
-	Sleep(63*1000);
+	Sleep(1*1000);
 }
 #endif // _DEBUG_TIMESYNC
 
@@ -367,7 +367,7 @@ TEST_F(ccbElockTest,ReadCloseCodeTest0004)
 	zwGetCCBMsgType(s_repReadCloseCodeXML,ccbop,ccbname);
 	EXPECT_EQ("0004",ccbop);
 	EXPECT_EQ("ReadShutLockCode",ccbname);
-	Sleep(63*5*1000);
+	Sleep(1*1000);
 }
 #endif // _DEBUG_READ_CLOSE_CODE
 
