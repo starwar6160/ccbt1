@@ -73,7 +73,7 @@ namespace jcAtmcConvertDLL{
 		if ("0003"==transCode)
 		{//时间同步
 			zwconvTimeSyncDown(ptCCB,ptJC);
-			msgType=JCMSG_TIMESYNC;
+			msgType=JCMSG_TIME_SYNC;
 		}
 		if ("0004"==transCode)
 		{//读取闭锁码
@@ -265,11 +265,8 @@ catch(...)
 	void zwconvTimeSyncDown( const ptree &ptccb, ptree &ptjc )
 	{
 		ZWFUNCTRACE
-			string zwDate,zwTime;
-		zwGetDateTimeString(time(NULL),zwDate,zwTime);
-		ptjc=ptccb;
-		ptjc.put(CCBSTR_DATE,zwDate);
-		ptjc.put(CCBSTR_TIME,zwTime);
+		ptjc.put(jcAtmcConvertDLL::JCSTR_CMDTITLE,JCSTR_TIME_SYNC);
+		ptjc.put("Lock_Time",time(NULL));
 
 	}
 

@@ -11,6 +11,7 @@ void myLockInit(ptree &ptIn );
 void myReadCloseCode(ptree &pt );
 void myGenInitCloseCodeJson( ptree &ptInOut );
 void myGenVerifyCodeJson(ptree &ptInOut);
+void myTimeSync(ptree &ptInOut );
 
 void ZWTRACES(const char *x)
 {
@@ -71,8 +72,13 @@ const JC_MSG_TYPE lockParseInJson( const string & inJson, ptree &pt )
 			myLockInit(pt);
 			return JCMSG_SEND_LOCK_ACTIVEINFO;
 		}
-		if (jcAtmcConvertDLL::JCSTR_READ_CLOSECODE==sCommand)
+		if (jcAtmcConvertDLL::JCSTR_TIME_SYNC==sCommand)
 		{//是锁具初始化请求，进行相关处理
+			myTimeSync(pt);
+			return JCMSG_TIME_SYNC;
+		}
+		if (jcAtmcConvertDLL::JCSTR_READ_CLOSECODE==sCommand)
+		{//是读取闭锁码，进行相关处理
 			myReadCloseCode(pt);
 			return JCMSG_GET_CLOSECODE;
 		}
@@ -133,6 +139,23 @@ void myLockInit( ptree &ptInOut  )
 	ptInOut=ptOut;
 }
 
+
+//读取闭锁码消息的具体处理函数
+void myTimeSync(ptree &ptInOut )
+{
+	cout<<"时间同步"<<endl;
+	//>> 锁具与上位机时间同步
+	//{
+	//	"Command": JCSTR_TIME_SYNC,
+	//		Lock_Time: "12345678",  //uint64_t
+	ptree ptOut;
+	time_t now=time(NULL);
+	ptOut.put(jcAtmcConvertDLL::JCSTR_CMDTITLE,jcAtmcConvertDLL::JCSTR_TIME_SYNC);
+	ptOut.put("Lock_Time",now);
+	ptOut.put("Lock_Serial","ZWFAKELOCKNO1548");	
+	ptOut.put("Ex_Syn_Time",now-9);	
+	ptInOut=ptOut;
+}
 
 //读取闭锁码消息的具体处理函数
 void myReadCloseCode(ptree &ptInOut )

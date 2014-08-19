@@ -12,7 +12,6 @@ typedef enum jcmsg_ccb_elock_t{
 	JCMSG_TIME_SYNC,
 	JCMSG_GET_CLOSECODE,		//获取闭锁码
 	JCMSG_GET_LOCK_LOG,
-	JCMSG_TIMESYNC,
 	//LOCK TO ATMC MSG:
 	JCMSG_SEND_INITCLOSECODE,		//发送闭锁码
 	JCMSG_PUSH_WARNING,
@@ -26,6 +25,7 @@ namespace jcAtmcConvertDLL{
 	extern const char *JCSTR_CMDTITLE;
 	extern const char *JCSTR_LOCK_ACTIVE_REQUEST;	//锁具激活请求
 	extern const char *JCSTR_LOCK_INIT;				//锁具初始化
+	extern const char *JCSTR_TIME_SYNC;				//时间同步
 	extern const char *JCSTR_READ_CLOSECODE;		//读取闭锁码
 	extern const char *JCSTR_SEND_INITCLOSECODE;	//下位机主动发送初始闭锁码
 	extern const char *JCSTR_SEND_UNLOCK_CERTCODE;	//下位机主动发送验证码
