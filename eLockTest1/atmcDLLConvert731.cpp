@@ -322,9 +322,17 @@ catch(...)
 			&BatteryStatus,&ShockAlert,&ShockValue,
 			&TempAlert,&nodeTemp,
 			&PswTryAlert,&LockOverTime);
-		char tbuf[256];
-		memset(tbuf,0,256);
-
+	ptccb.put("root.ActiveStatus",ActiveStatus);
+	ptccb.put("root.EnableStatus",EnableStatus);
+	ptccb.put("root.LockStatus",LockStatus);
+	ptccb.put("root.DoorStatus",DoorStatus);
+	ptccb.put("root.BatteryStatus",BatteryStatus);
+	ptccb.put("root.ShockAlert",ShockAlert);
+	ptccb.put("root.ShockValue",ShockValue);
+	ptccb.put("root.TempAlert",TempAlert);
+	ptccb.put("root.NodeTemp",nodeTemp);
+	ptccb.put("root.PswTryAlert",PswTryAlert);
+	ptccb.put("root.LockOverTime",LockOverTime);
 	}
 
 	//////////////////////////////////////////////////////////////////////////
