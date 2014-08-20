@@ -17,8 +17,6 @@ namespace zwccbthr{
 	string s_dbgReturn="";
 	boost:: mutex recv_mutex; 
 	std::string s_LockIp;
-	bool s_wsioing=false;
-	string s_HeartJump="HEART1054";
 
 	void wait(int milliseconds)
 	{ 
@@ -39,53 +37,37 @@ namespace zwccbthr{
 	void ThreadLockComm()
 	{		
 	ZWFUNCTRACE
-	OutputDebugStringA("COMM1");
 	boost:: mutex:: scoped_lock lock( thr_mutex); 
 	string myLockIp;
 	try{
 	myLockIp=zwGetLockIP();
 	ZWTRACE("USED JCLOCKIP=");
 	ZWTRACE(myLockIp.c_str());
-		OutputDebugStringA("COMM2");
 			zwWebSocket wsconn(myLockIp.c_str(),8088);
 			zwscthr=&wsconn;
 			wsconn.wsConnect();
 			wsconn.zwSetLongTimeOut();
+			ZWNOTICE("连接锁具成功");
 		while(1)
 		{			
-			OutputDebugStringA("COMM3");
+			ZWINFO("通信线程的新一轮等待接收数据循环开始");
 			string recstr;
 			{
-				s_wsioing=true;
-				OutputDebugStringA("COMM4");
 				try{
 					wsconn.ReceiveString(recstr);
+					ZWNOTICE("成功从锁具接收数据如下：");
 				}
 				catch(...)
 				{
-					ZWFATAL("WS CONNECT TO LOCK DISCONNECTED,TRY TO RECONNECT");
-					OutputDebugStringA("WS CONNECT TO LOCK DISCONNECTED,TRY TO RECONNECT");
-					//Sleep(10*1000);
-					OutputDebugStringA("SLEEP 10 SEC END");
+					ZWFATAL("到锁具的WS连接异常断开，数据接收线程将终止");
 					return;
 				}
-				OutputDebugStringA(recstr.c_str());
-				s_wsioing=false;
-				OutputDebugStringA("COMM5");
-			}
-			
-			//检查是否为心跳包
-			if (s_HeartJump==recstr)
-			{
-				OutputDebugStringA("COMM6");
-				//如果是心跳包的返回字符串，就直接忽略；
-				continue;
+				ZWNOTICE(recstr.c_str());
 			}
 
 			string outXML;
-			OutputDebugStringA("COMM7.1");
 			jcAtmcConvertDLL::zwJCjson2CCBxml(recstr,outXML);
-			OutputDebugStringA("COMM7.2");
+			ZWINFO("分析锁具回传的Json并转换为建行XML成功");
 			assert(outXML.length()>42);	//XML开头的固定内容38个字符，外加起码一个标签的两对尖括号合计4个字符
 			ZWTRACE(outXML.c_str());		
 
@@ -96,25 +78,20 @@ namespace zwccbthr{
 			
 			if (NULL!=zwCfg::g_WarnCallback)
 			{
-				OutputDebugStringA("COMM8");
 				//调用回调函数传回信息，然后就关闭连接，结束通信线程；
 				zwCfg::g_WarnCallback(outXML.c_str());
-				//zwscthr->wsClose();
-				//break;
+				ZWINFO("成功把从锁具接收到的数据传递给回调函数");
 			}
 			else
 			{
-				OutputDebugStringA("COMM8.1");
-				ZWFATAL("回调函数指针为空，无法调用回调函数")
+				ZWWARN("回调函数指针为空，无法调用回调函数")
 			}
 		} 		
-		ZWTRACE("JCLOCK COMM THREAD NORMAL EXIT 20140817");
+		ZWINFO("金储通信数据接收线程正常退出");
 
 	}	//try
 	catch(...){
-		OutputDebugStringA("COMM9");
-		OutputDebugStringA("JC CCB ELOCK THREAD CONNECT FAIL! 20140817");
-		ZWFATAL("##########JC CCB ELOCK THREAD CONNECT FAIL! 20140817");
+		ZWFATAL("金储通信数据接收线程WebSocket网络连接异常断开，现在数据接收线程将结束");
 		return;
 	}
 	}
