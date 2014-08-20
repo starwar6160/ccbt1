@@ -3,7 +3,7 @@
 #include "zwPocoLog.h"
 
 using namespace boost::property_tree;
-void zwParseLockStatus(const char *LockStatus);
+string zwParseLockStatus(const char *LockStatus);
 void testjson819(void)
 {
 	const char *jstest1="{\"Command\": \"Lock_Time_Sync_ATM\",\"Lock_Time\": 1408443318 }";
