@@ -57,6 +57,7 @@ namespace zwCfg{
 	boost::thread *thr=NULL;
 }	//namespace zwCfg{
 
+#ifdef _DEBUG820
 void zwFakeThread(void)
 {
 	for (int i=0;i<10;i++)
@@ -65,6 +66,7 @@ void zwFakeThread(void)
 		Sleep(1000);
 	}
 }
+#endif // _DEBUG820
 
 
 
@@ -78,6 +80,7 @@ CCBELOCK_API long JCAPISTD Open(long lTimeOut)
 	//boost::thread thr(zwccbthr::ThreadHeartJump);
 	//Sleep(300);	//等待起码300毫秒，等待建立和锁具的WebSocket连接
 	g_log->notice()<<"Open Return "<<ELOCK_ERROR_SUCCESS<<endl;
+	ZWNOTICE("打开 到锁具的连接")
 	return ELOCK_ERROR_SUCCESS;
 }
 
@@ -86,6 +89,7 @@ CCBELOCK_API long JCAPISTD Close()
 	ZWFUNCTRACE
 	boost:: mutex:: scoped_lock lock( zwCfg::ws_mutex); 
 	zwCfg::g_WarnCallback=NULL;
+	ZWNOTICE("关闭 到锁具的连接")
 	return ELOCK_ERROR_SUCCESS;
 }
 
@@ -104,52 +108,44 @@ CCBELOCK_API long JCAPISTD Notify(const char *pszMsg)
 		assert(NULL!=pszMsg);
 		if (NULL==pszMsg)
 		{
+			ZWERROR("Notify输入为空")
 			return ELOCK_ERROR_PARAMINVALID;
 		}
 		int inlen=strlen(pszMsg);
 		assert(inlen>0 && inlen<zwCfg::JC_MSG_MAXLEN);
 		if (inlen==0 || inlen>=zwCfg::JC_MSG_MAXLEN )
 		{
+			ZWWARN("Notify输入超过最大最小限制");
 			return ELOCK_ERROR_PARAMINVALID;
 		}
 		//////////////////////////////////////////////////////////////////////////
 		string strXMLSend=pszMsg;		
-		//string strRecv;
 		assert(strXMLSend.length()>42);	//XML开头的固定内容38个字符，外加起码一个标签的两对尖括号合计4个字符
-		int msgTypeSend=jcAtmcConvertDLL::zwCCBxml2JCjson(strXMLSend,strJsonSend);
+		jcAtmcConvertDLL::zwCCBxml2JCjson(strXMLSend,strJsonSend);
 		assert(strJsonSend.length()>9);	//json最基本的符号起码好像要9个字符左右
-		string msgTypeStrSend;
-		switch (msgTypeSend)
-		{
-		case JCMSG_LOCK_ACTIVE_REQUEST:
-			msgTypeStrSend="JCMSG_LOCK_ACTIVE_REQUEST";
-			break;
-		}
+		//启动通信线程
 		 boost::thread thr(zwccbthr::ThreadLockComm);
-		 Sleep(300);
+		 ZWNOTICE(strJsonSend.c_str());
+		 Sleep(300);	 
 		zwPushString(strJsonSend);
 		return ELOCK_ERROR_SUCCESS;
 	}
 	catch(ptree_bad_path &e)
 	{
-		ZWTRACE("XML2JSON BAD DATA:");
-		ZWTRACE(e.what());
-		ZWFATAL("CCB下发XML有错误节点路径")
+		ZWERROR(e.what());
+		ZWERROR("CCB下发XML有错误节点路径")
 		return ELOCK_ERROR_CONNECTLOST;
 	}
 	catch(ptree_bad_data &e)
 	{
-		ZWTRACE("XML2JSON BAD DATA:");
-		ZWTRACE(e.what());
-		ZWFATAL("CCB下发XML有错误数据内容")
+		ZWERROR(e.what());
+		ZWERROR("CCB下发XML有错误数据内容")
 			return ELOCK_ERROR_CONNECTLOST;
 	}
 	catch(ptree_error &e)
 	{
-		
-		ZWTRACE("XML2JSON ERROR PERROR");
-		ZWTRACE(e.what());
-		ZWFATAL("CCB下发XML有其他未知错误")
+		ZWERROR(e.what());
+		ZWERROR("CCB下发XML有其他未知错误")
 		return ELOCK_ERROR_CONNECTLOST;
 	}
 	catch (...)
@@ -159,12 +155,8 @@ CCBELOCK_API long JCAPISTD Notify(const char *pszMsg)
 		//发现WS对象因为未连接而是NULL时直接throw一个枚举
 		//然后在此，也就是上层捕获。暂时不知道捕获精确类型
 		//所以catch所有异常了
-		ZWTRACE("CPPEXECPTION804A OTHER ERROR");
-		ZWTRACE(__FUNCTION__);
-		ZWTRACE(pszMsg);
-		ZWTRACE(strJsonSend.c_str());
-		//MessageBox(NULL,TEXT("jcError"),TEXT(),MB_OK);
-		ZWFATAL("通过WebSocket发送数据异常，可能网络故障")
+		ZWFATAL(__FUNCTION__);
+		ZWFATAL("Notify通过WebSocket发送数据异常，可能网络故障")
 		return ELOCK_ERROR_CONNECTLOST;
 	}
 }

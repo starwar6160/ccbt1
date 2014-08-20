@@ -30,6 +30,8 @@ namespace zwccbthr{
 		{
 			myLockIp=s_LockIp;	//如果有配置文件的IP值，就使用之；
 		}
+		ZWNOTICE("连接锁具IP使用");
+		ZWNOTICE(myLockIp.c_str());
 		return myLockIp;
 	}
 
@@ -41,8 +43,6 @@ namespace zwccbthr{
 	string myLockIp;
 	try{
 	myLockIp=zwGetLockIP();
-	ZWTRACE("USED JCLOCKIP=");
-	ZWTRACE(myLockIp.c_str());
 			zwWebSocket wsconn(myLockIp.c_str(),8088);
 			zwscthr=&wsconn;
 			wsconn.wsConnect();
