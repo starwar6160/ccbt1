@@ -14,10 +14,9 @@ typedef enum jcmsg_ccb_elock_t{
 	JCMSG_GET_LOCK_LOG,			//读取日志
 	//LOCK TO ATMC MSG:
 	JCMSG_SEND_INITCLOSECODE,		//发送闭锁码
-	JCMSG_PUSH_WARNING,
+	JCMSG_PUSH_WARNING,				//锁具主动上送告警
 	JCMSG_SEND_UNLOCK_CERTCODE,	//锁具发送开锁验证码
-	JCMSG_REQUEST_TIME_SYNC,
-	JCMSG_TEST730A1,	//测试用
+	JCMSG_REQUEST_TIME_SYNC,	//锁具主动要求时间同步
 }JC_MSG_TYPE;
 
 typedef struct jcLockStatus_t{
@@ -48,7 +47,9 @@ namespace jcAtmcConvertDLL{
 	extern const char *JCSTR_SEND_INITCLOSECODE;	//下位机主动发送初始闭锁码
 	extern const char *JCSTR_SEND_UNLOCK_CERTCODE;	//下位机主动发送验证码
 	extern const char *JCSTR_GET_LOCK_LOG;			//读取日志
-	
+	extern const char *JCSTR_PUSH_WARNING;			//锁具主动上送告警
+	extern const char *JCSTR_REQUEST_TIME_SYNC;		//锁具主动要求时间同步
+
 	extern const char *CCBSTR_CODE;
 	extern const char *CCBSTR_NAME;
 	extern const char *CCBSTR_DATE;

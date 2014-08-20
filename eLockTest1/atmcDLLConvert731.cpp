@@ -26,6 +26,8 @@ namespace jcAtmcConvertDLL{
 	void zwconvQueryLockStatusDown( const ptree &ptccb, ptree &ptjc );
 	void zwconvTimeSyncDown( const ptree &ptccb, ptree &ptjc );
 	void zwconvGetLockLogDown( const ptree &ptccb, ptree &ptjc );
+	void zwconvLockPushWarnDown(const ptree &ptccb, ptree &ptjc );
+	void zwconvLockReqTimeSyncDown(const ptree &ptccb, ptree &ptjc );
 	
 	//上传方向处理
 	void zwconvLockActiveUp(const ptree &ptjc, ptree &ptccb );
@@ -108,6 +110,16 @@ namespace jcAtmcConvertDLL{
 		{//读取日志
 			msgType= JCMSG_GET_LOCK_LOG;
 			zwconvGetLockLogDown(ptCCB,ptJC);
+		}
+		if ("1001"==transCode)
+		{//锁具主动上送告警
+			msgType= JCMSG_PUSH_WARNING;
+			zwconvLockPushWarnDown(ptCCB,ptJC);
+		}
+		if ("1003"==transCode)
+		{//锁具主动要求时间同步
+			msgType= JCMSG_REQUEST_TIME_SYNC;
+			zwconvLockReqTimeSyncDown(ptCCB,ptJC);
 		}
 //////////////////////////////////////////////////////////////////////////
 		//锁具单向上传消息的配合一问一答测试消息：
@@ -521,6 +533,21 @@ catch(...)
 		//关键的验证码本体
 		ptccb.put("root.UnLockIdentInfo",ptjc.get<int>("Lock_Ident_Info"));
 	}
+
+	void zwconvLockPushWarnDown(const ptree &ptccb, ptree &ptjc )
+	{
+		ZWFUNCTRACE
+		ptjc.put(jcAtmcConvertDLL::JCSTR_CMDTITLE,jcAtmcConvertDLL::JCSTR_PUSH_WARNING);
+		ptjc.put("State",ptccb.get<int>("RevResult"));
+	}
+
+	void zwconvLockReqTimeSyncDown(const ptree &ptccb, ptree &ptjc )
+	{
+		ZWFUNCTRACE
+		ptjc.put(jcAtmcConvertDLL::JCSTR_CMDTITLE,jcAtmcConvertDLL::JCSTR_REQUEST_TIME_SYNC);
+		ptjc.put("Lock_Time",time(NULL));
+	}
+
 
 	////////////////////////////每一条报文的具体处理函数结束//////////////////////////////////////////////
 }	//namespace jcAtmcConvertDLLLock_Open_Ident
