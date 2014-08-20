@@ -466,7 +466,12 @@ catch(...)
 		ptccb.put(CCBSTR_DATE,zwDate);
 		ptccb.put(CCBSTR_TIME,zwTime);
 		ptccb.put("root.RevResult",ptjc.get<int>("State"));
-		ptccb.put("root.Log",ptjc.get<string>("Journal"));
+		string LockStatus=ptjc.get<string>("Journal");
+		JCLOCKSTATUS lst,ostr;
+		zwLockStatusDataSplit(LockStatus.c_str(),lst);
+		zwStatusData2String(lst,ostr);
+		string LockStatusHumanReadable=LockStatusStringMerge(ostr);
+		ptccb.put("root.Log",LockStatusHumanReadable);
 	}
 
 
