@@ -20,6 +20,23 @@ typedef enum jcmsg_ccb_elock_t{
 	JCMSG_TEST730A1,	//≤‚ ‘”√
 }JC_MSG_TYPE;
 
+typedef struct jcLockStatus_t{
+	string ActiveStatus;
+	string EnableStatus;
+	string LockStatus;
+	string DoorStatus;
+	string BatteryStatus;
+	string ShockAlert;
+	string ShockValue;
+	string TempAlert;
+	string nodeTemp;
+	string PswTryAlert;
+	string LockOverTime;
+}JCLOCKSTATUS;
+void zwLockStatusDataSplit(const char *LockStatus,JCLOCKSTATUS &lst);
+void zwStatusData2String(const JCLOCKSTATUS &lst,JCLOCKSTATUS &ostr);
+string LockStatusStringMerge(JCLOCKSTATUS &ostr);
+
 namespace jcAtmcConvertDLL{
 	//JSON√¸¡Ó◊÷∑˚¥Æ∂®“Â
 	extern const char *JCSTR_CMDTITLE;

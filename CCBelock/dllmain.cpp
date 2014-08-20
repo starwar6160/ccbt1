@@ -7,7 +7,7 @@ Poco::LogStream *g_log=NULL;
 int PocoLogInit(void)  ;
 string zwGetConfigFileName(void);
 void testjson819(void);
-string zwParseLockStatus(const char *LockStatus);
+
 
 BOOL APIENTRY DllMain( HMODULE hModule,
                        DWORD  ul_reason_for_call,
@@ -35,7 +35,7 @@ BOOL APIENTRY DllMain( HMODULE hModule,
 	}
 	//g_log->notice()<<33<<"hello"<<endl;
 	//testjson819();
-	cout<<zwParseLockStatus("0,0,0,0,100,0,1,20,100,0,0")<<endl;
+	//cout<<zwParseLockStatus("0,0,0,0,100,0,1,20,100,0,0")<<endl;
 	return TRUE;
 }
 

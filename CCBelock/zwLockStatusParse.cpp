@@ -1,35 +1,21 @@
 #include "stdafx.h"
+#include "zwCcbElockHdr.h"
 using boost::ifind_all;
 using boost::iterator_range;
 using boost::split;
 using boost::is_any_of;
 
-typedef struct jcLockStatus_t{
-	string ActiveStatus;
-	string EnableStatus;
-	string LockStatus;
-	string DoorStatus;
-	string BatteryStatus;
-	string ShockAlert;
-	string ShockValue;
-	string TempAlert;
-	string nodeTemp;
-	string PswTryAlert;
-	string LockOverTime;
-}JCLOCKSTATUS;
 
-string zwParseLockStatus(const char *LockStatus)
+
+void zwLockStatusDataSplit(const char *LockStatus,JCLOCKSTATUS &lst)
 {
 	string LockStatusStr=LockStatus;
 	vector<string>StatusVec;
 	split(StatusVec, LockStatusStr, is_any_of(",.:-+")); //使用标点分割
-	for(BOOST_AUTO(pos, StatusVec.begin()); pos != StatusVec.end(); ++pos)
-	{
-		cout<<" "<<*pos<<" ";
-	}
-	cout<<endl;
-	cout<<"**********************"<<endl;
-	JCLOCKSTATUS lst,ostr;
+	// "0,0,0,0,100,0,1,20,100,0,0"
+	//锁具已激活 | 锁具允许使用 | 锁关闭 | 门关闭 | 电池状态100%% | 震动正常 | 震动幅值1g 
+	// |  | 温度探头温度100摄氏度 | 密码错误不多 | 开锁时间正常 |
+	JCLOCKSTATUS ostr;
 	lst.ActiveStatus=StatusVec[0];
 	lst.EnableStatus=StatusVec[1];
 	lst.LockStatus=StatusVec[2];
@@ -37,10 +23,14 @@ string zwParseLockStatus(const char *LockStatus)
 	lst.BatteryStatus=StatusVec[4];
 	lst.ShockAlert=StatusVec[5];
 	lst.ShockValue=StatusVec[6];
-	lst.TempAlert=StatusVec[7];
-	lst.nodeTemp=StatusVec[8];
+	lst.TempAlert=StatusVec[7];	//这里值是20，但是合法值只有0,1,2,3，为什么？
+	lst.nodeTemp=StatusVec[8];	//探头温度100摄氏度？
 	lst.PswTryAlert=StatusVec[9];
 	lst.LockOverTime=StatusVec[10];
+}
+
+void zwStatusData2String(const JCLOCKSTATUS &lst,JCLOCKSTATUS &ostr)
+{
 //////////////////////////////////////////////////////////////////////////
 	if ("0"==lst.ActiveStatus)
 	{
@@ -86,7 +76,7 @@ string zwParseLockStatus(const char *LockStatus)
 		ostr.DoorStatus="门检测器";
 	}
 	//////////////////////////////////////////////////////////////////////////
-	ostr.BatteryStatus="电池状态"+lst.BatteryStatus+"%%";
+	ostr.BatteryStatus="电池状态"+lst.BatteryStatus+"%";
 	//////////////////////////////////////////////////////////////////////////
 	if ("0"==lst.ShockAlert)
 	{
@@ -128,7 +118,7 @@ string zwParseLockStatus(const char *LockStatus)
 	//////////////////////////////////////////////////////////////////////////
 	if ("0"==lst.PswTryAlert)
 	{
-		ostr.PswTryAlert="密码错误不多";
+		ostr.PswTryAlert="密码错误没有或者不多";
 	}
 	if ("1"==lst.PswTryAlert)
 	{
@@ -143,6 +133,10 @@ string zwParseLockStatus(const char *LockStatus)
 	{
 		ostr.LockOverTime="开锁时间超时";
 	}
+}	//end of void zwStatusData2String
+
+string LockStatusStringMerge(JCLOCKSTATUS &ostr)
+{
 	string sep=" | ";
 	string ccbStatusStr=ostr.ActiveStatus+sep+ostr.EnableStatus+sep
 		+ostr.LockStatus+sep+ostr.DoorStatus+sep
@@ -151,5 +145,4 @@ string zwParseLockStatus(const char *LockStatus)
 		+ostr.TempAlert+sep+ostr.nodeTemp+sep
 		+ostr.PswTryAlert+sep+ostr.LockOverTime+sep;
 	return ccbStatusStr;
-
 }

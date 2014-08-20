@@ -3,7 +3,7 @@
 #include "zwPocoLog.h"
 
 using namespace boost::property_tree;
-string zwParseLockStatus(const char *LockStatus);
+
 void testjson819(void)
 {
 	const char *jstest1="{\"Command\": \"Lock_Time_Sync_ATM\",\"Lock_Time\": 1408443318 }";
@@ -344,24 +344,27 @@ catch(...)
 		int nodeTemp=0;
 		int PswTryAlert=0;
 		int LockOverTime=0;
-		zwParseLockStatus(LockStatusStr.c_str());
+		//zwParseLockStatus(LockStatusStr.c_str());
+		JCLOCKSTATUS lockStatusData,lockStatusStrings;
+		zwLockStatusDataSplit(LockStatusStr.c_str(),lockStatusData);
+		zwStatusData2String(lockStatusData,lockStatusStrings);
 		//0,0,0,1,100,0,1,20,100,0,0
 		sscanf(LockStatusStr.c_str(),"%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d",
 			&ActiveStatus,&EnableStatus,&LockStatus,&DoorStatus,
 			&BatteryStatus,&ShockAlert,&ShockValue,
 			&TempAlert,&nodeTemp,
 			&PswTryAlert,&LockOverTime);
-	ptccb.put("root.ActiveStatus",ActiveStatus);
-	ptccb.put("root.EnableStatus",EnableStatus);
-	ptccb.put("root.LockStatus",LockStatus);
-	ptccb.put("root.DoorStatus",DoorStatus);
-	ptccb.put("root.BatteryStatus",BatteryStatus);
-	ptccb.put("root.ShockAlert",ShockAlert);
-	ptccb.put("root.ShockValue",ShockValue);
-	ptccb.put("root.TempAlert",TempAlert);
-	ptccb.put("root.NodeTemp",nodeTemp);
-	ptccb.put("root.PswTryAlert",PswTryAlert);
-	ptccb.put("root.LockOverTime",LockOverTime);
+	ptccb.put("root.ActiveStatus",lockStatusStrings.ActiveStatus);
+	ptccb.put("root.EnableStatus",lockStatusStrings.EnableStatus);
+	ptccb.put("root.LockStatus",lockStatusStrings.LockStatus);
+	ptccb.put("root.DoorStatus",lockStatusStrings.DoorStatus);
+	ptccb.put("root.BatteryStatus",lockStatusStrings.BatteryStatus);
+	ptccb.put("root.ShockAlert",lockStatusStrings.ShockAlert);
+	ptccb.put("root.ShockValue",lockStatusStrings.ShockValue);
+	ptccb.put("root.TempAlert",lockStatusStrings.TempAlert);
+	ptccb.put("root.NodeTemp",lockStatusStrings.nodeTemp);
+	ptccb.put("root.PswTryAlert",lockStatusStrings.PswTryAlert);
+	ptccb.put("root.LockOverTime",lockStatusStrings.LockOverTime);
 	}
 
 	//////////////////////////////////////////////////////////////////////////
