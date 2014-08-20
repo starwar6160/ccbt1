@@ -138,13 +138,13 @@ unsigned int zwBinString2Int32(const char *data,const int len);
 		pjc->m_validity=5;		//用的最多的是5分钟有效期，所以直接初始化为
 		pjc->m_closecode=0;		//防备初始闭锁码生成的时候此处未初始化
 		pjc->m_cmdtype=JCCMD_INIT_CLOSECODE;
-//#ifdef _DEBUG
-//		pjc->m_stepoftime=6;	//调试模式采用6秒的步长，快速发现问题
-//#else		
-		pjc->m_stepoftime=60*5;	//默认在线模式，反推时间步长60秒.
+		pjc->m_stepoftime=6;	
+		//默认在线模式，反推时间步长60秒.
 		//20140805.0903.按照昨天张靖钰的要求，暂时改为5分钟默认值
-//#endif // _DEBUG
-		pjc->m_reverse_time_length=10*60;	//默认在线模式，反推10分钟
+		// 20140820.2329.按照建行要求从任意时间点开始5分钟有效期的要求，
+		// 步长改为6秒 以便尽量接近该要求
+		//默认在线模式，反推6分钟，比要求的5分钟多一点，保险一点
+		pjc->m_reverse_time_length=6*60;	
 		////将5分钟，4小时这样最常用到的有效期排列在前面，提高效率
 		//int valarr[]={5,MIN_OF_HOUR*4,MIN_OF_HOUR*8,MIN_OF_HOUR*12,15,30,60,MIN_OF_HOUR*24};
 		pjc->m_validity_array[0]=5;
