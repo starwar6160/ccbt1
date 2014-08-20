@@ -42,6 +42,8 @@ namespace jcAtmcConvertDLL{
 	//接收锁具主动发送的验证码，只有上传方向
 	void zwconvRecvVerifyCodeDown(const ptree &ptccb, ptree &ptjc );
 	void zwconvRecvVerifyCodeUp(const ptree &ptjc, ptree &ptccb);
+	void zwconvLockPushWarnUp(const ptree &ptjc, ptree &ptccb);
+	void zwconvLockReqTimeSyncUp(const ptree &ptjc, ptree &ptccb);
 	//以下4个字段，为的是在上下转换期间保存建行报文中冗余的，我们基本不用但又必须返回给建行的字段
 	string ns_ActReqName;
 	string ns_LockInitName;
@@ -199,6 +201,15 @@ namespace jcAtmcConvertDLL{
 			zwconvRecvVerifyCodeUp(ptJC,ptCCB);
 		}
 
+		if (JCSTR_PUSH_WARNING==jcCmd)
+		{//接收锁具主动上送的告警信息
+			zwconvLockPushWarnUp(ptJC,ptCCB);
+		}
+		if (JCSTR_REQUEST_TIME_SYNC==jcCmd)
+		{//接收锁具主动的时间同步请求
+			zwconvLockReqTimeSyncUp(ptJC,ptCCB);
+		}
+
 		//////////////////////////////////////////////////////////////////////////
 		std::stringstream sst2;
 		write_json(sst2,ptCCB);
@@ -345,27 +356,11 @@ catch(...)
 		string LockStatusStr=ptjc.get<string>("Lock_Status");
 		//格式：ActiveStatus,EnableStatus,LockStatus,DoorStatus,
 		//BatteryStatus,ShockAlert,TempAlert,PswTryAlert,LockOverTime
-		int ActiveStatus=0;
-		int EnableStatus=0;
-		int LockStatus=0;
-		int DoorStatus=0;
-		int BatteryStatus=0;
-		int ShockAlert=0;
-		int ShockValue=0;
-		int TempAlert=0;
-		int nodeTemp=0;
-		int PswTryAlert=0;
-		int LockOverTime=0;
-		//zwParseLockStatus(LockStatusStr.c_str());
+		//0,0,0,1,100,0,1,20,100,0,0
 		JCLOCKSTATUS lockStatusData,lockStatusStrings;
 		zwLockStatusDataSplit(LockStatusStr.c_str(),lockStatusData);
 		zwStatusData2String(lockStatusData,lockStatusStrings);
-		//0,0,0,1,100,0,1,20,100,0,0
-		sscanf(LockStatusStr.c_str(),"%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d",
-			&ActiveStatus,&EnableStatus,&LockStatus,&DoorStatus,
-			&BatteryStatus,&ShockAlert,&ShockValue,
-			&TempAlert,&nodeTemp,
-			&PswTryAlert,&LockOverTime);
+		
 	ptccb.put("root.ActiveStatus",lockStatusStrings.ActiveStatus);
 	ptccb.put("root.EnableStatus",lockStatusStrings.EnableStatus);
 	ptccb.put("root.LockStatus",lockStatusStrings.LockStatus);
@@ -548,6 +543,56 @@ catch(...)
 		ptjc.put("Lock_Time",time(NULL));
 	}
 
+	void zwconvLockPushWarnUp(const ptree &ptjc, ptree &ptccb)
+	{
+		ZWFUNCTRACE
+		ptccb.put(CCBSTR_CODE,"1001");
+		ptccb.put(CCBSTR_NAME,"SendAlertStatus");
+		string zwDate,zwTime;
+		zwGetDateTimeString(time(NULL),zwDate,zwTime);
+		ptccb.put(CCBSTR_DATE,zwDate);
+		ptccb.put(CCBSTR_TIME,zwTime);
+		//锁具发送初始闭锁码时，ATM编号应该已经在激活请求中获得，但是
+		//1.1版本报文里面没有给出，所以此处可能会有问题
+		ptccb.put(CCBSTR_DEVCODE,ns_ccbAtmno);	
+		ptccb.put("root.LockMan",LOCKMAN_NAME);
+		ptccb.put("root.LockId",ptjc.get<string>("Lock_Serial"));
+		string LockStatusStr=ptjc.get<string>("Lock_Status");
+		//格式：ActiveStatus,EnableStatus,LockStatus,DoorStatus,
+		//BatteryStatus,ShockAlert,TempAlert,PswTryAlert,LockOverTime
+		//0,0,0,1,100,0,1,20,100,0,0
+		JCLOCKSTATUS lockStatusData,lockStatusStrings;
+		zwLockStatusDataSplit(LockStatusStr.c_str(),lockStatusData);
+		zwStatusData2String(lockStatusData,lockStatusStrings);
+
+		ptccb.put("root.ActiveStatus",lockStatusStrings.ActiveStatus);
+		ptccb.put("root.EnableStatus",lockStatusStrings.EnableStatus);
+		ptccb.put("root.LockStatus",lockStatusStrings.LockStatus);
+		ptccb.put("root.DoorStatus",lockStatusStrings.DoorStatus);
+		ptccb.put("root.BatteryStatus",lockStatusStrings.BatteryStatus);
+		ptccb.put("root.ShockAlert",lockStatusStrings.ShockAlert);
+		ptccb.put("root.ShockValue",lockStatusStrings.ShockValue);
+		ptccb.put("root.TempAlert",lockStatusStrings.TempAlert);
+		ptccb.put("root.NodeTemp",lockStatusStrings.nodeTemp);
+		ptccb.put("root.PswTryAlert",lockStatusStrings.PswTryAlert);
+		ptccb.put("root.LockOverTime",lockStatusStrings.LockOverTime);
+	}
+
+	void zwconvLockReqTimeSyncUp(const ptree &ptjc, ptree &ptccb)
+	{
+		ZWFUNCTRACE
+		ptccb.put(CCBSTR_CODE,"1003");
+		ptccb.put(CCBSTR_NAME,"TimeSync");
+		string zwDate,zwTime;
+		zwGetDateTimeString(time(NULL),zwDate,zwTime);
+		ptccb.put(CCBSTR_DATE,zwDate);
+		ptccb.put(CCBSTR_TIME,zwTime);
+		//锁具发送初始闭锁码时，ATM编号应该已经在激活请求中获得，但是
+		//1.1版本报文里面没有给出，所以此处可能会有问题
+		ptccb.put(CCBSTR_DEVCODE,ns_ccbAtmno);	
+		ptccb.put("root.LockMan",LOCKMAN_NAME);
+		ptccb.put("root.LockId",ptjc.get<string>("Lock_Serial"));
+	}
 
 	////////////////////////////每一条报文的具体处理函数结束//////////////////////////////////////////////
 }	//namespace jcAtmcConvertDLLLock_Open_Ident
