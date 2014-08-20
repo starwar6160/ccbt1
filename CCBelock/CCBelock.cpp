@@ -25,7 +25,6 @@ using Poco::Net::ConnectionRefusedException;
 void ZWTRACE(const char *x)
 {
 	OutputDebugStringA(x);
-	//cout<<x<<endl;	
 	g_log->trace(x);
 }
 
@@ -35,7 +34,6 @@ zw_trace::zw_trace(const char *funcName)
 	m_start=m_str+"\tSTART";
 	m_end=m_str+"\tEND";
 	OutputDebugStringA(m_start.c_str());
-	//cout<<m_start<<endl;
 	g_log->trace(m_start);
 }
 
@@ -43,7 +41,6 @@ zw_trace::~zw_trace()
 {
 
 	OutputDebugStringA(m_end.c_str());
-	//cout<<m_end<<endl;
 	g_log->trace(m_end);
 }
 
@@ -57,19 +54,6 @@ namespace zwCfg{
 	boost::thread *thr=NULL;
 }	//namespace zwCfg{
 
-#ifdef _DEBUG820
-void zwFakeThread(void)
-{
-	for (int i=0;i<10;i++)
-	{
-		OutputDebugStringA("ZWFAKETHREAD");
-		Sleep(1000);
-	}
-}
-#endif // _DEBUG820
-
-
-
 CCBELOCK_API long JCAPISTD Open(long lTimeOut)
 {
 	ZWFUNCTRACE
@@ -77,8 +61,6 @@ CCBELOCK_API long JCAPISTD Open(long lTimeOut)
 	//必须大于0，小于JC_CCBDLL_TIMEOUT，限制在一个合理范围内
 	assert(lTimeOut>0 && lTimeOut<zwCfg::JC_CCBDLL_TIMEOUT);
 
-	//boost::thread thr(zwccbthr::ThreadHeartJump);
-	//Sleep(300);	//等待起码300毫秒，等待建立和锁具的WebSocket连接
 	g_log->notice()<<"Open Return "<<ELOCK_ERROR_SUCCESS<<endl;
 	ZWNOTICE("打开 到锁具的连接")
 	return ELOCK_ERROR_SUCCESS;

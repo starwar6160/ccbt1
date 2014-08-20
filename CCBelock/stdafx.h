@@ -81,6 +81,8 @@ using Poco::Util::HelpFormatter;
 #include <boost/property_tree/xml_parser.hpp>
 #include <boost/property_tree/json_parser.hpp>
 #include <boost/property_tree/exceptions.hpp>
+#include <boost/algorithm/string.hpp>
+#include <boost/typeof/typeof.hpp>
 
 using std::cout;
 using std::cin;

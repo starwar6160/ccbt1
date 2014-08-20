@@ -7,6 +7,7 @@ Poco::LogStream *g_log=NULL;
 int PocoLogInit(void)  ;
 string zwGetConfigFileName(void);
 void testjson819(void);
+void zwParseLockStatus(const char *LockStatus);
 
 BOOL APIENTRY DllMain( HMODULE hModule,
                        DWORD  ul_reason_for_call,
@@ -34,6 +35,7 @@ BOOL APIENTRY DllMain( HMODULE hModule,
 	}
 	//g_log->notice()<<33<<"hello"<<endl;
 	//testjson819();
+	zwParseLockStatus("0,0,0,0,100,0,1,20,100,0,0");
 	return TRUE;
 }
 
@@ -74,8 +76,8 @@ int PocoLogInit(void)
 		fileChannel->setProperty("path", 
 			zwGetLogFileName()); 
 		fileChannel->setProperty("archive", "number");  
-		fileChannel->setProperty("purgeAge", "3 days");  
-		fileChannel->setProperty("rotation", "1 hours");  
+		fileChannel->setProperty("purgeAge", "30 days");  
+		fileChannel->setProperty("rotation", "6 hours");  
 		fileChannel->setProperty("times", "local"); 
 
 		Poco::AutoPtr<Poco::PatternFormatter> patternFormatter(new Poco::PatternFormatter());  

@@ -68,6 +68,9 @@
     <ClCompile Include="..\eLockTest1\atmcDLLConvert731.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="zwLockStatusParse.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="HidProtocol.rc">

@@ -3,7 +3,7 @@
 #include "zwPocoLog.h"
 
 using namespace boost::property_tree;
-
+void zwParseLockStatus(const char *LockStatus);
 void testjson819(void)
 {
 	const char *jstest1="{\"Command\": \"Lock_Time_Sync_ATM\",\"Lock_Time\": 1408443318 }";
@@ -300,6 +300,8 @@ catch(...)
 		ptccb.put("root.ActInfo",ptjc.get<string>("Lock_Init_Info"));
 	}
 
+
+	
 	
 	//²éÑ¯Ëø¾ß×´Ì¬
 	void zwconvQueryLockStatusDown( const ptree &ptccb, ptree &ptjc )
@@ -307,6 +309,8 @@ catch(...)
 		ZWFUNCTRACE
 		ptjc.put(jcAtmcConvertDLL::JCSTR_CMDTITLE,JCSTR_QUERY_LOCK_STATUS);
 	}
+
+
 
 	void zwconvCheckLockStatusUp( const ptree &ptjc, ptree &ptccb )
 	{
@@ -340,6 +344,7 @@ catch(...)
 		int nodeTemp=0;
 		int PswTryAlert=0;
 		int LockOverTime=0;
+		zwParseLockStatus(LockStatusStr.c_str());
 		//0,0,0,1,100,0,1,20,100,0,0
 		sscanf(LockStatusStr.c_str(),"%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d",
 			&ActiveStatus,&EnableStatus,&LockStatus,&DoorStatus,
