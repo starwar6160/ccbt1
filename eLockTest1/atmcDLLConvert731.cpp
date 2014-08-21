@@ -357,9 +357,8 @@ catch(...)
 		//格式：ActiveStatus,EnableStatus,LockStatus,DoorStatus,
 		//BatteryStatus,ShockAlert,TempAlert,PswTryAlert,LockOverTime
 		//0,0,0,1,100,0,1,20,100,0,0
-		JCLOCKSTATUS lockStatusData,lockStatusStrings;
-		zwLockStatusDataSplit(LockStatusStr.c_str(),lockStatusData);
-		zwStatusData2String(lockStatusData,lockStatusStrings);
+		JCLOCKSTATUS lockStatusStrings;
+		zwLockStatusDataSplit(LockStatusStr.c_str(),lockStatusStrings);
 		
 	ptccb.put("root.ActiveStatus",lockStatusStrings.ActiveStatus);
 	ptccb.put("root.EnableStatus",lockStatusStrings.EnableStatus);
@@ -561,9 +560,8 @@ catch(...)
 		//格式：ActiveStatus,EnableStatus,LockStatus,DoorStatus,
 		//BatteryStatus,ShockAlert,TempAlert,PswTryAlert,LockOverTime
 		//0,0,0,1,100,0,1,20,100,0,0
-		JCLOCKSTATUS lockStatusData,lockStatusStrings;
-		zwLockStatusDataSplit(LockStatusStr.c_str(),lockStatusData);
-		zwStatusData2String(lockStatusData,lockStatusStrings);
+		JCLOCKSTATUS lockStatusStrings;
+		zwLockStatusDataSplit(LockStatusStr.c_str(),lockStatusStrings);
 
 		ptccb.put("root.ActiveStatus",lockStatusStrings.ActiveStatus);
 		ptccb.put("root.EnableStatus",lockStatusStrings.EnableStatus);
