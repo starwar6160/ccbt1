@@ -96,6 +96,7 @@
     <ClCompile Include="eLockTest1.cpp" />
     <ClCompile Include="eLockTestBadInput.cpp" />
     <ClCompile Include="eLockTestCommon.cpp" />
+    <ClCompile Include="GetLockLogAndStatusTest.cpp" />
     <ClCompile Include="ReadCloseCode0004Test.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
