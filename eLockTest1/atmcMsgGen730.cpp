@@ -55,8 +55,9 @@ namespace jcAtmcMsg{
 	string & myTestMsgCheckLockStatus( string & strXML ,ptree &pt );
 	string & myTestMsgGetLockLog( string & strXML ,ptree &pt );
 //生成模拟的ATMC XML消息的总入口，根据枚举生成相应那一条的XML消息
-void zwAtmcTestMsgGen( const JC_MSG_TYPE type,string &strXML,ptree &pt )
-{
+	void zwAtmcTestMsgGen(const JC_MSG_TYPE type,string &strXML)
+	{
+		ptree pt;
 	switch (type)
 	{
 	case JCMSG_LOCK_ACTIVE_REQUEST:

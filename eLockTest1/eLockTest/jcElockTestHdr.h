@@ -1,8 +1,9 @@
 #ifndef jcElockTestHdr_h__
 #define jcElockTestHdr_h__
+
+using boost::property_tree::ptree;
 #include <gtest/gtest.h>
 #include "zwCcbElockHdr.h"
-using namespace boost::property_tree;
 //看看是否打开其他测试以便专一测试一件事
 #define _ZWTEST730
 //第一阶段的3条测试是否打开
@@ -26,22 +27,11 @@ void myATMCRecvMsgRotine(const char *jcLockResponseXML);
 //获得一条XML报文的交易代码和交易名字
 void zwGetCCBMsgType(const string &inXML,string &outOpCode,string &outOpName);
 //临时保存回调函数获取到的结果，以便验证；
-extern string s_repInitCloseCodeXML;
-extern string s_repActReqXML;
-extern string s_repLockInitXML;
-extern string s_repReadCloseCodeXML;
-extern string s_repVerifyCodeXML;
+
 
 namespace jcAtmcMsg{
-	void zwAtmcTestMsgGen(const JC_MSG_TYPE type,string &strXML,ptree &pt);
+	void zwAtmcTestMsgGen(const JC_MSG_TYPE type,string &strXML);
 }
-
-const JC_MSG_TYPE lockParseInJson( const string & inJson, ptree &pt );
-void LockGenOutputJson( const ptree &pt, string &outJson );
-string zwCode8ToHex(int Code8);
-
-extern const int ZW_END_WAIT;
-extern const char *myLongMsg;
 
 //测试套件初始化和结束事件
 class ccbElockTest : public testing::Test

@@ -2,7 +2,13 @@
 #include "jcElockTestHdr.h"
 #include "CCBelock.h"
 
+
 #ifdef _DEBUG_ACTREQ
+
+string zwCode8ToHex(int Code8);
+string s_repActReqXML;
+string s_repLockInitXML;
+
 //锁具激活请求报文的在线测试
 TEST_F(ccbElockTest,LockActiveTest0000)
 {
@@ -16,7 +22,7 @@ TEST_F(ccbElockTest,LockActiveTest0000)
 	string strLockActiveXML;	//容纳生成的消息XML
 	//具体生成消息XML
 	ptree pt;
-	jcAtmcMsg::zwAtmcTestMsgGen(msgType,strLockActiveXML, pt);	
+	jcAtmcMsg::zwAtmcTestMsgGen(msgType,strLockActiveXML);	
 	//strLockActiveXML=
 	//"<?xml version=\"1.0\" encoding=\"utf-8\"?>"
 	//"<root><TransCode>0000</TransCode>"
@@ -46,7 +52,7 @@ TEST_F(ccbElockTest,LockActiveTest0000)
 		Sleep(200);
 	}
 
-	Sleep(ZW_END_WAIT);
+	Sleep(500);
 	EXPECT_LT(42,s_repActReqXML.length());
 
 	string ccbop,ccbname;
@@ -69,7 +75,7 @@ TEST_F(ccbElockTest,LockSendActInfoTest0001)
 	string strSendLockActInfoXML;	//容纳生成的消息XML
 	//具体生成消息XML
 	ptree pt;
-	jcAtmcMsg::zwAtmcTestMsgGen(msgType,strSendLockActInfoXML, pt);	
+	jcAtmcMsg::zwAtmcTestMsgGen(msgType,strSendLockActInfoXML);	
 
 	//cout<<"Sleep 65 seconds,please wait"<<endl;
 	//Sleep(5*1000);
@@ -87,7 +93,6 @@ TEST_F(ccbElockTest,LockSendActInfoTest0001)
 	{
 		Sleep(200);
 	}
-	//Sleep(ZW_END_WAIT);
 	EXPECT_LT(42,s_repLockInitXML.length());
 	string ccbop,ccbname;
 	zwGetCCBMsgType(s_repLockInitXML,ccbop,ccbname);

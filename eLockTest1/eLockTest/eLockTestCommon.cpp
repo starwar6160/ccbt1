@@ -2,11 +2,6 @@
 #include "jcElockTestHdr.h"
 #include "CCBelock.h"
 
-const char *myLongMsg="0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF"
-	"0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF"
-	"0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF";
-const int ZW_END_WAIT=500;
-
 void ccbElockTest::SetUp() {
 	cout<<__FUNCTION__<<endl;
 	m_connStatus=ELOCK_ERROR_SUCCESS;
@@ -18,11 +13,11 @@ void ccbElockTest::TearDown() {
 }
 
 //临时保存回调函数获取到的结果，以便验证；
-string s_repInitCloseCodeXML;
-string s_repActReqXML;
-string s_repLockInitXML;
-string s_repReadCloseCodeXML;
-string s_repVerifyCodeXML;
+extern string s_repInitCloseCodeXML;
+extern string s_repActReqXML;
+extern string s_repLockInitXML;
+extern string s_repReadCloseCodeXML;
+extern string s_repVerifyCodeXML;
 
 //获得一条XML报文的交易代码和交易名字
 void zwGetCCBMsgType(const string &inXML,string &outOpCode,string &outOpName)

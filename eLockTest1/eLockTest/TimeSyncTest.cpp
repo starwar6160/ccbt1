@@ -11,7 +11,7 @@ TEST_F(ccbElockTest,TimeSyncTest0003)
 	string strSendLockActInfoXML;	//容纳生成的消息XML
 	//具体生成消息XML
 	ptree pt;
-	jcAtmcMsg::zwAtmcTestMsgGen(msgType,strSendLockActInfoXML, pt);	
+	jcAtmcMsg::zwAtmcTestMsgGen(msgType,strSendLockActInfoXML);	
 
 	if (ELOCK_ERROR_SUCCESS==m_connStatus)
 	{

@@ -3,6 +3,10 @@
 #include "CCBelock.h"
 
 #ifdef _DEBUG_READ_CLOSE_CODE
+
+string s_repInitCloseCodeXML;
+string s_repReadCloseCodeXML;
+string s_repVerifyCodeXML;
 //读取闭锁码报文的在线测试
 TEST_F(ccbElockTest,ReadCloseCodeTest0004)
 {
@@ -13,7 +17,7 @@ TEST_F(ccbElockTest,ReadCloseCodeTest0004)
 	string strSendLockActInfoXML;	//容纳生成的消息XML
 	//具体生成消息XML
 	ptree pt;
-	jcAtmcMsg::zwAtmcTestMsgGen(msgType,strSendLockActInfoXML, pt);	
+	jcAtmcMsg::zwAtmcTestMsgGen(msgType,strSendLockActInfoXML);	
 
 	if (ELOCK_ERROR_SUCCESS==m_connStatus)
 	{
@@ -30,7 +34,6 @@ TEST_F(ccbElockTest,ReadCloseCodeTest0004)
 	{
 		Sleep(200);
 	}
-	//Sleep(ZW_END_WAIT);
 	EXPECT_LT(42,s_repReadCloseCodeXML.length());
 
 	string ccbop,ccbname;
@@ -51,7 +54,7 @@ TEST_F(ccbElockTest,RecvInitClose1000)
 	string strLockActiveXML;	//容纳生成的消息XML
 	//具体生成消息XML
 	ptree pt;
-	jcAtmcMsg::zwAtmcTestMsgGen(msgType,strLockActiveXML, pt);	
+	jcAtmcMsg::zwAtmcTestMsgGen(msgType,strLockActiveXML);	
 
 	Notify(strLockActiveXML.c_str());
 
@@ -59,7 +62,6 @@ TEST_F(ccbElockTest,RecvInitClose1000)
 	{
 		Sleep(200);
 	}
-	//Sleep(ZW_END_WAIT);
 	EXPECT_LT(42,s_repInitCloseCodeXML.length());
 	string ccbop,ccbname;
 	zwGetCCBMsgType(s_repInitCloseCodeXML,ccbop,ccbname);
@@ -79,7 +81,7 @@ TEST_F(ccbElockTest,RecvVerifyClose1002)
 	string strLockActiveXML;	//容纳生成的消息XML
 	//具体生成消息XML
 	ptree pt;
-	jcAtmcMsg::zwAtmcTestMsgGen(msgType,strLockActiveXML, pt);	
+	jcAtmcMsg::zwAtmcTestMsgGen(msgType,strLockActiveXML);	
 
 	Notify(strLockActiveXML.c_str());
 
@@ -87,7 +89,6 @@ TEST_F(ccbElockTest,RecvVerifyClose1002)
 	{
 		Sleep(200);
 	}
-	//Sleep(ZW_END_WAIT);
 	EXPECT_LT(42,s_repVerifyCodeXML.length());
 	string ccbop,ccbname;
 	zwGetCCBMsgType(s_repVerifyCodeXML,ccbop,ccbname);
