@@ -47,5 +47,8 @@
     <ClCompile Include="ReadCloseCode0004Test.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="eLockTestCommon.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

@@ -1,7 +1,6 @@
 #ifndef jcElockTestHdr_h__
 #define jcElockTestHdr_h__
 #include <gtest/gtest.h>
-#include "CCBelock.h"
 #include "zwCcbElockHdr.h"
 using namespace boost::property_tree;
 //看看是否打开其他测试以便专一测试一件事
@@ -19,6 +18,10 @@ using namespace boost::property_tree;
 //#define _DEBUG_TIMESYNC
 //#define _DEBUG_GET_LOCK_LOG
 
+
+using jcAtmcConvertDLL::CCBSTR_CODE;
+using jcAtmcConvertDLL::CCBSTR_NAME;
+
 void myATMCRecvMsgRotine(const char *jcLockResponseXML);
 //获得一条XML报文的交易代码和交易名字
 void zwGetCCBMsgType(const string &inXML,string &outOpCode,string &outOpName);
@@ -35,6 +38,7 @@ namespace jcAtmcMsg{
 
 const JC_MSG_TYPE lockParseInJson( const string & inJson, ptree &pt );
 void LockGenOutputJson( const ptree &pt, string &outJson );
+string zwCode8ToHex(int Code8);
 
 extern const int ZW_END_WAIT;
 extern const char *myLongMsg;
@@ -46,17 +50,8 @@ public:
 	int m_connStatus;
 
 protected:
-	virtual void SetUp() {
-		cout<<__FUNCTION__<<endl;
-		m_connStatus=ELOCK_ERROR_SUCCESS;
-		m_connStatus=Open(25);
-	}
-	virtual void TearDown() {
-		cout<<__FUNCTION__<<endl;
-		Close();
-	}
+	virtual void SetUp();
+	virtual void TearDown();
 };
-
-
 
 #endif // jcElockTestHdr_h__

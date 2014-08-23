@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "jcElockTestHdr.h"
-
+#include "CCBelock.h"
 
 #ifdef _DEBUG_READ_CLOSE_CODE
 //读取闭锁码报文的在线测试

@@ -93,6 +93,7 @@
     <ClCompile Include="..\CCBelock\jcJsonCommandDefine.cpp" />
     <ClCompile Include="atmcMsgGen730.cpp" />
     <ClCompile Include="eLockTest1.cpp" />
+    <ClCompile Include="eLockTestCommon.cpp" />
     <ClCompile Include="ReadCloseCode0004Test.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
