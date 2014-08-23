@@ -59,5 +59,8 @@
     <ClCompile Include="GetLockLogAndStatusTest.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="TimeSyncTest.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
