@@ -65,10 +65,10 @@
     <ClCompile Include="jcJsonCommandDefine.cpp">
       <Filter>源文件\ingtest</Filter>
     </ClCompile>
-    <ClCompile Include="..\eLockTest1\atmcDLLConvert731.cpp">
+    <ClCompile Include="zwLockStatusParse.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="zwLockStatusParse.cpp">
+    <ClCompile Include="atmcDLLConvert731.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
