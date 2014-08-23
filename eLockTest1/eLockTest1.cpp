@@ -2,41 +2,16 @@
 //
 
 #include "stdafx.h"
-#include <gtest/gtest.h>
-#include "CCBelock.h"
-#include "zwCcbElockHdr.h"
+#include "jcElockTestHdr.h"
 using jcAtmcConvertDLL::CCBSTR_CODE;
 using jcAtmcConvertDLL::CCBSTR_NAME;
-//看看是否打开其他测试以便专一测试一件事
-//#define _ZWTEST730
-//第一阶段的3条测试是否打开
-//锁具可以正确反应的2个测试
-#define _DEBUG_ACTREQ
-#define _DEBUG_SEND_ACTINFO
-//锁具内部由于缺乏数据而无法做出反应的测试
-#define _DEBUG_RECV_INIT_CLOSECODE
-#define _DEBUG_RECV_VERIFY_CODE
-#define _DEBUG_READ_CLOSE_CODE
-
-//#define _DEBUG_QUERY_LOCK_STATUS
-//#define _DEBUG_TIMESYNC
-//#define _DEBUG_GET_LOCK_LOG
-
-
-
-using namespace boost::property_tree;
-const JC_MSG_TYPE lockParseInJson( const string & inJson, ptree &pt );
-void LockGenOutputJson( const ptree &pt, string &outJson );
 
 const char *myLongMsg="0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF"
 	"0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF"
 	"0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF";
-
 const int ZW_END_WAIT=500;
 
-namespace jcAtmcMsg{
-	void zwAtmcTestMsgGen(const JC_MSG_TYPE type,string &strXML,ptree &pt);
-}
+
 
 
 //临时保存回调函数获取到的结果，以便验证；
@@ -99,25 +74,6 @@ void myATMCRecvMsgRotine(const char *jcLockResponseXML)
 		s_repVerifyCodeXML=rmsg;
 	}
 }
-
-//测试套件初始化和结束事件
-class ccbElockTest : public testing::Test
-{
-public:
-	int m_connStatus;
-	
-protected:
-	virtual void SetUp() {
-		cout<<__FUNCTION__<<endl;
-		m_connStatus=ELOCK_ERROR_SUCCESS;
-		m_connStatus=Open(25);
-	}
-	virtual void TearDown() {
-		cout<<__FUNCTION__<<endl;
-		Close();
-	}
-};
-
 
 #ifdef _ZWTEST730
 //SetRecvMsgRotine测试
@@ -189,7 +145,6 @@ string zwCode8ToHex(int Code8)
 	return retHexStr;
 }
 
-
 #ifdef _DEBUG_ACTREQ
 //锁具激活请求报文的在线测试
 TEST_F(ccbElockTest,LockActiveTest0000)
@@ -206,17 +161,17 @@ TEST_F(ccbElockTest,LockActiveTest0000)
 	ptree pt;
 	jcAtmcMsg::zwAtmcTestMsgGen(msgType,strLockActiveXML, pt);	
 	//strLockActiveXML=
-		//"<?xml version=\"1.0\" encoding=\"utf-8\"?>"
-		//"<root><TransCode>0000</TransCode>"
-		//"<TransName>CallForActInfo</TransName>"
-		//"<TransDate>20140807</TransDate>"
-		//"<TransTime>153235</TransTime>"
-		//"<DevCode>12345698</DevCode>"
-		//"<SpareString1>NULL</SpareString1>"
-		//"<SpareString2>NULL</SpareString2></root>";
-//"<?xml version=\"1.0\" encoding=\"utf-8\"?><root><TransCode>0000</TransCode><TransName>CallForActInfo</TransName><TransDate>20140807</TransDate><TransTime>173828</TransTime><DevCode>12345698Z</DevCode><SpareString1>NULL</SpareString1><SpareString2>NULL</SpareString2></root>";
-//下面一行是一整行原生XML，方便网页测试使用，没有转义字符
-// <?xml version="1.0" encoding="utf-8"?><root><TransCode>0000</TransCode><TransName>CallForActInfo</TransName><TransDate>20140807</TransDate><TransTime>173828</TransTime><DevCode>12345698Z</DevCode><SpareString1>NULL</SpareString1><SpareString2>NULL</SpareString2></root>
+	//"<?xml version=\"1.0\" encoding=\"utf-8\"?>"
+	//"<root><TransCode>0000</TransCode>"
+	//"<TransName>CallForActInfo</TransName>"
+	//"<TransDate>20140807</TransDate>"
+	//"<TransTime>153235</TransTime>"
+	//"<DevCode>12345698</DevCode>"
+	//"<SpareString1>NULL</SpareString1>"
+	//"<SpareString2>NULL</SpareString2></root>";
+	//"<?xml version=\"1.0\" encoding=\"utf-8\"?><root><TransCode>0000</TransCode><TransName>CallForActInfo</TransName><TransDate>20140807</TransDate><TransTime>173828</TransTime><DevCode>12345698Z</DevCode><SpareString1>NULL</SpareString1><SpareString2>NULL</SpareString2></root>";
+	//下面一行是一整行原生XML，方便网页测试使用，没有转义字符
+	// <?xml version="1.0" encoding="utf-8"?><root><TransCode>0000</TransCode><TransName>CallForActInfo</TransName><TransDate>20140807</TransDate><TransTime>173828</TransTime><DevCode>12345698Z</DevCode><SpareString1>NULL</SpareString1><SpareString2>NULL</SpareString2></root>
 	//cout<<"Sleep 65 seconds,please wait"<<endl;
 
 	if (ELOCK_ERROR_SUCCESS==m_connStatus)
@@ -244,6 +199,7 @@ TEST_F(ccbElockTest,LockActiveTest0000)
 	//Sleep(6*1000);
 }
 #endif // _DEBUG_ACTREQ
+
 
 
 
@@ -337,45 +293,6 @@ TEST_F(ccbElockTest,TimeSyncTest0003)
 	Sleep(1*1000);
 }
 #endif // _DEBUG_TIMESYNC
-
-#ifdef _DEBUG_READ_CLOSE_CODE
-//读取闭锁码报文的在线测试
-TEST_F(ccbElockTest,ReadCloseCodeTest0004)
-{
-	//Open(25);
-	EXPECT_EQ(ELOCK_ERROR_SUCCESS,SetRecvMsgRotine(myATMCRecvMsgRotine));	
-	const JC_MSG_TYPE msgType=JCMSG_GET_CLOSECODE;	//设定消息类型
-	//ATMC生成XML消息
-	string strSendLockActInfoXML;	//容纳生成的消息XML
-	//具体生成消息XML
-	ptree pt;
-	jcAtmcMsg::zwAtmcTestMsgGen(msgType,strSendLockActInfoXML, pt);	
-
-	if (ELOCK_ERROR_SUCCESS==m_connStatus)
-	{
-		EXPECT_EQ(ELOCK_ERROR_SUCCESS,Notify(strSendLockActInfoXML.c_str()));
-		Sleep(1000);
-		EXPECT_EQ(ELOCK_ERROR_SUCCESS,Notify(strSendLockActInfoXML.c_str()));
-	}
-	else
-	{
-		EXPECT_EQ(ELOCK_ERROR_CONNECTLOST,Notify(strSendLockActInfoXML.c_str()));		
-		cout<<"Server not Start!"<<endl;
-	}
-	while (s_repReadCloseCodeXML.length()==0)
-	{
-		Sleep(200);
-	}
-	//Sleep(ZW_END_WAIT);
-	EXPECT_LT(42,s_repReadCloseCodeXML.length());
-
-	string ccbop,ccbname;
-	zwGetCCBMsgType(s_repReadCloseCodeXML,ccbop,ccbname);
-	EXPECT_EQ("0004",ccbop);
-	EXPECT_EQ("ReadShutLockCode",ccbname);
-	Sleep(2*1000);
-}
-#endif // _DEBUG_READ_CLOSE_CODE
 
 
 #ifdef _DEBUG_GET_LOCK_LOG
