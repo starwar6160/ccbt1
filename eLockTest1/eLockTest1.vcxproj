@@ -91,6 +91,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\CCBelock\jcJsonCommandDefine.cpp" />
+    <ClCompile Include="ActiveLockTest.cpp" />
     <ClCompile Include="atmcMsgGen730.cpp" />
     <ClCompile Include="eLockTest1.cpp" />
     <ClCompile Include="eLockTestBadInput.cpp" />
