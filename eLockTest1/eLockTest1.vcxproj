@@ -85,24 +85,23 @@
     <None Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="jcElockTestHdr.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\CCBelock\jcJsonCommandDefine.cpp" />
-    <ClCompile Include="ActiveLockTest.cpp" />
     <ClCompile Include="atmcMsgGen730.cpp" />
-    <ClCompile Include="eLockTest1.cpp" />
-    <ClCompile Include="eLockTestBadInput.cpp" />
-    <ClCompile Include="eLockTestCommon.cpp" />
-    <ClCompile Include="GetLockLogAndStatusTest.cpp" />
-    <ClCompile Include="ReadCloseCode0004Test.cpp" />
+    <ClCompile Include="eLockTest\ActiveLockTest.cpp" />
+    <ClCompile Include="eLockTest\eLockTest1.cpp" />
+    <ClCompile Include="eLockTest\eLockTestBadInput.cpp" />
+    <ClCompile Include="eLockTest\eLockTestCommon.cpp" />
+    <ClCompile Include="eLockTest\GetLockLogAndStatusTest.cpp" />
+    <ClCompile Include="eLockTest\ReadCloseCode0004Test.cpp" />
+    <ClCompile Include="eLockTest\TimeSyncTest.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="TimeSyncTest.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

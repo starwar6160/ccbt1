@@ -16,6 +16,9 @@
     <Filter Include="源文件\shareSrc">
       <UniqueIdentifier>{f7c00805-1c07-4c21-925c-fe5c50b06811}</UniqueIdentifier>
     </Filter>
+    <Filter Include="源文件\eLockTest">
+      <UniqueIdentifier>{563c91cc-ca94-4dc9-ad5c-bb4e4bd2a4e0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="ReadMe.txt" />
@@ -27,15 +30,9 @@
     <ClInclude Include="targetver.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="jcElockTestHdr.h">
-      <Filter>源文件</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="eLockTest1.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="..\CCBelock\jcJsonCommandDefine.cpp">
@@ -44,23 +41,26 @@
     <ClCompile Include="atmcMsgGen730.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="ReadCloseCode0004Test.cpp">
-      <Filter>源文件</Filter>
+    <ClCompile Include="eLockTest\ActiveLockTest.cpp">
+      <Filter>源文件\eLockTest</Filter>
     </ClCompile>
-    <ClCompile Include="eLockTestCommon.cpp">
-      <Filter>源文件</Filter>
+    <ClCompile Include="eLockTest\eLockTest1.cpp">
+      <Filter>源文件\eLockTest</Filter>
     </ClCompile>
-    <ClCompile Include="eLockTestBadInput.cpp">
-      <Filter>源文件</Filter>
+    <ClCompile Include="eLockTest\eLockTestBadInput.cpp">
+      <Filter>源文件\eLockTest</Filter>
     </ClCompile>
-    <ClCompile Include="ActiveLockTest.cpp">
-      <Filter>源文件</Filter>
+    <ClCompile Include="eLockTest\eLockTestCommon.cpp">
+      <Filter>源文件\eLockTest</Filter>
     </ClCompile>
-    <ClCompile Include="GetLockLogAndStatusTest.cpp">
-      <Filter>源文件</Filter>
+    <ClCompile Include="eLockTest\GetLockLogAndStatusTest.cpp">
+      <Filter>源文件\eLockTest</Filter>
     </ClCompile>
-    <ClCompile Include="TimeSyncTest.cpp">
-      <Filter>源文件</Filter>
+    <ClCompile Include="eLockTest\ReadCloseCode0004Test.cpp">
+      <Filter>源文件\eLockTest</Filter>
+    </ClCompile>
+    <ClCompile Include="eLockTest\TimeSyncTest.cpp">
+      <Filter>源文件\eLockTest</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

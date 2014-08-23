@@ -6,7 +6,7 @@
 TEST_F(ccbElockTest,TimeSyncTest0003)
 {
 	EXPECT_EQ(ELOCK_ERROR_SUCCESS,SetRecvMsgRotine(myATMCRecvMsgRotine));	
-	const JC_MSG_TYPE msgType=JCMSG_TIME_SYNC;	//设定消息类型
+	const JC_MSG_TYPE mgType=JCMSG_TIME_SYNC;	//设定消息类型
 	//ATMC生成XML消息
 	string strSendLockActInfoXML;	//容纳生成的消息XML
 	//具体生成消息XML
