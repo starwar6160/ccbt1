@@ -25,7 +25,7 @@ using Poco::Net::ConnectionRefusedException;
 void ZWTRACE(const char *x)
 {
 	OutputDebugStringA(x);
-	g_log->trace(x);
+	pocoLog->trace(x);
 }
 
 zw_trace::zw_trace(const char *funcName)
@@ -34,14 +34,14 @@ zw_trace::zw_trace(const char *funcName)
 	m_start=m_str+"\tSTART";
 	m_end=m_str+"\tEND";
 	OutputDebugStringA(m_start.c_str());
-	g_log->trace(m_start);
+	pocoLog->trace(m_start);
 }
 
 zw_trace::~zw_trace()
 {
 
 	OutputDebugStringA(m_end.c_str());
-	g_log->trace(m_end);
+	pocoLog->trace(m_end);
 }
 
 namespace zwCfg{
@@ -61,7 +61,7 @@ CCBELOCK_API long JCAPISTD Open(long lTimeOut)
 	//必须大于0，小于JC_CCBDLL_TIMEOUT，限制在一个合理范围内
 	assert(lTimeOut>0 && lTimeOut<zwCfg::JC_CCBDLL_TIMEOUT);
 
-	g_log->notice()<<"Open Return "<<ELOCK_ERROR_SUCCESS<<endl;
+	pocoLog->notice()<<"Open Return "<<ELOCK_ERROR_SUCCESS<<endl;
 	ZWNOTICE("打开 到锁具的连接")
 	return ELOCK_ERROR_SUCCESS;
 }
@@ -81,7 +81,7 @@ CCBELOCK_API long JCAPISTD Notify(const char *pszMsg)
 	assert(pszMsg!=NULL && strlen(pszMsg)>42);	//XML至少42字节
 	if (NULL!=pszMsg && strlen(pszMsg)>0)
 	{
-		g_log->information()<<"CCB下发XML="<<endl<<pszMsg<<endl;
+		pocoLog->information()<<"CCB下发XML="<<endl<<pszMsg<<endl;
 	}
 	boost:: mutex:: scoped_lock lock( zwCfg::ws_mutex); 
 	string strJsonSend;

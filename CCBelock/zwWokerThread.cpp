@@ -109,7 +109,7 @@ namespace zwccbthr{
 		}
 		catch(Poco::Exception e)
 		{
-			g_log->warning()<<"ini config file"<<cfgFileName<<" not found"<<endl;
+			pocoLog->warning()<<"ini config file"<<cfgFileName<<" not found"<<endl;
 		}
 	}
 

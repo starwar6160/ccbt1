@@ -148,7 +148,7 @@ string & myAtmcMsgSendActiveInfo( string & strXML ,ptree &pt )
 	pt.put(CCBSTR_CODE,"0001");
 	pt.put(CCBSTR_NAME,"SendActInfo");
 	string zwDate,zwTime;
-	zwGetDateTimeString(time(NULL),zwDate,zwTime);
+	zwGetLocalDateTimeString(time(NULL),zwDate,zwTime);
 
 	pt.put(CCBSTR_DATE,zwDate);
 	pt.put(CCBSTR_TIME,zwTime);
@@ -247,7 +247,7 @@ string & myTestMsgCheckLockStatus( string & strXML ,ptree &pt )
 	pt.put(CCBSTR_CODE,"0002");
 	pt.put(CCBSTR_NAME,"QueryForLockStatus");
 	string zwDate,zwTime;
-	zwGetDateTimeString(time(NULL),zwDate,zwTime);
+	zwGetLocalDateTimeString(time(NULL),zwDate,zwTime);
 	pt.put(CCBSTR_DATE,zwDate);
 	pt.put(CCBSTR_TIME,zwTime);
 	pt.put(CCBSTR_DEVCODE,ATMNO_CCBTEST);
@@ -266,7 +266,7 @@ string & myTestMsgTimeSync( string & strXML ,ptree &pt )
 	pt.put(CCBSTR_CODE,"0003");
 	pt.put(CCBSTR_NAME,"TimeSync");
 	string zwDate,zwTime;
-	zwGetDateTimeString(time(NULL),zwDate,zwTime);
+	zwGetLocalDateTimeString(time(NULL),zwDate,zwTime);
 	pt.put(CCBSTR_DATE,zwDate);
 	pt.put(CCBSTR_TIME,zwTime);
 	std::ostringstream ss;
@@ -284,7 +284,7 @@ string & myTestMsgGetLockLog( string & strXML ,ptree &pt )
 	pt.put(CCBSTR_CODE,"0005");
 	pt.put(CCBSTR_NAME,"ReadLog");
 	string zwDate,zwTime;
-	zwGetDateTimeString(time(NULL),zwDate,zwTime);
+	zwGetLocalDateTimeString(time(NULL),zwDate,zwTime);
 	pt.put(CCBSTR_DATE,zwDate);
 	pt.put(CCBSTR_TIME,zwTime);
 	pt.put("root.BeginNo",0);

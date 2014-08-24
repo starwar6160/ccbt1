@@ -244,7 +244,7 @@ catch(...)
 	////////////////////////////每一条报文的具体处理函数开始//////////////////////////////////////////////
 
 	//发送锁具激活请求
-	void zwconvLockActiveDown( const ptree &ptccb, ptree &ptjc )
+	void zwconvLockActiveDown( const ptree &, ptree &ptjc )
 	{	
 		ZWFUNCTRACE
 		ptjc.put(jcAtmcConvertDLL::JCSTR_CMDTITLE,JCSTR_LOCK_ACTIVE_REQUEST);
@@ -261,7 +261,7 @@ catch(...)
 		ptccb.put(CCBSTR_DEVCODE,ns_ccbAtmno);
 //////////////////////////////////////////////////////////////////////////
 		string zwDate,zwTime;
-		zwGetDateTimeString(ptjc.get<time_t>("Lock_Time"),zwDate,zwTime);
+		zwGetLocalDateTimeString(ptjc.get<time_t>("Lock_Time"),zwDate,zwTime);
 		ptccb.put(CCBSTR_DATE,zwDate);
 		ptccb.put(CCBSTR_TIME,zwTime);
 
@@ -309,7 +309,7 @@ catch(...)
 		ptccb.put(CCBSTR_NAME,ns_LockInitName);	//使用缓存在内存中的值
 		assert("SendActInfo"==ns_LockInitName);
 		string zwDate,zwTime;
-		zwGetDateTimeString(ptjc.get<time_t>("Lock_Time"),zwDate,zwTime);
+		zwGetLocalDateTimeString(ptjc.get<time_t>("Lock_Time"),zwDate,zwTime);
 		ptccb.put(CCBSTR_DATE,zwDate);
 		ptccb.put(CCBSTR_TIME,zwTime);
 		ptccb.put(CCBSTR_DEVCODE,ns_ccbAtmno);	//使用缓存在内存中的值
@@ -327,7 +327,7 @@ catch(...)
 	
 	
 	//查询锁具状态
-	void zwconvQueryLockStatusDown( const ptree &ptccb, ptree &ptjc )
+	void zwconvQueryLockStatusDown( const ptree &, ptree &ptjc )
 	{
 		ZWFUNCTRACE
 		ptjc.put(jcAtmcConvertDLL::JCSTR_CMDTITLE,JCSTR_QUERY_LOCK_STATUS);
@@ -346,7 +346,7 @@ catch(...)
 		ptccb.put(CCBSTR_CODE,"0002");
 		ptccb.put(CCBSTR_NAME,"QueryForLockStatus");
 		string zwDate,zwTime;
-		zwGetDateTimeString(ptjc.get<time_t>("Lock_Time"),zwDate,zwTime);
+		zwGetLocalDateTimeString(ptjc.get<time_t>("Lock_Time"),zwDate,zwTime);
 		ptccb.put(CCBSTR_DATE,zwDate);
 		ptccb.put(CCBSTR_TIME,zwTime);
 		//////////////////////////////////////////////////////////////////////////
@@ -375,7 +375,7 @@ catch(...)
 
 	//////////////////////////////////////////////////////////////////////////
 	//时间同步
-	void zwconvTimeSyncDown( const ptree &ptccb, ptree &ptjc )
+	void zwconvTimeSyncDown( const ptree &, ptree &ptjc )
 	{
 		ZWFUNCTRACE
 		ptjc.put(jcAtmcConvertDLL::JCSTR_CMDTITLE,JCSTR_TIME_SYNC);
@@ -390,7 +390,7 @@ catch(...)
 		ptccb.put(CCBSTR_CODE,"0003");
 		ptccb.put(CCBSTR_NAME,"TimeSync");	//使用缓存在内存中的值
 		string zwDate,zwTime;
-		zwGetDateTimeString(ptjc.get<time_t>("Lock_Time"),zwDate,zwTime);
+		zwGetLocalDateTimeString(ptjc.get<time_t>("Lock_Time"),zwDate,zwTime);
 		ptccb.put(CCBSTR_DATE,zwDate);
 		ptccb.put(CCBSTR_TIME,zwTime);
 		//////////////////////////////////////////////////////////////////////////
@@ -401,7 +401,7 @@ catch(...)
 		//有用部分
 		time_t exTimeValue=ptjc.get<time_t>("Ex_Syn_Time");
 		string exDate,exTime;
-		zwGetDateTimeString(exTimeValue,exDate,exTime);
+		zwGetLocalDateTimeString(exTimeValue,exDate,exTime);
 		ptccb.put("root.ExSynDate",exDate);
 		ptccb.put("root.ExSynTime",exTime);
 	}
@@ -409,7 +409,7 @@ catch(...)
 	//////////////////////////////////////////////////////////////////////////
 
 	//读取闭锁码
-	void zwconvReadCloseCodeDown( const ptree &ptccb, ptree &ptjc )
+	void zwconvReadCloseCodeDown( const ptree &, ptree &ptjc )
 	{
 		ZWFUNCTRACE
 		//>> 读取闭锁码
@@ -441,7 +441,7 @@ catch(...)
 		assert("ReadShutLockCode"==ns_ReadCloseCodeName);
 		ptccb.put(CCBSTR_NAME,ns_ReadCloseCodeName);
 		string zwDate,zwTime;
-		zwGetDateTimeString(time(NULL),zwDate,zwTime);
+		zwGetLocalDateTimeString(time(NULL),zwDate,zwTime);
 		ptccb.put(CCBSTR_DATE,zwDate);
 		ptccb.put(CCBSTR_TIME,zwTime);
 
@@ -468,7 +468,7 @@ catch(...)
 		ptccb.put(CCBSTR_CODE,"0005");
 		ptccb.put(CCBSTR_NAME,"ReadLog");
 		string zwDate,zwTime;
-		zwGetDateTimeString(ptjc.get<time_t>("Lock_Time"),zwDate,zwTime);
+		zwGetLocalDateTimeString(ptjc.get<time_t>("Lock_Time"),zwDate,zwTime);
 		ptccb.put(CCBSTR_DATE,zwDate);
 		ptccb.put(CCBSTR_TIME,zwTime);
 		ptccb.put("root.RevResult",ptjc.get<int>("State"));
@@ -481,7 +481,7 @@ catch(...)
 	}
 
 
-	void zwconvRecvInitCloseCodeDown(const ptree &ptccb, ptree &ptjc )
+	void zwconvRecvInitCloseCodeDown(const ptree &, ptree &ptjc )
 	{
 		ZWFUNCTRACE
 		ptjc.put(jcAtmcConvertDLL::JCSTR_CMDTITLE,"Lock_Close_Code_Lock");
@@ -494,7 +494,7 @@ catch(...)
 		ptccb.put(CCBSTR_CODE,"1000");
 		ptccb.put(CCBSTR_NAME,"SendShutLockCode");
 		string zwDate,zwTime;
-		zwGetDateTimeString(time(NULL),zwDate,zwTime);
+		zwGetLocalDateTimeString(time(NULL),zwDate,zwTime);
 		ptccb.put(CCBSTR_DATE,zwDate);
 		ptccb.put(CCBSTR_TIME,zwTime);
 		//锁具发送初始闭锁码时，ATM编号应该已经在激活请求中获得，但是
@@ -504,7 +504,7 @@ catch(...)
 		ptccb.put("root.ShutLockcode",ptjc.get<int>("Code"));
 	}
 
-	void zwconvRecvVerifyCodeDown(const ptree &ptccb, ptree &ptjc )
+	void zwconvRecvVerifyCodeDown(const ptree &, ptree &ptjc )
 	{
 		ZWFUNCTRACE
 		ptjc.put(jcAtmcConvertDLL::JCSTR_CMDTITLE,"Lock_Open_Ident");
@@ -516,7 +516,7 @@ catch(...)
 		ptccb.put(CCBSTR_CODE,"1002");
 		ptccb.put(CCBSTR_NAME,"SendUnLockIdent");
 		string zwDate,zwTime;
-		zwGetDateTimeString(time(NULL),zwDate,zwTime);
+		zwGetLocalDateTimeString(time(NULL),zwDate,zwTime);
 		ptccb.put(CCBSTR_DATE,zwDate);
 		ptccb.put(CCBSTR_TIME,zwTime);
 		//锁具发送初始闭锁码时，ATM编号应该已经在激活请求中获得，但是
@@ -535,7 +535,7 @@ catch(...)
 		ptjc.put("State",ptccb.get<int>("RevResult"));
 	}
 
-	void zwconvLockReqTimeSyncDown(const ptree &ptccb, ptree &ptjc )
+	void zwconvLockReqTimeSyncDown(const ptree &, ptree &ptjc )
 	{
 		ZWFUNCTRACE
 		ptjc.put(jcAtmcConvertDLL::JCSTR_CMDTITLE,jcAtmcConvertDLL::JCSTR_REQUEST_TIME_SYNC);
@@ -548,7 +548,7 @@ catch(...)
 		ptccb.put(CCBSTR_CODE,"1001");
 		ptccb.put(CCBSTR_NAME,"SendAlertStatus");
 		string zwDate,zwTime;
-		zwGetDateTimeString(time(NULL),zwDate,zwTime);
+		zwGetLocalDateTimeString(time(NULL),zwDate,zwTime);
 		ptccb.put(CCBSTR_DATE,zwDate);
 		ptccb.put(CCBSTR_TIME,zwTime);
 		//锁具发送初始闭锁码时，ATM编号应该已经在激活请求中获得，但是
@@ -582,7 +582,7 @@ catch(...)
 		ptccb.put(CCBSTR_CODE,"1003");
 		ptccb.put(CCBSTR_NAME,"TimeSync");
 		string zwDate,zwTime;
-		zwGetDateTimeString(time(NULL),zwDate,zwTime);
+		zwGetLocalDateTimeString(time(NULL),zwDate,zwTime);
 		ptccb.put(CCBSTR_DATE,zwDate);
 		ptccb.put(CCBSTR_TIME,zwTime);
 		//锁具发送初始闭锁码时，ATM编号应该已经在激活请求中获得，但是

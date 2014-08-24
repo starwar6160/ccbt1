@@ -3,7 +3,7 @@
 #include <direct.h>
 #include <WinBase.h>
 #include "zwCcbElockHdr.h"
-Poco::LogStream *g_log=NULL;
+Poco::LogStream *pocoLog=NULL;
 int PocoLogInit(void)  ;
 string zwGetConfigFileName(void);
 void testjson819(void);
@@ -21,21 +21,18 @@ BOOL APIENTRY DllMain( HMODULE hModule,
 	switch (ul_reason_for_call)
 	{
 	case DLL_PROCESS_ATTACH:
-		g_log->notice("JINCHU ELOCK DLL_PROCESS_ATTACH");
+		pocoLog->notice("JINCHU ELOCK DLL_PROCESS_ATTACH");
 		break;
 	case DLL_THREAD_ATTACH:
-		g_log->notice("JINCHU ELOCK DLL_THREAD_ATTACH");
+		pocoLog->notice("JINCHU ELOCK DLL_THREAD_ATTACH");
 		break;
 	case DLL_THREAD_DETACH:
-		g_log->notice("JINCHU ELOCK DLL_THREAD_DETACH");
+		pocoLog->notice("JINCHU ELOCK DLL_THREAD_DETACH");
 		break;
 	case DLL_PROCESS_DETACH:
-		g_log->notice("JINCHU ELOCK DLL_PROCESS_DETACH");
+		pocoLog->notice("JINCHU ELOCK DLL_PROCESS_DETACH");
 		break;
 	}
-	//g_log->notice()<<33<<"hello"<<endl;
-	//testjson819();
-	//cout<<zwParseLockStatus("0,0,0,0,100,0,1,20,100,0,0")<<endl;
 	return TRUE;
 }
 
@@ -46,7 +43,6 @@ string zwGetConfigFileName(void)
 	char dllName[256];
 	memset(dllName,0,256);
 	GetModuleFileNameA(hdl,dllName,256);
-	//OutputDebugStringA(dllName);
 	char * tt=strstr(dllName,".dll");
 	strcpy(tt,".ini");
 	string cfgFileName=dllName;
@@ -55,13 +51,13 @@ string zwGetConfigFileName(void)
 
 string zwGetLogFileName(void)
 {
-	const string jcLogPath=".\\JinChuLog815";
+	const string jcLogPath=".\\JinChuLog2014";
 	string logdate,logtime;
 	_mkdir(jcLogPath.c_str());
 	time_t now=time(NULL);
 	time_t tail=now % 10;
 	now=now-tail;
-	zwGetDateTimeString(now,logdate,logtime);
+	zwGetLocalDateTimeString(now,logdate,logtime);
 	return jcLogPath+"\\"+logdate+"."+logtime+"JinChuLog.txt";
 }
 
@@ -89,7 +85,7 @@ int PocoLogInit(void)
 	Poco::Logger::root().setChannel(channel.get());  
 	Poco::Logger& logger = Poco::Logger::get("LockDLL");  
 	logger.setLevel(Poco::Message::PRIO_TRACE);
-	g_log=new Poco::LogStream(logger); 
+	pocoLog=new Poco::LogStream(logger); 
 	return 0;  
 }  
 
