@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "..\\eLockTest\\jcElockTestHdr.h"
-#include "CCBelock.h"
 
 
 namespace jcAtmcMsg{

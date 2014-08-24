@@ -98,6 +98,7 @@
     <ClCompile Include="eLockTest\GetLockLogAndStatusTest.cpp" />
     <ClCompile Include="eLockTest\ReadCloseCode0004Test.cpp" />
     <ClCompile Include="eLockTest\TimeSyncTest.cpp" />
+    <ClCompile Include="GenTestMsg\jcGenActiveMsg.cpp" />
     <ClCompile Include="GenTestMsg\JcGenCloseCodeMsg.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

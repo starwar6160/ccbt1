@@ -68,5 +68,8 @@
     <ClCompile Include="GenTestMsg\JcGenCloseCodeMsg.cpp">
       <Filter>源文件\GenTestMsg</Filter>
     </ClCompile>
+    <ClCompile Include="GenTestMsg\jcGenActiveMsg.cpp">
+      <Filter>源文件\GenTestMsg</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

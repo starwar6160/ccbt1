@@ -97,6 +97,7 @@ string zwCode8ToHex(int Code8)
 
 namespace jcAtmcMsg{
 	const char *ATMNO_CCBTEST="CCBATMNO1234";
+	const char *G_LOCKMAN_NAMEG="BeiJing.JinChu";
 
 	//生成模拟的ATMC XML消息的总入口，根据枚举生成相应那一条的XML消息
 	void zwAtmcTestMsgGen(const JC_MSG_TYPE type,string &strXML)

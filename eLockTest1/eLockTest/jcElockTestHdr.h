@@ -31,6 +31,7 @@ void zwGetCCBMsgType(const string &inXML,string &outOpCode,string &outOpName);
 
 namespace jcAtmcMsg{
 	extern const char *ATMNO_CCBTEST;
+	extern const char *G_LOCKMAN_NAMEG;
 	void zwAtmcTestMsgGen(const JC_MSG_TYPE type,string &strXML);
 	string & myAtmcMsgLockActive( string & strXML ,ptree &pt);
 	string & myAtmcMsgSendActiveInfo( string & strXML ,ptree &pt );
