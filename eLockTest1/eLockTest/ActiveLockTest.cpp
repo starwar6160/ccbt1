@@ -2,12 +2,12 @@
 #include "jcElockTestHdr.h"
 #include "CCBelock.h"
 
+string s_repActReqXML;
+string s_repLockInitXML;
 
 #ifdef _DEBUG_ACTREQ
 
 string zwCode8ToHex(int Code8);
-string s_repActReqXML;
-string s_repLockInitXML;
 
 //锁具激活请求报文的在线测试
 TEST_F(ccbElockTest,LockActiveTest0000)

@@ -2,11 +2,12 @@
 #include "jcElockTestHdr.h"
 #include "CCBelock.h"
 
-#ifdef _DEBUG_READ_CLOSE_CODE
-
 string s_repInitCloseCodeXML;
 string s_repReadCloseCodeXML;
 string s_repVerifyCodeXML;
+
+#ifdef _DEBUG_READ_CLOSE_CODE
+
 //读取闭锁码报文的在线测试
 TEST_F(ccbElockTest,ReadCloseCodeTest0004)
 {
