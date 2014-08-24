@@ -31,13 +31,8 @@
 //decryptPSK:
 //77498EB7D7CE8B92D871791C99B85AB337FF73235A89E7A20764EFE6EA41E4CE
 
-using namespace boost::property_tree;
-
-
-
 
 namespace jcAtmcMsg{
-
 
 //其他杂项报文
 //生成测试用的接收验证码报文，实际上建行并无此报文，只是为了形成一问一答方便测试

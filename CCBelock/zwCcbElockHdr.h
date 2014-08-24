@@ -1,6 +1,5 @@
 #ifndef zwCcbElockHdr_h__
 #define zwCcbElockHdr_h__
-//#include "stdafx.h"
 /////////////////////////////////测试用函数/////////////////////////////////////////
 //报文类型
 typedef enum jcmsg_ccb_elock_t{
