@@ -74,5 +74,8 @@
     <ClCompile Include="GenTestMsg\jcGenLockStatusLog.cpp">
       <Filter>源文件\GenTestMsg</Filter>
     </ClCompile>
+    <ClCompile Include="GenTestMsg\jcGenTimeSync.cpp">
+      <Filter>源文件\GenTestMsg</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
