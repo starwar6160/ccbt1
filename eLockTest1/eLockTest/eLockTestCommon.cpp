@@ -93,3 +93,52 @@ string zwCode8ToHex(int Code8)
 	string retHexStr=hexbuf;
 	return retHexStr;
 }
+
+
+namespace jcAtmcMsg{
+	const char *ATMNO_CCBTEST="CCBATMNO1234";
+
+	//生成模拟的ATMC XML消息的总入口，根据枚举生成相应那一条的XML消息
+	void zwAtmcTestMsgGen(const JC_MSG_TYPE type,string &strXML)
+	{
+		ptree pt;
+		switch (type)
+		{
+		case JCMSG_LOCK_ACTIVE_REQUEST:
+			strXML = myAtmcMsgLockActive(strXML, pt);
+			assert(strXML.length()>42);	//XML开头的固定内容38个字符，外加起码一个标签的两对尖括号合计4个字符
+			break;
+		case JCMSG_SEND_LOCK_ACTIVEINFO:
+			strXML=myAtmcMsgSendActiveInfo(strXML,pt);
+			assert(strXML.length()>42);
+			break;
+		case JCMSG_GET_CLOSECODE:
+			strXML=myAtmcMsgReadCloseCodeInfo(strXML,pt);
+			assert(strXML.length()>42);
+			break;
+			//以下是配合锁具主动上传信息的测试性下发消息,建行并无这些下发报文
+		case JCMSG_SEND_INITCLOSECODE:
+			strXML=myTestMsgRecvCloseCode(strXML,pt);
+			assert(strXML.length()>42);
+			break;
+		case JCMSG_SEND_UNLOCK_CERTCODE:
+			strXML=myTestMsgRecvVerifyCode(strXML,pt);
+			assert(strXML.length()>42);
+			break;
+		case JCMSG_TIME_SYNC:
+			strXML=myTestMsgTimeSync(strXML,pt);
+			assert(strXML.length()>42);
+			break;
+		case JCMSG_QUERY_LOCK_STATUS:
+			strXML=myTestMsgCheckLockStatus(strXML,pt);
+			assert(strXML.length()>42);
+			break;
+		case JCMSG_GET_LOCK_LOG:
+			strXML=myTestMsgGetLockLog(strXML,pt);
+			assert(strXML.length()>42);
+			break;
+		}
+	}
+
+
+}	//namespace jcAtmcMsg{

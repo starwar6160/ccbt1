@@ -19,6 +19,9 @@
     <Filter Include="源文件\eLockTest">
       <UniqueIdentifier>{563c91cc-ca94-4dc9-ad5c-bb4e4bd2a4e0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="源文件\GenTestMsg">
+      <UniqueIdentifier>{1bba195d-0062-44dc-bdbd-ae1a68a385fe}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="ReadMe.txt" />
@@ -61,6 +64,9 @@
     </ClCompile>
     <ClCompile Include="eLockTest\TimeSyncTest.cpp">
       <Filter>源文件\eLockTest</Filter>
+    </ClCompile>
+    <ClCompile Include="GenTestMsg\JcGenCloseCodeMsg.cpp">
+      <Filter>源文件\GenTestMsg</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

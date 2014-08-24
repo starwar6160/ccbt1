@@ -30,8 +30,24 @@ void zwGetCCBMsgType(const string &inXML,string &outOpCode,string &outOpName);
 
 
 namespace jcAtmcMsg{
+	extern const char *ATMNO_CCBTEST;
 	void zwAtmcTestMsgGen(const JC_MSG_TYPE type,string &strXML);
+	string & myAtmcMsgLockActive( string & strXML ,ptree &pt);
+	string & myAtmcMsgSendActiveInfo( string & strXML ,ptree &pt );
+	string & myAtmcMsgReadCloseCodeInfo( string & strXML ,ptree &pt );
+	string & myTestMsgRecvCloseCode( string & strXML ,ptree &pt );
+	string & myTestMsgRecvVerifyCode( string & strXML ,ptree &pt );
+	string & myTestMsgTimeSync( string & strXML ,ptree &pt );
+	string & myTestMsgCheckLockStatus( string & strXML ,ptree &pt );
+	string & myTestMsgGetLockLog( string & strXML ,ptree &pt );
+
 }
+using jcAtmcConvertDLL::CCBSTR_CODE;
+using jcAtmcConvertDLL::CCBSTR_NAME;
+using jcAtmcConvertDLL::CCBSTR_DATE;
+using jcAtmcConvertDLL::CCBSTR_TIME;
+using jcAtmcConvertDLL::CCBSTR_DEVCODE;
+using jcAtmcMsg::ATMNO_CCBTEST;
 
 //测试套件初始化和结束事件
 class ccbElockTest : public testing::Test
