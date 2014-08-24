@@ -71,6 +71,9 @@
     <ClCompile Include="atmcDLLConvert731.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="jcPocoLogCfg.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="HidProtocol.rc">
