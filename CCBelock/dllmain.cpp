@@ -3,22 +3,18 @@
 #include <direct.h>
 #include <WinBase.h>
 #include "zwCcbElockHdr.h"
-string zwGetConfigFileName(void);
-int PocoLogInit(void)  ;
+
 string zwGetLogFileName(void);
-
+void myLoadCfgs();
 extern Poco::LogStream *pocoLog;
-
 
 BOOL APIENTRY DllMain( HMODULE hModule,
                        DWORD  ul_reason_for_call,
                        LPVOID lpReserved
 					 )
 {
-	//在DLL的同一个目录下寻找同名的INI文件载入
-	zwccbthr::myLoadConfig(zwGetConfigFileName());
-	
-	PocoLogInit();
+	myLoadCfgs();
+
 	switch (ul_reason_for_call)
 	{
 	case DLL_PROCESS_ATTACH:
@@ -66,6 +62,7 @@ int PocoLogInit(void)
 	pocoLog=new Poco::LogStream(logger); 
 	return 0;  
 }  
+
 
 
 

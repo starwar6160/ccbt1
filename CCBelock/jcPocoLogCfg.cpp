@@ -3,7 +3,9 @@
 #include <WinBase.h>
 #include "zwCcbElockHdr.h"
 
-
+string zwGetConfigFileName(void);
+string zwGetLogFileName(void);
+int PocoLogInit(void);
 
 string zwGetConfigFileName(void)
 {
@@ -29,3 +31,10 @@ string zwGetLogFileName(void)
 	return jcLogPath+"\\"+logdate+"."+logtime+"JinChuLog.txt";
 }
 
+void myLoadCfgs()
+{
+	//在DLL的同一个目录下寻找同名的INI文件载入
+	zwccbthr::myLoadConfig(zwGetConfigFileName());
+
+	PocoLogInit();
+}
