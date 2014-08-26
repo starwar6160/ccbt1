@@ -17,6 +17,10 @@ const int ZW_LOWEST_DATE=1400*ZWMEGA-24*3600;	//考虑到取整运算可能使得时间值低于
 const int ZW_DIGI8_LOW=10*ZWMEGA;
 const int ZW_DIGI8_HIGH=100*ZWMEGA;
 const int ZW_MAXDATA32=2048*ZWMEGA-3;	//32位有符号整数可能表示的最大时间值
+//从当前时间偏移到将来方向这么多秒，以防止生成密码的加密服务器时间比较快，结果下位机匹配
+//的时候，从当前时间开始匹配，始终无法匹配到对应于“将来”某个时间点的动态码；
+//这是20140821在建行广开中心发现的问题；
+const int JC_DCODE_MATCH_FUTURE_SEC=60*3;	
 
 
 
@@ -285,8 +289,6 @@ unsigned int zwBinString2Int32(const char *data,const int len);
 		return res;
 	}
 
-
-
 	//离线模式匹配，时间点精度为取整到一个小时的零点，有效期精度为1小时起
 	//如果找到了，返回JCOFFLINE中是匹配的时间和有效期，否则其中的值都是0
 	JCMATCH JCLMSCCB2014_API JcLockReverseVerifyDynaCode( const int handle,const int dstCode )
@@ -298,7 +300,9 @@ unsigned int zwBinString2Int32(const char *data,const int len);
 		jcoff.s_datetime=0;
 		jcoff.s_validity=0;
 
-		int l_datetime=time(NULL);		
+		//根据建行广开中心发现的问题，从“将来”几分钟的时间开始往过去方向
+		//匹配，以防密码服务器和锁具之间有时间误差；
+		int l_datetime=time(NULL)+JC_DCODE_MATCH_FUTURE_SEC;		
 		int l_closecode=jcp->m_closecode;
 		int l_timestep=jcp->m_stepoftime;
 		if (JCCMD_CCB_CLOSECODE==jcp->m_cmdtype)
