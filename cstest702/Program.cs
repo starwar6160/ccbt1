@@ -18,12 +18,12 @@ namespace cstest702
         static void Main(string[] args)
         {
             //安全初始化例子
-            myECIEStest();
+            //myECIEStest();
             //String aa = Console.ReadLine();
-            myECIEStest2();
+            //myECIEStest2();
             //建行1.1版本动态码验证流程例子
             //myV11DynaCodeTest();
-            //myV11DynaCodeTestKeyBoardInput();
+            myV11DynaCodeTestKeyBoardInput();
         }
 
         //安全初始化例子
