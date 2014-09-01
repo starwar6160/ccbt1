@@ -296,7 +296,7 @@ SWIGEXPORT int SWIGSTDCALL CSharp_ZW_AES_BLOCK_SIZE_get() {
   int jresult ;
   int result;
   
-  result = (int)(int)ZW_AES_BLOCK_SIZE;
+  result = (int)(int)ZW_SYNCALG_BLOCK_SIZE;
   jresult = result; 
   return jresult;
 }

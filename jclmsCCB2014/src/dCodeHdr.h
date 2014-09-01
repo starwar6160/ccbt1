@@ -24,26 +24,14 @@ typedef struct JcLockInput
 	//	void DebugPrint(void);	//
 }JCINPUT;
 
-//生成各种类型的动态码
-int myGetDynaCodeImplCCB201407a( const int handle );
 //获得规格化的时间，也就是按照某个值取整的时间
 int myGetNormalTime(int gmtTime,const int TIMEMOD);
 //获取初始闭锁码的3个可变条件的“固定值”
 void myGetInitCloseCodeVarItem(int *mdatetime,int *mvalidity,int *mclosecode);
-void mySm3Process(SM3 *ctx,const char *data,const int len);
-//获取闭锁码的3个可变条件的“固定值”
-void myGetCloseCodeVarItem(int *mdatetime,int *mvalidity,int *mclosecode);
-void mySm3Process(SM3 *ctx,const char *data,const int len);
-void mySm3Process(SM3 *ctx,const int data);
-//从包含二进制数据的字符串输入，获得一个8位整数的输出
-unsigned int zwBinString2Int32(const char *data,const int len);
+
+//生成各种类型的动态码
+int myGetDynaCodeImplCCB201407a( const int handle );
 
 extern const int ZW_CLOSECODE_STEP;	//闭锁码的计算步长时间精度
-extern const int ZW_CLOSECODE_BASEINPUT;	//计算正常的闭锁码时，m_closecode字段的固定值
-extern const int ZW_LOWEST_DATE;	//考虑到取整运算可能使得时间值低于1400M，所以把最低点时间提前一整天该足够了
-extern const int ZW_DIGI8_LOW;
-extern const int ZW_DIGI8_HIGH;
-extern const int ZW_MAXDATA32;	//32位有符号整数可能表示的最大时间值
-
 
 #endif // dCodeHdr_h__

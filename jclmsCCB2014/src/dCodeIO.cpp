@@ -2,6 +2,9 @@
 #include "jclmsCCB2014.h"
 #include "dCodeHdr.h"
 
+const int ZW_MAXDATA32=2048*ZWMEGA-3;	//32位有符号整数可能表示的最大时间值
+const int ZW_LOWEST_DATE=1400*ZWMEGA-24*3600;	//考虑到取整运算可能使得时间值低于1400M，所以把最低点时间提前一整天该足够了
+
 //设置命令类型(第一开锁码，初始闭锁码等等)
 JCERROR	JCLMSCCB2014_API JcLockSetCmdType(const int handle,const JCITYPE mtype,const JCCMD cmd)
 {
@@ -104,7 +107,8 @@ JCERROR JCLMSCCB2014_API JcLockSetInt( const int handle,const JCITYPE mtype,int 
 
 JCERROR JCLMSCCB2014_API JcLockCheckInput( const int handle )
 {
-	//const int ZWMEGA=1000*1000;
+	const int ZW_DIGI8_LOW=10*ZWMEGA;
+	const int ZW_DIGI8_HIGH=100*ZWMEGA;
 	JCINPUT *jcp=(JCINPUT *)handle;
 	//假定这些数字字段在二进制层面都是等同于int的长度的，以便通过一个统一的函数进行HASH运算
 	assert(sizeof(jcp->m_datetime)==sizeof(int));

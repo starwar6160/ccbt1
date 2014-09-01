@@ -16,6 +16,13 @@ const int ZW_CLOSECODE_STEP=12;	//闭锁码的计算步长时间精度
 //这是20140821在建行广开中心发现的问题；
 const int JC_DCODE_MATCH_FUTURE_SEC=60*3;	
 
+void mySm3Process(SM3 *ctx,const char *data,const int len);
+void mySm3Process(SM3 *ctx,const int data);
+//从包含二进制数据的字符串输入，获得一个8位整数的输出
+unsigned int zwBinString2Int32(const char *data,const int len);
+//获取闭锁码的3个可变条件的“固定值”
+void myGetCloseCodeVarItem(int *mdatetime,int *mvalidity,int *mclosecode);
+
 
  	int JCLMSCCB2014_API JcLockGetDynaCode( const int handle )
 	{
