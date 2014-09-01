@@ -22,6 +22,9 @@
     <Filter Include="源文件\src">
       <UniqueIdentifier>{65922014-8a29-4f56-9c04-e25c270d9292}</UniqueIdentifier>
     </Filter>
+    <Filter Include="源文件\dyCode">
+      <UniqueIdentifier>{af4acb87-fe62-4287-a98d-65ed9b6e869d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="ReadMe.txt" />
@@ -33,9 +36,6 @@
     <ClInclude Include="targetver.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="jclmsCCB2014.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="mydefs.h">
       <Filter>源文件</Filter>
     </ClInclude>
@@ -44,6 +44,12 @@
     </ClInclude>
     <ClInclude Include="zwECIES\sm3.h">
       <Filter>源文件\hashalg</Filter>
+    </ClInclude>
+    <ClInclude Include="src\dCodeHdr.h">
+      <Filter>源文件\dyCode</Filter>
+    </ClInclude>
+    <ClInclude Include="src\jclmsCCB2014.h">
+      <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -55,9 +61,6 @@
     </ClCompile>
     <ClCompile Include="jclmsccb_csharp_wrap.cxx">
       <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="src\jclmsCCB2014.cpp">
-      <Filter>源文件\src</Filter>
     </ClCompile>
     <ClCompile Include="notuse\zwtest1.c">
       <Filter>源文件\src</Filter>
@@ -85,6 +88,18 @@
     </ClCompile>
     <ClCompile Include="zwOutputDebugString.cpp">
       <Filter>源文件\src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\jclmsCCB2014.cpp">
+      <Filter>源文件\dyCode</Filter>
+    </ClCompile>
+    <ClCompile Include="src\dCodeMisc.cpp">
+      <Filter>源文件\dyCode</Filter>
+    </ClCompile>
+    <ClCompile Include="src\dCodeIO.cpp">
+      <Filter>源文件\dyCode</Filter>
+    </ClCompile>
+    <ClCompile Include="src\dCodeNewDelete.cpp">
+      <Filter>源文件\dyCode</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

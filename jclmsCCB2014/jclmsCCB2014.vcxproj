@@ -90,8 +90,9 @@
     <None Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="jclmsCCB2014.h" />
     <ClInclude Include="mydefs.h" />
+    <ClInclude Include="src\dCodeHdr.h" />
+    <ClInclude Include="src\jclmsCCB2014.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="zwECIES\sm3.h" />
@@ -114,6 +115,9 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="src\dCodeIO.cpp" />
+    <ClCompile Include="src\dCodeMisc.cpp" />
+    <ClCompile Include="src\dCodeNewDelete.cpp" />
     <ClCompile Include="src\jclmsCCB2014.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
