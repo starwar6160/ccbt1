@@ -1,4 +1,4 @@
-// jclmsCCB2014.cpp : ¶¨Òå DLL Ó¦ÓÃ³ÌĞòµÄµ¼³öº¯Êı¡£
+// jclmsCCB2014.cpp : å®šä¹‰ DLL åº”ç”¨ç¨‹åºçš„å¯¼å‡ºå‡½æ•°ã€‚
 //
 #include "stdafx.h"
 #include <assert.h>
@@ -10,17 +10,17 @@
 #include "dCodeHdr.h"
 
 const int ZW_SM3_DGST_SIZE=(256/8)	;
-const int ZW_CLOSECODE_STEP=12;	//±ÕËøÂëµÄ¼ÆËã²½³¤Ê±¼ä¾«¶È
-//´Óµ±Ç°Ê±¼äÆ«ÒÆµ½½«À´·½ÏòÕâÃ´¶àÃë£¬ÒÔ·ÀÖ¹Éú³ÉÃÜÂëµÄ¼ÓÃÜ·şÎñÆ÷Ê±¼ä±È½Ï¿ì£¬½á¹ûÏÂÎ»»úÆ¥Åä
-//µÄÊ±ºò£¬´Óµ±Ç°Ê±¼ä¿ªÊ¼Æ¥Åä£¬Ê¼ÖÕÎŞ·¨Æ¥Åäµ½¶ÔÓ¦ÓÚ¡°½«À´¡±Ä³¸öÊ±¼äµãµÄ¶¯Ì¬Âë£»
-//ÕâÊÇ20140821ÔÚ½¨ĞĞ¹ã¿ªÖĞĞÄ·¢ÏÖµÄÎÊÌâ£»
+const int ZW_CLOSECODE_STEP=12;	//é—­é”ç çš„è®¡ç®—æ­¥é•¿æ—¶é—´ç²¾åº¦
+//ä»å½“å‰æ—¶é—´åç§»åˆ°å°†æ¥æ–¹å‘è¿™ä¹ˆå¤šç§’ï¼Œä»¥é˜²æ­¢ç”Ÿæˆå¯†ç çš„åŠ å¯†æœåŠ¡å™¨æ—¶é—´æ¯”è¾ƒå¿«ï¼Œç»“æœä¸‹ä½æœºåŒ¹é…
+//çš„æ—¶å€™ï¼Œä»å½“å‰æ—¶é—´å¼€å§‹åŒ¹é…ï¼Œå§‹ç»ˆæ— æ³•åŒ¹é…åˆ°å¯¹åº”äºâ€œå°†æ¥â€æŸä¸ªæ—¶é—´ç‚¹çš„åŠ¨æ€ç ï¼›
+//è¿™æ˜¯20140821åœ¨å»ºè¡Œå¹¿å¼€ä¸­å¿ƒå‘ç°çš„é—®é¢˜ï¼›
 const int JC_DCODE_MATCH_FUTURE_SEC=60*3;	
 
 void mySm3Process(SM3 *ctx,const char *data,const int len);
 void mySm3Process(SM3 *ctx,const int data);
-//´Ó°üº¬¶ş½øÖÆÊı¾İµÄ×Ö·û´®ÊäÈë£¬»ñµÃÒ»¸ö8Î»ÕûÊıµÄÊä³ö
+//ä»åŒ…å«äºŒè¿›åˆ¶æ•°æ®çš„å­—ç¬¦ä¸²è¾“å…¥ï¼Œè·å¾—ä¸€ä¸ª8ä½æ•´æ•°çš„è¾“å‡º
 unsigned int zwBinString2Int32(const char *data,const int len);
-//»ñÈ¡±ÕËøÂëµÄ3¸ö¿É±äÌõ¼şµÄ¡°¹Ì¶¨Öµ¡±
+//è·å–é—­é”ç çš„3ä¸ªå¯å˜æ¡ä»¶çš„â€œå›ºå®šå€¼â€
 void myGetCloseCodeVarItem(int *mdatetime,int *mvalidity,int *mclosecode);
 
 
@@ -29,31 +29,31 @@ void myGetCloseCodeVarItem(int *mdatetime,int *mvalidity,int *mclosecode);
 		return myGetDynaCodeImplCCB201407a(handle);
 	}
 
-	//Éú³É¸÷ÖÖÀàĞÍµÄ¶¯Ì¬Âë
+	//ç”Ÿæˆå„ç§ç±»å‹çš„åŠ¨æ€ç 
 	int myGetDynaCodeImplCCB201407a( const int handle )
 	{		
 		const JCINPUT *lock=(const JCINPUT *)handle;
 		SM3 sm3;
 		char outHmac[ZW_SM3_DGST_SIZE];
 
-		//¹æ¸ñ»¯Ê±¼äµ½G_TIMEMODÕâÃ´¶àÃë
+		//è§„æ ¼åŒ–æ—¶é—´åˆ°G_TIMEMODè¿™ä¹ˆå¤šç§’
 		int l_datetime=myGetNormalTime(lock->m_datetime,
 			lock->m_stepoftime);
-			//60*5);	//20140804.1717.Ó¦ÕÅ¾¸îÚµÄ²âÊÔĞèÇó£¬ÔİÊ±¸ÄÎª5·ÖÖÓÈ¡Õû
-		//ÓĞĞ§ÆÚºÍ±ÕËøÂëĞèÒª¸ù¾İ²»Í¬Çé¿ö·Ö±ğ´¦Àí
+			//60*5);	//20140804.1717.åº”å¼ é–é’°çš„æµ‹è¯•éœ€æ±‚ï¼Œæš‚æ—¶æ”¹ä¸º5åˆ†é’Ÿå–æ•´
+		//æœ‰æ•ˆæœŸå’Œé—­é”ç éœ€è¦æ ¹æ®ä¸åŒæƒ…å†µåˆ†åˆ«å¤„ç†
 		int l_validity=lock->m_validity;
 		int l_closecode=lock->m_closecode;	
-		//¼ÆËã³õÊ¼±ÕËøÂëÊ±£¬²ÉÓÃÊ®Ìì°ëÔÂ´óÖÂ¹Ì¶¨µÄÊ±¼ä£¬ÓĞĞ§ÆÚ£¬±ÕËøÂëµÄÖµ
-		//ÒÔ±ã¶ÔÓÚÌØ¶¨µÄËø¾ßºÍPSKÀ´Ëµ£¬³õÊ¼±ÕËøÂëÊÇÒ»¸öÊ®Ìì°ëÔÂÄÚµÄºã¶¨Öµ
+		//è®¡ç®—åˆå§‹é—­é”ç æ—¶ï¼Œé‡‡ç”¨åå¤©åŠæœˆå¤§è‡´å›ºå®šçš„æ—¶é—´ï¼Œæœ‰æ•ˆæœŸï¼Œé—­é”ç çš„å€¼
+		//ä»¥ä¾¿å¯¹äºç‰¹å®šçš„é”å…·å’ŒPSKæ¥è¯´ï¼Œåˆå§‹é—­é”ç æ˜¯ä¸€ä¸ªåå¤©åŠæœˆå†…çš„æ’å®šå€¼
 		if (JCCMD_INIT_CLOSECODE==lock->m_cmdtype)
 		{
-			//l_datetime=myGetNormalTime(time(NULL),ZWMEGA);	//³õÊ¼±ÕËøÂë²ÉÓÃ1MÃë(´óÔ¼12Ìì)µÄÈ¡ÕûÊ±¼ä
-			//l_validity=1000;	//³õÊ¼ÓĞĞ§ÆÚÈ¡Ò»¸öÓĞĞ§·¶Î§ÄÚµÄ¹æÕûÖµ
-			//l_closecode=1000000;	//³õÊ¼±ÕËøÂëÌØÑ¡Ò»¸öÓĞĞ§·¶Î§ÄÚµÄ¹æÕûÖµ
+			//l_datetime=myGetNormalTime(time(NULL),ZWMEGA);	//åˆå§‹é—­é”ç é‡‡ç”¨1Mç§’(å¤§çº¦12å¤©)çš„å–æ•´æ—¶é—´
+			//l_validity=1000;	//åˆå§‹æœ‰æ•ˆæœŸå–ä¸€ä¸ªæœ‰æ•ˆèŒƒå›´å†…çš„è§„æ•´å€¼
+			//l_closecode=1000000;	//åˆå§‹é—­é”ç ç‰¹é€‰ä¸€ä¸ªæœ‰æ•ˆèŒƒå›´å†…çš„è§„æ•´å€¼
 			myGetInitCloseCodeVarItem(&l_datetime,&l_validity,&l_closecode);
 		}		
 		if (JCCMD_CCB_CLOSECODE==lock->m_cmdtype)
-		{//¼ÆËãÕæÕıµÄ±ÕËøÂë£¬²ÉÓÃ3¸ö¹Ì¶¨Ìõ¼ş£¬Íâ¼ÓÌØ¶¨µÄÈ¡Õû²½³¤µÄÊ±¼ä£¬ÒÔ¼°¹Ì¶¨µÄÓĞĞ§ÆÚºÍ¡°±ÕËøÂë¡±×÷ÎªÊäÈë
+		{//è®¡ç®—çœŸæ­£çš„é—­é”ç ï¼Œé‡‡ç”¨3ä¸ªå›ºå®šæ¡ä»¶ï¼Œå¤–åŠ ç‰¹å®šçš„å–æ•´æ­¥é•¿çš„æ—¶é—´ï¼Œä»¥åŠå›ºå®šçš„æœ‰æ•ˆæœŸå’Œâ€œé—­é”ç â€ä½œä¸ºè¾“å…¥
 			myGetCloseCodeVarItem(&l_datetime,&l_validity,&l_closecode);
 		}
 		JCERROR err=JcLockCheckInput((const int)lock);
@@ -65,57 +65,57 @@ void myGetCloseCodeVarItem(int *mdatetime,int *mvalidity,int *mclosecode);
 
 		SM3_init(&sm3);
 
-		//ÏŞ¶ÈÊÇĞ¡ÓÚ14¿ªÍ·µÄÊ±¼ä(1.4GÃë)»òÕß¿ìÒª³¬³ö2048MÃëµÄ»°¾ÍÊÇ·Ç·¨ÁË
-		/////////////////////////////Öğ¸öÔªËØ½øĞĞHASHÔËËã/////////////////////////////////////////////
-		//Ê×ÏÈ´¦Àí¹Ì¶¨×Ö¶ÎµÄHASHÖµÊäÈë
+		//é™åº¦æ˜¯å°äº14å¼€å¤´çš„æ—¶é—´(1.4Gç§’)æˆ–è€…å¿«è¦è¶…å‡º2048Mç§’çš„è¯å°±æ˜¯éæ³•äº†
+		/////////////////////////////é€ä¸ªå…ƒç´ è¿›è¡ŒHASHè¿ç®—/////////////////////////////////////////////
+		//é¦–å…ˆå¤„ç†å›ºå®šå­—æ®µçš„HASHå€¼è¾“å…¥
 		mySm3Process(&sm3,lock->m_atmno,sizeof(lock->m_atmno));
 		mySm3Process(&sm3,lock->m_lockno,sizeof(lock->m_lockno));		
 		mySm3Process(&sm3,lock->m_psk,sizeof(lock->m_psk));
 
-		//¼ÌĞøÊäÈë¸÷¸ö¿É±ä×Ö¶ÎµÄHASHÖµ
+		//ç»§ç»­è¾“å…¥å„ä¸ªå¯å˜å­—æ®µçš„HASHå€¼
 		mySm3Process(&sm3,l_datetime);
 		mySm3Process(&sm3,l_validity);
 		mySm3Process(&sm3,l_closecode);
 		mySm3Process(&sm3,lock->m_cmdtype);
-		//////////////////////////////HASHÔËËã½áÊø////////////////////////////////////////////
+		//////////////////////////////HASHè¿ç®—ç»“æŸ////////////////////////////////////////////
 		memset(outHmac,0,ZWSM3_DGST_LEN);
 		SM3_hash(&sm3,(char *)(outHmac));
-		//°ÑHASH½á¹û×ª»¯Îª8Î»Êı×ÖÊä³ö
+		//æŠŠHASHç»“æœè½¬åŒ–ä¸º8ä½æ•°å­—è¾“å‡º
 		unsigned int res=zwBinString2Int32(outHmac,ZWSM3_DGST_LEN);
 		return res;
 	}
 
-	//ÀëÏßÄ£Ê½Æ¥Åä£¬Ê±¼äµã¾«¶ÈÎªÈ¡Õûµ½Ò»¸öĞ¡Ê±µÄÁãµã£¬ÓĞĞ§ÆÚ¾«¶ÈÎª1Ğ¡Ê±Æğ
-	//Èç¹ûÕÒµ½ÁË£¬·µ»ØJCOFFLINEÖĞÊÇÆ¥ÅäµÄÊ±¼äºÍÓĞĞ§ÆÚ£¬·ñÔòÆäÖĞµÄÖµ¶¼ÊÇ0
+	//ç¦»çº¿æ¨¡å¼åŒ¹é…ï¼Œæ—¶é—´ç‚¹ç²¾åº¦ä¸ºå–æ•´åˆ°ä¸€ä¸ªå°æ—¶çš„é›¶ç‚¹ï¼Œæœ‰æ•ˆæœŸç²¾åº¦ä¸º1å°æ—¶èµ·
+	//å¦‚æœæ‰¾åˆ°äº†ï¼Œè¿”å›JCOFFLINEä¸­æ˜¯åŒ¹é…çš„æ—¶é—´å’Œæœ‰æ•ˆæœŸï¼Œå¦åˆ™å…¶ä¸­çš„å€¼éƒ½æ˜¯0
 	JCMATCH JCLMSCCB2014_API JcLockReverseVerifyDynaCode( const int handle,const int dstCode )
 	{		
 		JCINPUT *jcp=(JCINPUT *)handle;
-		const int MIN_OF_HOUR=60;	//Ò»Ğ¡Ê±µÄ·ÖÖÓÊı
+		const int MIN_OF_HOUR=60;	//ä¸€å°æ—¶çš„åˆ†é’Ÿæ•°
 		JCMATCH jcoff;
-		//ÌîÈëÄ¬ÈÏµÄÊ§°Ü·µ»ØÖµ
+		//å¡«å…¥é»˜è®¤çš„å¤±è´¥è¿”å›å€¼
 		jcoff.s_datetime=0;
 		jcoff.s_validity=0;
 
-		//¸ù¾İ½¨ĞĞ¹ã¿ªÖĞĞÄ·¢ÏÖµÄÎÊÌâ£¬´Ó¡°½«À´¡±¼¸·ÖÖÓµÄÊ±¼ä¿ªÊ¼Íù¹ıÈ¥·½Ïò
-		//Æ¥Åä£¬ÒÔ·ÀÃÜÂë·şÎñÆ÷ºÍËø¾ßÖ®¼äÓĞÊ±¼äÎó²î£»
+		//æ ¹æ®å»ºè¡Œå¹¿å¼€ä¸­å¿ƒå‘ç°çš„é—®é¢˜ï¼Œä»â€œå°†æ¥â€å‡ åˆ†é’Ÿçš„æ—¶é—´å¼€å§‹å¾€è¿‡å»æ–¹å‘
+		//åŒ¹é…ï¼Œä»¥é˜²å¯†ç æœåŠ¡å™¨å’Œé”å…·ä¹‹é—´æœ‰æ—¶é—´è¯¯å·®ï¼›
 		int l_datetime=time(NULL)+JC_DCODE_MATCH_FUTURE_SEC;		
 		int l_closecode=jcp->m_closecode;
 		int l_timestep=jcp->m_stepoftime;
 		if (JCCMD_CCB_CLOSECODE==jcp->m_cmdtype)
 		{
-			int l_validity=jcp->m_validity;	//´ËÊäÈë²ÎÊıÑéÖ¤Ê±ÎŞÓÃ£¬Ö»ÊÇÎªÁËÂú×ãº¯ÊıÊäÈëÒªÇó
-			//Èç¹ûÊÇÑéÖ¤±ÕËøÂë£¬¾Í»»Ò»Ì×²ÎÊı
-			//ÑéÖ¤±ÕËøÂëµÄÊ±ºò£¬ÊÇ·ñĞèÒªËÑË÷¸ü³¤Ê±¼äÄØ£¿2014.0729.1509ÖÜÎ°
+			int l_validity=jcp->m_validity;	//æ­¤è¾“å…¥å‚æ•°éªŒè¯æ—¶æ— ç”¨ï¼Œåªæ˜¯ä¸ºäº†æ»¡è¶³å‡½æ•°è¾“å…¥è¦æ±‚
+			//å¦‚æœæ˜¯éªŒè¯é—­é”ç ï¼Œå°±æ¢ä¸€å¥—å‚æ•°
+			//éªŒè¯é—­é”ç çš„æ—¶å€™ï¼Œæ˜¯å¦éœ€è¦æœç´¢æ›´é•¿æ—¶é—´å‘¢ï¼Ÿ2014.0729.1509å‘¨ä¼Ÿ
 			myGetCloseCodeVarItem(&l_datetime,&l_validity,&l_closecode);
 			l_timestep=ZW_CLOSECODE_STEP;
 			assert(ZW_CLOSECODE_STEP>0 && ZW_CLOSECODE_STEP<60);
 		}
 
-		//ËÑË÷Ê±¼äµÄÆğÊ¼µã±ØĞëÂäÔÚm_stepoftimeµÄÕû±¶ÊıÉÏ£¬·ñÔò¾ÍÎŞ·¨Æ¥Åä
+		//æœç´¢æ—¶é—´çš„èµ·å§‹ç‚¹å¿…é¡»è½åœ¨m_stepoftimeçš„æ•´å€æ•°ä¸Šï¼Œå¦åˆ™å°±æ— æ³•åŒ¹é…
 		l_datetime=myGetNormalTime(l_datetime,l_timestep);
 		int tail=l_datetime % l_timestep;
-		l_datetime-=tail;	//È¡Õûµ½Êı¾İ½á¹¹ÖĞÖ¸¶¨µÄ²½³¤
-		//½áÊøÊ±¼ä£¬ÍùÇ°ÍÆÊı¾İ½á¹¹ËùÖ¸¶¨µÄÒ»¶ÎÊ±¼ä£¬¼¸·ÖÖÓµ½Ò»ÕûÌì²»µÈ
+		l_datetime-=tail;	//å–æ•´åˆ°æ•°æ®ç»“æ„ä¸­æŒ‡å®šçš„æ­¥é•¿
+		//ç»“æŸæ—¶é—´ï¼Œå¾€å‰æ¨æ•°æ®ç»“æ„æ‰€æŒ‡å®šçš„ä¸€æ®µæ—¶é—´ï¼Œå‡ åˆ†é’Ÿåˆ°ä¸€æ•´å¤©ä¸ç­‰
 		int tend=l_datetime-jcp->m_reverse_time_length;
 
 		for (int tdate=l_datetime;tdate>=tend;tdate-=l_timestep)			
@@ -127,7 +127,7 @@ void myGetCloseCodeVarItem(int *mdatetime,int *mvalidity,int *mclosecode);
 				char outHmac[ZW_SM3_DGST_SIZE];
 
 				SM3_init(&sm3);
-				/////////////////////////////Öğ¸öÔªËØ½øĞĞHASHÔËËã/////////////////////////////////////////////
+				/////////////////////////////é€ä¸ªå…ƒç´ è¿›è¡ŒHASHè¿ç®—/////////////////////////////////////////////
 				mySm3Process(&sm3,jcp->m_atmno,sizeof(jcp->m_atmno));
 				mySm3Process(&sm3,jcp->m_lockno,sizeof(jcp->m_lockno));
 				mySm3Process(&sm3,jcp->m_psk,sizeof(jcp->m_psk));
@@ -136,13 +136,13 @@ void myGetCloseCodeVarItem(int *mdatetime,int *mvalidity,int *mclosecode);
 				mySm3Process(&sm3,jcp->m_validity_array[v]);
 				mySm3Process(&sm3,l_closecode);
 				mySm3Process(&sm3,jcp->m_cmdtype);
-				//////////////////////////////HASHÔËËã½áÊø////////////////////////////////////////////
+				//////////////////////////////HASHè¿ç®—ç»“æŸ////////////////////////////////////////////
 				memset(outHmac,0,ZWSM3_DGST_LEN);
 				SM3_hash(&sm3,(char *)(outHmac));
 				unsigned int res=zwBinString2Int32(outHmac,ZWSM3_DGST_LEN);
-				if (dstCode==res)	//·¢ÏÖÁËÆ¥ÅäµÄÊ±¼äºÍÓĞĞ§ÆÚ
+				if (dstCode==res)	//å‘ç°äº†åŒ¹é…çš„æ—¶é—´å’Œæœ‰æ•ˆæœŸ
 				{
-					//ÌîĞ´Æ¥ÅäµÄÊ±¼äºÍÓĞĞ§ÆÚµ½½á¹û
+					//å¡«å†™åŒ¹é…çš„æ—¶é—´å’Œæœ‰æ•ˆæœŸåˆ°ç»“æœ
 					printf("FOUND MATCH %d %d\n",tdate,jcp->m_validity_array[v]);
 					jcoff.s_datetime=tdate;
 					jcoff.s_validity=jcp->m_validity_array[v];

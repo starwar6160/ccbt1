@@ -2,20 +2,20 @@
 #include "jclmsCCB2014.h"
 #include "dCodeHdr.h"
 
-//Ö»ÊÇ×÷ÎªÒ»¸ö»ù±¾µÄ¿é¹æÕû´óĞ¡µ¥Î»·½±ã´¦Àí
+//åªæ˜¯ä½œä¸ºä¸€ä¸ªåŸºæœ¬çš„å—è§„æ•´å¤§å°å•ä½æ–¹ä¾¿å¤„ç†
 const int ZW_SYNCALG_BLOCK_SIZE=(128/8)	;
 
 int myGetDynaCodeImplCCB201407a( const int handle );
-//´Ó°üº¬¶ş½øÖÆÊı¾İµÄ×Ö·û´®ÊäÈë£¬»ñµÃÒ»¸ö8Î»ÕûÊıµÄÊä³ö
+//ä»åŒ…å«äºŒè¿›åˆ¶æ•°æ®çš„å­—ç¬¦ä¸²è¾“å…¥ï¼Œè·å¾—ä¸€ä¸ª8ä½æ•´æ•°çš„è¾“å‡º
 unsigned int zwBinString2Int32(const char *data,const int len);
 
 int JcLockGetVersion(void)
 {
-	//º¬ÒåÊÇÊÇÈÕÆÚ
+	//å«ä¹‰æ˜¯æ˜¯æ—¥æœŸ
 	return 20140901;	
 }
 
-//»ñµÃ¹æ¸ñ»¯µÄÊ±¼ä£¬Ò²¾ÍÊÇ°´ÕÕÄ³¸öÖµÈ¡ÕûµÄÊ±¼ä
+//è·å¾—è§„æ ¼åŒ–çš„æ—¶é—´ï¼Œä¹Ÿå°±æ˜¯æŒ‰ç…§æŸä¸ªå€¼å–æ•´çš„æ—¶é—´
 int myGetNormalTime(int gmtTime,const int TIMEMOD) 
 {
 	int tail=gmtTime % TIMEMOD;
@@ -38,7 +38,7 @@ void mySm3Process(SM3 *ctx,const int data)
 {
 	assert(ctx!=NULL);
 	assert(ctx->length>0);
-	assert(data>=0);	//¼¸¸öÕûÊı²ÎÊı£¬¶¼ÊÇ0»òÕßÕıÕûÊı
+	assert(data>=0);	//å‡ ä¸ªæ•´æ•°å‚æ•°ï¼Œéƒ½æ˜¯0æˆ–è€…æ­£æ•´æ•°
 	int td=data;
 	for (int i=0;i<sizeof(data);i++)
 	{
@@ -50,14 +50,14 @@ void mySm3Process(SM3 *ctx,const int data)
 }
 
 
-//´Ó°üº¬¶ş½øÖÆÊı¾İµÄ×Ö·û´®ÊäÈë£¬»ñµÃÒ»¸ö8Î»ÕûÊıµÄÊä³ö
+//ä»åŒ…å«äºŒè¿›åˆ¶æ•°æ®çš„å­—ç¬¦ä¸²è¾“å…¥ï¼Œè·å¾—ä¸€ä¸ª8ä½æ•´æ•°çš„è¾“å‡º
 unsigned int zwBinString2Int32(const char *data,const int len)
 {
-	//±È1¿ªÍ·µÄ8Î»ÊıÉÔÎ¢´óÒ»Ğ©µÄÖÊÊı
+	//æ¯”1å¼€å¤´çš„8ä½æ•°ç¨å¾®å¤§ä¸€äº›çš„è´¨æ•°
 	const int dyLow=10000019;
-	//±È9¿ªÍ·µÄ8Î»ÊıÉÔÎ¢Ğ¡Ò»Ğ©µÄÖÊÊı
+	//æ¯”9å¼€å¤´çš„8ä½æ•°ç¨å¾®å°ä¸€äº›çš„è´¨æ•°
 	const int dyMod=89999969;	
-	const int dyMul=257;	//Ëæ±ãÕÒµÄÒ»¸öÖÊÊı×÷ÎªÏà³ËµÄÒò×Ó
+	const int dyMul=257;	//éšä¾¿æ‰¾çš„ä¸€ä¸ªè´¨æ•°ä½œä¸ºç›¸ä¹˜çš„å› å­
 
 	unsigned __int64 sum=0;
 	for (int i=0;i<len;i++)
@@ -66,13 +66,13 @@ unsigned int zwBinString2Int32(const char *data,const int len)
 		sum*=dyMul;
 		sum+=t;		
 	}
-	//ÕâÁ½¸öÊı×Ö½áºÏÊ¹ÓÃ£¬²úÉú¿Ï¶¨ÊÇ8Î»ÊıµÄ¶¯Ì¬Âë
+	//è¿™ä¸¤ä¸ªæ•°å­—ç»“åˆä½¿ç”¨ï¼Œäº§ç”Ÿè‚¯å®šæ˜¯8ä½æ•°çš„åŠ¨æ€ç 
 	sum %=dyMod;
 	sum +=dyLow;
 	return sum;
 }
 
-//»ñÈ¡³õÊ¼±ÕËøÂëµÄ3¸ö¿É±äÌõ¼şµÄ¡°¹Ì¶¨Öµ¡±
+//è·å–åˆå§‹é—­é”ç çš„3ä¸ªå¯å˜æ¡ä»¶çš„â€œå›ºå®šå€¼â€
 void myGetInitCloseCodeVarItem(int *mdatetime,int *mvalidity,int *mclosecode)
 {
 	assert(NULL!=mdatetime && NULL!=mvalidity && NULL!=mclosecode);
@@ -85,10 +85,10 @@ void myGetInitCloseCodeVarItem(int *mdatetime,int *mvalidity,int *mclosecode)
 	*mclosecode=10000000;
 }
 
-//»ñÈ¡±ÕËøÂëµÄ3¸ö¿É±äÌõ¼şµÄ¡°¹Ì¶¨Öµ¡±
+//è·å–é—­é”ç çš„3ä¸ªå¯å˜æ¡ä»¶çš„â€œå›ºå®šå€¼â€
 void myGetCloseCodeVarItem(int *mdatetime,int *mvalidity,int *mclosecode)
 {		
-	const int ZW_CLOSECODE_BASEINPUT=20000000;	//¼ÆËãÕı³£µÄ±ÕËøÂëÊ±£¬m_closecode×Ö¶ÎµÄ¹Ì¶¨Öµ
+	const int ZW_CLOSECODE_BASEINPUT=20000000;	//è®¡ç®—æ­£å¸¸çš„é—­é”ç æ—¶ï¼Œm_closecodeå­—æ®µçš„å›ºå®šå€¼
 	assert(NULL!=mdatetime && NULL!=mvalidity && NULL!=mclosecode);
 	if (NULL==mdatetime || NULL==mvalidity || NULL==mclosecode)
 	{

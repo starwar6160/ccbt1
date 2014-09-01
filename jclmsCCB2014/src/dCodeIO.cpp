@@ -2,10 +2,10 @@
 #include "jclmsCCB2014.h"
 #include "dCodeHdr.h"
 
-const int ZW_MAXDATA32=2048*ZWMEGA-3;	//32Î»ÓĞ·ûºÅÕûÊı¿ÉÄÜ±íÊ¾µÄ×î´óÊ±¼äÖµ
-const int ZW_LOWEST_DATE=1400*ZWMEGA-24*3600;	//¿¼ÂÇµ½È¡ÕûÔËËã¿ÉÄÜÊ¹µÃÊ±¼äÖµµÍÓÚ1400M£¬ËùÒÔ°Ñ×îµÍµãÊ±¼äÌáÇ°Ò»ÕûÌì¸Ã×ã¹»ÁË
+const int ZW_MAXDATA32=2048*ZWMEGA-3;	//32ä½æœ‰ç¬¦å·æ•´æ•°å¯èƒ½è¡¨ç¤ºçš„æœ€å¤§æ—¶é—´å€¼
+const int ZW_LOWEST_DATE=1400*ZWMEGA-24*3600;	//è€ƒè™‘åˆ°å–æ•´è¿ç®—å¯èƒ½ä½¿å¾—æ—¶é—´å€¼ä½äº1400Mï¼Œæ‰€ä»¥æŠŠæœ€ä½ç‚¹æ—¶é—´æå‰ä¸€æ•´å¤©è¯¥è¶³å¤Ÿäº†
 
-//ÉèÖÃÃüÁîÀàĞÍ(µÚÒ»¿ªËøÂë£¬³õÊ¼±ÕËøÂëµÈµÈ)
+//è®¾ç½®å‘½ä»¤ç±»å‹(ç¬¬ä¸€å¼€é”ç ï¼Œåˆå§‹é—­é”ç ç­‰ç­‰)
 JCERROR	JCLMSCCB2014_API JcLockSetCmdType(const int handle,const JCITYPE mtype,const JCCMD cmd)
 {
 	assert(handle>0);
@@ -26,7 +26,7 @@ JCERROR	JCLMSCCB2014_API JcLockSetCmdType(const int handle,const JCITYPE mtype,c
 
 //}	//end of namespace jclms
 
-//ÉèÖÃ×Ö·û´®ÀàĞÍµÄÖµ
+//è®¾ç½®å­—ç¬¦ä¸²ç±»å‹çš„å€¼
 JCERROR	JCLMSCCB2014_API JcLockSetString(const int handle,const JCITYPE mtype,const char *str)
 {
 	assert(handle>0);
@@ -54,7 +54,7 @@ JCERROR	JCLMSCCB2014_API JcLockSetString(const int handle,const JCITYPE mtype,co
 
 }
 
-//ÉèÖÃÕûÊıÀàĞÍµÄÖµ
+//è®¾ç½®æ•´æ•°ç±»å‹çš„å€¼
 JCERROR JCLMSCCB2014_API JcLockSetInt( const int handle,const JCITYPE mtype,int num )
 {
 	assert(handle>0);
@@ -69,7 +69,7 @@ JCERROR JCLMSCCB2014_API JcLockSetInt( const int handle,const JCITYPE mtype,int 
 	switch (mtype)
 	{
 	case JCI_DATETIME:
-		//Ê±¼ä±ØĞë¾­¹ı¹æ¸ñ»¯
+		//æ—¶é—´å¿…é¡»ç»è¿‡è§„æ ¼åŒ–
 		if (num<(1400*1000*1000))
 		{
 			return EJC_DATETIME_INVALID;
@@ -92,7 +92,7 @@ JCERROR JCLMSCCB2014_API JcLockSetInt( const int handle,const JCITYPE mtype,int 
 		//}
 		jcp->m_closecode=num;
 		break;
-	case JCI_TIMESTEP:	//·´ÍÆÊ±¼ä²½³¤
+	case JCI_TIMESTEP:	//åæ¨æ—¶é—´æ­¥é•¿
 		assert(num>=3 && num<=3600);
 		if (num<0 || num > 3600)
 		{
@@ -110,7 +110,7 @@ JCERROR JCLMSCCB2014_API JcLockCheckInput( const int handle )
 	const int ZW_DIGI8_LOW=10*ZWMEGA;
 	const int ZW_DIGI8_HIGH=100*ZWMEGA;
 	JCINPUT *jcp=(JCINPUT *)handle;
-	//¼Ù¶¨ÕâĞ©Êı×Ö×Ö¶ÎÔÚ¶ş½øÖÆ²ãÃæ¶¼ÊÇµÈÍ¬ÓÚintµÄ³¤¶ÈµÄ£¬ÒÔ±ãÍ¨¹ıÒ»¸öÍ³Ò»µÄº¯Êı½øĞĞHASHÔËËã
+	//å‡å®šè¿™äº›æ•°å­—å­—æ®µåœ¨äºŒè¿›åˆ¶å±‚é¢éƒ½æ˜¯ç­‰åŒäºintçš„é•¿åº¦çš„ï¼Œä»¥ä¾¿é€šè¿‡ä¸€ä¸ªç»Ÿä¸€çš„å‡½æ•°è¿›è¡ŒHASHè¿ç®—
 	assert(sizeof(jcp->m_datetime)==sizeof(int));
 	assert(sizeof(jcp->m_validity)==sizeof(int));
 	assert(sizeof(jcp->m_closecode)==sizeof(int));
@@ -119,35 +119,35 @@ JCERROR JCLMSCCB2014_API JcLockCheckInput( const int handle )
 	assert(jcp->m_datetime>=(ZW_LOWEST_DATE) && jcp->m_datetime<ZW_MAXDATA32);
 	assert(jcp->m_cmdtype>JCCMD_START && jcp->m_cmdtype<JCCMD_END);
 	if (JCCMD_INIT_CLOSECODE!=jcp->m_cmdtype && JCCMD_CCB_CLOSECODE!=jcp->m_cmdtype)
-	{	//Éú³É³õÊ¼±ÕËøÂë,ÒÔ¼°ÕæÕı±ÕËøÂëÊ±£¬²»¼ì²éÓĞĞ§ÆÚºÍ±ÕËøÂëµÄÖµ
+	{	//ç”Ÿæˆåˆå§‹é—­é”ç ,ä»¥åŠçœŸæ­£é—­é”ç æ—¶ï¼Œä¸æ£€æŸ¥æœ‰æ•ˆæœŸå’Œé—­é”ç çš„å€¼
 		assert(jcp->m_validity>=0 && jcp->m_validity<=(24*60));
-		//10,000,000 8Î»Êı£¬Ò²¾ÍÊÇ10-100MÖ®¼ä
+		//10,000,000 8ä½æ•°ï¼Œä¹Ÿå°±æ˜¯10-100Mä¹‹é—´
 		assert(jcp->m_closecode>=ZW_DIGI8_LOW && jcp->m_closecode<=ZW_DIGI8_HIGH);
 	}
 
 
-	//ÏŞ¶ÈÊÇĞ¡ÓÚ14¿ªÍ·µÄÊ±¼ä(1.4GÃë)»òÕß¿ìÒª³¬³öZW_MAXDATA32ÃëµÄ»°¾ÍÊÇ·Ç·¨ÁË
+	//é™åº¦æ˜¯å°äº14å¼€å¤´çš„æ—¶é—´(1.4Gç§’)æˆ–è€…å¿«è¦è¶…å‡ºZW_MAXDATA32ç§’çš„è¯å°±æ˜¯éæ³•äº†
 	if (jcp->m_datetime<(ZW_LOWEST_DATE) || jcp->m_datetime>ZW_MAXDATA32)
-	{//ÈÕÆÚÊ±¼äÃëÊıÔÚ2014ÄêµÄÄ³¸ö1.4GÃëÖ®Ç°µÄÈÕ×Ó£¬»òÕß³¬¹ı2038Äê(32Î»ÓĞ·ûºÅÕûÊı×î´óÖµ)ÔòÎŞĞ§
+	{//æ—¥æœŸæ—¶é—´ç§’æ•°åœ¨2014å¹´çš„æŸä¸ª1.4Gç§’ä¹‹å‰çš„æ—¥å­ï¼Œæˆ–è€…è¶…è¿‡2038å¹´(32ä½æœ‰ç¬¦å·æ•´æ•°æœ€å¤§å€¼)åˆ™æ— æ•ˆ
 		return EJC_DATETIME_INVALID;
 	}
 	if (JCCMD_INIT_CLOSECODE!=jcp->m_cmdtype && JCCMD_CCB_CLOSECODE!=jcp->m_cmdtype)
-	{	//Éú³É³õÊ¼±ÕËøÂë,ÒÔ¼°ÕæÕı±ÕËøÂëÊ±£¬²»¼ì²éÓĞĞ§ÆÚºÍ±ÕËøÂëµÄÖµ
+	{	//ç”Ÿæˆåˆå§‹é—­é”ç ,ä»¥åŠçœŸæ­£é—­é”ç æ—¶ï¼Œä¸æ£€æŸ¥æœ‰æ•ˆæœŸå’Œé—­é”ç çš„å€¼
 		if (jcp->m_validity<0 || jcp->m_validity>(24*60))
-		{//ÓĞĞ§ÆÚ·ÖÖÓÊıÎª¸ºÊı»òÕß´óÓÚÒ»ÕûÌìÔòÎŞĞ§
+		{//æœ‰æ•ˆæœŸåˆ†é’Ÿæ•°ä¸ºè´Ÿæ•°æˆ–è€…å¤§äºä¸€æ•´å¤©åˆ™æ— æ•ˆ
 			return EJC_VALIDRANGE_INVALID;
 		}
 		if (jcp->m_closecode<ZW_DIGI8_LOW || jcp->m_closecode>ZW_DIGI8_HIGH)
-		{//±ÕËøÂëĞ¡ÓÚ8Î»»òÕß´óÓÚ8Î»ÔòÎŞĞ§
+		{//é—­é”ç å°äº8ä½æˆ–è€…å¤§äº8ä½åˆ™æ— æ•ˆ
 			return EJC_CLOSECODE_INVALID;
 		}
 	}	//if (JCCMD_INIT_CLOSECODE!=jcp->m_cmdtype)
 	if (jcp->m_stepoftime<=0 || jcp->m_stepoftime>=(24*60*60))
-	{//ËÑË÷²½³¤Îª¸ºÊı»òÕß´óÓÚÒ»ÕûÌìÔòÎŞĞ§
+	{//æœç´¢æ­¥é•¿ä¸ºè´Ÿæ•°æˆ–è€…å¤§äºä¸€æ•´å¤©åˆ™æ— æ•ˆ
 		return EJC_CMDTYPE_TIMESTEP_INVALID;
 	}
 	if (jcp->m_reverse_time_length<=0 || jcp->m_reverse_time_length>=(365*24*60*60))
-	{//ÍùÇ°ËÑË÷Ê±¼äÎª¸ºÊı»òÕß´óÓÚÒ»ÕûÄêÔòÎŞĞ§
+	{//å¾€å‰æœç´¢æ—¶é—´ä¸ºè´Ÿæ•°æˆ–è€…å¤§äºä¸€æ•´å¹´åˆ™æ— æ•ˆ
 		return EJC_CMDTYPE_TIMELEN_INVALID;
 	}
 

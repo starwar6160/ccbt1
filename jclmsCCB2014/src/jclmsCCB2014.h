@@ -2,13 +2,13 @@
 #define jclmsCCB2014_h__
 //#include "zwstdafx.h"
 
-// ���� ifdef ���Ǵ���ʹ�� DLL �������򵥵�
-// ��ı�׼�������� DLL �е������ļ��������������϶���� JCLMSCCB2014_EXPORTS
-// ���ű���ġ���ʹ�ô� DLL ��
-// �κ�������Ŀ�ϲ�Ӧ����˷��š�������Դ�ļ��а������ļ����κ�������Ŀ���Ὣ
-// JCLMSCCB2014_API ������Ϊ�Ǵ� DLL ����ģ����� DLL ���ô˺궨���
-// ������Ϊ�Ǳ������ġ�
-//��ARM��ʹ����򿪸ú궨���Ա�����windows��DLL��ض���ı������
+// 下列 ifdef 块是创建使从 DLL 导出更简单的
+// 宏的标准方法。此 DLL 中的所有文件都是用命令行上定义的 JCLMSCCB2014_EXPORTS
+// 符号编译的。在使用此 DLL 的
+// 任何其他项目上不应定义此符号。这样，源文件中包含此文件的任何其他项目都会将
+// JCLMSCCB2014_API 函数视为是从 DLL 导入的，而此 DLL 则将用此宏定义的
+// 符号视为是被导出的。
+//在ARM上使用请打开该宏定义以便消除windows的DLL相关定义的编译错误
 //#define _USEON_NONWIN32
 #ifdef _ZWUSE_AS_JNI
 #define JCLMSCCB2014_API
@@ -27,86 +27,86 @@
 
 //////////////////////////////////////////////////////////////////////////
 typedef enum jc_error_code{
-	EJC_SUSSESS,	//�ɹ�
-	EJC_FAIL,		//ʧ��
-	EJC_INPUT_NULL,	//��������ȱ��
-	EJC_DATETIME_INVALID,	//����ʱ��Ƿ�
-	EJC_VALIDRANGE_INVALID,	//��Ч�ڷǷ�
-	EJC_CLOSECODE_INVALID,	//������Ƿ�
-	EJC_CMDTYPE_TIMESTEP_INVALID,	//ʱ�����������Ƿ�
-	EJC_CMDTYPE_TIMELEN_INVALID,	//ʱ���������ȷǷ�
-	EJC_CMDTYPE_INVALID		//�������ͷǷ�
+	EJC_SUSSESS,	//成功
+	EJC_FAIL,		//失败
+	EJC_INPUT_NULL,	//输入条件缺少
+	EJC_DATETIME_INVALID,	//日期时间非法
+	EJC_VALIDRANGE_INVALID,	//有效期非法
+	EJC_CLOSECODE_INVALID,	//闭锁码非法
+	EJC_CMDTYPE_TIMESTEP_INVALID,	//时间搜索步长非法
+	EJC_CMDTYPE_TIMELEN_INVALID,	//时间搜索长度非法
+	EJC_CMDTYPE_INVALID		//命令类型非法
 } JCERROR;
 
 typedef enum jc_cmd_type{
-	JCCMD_START,			//��Ч����
-	//��ʼ�����룬��ʱ����ATM��ţ�����ţ�PSK���߾���������ɱ�����Ϊ��ֵ
-	//ע�⣬��ʼ����������ɣ�����ÿ�����߽��г�ʼ��ʱ����һ�Σ������������
-	//���߳�ʼ��ʱ����һ�γ�ʼ������
+	JCCMD_START,			//无效命令
+	//初始闭锁码，此时仅有ATM编号，锁编号，PSK三者决定，其余可变因素为定值
+	//注意，初始闭锁码的生成，对于每个锁具仅有初始化时仅有一次，所以请仅仅在
+	//锁具初始化时生成一次初始闭锁码
 	JCCMD_INIT_CLOSECODE,		
-	JCCMD_CCB_DYPASS1,		//��λ����һ��������.��ʱ�������롱�ֶ���д�����ı�����
-	JCCMD_CCB_LOCK_VERCODE,	//��λ����֤��.������֤��ʱ���������롱�ֶα�����д��һ��������
-	JCCMD_CCB_DYPASS2,		//��λ���ڶ���������.�����ڶ���������ʱ���������롱�ֶ���д��֤��
-	JCCMD_CCB_CLOSECODE,	//���������ı�����
-	JCCMD_RESET_NFCKEY,		//����NFCԿ��
-	JCCMD_RESET_LOCKTIME,	//��������ʱ��
-	JCCMD_RESET_LOCKSYSTEM,	//��ϵͳ����
-	JCCMD_GET_LOCKLOG,		//��ȡ������־	
+	JCCMD_CCB_DYPASS1,		//上位机第一开锁密码.此时“闭锁码”字段填写真正的闭锁码
+	JCCMD_CCB_LOCK_VERCODE,	//下位机验证码.产生验证码时，“闭锁码”字段必须填写第一开锁密码
+	JCCMD_CCB_DYPASS2,		//上位机第二开锁密码.产生第二开锁密码时，“闭锁码”字段填写验证码
+	JCCMD_CCB_CLOSECODE,	//生成真正的闭锁码
+	JCCMD_RESET_NFCKEY,		//重置NFC钥匙
+	JCCMD_RESET_LOCKTIME,	//重设锁体时间
+	JCCMD_RESET_LOCKSYSTEM,	//锁系统重置
+	JCCMD_GET_LOCKLOG,		//提取锁体日志	
 	JCCMD_END
 } JCCMD;
 
 typedef enum jc_input_type{
-	JCI_START,		//��Чֵ�����ڽ綨���·�Χ
-	JCI_ATMNO,		//ATM��ţ���ʼ��ʱ�趨
-	JCI_LOCKNO,		//���ţ���ʼ��ʱ�趨
-	JCI_PSK,		//PSK����ʼ��ʱ�趨
-	JCI_DATETIME,	//ʱ�����ڣ���λ���룬Ӧ����GMT����
-	JCI_VALIDITY,	//��Ч�ڣ���λ�Ƿ���
-	JCI_CLOSECODE,	//������
-	JCI_CMDTYPE,	//Ҫ����ʲô���͵Ķ�̬��
-	JCI_TIMESTEP,	//ʱ����ǰ����ļ������λΪ��
-	JCI_END			//��Чֵ�����ڽ綨���·�Χ
+	JCI_START,		//无效值，用于界定上下范围
+	JCI_ATMNO,		//ATM编号，初始化时设定
+	JCI_LOCKNO,		//锁号，初始化时设定
+	JCI_PSK,		//PSK，初始化时设定
+	JCI_DATETIME,	//时间日期，单位是秒，应该是GMT秒数
+	JCI_VALIDITY,	//有效期，单位是分钟
+	JCI_CLOSECODE,	//闭锁码
+	JCI_CMDTYPE,	//要生成什么类型的动态码
+	JCI_TIMESTEP,	//时间往前推算的间隔，单位为秒
+	JCI_END			//无效值，用于界定上下范围
 }JCITYPE;
 
-//����ƥ��ķ���ֵ
+//离线匹配的返回值
 typedef struct jcLockReverseMatchResult{
-	int s_datetime;		//ƥ��������
-	int s_validity;		//ƥ������Ч�ڷ�����
-	//int s_matchTimes;	//ƥ�����ü������
+	int s_datetime;		//匹配结果秒数
+	int s_validity;		//匹配结果有效期分钟数
+	//int s_matchTimes;	//匹配所用计算次数
 }JCMATCH;
 
-//��Ч�������С�����Ĵ˴��Ժ����Ӧ����Դ������JcLockInput���ʼ��������
-//Ϊ��Ч������m_validity_array�����ֵ����Ӧ���
+//有效期数组大小；更改此处以后请对应更改源代码中JcLockInput类初始化代码中
+//为有效期数组m_validity_array赋予初值的相应语句
 #define NUM_VALIDITY (8)
-#define JC_ATMNO_MAXLEN (16)	//ATM��ų������ֵ
-#define JC_LOCKNO_MAXLEN (16)	//LOCK��ų������ֵ
-#define JC_PSK_LEN (256/4)	//256bit HEX+NULL,���Ƕ���ֵ
+#define JC_ATMNO_MAXLEN (16)	//ATM编号长度最大值
+#define JC_LOCKNO_MAXLEN (16)	//LOCK编号长度最大值
+#define JC_PSK_LEN (256/4)	//256bit HEX+NULL,这是定长值
 #define JC_INVALID_VALUE	(-1)
 
-//����һ���ڲ����ݽṹ�����ؾ�����Ժ����в������Ըþ��Ϊ����
+//分配一个内部数据结构，返回句柄，以后所有操作均以该句柄为对象
 int		JCLMSCCB2014_API JcLockNew(void);
-//ɾ���ڲ����ݽṹ���ͷ��ڴ�ռ䣬��������JCLMS��ش������ǰ����
+//删除内部数据结构，释放内存空间，请在所有JCLMS相关代码结束前调用
 int		JCLMSCCB2014_API JcLockDelete(const int handle);
-//�����������͵�ֵ
+//设置整数类型的值
 JCERROR JCLMSCCB2014_API JcLockSetInt(const int handle,const JCITYPE mtype,int num);
-//�����ַ������͵�ֵ
+//设置字符串类型的值
 JCERROR	JCLMSCCB2014_API JcLockSetString(const int handle,const JCITYPE mtype,const char *str);
-//������������(��һ�����룬��ʼ������ȵ�)
+//设置命令类型(第一开锁码，初始闭锁码等等)
 JCERROR	JCLMSCCB2014_API JcLockSetCmdType(const int handle,const JCITYPE mtype,const JCCMD cmd);
-//�����������Ϸ���
+//检查输入参数合法性
 JCERROR JCLMSCCB2014_API JcLockCheckInput(const int handle);
-//lock�ṹ���ڲ�m_cmdtype������������һ�ද̬�룻
+//lock结构体内部m_cmdtype决定了生成哪一类动态码；
 int		JCLMSCCB2014_API JcLockGetDynaCode(const int handle);
-//��֤��̬�룬���ط��Ƴ�����ʱ�����Ч�ڽ����ʧ�ܵĻ������߾�Ϊ0��
+//验证动态码，返回反推出来的时间和有效期结果，失败的话，两者均为0；
 JCMATCH	JCLMSCCB2014_API JcLockReverseVerifyDynaCode( const int handle,const int dstCode );
-//ָ�����㷨����һ����ģ����㷨���������ϵı��ʱ����汾�ı䣬һ�����ֻ��һ���汾��
+//指明该算法是哪一天出的，当算法有运算结果上的变更时这个版本改变，一天最多只出一个版本；
 int		JCLMSCCB2014_API JcLockGetVersion(void);
-//��������ַ���
+//输出调试字符串
 void	JCLMSCCB2014_API JcLockDebugPrint(const int handle);
 
-const int ZWMEGA=1000000;	//һ����
+const int ZWMEGA=1000000;	//一百万
 
 //}	//end of namespace jclms
-//////////////////////////////����Ƶ�C�ӿ�////////////////////////////////////////////
+//////////////////////////////新设计的C接口////////////////////////////////////////////
 
 #endif // jclmsCCB2014_h__
