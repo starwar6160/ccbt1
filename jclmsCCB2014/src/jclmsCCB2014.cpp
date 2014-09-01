@@ -120,7 +120,7 @@ void myGetCloseCodeVarItem(int *mdatetime,int *mvalidity,int *mclosecode);
 
 		for (int tdate=l_datetime;tdate>=tend;tdate-=l_timestep)			
 		{			
-			printf("%d\t",tdate);
+			//printf("%d\t",tdate);
 			for (int v=0;v<NUM_VALIDITY;v++)
 			{
 				SM3 sm3;

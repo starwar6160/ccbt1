@@ -4,6 +4,7 @@
 
 const int ZW_MAXDATA32=2048*ZWMEGA-3;	//32位有符号整数可能表示的最大时间值
 const int ZW_LOWEST_DATE=1400*ZWMEGA-24*3600;	//考虑到取整运算可能使得时间值低于1400M，所以把最低点时间提前一整天该足够了
+const int ZW_ONE_DAY=24*60*60;
 
 //设置命令类型(第一开锁码，初始闭锁码等等)
 JCERROR	JCLMSCCB2014_API JcLockSetCmdType(const int handle,const JCITYPE mtype,const JCCMD cmd)
@@ -65,7 +66,7 @@ JCERROR JCLMSCCB2014_API JcLockSetInt( const int handle,const JCITYPE mtype,int 
 		return EJC_INPUT_NULL;
 	}
 	JCINPUT *jcp=(JCINPUT *)handle;
-	assert(jcp->m_stepoftime>=6 && jcp->m_stepoftime<=24*3600);
+	assert(jcp->m_stepoftime>=6 && jcp->m_stepoftime<=ZW_ONE_DAY);
 	switch (mtype)
 	{
 	case JCI_DATETIME:
@@ -142,11 +143,11 @@ JCERROR JCLMSCCB2014_API JcLockCheckInput( const int handle )
 			return EJC_CLOSECODE_INVALID;
 		}
 	}	//if (JCCMD_INIT_CLOSECODE!=jcp->m_cmdtype)
-	if (jcp->m_stepoftime<=0 || jcp->m_stepoftime>=(24*60*60))
+	if (jcp->m_stepoftime<=0 || jcp->m_stepoftime>=ZW_ONE_DAY)
 	{//搜索步长为负数或者大于一整天则无效
 		return EJC_CMDTYPE_TIMESTEP_INVALID;
 	}
-	if (jcp->m_reverse_time_length<=0 || jcp->m_reverse_time_length>=(365*24*60*60))
+	if (jcp->m_reverse_time_length<=0 || jcp->m_reverse_time_length>=(365*ZW_ONE_DAY))
 	{//往前搜索时间为负数或者大于一整年则无效
 		return EJC_CMDTYPE_TIMELEN_INVALID;
 	}
