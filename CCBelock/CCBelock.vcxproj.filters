@@ -83,6 +83,12 @@
     <ClCompile Include="ATMCMsgConvert\atmcConvMain.cpp">
       <Filter>源文件\convert</Filter>
     </ClCompile>
+    <ClCompile Include="ATMCMsgConvert\myLockActive.cpp">
+      <Filter>源文件\convert</Filter>
+    </ClCompile>
+    <ClCompile Include="ATMCMsgConvert\myLockStatusAndLog.cpp">
+      <Filter>源文件\convert</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="HidProtocol.rc">

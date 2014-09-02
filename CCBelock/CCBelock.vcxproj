@@ -108,6 +108,8 @@
   <ItemGroup>
     <ClCompile Include="atmcDLLConvert731.cpp" />
     <ClCompile Include="ATMCMsgConvert\atmcConvMain.cpp" />
+    <ClCompile Include="ATMCMsgConvert\myLockActive.cpp" />
+    <ClCompile Include="ATMCMsgConvert\myLockStatusAndLog.cpp" />
     <ClCompile Include="CCBelock.cpp" />
     <ClCompile Include="dllmain.cpp">
       <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</CompileAsManaged>
