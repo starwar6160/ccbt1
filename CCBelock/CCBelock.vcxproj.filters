@@ -92,6 +92,9 @@
     <ClCompile Include="ATMCMsgConvert\myLockCloseCode.cpp">
       <Filter>源文件\convert</Filter>
     </ClCompile>
+    <ClCompile Include="ATMCMsgConvert\myLockTimeSync.cpp">
+      <Filter>源文件\convert</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="HidProtocol.rc">
