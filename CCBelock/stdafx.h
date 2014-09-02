@@ -74,6 +74,13 @@ using Poco::Util::HelpFormatter;
 #include <cassert>
 #include <vector>
 #include <deque>
+using std::cout;
+using std::cin;
+using std::cerr;
+using std::endl;
+using std::string;
+using std::deque;
+using std::vector;
 
 #include <boost/thread.hpp> 
 #include <boost/thread/mutex.hpp>
@@ -83,11 +90,5 @@ using Poco::Util::HelpFormatter;
 #include <boost/property_tree/exceptions.hpp>
 #include <boost/algorithm/string.hpp>
 #include <boost/typeof/typeof.hpp>
+using boost::property_tree::ptree;
 
-using std::cout;
-using std::cin;
-using std::cerr;
-using std::endl;
-using std::string;
-using std::deque;
-using std::vector;

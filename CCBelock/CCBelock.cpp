@@ -56,11 +56,10 @@ namespace zwCfg{
 
 CCBELOCK_API long JCAPISTD Open(long lTimeOut)
 {
+	assert(lTimeOut>0 && lTimeOut<zwCfg::JC_CCBDLL_TIMEOUT);
 	ZWFUNCTRACE
 	boost:: mutex:: scoped_lock lock( zwCfg::ws_mutex); 
 	//必须大于0，小于JC_CCBDLL_TIMEOUT，限制在一个合理范围内
-	assert(lTimeOut>0 && lTimeOut<zwCfg::JC_CCBDLL_TIMEOUT);
-
 	pocoLog->notice()<<"Open Return "<<ELOCK_ERROR_SUCCESS<<endl;
 	ZWNOTICE("打开 到锁具的连接")
 	return ELOCK_ERROR_SUCCESS;
