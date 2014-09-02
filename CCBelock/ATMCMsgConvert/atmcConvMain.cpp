@@ -14,9 +14,9 @@ namespace jcAtmcConvertDLL{
 		ZWFUNCTRACE
 			//接受ATMC下发的XML，转化为中间形式ptree
 			assert(downXML.length()>42);	//XML开头的固定内容38个字符，外加起码一个标签的两对尖括号合计4个字符
-		ZWTRACE("******************建行ATMC下发XML开始*********************\n");
-		ZWTRACE(downXML.c_str());
-		ZWTRACE("******************建行ATMC下发XML结束*********************\n");
+		ZWDBGMSG("******************建行ATMC下发XML开始*********************\n");
+		ZWDBGMSG(downXML.c_str());
+		ZWDBGMSG("******************建行ATMC下发XML结束*********************\n");
 		JC_MSG_TYPE msgType=JCMSG_INVALID_TYPE;
 		ptree ptCCB;
 		std::stringstream ss;
@@ -27,9 +27,9 @@ namespace jcAtmcConvertDLL{
 		std::stringstream ssccb;
 		write_json(ssccb,ptCCB);
 		string ccbJson= ssccb.str();
-		ZWTRACE("***建行XML转换后的JSON开始********************************\n");
-		ZWTRACE(ccbJson.c_str());
-		ZWTRACE("***建行XML转换后的JSON结束********************************\n");
+		ZWDBGMSG("***建行XML转换后的JSON开始********************************\n");
+		ZWDBGMSG(ccbJson.c_str());
+		ZWDBGMSG("***建行XML转换后的JSON结束********************************\n");
 
 
 		//判断消息类型
@@ -98,9 +98,9 @@ namespace jcAtmcConvertDLL{
 		std::stringstream ss2;
 		write_json(ss2,ptJC);
 		downJson= ss2.str();
-		ZWTRACE("***金储JSON下发请求开始***********************************\n");
-		ZWTRACE(downJson.c_str());
-		ZWTRACE("***金储JSON下发请求结束***********************************\n");
+		ZWDBGMSG("***金储JSON下发请求开始***********************************\n");
+		ZWDBGMSG(downJson.c_str());
+		ZWDBGMSG("***金储JSON下发请求结束***********************************\n");
 
 		return msgType;
 	}
@@ -119,9 +119,9 @@ namespace jcAtmcConvertDLL{
 		std::stringstream sst1;
 		write_json(sst1,ptJC);
 		string jsonJc= sst1.str();
-		ZWTRACE("***金储锁具返回的JSON应答开始*************************####\n");
-		ZWTRACE(jsonJc.c_str());
-		ZWTRACE("***金储锁具返回的JSON应答结束*************************####\n");
+		ZWDBGMSG("***金储锁具返回的JSON应答开始*************************####\n");
+		ZWDBGMSG(jsonJc.c_str());
+		ZWDBGMSG("***金储锁具返回的JSON应答结束*************************####\n");
 
 
 		//判断消息类型并从我们的JSON接口变为建行的接口所需字段
@@ -175,17 +175,17 @@ namespace jcAtmcConvertDLL{
 		write_json(sst2,ptCCB);
 		string jsonCcb=sst2.str();
 		//////////////////////////////////////////////////////////////////////////
-		ZWTRACE("***金储锁具应答JSON处理为建行所需元素 开始************####\n");
-		ZWTRACE(jsonCcb.c_str());
-		ZWTRACE("***金储锁具应答JSON处理为建行所需元素 结束************####\n");
+		ZWDBGMSG("***金储锁具应答JSON处理为建行所需元素 开始************####\n");
+		ZWDBGMSG(jsonCcb.c_str());
+		ZWDBGMSG("***金储锁具应答JSON处理为建行所需元素 结束************####\n");
 
 		//转换JSON为XML供ATMC使用
 		std::stringstream ss2;
 		write_xml(ss2,ptCCB);
 		upXML= ss2.str();
-		ZWTRACE("*********************金储应答XML开始******************####\n");
-		ZWTRACE(upXML.c_str());
-		ZWTRACE("*********************金储应答XML结束******************####\n");
+		ZWDBGMSG("*********************金储应答XML开始******************####\n");
+		ZWDBGMSG(upXML.c_str());
+		ZWDBGMSG("*********************金储应答XML结束******************####\n");
 		try{
 			string transCode=ptCCB.get<string>(CCBSTR_CODE);
 			if ("0000"==transCode)

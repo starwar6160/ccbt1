@@ -29,8 +29,8 @@ namespace{
 			}
 			catch (WebSocketException& exc)
 			{
-				ZWTRACE("CPPEXECPTION804B");
-				ZWTRACE(__FUNCTION__);
+				ZWDBGMSG("CPPEXECPTION804B");
+				ZWDBGMSG(__FUNCTION__);
 				ZWFATAL("webSocket类连接服务器异常")
 				switch (exc.code())
 				{

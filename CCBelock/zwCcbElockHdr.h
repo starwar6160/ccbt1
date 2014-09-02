@@ -1,7 +1,5 @@
 #ifndef zwCcbElockHdr_h__
 #define zwCcbElockHdr_h__
-//#include "stdafx.h"
-/////////////////////////////////测试用函数/////////////////////////////////////////
 //报文类型
 typedef enum jcmsg_ccb_elock_t{
 	JCMSG_INVALID_TYPE,	//无效报文类型
@@ -19,6 +17,7 @@ typedef enum jcmsg_ccb_elock_t{
 	JCMSG_REQUEST_TIME_SYNC,	//锁具主动要求时间同步
 }JC_MSG_TYPE;
 
+//为了日志，报警等用途设计的数据结构
 typedef struct jcLockStatus_t{
 	string ActiveStatus;
 	string EnableStatus;
@@ -32,9 +31,6 @@ typedef struct jcLockStatus_t{
 	string PswTryAlert;
 	string LockOverTime;
 }JCLOCKSTATUS;
-void zwLockStatusDataSplit(const char *LockStatus,JCLOCKSTATUS &lst);
-void zwStatusData2String(const JCLOCKSTATUS &lst,JCLOCKSTATUS &ostr);
-string LockStatusStringMerge(JCLOCKSTATUS &ostr);
 
 namespace jcAtmcConvertDLL{
 	//JSON命令字符串定义
@@ -56,7 +52,6 @@ namespace jcAtmcConvertDLL{
 	extern const char *CCBSTR_TIME;
 	extern const char *CCBSTR_DEVCODE;
 
-
 	const JC_MSG_TYPE zwCCBxml2JCjson(const string &inXML,string &outJson);
 	const JC_MSG_TYPE zwJCjson2CCBxml(const string &inJson,string &outXML);
 	extern const char *LOCKMAN_NAME;
@@ -71,32 +66,6 @@ enum JC_CCBELOCK_ERROR_CODE{
 	ELOCK_ERROR_TIMEOUT=5		//操作超时
 };
 
-//通讯线程运行状态控制
-enum{
-	//1145这个值随便取的，无意义，只是为了避免外部传入一个0或者1之类恰好符合枚举值的错误输入
-	ZWTHR_STOP=1145,	
-	ZWTHR_RUN,
-};
-
-namespace zwccbthr{
-void ThreadLockComm();				//与锁具之间的通讯线程
-void ThreadHeartJump();				//发送心跳包的线程；
-const string getString(void);
-void myLoadConfig(const string &cfgFileName);
-extern string s_dbgReturn;
-}	//namespace zwccbthr{
-
-
-typedef void (cdecl *RecvMsgRotine)(const char *pszMsg);
-namespace zwCfg{
-	extern RecvMsgRotine g_WarnCallback;
-}
-
-//从给定的时间秒数，获取日期(YYYYMMDD)和时间(HHMMSS)字符串
-void zwGetLocalDateTimeString(time_t inTime,string &outDate,string &outTime);
-
-void ZWTRACE(const char *x);
-
 class zw_trace
 {
 	string m_str;
@@ -108,6 +77,18 @@ public:
 };
 #define ZWFUNCTRACE	zw_trace fntr(__FUNCTION__);
 
+void zwLockStatusDataSplit(const char *LockStatus,JCLOCKSTATUS &lst);
+void zwStatusData2String(const JCLOCKSTATUS &lst,JCLOCKSTATUS &ostr);
+string LockStatusStringMerge(JCLOCKSTATUS &ostr);
+
+//从给定的时间秒数，获取日期(YYYYMMDD)和时间(HHMMSS)字符串
+void zwGetLocalDateTimeString(time_t inTime,string &outDate,string &outTime);
+
+typedef void (cdecl *RecvMsgRotine)(const char *pszMsg);
+namespace zwCfg{
+	extern RecvMsgRotine g_WarnCallback;
+}
+void ZWDBGMSG(const char *x);
 
 
 #endif // zwCcbElockHdr_h__

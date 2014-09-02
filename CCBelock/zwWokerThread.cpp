@@ -9,7 +9,6 @@ using Poco::Util::IniFileConfiguration;
 
 
 namespace zwccbthr{
-	int ns_thr_run=ZWTHR_RUN;	//控制通讯线程的开始和停止
 	boost:: mutex thr_mutex; 
 	//建行给的接口，没有设置连接参数的地方，也就是说，完全可以写死IP和端口，抑或是从配置文件读取
 	//zwWebSocket zwscthr("10.0.0.10",8088);
@@ -69,7 +68,7 @@ namespace zwccbthr{
 			jcAtmcConvertDLL::zwJCjson2CCBxml(recstr,outXML);
 			ZWINFO("分析锁具回传的Json并转换为建行XML成功");
 			assert(outXML.length()>42);	//XML开头的固定内容38个字符，外加起码一个标签的两对尖括号合计4个字符
-			ZWTRACE(outXML.c_str());		
+			ZWDBGMSG(outXML.c_str());		
 
 			{
 				boost:: mutex:: scoped_lock lock( recv_mutex); 
@@ -142,8 +141,8 @@ void zwPushString(const string &str)
 	}
 	catch(...)
 	{
-		ZWTRACE(__FUNCTION__);
-		ZWTRACE("\t zwWebSocket Send String Exeception!20140805.1626");
+		ZWDBGMSG(__FUNCTION__);
+		ZWDBGMSG("\t zwWebSocket Send String Exeception!20140805.1626");
 		ZWFATAL("通过WebSocket发送数据到锁具异常，可能是未连接")
 	}
 

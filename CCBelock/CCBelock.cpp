@@ -22,7 +22,12 @@ using boost::property_tree::ptree_bad_path;
 //回调函数指针类型定义
 using Poco::Net::ConnectionRefusedException;
 
-void ZWTRACE(const char *x)
+namespace zwccbthr{
+	void ThreadLockComm();				//与锁具之间的通讯线程
+}	//namespace zwccbthr{
+
+
+void ZWDBGMSG(const char *x)
 {
 	OutputDebugStringA(x);
 	pocoLog->trace(x);

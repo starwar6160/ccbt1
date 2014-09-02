@@ -7,6 +7,11 @@ string zwGetConfigFileName(void);
 string zwGetLogFileName(void);
 int PocoLogInit(void);
 
+namespace zwccbthr{
+	void myLoadConfig(const string &cfgFileName);
+}	//namespace zwccbthr{
+
+
 string zwGetConfigFileName(void)
 {
 	HMODULE hdl=GetModuleHandleA("HidProtocol.dll");
