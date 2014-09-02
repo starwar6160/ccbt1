@@ -8,7 +8,6 @@
 //4.初始化的时候，建行下发报文中有密码服务器公钥，我们的报文里面没有，锁具内部对此进行处理了吗？
 //5.新版文档里面"锁具初始化"，请求是“Atm_Serial”，应答是“Lock_Serial”，以哪个为准？
 
-
 #include "stdafx.h"
 #include "CCBelock.h"
 #include "zwCcbElockHdr.h"
@@ -22,10 +21,9 @@ using boost::property_tree::ptree_bad_path;
 //回调函数指针类型定义
 using Poco::Net::ConnectionRefusedException;
 
-namespace zwccbthr{
-	void ThreadLockComm();				//与锁具之间的通讯线程
-}	//namespace zwccbthr{
-
+namespace zwccbthr {
+	void ThreadLockComm();	//与锁具之间的通讯线程
+} //namespace zwccbthr{ 
 
 void ZWDBGMSG(const char *x)
 {
@@ -35,9 +33,9 @@ void ZWDBGMSG(const char *x)
 
 zw_trace::zw_trace(const char *funcName)
 {
-	m_str=funcName;
-	m_start=m_str+"\tSTART";
-	m_end=m_str+"\tEND";
+	m_str = funcName;
+	m_start = m_str + "\tSTART";
+	m_end = m_str + "\tEND";
 	OutputDebugStringA(m_start.c_str());
 	pocoLog->trace(m_start);
 }
@@ -49,132 +47,116 @@ zw_trace::~zw_trace()
 	pocoLog->trace(m_end);
 }
 
-namespace zwCfg{
-	const long	JC_CCBDLL_TIMEOUT=86400;	//最长超时时间为30秒,用于测试目的尽快达到限制暴露问题
-	const int	JC_MSG_MAXLEN=4*1024;	//最长为128字节,用于测试目的尽快达到限制暴露问题
+namespace zwCfg {
+	const long JC_CCBDLL_TIMEOUT = 86400;	//最长超时时间为30秒,用于测试目的尽快达到限制暴露问题
+	const int JC_MSG_MAXLEN = 4 * 1024;	//最长为128字节,用于测试目的尽快达到限制暴露问题
 	//定义一个回调函数指针
-	RecvMsgRotine g_WarnCallback=NULL;
-	boost:: mutex ws_mutex; 	//用于保护WebSocket连接对象
+	RecvMsgRotine g_WarnCallback = NULL;
+	 boost::mutex ws_mutex;	//用于保护WebSocket连接对象
 	//线程对象作为一个全局静态变量，则不需要显示启动就能启动一个线程
-	boost::thread *thr=NULL;
-}	//namespace zwCfg{
+	 boost::thread * thr = NULL;
+} //namespace zwCfg{ 
 
 CCBELOCK_API long JCAPISTD Open(long lTimeOut)
 {
-	assert(lTimeOut>0 && lTimeOut<zwCfg::JC_CCBDLL_TIMEOUT);
-	ZWFUNCTRACE
-	boost:: mutex:: scoped_lock lock( zwCfg::ws_mutex); 
+	assert(lTimeOut > 0 && lTimeOut < zwCfg::JC_CCBDLL_TIMEOUT);
+	ZWFUNCTRACE boost::mutex::scoped_lock lock(zwCfg::ws_mutex);
 	//必须大于0，小于JC_CCBDLL_TIMEOUT，限制在一个合理范围内
-	pocoLog->notice()<<"Open Return "<<ELOCK_ERROR_SUCCESS<<endl;
+	pocoLog->notice() << "Open Return " << ELOCK_ERROR_SUCCESS << endl;
 	ZWNOTICE("打开 到锁具的连接")
-	return ELOCK_ERROR_SUCCESS;
+	    return ELOCK_ERROR_SUCCESS;
 }
 
 CCBELOCK_API long JCAPISTD Close()
 {
-	ZWFUNCTRACE
-	boost:: mutex:: scoped_lock lock( zwCfg::ws_mutex); 
-	zwCfg::g_WarnCallback=NULL;
+	ZWFUNCTRACE boost::mutex::scoped_lock lock(zwCfg::ws_mutex);
+	zwCfg::g_WarnCallback = NULL;
 	ZWNOTICE("关闭 到锁具的连接")
-	return ELOCK_ERROR_SUCCESS;
+	    return ELOCK_ERROR_SUCCESS;
 }
 
 CCBELOCK_API long JCAPISTD Notify(const char *pszMsg)
 {
-	ZWFUNCTRACE
-	assert(pszMsg!=NULL && strlen(pszMsg)>42);	//XML至少42字节
-	if (NULL!=pszMsg && strlen(pszMsg)>0)
-	{
-		pocoLog->information()<<"CCB下发XML="<<endl<<pszMsg<<endl;
+	ZWFUNCTRACE assert(pszMsg != NULL && strlen(pszMsg) > 42);	//XML至少42字节
+	if (NULL != pszMsg && strlen(pszMsg) > 0) {
+		pocoLog->
+		    information() << "CCB下发XML=" << endl << pszMsg << endl;
 	}
-	boost:: mutex:: scoped_lock lock( zwCfg::ws_mutex); 
+	boost::mutex::scoped_lock lock(zwCfg::ws_mutex);
 	string strJsonSend;
-	try{
+	try {
 		//输入必须有内容，但是最大不得长于下位机内存大小，做合理限制
-		assert(NULL!=pszMsg);
-		if (NULL==pszMsg)
-		{
+		assert(NULL != pszMsg);
+		if (NULL == pszMsg) {
 			ZWERROR("Notify输入为空")
-			return ELOCK_ERROR_PARAMINVALID;
+			    return ELOCK_ERROR_PARAMINVALID;
 		}
-		int inlen=strlen(pszMsg);
-		assert(inlen>0 && inlen<zwCfg::JC_MSG_MAXLEN);
-		if (inlen==0 || inlen>=zwCfg::JC_MSG_MAXLEN )
-		{
+		int inlen = strlen(pszMsg);
+		assert(inlen > 0 && inlen < zwCfg::JC_MSG_MAXLEN);
+		if (inlen == 0 || inlen >= zwCfg::JC_MSG_MAXLEN) {
 			ZWWARN("Notify输入超过最大最小限制");
 			return ELOCK_ERROR_PARAMINVALID;
 		}
 		//////////////////////////////////////////////////////////////////////////
-		string strXMLSend=pszMsg;		
-		assert(strXMLSend.length()>42);	//XML开头的固定内容38个字符，外加起码一个标签的两对尖括号合计4个字符
-		jcAtmcConvertDLL::zwCCBxml2JCjson(strXMLSend,strJsonSend);
-		assert(strJsonSend.length()>9);	//json最基本的符号起码好像要9个字符左右
+		string strXMLSend = pszMsg;
+		assert(strXMLSend.length() > 42);	//XML开头的固定内容38个字符，外加起码一个标签的两对尖括号合计4个字符
+		jcAtmcConvertDLL::zwCCBxml2JCjson(strXMLSend, strJsonSend);
+		assert(strJsonSend.length() > 9);	//json最基本的符号起码好像要9个字符左右
 		//启动通信线程
-		 boost::thread thr(zwccbthr::ThreadLockComm);
-		 ZWNOTICE(strJsonSend.c_str());
-		 Sleep(300);	 
+		boost::thread thr(zwccbthr::ThreadLockComm);
+		ZWNOTICE(strJsonSend.c_str());
+		Sleep(300);
 		zwPushString(strJsonSend);
 		return ELOCK_ERROR_SUCCESS;
 	}
-	catch(ptree_bad_path &e)
-	{
+	catch(ptree_bad_path & e) {
 		ZWERROR(e.what());
 		ZWERROR("CCB下发XML有错误节点路径")
-		return ELOCK_ERROR_CONNECTLOST;
+		    return ELOCK_ERROR_CONNECTLOST;
 	}
-	catch(ptree_bad_data &e)
-	{
+	catch(ptree_bad_data & e) {
 		ZWERROR(e.what());
 		ZWERROR("CCB下发XML有错误数据内容")
-			return ELOCK_ERROR_CONNECTLOST;
+		    return ELOCK_ERROR_CONNECTLOST;
 	}
-	catch(ptree_error &e)
-	{
+	catch(ptree_error & e) {
 		ZWERROR(e.what());
 		ZWERROR("CCB下发XML有其他未知错误")
-		return ELOCK_ERROR_CONNECTLOST;
+		    return ELOCK_ERROR_CONNECTLOST;
 	}
-	catch (...)
-	{//一切网络异常都直接返回错误。主要是为了捕捉未连接时
-		//WebSocket对象为空造成访问NULL指针的的SEH异常	
+	catch(...) {		//一切网络异常都直接返回错误。主要是为了捕捉未连接时
+		//WebSocket对象为空造成访问NULL指针的的SEH异常  
 		//为了使得底层Poco库与cceblock类解耦，从我的WS类
 		//发现WS对象因为未连接而是NULL时直接throw一个枚举
 		//然后在此，也就是上层捕获。暂时不知道捕获精确类型
 		//所以catch所有异常了
 		ZWFATAL(__FUNCTION__);
 		ZWFATAL("Notify通过WebSocket发送数据异常，可能网络故障")
-		return ELOCK_ERROR_CONNECTLOST;
+		    return ELOCK_ERROR_CONNECTLOST;
 	}
 }
 
 void cdecl myATMCRecvMsgRotine(const char *pszMsg)
 {
-	ZWFUNCTRACE
-	assert(pszMsg!=NULL && strlen(pszMsg)>42);
-	boost:: mutex:: scoped_lock lock( zwCfg::ws_mutex); 
+	ZWFUNCTRACE assert(pszMsg != NULL && strlen(pszMsg) > 42);
+	boost::mutex::scoped_lock lock(zwCfg::ws_mutex);
 	//输入必须有内容，但是最大不得长于下位机内存大小，做合理限制
-	assert(NULL!=pszMsg);
-	int inlen=strlen(pszMsg);
-	assert(inlen>0 && inlen<zwCfg::JC_MSG_MAXLEN);
-	if (NULL==pszMsg || inlen==0 || inlen>=zwCfg::JC_MSG_MAXLEN )
-	{
+	assert(NULL != pszMsg);
+	int inlen = strlen(pszMsg);
+	assert(inlen > 0 && inlen < zwCfg::JC_MSG_MAXLEN);
+	if (NULL == pszMsg || inlen == 0 || inlen >= zwCfg::JC_MSG_MAXLEN) {
 		return;
 	}
 }
 
-
 CCBELOCK_API int JCAPISTD SetRecvMsgRotine(RecvMsgRotine pRecvMsgFun)
 {
-	ZWFUNCTRACE
-	boost:: mutex:: scoped_lock lock( zwCfg::ws_mutex); 
-	assert(NULL!=pRecvMsgFun);
-	if (NULL==pRecvMsgFun)
-	{
+	ZWFUNCTRACE boost::mutex::scoped_lock lock(zwCfg::ws_mutex);
+	assert(NULL != pRecvMsgFun);
+	if (NULL == pRecvMsgFun) {
 		ZWFATAL("注册回调函数不能传入空指针0952")
-		return ELOCK_ERROR_PARAMINVALID;
+		    return ELOCK_ERROR_PARAMINVALID;
 	}
-	zwCfg::g_WarnCallback=pRecvMsgFun;
+	zwCfg::g_WarnCallback = pRecvMsgFun;
 	return ELOCK_ERROR_SUCCESS;
 }
-
-
