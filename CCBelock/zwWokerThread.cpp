@@ -129,9 +129,7 @@ void zwPushString(const string & str)
 		return;
 	}
 	try {
-		//发出的Json命令字符串加上感叹号，作为万敏用的结束符
-		string strS=str+"!";
-		zwccbthr::zwComPort->SendData(strS.data(),strS.length());
+		zwccbthr::zwComPort->SendData(str.data(),str.length());
 	}
 	catch(...) {
 		ZWDBGMSG(__FUNCTION__);
