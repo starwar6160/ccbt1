@@ -33,7 +33,7 @@ int sptest905a17(void)
 	//	000000323031323334353637383930313233343536373839303132333435363738393031323334353637383930313233343536373839
 
 	jcSerialPort jcsp("COM2");
-	string msg1="ZhouWei20140905.1112\n";
+	string msg1="ZhouWei20140909.0858\n";
 	jcsp.SendData(msg1.c_str(),msg1.size());
 	const int BLEN=500;
 	char recvBuf[BLEN+1];

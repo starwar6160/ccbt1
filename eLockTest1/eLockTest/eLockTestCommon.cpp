@@ -131,3 +131,4 @@ namespace jcAtmcMsg {
 			assert(strXML.length() > 42);
 			break;
 }}}				//namespace jcAtmcMsg{
+
