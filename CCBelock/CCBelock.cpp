@@ -103,9 +103,9 @@ CCBELOCK_API long JCAPISTD Notify(const char *pszMsg)
 		jcAtmcConvertDLL::zwCCBxml2JCjson(strXMLSend, strJsonSend);
 		assert(strJsonSend.length() > 9);	//json最基本的符号起码好像要9个字符左右
 		//启动通信线程
-		boost::thread thr(zwccbthr::ThreadLockComm);
+		//boost::thread thr(zwccbthr::ThreadLockComm);
 		ZWNOTICE(strJsonSend.c_str());
-		Sleep(300);
+		//Sleep(300);
 		zwPushString(strJsonSend);
 		return ELOCK_ERROR_SUCCESS;
 	}
