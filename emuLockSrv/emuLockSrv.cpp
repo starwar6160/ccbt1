@@ -2,8 +2,10 @@
 //
 
 #include "stdafx.h"
+#include "jcSerialPort.h"
 #define ZWFUNCTRACK	cout<<__FUNCTION__<<endl;
 int zwjclms_command_proc(const string &inJson,string &outJson);
+jcSerialPort g_jcsp("COM3");
 
 class PageRequestHandler: public HTTPRequestHandler
 	/// Return a HTML document with some JavaScript creating
