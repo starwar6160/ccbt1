@@ -103,7 +103,6 @@
     <ClInclude Include="targetver.h" />
     <ClInclude Include="zwCcbElockHdr.h" />
     <ClInclude Include="zwPocoLog.h" />
-    <ClInclude Include="zwwsClient.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="atmcDLLConvert731.cpp" />
@@ -128,7 +127,6 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="zwLockStatusParse.cpp" />
-    <ClCompile Include="zwWebSocketClient.cpp" />
     <ClCompile Include="zwWokerThread.cpp" />
   </ItemGroup>
   <ItemGroup>

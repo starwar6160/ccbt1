@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "zwCcbElockHdr.h"
-#include "zwwsClient.h"
+//#include "zwwsClient.h"
 #include "zwPocoLog.h"
 #include "jcSerialPort.h"
 #include <stdio.h>
@@ -10,8 +10,7 @@ using Poco::Util::IniFileConfiguration;
 
 namespace zwccbthr {
 	boost::mutex thr_mutex;
-	//建行给的接口，没有设置连接参数的地方，也就是说，完全可以写死IP和端口，抑或是从配置文件读取
-	//zwWebSocket zwscthr("10.0.0.10",8088);
+	//建行给的接口，没有设置连接参数的地方，也就是说，完全可以端口，抑或是从配置文件读取
 	jcSerialPort *zwComPort = NULL;
 	string s_dbgReturn = "";
 	boost::mutex recv_mutex;
@@ -38,10 +37,6 @@ namespace zwccbthr {
 			myLockIp = zwGetLockIP();
 			jcSerialPort jcsp(myLockIp.c_str());
 			zwComPort=&jcsp;
-			//zwWebSocket wsconn(myLockIp.c_str(), 8088);
-			//zwscthr = &wsconn;
-			//wsconn.wsConnect();
-			//wsconn.zwSetLongTimeOut();
 			const int BLEN=1024;
 			char recvBuf[BLEN+1];
 			memset(recvBuf,0,BLEN+1);
@@ -130,7 +125,7 @@ void zwPushString(const string & str)
 		return;
 	}
 	if (NULL == zwccbthr::zwComPort) {
-		ZWFATAL("WebSocket对象指针为空！");
+		ZWFATAL("串口对象指针为空！");
 		return;
 	}
 	try {
@@ -138,8 +133,8 @@ void zwPushString(const string & str)
 	}
 	catch(...) {
 		ZWDBGMSG(__FUNCTION__);
-		ZWDBGMSG("\t zwWebSocket Send String Exeception!20140805.1626");
-		ZWFATAL("通过WebSocket发送数据到锁具异常，可能是未连接")
+		ZWDBGMSG("\t SerialPort Send String Exeception!20140805.1626");
+		ZWFATAL("通过串口发送数据到锁具异常，可能是未连接")
 	}
 
 }

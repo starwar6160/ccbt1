@@ -11,15 +11,12 @@
 #include "stdafx.h"
 #include "CCBelock.h"
 #include "zwCcbElockHdr.h"
-#include "zwwsClient.h"
+//#include "zwwsClient.h"
 #include "zwPocoLog.h"
 using namespace std;
 using boost::property_tree::ptree_error;
 using boost::property_tree::ptree_bad_data;
 using boost::property_tree::ptree_bad_path;
-
-//回调函数指针类型定义
-using Poco::Net::ConnectionRefusedException;
 
 namespace zwccbthr {
 	void ThreadLockComm();	//与锁具之间的通讯线程
@@ -52,7 +49,7 @@ namespace zwCfg {
 	const int JC_MSG_MAXLEN = 4 * 1024;	//最长为128字节,用于测试目的尽快达到限制暴露问题
 	//定义一个回调函数指针
 	RecvMsgRotine g_WarnCallback = NULL;
-	 boost::mutex ws_mutex;	//用于保护WebSocket连接对象
+	 boost::mutex ComPort_mutex;	//用于保护串口连接对象
 	//线程对象作为一个全局静态变量，则不需要显示启动就能启动一个线程
 	 boost::thread * thr = NULL;
 } //namespace zwCfg{ 
@@ -60,7 +57,7 @@ namespace zwCfg {
 CCBELOCK_API long JCAPISTD Open(long lTimeOut)
 {
 	assert(lTimeOut > 0 && lTimeOut < zwCfg::JC_CCBDLL_TIMEOUT);
-	ZWFUNCTRACE boost::mutex::scoped_lock lock(zwCfg::ws_mutex);
+	ZWFUNCTRACE boost::mutex::scoped_lock lock(zwCfg::ComPort_mutex);
 	//必须大于0，小于JC_CCBDLL_TIMEOUT，限制在一个合理范围内
 	pocoLog->notice() << "Open Return " << ELOCK_ERROR_SUCCESS << endl;
 	ZWNOTICE("打开 到锁具的连接")
@@ -69,7 +66,7 @@ CCBELOCK_API long JCAPISTD Open(long lTimeOut)
 
 CCBELOCK_API long JCAPISTD Close()
 {
-	ZWFUNCTRACE boost::mutex::scoped_lock lock(zwCfg::ws_mutex);
+	ZWFUNCTRACE boost::mutex::scoped_lock lock(zwCfg::ComPort_mutex);
 	zwCfg::g_WarnCallback = NULL;
 	ZWNOTICE("关闭 到锁具的连接")
 	    return ELOCK_ERROR_SUCCESS;
@@ -82,7 +79,7 @@ CCBELOCK_API long JCAPISTD Notify(const char *pszMsg)
 		pocoLog->
 		    information() << "CCB下发XML=" << endl << pszMsg << endl;
 	}
-	boost::mutex::scoped_lock lock(zwCfg::ws_mutex);
+	boost::mutex::scoped_lock lock(zwCfg::ComPort_mutex);
 	string strJsonSend;
 	try {
 		//输入必须有内容，但是最大不得长于下位机内存大小，做合理限制
@@ -125,13 +122,13 @@ CCBELOCK_API long JCAPISTD Notify(const char *pszMsg)
 		    return ELOCK_ERROR_CONNECTLOST;
 	}
 	catch(...) {		//一切网络异常都直接返回错误。主要是为了捕捉未连接时
-		//WebSocket对象为空造成访问NULL指针的的SEH异常  
+		//串口对象为空造成访问NULL指针的的SEH异常  
 		//为了使得底层Poco库与cceblock类解耦，从我的WS类
 		//发现WS对象因为未连接而是NULL时直接throw一个枚举
 		//然后在此，也就是上层捕获。暂时不知道捕获精确类型
 		//所以catch所有异常了
 		ZWFATAL(__FUNCTION__);
-		ZWFATAL("Notify通过WebSocket发送数据异常，可能网络故障")
+		ZWFATAL("Notify通过串口发送数据异常，可能网络故障")
 		    return ELOCK_ERROR_CONNECTLOST;
 	}
 }
@@ -139,7 +136,7 @@ CCBELOCK_API long JCAPISTD Notify(const char *pszMsg)
 void cdecl myATMCRecvMsgRotine(const char *pszMsg)
 {
 	ZWFUNCTRACE assert(pszMsg != NULL && strlen(pszMsg) > 42);
-	boost::mutex::scoped_lock lock(zwCfg::ws_mutex);
+	boost::mutex::scoped_lock lock(zwCfg::ComPort_mutex);
 	//输入必须有内容，但是最大不得长于下位机内存大小，做合理限制
 	assert(NULL != pszMsg);
 	int inlen = strlen(pszMsg);
@@ -151,7 +148,7 @@ void cdecl myATMCRecvMsgRotine(const char *pszMsg)
 
 CCBELOCK_API int JCAPISTD SetRecvMsgRotine(RecvMsgRotine pRecvMsgFun)
 {
-	ZWFUNCTRACE boost::mutex::scoped_lock lock(zwCfg::ws_mutex);
+	ZWFUNCTRACE boost::mutex::scoped_lock lock(zwCfg::ComPort_mutex);
 	assert(NULL != pRecvMsgFun);
 	if (NULL == pRecvMsgFun) {
 		ZWFATAL("注册回调函数不能传入空指针0952")
