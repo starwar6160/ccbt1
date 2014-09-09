@@ -18,6 +18,10 @@ int main(int argc,char *argv[])
 			memset(buffer,0,RECV_BUF_LEN);
 			outLen=0;
 			g_jcsp.RecvData(buffer,RECV_BUF_LEN,&outLen);
+			if ('!'==buffer[outLen-1])
+			{
+				buffer[outLen-1]=0;	//去掉为了万敏的要求添加的末尾的感叹号的干扰
+			}
 			string cmdRecv=buffer;
 			//app.logger().information(Poco::format("Frame received (length=%d, flags=0x%x).", n, unsigned(flags)));										
 			string cmdSend;				

@@ -20,9 +20,9 @@ namespace zwccbthr {
 		boost::this_thread::sleep(boost::posix_time::
 					  milliseconds(milliseconds));
 	} string zwGetLockIP(void) {
-		string myLockIp = "COM3";	//默认值是真实锁具IP
+		string myLockIp = "COM2";	//默认值是COM2
 		if (s_ComPort.length() > 0) {
-			myLockIp = s_ComPort;	//如果有配置文件的IP值，就使用之；
+			myLockIp = s_ComPort;	//如果有配置文件的串口值，就使用之；
 		}
 		ZWNOTICE("连接锁具IP使用");
 		ZWNOTICE(myLockIp.c_str());
@@ -129,7 +129,9 @@ void zwPushString(const string & str)
 		return;
 	}
 	try {
-		zwccbthr::zwComPort->SendData(str.data(),str.length());
+		//发出的Json命令字符串加上感叹号，作为万敏用的结束符
+		string strS=str+"!";
+		zwccbthr::zwComPort->SendData(strS.data(),strS.length());
 	}
 	catch(...) {
 		ZWDBGMSG(__FUNCTION__);
