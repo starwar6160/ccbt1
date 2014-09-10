@@ -37,14 +37,14 @@ zw_trace::zw_trace(const char *funcName)
 	//pocoLog->trace(m_start);
 }
 
-extern Poco::LogStream * pocoLog;
+
 zw_trace::~zw_trace()
 {
 
 	OutputDebugStringA(m_end.c_str());
 
 	//这里删除这一句就会导致测试停止，奇怪
-	pocoLog->trace(m_end);
+	//pocoLog->trace(m_end);
 }
 
 namespace zwCfg {

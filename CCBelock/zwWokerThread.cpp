@@ -5,8 +5,6 @@
 #include "jcSerialPort.h"
 #include <stdio.h>
 using namespace boost::property_tree;
-using Poco::AutoPtr;
-using Poco::Util::IniFileConfiguration;
 
 namespace zwccbthr {
 	boost::mutex thr_mutex;
@@ -97,14 +95,15 @@ namespace zwccbthr {
 	void myLoadConfig(const string & cfgFileName) {
 		try {
 			// 1. 载入配置文件  
-			AutoPtr < IniFileConfiguration >
-			    cfg(new IniFileConfiguration(cfgFileName));
+			//AutoPtr < IniFileConfiguration >
+			//    cfg(new IniFileConfiguration(cfgFileName));
 
 			// 2. 获取节点的值  
-			s_ComPort = cfg->getString("ELock.ComPort");
+			s_ComPort = "COM2";
+				//cfg->getString("ELock.ComPort");
 			assert(s_ComPort.length() > 0);
 		}
-		catch(Poco::Exception e) {
+		catch(...) {
 			//pocoLog->
 			//    warning() << "ini config file" << cfgFileName <<
 			//    " not found" << endl;
