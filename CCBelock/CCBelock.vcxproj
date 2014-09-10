@@ -52,7 +52,7 @@
       <WarningLevel>Level4</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;POCO_STATIC;CCBELOCK_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(BOOST)\;.\SerialPortTestCode;.\;$(GLOG)\src\windows;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(BOOST)\;.\SerialPortTestCode;.\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <ExceptionHandling>Sync</ExceptionHandling>
       <AdditionalOptions>-Zm113 %(AdditionalOptions)</AdditionalOptions>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
@@ -65,7 +65,7 @@
       <GenerateMapFile>false</GenerateMapFile>
       <MapExports>false</MapExports>
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
-      <AdditionalDependencies>libglog.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
       <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
     </Link>
   </ItemDefinitionGroup>
@@ -77,7 +77,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;POCO_STATIC;CCBELOCK_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(BOOST)\;.\SerialPortTestCode;.\;$(GLOG)\src\windows;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(BOOST)\;.\SerialPortTestCode;.\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalOptions>-Zm113 %(AdditionalOptions)</AdditionalOptions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
@@ -89,7 +89,7 @@
       <ModuleDefinitionFile>ccbElock.def</ModuleDefinitionFile>
       <AdditionalLibraryDirectories>$(BOOST)\lib;$(ZWBINJCLOCK)\$(Configuration)\</AdditionalLibraryDirectories>
       <GenerateMapFile>false</GenerateMapFile>
-      <AdditionalDependencies>libglog.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -98,6 +98,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ATMCMsgConvert\myConvIntHdr.h" />
+    <ClInclude Include="boostLogger.h" />
     <ClInclude Include="CCBelock.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="SerialPortTestCode\jcSerialPort.h" />
@@ -113,6 +114,10 @@
     <ClCompile Include="ATMCMsgConvert\myLockCloseCode.cpp" />
     <ClCompile Include="ATMCMsgConvert\myLockStatusAndLog.cpp" />
     <ClCompile Include="ATMCMsgConvert\myLockTimeSync.cpp" />
+    <ClCompile Include="boostLogger.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="CCBelock.cpp" />
     <ClCompile Include="dllmain.cpp">
       <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</CompileAsManaged>

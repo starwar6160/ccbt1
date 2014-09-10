@@ -54,6 +54,9 @@
     <ClInclude Include="SerialPortTestCode\jcSerialPort.h">
       <Filter>源文件\SerialPort</Filter>
     </ClInclude>
+    <ClInclude Include="boostLogger.h">
+      <Filter>源文件\SerialPort</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -96,6 +99,9 @@
       <Filter>源文件\convert</Filter>
     </ClCompile>
     <ClCompile Include="SerialPortTestCode\zwSerialTest905.cpp">
+      <Filter>源文件\SerialPort</Filter>
+    </ClCompile>
+    <ClCompile Include="boostLogger.cpp">
       <Filter>源文件\SerialPort</Filter>
     </ClCompile>
   </ItemGroup>
