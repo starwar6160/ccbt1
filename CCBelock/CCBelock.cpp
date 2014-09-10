@@ -37,6 +37,7 @@ zw_trace::zw_trace(const char *funcName)
 	//pocoLog->trace(m_start);
 }
 
+extern Poco::LogStream * pocoLog;
 zw_trace::~zw_trace()
 {
 

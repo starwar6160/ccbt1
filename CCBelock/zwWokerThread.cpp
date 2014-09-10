@@ -105,9 +105,9 @@ namespace zwccbthr {
 			assert(s_ComPort.length() > 0);
 		}
 		catch(Poco::Exception e) {
-			pocoLog->
-			    warning() << "ini config file" << cfgFileName <<
-			    " not found" << endl;
+			//pocoLog->
+			//    warning() << "ini config file" << cfgFileName <<
+			//    " not found" << endl;
 		}
 	}
 

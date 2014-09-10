@@ -3,7 +3,7 @@
 
 #include "stdafx.h"
 
-extern Poco::LogStream *pocoLog;
+//extern Poco::LogStream *pocoLog;
 //#define ZWFATAL(x)	OutputDebugStringA("ZWFATAL"); OutputDebugStringA(x);
 #define ZWDEBUG(x) OutputDebugStringA(x);
 #define ZWINFO(x) OutputDebugStringA(x);
