@@ -25,7 +25,7 @@ namespace zwccbthr {
 void ZWDBGMSG(const char *x)
 {
 	OutputDebugStringA(x);
-	pocoLog->trace(x);
+	//pocoLog->trace(x);
 }
 
 zw_trace::zw_trace(const char *funcName)
@@ -34,13 +34,15 @@ zw_trace::zw_trace(const char *funcName)
 	m_start = m_str + "\tSTART";
 	m_end = m_str + "\tEND";
 	OutputDebugStringA(m_start.c_str());
-	pocoLog->trace(m_start);
+	//pocoLog->trace(m_start);
 }
 
 zw_trace::~zw_trace()
 {
 
 	OutputDebugStringA(m_end.c_str());
+
+	//这里删除这一句就会导致测试停止，奇怪
 	pocoLog->trace(m_end);
 }
 
@@ -59,7 +61,7 @@ CCBELOCK_API long JCAPISTD Open(long lTimeOut)
 	assert(lTimeOut > 0 && lTimeOut < zwCfg::JC_CCBDLL_TIMEOUT);
 	ZWFUNCTRACE boost::mutex::scoped_lock lock(zwCfg::ComPort_mutex);
 	//必须大于0，小于JC_CCBDLL_TIMEOUT，限制在一个合理范围内
-	pocoLog->notice() << "Open Return " << ELOCK_ERROR_SUCCESS << endl;
+	//pocoLog->notice() << "Open Return " << ELOCK_ERROR_SUCCESS << endl;
 	ZWNOTICE("打开 到锁具的连接")
 	    return ELOCK_ERROR_SUCCESS;
 }
@@ -76,8 +78,7 @@ CCBELOCK_API long JCAPISTD Notify(const char *pszMsg)
 {
 	ZWFUNCTRACE assert(pszMsg != NULL && strlen(pszMsg) > 42);	//XML至少42字节
 	if (NULL != pszMsg && strlen(pszMsg) > 0) {
-		pocoLog->
-		    information() << "CCB下发XML=" << endl << pszMsg << endl;
+		//pocoLog->information() << "CCB下发XML=" << endl << pszMsg << endl;
 	}
 	boost::mutex::scoped_lock lock(zwCfg::ComPort_mutex);
 	string strJsonSend;
