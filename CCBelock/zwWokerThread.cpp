@@ -5,8 +5,6 @@
 #include "jcSerialPort.h"
 #include <stdio.h>
 using namespace boost::property_tree;
-using Poco::AutoPtr;
-using Poco::Util::IniFileConfiguration;
 
 namespace zwccbthr {
 	boost::mutex thr_mutex;
@@ -24,8 +22,8 @@ namespace zwccbthr {
 		if (s_ComPort.length() > 0) {
 			myLockIp = s_ComPort;	//如果有配置文件的串口值，就使用之；
 		}
-		ZWNOTICE("连接锁具IP使用");
-		ZWNOTICE(myLockIp.c_str());
+		ZWWARN("连接锁具IP使用");
+		ZWWARN(myLockIp.c_str());
 		return myLockIp;
 	}
 
@@ -41,7 +39,7 @@ namespace zwccbthr {
 			char recvBuf[BLEN+1];
 			memset(recvBuf,0,BLEN+1);
 			int outLen=0;
-			ZWNOTICE("连接锁具成功");
+			ZWWARN("连接锁具成功");
 			while (1) {
 				ZWINFO("通信线程的新一轮等待接收数据循环开始");
 				//string recstr;
@@ -50,7 +48,7 @@ namespace zwccbthr {
 						//wsconn.ReceiveString(recstr);
 						memset(recvBuf,0,BLEN);
 						jcsp.RecvData(recvBuf, BLEN,&outLen);
-						ZWNOTICE
+						ZWWARN
 						    ("成功从锁具接收数据如下：");
 					}
 					catch(...) {
@@ -58,7 +56,7 @@ namespace zwccbthr {
 						    ("到锁具的WS连接异常断开，数据接收线程将终止");
 						return;
 					}
-					ZWNOTICE(recvBuf);
+					ZWWARN(recvBuf);
 				}
 
 				string outXML;
@@ -95,6 +93,7 @@ namespace zwccbthr {
 	}
 
 	void myLoadConfig(const string & cfgFileName) {
+#ifdef _DEBUG_POCO910
 		try {
 			// 1. 载入配置文件  
 			AutoPtr < IniFileConfiguration >
@@ -105,10 +104,10 @@ namespace zwccbthr {
 			assert(s_ComPort.length() > 0);
 		}
 		catch(Poco::Exception e) {
-			pocoLog->
-			    warning() << "ini config file" << cfgFileName <<
+			LOG(WARNING) << "ini config file" << cfgFileName <<
 			    " not found" << endl;
 		}
+#endif // _DEBUG_POCO910
 	}
 
 //////////////////////////////////////////////////////////////////////////
@@ -129,6 +128,10 @@ void zwPushString(const string & str)
 		return;
 	}
 	try {
+#ifdef _DEBUG
+		cout<<"SERIAL PORT DATA=\n"<<str<<endl;
+		cout<<"SERIAL PORT LENGTH="<<str.length()<<endl;
+#endif // _DEBUG
 		zwccbthr::zwComPort->SendData(str.data(),str.length());
 	}
 	catch(...) {

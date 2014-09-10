@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "zwCcbElockHdr.h"
-#include "zwPocoLog.h"
+//#include "zwPocoLog.h"
 #include "myConvIntHdr.h"
 
 //把ATMC DLL的XML和JSON互转函数集中于此，便于单元测试；
@@ -180,7 +180,7 @@ namespace jcAtmcConvertDLL {
 			}
 		}
 		catch(...) {
-			ZWFATAL("金储JSON补全为CCB所需字段过程中有缺失")
+			OutputDebugStringA("金储JSON补全为CCB所需字段过程中有缺失");
 			    return JCMSG_INVALID_TYPE;
 		}
 		return JCMSG_INVALID_TYPE;

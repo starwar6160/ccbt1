@@ -37,6 +37,7 @@ string zwGetLogFileName(void)
 }
 
 
+#ifdef _DEBUG_POCOLOG910
 Poco::LogStream *pocoLog=NULL;
 int PocoLogInit(void)  
 {  
@@ -64,6 +65,7 @@ int PocoLogInit(void)
 	pocoLog=new Poco::LogStream(logger); 
 	return 0;  
 }  
+#endif // _DEBUG_POCOLOG910
 
 void myLoadCfgs()
 {

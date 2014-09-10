@@ -56,9 +56,6 @@
     <ClCompile Include="CCBelock.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="dllmain.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="zwWokerThread.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
@@ -88,6 +85,9 @@
     </ClCompile>
     <ClCompile Include="ATMCMsgConvert\myLockTimeSync.cpp">
       <Filter>源文件\convert</Filter>
+    </ClCompile>
+    <ClCompile Include="dllmain.cpp">
+      <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

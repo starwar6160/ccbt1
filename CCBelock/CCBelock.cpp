@@ -9,10 +9,9 @@
 //5.新版文档里面"锁具初始化"，请求是“Atm_Serial”，应答是“Lock_Serial”，以哪个为准？
 
 #include "stdafx.h"
+#include "zwPocoLog.h"
 #include "CCBelock.h"
 #include "zwCcbElockHdr.h"
-//#include "zwwsClient.h"
-#include "zwPocoLog.h"
 using namespace std;
 using boost::property_tree::ptree_error;
 using boost::property_tree::ptree_bad_data;
@@ -25,7 +24,7 @@ namespace zwccbthr {
 void ZWDBGMSG(const char *x)
 {
 	OutputDebugStringA(x);
-	pocoLog->trace(x);
+	ZWINFO(x);
 }
 
 zw_trace::zw_trace(const char *funcName)
@@ -34,14 +33,14 @@ zw_trace::zw_trace(const char *funcName)
 	m_start = m_str + "\tSTART";
 	m_end = m_str + "\tEND";
 	OutputDebugStringA(m_start.c_str());
-	pocoLog->trace(m_start);
+	ZWINFO(m_start.c_str());
 }
 
 zw_trace::~zw_trace()
 {
 
 	OutputDebugStringA(m_end.c_str());
-	pocoLog->trace(m_end);
+	ZWINFO(m_end.c_str());
 }
 
 namespace zwCfg {
@@ -59,8 +58,8 @@ CCBELOCK_API long JCAPISTD Open(long lTimeOut)
 	assert(lTimeOut > 0 && lTimeOut < zwCfg::JC_CCBDLL_TIMEOUT);
 	ZWFUNCTRACE boost::mutex::scoped_lock lock(zwCfg::ComPort_mutex);
 	//必须大于0，小于JC_CCBDLL_TIMEOUT，限制在一个合理范围内
-	pocoLog->notice() << "Open Return " << ELOCK_ERROR_SUCCESS << endl;
-	ZWNOTICE("打开 到锁具的连接")
+	ZWWARN("Open ELock");
+	ZWWARN("打开 到锁具的连接")
 	    return ELOCK_ERROR_SUCCESS;
 }
 
@@ -68,7 +67,7 @@ CCBELOCK_API long JCAPISTD Close()
 {
 	ZWFUNCTRACE boost::mutex::scoped_lock lock(zwCfg::ComPort_mutex);
 	zwCfg::g_WarnCallback = NULL;
-	ZWNOTICE("关闭 到锁具的连接")
+	ZWWARN("关闭 到锁具的连接")
 	    return ELOCK_ERROR_SUCCESS;
 }
 
@@ -76,8 +75,8 @@ CCBELOCK_API long JCAPISTD Notify(const char *pszMsg)
 {
 	ZWFUNCTRACE assert(pszMsg != NULL && strlen(pszMsg) > 42);	//XML至少42字节
 	if (NULL != pszMsg && strlen(pszMsg) > 0) {
-		pocoLog->
-		    information() << "CCB下发XML=" << endl << pszMsg << endl;
+		
+		LOG(WARNING) << "CCB下发XML=" << endl << pszMsg << endl;
 	}
 	boost::mutex::scoped_lock lock(zwCfg::ComPort_mutex);
 	string strJsonSend;
@@ -101,7 +100,7 @@ CCBELOCK_API long JCAPISTD Notify(const char *pszMsg)
 		assert(strJsonSend.length() > 9);	//json最基本的符号起码好像要9个字符左右
 		//启动通信线程
 		//boost::thread thr(zwccbthr::ThreadLockComm);
-		ZWNOTICE(strJsonSend.c_str());
+		ZWWARN(strJsonSend.c_str());
 		//Sleep(300);
 		zwPushString(strJsonSend);
 		return ELOCK_ERROR_SUCCESS;
