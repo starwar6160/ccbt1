@@ -29,7 +29,7 @@ void g_InitLog(SeverityLevel file_level, SeverityLevel console_level)
 	auto console_sink = logging::add_console_log();
 	auto file_sink = logging::add_file_log
 		(
-		keywords::file_name = "%Y-%m-%d_%N.log",      //文件名
+		keywords::file_name = "JCELOCK%Y-%m-%d_%N.log",      //文件名
 		keywords::rotation_size = 10 * 1024 * 1024,       //单个文件限制大小
 		keywords::time_based_rotation = sinks::file::rotation_at_time_point(0, 0, 0)    //每天重建
 		);
