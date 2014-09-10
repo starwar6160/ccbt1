@@ -19,6 +19,9 @@
     <Filter Include="源文件\convert">
       <UniqueIdentifier>{b773109f-6cf3-4e63-8990-89fde05b5ff8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="源文件\SerialPort">
+      <UniqueIdentifier>{a2711746-d8d0-42a1-a036-d704b68d9a5a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="ReadMe.txt" />
@@ -47,6 +50,9 @@
     </ClInclude>
     <ClInclude Include="ATMCMsgConvert\myConvIntHdr.h">
       <Filter>源文件\convert</Filter>
+    </ClInclude>
+    <ClInclude Include="SerialPortTestCode\jcSerialPort.h">
+      <Filter>源文件\SerialPort</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -88,6 +94,9 @@
     </ClCompile>
     <ClCompile Include="ATMCMsgConvert\myLockTimeSync.cpp">
       <Filter>源文件\convert</Filter>
+    </ClCompile>
+    <ClCompile Include="SerialPortTestCode\zwSerialTest905.cpp">
+      <Filter>源文件\SerialPort</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -36,3 +36,5 @@ using std::vector;
 #include <boost/typeof/typeof.hpp>
 using boost::property_tree::ptree;
 
+//#define GLOG_NO_ABBREVIATED_SEVERITIES
+//#include <glog/logging.h>   // glog м╥нд╪Ч
