@@ -2,8 +2,8 @@
 #include "jcElockTestHdr.h"
 #include "CCBelock.h"
 
-string s_repActReqXML;
-string s_repLockInitXML;
+string s_repActReqXML;	//从锁具收到的激活请求的返回报文
+string s_repLockInitXML;//从锁具收到的初始化请求的返回报文
 
 
 #ifdef _DEBUG_ACTREQ
@@ -15,7 +15,21 @@ int sptest905a17(void);
 //	int aa=sptest905a17();
 //}
 
-static string g_PubKeyRecvFromLock="";//用于保存从锁具收到的公钥
+//从0号报文返回XML提取公钥并返回
+string myGetPubKeyFromMsg0000Rep(const string msg0000RepXML)
+{
+	assert(msg0000RepXML.length()>0);
+	ptree ptJC;
+	std::stringstream ss;
+	ss << msg0000RepXML;
+	read_xml(ss, ptJC);
+	string pubkeyLock = ptJC.get < string > ("root.LockPubKey");
+	assert(pubkeyLock.length()>0);
+	return pubkeyLock;
+}
+
+
+
 
 //锁具激活请求报文的在线测试
 TEST_F(ccbElockTest, LockActiveTest0000)
@@ -75,6 +89,9 @@ TEST_F(ccbElockTest, LockSendActInfoTest0001)
 {
 	//Open(25);
 	//Sleep(2000);
+	assert(s_repActReqXML.length()>0);
+	cout<<"MESSAGE 0000 REP IS "<<s_repActReqXML<<endl;
+	cout<<"PubKey from Lock 20140911 is "<<myGetPubKeyFromMsg0000Rep(s_repActReqXML)<<endl;
 	EXPECT_EQ(ELOCK_ERROR_SUCCESS, SetRecvMsgRotine(myATMCRecvMsgRotine));
 	const JC_MSG_TYPE msgType = JCMSG_SEND_LOCK_ACTIVEINFO;	//设定消息类型
 	//ATMC生成XML消息
