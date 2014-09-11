@@ -187,17 +187,3 @@ namespace jcAtmcConvertDLL {
 	}
 
 }				//namespace jcAtmcConvertDLL{
-
-#ifdef _DEBUG_TEST819
-void testjson819(void)
-{
-	const char *jstest1 =
-	    "{\"Command\": \"Lock_Time_Sync_ATM\",\"Lock_Time\": 1408443318 }";
-	ptree ptt;
-	std::stringstream ss;
-	ss << jstest1;
-	read_json(ss, ptt);
-	write_json(ss, ptt);
-	cout << __FUNCTION__ << " " << ss.str() << endl;
-}
-#endif // _DEBUG_TEST819

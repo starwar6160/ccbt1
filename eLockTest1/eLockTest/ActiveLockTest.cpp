@@ -15,6 +15,8 @@ int sptest905a17(void);
 //	int aa=sptest905a17();
 //}
 
+static string g_PubKeyRecvFromLock="";//用于保存从锁具收到的公钥
+
 //锁具激活请求报文的在线测试
 TEST_F(ccbElockTest, LockActiveTest0000)
 {

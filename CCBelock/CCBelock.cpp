@@ -56,7 +56,11 @@ namespace zwCfg {
 
 CCBELOCK_API long JCAPISTD Open(long lTimeOut)
 {
-	assert(lTimeOut > 0 && lTimeOut < zwCfg::JC_CCBDLL_TIMEOUT);
+	assert(lTimeOut >= 0 && lTimeOut <= zwCfg::JC_CCBDLL_TIMEOUT);
+	if (lTimeOut<0 || lTimeOut>zwCfg::JC_CCBDLL_TIMEOUT)
+	{
+		return ELOCK_ERROR_PARAMINVALID;
+	}
 	ZWFUNCTRACE boost::mutex::scoped_lock lock(zwCfg::ComPort_mutex);
 	//必须大于0，小于JC_CCBDLL_TIMEOUT，限制在一个合理范围内
 	pocoLog->notice() << "Open Return " << ELOCK_ERROR_SUCCESS << endl;
@@ -74,7 +78,12 @@ CCBELOCK_API long JCAPISTD Close()
 
 CCBELOCK_API long JCAPISTD Notify(const char *pszMsg)
 {
-	ZWFUNCTRACE assert(pszMsg != NULL && strlen(pszMsg) > 42);	//XML至少42字节
+	ZWFUNCTRACE 
+	assert(pszMsg != NULL && strlen(pszMsg) >= 42);	//XML至少42字节utf8
+	if (pszMsg==NULL || strlen(pszMsg)<42)
+	{
+		return ELOCK_ERROR_PARAMINVALID;
+	}
 	if (NULL != pszMsg && strlen(pszMsg) > 0) {
 		pocoLog->
 		    information() << "CCB下发XML=" << endl << pszMsg << endl;
@@ -99,22 +108,20 @@ CCBELOCK_API long JCAPISTD Notify(const char *pszMsg)
 		assert(strXMLSend.length() > 42);	//XML开头的固定内容38个字符，外加起码一个标签的两对尖括号合计4个字符
 		jcAtmcConvertDLL::zwCCBxml2JCjson(strXMLSend, strJsonSend);
 		assert(strJsonSend.length() > 9);	//json最基本的符号起码好像要9个字符左右
-		//启动通信线程
-		//boost::thread thr(zwccbthr::ThreadLockComm);
 		ZWNOTICE(strJsonSend.c_str());
-		//Sleep(300);
+		Sleep(50);
 		zwPushString(strJsonSend);
 		return ELOCK_ERROR_SUCCESS;
 	}
 	catch(ptree_bad_path & e) {
 		ZWERROR(e.what());
 		ZWERROR("CCB下发XML有错误节点路径")
-		    return ELOCK_ERROR_CONNECTLOST;
+		    return ELOCK_ERROR_NOTSUPPORT;
 	}
 	catch(ptree_bad_data & e) {
 		ZWERROR(e.what());
 		ZWERROR("CCB下发XML有错误数据内容")
-		    return ELOCK_ERROR_CONNECTLOST;
+		    return ELOCK_ERROR_PARAMINVALID;
 	}
 	catch(ptree_error & e) {
 		ZWERROR(e.what());
