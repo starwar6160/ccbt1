@@ -578,6 +578,11 @@ static string myMergeEncOutItems(int eciesHandle)
 //要求eciesHandle已经被设置了公钥才能成功，返回值是3个元素的组合，不必理解其意义
 ZWECIES_API const char * EciesEncrypt( const char *pubKey,const char *plainText )
 {
+	//1043test
+	assert(NULL!=pubKey && strlen(pubKey)>0);
+	assert(*(int *)pubKey!=0xCCCCCCCC);
+	assert(NULL!=plainText &&strlen(plainText)>0);
+	assert(*(int *)plainText!=0xCCCCCCCC);
 	static string g_retStr;
 #define SKELEN	(ZW_ECIES_ENCSYNCKEY_LEN*2)
 #define HASHLEN	(EFS*2+ZW_EXA)
