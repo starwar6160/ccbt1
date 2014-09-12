@@ -19,6 +19,7 @@ typedef enum jcmsg_ccb_elock_t{
 
 //为了日志，报警等用途设计的数据结构
 typedef struct jcLockStatus_t{
+	string LogGenDate;	//20140912。1540,应万敏要求加上的日志生成的时间字段
 	string ActiveStatus;
 	string EnableStatus;
 	string LockStatus;

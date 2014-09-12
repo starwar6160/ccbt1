@@ -51,5 +51,6 @@ using std::vector;
 #include <boost/property_tree/exceptions.hpp>
 #include <boost/algorithm/string.hpp>
 #include <boost/typeof/typeof.hpp>
+#include <boost/lexical_cast.hpp>  
 using boost::property_tree::ptree;
 

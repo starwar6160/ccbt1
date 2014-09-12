@@ -13,8 +13,11 @@ void zwLockStatusDataSplit(const char *LockStatus, JCLOCKSTATUS & lst)
 	// "0,0,0,0,100,0,1,20,100,0,0"
 	//锁具已激活 | 锁具允许使用 | 锁关闭 | 门关闭 | 电池状态100%% | 震动正常 | 震动幅值1g 
 	// |  | 温度探头温度100摄氏度 | 密码错误不多 | 开锁时间正常 |
+	//2014/9/12 15:14:50 [星期五] 万敏  15:10:59	这个是加时间后的日志
+	//{"Command":"Lock_System_Journal","Lock_Time":1409023166,"State":"0","Journal":"1409023024,0,0,1,0,100,0,00,0,000,0,0"}
 	JCLOCKSTATUS ostr;
 	int nIndex=0;
+	lst.LogGenDate=StatusVec[nIndex];nIndex++;
 	lst.ActiveStatus = StatusVec[nIndex];nIndex++;
 	lst.EnableStatus = StatusVec[nIndex];nIndex++;
 	lst.LockStatus = StatusVec[nIndex];nIndex++;
@@ -30,6 +33,11 @@ void zwLockStatusDataSplit(const char *LockStatus, JCLOCKSTATUS & lst)
 
 void zwStatusData2String(const JCLOCKSTATUS & lst, JCLOCKSTATUS & ostr)
 {
+	time_t logGenData=boost::lexical_cast<time_t>(lst.LogGenDate);
+	string exDate, exTime;
+	zwGetLocalDateTimeString(logGenData, exDate, exTime);
+	ostr.LogGenDate=exDate+"."+exTime;
+
 //////////////////////////////////////////////////////////////////////////
 	if ("0" == lst.ActiveStatus) {
 		ostr.ActiveStatus = "锁具已激活";
@@ -115,7 +123,10 @@ void zwStatusData2String(const JCLOCKSTATUS & lst, JCLOCKSTATUS & ostr)
 string LockStatusStringMerge(JCLOCKSTATUS & ostr)
 {
 	string sep = " | ";
-	string ccbStatusStr = ostr.ActiveStatus + sep + ostr.EnableStatus + sep
+	//20140912.1552.应万敏的要求，添加了日志生成的时间，但是为了防止新增字段造成
+	//建行后台分割处理这些字符串出问题，暂时采用将时间与激活状态两者拼接在一起的方法
+	string ccbStatusStr = ostr.LogGenDate+":"
+		+ostr.ActiveStatus + sep + ostr.EnableStatus + sep
 	    + ostr.LockStatus + sep + ostr.DoorStatus + sep
 	    + ostr.BatteryStatus + sep
 	    + ostr.ShockAlert + sep + ostr.ShockValue + sep
