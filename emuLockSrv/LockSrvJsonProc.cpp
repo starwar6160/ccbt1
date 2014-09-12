@@ -1,5 +1,7 @@
 #include "stdafx.h"
 #include "zwCcbElockHdr.h"
+#include "zwEcies529.h"
+
 using namespace boost::property_tree;
 //把锁具服务器端处理Json的函数集中于此，便于单元测试
 
@@ -104,13 +106,19 @@ void LockGenOutputJson(const ptree & pt, string & outJson)
 	assert(outJson.length() > 9);
 }
 
+static string s_PubKey;
+static string s_PriKey;
+
 //锁具激活消息的具体处理函数。
 void myLockActive(ptree & ptInOut)
 {
+	int handle=EciesGenKeyPair();
+	s_PubKey=EciesGetPubKey(handle);
+	s_PriKey=EciesGetPriKey(handle);
+	EciesDelete(handle);
 	cout << "锁具激活请求" << endl;
-	ptInOut.put("Lock_Serial", "ZWFAKELOCKNO1631");
-	ptInOut.put("Lock_Public_Key",
-		    "BJpnccGKE5muLO3RLOe+hDjUftMJJwpmnuxEir0P3ss5/sxpEKNQ5AXcSsW1CbC/pXlqAk9/NZoquFJXHW3n1Cw=,");
+	ptInOut.put("Lock_Serial", "ZWFAKELOCKNO0912");
+	ptInOut.put("Lock_Public_Key",s_PubKey);
 	ptInOut.put("Lock_Time", time(NULL));
 
 }

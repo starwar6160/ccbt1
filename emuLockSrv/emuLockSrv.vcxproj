@@ -51,7 +51,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(BOOST)\;$(POCO)\Net\include;$(POCO)\Util\include;$(POCO)\Foundation\include;..\CCBelock;F:\mydoc\work\zwsrc\lms\zwBaseLib\zwBaseLib\SerialPortTestCode;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(BOOST)\;$(POCO)\Net\include;$(POCO)\Util\include;$(POCO)\Foundation\include;..\CCBelock;F:\mydoc\work\zwsrc\lms\zwBaseLib\zwBaseLib\SerialPortTestCode;F:\mydoc\work\zwsrc\lms\jclmsCCB2014\jclmsCCB2014\zwECIES;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalOptions>-Zm112 %(AdditionalOptions)</AdditionalOptions>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
@@ -60,7 +60,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(BOOST)\lib;$(POCO)\lib;$(ZWBINJCLOCK)\$(Configuration)\</AdditionalLibraryDirectories>
       <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
-      <AdditionalDependencies>zwBaseLibStatic.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>zwBaseLibStatic.lib;jclmsCCB2014.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -71,7 +71,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(BOOST)\;$(POCO)\Net\include;$(POCO)\Util\include;$(POCO)\Foundation\include;..\CCBelock;F:\mydoc\work\zwsrc\lms\zwBaseLib\zwBaseLib\SerialPortTestCode;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(BOOST)\;$(POCO)\Net\include;$(POCO)\Util\include;$(POCO)\Foundation\include;..\CCBelock;F:\mydoc\work\zwsrc\lms\zwBaseLib\zwBaseLib\SerialPortTestCode;F:\mydoc\work\zwsrc\lms\jclmsCCB2014\jclmsCCB2014\zwECIES;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalOptions>-Zm112 %(AdditionalOptions)</AdditionalOptions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
@@ -81,7 +81,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalLibraryDirectories>$(BOOST)\lib;$(POCO)\lib;$(ZWBINJCLOCK)\$(Configuration)\</AdditionalLibraryDirectories>
-      <AdditionalDependencies>zwBaseLibStatic.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>zwBaseLibStatic.lib;jclmsCCB2014.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
