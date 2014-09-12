@@ -292,7 +292,7 @@ SWIGEXPORT void SWIGSTDCALL SWIGRegisterStringCallback_jclmsCCB2014(SWIG_CSharpS
 extern "C" {
 #endif
 
-SWIGEXPORT int SWIGSTDCALL CSharp_ZW_AES_BLOCK_SIZE_get() {
+SWIGEXPORT int SWIGSTDCALL CSharp_ZW_SYNCALG_BLOCK_SIZE_get() {
   int jresult ;
   int result;
   

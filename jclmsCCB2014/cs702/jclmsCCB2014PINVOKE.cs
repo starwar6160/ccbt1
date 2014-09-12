@@ -186,8 +186,8 @@ class jclmsCCB2014PINVOKE {
   }
 
 
-  [global::System.Runtime.InteropServices.DllImport("jclmsCCB2014", EntryPoint="CSharp_ZW_AES_BLOCK_SIZE_get")]
-  public static extern int ZW_AES_BLOCK_SIZE_get();
+  [global::System.Runtime.InteropServices.DllImport("jclmsCCB2014", EntryPoint="CSharp_ZW_SYNCALG_BLOCK_SIZE_get")]
+  public static extern int ZW_SYNCALG_BLOCK_SIZE_get();
 
   [global::System.Runtime.InteropServices.DllImport("jclmsCCB2014", EntryPoint="CSharp_ZW_SM3_DGST_SIZE_get")]
   public static extern int ZW_SM3_DGST_SIZE_get();

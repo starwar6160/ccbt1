@@ -9,9 +9,9 @@
 namespace jclms {
 
 public class jclmsCCB2014 {
-  public static int ZW_AES_BLOCK_SIZE {
+  public static int ZW_SYNCALG_BLOCK_SIZE {
     get {
-      int ret = jclmsCCB2014PINVOKE.ZW_AES_BLOCK_SIZE_get();
+      int ret = jclmsCCB2014PINVOKE.ZW_SYNCALG_BLOCK_SIZE_get();
       return ret;
     } 
   }
