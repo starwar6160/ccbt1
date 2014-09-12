@@ -106,6 +106,8 @@ void LockGenOutputJson(const ptree & pt, string & outJson)
 	assert(outJson.length() > 9);
 }
 
+//公私钥对的生命周期是模拟锁具进程的执行期间，
+//直到新的0号报文来到，就生成新的公私钥对
 static string s_PubKey;
 static string s_PriKey;
 
@@ -133,9 +135,13 @@ void myLockInit(ptree & ptInOut)
 	ptOut.put("Lock_Time", time(NULL));
 	ptOut.put("Lock_Serial", ptInOut.get < string > ("Atm_Serial"));
 	ptOut.put("State", "0");
-	//在此暂不计算，直接返回预先计算好的第一套密文数据里面的PSK
-	ptOut.put("Lock_Init_Info",
-		  "77498EB7D7CE8B92D871791C99B85AB337FF73235A89E7A20764EFE6EA41E4CE");
+	string atmcActInfo=ptInOut.get<string>("Lock_Init_Info");
+	string decryptedPSK=EciesDecrypt(s_PriKey.c_str(),atmcActInfo.c_str());
+#ifdef _DEBUG
+	cout<<"ACT INFO FROM ATMC 912 IS\n"<<atmcActInfo<<endl;
+	cout<<"ECIES912 DECRYPT RESULT IS\n"<<decryptedPSK<<endl;
+#endif // _DEBUG
+	ptOut.put("Lock_Init_Info",decryptedPSK);
 	ptInOut = ptOut;
 }
 
