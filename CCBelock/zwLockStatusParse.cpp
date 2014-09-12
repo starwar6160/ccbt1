@@ -14,17 +14,18 @@ void zwLockStatusDataSplit(const char *LockStatus, JCLOCKSTATUS & lst)
 	//锁具已激活 | 锁具允许使用 | 锁关闭 | 门关闭 | 电池状态100%% | 震动正常 | 震动幅值1g 
 	// |  | 温度探头温度100摄氏度 | 密码错误不多 | 开锁时间正常 |
 	JCLOCKSTATUS ostr;
-	lst.ActiveStatus = StatusVec[0];
-	lst.EnableStatus = StatusVec[1];
-	lst.LockStatus = StatusVec[2];
-	lst.DoorStatus = StatusVec[3];
-	lst.BatteryStatus = StatusVec[4];
-	lst.ShockAlert = StatusVec[5];
-	lst.ShockValue = StatusVec[6];
-	lst.TempAlert = StatusVec[7];	//这里值是20，但是合法值只有0,1,2,3，为什么？
-	lst.nodeTemp = StatusVec[8];	//探头温度100摄氏度？
-	lst.PswTryAlert = StatusVec[9];
-	lst.LockOverTime = StatusVec[10];
+	int nIndex=0;
+	lst.ActiveStatus = StatusVec[nIndex];nIndex++;
+	lst.EnableStatus = StatusVec[nIndex];nIndex++;
+	lst.LockStatus = StatusVec[nIndex];nIndex++;
+	lst.DoorStatus = StatusVec[nIndex];nIndex++;
+	lst.BatteryStatus = StatusVec[nIndex];nIndex++;
+	lst.ShockAlert = StatusVec[nIndex];nIndex++;
+	lst.ShockValue = StatusVec[nIndex];nIndex++;
+	lst.TempAlert = StatusVec[nIndex];nIndex++;	//这里值是20，但是合法值只有0,1,2,3，为什么？
+	lst.nodeTemp = StatusVec[nIndex];nIndex++;	//探头温度100摄氏度？
+	lst.PswTryAlert = StatusVec[nIndex];nIndex++;
+	lst.LockOverTime = StatusVec[nIndex];
 }
 
 void zwStatusData2String(const JCLOCKSTATUS & lst, JCLOCKSTATUS & ostr)
