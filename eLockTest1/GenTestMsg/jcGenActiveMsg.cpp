@@ -57,17 +57,21 @@ namespace jcAtmcMsg {
 		pt.put(CCBSTR_NAME, "SendActInfo");
 		string zwDate, zwTime;
 		zwGetLocalDateTimeString(time(NULL), zwDate, zwTime);
-
 		pt.put(CCBSTR_DATE, zwDate);
 		pt.put(CCBSTR_TIME, zwTime);
 		pt.put(CCBSTR_DEVCODE, ATMNO_CCBTEST);
 		pt.put("root.LockMan", jcAtmcMsg::G_LOCKMAN_NAMEG);
 		pt.put("root.LockId", "ZWFAKELOCKNO1548");
-		//使用第一套激活信息,提供"ActInfo"的值
-		pt.put("root.ActInfo",
-		       "BG3j9JZxpssY0bdb1oMwg4obKmZ93GTvbbnY8VZnQIglLGO8m7JvhTlnvKPnsuBv"
-		       "1vAySJell1QrrkiMhsob1oc=.StjumFvZi4W4j2n/NUliN/72PY72IHjT.7tnYku3DAGnbsAas0+E98i"
-		       "Ql2mr+CoJbZcc2uQS3oVEFBbwtAgspY+oC+lSJcKI62395wPYkSG+F+Rd1Bj66CaVyBk8I7KvO/R+ofR5BeeM=");
+
+		string pubKeyFromLock=myGetPubKeyFromMsg0000Rep(s_repActReqXML);
+		assert(pubKeyFromLock.length()>0);
+		string pskinput="zhouwei20140912.1014FAKEPSK"+zwDate+zwTime;
+		string psk=zwMergePsk(pskinput.c_str());
+		string actInfo=EciesEncrypt(pubKeyFromLock.c_str(),psk.c_str());
+		assert(actInfo.length()>0);
+		cout<<"PSK912 FROM ATMC IS "<<psk<<endl;
+		cout<<"ACTINFO912\n"<<actInfo<<endl;
+		pt.put("root.ActInfo",actInfo);
 
 		std::ostringstream ss;
 		write_xml(ss, pt);
