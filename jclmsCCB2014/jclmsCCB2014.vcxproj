@@ -51,7 +51,7 @@
       <WarningLevel>Level1</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_CRT_SECURE_NO_WARNINGS;ZWECIES_EXPORTS;_DEBUG;_WINDOWS;_USRDLL;JCLMSCCB2014_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(MIRACL);.\src;.\zwECIES;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(MIRACL);.\src;.\zwECIES;C:\Python27\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DisableLanguageExtensions>false</DisableLanguageExtensions>
       <DisableSpecificWarnings>4731;4819</DisableSpecificWarnings>
       <InlineFunctionExpansion>Disabled</InlineFunctionExpansion>
@@ -60,7 +60,7 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <OutputFile>$(ZWBINJCLOCK)\$(Configuration)\$(TargetName)$(TargetExt)</OutputFile>
-      <AdditionalLibraryDirectories>$(ZWBINJCLOCK)\$(Configuration);C:\zwLibs\zwMiracl2014.hg\$(Configuration)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(ZWBINJCLOCK)\$(Configuration);C:\zwLibs\zwMiracl2014.hg\$(Configuration);C:\Python27\libs</AdditionalLibraryDirectories>
       <AdditionalDependencies>miracl2014.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
@@ -72,7 +72,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;_CRT_SECURE_NO_WARNINGS;ZWECIES_EXPORTS;NDEBUG;_WINDOWS;_USRDLL;JCLMSCCB2014_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(MIRACL);.\src;.\zwECIES;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(MIRACL);.\src;.\zwECIES;C:\Python27\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DisableLanguageExtensions>false</DisableLanguageExtensions>
       <DisableSpecificWarnings>4731;4819</DisableSpecificWarnings>
     </ClCompile>
@@ -82,7 +82,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <OutputFile>$(ZWBINJCLOCK)\$(Configuration)\$(TargetName)$(TargetExt)</OutputFile>
-      <AdditionalLibraryDirectories>$(ZWBINJCLOCK)\$(Configuration);C:\zwLibs\zwMiracl2014.hg\$(Configuration)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(ZWBINJCLOCK)\$(Configuration);C:\zwLibs\zwMiracl2014.hg\$(Configuration);C:\Python27\libs</AdditionalLibraryDirectories>
       <AdditionalDependencies>miracl2014.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
@@ -108,6 +108,10 @@
       </PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="jclmsccb_csharp_wrap.cxx">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="jclmsccb_python_wrap.cxx">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
     </ClCompile>

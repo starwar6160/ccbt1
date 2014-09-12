@@ -101,5 +101,8 @@
     <ClCompile Include="src\dCodeNewDelete.cpp">
       <Filter>源文件\dyCode</Filter>
     </ClCompile>
+    <ClCompile Include="jclmsccb_python_wrap.cxx">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
