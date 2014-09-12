@@ -1,5 +1,11 @@
 #include "stdafx.h"
 #include "..\\eLockTest\\jcElockTestHdr.h"
+#include "zwecies529.h"
+
+
+extern string s_repActReqXML;	//从锁具收到的激活请求的返回报文
+//从0号报文返回XML提取公钥并返回
+string myGetPubKeyFromMsg0000Rep(const string msg0000RepXML);
 
 namespace jcAtmcMsg {
 	//生成锁具激活XML报文，获取锁具编号和公钥
@@ -13,10 +19,11 @@ namespace jcAtmcMsg {
 		//开始生成请求报文
 		pt.put(CCBSTR_CODE, "0000");
 		pt.put(CCBSTR_NAME, "CallForActInfo");
-		pt.put(CCBSTR_DATE, "20140730");
-		pt.put(CCBSTR_TIME, "142248");
+		string zwDate, zwTime;
+		zwGetLocalDateTimeString(time(NULL),zwDate, zwTime);
+		pt.put(CCBSTR_DATE, zwDate);
+		pt.put(CCBSTR_TIME, zwTime);
 		pt.put(CCBSTR_DEVCODE, ATMNO_CCBTEST);
-		//pt.put(CCBSTR_DEVCODE,"12345678");
 
 		std::ostringstream ss;
 		write_xml(ss, pt);

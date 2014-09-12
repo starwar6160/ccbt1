@@ -90,7 +90,6 @@ TEST_F(ccbElockTest, LockSendActInfoTest0001)
 	//Open(25);
 	//Sleep(2000);
 	assert(s_repActReqXML.length()>0);
-	cout<<"MESSAGE 0000 REP IS "<<s_repActReqXML<<endl;
 	cout<<"PubKey from Lock 20140911 is "<<myGetPubKeyFromMsg0000Rep(s_repActReqXML)<<endl;
 	EXPECT_EQ(ELOCK_ERROR_SUCCESS, SetRecvMsgRotine(myATMCRecvMsgRotine));
 	const JC_MSG_TYPE msgType = JCMSG_SEND_LOCK_ACTIVEINFO;	//设定消息类型

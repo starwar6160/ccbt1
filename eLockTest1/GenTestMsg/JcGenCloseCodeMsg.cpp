@@ -12,8 +12,10 @@ namespace jcAtmcMsg {
 		//开始生成请求报文
 		pt.put(CCBSTR_CODE, "0004");
 		pt.put(CCBSTR_NAME, "ReadShutLockCode");
-		pt.put(CCBSTR_DATE, "20140802");
-		pt.put(CCBSTR_TIME, "140826");
+		string zwDate, zwTime;
+		zwGetLocalDateTimeString(time(NULL),zwDate, zwTime);
+		pt.put(CCBSTR_DATE, zwDate);
+		pt.put(CCBSTR_TIME, zwTime);
 		//建行给出的报文里面没有这个字段，但是会导致后续流程很难处理
 		pt.put(CCBSTR_DEVCODE, ATMNO_CCBTEST);
 		pt.put(jcAtmcConvertDLL::JCSTR_CMDTITLE,
