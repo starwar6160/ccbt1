@@ -14,13 +14,8 @@ namespace zwccbthr{
 
 string zwGetConfigFileName(void)
 {
-	HMODULE hdl=GetModuleHandleA("HidProtocol.dll");
-	char dllName[256];
-	memset(dllName,0,256);
-	GetModuleFileNameA(hdl,dllName,256);
-	char * tt=strstr(dllName,".dll");
-	strcpy(tt,".ini");
-	string cfgFileName=dllName;
+	OutputDebugStringA(__FUNCTION__);
+	string cfgFileName="jinChuElock.ini";
 	return cfgFileName;
 }
 
