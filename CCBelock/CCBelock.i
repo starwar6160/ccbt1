@@ -1,4 +1,4 @@
-%module ccbElock
+%module HidProtocol
 using namespace std;
 %include "std_string.i"
 %include "typemaps.i"

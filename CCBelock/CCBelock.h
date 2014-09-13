@@ -9,6 +9,7 @@
 // 符号视为是被导出的。
 #ifdef _ZWUSE_AS_JNI
 #define CCBELOCK_API
+typedef void (*RecvMsgRotine)(const char *pszMsg);
 #else
 #ifdef CCBELOCK_EXPORTS
 #define CCBELOCK_API __declspec(dllexport) 
@@ -28,5 +29,5 @@ CCBELOCK_API long	JCAPISTD Notify(const char *pszMsg);
 CCBELOCK_API int	JCAPISTD SetRecvMsgRotine(RecvMsgRotine pRecvMsgFun);
 
 //////////////////////////////////////////////////////////////////////////
-CCBELOCK_API void zwPushString(const string &str);
+CCBELOCK_API void zwPushString(const char *str);
 #endif // CCBelock_h__

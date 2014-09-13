@@ -52,7 +52,7 @@
       <WarningLevel>Level4</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;POCO_STATIC;CCBELOCK_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(BOOST)\;$(POCO)\Foundation\include;$(POCO)\Net\include;$(POCO)\XML\include;$(POCO)\Util\include;.\;$(ZWBASELIB)\zwBaseLib\SerialPortTestCode\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(BOOST)\;$(POCO)\Foundation\include;$(POCO)\Net\include;$(POCO)\XML\include;$(POCO)\Util\include;.\;$(ZWBASELIB)\zwBaseLib\SerialPortTestCode\;C:\Python27\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <ExceptionHandling>Sync</ExceptionHandling>
       <AdditionalOptions>-Zm113 %(AdditionalOptions)</AdditionalOptions>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
@@ -61,7 +61,7 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ModuleDefinitionFile>ccbElock.def</ModuleDefinitionFile>
-      <AdditionalLibraryDirectories>$(BOOST)\lib;$(POCO)\lib;$(ZWBINJCLOCK)\$(Configuration)\</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(BOOST)\lib;$(POCO)\lib;$(ZWBINJCLOCK)\$(Configuration)\;C:\Python27\libs</AdditionalLibraryDirectories>
       <GenerateMapFile>false</GenerateMapFile>
       <MapExports>false</MapExports>
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
@@ -76,7 +76,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;POCO_STATIC;CCBELOCK_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(BOOST)\;$(POCO)\Foundation\include;$(POCO)\Net\include;$(POCO)\XML\include;$(POCO)\Util\include;.\;$(ZWBASELIB)\zwBaseLib\SerialPortTestCode\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(BOOST)\;$(POCO)\Foundation\include;$(POCO)\Net\include;$(POCO)\XML\include;$(POCO)\Util\include;.\;$(ZWBASELIB)\zwBaseLib\SerialPortTestCode\;C:\Python27\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalOptions>-Zm113 %(AdditionalOptions)</AdditionalOptions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
@@ -86,7 +86,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <ModuleDefinitionFile>ccbElock.def</ModuleDefinitionFile>
-      <AdditionalLibraryDirectories>$(BOOST)\lib;$(POCO)\lib;$(ZWBINJCLOCK)\$(Configuration)\</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(BOOST)\lib;$(POCO)\lib;$(ZWBINJCLOCK)\$(Configuration)\;C:\Python27\libs</AdditionalLibraryDirectories>
       <GenerateMapFile>false</GenerateMapFile>
       <AdditionalDependencies>zwBaseLibStatic.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
@@ -112,6 +112,10 @@
     <ClCompile Include="ATMCMsgConvert\myLockStatusAndLog.cpp" />
     <ClCompile Include="ATMCMsgConvert\myLockTimeSync.cpp" />
     <ClCompile Include="CCBelock.cpp" />
+    <ClCompile Include="CCBelock_wrap.cxx">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="dllmain.cpp">
       <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</CompileAsManaged>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">

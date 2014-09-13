@@ -110,7 +110,7 @@ CCBELOCK_API long JCAPISTD Notify(const char *pszMsg)
 		assert(strJsonSend.length() > 9);	//json最基本的符号起码好像要9个字符左右
 		ZWNOTICE(strJsonSend.c_str());
 		Sleep(50);
-		zwPushString(strJsonSend);
+		zwPushString(strJsonSend.c_str());
 		return ELOCK_ERROR_SUCCESS;
 	}
 	catch(ptree_bad_path & e) {

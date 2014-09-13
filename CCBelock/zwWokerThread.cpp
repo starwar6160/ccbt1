@@ -1,4 +1,5 @@
 #include "stdafx.h"
+#include "CCBelock.h"
 #include "zwCcbElockHdr.h"
 //#include "zwwsClient.h"
 #include "zwPocoLog.h"
@@ -118,10 +119,10 @@ namespace zwccbthr {
 boost::thread thr(zwccbthr::ThreadLockComm);
 
 
-void zwPushString(const string & str)
+CCBELOCK_API void zwPushString(const char *str)
 {
-	ZWFUNCTRACE assert(str.length() > 0);
-	if (str.length() == 0) {
+	ZWFUNCTRACE assert(NULL!=str && strlen(str) > 0);
+	if (NULL==str || strlen(str) == 0) {
 		return;
 	}
 	if (NULL == zwccbthr::zwComPort) {
@@ -129,7 +130,7 @@ void zwPushString(const string & str)
 		return;
 	}
 	try {
-		zwccbthr::zwComPort->SendData(str.data(),str.length());
+		zwccbthr::zwComPort->SendData(str,strlen(str));
 	}
 	catch(...) {
 		ZWDBGMSG(__FUNCTION__);
