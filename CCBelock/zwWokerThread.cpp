@@ -104,15 +104,15 @@ namespace zwccbthr {
 			// 1. 载入配置文件  
 			AutoPtr < IniFileConfiguration >
 			    cfg(new IniFileConfiguration(cfgFileName));
-
 			// 2. 获取节点的值  
 			s_ComPort = cfg->getString("ELock.ComPort");
 			assert(s_ComPort.length() > 0);
 		}
-		catch(Poco::Exception e) {
-			pocoLog->
-			    warning() << "ini config file" << cfgFileName <<
-			    " not found" << endl;
+		catch(...) {
+			string errMsg="Load JinChuELock Config file\t"+cfgFileName+"\tfail.now exit !";
+			OutputDebugStringA(errMsg.c_str());
+			cout<<errMsg<<endl;
+			exit(2);
 		}
 	}
 

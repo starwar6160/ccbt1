@@ -14,7 +14,6 @@ namespace zwccbthr{
 
 string zwGetConfigFileName(void)
 {
-	OutputDebugStringA(__FUNCTION__);
 	string cfgFileName="jinChuElock.ini";
 	return cfgFileName;
 }
@@ -35,6 +34,7 @@ string zwGetLogFileName(void)
 Poco::LogStream *pocoLog=NULL;
 int PocoLogInit(void)  
 {  
+	OutputDebugStringA(__FUNCTION__);
 	Poco::AutoPtr<Poco::Channel> channel;  
 	{  
 
