@@ -21,7 +21,7 @@ BOOL APIENTRY DllMain(HMODULE hModule,
 {
 	myLoadCfgs();
 #ifdef _DEBUG
-	cout<<"TEST912 LEXICAST.1557.\t"<<zwTest912("1409023024")<<endl;
+	//cout<<"TEST912 LEXICAST.1557.\t"<<zwTest912("1409023024")<<endl;
 #endif // _DEBUG
 	switch (ul_reason_for_call) {
 	case DLL_PROCESS_ATTACH:

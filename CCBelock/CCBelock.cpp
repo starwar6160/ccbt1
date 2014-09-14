@@ -66,13 +66,21 @@ CCBELOCK_API long JCAPISTD Open(long lTimeOut)
 	ZWFUNCTRACE boost::mutex::scoped_lock lock(zwCfg::ComPort_mutex);
 	//必须大于0，小于JC_CCBDLL_TIMEOUT，限制在一个合理范围内
 	pocoLog->notice() << "Open Return " << ELOCK_ERROR_SUCCESS << endl;
-	//打开串口
-	string myLockIp = zwccbthr::zwGetLockIP();
-	zwccbthr::zwComPort=new jcSerialPort(myLockIp.c_str());
-	//启动通信线程
-	boost::thread thr(zwccbthr::ThreadLockComm);
+	string myLockIp;
+	try{
+		//打开串口
+		myLockIp = zwccbthr::zwGetLockIP();
+		zwccbthr::zwComPort=new jcSerialPort(myLockIp.c_str());
+		//启动通信线程
+		boost::thread thr(zwccbthr::ThreadLockComm);
+	}
+	catch(...)
+	{
+		string errMsg="打开端口"+myLockIp+"失败";
+		ZWFATAL(errMsg.c_str())
+	}
 
-	ZWNOTICE("打开 到锁具的连接")
+	ZWNOTICE("成功打开 到锁具的连接")
 	    return ELOCK_ERROR_SUCCESS;
 }
 
