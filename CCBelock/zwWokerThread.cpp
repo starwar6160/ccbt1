@@ -20,7 +20,9 @@ namespace zwccbthr {
 	void wait(int milliseconds) {
 		boost::this_thread::sleep(boost::posix_time::
 					  milliseconds(milliseconds));
-	} string zwGetLockIP(void) {
+	} 
+	string zwGetLockIP(void) 
+	{
 		string myLockIp = "COM2";	//默认值是COM2
 		if (s_ComPort.length() > 0) {
 			myLockIp = s_ComPort;	//如果有配置文件的串口值，就使用之；
@@ -33,24 +35,26 @@ namespace zwccbthr {
 	//与锁具之间的通讯线程
 	void ThreadLockComm() {
 		ZWFUNCTRACE boost::mutex::scoped_lock lock(thr_mutex);
-		string myLockIp;
+		
 		try {
-			myLockIp = zwGetLockIP();
-			jcSerialPort jcsp(myLockIp.c_str());
-			zwComPort=&jcsp;
 			const int BLEN=1024;
 			char recvBuf[BLEN+1];
 			memset(recvBuf,0,BLEN+1);
-			int outLen=0;
-			ZWNOTICE("连接锁具成功");
+			int outLen=0;			
 			while (1) {
+				if (NULL==zwComPort)
+				{
+					ZWNOTICE("串口已经关闭，通信线程将退出");
+					return;
+				}
+				ZWNOTICE("连接锁具成功");
 				ZWINFO("通信线程的新一轮等待接收数据循环开始");
 				//string recstr;
 				{
 					try {
 						//wsconn.ReceiveString(recstr);
 						memset(recvBuf,0,BLEN);
-						jcsp.RecvData(recvBuf, BLEN,&outLen);
+						zwComPort->RecvData(recvBuf, BLEN,&outLen);
 						ZWNOTICE
 						    ("成功从锁具接收数据如下：");
 					}
@@ -115,8 +119,7 @@ namespace zwccbthr {
 //////////////////////////////////////////////////////////////////////////
 }				//namespace zwccbthr{
 
-//启动通信线程
-boost::thread thr(zwccbthr::ThreadLockComm);
+
 
 
 CCBELOCK_API void zwPushString(const char *str)

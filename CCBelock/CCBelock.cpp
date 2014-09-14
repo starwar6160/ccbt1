@@ -11,7 +11,7 @@
 #include "stdafx.h"
 #include "CCBelock.h"
 #include "zwCcbElockHdr.h"
-//#include "zwwsClient.h"
+#include "jcSerialPort.h"
 #include "zwPocoLog.h"
 using namespace std;
 using boost::property_tree::ptree_error;
@@ -20,6 +20,8 @@ using boost::property_tree::ptree_bad_path;
 
 namespace zwccbthr {
 	void ThreadLockComm();	//与锁具之间的通讯线程
+	extern jcSerialPort *zwComPort;
+	string zwGetLockIP(void);
 } //namespace zwccbthr{ 
 
 void ZWDBGMSG(const char *x)
@@ -64,6 +66,12 @@ CCBELOCK_API long JCAPISTD Open(long lTimeOut)
 	ZWFUNCTRACE boost::mutex::scoped_lock lock(zwCfg::ComPort_mutex);
 	//必须大于0，小于JC_CCBDLL_TIMEOUT，限制在一个合理范围内
 	pocoLog->notice() << "Open Return " << ELOCK_ERROR_SUCCESS << endl;
+	//打开串口
+	string myLockIp = zwccbthr::zwGetLockIP();
+	zwccbthr::zwComPort=new jcSerialPort(myLockIp.c_str());
+	//启动通信线程
+	boost::thread thr(zwccbthr::ThreadLockComm);
+
 	ZWNOTICE("打开 到锁具的连接")
 	    return ELOCK_ERROR_SUCCESS;
 }
@@ -72,6 +80,11 @@ CCBELOCK_API long JCAPISTD Close()
 {
 	ZWFUNCTRACE boost::mutex::scoped_lock lock(zwCfg::ComPort_mutex);
 	zwCfg::g_WarnCallback = NULL;
+	if (NULL!=zwccbthr::zwComPort)
+	{
+		delete zwccbthr::zwComPort;
+		zwccbthr::zwComPort=NULL;
+	}
 	ZWNOTICE("关闭 到锁具的连接")
 	    return ELOCK_ERROR_SUCCESS;
 }
