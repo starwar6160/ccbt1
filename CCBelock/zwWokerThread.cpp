@@ -48,29 +48,25 @@ namespace zwccbthr {
 					return;
 				}
 				ZWNOTICE("连接锁具成功");
-				ZWINFO("通信线程的新一轮等待接收数据循环开始");
-				//string recstr;
-				{
-					try {
-						//wsconn.ReceiveString(recstr);
-						memset(recvBuf,0,BLEN);
-						zwComPort->RecvData(recvBuf, BLEN,&outLen);
-						ZWNOTICE
-						    ("成功从锁具接收数据如下：");
-					}
-					catch(...) {
-						ZWFATAL
-						    ("到锁具的串口连接异常断开，数据接收线程将终止");
-						return;
-					}
-					ZWNOTICE(recvBuf);
+				ZWINFO("通信线程的新一轮等待接收数据循环开始");			
+				try {
+					memset(recvBuf,0,BLEN);
+					zwComPort->RecvData(recvBuf, BLEN,&outLen);
+					ZWNOTICE
+						("成功从锁具接收数据如下：");
 				}
+				catch(...) {
+					ZWFATAL
+						("RecvData接收数据时到锁具的串口连接异常断开，数据接收线程将终止");
+					return;
+				}
+				ZWNOTICE(recvBuf);
 
 				string outXML;
-				jcAtmcConvertDLL::zwJCjson2CCBxml(recvBuf,
-								  outXML);
+				jcAtmcConvertDLL::zwJCjson2CCBxml(recvBuf,outXML);
 				ZWINFO("分析锁具回传的Json并转换为建行XML成功");
-				assert(outXML.length() > 42);	//XML开头的固定内容38个字符，外加起码一个标签的两对尖括号合计4个字符
+				//XML开头的固定内容38个字符，外加起码一个标签的两对尖括号合计4个字符
+				assert(outXML.length() > 42);	
 				ZWDBGMSG(outXML.c_str());
 
 				{
@@ -83,19 +79,16 @@ namespace zwccbthr {
 				if (NULL != zwCfg::g_WarnCallback) {
 					//调用回调函数传回信息，然后就关闭连接，结束通信线程；
 					zwCfg::g_WarnCallback(outXML.c_str());
-					ZWINFO
-					    ("成功把从锁具接收到的数据传递给回调函数");
+					ZWINFO("成功把从锁具接收到的数据传递给回调函数");
 				} else {
-					ZWWARN
-					    ("回调函数指针为空，无法调用回调函数")
+					ZWWARN("回调函数指针为空，无法调用回调函数")
 				}
 			}
 			ZWINFO("金储通信数据接收线程正常退出");
 
 		}		//try
 		catch(...) {
-			ZWFATAL
-			    ("金储通信数据接收线程串口连接异常断开，现在数据接收线程将结束");
+			ZWFATAL("金储通信数据接收线程串口连接异常断开，现在数据接收线程将结束");
 			return;
 		}
 	}
