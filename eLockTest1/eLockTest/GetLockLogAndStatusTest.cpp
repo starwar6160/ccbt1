@@ -35,18 +35,20 @@ TEST_F(ccbElockTest, GetLockLogTest0005)
 	//具体生成消息XML
 	ptree pt;
 	jcAtmcMsg::zwAtmcTestMsgGen(msgType, strSendLockActInfoXML);
-
-	if (ELOCK_ERROR_SUCCESS == m_connStatus) {
-		EXPECT_EQ(ELOCK_ERROR_SUCCESS,
-			  Notify(strSendLockActInfoXML.c_str()));
-		Sleep(20000);
-		EXPECT_EQ(ELOCK_ERROR_SUCCESS,
-			  Notify(strSendLockActInfoXML.c_str()));
-	} else {
-		EXPECT_EQ(ELOCK_ERROR_CONNECTLOST,
-			  Notify(strSendLockActInfoXML.c_str()));
-		cout << "Server not Start!" << endl;
+	for (int i=0;i<9;i++)
+	{
+		if (ELOCK_ERROR_SUCCESS == m_connStatus) {
+			EXPECT_EQ(ELOCK_ERROR_SUCCESS,
+				Notify(strSendLockActInfoXML.c_str()));
+			Sleep(1000);
+			EXPECT_EQ(ELOCK_ERROR_SUCCESS,
+				Notify(strSendLockActInfoXML.c_str()));
+		} else {
+			EXPECT_EQ(ELOCK_ERROR_CONNECTLOST,
+				Notify(strSendLockActInfoXML.c_str()));
+			cout << "Server not Start!" << endl;
+		}
+		Sleep(2 * 1000);
 	}
-	Sleep(60 * 1000);
 }
 #endif // _DEBUG_GET_LOCK_LOG

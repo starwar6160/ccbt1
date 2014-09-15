@@ -6,15 +6,6 @@ string s_repActReqXML;	//从锁具收到的激活请求的返回报文
 string s_repLockInitXML;//从锁具收到的初始化请求的返回报文
 
 
-#ifdef _DEBUG_ACTREQ
-
-string zwCode8ToHex(int Code8);
-int sptest905a17(void);
-
-//TEST_F(ccbElockTest, SerialPortTest909A01){
-//	int aa=sptest905a17();
-//}
-
 //从0号报文返回XML提取公钥并返回
 string myGetPubKeyFromMsg0000Rep(const string msg0000RepXML)
 {
@@ -29,7 +20,14 @@ string myGetPubKeyFromMsg0000Rep(const string msg0000RepXML)
 }
 
 
+#ifdef _DEBUG_ACTREQ
 
+string zwCode8ToHex(int Code8);
+int sptest905a17(void);
+
+//TEST_F(ccbElockTest, SerialPortTest909A01){
+//	int aa=sptest905a17();
+//}
 
 //锁具激活请求报文的在线测试
 TEST_F(ccbElockTest, LockActiveTest0000)
