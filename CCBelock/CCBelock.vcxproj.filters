@@ -92,6 +92,9 @@
     <ClCompile Include="CCBelock_wrap.cxx">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="PythonCallBack.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="HidProtocol.rc">
