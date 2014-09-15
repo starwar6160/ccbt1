@@ -22,7 +22,7 @@ namespace zwccbthr {
 	void ThreadLockComm();	//与锁具之间的通讯线程
 	extern jcSerialPort *zwComPort;
 	string zwGetLockIP(void);
-	extern string s_dbgReturn ;
+	extern std::deque<string> dqOutXML;;
 	extern boost::mutex recv_mutex;
 } //namespace zwccbthr{ 
 
@@ -191,10 +191,12 @@ CCBELOCK_API int JCAPISTD SetRecvMsgRotine(RecvMsgRotine pRecvMsgFun)
 CCBELOCK_API const char * dbgGetLockReturnXML(void)
 {
 	boost::mutex::scoped_lock lock(zwccbthr::recv_mutex);
-
-	if (zwccbthr::s_dbgReturn.length()>0)
+	static string sg_outxml;
+	if (!zwccbthr::dqOutXML.empty())
 	{
-		return zwccbthr::s_dbgReturn.c_str();	
+		sg_outxml=zwccbthr::dqOutXML.front();
+		zwccbthr::dqOutXML.pop_front();
+		return sg_outxml.c_str();
 	}
 	else
 	{

@@ -13,9 +13,9 @@ namespace zwccbthr {
 	boost::mutex thr_mutex;
 	//建行给的接口，没有设置连接参数的地方，也就是说，完全可以端口，抑或是从配置文件读取
 	jcSerialPort *zwComPort = NULL;
-	string s_dbgReturn = "";
 	boost::mutex recv_mutex;
 	std::string s_ComPort;
+	std::deque<string> dqOutXML;
 
 	void wait(int milliseconds) {
 		boost::this_thread::sleep(boost::posix_time::
@@ -76,7 +76,8 @@ namespace zwccbthr {
 				{
 					boost::mutex::
 					    scoped_lock lock(recv_mutex);
-					s_dbgReturn = outXML;
+					//收到的XML存入队列
+					dqOutXML.push_back(outXML);
 				}
 
 				if (NULL != zwCfg::g_WarnCallback) {
