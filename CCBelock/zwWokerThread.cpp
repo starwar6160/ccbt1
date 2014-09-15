@@ -60,7 +60,7 @@ namespace zwccbthr {
 					}
 					catch(...) {
 						ZWFATAL
-						    ("到锁具的WS连接异常断开，数据接收线程将终止");
+						    ("到锁具的串口连接异常断开，数据接收线程将终止");
 						return;
 					}
 					ZWNOTICE(recvBuf);

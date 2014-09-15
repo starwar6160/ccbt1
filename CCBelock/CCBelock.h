@@ -30,4 +30,5 @@ CCBELOCK_API int	JCAPISTD SetRecvMsgRotine(RecvMsgRotine pRecvMsgFun);
 
 //////////////////////////////////////////////////////////////////////////
 CCBELOCK_API void zwPushString(const char *str);
+CCBELOCK_API const char * dbgGetLockReturnXML(void);
 #endif // CCBelock_h__

@@ -3262,6 +3262,38 @@ SWIGINTERNINLINE PyObject*
   return PyInt_FromLong((long) value);
 }
 
+
+SWIGINTERNINLINE PyObject *
+SWIG_FromCharPtrAndSize(const char* carray, size_t size)
+{
+  if (carray) {
+    if (size > INT_MAX) {
+      swig_type_info* pchar_descriptor = SWIG_pchar_descriptor();
+      return pchar_descriptor ? 
+	SWIG_InternalNewPointerObj(const_cast< char * >(carray), pchar_descriptor, 0) : SWIG_Py_Void();
+    } else {
+#if PY_VERSION_HEX >= 0x03000000
+#if PY_VERSION_HEX >= 0x03010000
+      return PyUnicode_DecodeUTF8(carray, static_cast< int >(size), "surrogateescape");
+#else
+      return PyUnicode_FromStringAndSize(carray, static_cast< int >(size));
+#endif
+#else
+      return PyString_FromStringAndSize(carray, static_cast< int >(size));
+#endif
+    }
+  } else {
+    return SWIG_Py_Void();
+  }
+}
+
+
+SWIGINTERNINLINE PyObject * 
+SWIG_FromCharPtr(const char *cptr)
+{ 
+  return SWIG_FromCharPtrAndSize(cptr, (cptr ? strlen(cptr) : 0));
+}
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -3370,6 +3402,19 @@ fail:
 }
 
 
+SWIGINTERN PyObject *_wrap_dbgGetLockReturnXML(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  char *result = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)":dbgGetLockReturnXML")) SWIG_fail;
+  result = (char *)dbgGetLockReturnXML();
+  resultobj = SWIG_FromCharPtr((const char *)result);
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
 static PyMethodDef SwigMethods[] = {
 	 { (char *)"SWIG_PyInstanceMethod_New", (PyCFunction)SWIG_PyInstanceMethod_New, METH_O, NULL},
 	 { (char *)"Open", _wrap_Open, METH_VARARGS, NULL},
@@ -3377,6 +3422,7 @@ static PyMethodDef SwigMethods[] = {
 	 { (char *)"Notify", _wrap_Notify, METH_VARARGS, NULL},
 	 { (char *)"SetRecvMsgRotine", _wrap_SetRecvMsgRotine, METH_VARARGS, NULL},
 	 { (char *)"zwPushString", _wrap_zwPushString, METH_VARARGS, NULL},
+	 { (char *)"dbgGetLockReturnXML", _wrap_dbgGetLockReturnXML, METH_VARARGS, NULL},
 	 { NULL, NULL, 0, NULL }
 };
 

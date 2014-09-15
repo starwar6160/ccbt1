@@ -89,6 +89,10 @@ SetRecvMsgRotine = _HidProtocol.SetRecvMsgRotine
 def zwPushString(*args):
   return _HidProtocol.zwPushString(*args)
 zwPushString = _HidProtocol.zwPushString
+
+def dbgGetLockReturnXML():
+  return _HidProtocol.dbgGetLockReturnXML()
+dbgGetLockReturnXML = _HidProtocol.dbgGetLockReturnXML
 # This file is compatible with both classic and new-style classes.
 
 
