@@ -20,7 +20,6 @@ int main(int argc,char *argv[])
 			outLen=0;
 			g_jcsp.RecvData(buffer,RECV_BUF_LEN,&outLen);
 			string cmdRecv=buffer;
-			//app.logger().information(Poco::format("Frame received (length=%d, flags=0x%x).", n, unsigned(flags)));										
 			string cmdSend;				
 			int m_type=zwjclms_command_proc(cmdRecv,cmdSend);				
 			int sendCount=1;
@@ -32,9 +31,6 @@ int main(int argc,char *argv[])
 			{
 				g_jcsp.SendData(cmdSend.data(),cmdSend.size());
 			}
-			
-			//app.logger().information(Poco::format("RECV msg=%s",cmdRecv));		
-			//app.logger().information(Poco::format("SEND msg=%s",cmdSend));	
 		}
 		while (1);
 							

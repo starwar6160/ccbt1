@@ -67,11 +67,16 @@ namespace jcAtmcConvertDLL {
 		ptccb.put(CCBSTR_TIME, zwTime);
 		ptccb.put("root.RevResult", ptjc.get < int >("State"));
 		string LockStatus = ptjc.get < string > ("Journal");
+
+//////////////////////////////////////////////////////////////////////////
+//20140916.1458.万敏给我的测试电路板对于0005报文返回的日志内容有问题，所以
+//使用该锁具测试时需要把一下4行解析日志的代码注释掉
 		JCLOCKSTATUS lst, ostr;
 		zwLockStatusDataSplit(LockStatus.c_str(), lst);
 		zwStatusData2String(lst, ostr);
-		string LockStatusHumanReadable = LockStatusStringMerge(ostr);
-		ptccb.put("root.Log", LockStatusHumanReadable);
+		LockStatus = LockStatusStringMerge(ostr);
+//////////////////////////////////////////////////////////////////////////
+		ptccb.put("root.Log", LockStatus);
 	}
 
 	void zwconvLockPushWarnDown(const ptree & ptccb, ptree & ptjc) {
