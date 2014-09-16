@@ -14,6 +14,7 @@ void myReadCloseCode(ptree & pt);
 void myGenInitCloseCodeJson(ptree & ptInOut);
 void myGenVerifyCodeJson(ptree & ptInOut);
 void myTimeSync(ptree & ptInOut);
+void myReadLockLogJson(ptree & ptInOut);
 
 void ZWTRACES(const char *x)
 {
@@ -61,6 +62,19 @@ const JC_MSG_TYPE lockParseInJson(const string & inJson, ptree & pt)
 	try {
 		string sCommand =
 		    pt.get < string > (jcAtmcConvertDLL::JCSTR_CMDTITLE);
+		if (jcAtmcConvertDLL::JCSTR_TIME_SYNC == sCommand) {	//是锁具时间同步请求，进行相关处理
+			myTimeSync(pt);
+			return JCMSG_TIME_SYNC;
+		}
+		if (jcAtmcConvertDLL::JCSTR_READ_CLOSECODE == sCommand) {	//是读取闭锁码，进行相关处理
+			myReadCloseCode(pt);
+			return JCMSG_GET_CLOSECODE;
+		}
+		if (jcAtmcConvertDLL::JCSTR_GET_LOCK_LOG == sCommand) {	//读取锁具日志
+			myReadLockLogJson(pt);
+			return JCMSG_GET_LOCK_LOG;
+		}
+//////////////////////////////////////////////////////////////////////////
 		if (jcAtmcConvertDLL::JCSTR_LOCK_ACTIVE_REQUEST == sCommand) {	//是锁具激活请求，进行相关处理
 			myLockActive(pt);
 			return JCMSG_LOCK_ACTIVE_REQUEST;
@@ -69,14 +83,7 @@ const JC_MSG_TYPE lockParseInJson(const string & inJson, ptree & pt)
 			myLockInit(pt);
 			return JCMSG_SEND_LOCK_ACTIVEINFO;
 		}
-		if (jcAtmcConvertDLL::JCSTR_TIME_SYNC == sCommand) {	//是锁具初始化请求，进行相关处理
-			myTimeSync(pt);
-			return JCMSG_TIME_SYNC;
-		}
-		if (jcAtmcConvertDLL::JCSTR_READ_CLOSECODE == sCommand) {	//是读取闭锁码，进行相关处理
-			myReadCloseCode(pt);
-			return JCMSG_GET_CLOSECODE;
-		}
+//////////////////////////////////////////////////////////////////////////
 		if (jcAtmcConvertDLL::JCSTR_SEND_INITCLOSECODE == sCommand) {	//是测试用的要求锁具“主动”发送初始闭锁码的消息
 			myGenInitCloseCodeJson(pt);
 			return JCMSG_SEND_INITCLOSECODE;
@@ -85,6 +92,9 @@ const JC_MSG_TYPE lockParseInJson(const string & inJson, ptree & pt)
 			myGenVerifyCodeJson(pt);
 			return JCMSG_SEND_UNLOCK_CERTCODE;
 		}
+
+
+		
 	}
 	catch(...) {
 		OutputDebugStringA("CPPEXECPTION804C");
@@ -199,5 +209,19 @@ void myGenVerifyCodeJson(ptree & ptInOut)
 	ptOut.put("Lock_Time", time(NULL));
 	ptOut.put("Lock_Serial", "ZWFAKELOCKNO1548");
 	ptOut.put("Lock_Ident_Info", "10028888");
+	ptInOut = ptOut;
+}
+
+
+//读取锁具日志
+void myReadLockLogJson(ptree & ptInOut)
+{
+	//{"Command":"Lock_System_Journal","Lock_Time":1410774283,"State":"0",
+	//"Journal":"1410728006,0,0,0,0,100,0,00,0,000,0,0"}
+	ptree ptOut;
+	ptOut.put(jcAtmcConvertDLL::JCSTR_CMDTITLE, jcAtmcConvertDLL::JCSTR_GET_LOCK_LOG);
+	ptOut.put("Lock_Time", time(NULL));
+	ptOut.put("State", 0);
+	ptOut.put("Journal", "1410728006,0,0,0,0,100,0,00,0,000,0,0");
 	ptInOut = ptOut;
 }
