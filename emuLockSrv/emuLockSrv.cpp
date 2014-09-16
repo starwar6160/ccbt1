@@ -3,6 +3,7 @@
 
 #include "stdafx.h"
 #include "jcSerialPort.h"
+#include "zwCcbElockHdr.h"
 #define ZWFUNCTRACK	cout<<__FUNCTION__<<endl;
 int zwjclms_command_proc(const string &inJson,string &outJson);
 jcSerialPort g_jcsp("COM3");
@@ -21,8 +22,17 @@ int main(int argc,char *argv[])
 			string cmdRecv=buffer;
 			//app.logger().information(Poco::format("Frame received (length=%d, flags=0x%x).", n, unsigned(flags)));										
 			string cmdSend;				
-			zwjclms_command_proc(cmdRecv,cmdSend);				
-			g_jcsp.SendData(cmdSend.data(),cmdSend.size());
+			int m_type=zwjclms_command_proc(cmdRecv,cmdSend);				
+			int sendCount=1;
+			if (JCMSG_GET_LOCK_LOG==m_type)
+			{
+				sendCount=3;
+			}
+			for (int i=0;i<sendCount;i++)
+			{
+				g_jcsp.SendData(cmdSend.data(),cmdSend.size());
+			}
+			
 			//app.logger().information(Poco::format("RECV msg=%s",cmdRecv));		
 			//app.logger().information(Poco::format("SEND msg=%s",cmdSend));	
 		}

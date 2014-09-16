@@ -200,7 +200,7 @@ CCBELOCK_API const char * dbgGetLockReturnXML(void)
 	}
 	else
 	{
-		return "ZWNOTRECV915";
+		return "NODATA916";
 	}
 	
 }
