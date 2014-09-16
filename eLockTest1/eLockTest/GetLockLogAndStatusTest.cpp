@@ -35,7 +35,7 @@ TEST_F(ccbElockTest, GetLockLogTest0005)
 	//具体生成消息XML
 	ptree pt;
 	jcAtmcMsg::zwAtmcTestMsgGen(msgType, strSendLockActInfoXML);
-	for (int i=0;i<9;i++)
+	for (int i=0;i<1;i++)
 	{
 		if (ELOCK_ERROR_SUCCESS == m_connStatus) {
 			EXPECT_EQ(ELOCK_ERROR_SUCCESS,
