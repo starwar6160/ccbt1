@@ -68,7 +68,7 @@
       <AdditionalDependencies>zwBaseLibStatic.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>COPY /y $(TargetPath) $(TargetDir)\_$(ProjectName).pyd</Command>
+      <Command>COPY /y $(TargetPath) $(PYTHON)\_$(ProjectName).pyd</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -94,7 +94,7 @@
       <AdditionalDependencies>zwBaseLibStatic.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>COPY /y $(TargetPath) $(TargetDir)\_$(ProjectName).pyd</Command>
+      <Command>COPY /y $(TargetPath) $(PYTHON)\_$(ProjectName).pyd</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
