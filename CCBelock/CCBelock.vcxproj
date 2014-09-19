@@ -52,7 +52,7 @@
       <WarningLevel>Level4</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;POCO_STATIC;CCBELOCK_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(BOOST)\;$(POCO)\Foundation\include;$(POCO)\Net\include;$(POCO)\XML\include;$(POCO)\Util\include;.\;$(ZWBASELIB)\zwBaseLib\SerialPortTestCode\;$(PYTHON)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(BOOST)\;$(POCO)\Foundation\include;$(POCO)\Net\include;$(POCO)\XML\include;$(POCO)\Util\include;.\;$(ZWBASELIB)\zwBaseLib\SerialPortTestCode\;$(ZWBASELIB)\zwBaseLib\nanopb_Code;$(PYTHON)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <ExceptionHandling>Sync</ExceptionHandling>
       <AdditionalOptions>-Zm113 %(AdditionalOptions)</AdditionalOptions>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
@@ -79,7 +79,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;POCO_STATIC;CCBELOCK_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(BOOST)\;$(POCO)\Foundation\include;$(POCO)\Net\include;$(POCO)\XML\include;$(POCO)\Util\include;.\;$(ZWBASELIB)\zwBaseLib\SerialPortTestCode\;$(PYTHON)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(BOOST)\;$(POCO)\Foundation\include;$(POCO)\Net\include;$(POCO)\XML\include;$(POCO)\Util\include;.\;$(ZWBASELIB)\zwBaseLib\SerialPortTestCode\;$(ZWBASELIB)\zwBaseLib\nanopb_Code;$(PYTHON)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalOptions>-Zm113 %(AdditionalOptions)</AdditionalOptions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>

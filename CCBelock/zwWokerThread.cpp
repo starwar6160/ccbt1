@@ -4,6 +4,7 @@
 //#include "zwwsClient.h"
 #include "zwPocoLog.h"
 #include "jcSerialPort.h"
+#include "zwHidSplitMsg.h"
 #include <stdio.h>
 using namespace boost::property_tree;
 using Poco::AutoPtr;
@@ -127,7 +128,13 @@ CCBELOCK_API void zwPushString(const char *str)
 		return;
 	}
 	try {
-		zwccbthr::zwComPort->SendData(str,strlen(str));
+		JC_MSG_MULPART s_mpSplit[JC_HIDMSG_SPLIT_NUM];
+		jcMsgMulPartSplit(str,strlen(str),s_mpSplit,JC_HIDMSG_SPLIT_NUM);
+		for (int i=0;i<NtoHs(s_mpSplit[0].nTotalBlock);i++)
+		{
+			zwccbthr::zwComPort->SendData((char *)s_mpSplit[i].Data,NtoHs(s_mpSplit[i].nDataLength));
+		}
+		
 	}
 	catch(...) {
 		ZWDBGMSG(__FUNCTION__);
