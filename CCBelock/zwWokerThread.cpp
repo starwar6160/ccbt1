@@ -132,7 +132,7 @@ CCBELOCK_API void zwPushString(const char *str)
 		jcMsgMulPartSplit(str,strlen(str),s_mpSplit,JC_HIDMSG_SPLIT_NUM);
 		for (int i=0;i<NtoHs(s_mpSplit[0].nTotalBlock);i++)
 		{
-			zwccbthr::zwComPort->SendData((char *)s_mpSplit[i].Data,NtoHs(s_mpSplit[i].nDataLength));
+			zwccbthr::zwComPort->SendData((char *)(s_mpSplit+i),sizeof(JC_MSG_MULPART));
 		}
 		
 	}
