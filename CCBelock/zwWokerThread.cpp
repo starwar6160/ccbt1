@@ -55,6 +55,7 @@ namespace zwccbthr {
 					memset(partBuf,0,JC_HID_TRANS_BYTES);
 					zwComPort->RecvData(partBuf, JC_HID_TRANS_BYTES,&outLen);
 					//////////////////////////////////////////////////////////////////////////
+					JC_MSG_MULPART s_mpSplit[JC_HIDMSG_SPLIT_NUM];
 					JC_MSG_MULPART *tmm=(JC_MSG_MULPART *)partBuf;
 					int rIndex=NtoHs(tmm->nIndex);
 					int rTotal=NtoHs(tmm->nTotalBlock);
