@@ -36,7 +36,11 @@ int main(int argc,char *argv[])
 			{
 				memset(buffer,0,RECV_BUF_LEN);
 				jcMsgMulPartMerge(s_mpSplit,rTotal,buffer,RECV_BUF_LEN);
-
+			}
+			else
+			{
+				//尚未结束一个完整包的处理的话就继续接受下一个分片的消息
+				continue;
 			}
 			string cmdRecv=buffer;
 			string cmdSend;				
