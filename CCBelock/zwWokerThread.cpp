@@ -40,6 +40,7 @@ namespace zwccbthr {
 		try {
 			const int BLEN=1024;
 			char recvBuf[BLEN+1];
+			char partBuf[JC_HID_TRANS_BYTES];
 			memset(recvBuf,0,BLEN+1);
 			int outLen=0;			
 			while (1) {
@@ -50,9 +51,29 @@ namespace zwccbthr {
 				}
 				ZWNOTICE("连接锁具成功");
 				ZWINFO("通信线程的新一轮等待接收数据循环开始");			
-				try {
-					memset(recvBuf,0,BLEN);
-					zwComPort->RecvData(recvBuf, BLEN,&outLen);
+				try {					
+					memset(partBuf,0,JC_HID_TRANS_BYTES);
+					zwComPort->RecvData(partBuf, JC_HID_TRANS_BYTES,&outLen);
+					//////////////////////////////////////////////////////////////////////////
+					JC_MSG_MULPART *tmm=(JC_MSG_MULPART *)partBuf;
+					int rIndex=NtoHs(tmm->nIndex);
+					int rTotal=NtoHs(tmm->nTotalBlock);
+					assert(rIndex>=0 && rIndex <256);
+					assert(rTotal>0 && rTotal <256);
+					assert(rIndex<rTotal);
+					memcpy(s_mpSplit+rIndex,partBuf,sizeof(JC_MSG_MULPART));
+					if (rIndex==(rTotal-1))
+					{
+						memset(recvBuf,0,BLEN);
+						jcMsgMulPartMerge(s_mpSplit,rTotal,recvBuf,BLEN);
+					}
+					else
+					{
+						//尚未结束一个完整包的处理的话就继续接受下一个分片的消息
+						continue;
+					}
+					//////////////////////////////////////////////////////////////////////////
+
 					ZWNOTICE
 						("成功从锁具接收数据如下：");
 				}

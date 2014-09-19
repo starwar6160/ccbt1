@@ -42,6 +42,7 @@ int main(int argc,char *argv[])
 				//尚未结束一个完整包的处理的话就继续接受下一个分片的消息
 				continue;
 			}
+			//////////////////////////////////////////////////////////////////////////
 			string cmdRecv=buffer;
 			string cmdSend;				
 			int m_type=zwjclms_command_proc(cmdRecv,cmdSend);				
@@ -50,9 +51,15 @@ int main(int argc,char *argv[])
 			{
 				sendCount=3;
 			}
+
+			JC_MSG_MULPART s_mpSplit[JC_HIDMSG_SPLIT_NUM];
 			for (int i=0;i<sendCount;i++)
 			{
-				g_jcsp.SendData(cmdSend.data(),cmdSend.size());
+				jcMsgMulPartSplit(cmdSend.c_str(),cmdSend.length(),s_mpSplit,JC_HIDMSG_SPLIT_NUM);
+				for (int i=0;i<NtoHs(s_mpSplit[0].nTotalBlock);i++)
+				{
+					g_jcsp.SendData((char *)(s_mpSplit+i),sizeof(JC_MSG_MULPART));
+				}
 			}
 		}
 		while (1);

@@ -14,7 +14,7 @@ using boost::property_tree::ptree;
 #define _DEBUG_RECV_INIT_CLOSECODE
 #define _DEBUG_RECV_VERIFY_CODE
 #define _DEBUG_READ_CLOSE_CODE
-
+//
 #define _DEBUG_QUERY_LOCK_STATUS
 #define _DEBUG_TIMESYNC
 #define _DEBUG_GET_LOCK_LOG
