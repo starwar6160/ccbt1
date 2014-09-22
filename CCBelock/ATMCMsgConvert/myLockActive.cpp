@@ -4,10 +4,11 @@
 
 namespace jcAtmcConvertDLL {
 //发送锁具激活请求
-	void zwconvLockActiveDown(const ptree &, ptree & ptjc) {
+	void zwconvLockActiveDown(const ptree &ptccb, ptree & ptjc) {
 		ZWFUNCTRACE
 		    ptjc.put(jcAtmcConvertDLL::JCSTR_CMDTITLE,
 			     JCSTR_LOCK_ACTIVE_REQUEST);
+			ptjc.put("Atm_Serial", ptccb.get < string > (CCBSTR_DEVCODE));
 	} 
 	
 	void zwconvLockActiveUp(const ptree & ptjc, ptree & ptccb) {
