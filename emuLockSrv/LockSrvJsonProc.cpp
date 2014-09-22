@@ -4,7 +4,7 @@
 
 using namespace boost::property_tree;
 //把锁具服务器端处理Json的函数集中于此，便于单元测试
-
+const char * G_EMULOCK_FAKE_ATMNO="LOCKFAKEATM9";
 const JC_MSG_TYPE lockParseInJson(const string & inJson, ptree & pt);
 void LockGenOutputJson(const ptree & pt, string & outJson);
 //内部函数，不必暴露给外界
@@ -132,7 +132,7 @@ void myLockActive(ptree & ptInOut)
 	ptInOut.put("Lock_Serial", "ZWFAKELOCKNO0912");
 	ptInOut.put("Lock_Public_Key",s_PubKey);
 	ptInOut.put("Lock_Time", time(NULL));
-
+	ptInOut.put("Atm_Serial",G_EMULOCK_FAKE_ATMNO);
 }
 
 //锁具初始化的具体处理函数。
@@ -152,6 +152,7 @@ void myLockInit(ptree & ptInOut)
 	cout<<"ECIES912 DECRYPT RESULT IS\n"<<decryptedPSK<<endl;
 #endif // _DEBUG
 	ptOut.put("Lock_Init_Info",decryptedPSK);
+	ptOut.put("Atm_Serial",G_EMULOCK_FAKE_ATMNO);
 	ptInOut = ptOut;
 }
 
@@ -170,6 +171,7 @@ void myTimeSync(ptree & ptInOut)
 	ptOut.put("Lock_Time", now);
 	ptOut.put("Lock_Serial", "ZWFAKELOCKNO1548");
 	ptOut.put("Ex_Syn_Time", now - 9);
+	ptOut.put("Atm_Serial",G_EMULOCK_FAKE_ATMNO);
 	ptInOut = ptOut;
 }
 
@@ -187,6 +189,7 @@ void myReadCloseCode(ptree & ptInOut)
 	ptOut.put("Lock_Time", time(NULL));
 	ptOut.put("Lock_Serial", "ZWFAKELOCKNO1548");
 	ptOut.put("Code", "11112222");
+	ptOut.put("Atm_Serial",G_EMULOCK_FAKE_ATMNO);
 	ptInOut = ptOut;
 }
 
@@ -198,6 +201,7 @@ void myGenInitCloseCodeJson(ptree & ptInOut)
 	ptOut.put("Lock_Time", time(NULL));
 	ptOut.put("Lock_Serial", "ZWFAKELOCKNO1548");
 	ptOut.put("Code", "10007777");
+	ptOut.put("Atm_Serial",G_EMULOCK_FAKE_ATMNO);
 	ptInOut = ptOut;
 }
 
@@ -209,6 +213,7 @@ void myGenVerifyCodeJson(ptree & ptInOut)
 	ptOut.put("Lock_Time", time(NULL));
 	ptOut.put("Lock_Serial", "ZWFAKELOCKNO1548");
 	ptOut.put("Lock_Ident_Info", "10028888");
+	ptOut.put("Atm_Serial",G_EMULOCK_FAKE_ATMNO);
 	ptInOut = ptOut;
 }
 
@@ -223,5 +228,6 @@ void myReadLockLogJson(ptree & ptInOut)
 	ptOut.put("Lock_Time", time(NULL));
 	ptOut.put("State", 0);
 	ptOut.put("Journal", "1410728006,0,0,0,0,100,0,00,0,000,0,0");
+	ptOut.put("Atm_Serial",G_EMULOCK_FAKE_ATMNO);
 	ptInOut = ptOut;
 }
