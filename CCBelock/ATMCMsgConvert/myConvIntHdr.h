@@ -32,6 +32,5 @@ namespace jcAtmcConvertDLL {
 	extern string ns_ActReqName;
 	extern string ns_LockInitName;
 	extern string ns_ReadCloseCodeName;
-	extern string ns_ccbAtmno;	//ATM±àºÅ
-
+	//extern string ns_ccbAtmno;	//ATM±àºÅ
 }				//namespace jcAtmcConvertDLL{

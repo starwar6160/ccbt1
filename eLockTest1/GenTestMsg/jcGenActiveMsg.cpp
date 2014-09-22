@@ -23,7 +23,8 @@ namespace jcAtmcMsg {
 		zwGetLocalDateTimeString(time(NULL),zwDate, zwTime);
 		pt.put(CCBSTR_DATE, zwDate);
 		pt.put(CCBSTR_TIME, zwTime);
-		pt.put(CCBSTR_DEVCODE, ATMNO_CCBTEST);
+		//金储此报文根本没有ATMNO字段，所以写死的值也不会有任何影响
+		pt.put(CCBSTR_DEVCODE, ATMNO_CCBTEST);	
 
 		std::ostringstream ss;
 		write_xml(ss, pt);

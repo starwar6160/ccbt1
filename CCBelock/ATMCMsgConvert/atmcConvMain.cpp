@@ -34,8 +34,6 @@ namespace jcAtmcConvertDLL {
 
 		//判断消息类型
 		string transCode = ptCCB.get < string > (CCBSTR_CODE);
-		//保存建行冗余字段以便上传返回时提供给建行                      
-		 ns_ccbAtmno = ptCCB.get(CCBSTR_DEVCODE, "CCBATMFAKE88");
 		//根据消息类型调用不同函数处理  
 		//从建行的接口所需字段变为我们的JSON接口
 		ptree ptJC;

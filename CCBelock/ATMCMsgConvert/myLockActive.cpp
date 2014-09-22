@@ -16,7 +16,7 @@ namespace jcAtmcConvertDLL {
 		    ptccb.put(CCBSTR_CODE, "0000");
 		assert("CallForActInfo" == ns_ActReqName);
 		ptccb.put(CCBSTR_NAME, ns_ActReqName);
-		ptccb.put(CCBSTR_DEVCODE, ns_ccbAtmno);
+		ptccb.put(CCBSTR_DEVCODE, ptjc.get < string > ("Atm_Serial"));
 		//////////////////////////////////////////////////////////////////////////
 		string zwDate, zwTime;
 		zwGetLocalDateTimeString(ptjc.get < time_t > ("Lock_Time"),
@@ -69,7 +69,7 @@ namespace jcAtmcConvertDLL {
 					 zwDate, zwTime);
 		ptccb.put(CCBSTR_DATE, zwDate);
 		ptccb.put(CCBSTR_TIME, zwTime);
-		ptccb.put(CCBSTR_DEVCODE, ns_ccbAtmno);	//使用缓存在内存中的值
+		ptccb.put(CCBSTR_DEVCODE, ptjc.get < string > ("Atm_Serial"));	//使用缓存在内存中的值
 		ptccb.put("root.LockMan", LOCKMAN_NAME);
 		ptccb.put("root.LockId", ptjc.get < string > ("Lock_Serial"));
 		//有用部分

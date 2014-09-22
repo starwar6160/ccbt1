@@ -22,7 +22,7 @@ namespace jcAtmcConvertDLL {
 		ptccb.put(CCBSTR_DATE, zwDate);
 		ptccb.put(CCBSTR_TIME, zwTime);
 		//////////////////////////////////////////////////////////////////////////
-		ptccb.put(CCBSTR_DEVCODE, ns_ccbAtmno);	//使用缓存在内存中的值
+		ptccb.put(CCBSTR_DEVCODE, ptjc.get < string > ("Atm_Serial"));	//使用缓存在内存中的值
 		ptccb.put("root.LockMan", LOCKMAN_NAME);
 		ptccb.put("root.LockId", ptjc.get < string > ("Lock_Serial"));
 		//////////////////////////////////////////////////////////////////////////
@@ -52,7 +52,7 @@ namespace jcAtmcConvertDLL {
 		ptccb.put(CCBSTR_TIME, zwTime);
 		//锁具发送初始闭锁码时，ATM编号应该已经在激活请求中获得，但是
 		//1.1版本报文里面没有给出，所以此处可能会有问题
-		ptccb.put(CCBSTR_DEVCODE, ns_ccbAtmno);
+		ptccb.put(CCBSTR_DEVCODE, ptjc.get < string > ("Atm_Serial"));
 		ptccb.put("root.LockMan", LOCKMAN_NAME);
 		ptccb.put("root.LockId", ptjc.get < string > ("Lock_Serial"));
 	}

@@ -9,6 +9,6 @@ namespace jcAtmcConvertDLL {
 	string ns_ActReqName;
 	string ns_LockInitName;
 	string ns_ReadCloseCodeName;
-	string ns_ccbAtmno;	//ATM±àºÅ
+	//string ns_ccbAtmno;	//ATM±àºÅ
 
 }				//namespace jcAtmcConvertDLL
