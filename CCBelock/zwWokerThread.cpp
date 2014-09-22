@@ -10,6 +10,9 @@ using namespace boost::property_tree;
 using Poco::AutoPtr;
 using Poco::Util::IniFileConfiguration;
 
+//20140922.1545.该宏定义用于在这几天调试期间临时切换HID和原始不切分消息的串口通信，方便万敏和马浩调试
+//#define ZWUSE_HID_MSG_SPLIT		//是否使用HID的64字节消息切分方案
+
 namespace zwccbthr {
 	boost::mutex thr_mutex;
 	//建行给的接口，没有设置连接参数的地方，也就是说，完全可以端口，抑或是从配置文件读取
@@ -39,8 +42,7 @@ namespace zwccbthr {
 		
 		try {
 			const int BLEN=1024;
-			char recvBuf[BLEN+1];
-			char partBuf[JC_HID_TRANS_BYTES];
+			char recvBuf[BLEN+1];			
 			memset(recvBuf,0,BLEN+1);
 			int outLen=0;			
 			while (1) {
@@ -52,6 +54,8 @@ namespace zwccbthr {
 				ZWNOTICE("连接锁具成功");
 				ZWINFO("通信线程的新一轮等待接收数据循环开始");			
 				try {					
+#ifdef ZWUSE_HID_MSG_SPLIT
+					char partBuf[JC_HID_TRANS_BYTES];
 					memset(partBuf,0,JC_HID_TRANS_BYTES);
 					zwComPort->RecvData(partBuf, JC_HID_TRANS_BYTES,&outLen);
 					//////////////////////////////////////////////////////////////////////////
@@ -73,6 +77,11 @@ namespace zwccbthr {
 						//尚未结束一个完整包的处理的话就继续接受下一个分片的消息
 						continue;
 					}
+#else
+					zwComPort->RecvData(recvBuf, BLEN,&outLen);
+#endif // ZWUSE_HID_MSG_SPLIT
+
+					
 					//////////////////////////////////////////////////////////////////////////
 
 					ZWNOTICE
@@ -150,14 +159,17 @@ CCBELOCK_API void zwPushString(const char *str)
 		return;
 	}
 	try {
+#ifdef ZWUSE_HID_MSG_SPLIT
 		JC_MSG_MULPART s_mpSplit[JC_HIDMSG_SPLIT_NUM];
 		jcMsgMulPartSplit(str,strlen(str),s_mpSplit,JC_HIDMSG_SPLIT_NUM);
 		for (int i=0;i<NtoHs(s_mpSplit[0].nTotalBlock);i++)
 		{
 			zwccbthr::zwComPort->SendData((char *)(s_mpSplit+i),sizeof(JC_MSG_MULPART));
 		}
-		
-	}
+#else
+zwccbthr::zwComPort->SendData(str,strlen(str));
+#endif // ZWUSE_HID_MSG_SPLIT		
+		}	//try
 	catch(...) {
 		ZWDBGMSG(__FUNCTION__);
 		ZWDBGMSG("\t SerialPort Send String Exeception!20140805.1626");
