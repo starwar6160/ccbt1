@@ -32,6 +32,7 @@ void myGetCloseCodeVarItem(int *mdatetime,int *mvalidity,int *mclosecode);
 	//生成各种类型的动态码
 	int myGetDynaCodeImplCCB201407a( const int handle )
 	{		
+		zwJcLockDumpJCINPUT(handle);
 		const JCINPUT *lock=(const JCINPUT *)handle;
 		SM3 sm3;
 		char outHmac[ZW_SM3_DGST_SIZE];
@@ -89,6 +90,7 @@ void myGetCloseCodeVarItem(int *mdatetime,int *mvalidity,int *mclosecode);
 	//如果找到了，返回JCOFFLINE中是匹配的时间和有效期，否则其中的值都是0
 	JCMATCH JCLMSCCB2014_API JcLockReverseVerifyDynaCode( const int handle,const int dstCode )
 	{		
+		zwJcLockDumpJCINPUT(handle);
 		JCINPUT *jcp=(JCINPUT *)handle;
 		const int MIN_OF_HOUR=60;	//一小时的分钟数
 		JCMATCH jcoff;

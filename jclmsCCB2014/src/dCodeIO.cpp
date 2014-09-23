@@ -39,6 +39,7 @@ JCERROR	JCLMSCCB2014_API JcLockSetString(const int handle,const JCITYPE mtype,co
 		return EJC_INPUT_NULL;
 	}
 	JCINPUT *jcp=(JCINPUT *)handle;
+	zwJcLockDumpJCINPUT(handle);
 	switch (mtype)
 	{
 	case JCI_ATMNO:
@@ -67,6 +68,7 @@ JCERROR JCLMSCCB2014_API JcLockSetInt( const int handle,const JCITYPE mtype,int 
 	}
 	JCINPUT *jcp=(JCINPUT *)handle;
 	assert(jcp->m_stepoftime>=6 && jcp->m_stepoftime<=ZW_ONE_DAY);
+	zwJcLockDumpJCINPUT(handle);
 	switch (mtype)
 	{
 	case JCI_DATETIME:
@@ -108,6 +110,7 @@ JCERROR JCLMSCCB2014_API JcLockSetInt( const int handle,const JCITYPE mtype,int 
 
 JCERROR JCLMSCCB2014_API JcLockCheckInput( const int handle )
 {
+	zwJcLockDumpJCINPUT(handle);
 	const int ZW_DIGI8_LOW=10*ZWMEGA;
 	const int ZW_DIGI8_HIGH=100*ZWMEGA;
 	JCINPUT *jcp=(JCINPUT *)handle;

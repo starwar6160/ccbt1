@@ -103,7 +103,7 @@ JCMATCH	JCLMSCCB2014_API JcLockReverseVerifyDynaCode( const int handle,const int
 int		JCLMSCCB2014_API JcLockGetVersion(void);
 //输出调试字符串
 void	JCLMSCCB2014_API JcLockDebugPrint(const int handle);
-
+void JCLMSCCB2014_API	zwJcLockDumpJCINPUT(const int handle);
 const int ZWMEGA=1000000;	//一百万
 
 //}	//end of namespace jclms

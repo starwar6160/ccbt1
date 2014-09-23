@@ -3,6 +3,8 @@
 #include <memory.h>
 #include "jclmsCCB2014.h"
 #include "dCodeHdr.h"
+
+
 //////////////////////////////////////////////////////////////////////////
 int JCLMSCCB2014_API JcLockNew( void )
 {
@@ -65,8 +67,9 @@ static string zwTimeSecond2String(const time_t sec)
 	return rStr;
 }
 
-void zwJcLockDumpJCINPUT(const JCINPUT *jcp)
+void JCLMSCCB2014_API	zwJcLockDumpJCINPUT(const int handle)
 {
+	JCINPUT *jcp=(JCINPUT *)handle;
 	assert(NULL!=jcp);
 	if (NULL==jcp)
 	{
@@ -121,7 +124,7 @@ void zwJcLockDumpJCINPUT(const JCINPUT *jcp)
 void JCLMSCCB2014_API JcLockDebugPrint( const int handle )
 {
 	JCINPUT *jcp=(JCINPUT *)handle;
-	zwJcLockDumpJCINPUT(jcp);
+	zwJcLockDumpJCINPUT(handle);
 	if (EJC_SUSSESS!=JcLockCheckInput((const int)jcp))
 	{
 		printf("JcLock Input Para Error!\n");
