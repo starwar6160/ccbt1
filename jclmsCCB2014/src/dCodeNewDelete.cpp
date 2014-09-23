@@ -1,4 +1,6 @@
 #include "stdafx.h"
+#include <time.h>
+#include <memory.h>
 #include "jclmsCCB2014.h"
 #include "dCodeHdr.h"
 //////////////////////////////////////////////////////////////////////////
@@ -48,9 +50,78 @@ int		JCLMSCCB2014_API JcLockDelete(const int handle)
 	return EJC_SUSSESS;
 }
 
+//时间GMT秒数转为字符串
+static string zwTimeSecond2String(const time_t sec)
+{
+	char strTime[32];
+	memset(strTime,0,32);
+	struct tm *p;
+	time_t tsec=sec;
+	p=localtime(&tsec); 
+	sprintf(strTime,"%04d.%02d%02d:%02d:%02d:%02d",
+		(1900+p->tm_year),(1+p->tm_mon),p->tm_mday,
+		p->tm_hour,p->tm_min,p->tm_sec);
+	string rStr=strTime;
+	return rStr;
+}
+
+void zwJcLockDumpJCINPUT(const JCINPUT *jcp)
+{
+	assert(NULL!=jcp);
+	if (NULL==jcp)
+	{
+		printf("%s input is NULL",__FUNCTION__);
+		return ;
+	}
+	printf("########JCINPUT DUMP START############\n");
+	printf("ATMNO:%s\t",jcp->m_atmno);
+	printf("LOCKNO:%s\n",jcp->m_lockno);
+	printf("PSK:%s\n",jcp->m_psk);
+	printf("DATETIME:%d\t%s\n",jcp->m_datetime,zwTimeSecond2String(jcp->m_datetime).c_str());
+	printf("VALIDITY:%d\tCloseCode:%d\n",jcp->m_validity,jcp->m_closecode);
+	printf("CMDTYPE:");
+	switch(jcp->m_cmdtype)
+	{
+	case JCI_ATMNO:
+		printf("JCI_ATMNO");
+		break;
+	case JCI_LOCKNO:
+		printf("JCI_LOCKNO");
+		break;
+	case JCI_PSK:
+		printf("JCI_PSK");
+		break;
+	case JCI_DATETIME:
+		printf("JCI_DATETIME");
+		break;
+	case JCI_VALIDITY:
+		printf("JCI_VALIDITY");
+		break;
+	case JCI_CLOSECODE:
+		printf("JCI_CLOSECODE");
+		break;
+	case JCI_CMDTYPE:
+		printf("JCI_CMDTYPE");
+		break;
+	case JCI_TIMESTEP:
+		printf("JCI_TIMESTEP");
+		break;
+	}
+	printf("\n");
+	printf("M_STEPOFTIME:%d\t",jcp->m_stepoftime);
+	printf("M_REVERSE_TIME_LENGTH:%d\n",jcp->m_reverse_time_length);
+	printf("M_VALIDITY_ARRAY:\n");
+	for (int i=0;i<NUM_VALIDITY;i++)
+	{
+		printf("%d\t");
+	}
+	printf("\n########JCINPUT DUMP END############\n");
+}
+
 void JCLMSCCB2014_API JcLockDebugPrint( const int handle )
 {
 	JCINPUT *jcp=(JCINPUT *)handle;
+	zwJcLockDumpJCINPUT(jcp);
 	if (EJC_SUSSESS!=JcLockCheckInput((const int)jcp))
 	{
 		printf("JcLock Input Para Error!\n");
