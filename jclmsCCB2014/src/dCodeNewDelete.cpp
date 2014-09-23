@@ -78,10 +78,10 @@ void JCLMSCCB2014_API	zwJcLockDumpJCINPUT(const int handle)
 	}
 	printf("########JCINPUT DUMP START############\n");
 	printf("ATMNO:%s\t",jcp->m_atmno);
-	printf("LOCKNO:%s\n",jcp->m_lockno);
+	printf("LOCKNO:%s\t",jcp->m_lockno);
 	printf("PSK:%s\n",jcp->m_psk);
 	printf("DATETIME:%d\t%s\n",jcp->m_datetime,zwTimeSecond2String(jcp->m_datetime).c_str());
-	printf("VALIDITY:%d\tCloseCode:%d\n",jcp->m_validity,jcp->m_closecode);
+	printf("VALIDITY:%d\tCloseCode:%d\t",jcp->m_validity,jcp->m_closecode);
 	printf("CMDTYPE:");
 	switch(jcp->m_cmdtype)
 	{
@@ -116,7 +116,7 @@ void JCLMSCCB2014_API	zwJcLockDumpJCINPUT(const int handle)
 	printf("M_VALIDITY_ARRAY:\n");
 	for (int i=0;i<NUM_VALIDITY;i++)
 	{
-		printf("%d\t");
+		printf("%d\t",jcp->m_validity_array[i]);
 	}
 	printf("\n########JCINPUT DUMP END############\n");
 }
