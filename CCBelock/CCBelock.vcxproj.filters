@@ -19,6 +19,9 @@
     <Filter Include="源文件\convert">
       <UniqueIdentifier>{b773109f-6cf3-4e63-8990-89fde05b5ff8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="源文件\wrap">
+      <UniqueIdentifier>{04e2fd66-c204-4823-880d-5d7dd6190c42}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="ReadMe.txt" />
@@ -65,12 +68,6 @@
     <ClCompile Include="jcJsonCommandDefine.cpp">
       <Filter>源文件\ingtest</Filter>
     </ClCompile>
-    <ClCompile Include="zwLockStatusParse.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="jcPocoLogCfg.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="atmcDLLConvert731.cpp">
       <Filter>源文件\convert</Filter>
     </ClCompile>
@@ -89,11 +86,17 @@
     <ClCompile Include="ATMCMsgConvert\myLockTimeSync.cpp">
       <Filter>源文件\convert</Filter>
     </ClCompile>
+    <ClCompile Include="zwLockStatusParse.cpp">
+      <Filter>源文件\convert</Filter>
+    </ClCompile>
     <ClCompile Include="CCBelock_wrap.cxx">
-      <Filter>源文件</Filter>
+      <Filter>源文件\wrap</Filter>
     </ClCompile>
     <ClCompile Include="PythonCallBack.cpp">
-      <Filter>源文件</Filter>
+      <Filter>源文件\wrap</Filter>
+    </ClCompile>
+    <ClCompile Include="jcPocoLogCfg.cpp">
+      <Filter>源文件\wrap</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
