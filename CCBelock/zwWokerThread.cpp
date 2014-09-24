@@ -57,28 +57,7 @@ namespace zwccbthr {
 				ZWINFO("通信线程的新一轮等待接收数据循环开始");			
 				try {					
 #ifdef ZWUSE_HID_MSG_SPLIT
-					char partBuf[JC_HID_TRANS_BYTES];
-					memset(partBuf,0,JC_HID_TRANS_BYTES);
-					zwComPort->RecvData(partBuf, JC_HID_TRANS_BYTES,&outLen);
-					//////////////////////////////////////////////////////////////////////////
-					JC_MSG_MULPART s_mpSplit[JC_HIDMSG_SPLIT_NUM];
-					JC_MSG_MULPART *tmm=(JC_MSG_MULPART *)partBuf;
-					int rIndex=NtoHs(tmm->nIndex);
-					int rTotal=NtoHs(tmm->nTotalBlock);
-					assert(rIndex>=0 && rIndex <256);
-					assert(rTotal>0 && rTotal <256);
-					assert(rIndex<rTotal);
-					memcpy(s_mpSplit+rIndex,partBuf,sizeof(JC_MSG_MULPART));
-					if (rIndex==(rTotal-1))
-					{
-						memset(recvBuf,0,BLEN);
-						jcMsgMulPartMerge(s_mpSplit,rTotal,recvBuf,BLEN);
-					}
-					else
-					{
-						//尚未结束一个完整包的处理的话就继续接受下一个分片的消息
-						continue;
-					}
+					jcHidRecvData(&zwccbthr::hidHandle,recvBuf,BLEN,&outLen);
 #else
 					zwComPort->RecvData(recvBuf, BLEN,&outLen);
 #endif // ZWUSE_HID_MSG_SPLIT
@@ -162,12 +141,7 @@ CCBELOCK_API void zwPushString(const char *str)
 	}
 	try {
 #ifdef ZWUSE_HID_MSG_SPLIT
-		JC_MSG_MULPART s_mpSplit[JC_HIDMSG_SPLIT_NUM];
-		jcMsgMulPartSplit(str,strlen(str),s_mpSplit,JC_HIDMSG_SPLIT_NUM);
-		for (int i=0;i<NtoHs(s_mpSplit[0].nTotalBlock);i++)
-		{
-			zwccbthr::zwComPort->SendData((char *)(s_mpSplit+i),sizeof(JC_MSG_MULPART));
-		}
+		jcHidSendData(&zwccbthr::hidHandle,str,strlen(str));
 #else
 zwccbthr::zwComPort->SendData(str,strlen(str));
 #endif // ZWUSE_HID_MSG_SPLIT		
