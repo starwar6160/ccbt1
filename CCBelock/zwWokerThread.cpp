@@ -5,6 +5,7 @@
 #include "zwPocoLog.h"
 #include "jcSerialPort.h"
 #include "zwHidSplitMsg.h"
+#include "zwHidComm.h"
 #include <stdio.h>
 using namespace boost::property_tree;
 using Poco::AutoPtr;
@@ -20,6 +21,7 @@ namespace zwccbthr {
 	boost::mutex recv_mutex;
 	std::string s_ComPort;
 	std::deque<string> dqOutXML;
+	JCHID hidHandle;
 
 	void wait(int milliseconds) {
 		boost::this_thread::sleep(boost::posix_time::

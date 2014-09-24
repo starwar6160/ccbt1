@@ -5,6 +5,7 @@
 #include "jcSerialPort.h"
 #include "zwCcbElockHdr.h"
 #include "zwHidSplitMsg.h"
+#include "zwHidComm.h"
 #define ZWFUNCTRACK	cout<<__FUNCTION__<<endl;
 //#define ZWUSE_HID_MSG_SPLIT		//是否使用HID的64字节消息切分方案
 int zwjclms_command_proc(const string &inJson,string &outJson);

@@ -12,6 +12,7 @@
 #include "CCBelock.h"
 #include "zwCcbElockHdr.h"
 #include "jcSerialPort.h"
+#include "zwHidComm.h"
 #include "zwPocoLog.h"
 using namespace std;
 using boost::property_tree::ptree_error;
@@ -24,6 +25,7 @@ namespace zwccbthr {
 	string zwGetLockIP(void);
 	extern std::deque<string> dqOutXML;;
 	extern boost::mutex recv_mutex;
+	extern JCHID hidHandle;
 } //namespace zwccbthr{ 
 
 void ZWDBGMSG(const char *x)
@@ -70,9 +72,20 @@ CCBELOCK_API long JCAPISTD Open(long lTimeOut)
 	pocoLog->notice() << "Open Return " << ELOCK_ERROR_SUCCESS << endl;
 	string myLockIp;
 	try{
+
+#ifdef ZWUSE_HID_MSG_SPLIT
+		memset(&zwccbthr::hidHandle,0,sizeof(JCHID));
+		zwccbthr::hidHandle.vid=0x0483;
+		zwccbthr::hidHandle.pid=0x5710;		
+		if (JCHID_STATUS_OK!=jcHidOpen(&zwccbthr::hidHandle))
+		{
+			return ELOCK_ERROR_PARAMINVALID;
+		}
+#else
 		//打开串口
 		myLockIp = zwccbthr::zwGetLockIP();
 		zwccbthr::zwComPort=new jcSerialPort(myLockIp.c_str());
+#endif // ZWUSE_HID_MSG_SPLIT
 		//启动通信线程
 		boost::thread thr(zwccbthr::ThreadLockComm);
 	}
@@ -90,11 +103,19 @@ CCBELOCK_API long JCAPISTD Close()
 {
 	ZWFUNCTRACE boost::mutex::scoped_lock lock(zwCfg::ComPort_mutex);
 	zwCfg::g_WarnCallback = NULL;
+#ifdef ZWUSE_HID_MSG_SPLIT
+	if (NULL!=zwccbthr::hidHandle.vid && NULL!=zwccbthr::hidHandle.pid)
+	{
+		jcHidClose(&zwccbthr::hidHandle);
+	}
+#else
 	if (NULL!=zwccbthr::zwComPort)
 	{
 		delete zwccbthr::zwComPort;
 		zwccbthr::zwComPort=NULL;
 	}
+#endif // ZWUSE_HID_MSG_SPLIT
+
 	ZWNOTICE("关闭 到锁具的连接")
 	    return ELOCK_ERROR_SUCCESS;
 }
