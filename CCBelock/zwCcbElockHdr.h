@@ -93,6 +93,6 @@ namespace zwCfg{
 	extern RecvMsgRotine g_WarnCallback;
 }
 void ZWDBGMSG(const char *x);
-#define ZWUSE_HID_MSG_SPLIT
+//#define ZWUSE_HID_MSG_SPLIT
 
 #endif // zwCcbElockHdr_h__
