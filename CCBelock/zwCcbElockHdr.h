@@ -83,7 +83,10 @@ void zwStatusData2String(const JCLOCKSTATUS &lst,JCLOCKSTATUS &ostr);
 string LockStatusStringMerge(JCLOCKSTATUS &ostr);
 
 //从给定的时间秒数，获取日期(YYYYMMDD)和时间(HHMMSS)字符串
+namespace zwTimeFunc{
 void zwGetLocalDateTimeString(time_t inTime,string &outDate,string &outTime);
+}	//namespace zwTimeFunc{
+using zwTimeFunc::zwGetLocalDateTimeString;
 
 typedef void (cdecl *RecvMsgRotine)(const char *pszMsg);
 namespace zwCfg{
