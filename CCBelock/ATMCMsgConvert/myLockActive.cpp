@@ -52,7 +52,15 @@ namespace jcAtmcConvertDLL {
 		    //      "Lock_Init_Info":"锁具ECIES解密出来的PSK明文,用于ATMVH存档"
 		    ptjc.put(jcAtmcConvertDLL::JCSTR_CMDTITLE, JCSTR_LOCK_INIT);
 		//以下字段(LMS时间)是JC特有，CCB没有,时间或许还应该用建行报文中的时间来转换
-		ptjc.put("Lock_Time", time(NULL));
+		//建行字符串格式的日期和时间字段合成转换为UTC秒数.开始
+		string ccbDate=ptccb.get<string>(CCBSTR_DATE);
+		string ccbTime=ptccb.get<string>(CCBSTR_TIME);
+		time_t ccbUTCSec=0;
+		zwCCBDateTime2UTC(ccbDate.c_str(),ccbTime.c_str(),&ccbUTCSec);
+		assert(ccbUTCSec>1400*1000*1000);
+		//建行字符串格式的日期和时间字段合成转换为UTC秒数.结束
+
+		ptjc.put("Lock_Time", ccbUTCSec);
 		ptjc.put("Atm_Serial", ptccb.get < string > (CCBSTR_DEVCODE));
 		//此处1.1版本已经支持ECIES加密过的PSK输入了，使用第一套密文
 		ptjc.put("Lock_Init_Info",

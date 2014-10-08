@@ -4,10 +4,18 @@
 
 namespace jcAtmcConvertDLL {
 	//时间同步
-	void zwconvTimeSyncDown(const ptree &, ptree & ptjc) {
+	void zwconvTimeSyncDown(const ptree &ptccb, ptree & ptjc) {
 		ZWFUNCTRACE
 		    ptjc.put(jcAtmcConvertDLL::JCSTR_CMDTITLE, JCSTR_TIME_SYNC);
-		ptjc.put < time_t > ("Lock_Time", time(NULL));
+		//建行字符串格式的日期和时间字段合成转换为UTC秒数.开始
+		string ccbDate=ptccb.get<string>(CCBSTR_DATE);
+		string ccbTime=ptccb.get<string>(CCBSTR_TIME);
+		time_t ccbUTCSec=0;
+		zwCCBDateTime2UTC(ccbDate.c_str(),ccbTime.c_str(),&ccbUTCSec);
+		assert(ccbUTCSec>1400*1000*1000);
+		//建行字符串格式的日期和时间字段合成转换为UTC秒数.结束
+
+		ptjc.put < time_t > ("Lock_Time", ccbUTCSec);
 	}
 	
 	//时间同步 
@@ -36,11 +44,20 @@ namespace jcAtmcConvertDLL {
 
 	//////////////////////////////////////////////////////////////////////////
 
-	void zwconvLockReqTimeSyncDown(const ptree &, ptree & ptjc) {
+	void zwconvLockReqTimeSyncDown(const ptree &ptccb, ptree & ptjc) {
 		ZWFUNCTRACE
 		    ptjc.put(jcAtmcConvertDLL::JCSTR_CMDTITLE,
 			     jcAtmcConvertDLL::JCSTR_REQUEST_TIME_SYNC);
-		ptjc.put("Lock_Time", time(NULL));
+		//建行字符串格式的日期和时间字段合成转换为UTC秒数.开始
+		string ccbDate=ptccb.get<string>(CCBSTR_DATE);
+		string ccbTime=ptccb.get<string>(CCBSTR_TIME);
+		time_t ccbUTCSec=0;
+		zwCCBDateTime2UTC(ccbDate.c_str(),ccbTime.c_str(),&ccbUTCSec);
+		assert(ccbUTCSec>1400*1000*1000);
+		//建行字符串格式的日期和时间字段合成转换为UTC秒数.结束
+
+
+		ptjc.put("Lock_Time", ccbUTCSec);
 	}
 
 	void zwconvLockReqTimeSyncUp(const ptree & ptjc, ptree & ptccb) {

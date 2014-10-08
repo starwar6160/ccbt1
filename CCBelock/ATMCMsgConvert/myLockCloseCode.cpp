@@ -4,7 +4,7 @@
 
 namespace jcAtmcConvertDLL {
 	//读取闭锁码
-	void zwconvReadCloseCodeDown(const ptree &, ptree & ptjc) {
+	void zwconvReadCloseCodeDown(const ptree &ptccb, ptree & ptjc) {
 		ZWFUNCTRACE
 		    //>> 读取闭锁码
 		    //请求
@@ -14,7 +14,15 @@ namespace jcAtmcConvertDLL {
 		    //"Command":JCSTR_READ_CLOSECODE
 		    ptjc.put(jcAtmcConvertDLL::JCSTR_CMDTITLE,
 			     JCSTR_READ_CLOSECODE);
-		ptjc.put("Lock_Time", time(NULL));
+		//建行字符串格式的日期和时间字段合成转换为UTC秒数.开始
+		string ccbDate=ptccb.get<string>(CCBSTR_DATE);
+		string ccbTime=ptccb.get<string>(CCBSTR_TIME);
+		time_t ccbUTCSec=0;
+		zwCCBDateTime2UTC(ccbDate.c_str(),ccbTime.c_str(),&ccbUTCSec);
+		assert(ccbUTCSec>1400*1000*1000);
+		//建行字符串格式的日期和时间字段合成转换为UTC秒数.结束
+
+		ptjc.put("Lock_Time", ccbUTCSec);
 	} 
 	void zwconvReadCloseCodeUp(const ptree & ptjc, ptree & ptccb) {
 		ZWFUNCTRACE
