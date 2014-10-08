@@ -15,7 +15,8 @@ namespace jcAtmcConvertDLL {
 		assert(ccbUTCSec>1400*1000*1000);
 		//建行字符串格式的日期和时间字段合成转换为UTC秒数.结束
 
-		ptjc.put < time_t > ("Lock_Time", ccbUTCSec);
+		//ptjc.put < time_t > ("Lock_Time", ccbUTCSec);
+		ptjc.put < time_t > ("Lock_Time", time(NULL));
 	}
 	
 	//时间同步 
@@ -57,7 +58,7 @@ namespace jcAtmcConvertDLL {
 		//建行字符串格式的日期和时间字段合成转换为UTC秒数.结束
 
 
-		ptjc.put("Lock_Time", ccbUTCSec);
+		ptjc.put("Lock_Time", ccbUTCSec);		
 	}
 
 	void zwconvLockReqTimeSyncUp(const ptree & ptjc, ptree & ptccb) {

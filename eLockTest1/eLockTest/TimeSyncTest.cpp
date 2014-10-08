@@ -16,7 +16,7 @@ TEST_F(ccbElockTest, TimeSyncTest0003)
 	if (ELOCK_ERROR_SUCCESS == m_connStatus) {
 		EXPECT_EQ(ELOCK_ERROR_SUCCESS,
 			  Notify(strSendLockActInfoXML.c_str()));
-		Sleep(90 * 1000);
+		Sleep(3 * 1000);
 		EXPECT_EQ(ELOCK_ERROR_SUCCESS,
 			  Notify(strSendLockActInfoXML.c_str()));
 	} else {
