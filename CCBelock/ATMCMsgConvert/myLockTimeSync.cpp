@@ -8,15 +8,17 @@ namespace jcAtmcConvertDLL {
 		ZWFUNCTRACE
 		    ptjc.put(jcAtmcConvertDLL::JCSTR_CMDTITLE, JCSTR_TIME_SYNC);
 		//建行字符串格式的日期和时间字段合成转换为UTC秒数.开始
+		time_t nowSec=time(NULL);
 		string ccbDate=ptccb.get<string>(CCBSTR_DATE);
 		string ccbTime=ptccb.get<string>(CCBSTR_TIME);
 		time_t ccbUTCSec=0;
 		zwCCBDateTime2UTC(ccbDate.c_str(),ccbTime.c_str(),&ccbUTCSec);
 		assert(ccbUTCSec>1400*1000*1000);
+		
 		//建行字符串格式的日期和时间字段合成转换为UTC秒数.结束
-
-		//ptjc.put < time_t > ("Lock_Time", ccbUTCSec);
-		ptjc.put < time_t > ("Lock_Time", time(NULL));
+		
+		ptjc.put < time_t > ("Lock_Time", ccbUTCSec);
+		//ptjc.put < time_t > ("Lock_Time", nowSec);
 	}
 	
 	//时间同步 
