@@ -84,10 +84,11 @@ string LockStatusStringMerge(JCLOCKSTATUS &ostr);
 
 //从给定的时间秒数，获取日期(YYYYMMDD)和时间(HHMMSS)字符串
 namespace zwTimeFunc{
-void zwGetLocalDateTimeString(time_t inTime,string &outDate,string &outTime);
-//把建行的本地日期和时间两项，合成之后，转换为一个UTC时间(格林尼治时间,协调世界时)秒数
-//建行的日期是YYYYMMDD格式8位，时间是HHMMSS6位
-void zwCCBDateTime2UTC(const char *ccbDate,const char *ccbTime,time_t *outUTC);
+	//从给定的时间GMT秒数，获取本地日期(YYYYMMDD)和时间(HHMMSS)字符串
+	void zwGetLocalDateTimeString(time_t inTimeUTC, string & outDateLocal,string & outTimeLocal);
+	//把建行的本地日期和时间两项，合成之后，转换为一个UTC时间(格林尼治时间,协调世界时)秒数
+	//建行的日期是YYYYMMDD格式8位，时间是HHMMSS6位
+	void zwCCBDateTime2UTC(const char *ccbDateLocal,const char *ccbTimeLocal,time_t *outUTC);
 }	//namespace zwTimeFunc{
 using zwTimeFunc::zwGetLocalDateTimeString;
 using zwTimeFunc::zwCCBDateTime2UTC;
