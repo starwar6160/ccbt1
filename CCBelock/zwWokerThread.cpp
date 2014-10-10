@@ -133,10 +133,12 @@ CCBELOCK_API void zwPushString(const char *str)
 	if (NULL==str || strlen(str) == 0) {
 		return;
 	}
+#ifndef ZWUSE_HID_MSG_SPLIT
 	if (NULL == zwccbthr::zwComPort) {
 		ZWFATAL("串口对象指针为空！");
 		return;
 	}
+#endif // ZWUSE_HID_MSG_SPLIT
 	try {
 #ifdef ZWUSE_HID_MSG_SPLIT
 		jcHidSendData(&zwccbthr::hidHandle,str,strlen(str));

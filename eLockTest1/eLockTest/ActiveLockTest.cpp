@@ -5,7 +5,7 @@
 string s_repActReqXML;	//从锁具收到的激活请求的返回报文
 string s_repLockInitXML;//从锁具收到的初始化请求的返回报文
 
-
+ 
 //从0号报文返回XML提取公钥并返回
 string myGetPubKeyFromMsg0000Rep(const string msg0000RepXML)
 {
