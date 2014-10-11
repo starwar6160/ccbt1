@@ -76,13 +76,13 @@ CCBELOCK_API long JCAPISTD Open(long lTimeOut)
 	try{
 
 #ifdef ZWUSE_HID_MSG_SPLIT		
-		memset(&zwccbthr::hidHandle,0,sizeof(JCHID));
-		zwccbthr::hidHandle.vid=0x0483;
-		zwccbthr::hidHandle.pid=0x5710;		
 		if (true==s_hidOpened)
 		{
 			return ELOCK_ERROR_SUCCESS;
 		}
+		memset(&zwccbthr::hidHandle,0,sizeof(JCHID));
+		zwccbthr::hidHandle.vid=0x0483;
+		zwccbthr::hidHandle.pid=0x5710;		
 		if (JCHID_STATUS_OK!=jcHidOpen(&zwccbthr::hidHandle))
 		{
 			return ELOCK_ERROR_PARAMINVALID;
@@ -111,12 +111,13 @@ CCBELOCK_API long JCAPISTD Close()
 	ZWFUNCTRACE boost::mutex::scoped_lock lock(zwCfg::ComPort_mutex);
 	zwCfg::g_WarnCallback = NULL;
 #ifdef ZWUSE_HID_MSG_SPLIT
+	goto CloseHidEnd;
 	if (NULL!=zwccbthr::hidHandle.vid && NULL!=zwccbthr::hidHandle.pid)
 	{
-		if (true==s_hidOpened)
-		{
+		//if (true==s_hidOpened)
+		//{
 			jcHidClose(&zwccbthr::hidHandle);
-		}		
+		//}		
 	}
 #else
 	if (NULL!=zwccbthr::zwComPort)
@@ -125,7 +126,7 @@ CCBELOCK_API long JCAPISTD Close()
 		zwccbthr::zwComPort=NULL;
 	}
 #endif // ZWUSE_HID_MSG_SPLIT
-
+	CloseHidEnd:
 	ZWNOTICE("关闭 到锁具的连接")
 	    return ELOCK_ERROR_SUCCESS;
 }

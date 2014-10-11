@@ -86,7 +86,7 @@ TEST_F(ccbElockTest, LockActiveTest0000)
 TEST_F(ccbElockTest, LockSendActInfoTest0001)
 {
 	//Open(25);
-	//Sleep(2000);
+	Sleep(2000);
 	assert(s_repActReqXML.length()>0);
 	cout<<"PubKey from Lock 20140911 is "<<myGetPubKeyFromMsg0000Rep(s_repActReqXML)<<endl;
 	EXPECT_EQ(ELOCK_ERROR_SUCCESS, SetRecvMsgRotine(myATMCRecvMsgRotine));
