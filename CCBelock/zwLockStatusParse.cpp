@@ -8,7 +8,8 @@ using boost::is_any_of;
 void zwLockStatusDataSplit(const char *LockStatus, JCLOCKSTATUS & lst)
 {
 	assert(NULL!=LockStatus);
-	if (NULL==LockStatus)
+	assert(strlen(LockStatus)>0);
+	if (NULL==LockStatus || strlen(LockStatus)==0)
 	{
 		return;
 	}
@@ -25,12 +26,19 @@ void zwLockStatusDataSplit(const char *LockStatus, JCLOCKSTATUS & lst)
 	int vecSize=StatusVec.size();
 	if(vecSize==0)return;
 	lst.LogGenDate=StatusVec[nIndex];nIndex++;
+	if (nIndex>=vecSize) return;	//为了预防下位机返回的数据项目不足的临时措施
 	lst.ActiveStatus = StatusVec[nIndex];nIndex++;
+	if (nIndex>=vecSize) return;	//为了预防下位机返回的数据项目不足的临时措施
 	lst.EnableStatus = StatusVec[nIndex];nIndex++;
+	if (nIndex>=vecSize) return;	//为了预防下位机返回的数据项目不足的临时措施
 	lst.LockStatus = StatusVec[nIndex];nIndex++;
+	if (nIndex>=vecSize) return;	//为了预防下位机返回的数据项目不足的临时措施
 	lst.DoorStatus = StatusVec[nIndex];nIndex++;
+	if (nIndex>=vecSize) return;	//为了预防下位机返回的数据项目不足的临时措施
 	lst.BatteryStatus = StatusVec[nIndex];nIndex++;
+	if (nIndex>=vecSize) return;	//为了预防下位机返回的数据项目不足的临时措施
 	lst.ShockAlert = StatusVec[nIndex];nIndex++;
+	if (nIndex>=vecSize) return;	//为了预防下位机返回的数据项目不足的临时措施
 	lst.ShockValue = StatusVec[nIndex];nIndex++;
 	//20141011.1438.以下4个判断，预计下位机返回的哪怕项目不足应该也最多少4项，再多的话仍然会出错
 	if (nIndex>=vecSize) return;	//为了预防下位机返回的数据项目不足的临时措施
@@ -46,11 +54,17 @@ void zwLockStatusDataSplit(const char *LockStatus, JCLOCKSTATUS & lst)
 
 void zwStatusData2String(const JCLOCKSTATUS & lst, JCLOCKSTATUS & ostr)
 {
+try{
 	time_t logGenData=boost::lexical_cast<time_t>(lst.LogGenDate);
 	string exDate, exTime;
 	zwGetLocalDateTimeString(logGenData, exDate, exTime);
 	ostr.LogGenDate=exDate+"."+exTime;
-
+	}
+	catch(...)
+	{
+		cout<<__FUNCTION__<<"error!20141011"<<endl;
+		return;
+	}
 //////////////////////////////////////////////////////////////////////////
 	if ("0" == lst.ActiveStatus) {
 		ostr.ActiveStatus = "锁具已激活";
