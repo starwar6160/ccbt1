@@ -7,6 +7,11 @@ using boost::is_any_of;
 
 void zwLockStatusDataSplit(const char *LockStatus, JCLOCKSTATUS & lst)
 {
+	assert(NULL!=LockStatus);
+	if (NULL==LockStatus)
+	{
+		return;
+	}
 	string LockStatusStr = LockStatus;
 	vector < string > StatusVec;
 	split(StatusVec, LockStatusStr, is_any_of(",.:-+"));	//使用标点分割
@@ -17,6 +22,8 @@ void zwLockStatusDataSplit(const char *LockStatus, JCLOCKSTATUS & lst)
 	//{"Command":"Lock_System_Journal","Lock_Time":1409023166,"State":"0","Journal":"1409023024,0,0,1,0,100,0,00,0,000,0,0"}
 	JCLOCKSTATUS ostr;
 	int nIndex=0;
+	int vecSize=StatusVec.size();
+	if(vecSize==0)return;
 	lst.LogGenDate=StatusVec[nIndex];nIndex++;
 	lst.ActiveStatus = StatusVec[nIndex];nIndex++;
 	lst.EnableStatus = StatusVec[nIndex];nIndex++;
@@ -25,9 +32,15 @@ void zwLockStatusDataSplit(const char *LockStatus, JCLOCKSTATUS & lst)
 	lst.BatteryStatus = StatusVec[nIndex];nIndex++;
 	lst.ShockAlert = StatusVec[nIndex];nIndex++;
 	lst.ShockValue = StatusVec[nIndex];nIndex++;
+	//20141011.1438.以下4个判断，预计下位机返回的哪怕项目不足应该也最多少4项，再多的话仍然会出错
+	if (nIndex>=vecSize) return;	//为了预防下位机返回的数据项目不足的临时措施
 	lst.TempAlert = StatusVec[nIndex];nIndex++;	//这里值是20，但是合法值只有0,1,2,3，为什么？
+	if (nIndex>=vecSize) return;	//为了预防下位机返回的数据项目不足的临时措施
 	lst.nodeTemp = StatusVec[nIndex];nIndex++;	//探头温度100摄氏度？
+	if (nIndex>=vecSize) return;	//为了预防下位机返回的数据项目不足的临时措施
 	lst.PswTryAlert = StatusVec[nIndex];nIndex++;
+	//20141011.结构体有12个项目，但是下位机返回的只有11项数据，需要万敏修复；
+	if (nIndex>=vecSize) return;	//为了预防下位机返回的数据项目不足的临时措施
 	lst.LockOverTime = StatusVec[nIndex];
 }
 
