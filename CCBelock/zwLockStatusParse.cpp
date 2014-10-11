@@ -25,7 +25,12 @@ void zwLockStatusDataSplit(const char *LockStatus, JCLOCKSTATUS & lst)
 	int nIndex=0;
 	int vecSize=StatusVec.size();
 	if(vecSize==0)return;
-	lst.LogGenDate=StatusVec[nIndex];nIndex++;
+	if(vecSize==12)
+	{
+	//有万敏要求加上的日期字段的话，就从1开始
+	lst.LogGenDate=StatusVec[0];
+	nIndex=1;
+	}
 	if (nIndex>=vecSize) return;	//为了预防下位机返回的数据项目不足的临时措施
 	lst.ActiveStatus = StatusVec[nIndex];nIndex++;
 	if (nIndex>=vecSize) return;	//为了预防下位机返回的数据项目不足的临时措施
