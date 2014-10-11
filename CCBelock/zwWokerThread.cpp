@@ -46,11 +46,13 @@ namespace zwccbthr {
 			memset(recvBuf,0,BLEN+1);
 			int outLen=0;			
 			while (1) {
+#ifndef ZWUSE_HID_MSG_SPLIT
 				if (NULL==zwComPort)
 				{
 					ZWNOTICE("串口已经关闭，通信线程将退出");
 					return;
 				}
+#endif // ZWUSE_HID_MSG_SPLIT
 				ZWNOTICE("连接锁具成功");
 				ZWINFO("通信线程的新一轮等待接收数据循环开始");			
 				try {					

@@ -14,6 +14,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "elockcstest808", "elockcste
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "jclmsCCB2014", "..\lms\jclmsCCB2014\jclmsCCB2014\jclmsCCB2014.vcxproj", "{A062E85F-C9C1-487D-836A-AED01FA97314}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "zwBaseLibStatic", "..\lms\zwBaseLib\zwBaseLibStatic\zwBaseLibStatic.vcxproj", "{AA8F4DC7-84A6-41CE-AFFA-1EB303F6702E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Mixed Platforms = Debug|Mixed Platforms
@@ -74,6 +76,16 @@ Global
 		{A062E85F-C9C1-487D-836A-AED01FA97314}.Release|Win32.ActiveCfg = Release|Win32
 		{A062E85F-C9C1-487D-836A-AED01FA97314}.Release|Win32.Build.0 = Release|Win32
 		{A062E85F-C9C1-487D-836A-AED01FA97314}.Release|x86.ActiveCfg = Release|Win32
+		{AA8F4DC7-84A6-41CE-AFFA-1EB303F6702E}.Debug|Mixed Platforms.ActiveCfg = Debug|Win32
+		{AA8F4DC7-84A6-41CE-AFFA-1EB303F6702E}.Debug|Mixed Platforms.Build.0 = Debug|Win32
+		{AA8F4DC7-84A6-41CE-AFFA-1EB303F6702E}.Debug|Win32.ActiveCfg = Debug|Win32
+		{AA8F4DC7-84A6-41CE-AFFA-1EB303F6702E}.Debug|Win32.Build.0 = Debug|Win32
+		{AA8F4DC7-84A6-41CE-AFFA-1EB303F6702E}.Debug|x86.ActiveCfg = Debug|Win32
+		{AA8F4DC7-84A6-41CE-AFFA-1EB303F6702E}.Release|Mixed Platforms.ActiveCfg = Release|Win32
+		{AA8F4DC7-84A6-41CE-AFFA-1EB303F6702E}.Release|Mixed Platforms.Build.0 = Release|Win32
+		{AA8F4DC7-84A6-41CE-AFFA-1EB303F6702E}.Release|Win32.ActiveCfg = Release|Win32
+		{AA8F4DC7-84A6-41CE-AFFA-1EB303F6702E}.Release|Win32.Build.0 = Release|Win32
+		{AA8F4DC7-84A6-41CE-AFFA-1EB303F6702E}.Release|x86.ActiveCfg = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
