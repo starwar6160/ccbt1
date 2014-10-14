@@ -302,16 +302,11 @@ TEST_F(ECIES_Test,cs_BadInput)
 	priKey=(char *)EciesGetPriKey(NULL);
 	EXPECT_EQ(NULL,pubKey);
 	EXPECT_EQ(NULL,priKey);
-	char *crypt=NULL;
-	crypt=(char *)EciesEncrypt(NULL,"palintext");
-	EXPECT_EQ(NULL,crypt);
-	crypt=(char *)EciesEncrypt("pubkey",NULL);
-	EXPECT_EQ(NULL,crypt);
-	crypt=(char *)EciesDecrypt("pubkey",NULL);
-	EXPECT_EQ(NULL,crypt);
-	crypt=(char *)EciesDecrypt(NULL,"crypttext");
-	EXPECT_EQ(NULL,crypt);
-
+	
+	EXPECT_EQ(NULL,(char *)EciesEncrypt(NULL,"palintext"));
+	EXPECT_EQ(NULL,(char *)EciesEncrypt("pubkey",NULL));
+	EXPECT_EQ(NULL,(char *)EciesDecrypt("pubkey",NULL));
+	EXPECT_EQ(NULL,(char *)EciesDecrypt(NULL,"crypttext"));
 }
 
 
@@ -464,7 +459,7 @@ TEST_F(jclmsCCBV11_Test,getDynaCodePass1)
 	//此处期待值由于时间秒数按照一百万秒取整的原因，每隔12天需要更新一次
 	//这里是一个自检测试，如果失败，就说明有比较大的问题了，比如类似发生过的
 	//ARM编译器优化级别问题导致的生成错误的二进制代码等等
-	EXPECT_EQ(48731379,initCloseCode);
+	EXPECT_EQ(56274641,initCloseCode);
 	//dynaPass1
 	//注意现在合法的时间值应该是1.4G以上了，注意位数。20140721.1709	
 	JcLockSetInt(handle,JCI_DATETIME,static_cast<int>(time(NULL)));
