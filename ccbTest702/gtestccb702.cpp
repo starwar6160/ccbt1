@@ -302,11 +302,17 @@ TEST_F(ECIES_Test,cs_BadInput)
 	priKey=(char *)EciesGetPriKey(NULL);
 	EXPECT_EQ(NULL,pubKey);
 	EXPECT_EQ(NULL,priKey);
-	
+
+#ifdef _DEBUG
+	EXPECT_DEBUG_DEATH((char *)EciesEncrypt(NULL,"palintext"),"");
+	EXPECT_DEBUG_DEATH((char *)EciesEncrypt("pubkey",NULL),"");
+#else
 	EXPECT_EQ(NULL,(char *)EciesEncrypt(NULL,"palintext"));
 	EXPECT_EQ(NULL,(char *)EciesEncrypt("pubkey",NULL));
+#endif // _DEBUG
 	EXPECT_EQ(NULL,(char *)EciesDecrypt("pubkey",NULL));
 	EXPECT_EQ(NULL,(char *)EciesDecrypt(NULL,"crypttext"));
+
 }
 
 
