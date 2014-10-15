@@ -58,6 +58,7 @@ namespace zwccbthr {
 				try {					
 #ifdef ZWUSE_HID_MSG_SPLIT
 					jcHidRecvData(&zwccbthr::hidHandle,recvBuf,BLEN,&outLen);
+					printf("\n");
 #else
 					zwComPort->RecvData(recvBuf, BLEN,&outLen);
 #endif // ZWUSE_HID_MSG_SPLIT

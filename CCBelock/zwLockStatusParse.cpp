@@ -60,6 +60,10 @@ void zwLockStatusDataSplit(const char *LockStatus, JCLOCKSTATUS & lst)
 void zwStatusData2String(const JCLOCKSTATUS & lst, JCLOCKSTATUS & ostr)
 {
 try{
+	if (lst.LogGenDate.length()==0)
+	{
+		return;
+	}
 	time_t logGenData=boost::lexical_cast<time_t>(lst.LogGenDate);
 	string exDate, exTime;
 	zwGetLocalDateTimeString(logGenData, exDate, exTime);

@@ -10,17 +10,17 @@ using boost::property_tree::ptree;
 //锁具可以正确反应的2个测试
 #define _DEBUG_ACTREQ		//0000
 #define _DEBUG_SEND_ACTINFO	//0001
-////
-//////锁具内部由于缺乏数据而无法做出反应的测试
+//
+////锁具内部由于缺乏数据而无法做出反应的测试
 #define _DEBUG_READ_CLOSE_CODE		//0004
 #define _DEBUG_TIMESYNC				//0003
 
 #define _DEBUG_QUERY_LOCK_STATUS	//0002
 #define _DEBUG_GET_LOCK_LOG		//0005
 
-//#define _DEBUG_RECV_INIT_CLOSECODE	//1000
-//#define _DEBUG_RECV_VERIFY_CODE		//1002
-//
+#define _DEBUG_RECV_INIT_CLOSECODE	//1000
+#define _DEBUG_RECV_VERIFY_CODE		//1002
+
 
 
 using jcAtmcConvertDLL::CCBSTR_CODE;
