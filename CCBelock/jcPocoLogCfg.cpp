@@ -60,10 +60,12 @@ int PocoLogInit(void)
 	return 0;  
 }  
 
-void myLoadCfgs()
+void myLoadCfgs( const char *DLLPath )
 {
 	//在DLL的同一个目录下寻找同名的INI文件载入
-	zwccbthr::myLoadConfig(zwGetConfigFileName());
+	string cfgPathName=DLLPath;
+	cfgPathName=cfgPathName+"\\"+zwGetConfigFileName();
+	zwccbthr::myLoadConfig(cfgPathName);
 	PocoLogInit();
 }
 
