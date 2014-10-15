@@ -4,7 +4,7 @@
 void myLoadCfgs(const char *DLLPath);
 extern Poco::LogStream * pocoLog;
 
-
+HMODULE G_DLL_HMODULE=NULL;
 
 
 
@@ -20,9 +20,13 @@ string zwTest912(string now)
 
 void zwGetDLLPath(HMODULE hDLL,char *pDllPath,const int dllPathLen)
 {
-	assert(	NULL!=hDLL );
+	//assert(	NULL!=hDLL );
 	assert(NULL!=pDllPath);
 	assert(dllPathLen>0);
+	if (NULL==hDLL)
+	{
+		return;
+	}
 	GetModuleFileNameA(hDLL,pDllPath,dllPathLen);
 	int dllNameLen=strlen(pDllPath);
 	//从最后一个字节找起,找到"HidProtocol.dll"之前的'\\'字符就将其阶段
@@ -42,10 +46,11 @@ void zwGetDLLPath(HMODULE hDLL,char *pDllPath,const int dllPathLen)
 BOOL APIENTRY DllMain(HMODULE hModule,
 		      DWORD ul_reason_for_call, LPVOID lpReserved)
 {
+	G_DLL_HMODULE=hModule;	//方便其他需要获取DLL绝对路径的地方使用；
 	char myDllPath[256];
 	memset(myDllPath,0,256);
 	zwGetDLLPath(hModule,myDllPath,256);
-	myLoadCfgs(myDllPath);
+	myLoadCfgs(myDllPath);	
 #ifdef _DEBUG
 	//cout<<"TEST912 LEXICAST.1557.\t"<<zwTest912("1409023024")<<endl;
 #endif // _DEBUG

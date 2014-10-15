@@ -81,6 +81,7 @@ public:
 void zwLockStatusDataSplit(const char *LockStatus,JCLOCKSTATUS &lst);
 void zwStatusData2String(const JCLOCKSTATUS &lst,JCLOCKSTATUS &ostr);
 string LockStatusStringMerge(JCLOCKSTATUS &ostr);
+void zwGetDLLPath(HMODULE hDLL,char *pDllPath,const int dllPathLen);
 
 //从给定的时间秒数，获取日期(YYYYMMDD)和时间(HHMMSS)字符串
 namespace zwTimeFunc{
@@ -99,5 +100,6 @@ namespace zwCfg{
 }
 void ZWDBGMSG(const char *x);
 #define ZWUSE_HID_MSG_SPLIT
+extern HMODULE G_DLL_HMODULE;
 
 #endif // zwCcbElockHdr_h__

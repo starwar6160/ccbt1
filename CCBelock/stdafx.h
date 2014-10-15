@@ -53,4 +53,3 @@ using std::vector;
 #include <boost/typeof/typeof.hpp>
 #include <boost/lexical_cast.hpp>  
 using boost::property_tree::ptree;
-

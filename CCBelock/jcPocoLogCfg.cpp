@@ -20,7 +20,12 @@ string zwGetConfigFileName(void)
 
 string zwGetLogFileName(void)
 {
-	const string jcLogPath=".\\JinChuLog2014";
+	char myDllPath[256];
+	memset(myDllPath,0,256);
+	zwGetDLLPath(G_DLL_HMODULE,myDllPath,256);
+
+	string jcLogPath=myDllPath;
+	jcLogPath=jcLogPath+"\\JinChuLog2014";
 	string logdate,logtime;
 	_mkdir(jcLogPath.c_str());
 	time_t now=time(NULL);
