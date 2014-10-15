@@ -118,10 +118,6 @@
     <ClCompile Include="ATMCMsgConvert\myLockStatusAndLog.cpp" />
     <ClCompile Include="ATMCMsgConvert\myLockTimeSync.cpp" />
     <ClCompile Include="CCBelock.cpp" />
-    <ClCompile Include="CCBelock_wrap.cxx">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
-    </ClCompile>
     <ClCompile Include="dllmain.cpp">
       <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</CompileAsManaged>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -132,7 +128,6 @@
     </ClCompile>
     <ClCompile Include="jcJsonCommandDefine.cpp" />
     <ClCompile Include="jcPocoLogCfg.cpp" />
-    <ClCompile Include="PythonCallBack.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>

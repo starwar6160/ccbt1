@@ -89,12 +89,6 @@
     <ClCompile Include="zwLockStatusParse.cpp">
       <Filter>源文件\convert</Filter>
     </ClCompile>
-    <ClCompile Include="CCBelock_wrap.cxx">
-      <Filter>源文件\wrap</Filter>
-    </ClCompile>
-    <ClCompile Include="PythonCallBack.cpp">
-      <Filter>源文件\wrap</Filter>
-    </ClCompile>
     <ClCompile Include="jcPocoLogCfg.cpp">
       <Filter>源文件\wrap</Filter>
     </ClCompile>
