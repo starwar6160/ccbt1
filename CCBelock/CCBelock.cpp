@@ -64,9 +64,17 @@ static bool s_hidOpened=false;
 
 CCBELOCK_API long JCAPISTD Open(long lTimeOut)
 {
-	assert(lTimeOut >= 0 && lTimeOut <= zwCfg::JC_CCBDLL_TIMEOUT);
-	if (lTimeOut<0 || lTimeOut>zwCfg::JC_CCBDLL_TIMEOUT)
+	char buf[256];
+	memset(buf,0,256);
+	sprintf(buf,"Open incoming timeout value seconds is %d",lTimeOut);
+	OutputDebugStringA(buf);
+	assert(lTimeOut >= -1 && lTimeOut <= zwCfg::JC_CCBDLL_TIMEOUT);
+	if (lTimeOut<-1 || lTimeOut>zwCfg::JC_CCBDLL_TIMEOUT)
 	{
+		memset(buf,0,256);
+		sprintf(buf,"Open Function incoming timeout Value must in -1 to %d seconds",zwCfg::JC_CCBDLL_TIMEOUT);
+		OutputDebugStringA(buf);
+		pocoLog->error()<<"Open Function incoming timeout Value must in -1 to "<<zwCfg::JC_CCBDLL_TIMEOUT<<"seconds";
 		return ELOCK_ERROR_PARAMINVALID;
 	}
 	ZWFUNCTRACE boost::mutex::scoped_lock lock(zwCfg::ComPort_mutex);
