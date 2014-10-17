@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "zwCcbElockHdr.h"
 #include "myConvIntHdr.h"
-
+extern Poco::LogStream * pocoLog;
 namespace jcAtmcConvertDLL {
 	//读取闭锁码
 	void zwconvReadCloseCodeDown(const ptree &ptccb, ptree & ptjc) {
@@ -77,20 +77,35 @@ namespace jcAtmcConvertDLL {
 	}
 
 	void zwconvRecvVerifyCodeUp(const ptree & ptjc, ptree & ptccb) {
+		try{
+		OutputDebugStringA("20141017.1116.zwconvRecvVerifyCodeUp.MaHaoTest1");
 		ZWFUNCTRACE ptccb.put(CCBSTR_CODE, "1002");
+		OutputDebugStringA("20141017.1116.zwconvRecvVerifyCodeUp.MaHaoTest2");
 		ptccb.put(CCBSTR_NAME, "SendUnLockIdent");
+		OutputDebugStringA("20141017.1116.zwconvRecvVerifyCodeUp.MaHaoTest3");
 		string zwDate, zwTime;
 		zwGetLocalDateTimeString(time(NULL), zwDate, zwTime);
 		ptccb.put(CCBSTR_DATE, zwDate);
 		ptccb.put(CCBSTR_TIME, zwTime);
 		//锁具发送初始闭锁码时，ATM编号应该已经在激活请求中获得，但是
 		//1.1版本报文里面没有给出，所以此处可能会有问题
+		OutputDebugStringA("20141017.1116.zwconvRecvVerifyCodeUp.MaHaoTest4");
 		ptccb.put(CCBSTR_DEVCODE, ptjc.get < string > ("Atm_Serial"));
 		ptccb.put("root.LockMan", LOCKMAN_NAME);
+		OutputDebugStringA("20141017.1116.zwconvRecvVerifyCodeUp.MaHaoTest5");
 		ptccb.put("root.LockId", ptjc.get < string > ("Lock_Serial"));
+		OutputDebugStringA("20141017.1116.zwconvRecvVerifyCodeUp.MaHaoTest6");
 		//关键的验证码本体
 		ptccb.put("root.UnLockIdentInfo",
 			  ptjc.get < int >("Lock_Ident_Info"));
+		OutputDebugStringA("20141017.1116.zwconvRecvVerifyCodeUp.MaHaoTest7");
+		}
+		catch(...)
+		{
+			string errmsg="zwconvRecvVerifyCodeUp发生了异常，多半原因是JcEloc返回的Json中缺少某些关键字段比如Atm_Serial，Lock_Serial，Lock_Ident_Info";
+			OutputDebugStringA(errmsg.c_str());
+			pocoLog->error()<<errmsg<<endl;
+		}
 	}
 
 }				//namespace jcAtmcConvertDLL{
