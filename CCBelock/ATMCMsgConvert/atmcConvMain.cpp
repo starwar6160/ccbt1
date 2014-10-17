@@ -142,7 +142,9 @@ namespace jcAtmcConvertDLL {
 			zwconvRecvInitCloseCodeUp(ptJC, ptCCB);
 		}
 		if (JCSTR_SEND_UNLOCK_CERTCODE == jcCmd) {	//接收下位机主动发来的验证码
+			OutputDebugStringA("20141017.1116.MaHaoTest1");
 			zwconvRecvVerifyCodeUp(ptJC, ptCCB);
+			OutputDebugStringA("20141017.1116.MaHaoTest2");
 		}
 
 		if (JCSTR_PUSH_WARNING == jcCmd) {	//接收锁具主动上送的告警信息
@@ -153,7 +155,9 @@ namespace jcAtmcConvertDLL {
 		}
 		//////////////////////////////////////////////////////////////////////////
 		std::stringstream sst2;
+		OutputDebugStringA("20141017.1116.MaHaoTest3");
 		write_json(sst2, ptCCB);
+		OutputDebugStringA("20141017.1116.MaHaoTest4");
 		string jsonCcb = sst2.str();
 		//////////////////////////////////////////////////////////////////////////
 		ZWDBGMSG
@@ -161,10 +165,12 @@ namespace jcAtmcConvertDLL {
 		ZWDBGMSG(jsonCcb.c_str());
 		ZWDBGMSG
 		    ("***金储锁具应答JSON处理为建行所需元素 结束************####\n");
-
+		OutputDebugStringA("20141017.1116.MaHaoTest5");
 		//转换JSON为XML供ATMC使用
 		std::stringstream ss2;
+		OutputDebugStringA("20141017.1116.MaHaoTest6");
 		write_xml(ss2, ptCCB);
+		OutputDebugStringA("20141017.1116.MaHaoTest7");
 		upXML = ss2.str();
 		ZWDBGMSG
 		    ("*********************金储应答XML开始******************####\n");
@@ -172,16 +178,19 @@ namespace jcAtmcConvertDLL {
 		ZWDBGMSG
 		    ("*********************金储应答XML结束******************####\n");
 		try {
+			OutputDebugStringA("20141017.1116.MaHaoTest8");
 			string transCode = ptCCB.get < string > (CCBSTR_CODE);
+			OutputDebugStringA("20141017.1116.MaHaoTest9");
 			if ("0000" == transCode) {
 				return JCMSG_LOCK_ACTIVE_REQUEST;
 			}
 		}
 		catch(...) {
+			OutputDebugStringA("20141017.1116.MaHaoTest10");
 			ZWFATAL("金储JSON补全为CCB所需字段过程中有缺失")
 			    return JCMSG_INVALID_TYPE;
 		}
+		OutputDebugStringA("20141017.1116.MaHaoTest11");
 		return JCMSG_INVALID_TYPE;
 	}
-
 }				//namespace jcAtmcConvertDLL{
