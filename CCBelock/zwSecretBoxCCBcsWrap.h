@@ -25,13 +25,11 @@ extern "C" {
 	////////////////////////////////C#封装函数//////////////////////////////////////////
 	//向密盒发送认证请求，返回成功或者结果
 	CCBELOCK_API JC_SECBOX_STATUS SecboxAuth(void);
-	//返回密盒句柄，用于读写数据操作,必须是认证成功后，返回的值才能用于成功操作密盒
-	CCBELOCK_API int SecboxGetHandle(void);
 	//写入数据到密盒，最大400多字节，输入格式为base64编码的字符串。需要指定zwSecboxHidOpen给出的句柄，以及索引号
 	//索引号大约为1-8左右，具体还需要和赵工确定；
-	CCBELOCK_API void SecboxWriteData(int handleHid,const int index,const char *dataB64);
+	CCBELOCK_API void SecboxWriteData(const int index,const char *dataB64);
 	//指定密盒HID句柄，以及索引号，读取密盒的数据，返回base64编码的数据字符串
-	CCBELOCK_API const char * SecboxReadData(int handleHid,const int index);
+	CCBELOCK_API const char * SecboxReadData(const int index);
 
 
 #ifdef __cplusplus

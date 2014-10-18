@@ -38,18 +38,12 @@ JC_SECBOX_STATUS SecboxAuth(void)
 	
 }
 
-CCBELOCK_API int SecboxGetHandle(void)
+CCBELOCK_API void SecboxWriteData( const int index,const char *dataB64 )
 {
-	return g_HidSecretBoxHandle;
+	zwWriteData2SecretBox(g_HidSecretBoxHandle,index,dataB64);
 }
 
-
-void SecboxWriteData(int handleHid,const int index,const char *dataB64)
+CCBELOCK_API const char * SecboxReadData( const int index )
 {
-	zwWriteData2SecretBox(handleHid,index,dataB64);
-}
-
-const char * SecboxReadData(int handleHid,const int index)
-{
-	return zwReadDataFromSecretBox(handleHid,index);
+	return zwReadDataFromSecretBox(g_HidSecretBoxHandle,index);
 }

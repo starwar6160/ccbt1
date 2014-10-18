@@ -301,37 +301,23 @@ SWIGEXPORT int SWIGSTDCALL CSharp_SecboxAuth() {
 }
 
 
-SWIGEXPORT int SWIGSTDCALL CSharp_SecboxGetHandle() {
-  int jresult ;
-  int result;
-  
-  result = (int)SecboxGetHandle();
-  jresult = result; 
-  return jresult;
-}
-
-
-SWIGEXPORT void SWIGSTDCALL CSharp_SecboxWriteData(int jarg1, int jarg2, char * jarg3) {
+SWIGEXPORT void SWIGSTDCALL CSharp_SecboxWriteData(int jarg1, char * jarg2) {
   int arg1 ;
-  int arg2 ;
-  char *arg3 = (char *) 0 ;
+  char *arg2 = (char *) 0 ;
   
   arg1 = (int)jarg1; 
-  arg2 = (int)jarg2; 
-  arg3 = (char *)jarg3; 
-  SecboxWriteData(arg1,arg2,(char const *)arg3);
+  arg2 = (char *)jarg2; 
+  SecboxWriteData(arg1,(char const *)arg2);
 }
 
 
-SWIGEXPORT char * SWIGSTDCALL CSharp_SecboxReadData(int jarg1, int jarg2) {
+SWIGEXPORT char * SWIGSTDCALL CSharp_SecboxReadData(int jarg1) {
   char * jresult ;
   int arg1 ;
-  int arg2 ;
   char *result = 0 ;
   
   arg1 = (int)jarg1; 
-  arg2 = (int)jarg2; 
-  result = (char *)SecboxReadData(arg1,arg2);
+  result = (char *)SecboxReadData(arg1);
   jresult = SWIG_csharp_string_callback((const char *)result); 
   return jresult;
 }

@@ -14,17 +14,12 @@ public class HidProtocol {
     return ret;
   }
 
-  public static int SecboxGetHandle() {
-    int ret = HidProtocolPINVOKE.SecboxGetHandle();
-    return ret;
+  public static void SecboxWriteData(int index, string dataB64) {
+    HidProtocolPINVOKE.SecboxWriteData(index, dataB64);
   }
 
-  public static void SecboxWriteData(int handleHid, int index, string dataB64) {
-    HidProtocolPINVOKE.SecboxWriteData(handleHid, index, dataB64);
-  }
-
-  public static string SecboxReadData(int handleHid, int index) {
-    string ret = HidProtocolPINVOKE.SecboxReadData(handleHid, index);
+  public static string SecboxReadData(int index) {
+    string ret = HidProtocolPINVOKE.SecboxReadData(index);
     return ret;
   }
 
