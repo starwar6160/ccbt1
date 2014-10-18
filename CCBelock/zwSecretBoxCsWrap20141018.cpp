@@ -27,3 +27,23 @@ void SecboxHidClose(int handleHid)
 {
 	zwSecboxHidClose(handleHid);
 }
+
+void SendAuthReq2SecBox(int handleHid)
+{
+	zwSendAuthReq2SecBox(handleHid);
+}
+
+int VerifyAuthRspFromSecBox(int handleHid)
+{
+	return zwVerifyAuthRspFromSecBox(handleHid);
+}
+
+void WriteData2SecretBox(int handleHid,const int index,const char *dataB64)
+{
+	zwWriteData2SecretBox(handleHid,index,dataB64);
+}
+
+const char * ReadDataFromSecretBox(int handleHid,const int index)
+{
+	return zwReadDataFromSecretBox(handleHid,index);
+}
