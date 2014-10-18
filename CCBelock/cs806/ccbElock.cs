@@ -9,35 +9,6 @@
 namespace jclms {
 
 public class ccbElock {
-  public static int Open(int lTimeOut) {
-    int ret = ccbElockPINVOKE.Open(lTimeOut);
-    return ret;
-  }
-
-  public static int Close() {
-    int ret = ccbElockPINVOKE.Close();
-    return ret;
-  }
-
-  public static int Notify(string pszMsg) {
-    int ret = ccbElockPINVOKE.Notify(pszMsg);
-    return ret;
-  }
-
-  public static int SetRecvMsgRotine(SWIGTYPE_p_f_p_q_const__char__void pRecvMsgFun) {
-    int ret = ccbElockPINVOKE.SetRecvMsgRotine(SWIGTYPE_p_f_p_q_const__char__void.getCPtr(pRecvMsgFun));
-    return ret;
-  }
-
-  public static void zwPushString(string str) {
-    ccbElockPINVOKE.zwPushString(str);
-  }
-
-  public static string dbgGetLockReturnXML() {
-    string ret = ccbElockPINVOKE.dbgGetLockReturnXML();
-    return ret;
-  }
-
   public static int SecboxOpen() {
     int ret = ccbElockPINVOKE.SecboxOpen();
     return ret;

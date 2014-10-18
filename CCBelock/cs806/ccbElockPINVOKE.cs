@@ -186,24 +186,6 @@ class ccbElockPINVOKE {
   }
 
 
-  [global::System.Runtime.InteropServices.DllImport("ccbElock", EntryPoint="CSharp_Open")]
-  public static extern int Open(int jarg1);
-
-  [global::System.Runtime.InteropServices.DllImport("ccbElock", EntryPoint="CSharp_Close")]
-  public static extern int Close();
-
-  [global::System.Runtime.InteropServices.DllImport("ccbElock", EntryPoint="CSharp_Notify")]
-  public static extern int Notify(string jarg1);
-
-  [global::System.Runtime.InteropServices.DllImport("ccbElock", EntryPoint="CSharp_SetRecvMsgRotine")]
-  public static extern int SetRecvMsgRotine(global::System.Runtime.InteropServices.HandleRef jarg1);
-
-  [global::System.Runtime.InteropServices.DllImport("ccbElock", EntryPoint="CSharp_zwPushString")]
-  public static extern void zwPushString(string jarg1);
-
-  [global::System.Runtime.InteropServices.DllImport("ccbElock", EntryPoint="CSharp_dbgGetLockReturnXML")]
-  public static extern string dbgGetLockReturnXML();
-
   [global::System.Runtime.InteropServices.DllImport("ccbElock", EntryPoint="CSharp_SecboxOpen")]
   public static extern int SecboxOpen();
 
