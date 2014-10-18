@@ -19,32 +19,32 @@ void zwWriteData2SecretBox(int handleHid,const int index,const char *dataB64);
 const char * zwReadDataFromSecretBox(int handleHid,const int index);
 #endif // _DEBUG_1018
 
-int SecboxHidOpen(void)
+int SecboxOpen(void)
 {
 	return zwSecboxHidOpen();
 }
 
-void SecboxHidClose(int handleHid)
+void SecboxClose(int handleHid)
 {
 	zwSecboxHidClose(handleHid);
 }
 
-void SendAuthReq2SecBox(int handleHid)
+void SecboxSendAuthReq(int handleHid)
 {
 	zwSendAuthReq2SecBox(handleHid);
 }
 
-int VerifyAuthRspFromSecBox(int handleHid)
+int SecboxVerifyAuthRsp(int handleHid)
 {
 	return zwVerifyAuthRspFromSecBox(handleHid);
 }
 
-void WriteData2SecretBox(int handleHid,const int index,const char *dataB64)
+void SecboxWriteData(int handleHid,const int index,const char *dataB64)
 {
 	zwWriteData2SecretBox(handleHid,index,dataB64);
 }
 
-const char * ReadDataFromSecretBox(int handleHid,const int index)
+const char * SecboxReadData(int handleHid,const int index)
 {
 	return zwReadDataFromSecretBox(handleHid,index);
 }

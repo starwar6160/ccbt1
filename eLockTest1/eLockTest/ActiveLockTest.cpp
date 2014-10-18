@@ -23,11 +23,7 @@ string myGetPubKeyFromMsg0000Rep(const string msg0000RepXML)
 #ifdef _DEBUG_ACTREQ
 
 string zwCode8ToHex(int Code8);
-int sptest905a17(void);
 
-//TEST_F(ccbElockTest, SerialPortTest909A01){
-//	int aa=sptest905a17();
-//}
 
 //锁具激活请求报文的在线测试
 TEST_F(ccbElockTest, LockActiveTest0000)
