@@ -1,3 +1,4 @@
+#include "CCBelock.h"
 #include "zwSecBoxCSHdr.h"
 
 #ifdef _DEBUG_1018
