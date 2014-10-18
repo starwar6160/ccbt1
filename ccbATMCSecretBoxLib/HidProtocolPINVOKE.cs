@@ -8,7 +8,7 @@
 
 namespace jclms {
 
-class ccbElockPINVOKE {
+class HidProtocolPINVOKE {
 
   protected class SWIGExceptionHelper {
 
@@ -31,8 +31,8 @@ class ccbElockPINVOKE {
     static ExceptionArgumentDelegate argumentNullDelegate = new ExceptionArgumentDelegate(SetPendingArgumentNullException);
     static ExceptionArgumentDelegate argumentOutOfRangeDelegate = new ExceptionArgumentDelegate(SetPendingArgumentOutOfRangeException);
 
-    [global::System.Runtime.InteropServices.DllImport("ccbElock", EntryPoint="SWIGRegisterExceptionCallbacks_ccbElock")]
-    public static extern void SWIGRegisterExceptionCallbacks_ccbElock(
+    [global::System.Runtime.InteropServices.DllImport("HidProtocol", EntryPoint="SWIGRegisterExceptionCallbacks_HidProtocol")]
+    public static extern void SWIGRegisterExceptionCallbacks_HidProtocol(
                                 ExceptionDelegate applicationDelegate,
                                 ExceptionDelegate arithmeticDelegate,
                                 ExceptionDelegate divideByZeroDelegate, 
@@ -45,8 +45,8 @@ class ccbElockPINVOKE {
                                 ExceptionDelegate overflowDelegate, 
                                 ExceptionDelegate systemExceptionDelegate);
 
-    [global::System.Runtime.InteropServices.DllImport("ccbElock", EntryPoint="SWIGRegisterExceptionArgumentCallbacks_ccbElock")]
-    public static extern void SWIGRegisterExceptionCallbacksArgument_ccbElock(
+    [global::System.Runtime.InteropServices.DllImport("HidProtocol", EntryPoint="SWIGRegisterExceptionArgumentCallbacks_HidProtocol")]
+    public static extern void SWIGRegisterExceptionCallbacksArgument_HidProtocol(
                                 ExceptionArgumentDelegate argumentDelegate,
                                 ExceptionArgumentDelegate argumentNullDelegate,
                                 ExceptionArgumentDelegate argumentOutOfRangeDelegate);
@@ -100,7 +100,7 @@ class ccbElockPINVOKE {
     }
 
     static SWIGExceptionHelper() {
-      SWIGRegisterExceptionCallbacks_ccbElock(
+      SWIGRegisterExceptionCallbacks_HidProtocol(
                                 applicationDelegate,
                                 arithmeticDelegate,
                                 divideByZeroDelegate,
@@ -113,7 +113,7 @@ class ccbElockPINVOKE {
                                 overflowDelegate,
                                 systemDelegate);
 
-      SWIGRegisterExceptionCallbacksArgument_ccbElock(
+      SWIGRegisterExceptionCallbacksArgument_HidProtocol(
                                 argumentDelegate,
                                 argumentNullDelegate,
                                 argumentOutOfRangeDelegate);
@@ -141,7 +141,7 @@ class ccbElockPINVOKE {
       if (pendingException != null)
         throw new global::System.ApplicationException("FATAL: An earlier pending exception from unmanaged code was missed and thus not thrown (" + pendingException.ToString() + ")", e);
       pendingException = e;
-      lock(typeof(ccbElockPINVOKE)) {
+      lock(typeof(HidProtocolPINVOKE)) {
         numExceptionsPending++;
       }
     }
@@ -152,7 +152,7 @@ class ccbElockPINVOKE {
         if (pendingException != null) {
           e = pendingException;
           pendingException = null;
-          lock(typeof(ccbElockPINVOKE)) {
+          lock(typeof(HidProtocolPINVOKE)) {
             numExceptionsPending--;
           }
         }
@@ -167,41 +167,41 @@ class ccbElockPINVOKE {
     public delegate string SWIGStringDelegate(string message);
     static SWIGStringDelegate stringDelegate = new SWIGStringDelegate(CreateString);
 
-    [global::System.Runtime.InteropServices.DllImport("ccbElock", EntryPoint="SWIGRegisterStringCallback_ccbElock")]
-    public static extern void SWIGRegisterStringCallback_ccbElock(SWIGStringDelegate stringDelegate);
+    [global::System.Runtime.InteropServices.DllImport("HidProtocol", EntryPoint="SWIGRegisterStringCallback_HidProtocol")]
+    public static extern void SWIGRegisterStringCallback_HidProtocol(SWIGStringDelegate stringDelegate);
 
     static string CreateString(string cString) {
       return cString;
     }
 
     static SWIGStringHelper() {
-      SWIGRegisterStringCallback_ccbElock(stringDelegate);
+      SWIGRegisterStringCallback_HidProtocol(stringDelegate);
     }
   }
 
   static protected SWIGStringHelper swigStringHelper = new SWIGStringHelper();
 
 
-  static ccbElockPINVOKE() {
+  static HidProtocolPINVOKE() {
   }
 
 
-  [global::System.Runtime.InteropServices.DllImport("ccbElock", EntryPoint="CSharp_SecboxOpen")]
+  [global::System.Runtime.InteropServices.DllImport("HidProtocol", EntryPoint="CSharp_SecboxOpen")]
   public static extern int SecboxOpen();
 
-  [global::System.Runtime.InteropServices.DllImport("ccbElock", EntryPoint="CSharp_SecboxClose")]
+  [global::System.Runtime.InteropServices.DllImport("HidProtocol", EntryPoint="CSharp_SecboxClose")]
   public static extern void SecboxClose(int jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("ccbElock", EntryPoint="CSharp_SecboxSendAuthReq")]
+  [global::System.Runtime.InteropServices.DllImport("HidProtocol", EntryPoint="CSharp_SecboxSendAuthReq")]
   public static extern void SecboxSendAuthReq(int jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("ccbElock", EntryPoint="CSharp_SecboxVerifyAuthRsp")]
+  [global::System.Runtime.InteropServices.DllImport("HidProtocol", EntryPoint="CSharp_SecboxVerifyAuthRsp")]
   public static extern int SecboxVerifyAuthRsp(int jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("ccbElock", EntryPoint="CSharp_SecboxWriteData")]
+  [global::System.Runtime.InteropServices.DllImport("HidProtocol", EntryPoint="CSharp_SecboxWriteData")]
   public static extern void SecboxWriteData(int jarg1, int jarg2, string jarg3);
 
-  [global::System.Runtime.InteropServices.DllImport("ccbElock", EntryPoint="CSharp_SecboxReadData")]
+  [global::System.Runtime.InteropServices.DllImport("HidProtocol", EntryPoint="CSharp_SecboxReadData")]
   public static extern string SecboxReadData(int jarg1, int jarg2);
 }
 

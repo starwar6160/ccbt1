@@ -8,31 +8,31 @@
 
 namespace jclms {
 
-public class ccbElock {
+public class HidProtocol {
   public static int SecboxOpen() {
-    int ret = ccbElockPINVOKE.SecboxOpen();
+    int ret = HidProtocolPINVOKE.SecboxOpen();
     return ret;
   }
 
   public static void SecboxClose(int handleHid) {
-    ccbElockPINVOKE.SecboxClose(handleHid);
+    HidProtocolPINVOKE.SecboxClose(handleHid);
   }
 
   public static void SecboxSendAuthReq(int handleHid) {
-    ccbElockPINVOKE.SecboxSendAuthReq(handleHid);
+    HidProtocolPINVOKE.SecboxSendAuthReq(handleHid);
   }
 
   public static int SecboxVerifyAuthRsp(int handleHid) {
-    int ret = ccbElockPINVOKE.SecboxVerifyAuthRsp(handleHid);
+    int ret = HidProtocolPINVOKE.SecboxVerifyAuthRsp(handleHid);
     return ret;
   }
 
   public static void SecboxWriteData(int handleHid, int index, string dataB64) {
-    ccbElockPINVOKE.SecboxWriteData(handleHid, index, dataB64);
+    HidProtocolPINVOKE.SecboxWriteData(handleHid, index, dataB64);
   }
 
   public static string SecboxReadData(int handleHid, int index) {
-    string ret = ccbElockPINVOKE.SecboxReadData(handleHid, index);
+    string ret = HidProtocolPINVOKE.SecboxReadData(handleHid, index);
     return ret;
   }
 
