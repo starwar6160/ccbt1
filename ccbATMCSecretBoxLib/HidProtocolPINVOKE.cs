@@ -186,17 +186,11 @@ class HidProtocolPINVOKE {
   }
 
 
-  [global::System.Runtime.InteropServices.DllImport("HidProtocol", EntryPoint="CSharp_SecboxOpen")]
-  public static extern int SecboxOpen();
+  [global::System.Runtime.InteropServices.DllImport("HidProtocol", EntryPoint="CSharp_SecboxAuth")]
+  public static extern int SecboxAuth();
 
-  [global::System.Runtime.InteropServices.DllImport("HidProtocol", EntryPoint="CSharp_SecboxClose")]
-  public static extern void SecboxClose(int jarg1);
-
-  [global::System.Runtime.InteropServices.DllImport("HidProtocol", EntryPoint="CSharp_SecboxSendAuthReq")]
-  public static extern void SecboxSendAuthReq(int jarg1);
-
-  [global::System.Runtime.InteropServices.DllImport("HidProtocol", EntryPoint="CSharp_SecboxVerifyAuthRsp")]
-  public static extern int SecboxVerifyAuthRsp(int jarg1);
+  [global::System.Runtime.InteropServices.DllImport("HidProtocol", EntryPoint="CSharp_SecboxGetHandle")]
+  public static extern int SecboxGetHandle();
 
   [global::System.Runtime.InteropServices.DllImport("HidProtocol", EntryPoint="CSharp_SecboxWriteData")]
   public static extern void SecboxWriteData(int jarg1, int jarg2, string jarg3);

@@ -16,16 +16,17 @@
 extern "C" {
 #endif
 
-	////////////////////////////////C#封装函数//////////////////////////////////////////
-	//打开密盒HID通道,返回0代表失败，其他代表成功
-	CCBELOCK_API int SecboxOpen(void);
-	//关闭密盒HID通道，参数为secboxHidOpen的返回值句柄
-	CCBELOCK_API void SecboxClose(int handleHid);
-	//通过HID发送授权验证请求到密盒
-	CCBELOCK_API void SecboxSendAuthReq(int handleHid);
-	//通过HID接收密盒反应并验证，成功返回0，其他值代表失败
-	CCBELOCK_API int SecboxVerifyAuthRsp(int handleHid);
+	typedef enum jc_secret_box_status_t{
+		JC_SECBOX_SUCCESS,
+		JC_SECBOX_FAIL
 
+	}JC_SECBOX_STATUS;
+
+	////////////////////////////////C#封装函数//////////////////////////////////////////
+	//向密盒发送认证请求，返回成功或者结果
+	CCBELOCK_API JC_SECBOX_STATUS SecboxAuth(void);
+	//返回密盒句柄，用于读写数据操作,必须是认证成功后，返回的值才能用于成功操作密盒
+	CCBELOCK_API int SecboxGetHandle(void);
 	//写入数据到密盒，最大400多字节，输入格式为base64编码的字符串。需要指定zwSecboxHidOpen给出的句柄，以及索引号
 	//索引号大约为1-8左右，具体还需要和赵工确定；
 	CCBELOCK_API void SecboxWriteData(int handleHid,const int index,const char *dataB64);

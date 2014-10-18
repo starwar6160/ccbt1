@@ -20,25 +20,29 @@ void zwWriteData2SecretBox(int handleHid,const int index,const char *dataB64);
 const char * zwReadDataFromSecretBox(int handleHid,const int index);
 #endif // _DEBUG_1018
 
-int SecboxOpen(void)
+static int g_HidSecretBoxHandle=0;
+
+JC_SECBOX_STATUS SecboxAuth(void)
 {
-	return zwSecboxHidOpen();
+	g_HidSecretBoxHandle=zwSecboxHidOpen();
+	zwSendAuthReq2SecBox(g_HidSecretBoxHandle);
+	int AuthRes=zwVerifyAuthRspFromSecBox(g_HidSecretBoxHandle);
+	if (0==AuthRes)
+	{
+		return JC_SECBOX_SUCCESS;
+	}
+	else
+	{
+		return JC_SECBOX_FAIL;
+	}
+	
 }
 
-void SecboxClose(int handleHid)
+CCBELOCK_API int SecboxGetHandle(void)
 {
-	zwSecboxHidClose(handleHid);
+	return g_HidSecretBoxHandle;
 }
 
-void SecboxSendAuthReq(int handleHid)
-{
-	zwSendAuthReq2SecBox(handleHid);
-}
-
-int SecboxVerifyAuthRsp(int handleHid)
-{
-	return zwVerifyAuthRspFromSecBox(handleHid);
-}
 
 void SecboxWriteData(int handleHid,const int index,const char *dataB64)
 {

@@ -291,39 +291,21 @@ SWIGEXPORT void SWIGSTDCALL SWIGRegisterStringCallback_HidProtocol(SWIG_CSharpSt
 extern "C" {
 #endif
 
-SWIGEXPORT int SWIGSTDCALL CSharp_SecboxOpen() {
+SWIGEXPORT int SWIGSTDCALL CSharp_SecboxAuth() {
   int jresult ;
-  int result;
+  JC_SECBOX_STATUS result;
   
-  result = (int)SecboxOpen();
-  jresult = result; 
+  result = (JC_SECBOX_STATUS)SecboxAuth();
+  jresult = (int)result; 
   return jresult;
 }
 
 
-SWIGEXPORT void SWIGSTDCALL CSharp_SecboxClose(int jarg1) {
-  int arg1 ;
-  
-  arg1 = (int)jarg1; 
-  SecboxClose(arg1);
-}
-
-
-SWIGEXPORT void SWIGSTDCALL CSharp_SecboxSendAuthReq(int jarg1) {
-  int arg1 ;
-  
-  arg1 = (int)jarg1; 
-  SecboxSendAuthReq(arg1);
-}
-
-
-SWIGEXPORT int SWIGSTDCALL CSharp_SecboxVerifyAuthRsp(int jarg1) {
+SWIGEXPORT int SWIGSTDCALL CSharp_SecboxGetHandle() {
   int jresult ;
-  int arg1 ;
   int result;
   
-  arg1 = (int)jarg1; 
-  result = (int)SecboxVerifyAuthRsp(arg1);
+  result = (int)SecboxGetHandle();
   jresult = result; 
   return jresult;
 }

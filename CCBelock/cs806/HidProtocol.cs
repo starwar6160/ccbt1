@@ -9,21 +9,13 @@
 namespace jclms {
 
 public class HidProtocol {
-  public static int SecboxOpen() {
-    int ret = HidProtocolPINVOKE.SecboxOpen();
+  public static JC_SECBOX_STATUS SecboxAuth() {
+    JC_SECBOX_STATUS ret = (JC_SECBOX_STATUS)HidProtocolPINVOKE.SecboxAuth();
     return ret;
   }
 
-  public static void SecboxClose(int handleHid) {
-    HidProtocolPINVOKE.SecboxClose(handleHid);
-  }
-
-  public static void SecboxSendAuthReq(int handleHid) {
-    HidProtocolPINVOKE.SecboxSendAuthReq(handleHid);
-  }
-
-  public static int SecboxVerifyAuthRsp(int handleHid) {
-    int ret = HidProtocolPINVOKE.SecboxVerifyAuthRsp(handleHid);
+  public static int SecboxGetHandle() {
+    int ret = HidProtocolPINVOKE.SecboxGetHandle();
     return ret;
   }
 

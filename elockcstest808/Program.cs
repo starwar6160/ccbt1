@@ -30,28 +30,23 @@ namespace elockcstest808
         {
             //myTest1();
             Console.Out.WriteLine("Secret Box Open");
-            int hnd = jclms.HidProtocol.SecboxOpen();
-///////////////////////////////////////////////////////
-            Console.Out.WriteLine("Secret Box SecboxSendAuthReq");
-            jclms.HidProtocol.SecboxSendAuthReq(hnd);
-            Console.Out.WriteLine("Secret Box SecboxVerifyAuthRsp");
-            int authResult = jclms.HidProtocol.SecboxVerifyAuthRsp(hnd);
-            if (authResult == 0)
+            jclms.JC_SECBOX_STATUS status =
+                jclms.HidProtocol.SecboxAuth();
+            if(status==JC_SECBOX_STATUS.JC_SECBOX_SUCCESS)
             {
                 Console.Out.WriteLine("Good Secret Box");
             }
-            else
+            if (status == JC_SECBOX_STATUS.JC_SECBOX_FAIL)
             {
                 Console.Out.WriteLine("Fake Secret Box");
             }
+            int hnd = jclms.HidProtocol.SecboxGetHandle();
 //////////////////////////////////////////////////////////
             const String myLongB64Str1 = "emhvdXdlaXRlc3RPdXRwdXREZWJ1Z1N0cmluZ0FuZEppbkNodUVMb2NraW5kZXg9MFRvdGFsQmxvY2s9MkN1ckJsb2NrTGVuPTU4U2VkaW5nIERhdGEgQmxvY2sgIzBSZWNldmVkIERhdGEgRnJvbSBKQ0VMb2NrIGlzOg==";
             Console.Out.WriteLine("Secret Box WriteData");
             jclms.HidProtocol.SecboxWriteData(hnd, 1, myLongB64Str1);
             Console.Out.WriteLine("Secret Box ReadData");
             String recvFromSecBox = jclms.HidProtocol.SecboxReadData(hnd, 1);
-            jclms.HidProtocol.SecboxClose(hnd);
-
         }
 
         private static void myTest1()
@@ -60,7 +55,6 @@ namespace elockcstest808
             string ty = "<?xml version=\"1.0\" encoding=\"utf-8\"?><root><TransCode>0000</TransCode><TransName>CallForActInfo</TransName><TransDate>20140807</TransDate><TransTime>173828</TransTime><DevCode>12345698Z</DevCode><SpareString1>zwtest808.1623</SpareString1><SpareString2>NULL</SpareString2></root>";
             int t = SetRecvMsgRotine(dle1);
             Open(45);
-            int y = 0;
             Notify(ty);
         }
     }
