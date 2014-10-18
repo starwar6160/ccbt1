@@ -70,7 +70,9 @@ void myLoadCfgs( const char *DLLPath )
 	//在DLL的同一个目录下寻找同名的INI文件载入
 	string cfgPathName=DLLPath;
 	cfgPathName=cfgPathName+"\\"+zwGetConfigFileName();
-	zwccbthr::myLoadConfig(cfgPathName);
+	//现在不用串口了，所以不用配置文件了，所以去掉，以免引起DLL Load失败。
+	//20141018.1541.周伟
+	//zwccbthr::myLoadConfig(cfgPathName);
 	PocoLogInit();
 }
 
