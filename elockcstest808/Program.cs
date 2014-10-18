@@ -29,8 +29,12 @@ namespace elockcstest808
         static void Main(string[] args)
         {
             //myTest1();
+            Console.Out.WriteLine("Secret Box Open");
             int hnd = jclms.HidProtocol.SecboxOpen();
+///////////////////////////////////////////////////////
+            Console.Out.WriteLine("Secret Box SecboxSendAuthReq");
             jclms.HidProtocol.SecboxSendAuthReq(hnd);
+            Console.Out.WriteLine("Secret Box SecboxVerifyAuthRsp");
             int authResult = jclms.HidProtocol.SecboxVerifyAuthRsp(hnd);
             if (authResult == 0)
             {
@@ -40,9 +44,12 @@ namespace elockcstest808
             {
                 Console.Out.WriteLine("Fake Secret Box");
             }
+//////////////////////////////////////////////////////////
             const String myLongB64Str1 = "emhvdXdlaXRlc3RPdXRwdXREZWJ1Z1N0cmluZ0FuZEppbkNodUVMb2NraW5kZXg9MFRvdGFsQmxvY2s9MkN1ckJsb2NrTGVuPTU4U2VkaW5nIERhdGEgQmxvY2sgIzBSZWNldmVkIERhdGEgRnJvbSBKQ0VMb2NrIGlzOg==";
-            jclms.HidProtocol.SecboxWriteData(hnd, 2, myLongB64Str1);
-            String recvFromSecBox = jclms.HidProtocol.SecboxReadData(hnd, 2);
+            Console.Out.WriteLine("Secret Box WriteData");
+            jclms.HidProtocol.SecboxWriteData(hnd, 1, myLongB64Str1);
+            Console.Out.WriteLine("Secret Box ReadData");
+            String recvFromSecBox = jclms.HidProtocol.SecboxReadData(hnd, 1);
             jclms.HidProtocol.SecboxClose(hnd);
 
         }
