@@ -23,6 +23,10 @@ public class HidProtocol {
     return ret;
   }
 
+  public static void SecboxReadClose() {
+    HidProtocolPINVOKE.SecboxReadClose();
+  }
+
 }
 
 }

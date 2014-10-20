@@ -54,3 +54,8 @@ CCBELOCK_API const char * SecboxReadData( const int index )
 {
 	return zwReadDataFromSecretBox(g_HidSecretBoxHandle,index);
 }
+
+CCBELOCK_API void SecboxReadClose( void )
+{
+	zwSecboxHidClose(g_HidSecretBoxHandle);
+}

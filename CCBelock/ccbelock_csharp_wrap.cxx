@@ -323,6 +323,11 @@ SWIGEXPORT char * SWIGSTDCALL CSharp_SecboxReadData(int jarg1) {
 }
 
 
+SWIGEXPORT void SWIGSTDCALL CSharp_SecboxReadClose() {
+  SecboxReadClose();
+}
+
+
 #ifdef __cplusplus
 }
 #endif

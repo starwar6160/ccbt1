@@ -53,6 +53,7 @@ namespace elockcstest808
                 //通过句柄，索引号，读取密盒数据，返回的也是Base64编码过的字符串，解码后可能是文本，也可能是二进制数据
                 Console.Out.WriteLine("Secret Box ReadData");
                 String recvFromSecBox = jclms.HidProtocol.SecboxReadData(1);
+                jclms.HidProtocol.SecboxReadClose();
             }
         }
 
