@@ -1,6 +1,7 @@
 //#include "CCBelock.h"
 #include "zwSecretBoxCCBcsWrap.h"
 #include "zwSecBoxCSHdr.h"
+#include <stdio.h>
 
 #ifdef _DEBUG_1018
 ////////////////////////////////C#·â×°º¯Êý//////////////////////////////////////////
@@ -24,15 +25,21 @@ static int g_HidSecretBoxHandle=0;
 
 JC_SECBOX_STATUS SecboxAuth(void)
 {
+	printf("*****************************SecretBox zwSecboxHidOpen\n");
 	g_HidSecretBoxHandle=zwSecboxHidOpen();
+	printf("*****************************SecretBox zwSendAuthReq2SecBox\n");
 	zwSendAuthReq2SecBox(g_HidSecretBoxHandle);
+	printf("*****************************SecretBox zwVerifyAuthRspFromSecBox\n");
 	int AuthRes=zwVerifyAuthRspFromSecBox(g_HidSecretBoxHandle);
+	
 	if (0==AuthRes)
 	{
+		printf("*****************************SecretBox Auth SUCCESS\n");
 		return JC_SECBOX_SUCCESS;
 	}
 	else
 	{
+		printf("*****************************SecretBox Auth FAIL\n");
 		return JC_SECBOX_FAIL;
 	}
 	
