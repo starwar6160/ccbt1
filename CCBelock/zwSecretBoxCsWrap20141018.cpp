@@ -21,16 +21,17 @@ void zwWriteData2SecretBox(int handleHid,const int index,const char *dataB64);
 const char * zwReadDataFromSecretBox(int handleHid,const int index);
 #endif // _DEBUG_1018
 
-static int g_HidSecretBoxHandle=0;
+
 
 JC_SECBOX_STATUS SecboxAuth(void)
 {
+	int hidHandle=0;
 	printf("*****************************SecretBox zwSecboxHidOpen\n");
-	g_HidSecretBoxHandle=zwSecboxHidOpen();
+	hidHandle=zwSecboxHidOpen();
 	printf("*****************************SecretBox zwSendAuthReq2SecBox\n");
-	zwSendAuthReq2SecBox(g_HidSecretBoxHandle);
+	zwSendAuthReq2SecBox(hidHandle);
 	printf("*****************************SecretBox zwVerifyAuthRspFromSecBox\n");
-	int AuthRes=zwVerifyAuthRspFromSecBox(g_HidSecretBoxHandle);
+	int AuthRes=zwVerifyAuthRspFromSecBox(hidHandle);
 	
 	if (0==AuthRes)
 	{
@@ -42,20 +43,23 @@ JC_SECBOX_STATUS SecboxAuth(void)
 		printf("*****************************SecretBox Auth FAIL\n");
 		return JC_SECBOX_FAIL;
 	}
-	
+	zwSecboxHidClose(hidHandle);
 }
 
 CCBELOCK_API void SecboxWriteData( const int index,const char *dataB64 )
 {
-	zwWriteData2SecretBox(g_HidSecretBoxHandle,index,dataB64);
+	int hidHandle=0;
+	hidHandle=zwSecboxHidOpen();
+	zwWriteData2SecretBox(hidHandle,index,dataB64);
+	zwSecboxHidClose(hidHandle);
 }
 
 CCBELOCK_API const char * SecboxReadData( const int index )
 {
-	return zwReadDataFromSecretBox(g_HidSecretBoxHandle,index);
-}
-
-CCBELOCK_API void SecboxReadClose( void )
-{
-	zwSecboxHidClose(g_HidSecretBoxHandle);
+	int hidHandle=0;
+	const char *retStr=NULL;
+	hidHandle=zwSecboxHidOpen();	
+	retStr=zwReadDataFromSecretBox(hidHandle,index);
+	zwSecboxHidClose(hidHandle);
+	return retStr;
 }

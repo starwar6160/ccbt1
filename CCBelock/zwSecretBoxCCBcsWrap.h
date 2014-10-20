@@ -30,7 +30,6 @@ extern "C" {
 	CCBELOCK_API void SecboxWriteData(const int index,const char *dataB64);
 	//指定密盒HID句柄，以及索引号，读取密盒的数据，返回base64编码的数据字符串
 	CCBELOCK_API const char * SecboxReadData(const int index);
-	CCBELOCK_API void SecboxReadClose(void);
 
 #ifdef __cplusplus
 }
