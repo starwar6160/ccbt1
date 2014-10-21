@@ -29,16 +29,18 @@ namespace elockcstest808
 
         static void Main(string[] args)
         {
+            const int ZWPAUSE = 1500;
             //声明一个密盒对象；使用该对象的3个方法来认证，读取，写入，至于Open/Close由该对象内部自动完成；            
             
-            for (int i = 0; i < 3; i++)
+            for (int i = 0; i < 5; i++)
             {
                 jclms.JcSecBox secBox = new JcSecBox();
                 Console.Out.WriteLine("Secret Box Open###########################################################");
                 //打开密盒
+                //System.Threading.Thread.Sleep(ZWPAUSE*2);
                 jclms.JC_SECBOX_STATUS status =
                     secBox.SecboxAuth();
-                System.Threading.Thread.Sleep(500);
+
                 if (status == JC_SECBOX_STATUS.JC_SECBOX_SUCCESS)
                 {
                     Console.Out.WriteLine("Good Secret Box");
@@ -46,7 +48,6 @@ namespace elockcstest808
                 if (status == JC_SECBOX_STATUS.JC_SECBOX_FAIL)
                 {
                     Console.Out.WriteLine("Fake Secret Box");
-                    System.Threading.Thread.Sleep(500);
                     continue;
                 }
                 //////////////////////////////////////////////////////////
@@ -55,12 +56,13 @@ namespace elockcstest808
                 //第二个参数是索引号，大致上是0到10左右，具体还得和赵工确认
                 //第三个参数，也就是数据，大体上可以达到最大400多个字节，具体多少还得和赵工确认
                 const String myLongB64Str1 = "emhvdXdlaXRlc3RPdXRwdXREZWJ1Z1N0cmluZ0FuZEppbkNodUVMb2NraW5kZXg9MFRvdGFsQmxvY2s9MkN1ckJsb2NrTGVuPTU4U2VkaW5nIERhdGEgQmxvY2sgIzBSZWNldmVkIERhdGEgRnJvbSBKQ0VMb2NrIGlzOg==";
-                Console.Out.WriteLine("Secret Box WriteData");
-                secBox.SecboxWriteData(1, myLongB64Str1);
                 //通过句柄，索引号，读取密盒数据，返回的也是Base64编码过的字符串，解码后可能是文本，也可能是二进制数据
-                Console.Out.WriteLine("Secret Box ReadData");
+                //Console.Out.WriteLine("Secret Box WriteData");
+                secBox.SecboxWriteData(1, myLongB64Str1);
+                //Console.Out.WriteLine("Secret Box ReadData");
                 String recvFromSecBox = secBox.SecboxReadData(1);
-                System.Threading.Thread.Sleep(1000); //1 second
+
+                secBox.jcClose();
             }
         }
 

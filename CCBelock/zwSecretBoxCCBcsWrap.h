@@ -36,10 +36,12 @@ extern "C" {
 	public:
 		JcSecBox();
 		~JcSecBox();
+		void jcClose(void);
 		JC_SECBOX_STATUS SecboxAuth(void);
 		void SecboxWriteData(const int index,const char *dataB64);
 		const char * SecboxReadData(const int index);
 	private:		
+		int m_hidHandle;
 	};
 #ifdef __cplusplus
 }
