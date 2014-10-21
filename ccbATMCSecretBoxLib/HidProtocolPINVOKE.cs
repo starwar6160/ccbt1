@@ -186,14 +186,20 @@ class HidProtocolPINVOKE {
   }
 
 
-  [global::System.Runtime.InteropServices.DllImport("HidProtocol", EntryPoint="CSharp_SecboxAuth")]
-  public static extern int SecboxAuth();
+  [global::System.Runtime.InteropServices.DllImport("HidProtocol", EntryPoint="CSharp_new_JcSecBox")]
+  public static extern global::System.IntPtr new_JcSecBox();
 
-  [global::System.Runtime.InteropServices.DllImport("HidProtocol", EntryPoint="CSharp_SecboxWriteData")]
-  public static extern void SecboxWriteData(int jarg1, string jarg2);
+  [global::System.Runtime.InteropServices.DllImport("HidProtocol", EntryPoint="CSharp_delete_JcSecBox")]
+  public static extern void delete_JcSecBox(global::System.Runtime.InteropServices.HandleRef jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("HidProtocol", EntryPoint="CSharp_SecboxReadData")]
-  public static extern string SecboxReadData(int jarg1);
+  [global::System.Runtime.InteropServices.DllImport("HidProtocol", EntryPoint="CSharp_JcSecBox_SecboxAuth")]
+  public static extern int JcSecBox_SecboxAuth(global::System.Runtime.InteropServices.HandleRef jarg1);
+
+  [global::System.Runtime.InteropServices.DllImport("HidProtocol", EntryPoint="CSharp_JcSecBox_SecboxWriteData")]
+  public static extern void JcSecBox_SecboxWriteData(global::System.Runtime.InteropServices.HandleRef jarg1, int jarg2, string jarg3);
+
+  [global::System.Runtime.InteropServices.DllImport("HidProtocol", EntryPoint="CSharp_JcSecBox_SecboxReadData")]
+  public static extern string JcSecBox_SecboxReadData(global::System.Runtime.InteropServices.HandleRef jarg1, int jarg2);
 }
 
 }

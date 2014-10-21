@@ -23,17 +23,31 @@ void zwWriteData2SecretBox(int handleHid,const int index,const char *dataB64);
 const char * zwReadDataFromSecretBox(int handleHid,const int index);
 #endif // _DEBUG_1018
 
-
-
-JC_SECBOX_STATUS SecboxAuth(void)
+JcSecBox::JcSecBox()
 {
-	int hidHandle=0;
-	printf("*****************************SecretBox zwSecboxHidOpen\n");
-	hidHandle=zwSecboxHidOpen();
+	m_hidHandle=zwSecboxHidOpen();
+	assert(NULL!=m_hidHandle);
+	if (NULL==m_hidHandle)
+	{
+		printf("%s OPEN HID JINCHU SECRET BOX FAIL!\n");
+	}
+}
+
+JcSecBox::~JcSecBox()
+{
+	assert(NULL!=m_hidHandle);
+	zwSecboxHidClose(m_hidHandle);
+}
+
+
+
+JC_SECBOX_STATUS JcSecBox::SecboxAuth(void)
+{
+
 	printf("*****************************SecretBox zwSendAuthReq2SecBox\n");
-	zwSendAuthReq2SecBox(hidHandle);
+	zwSendAuthReq2SecBox(m_hidHandle);
 	printf("*****************************SecretBox zwVerifyAuthRspFromSecBox\n");
-	int AuthRes=zwVerifyAuthRspFromSecBox(hidHandle);
+	int AuthRes=zwVerifyAuthRspFromSecBox(m_hidHandle);
 	
 	if (0==AuthRes)
 	{
@@ -45,33 +59,9 @@ JC_SECBOX_STATUS SecboxAuth(void)
 		printf("*****************************SecretBox Auth FAIL\n");
 		return JC_SECBOX_FAIL;
 	}
-	zwSecboxHidClose(hidHandle);
 }
 
-//用于读写过程中附带的认证，不做开关HID接口了，由外层来做
-static JC_SECBOX_STATUS mySecboxMiniAuth(int hidHandle)
-{	
-	assert(NULL!=hidHandle);
-	if (NULL==hidHandle)
-	{
-		printf("HID HANDLE IS NULL!\n");
-		return JC_SECBOX_FAIL;
-	}
-	zwSendAuthReq2SecBox(hidHandle);
-	int AuthRes=zwVerifyAuthRspFromSecBox(hidHandle);
-	if (0==AuthRes)
-	{
-		printf("*****************MINI SecretBox Auth SUCCESS\n");
-		return JC_SECBOX_SUCCESS;
-	}
-	else
-	{
-		printf("*****************MINI SecretBox Auth FAIL\n");
-		return JC_SECBOX_FAIL;
-	}
-}
-
-CCBELOCK_API void SecboxWriteData( const int index,const char *dataB64 )
+void JcSecBox::SecboxWriteData( const int index,const char *dataB64 )
 {
 	assert(index>=0 && index<=16);
 	assert(NULL!=dataB64 && strlen(dataB64)>0);
@@ -84,16 +74,14 @@ CCBELOCK_API void SecboxWriteData( const int index,const char *dataB64 )
 		printf("input must base64 encoded string!\n");
 		return ;
 	}
-	int hidHandle=zwSecboxHidOpen();
-	JC_SECBOX_STATUS status=mySecboxMiniAuth(hidHandle);
+	JC_SECBOX_STATUS status=SecboxAuth();
 	if (JC_SECBOX_SUCCESS==status)
 	{
-		zwWriteData2SecretBox(hidHandle,index,dataB64);
+		zwWriteData2SecretBox(m_hidHandle,index,dataB64);
 	}	
-	zwSecboxHidClose(hidHandle);
 }
 
-CCBELOCK_API const char * SecboxReadData( const int index )
+const char * JcSecBox::SecboxReadData( const int index )
 {
 	assert(index>=0 && index<=16);
 	if (index<0 || index>16)
@@ -101,12 +89,10 @@ CCBELOCK_API const char * SecboxReadData( const int index )
 		printf("Data Index out of range! must in 0 to 16\n");
 	}
 	const char *retStr=NULL;
-	int hidHandle=zwSecboxHidOpen();	
-	JC_SECBOX_STATUS status=mySecboxMiniAuth(hidHandle);
+	JC_SECBOX_STATUS status=SecboxAuth();
 	if (JC_SECBOX_SUCCESS==status)
 	{
-		retStr=zwReadDataFromSecretBox(hidHandle,index);
+		retStr=zwReadDataFromSecretBox(m_hidHandle,index);
 	}	
-	zwSecboxHidClose(hidHandle);
 	return retStr;
 }

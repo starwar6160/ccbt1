@@ -28,12 +28,13 @@ namespace elockcstest808
 
         static void Main(string[] args)
         {
+            jclms.JcSecBox secBox=new JcSecBox();
             for (int i = 0; i < 3; i++)
             {
                 Console.Out.WriteLine("Secret Box Open");
                 //打开密盒
                 jclms.JC_SECBOX_STATUS status =
-                    jclms.HidProtocol.SecboxAuth();
+                    secBox.SecboxAuth();
                 if (status == JC_SECBOX_STATUS.JC_SECBOX_SUCCESS)
                 {
                     Console.Out.WriteLine("Good Secret Box");
@@ -49,10 +50,10 @@ namespace elockcstest808
                 //第三个参数，也就是数据，大体上可以达到最大400多个字节，具体多少还得和赵工确认
                 const String myLongB64Str1 = "emhvdXdlaXRlc3RPdXRwdXREZWJ1Z1N0cmluZ0FuZEppbkNodUVMb2NraW5kZXg9MFRvdGFsQmxvY2s9MkN1ckJsb2NrTGVuPTU4U2VkaW5nIERhdGEgQmxvY2sgIzBSZWNldmVkIERhdGEgRnJvbSBKQ0VMb2NrIGlzOg==";
                 Console.Out.WriteLine("Secret Box WriteData");
-                jclms.HidProtocol.SecboxWriteData(1, myLongB64Str1);
+                secBox.SecboxWriteData(1, myLongB64Str1);
                 //通过句柄，索引号，读取密盒数据，返回的也是Base64编码过的字符串，解码后可能是文本，也可能是二进制数据
                 Console.Out.WriteLine("Secret Box ReadData");
-                String recvFromSecBox = jclms.HidProtocol.SecboxReadData(1);
+                String recvFromSecBox = secBox.SecboxReadData(1);
             }
         }
 

@@ -291,33 +291,57 @@ SWIGEXPORT void SWIGSTDCALL SWIGRegisterStringCallback_HidProtocol(SWIG_CSharpSt
 extern "C" {
 #endif
 
-SWIGEXPORT int SWIGSTDCALL CSharp_SecboxAuth() {
+SWIGEXPORT void * SWIGSTDCALL CSharp_new_JcSecBox() {
+  void * jresult ;
+  JcSecBox *result = 0 ;
+  
+  result = (JcSecBox *)new JcSecBox();
+  jresult = (void *)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void SWIGSTDCALL CSharp_delete_JcSecBox(void * jarg1) {
+  JcSecBox *arg1 = (JcSecBox *) 0 ;
+  
+  arg1 = (JcSecBox *)jarg1; 
+  delete arg1;
+}
+
+
+SWIGEXPORT int SWIGSTDCALL CSharp_JcSecBox_SecboxAuth(void * jarg1) {
   int jresult ;
+  JcSecBox *arg1 = (JcSecBox *) 0 ;
   JC_SECBOX_STATUS result;
   
-  result = (JC_SECBOX_STATUS)SecboxAuth();
+  arg1 = (JcSecBox *)jarg1; 
+  result = (JC_SECBOX_STATUS)(arg1)->SecboxAuth();
   jresult = (int)result; 
   return jresult;
 }
 
 
-SWIGEXPORT void SWIGSTDCALL CSharp_SecboxWriteData(int jarg1, char * jarg2) {
-  int arg1 ;
-  char *arg2 = (char *) 0 ;
+SWIGEXPORT void SWIGSTDCALL CSharp_JcSecBox_SecboxWriteData(void * jarg1, int jarg2, char * jarg3) {
+  JcSecBox *arg1 = (JcSecBox *) 0 ;
+  int arg2 ;
+  char *arg3 = (char *) 0 ;
   
-  arg1 = (int)jarg1; 
-  arg2 = (char *)jarg2; 
-  SecboxWriteData(arg1,(char const *)arg2);
+  arg1 = (JcSecBox *)jarg1; 
+  arg2 = (int)jarg2; 
+  arg3 = (char *)jarg3; 
+  (arg1)->SecboxWriteData(arg2,(char const *)arg3);
 }
 
 
-SWIGEXPORT char * SWIGSTDCALL CSharp_SecboxReadData(int jarg1) {
+SWIGEXPORT char * SWIGSTDCALL CSharp_JcSecBox_SecboxReadData(void * jarg1, int jarg2) {
   char * jresult ;
-  int arg1 ;
+  JcSecBox *arg1 = (JcSecBox *) 0 ;
+  int arg2 ;
   char *result = 0 ;
   
-  arg1 = (int)jarg1; 
-  result = (char *)SecboxReadData(arg1);
+  arg1 = (JcSecBox *)jarg1; 
+  arg2 = (int)jarg2; 
+  result = (char *)(arg1)->SecboxReadData(arg2);
   jresult = SWIG_csharp_string_callback((const char *)result); 
   return jresult;
 }
