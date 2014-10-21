@@ -309,14 +309,6 @@ SWIGEXPORT void SWIGSTDCALL CSharp_delete_JcSecBox(void * jarg1) {
 }
 
 
-SWIGEXPORT void SWIGSTDCALL CSharp_JcSecBox_jcClose(void * jarg1) {
-  JcSecBox *arg1 = (JcSecBox *) 0 ;
-  
-  arg1 = (JcSecBox *)jarg1; 
-  (arg1)->jcClose();
-}
-
-
 SWIGEXPORT int SWIGSTDCALL CSharp_JcSecBox_SecboxAuth(void * jarg1) {
   int jresult ;
   JcSecBox *arg1 = (JcSecBox *) 0 ;

@@ -62,7 +62,7 @@ namespace elockcstest808
                 //Console.Out.WriteLine("Secret Box ReadData");
                 String recvFromSecBox = secBox.SecboxReadData(1);
 
-                secBox.jcClose();
+                //secBox.jcClose();
             }
         }
 

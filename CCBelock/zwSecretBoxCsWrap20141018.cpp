@@ -7,6 +7,8 @@
 #include <windows.h>
 #define PRFN	printf("%s\n",__FUNCTION__);OutputDebugStringA(__FUNCTION__);
 
+static int g_hidHandle;	//单例模式密盒HID句柄，new多少个类都是这个全局变量保存HID通信句柄，等于一个类；
+
 #ifdef _DEBUG_1018
 ////////////////////////////////C#封装函数//////////////////////////////////////////
 //打开密盒HID通道,返回0代表失败，其他代表成功
@@ -25,22 +27,14 @@ void zwWriteData2SecretBox(int handleHid,const int index,const char *dataB64);
 const char * zwReadDataFromSecretBox(int handleHid,const int index);
 #endif // _DEBUG_1018
 
-
-void JcSecBox::jcClose()
-{
-	PRFN
-	if (NULL!=m_hidHandle)
-	{
-		zwSecboxHidClose(m_hidHandle);
-	}	
-}
-
 JcSecBox::JcSecBox()
 {
 	PRFN	
-		m_hidHandle=zwSecboxHidOpen();
-		//assert(NULL!=g_hidHandle);
-		if (NULL==m_hidHandle)
+		if(NULL==g_hidHandle){
+			g_hidHandle=zwSecboxHidOpen();
+		}		
+		assert(NULL!=g_hidHandle);
+		if (NULL==g_hidHandle)
 		{
 			OutputDebugStringA("JcSecBox open FAIL");
 			printf("%s OPEN HID JINCHU SECRET BOX FAIL!\n");
@@ -50,7 +44,10 @@ JcSecBox::JcSecBox()
 JcSecBox::~JcSecBox()
 {
 	PRFN
-	jcClose();
+		if (NULL!=g_hidHandle)
+		{
+			zwSecboxHidClose(g_hidHandle);
+		}	
 }
 
 
@@ -58,14 +55,14 @@ JcSecBox::~JcSecBox()
 JC_SECBOX_STATUS JcSecBox::SecboxAuth(void)
 {
 	PRFN
-	if (0==m_hidHandle)
+	if (0==g_hidHandle)
 	{
 		return JC_SECBOX_FAIL ;
 	}
 	printf("*****************************SecretBox zwSendAuthReq2SecBox\n");
-	zwSendAuthReq2SecBox(m_hidHandle);
+	zwSendAuthReq2SecBox(g_hidHandle);
 	printf("*****************************SecretBox zwVerifyAuthRspFromSecBox\n");
-	int AuthRes=zwVerifyAuthRspFromSecBox(m_hidHandle);
+	int AuthRes=zwVerifyAuthRspFromSecBox(g_hidHandle);
 	
 	if (0==AuthRes)
 	{
@@ -74,7 +71,7 @@ JC_SECBOX_STATUS JcSecBox::SecboxAuth(void)
 	}
 	else
 	{
-		OutputDebugStringA("JcSecBox AUTH FAIL");
+		OutputDebugStringA("JcSecBox AUTH FAIL###########################");
 		printf("************************************************** ***SecretBox Auth FAIL\n");
 		return JC_SECBOX_FAIL;
 	}
@@ -83,7 +80,7 @@ JC_SECBOX_STATUS JcSecBox::SecboxAuth(void)
 void JcSecBox::SecboxWriteData( const int index,const char *dataB64 )
 {
 	PRFN
-	if (0==m_hidHandle)
+	if (0==g_hidHandle)
 	{
 		return ;
 	}
@@ -101,14 +98,14 @@ void JcSecBox::SecboxWriteData( const int index,const char *dataB64 )
 	JC_SECBOX_STATUS status=SecboxAuth();
 	if (JC_SECBOX_SUCCESS==status)
 	{
-		zwWriteData2SecretBox(m_hidHandle,index,dataB64);
+		zwWriteData2SecretBox(g_hidHandle,index,dataB64);
 	}	
 }
 
 const char * JcSecBox::SecboxReadData( const int index )
 {
 	PRFN
-	if (0==m_hidHandle)
+	if (0==g_hidHandle)
 	{
 		return "";
 	}
@@ -121,7 +118,7 @@ const char * JcSecBox::SecboxReadData( const int index )
 	JC_SECBOX_STATUS status=SecboxAuth();
 	if (JC_SECBOX_SUCCESS==status)
 	{
-		retStr=zwReadDataFromSecretBox(m_hidHandle,index);
+		retStr=zwReadDataFromSecretBox(g_hidHandle,index);
 	}	
 	return retStr;
 }
