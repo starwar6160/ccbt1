@@ -16,11 +16,7 @@
 extern "C" {
 #endif
 
-	typedef enum jc_secret_box_status_t{
-		JC_SECBOX_SUCCESS,
-		JC_SECBOX_FAIL
 
-	}JC_SECBOX_STATUS;
 
 	////////////////////////////////C#封装函数//////////////////////////////////////////
 	////向密盒发送认证请求，返回成功或者结果
@@ -36,7 +32,7 @@ extern "C" {
 	public:
 		JcSecBox();
 		~JcSecBox();
-		JC_SECBOX_STATUS SecboxAuth(void);
+		int SecboxAuth(void);
 		void SecboxWriteData(const int index,const char *dataB64);
 		const char * SecboxReadData(const int index);
 	private:		

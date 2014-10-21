@@ -38,14 +38,14 @@ namespace elockcstest808
                 Console.Out.WriteLine("Secret Box Open###########################################################");
                 //打开密盒
                 //System.Threading.Thread.Sleep(ZWPAUSE*2);
-                jclms.JC_SECBOX_STATUS status =
+                int status =
                     secBox.SecboxAuth();
 
-                if (status == JC_SECBOX_STATUS.JC_SECBOX_SUCCESS)
+                if (0==status)
                 {
                     Console.Out.WriteLine("Good Secret Box");
                 }
-                if (status == JC_SECBOX_STATUS.JC_SECBOX_FAIL)
+                if (1==status)
                 {
                     Console.Out.WriteLine("Fake Secret Box");
                     continue;

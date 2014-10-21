@@ -41,8 +41,8 @@ public class JcSecBox : global::System.IDisposable {
   public JcSecBox() : this(HidProtocolPINVOKE.new_JcSecBox(), true) {
   }
 
-  public JC_SECBOX_STATUS SecboxAuth() {
-    JC_SECBOX_STATUS ret = (JC_SECBOX_STATUS)HidProtocolPINVOKE.JcSecBox_SecboxAuth(swigCPtr);
+  public int SecboxAuth() {
+    int ret = HidProtocolPINVOKE.JcSecBox_SecboxAuth(swigCPtr);
     return ret;
   }
 

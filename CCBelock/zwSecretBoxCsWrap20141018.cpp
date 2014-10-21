@@ -9,6 +9,11 @@
 
 static int g_hidHandle;	//单例模式密盒HID句柄，new多少个类都是这个全局变量保存HID通信句柄，等于一个类；
 
+typedef enum jc_secret_box_status_t{
+	JC_SECBOX_SUCCESS=0,
+	JC_SECBOX_FAIL=1
+}JC_SECBOX_STATUS;
+
 #ifdef _DEBUG_1018
 ////////////////////////////////C#封装函数//////////////////////////////////////////
 //打开密盒HID通道,返回0代表失败，其他代表成功
@@ -52,7 +57,7 @@ JcSecBox::~JcSecBox()
 
 
 
-JC_SECBOX_STATUS JcSecBox::SecboxAuth(void)
+int JcSecBox::SecboxAuth( void )
 {
 	PRFN
 	if (0==g_hidHandle)
@@ -95,7 +100,7 @@ void JcSecBox::SecboxWriteData( const int index,const char *dataB64 )
 		printf("input must base64 encoded string!\n");
 		return ;
 	}
-	JC_SECBOX_STATUS status=SecboxAuth();
+	int status=SecboxAuth();
 	if (JC_SECBOX_SUCCESS==status)
 	{
 		zwWriteData2SecretBox(g_hidHandle,index,dataB64);
@@ -115,7 +120,7 @@ const char * JcSecBox::SecboxReadData( const int index )
 		printf("Data Index out of range! must in 0 to 16\n");
 	}
 	const char *retStr=NULL;
-	JC_SECBOX_STATUS status=SecboxAuth();
+	int status=SecboxAuth();
 	if (JC_SECBOX_SUCCESS==status)
 	{
 		retStr=zwReadDataFromSecretBox(g_hidHandle,index);
