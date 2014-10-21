@@ -5,6 +5,7 @@
 #include <assert.h>
 #include <string.h>
 #include <windows.h>
+#define PRFN	printf("%s\n",__FUNCTION__);OutputDebugStringA(__FUNCTION__);
 
 #ifdef _DEBUG_1018
 ////////////////////////////////C#·â×°º¯Êý//////////////////////////////////////////
@@ -31,7 +32,7 @@ int g_hidHandle=0;
 
 JcSecBox::JcSecBox()
 {
-	OutputDebugStringA(__FUNCTION__);
+	PRFN	
 	if (0==g_hidHandle)
 	{
 		g_hidHandle=zwSecboxHidOpen();
@@ -45,7 +46,7 @@ JcSecBox::JcSecBox()
 
 JcSecBox::~JcSecBox()
 {
-	OutputDebugStringA(__FUNCTION__);
+	PRFN
 	assert(NULL!=g_hidHandle);
 	//zwSecboxHidClose(m_hidHandle);
 }
@@ -54,6 +55,7 @@ JcSecBox::~JcSecBox()
 
 JC_SECBOX_STATUS JcSecBox::SecboxAuth(void)
 {
+	PRFN
 	if (0==g_hidHandle)
 	{
 		return JC_SECBOX_FAIL ;
@@ -77,6 +79,7 @@ JC_SECBOX_STATUS JcSecBox::SecboxAuth(void)
 
 void JcSecBox::SecboxWriteData( const int index,const char *dataB64 )
 {
+	PRFN
 	if (0==g_hidHandle)
 	{
 		return ;
@@ -101,6 +104,7 @@ void JcSecBox::SecboxWriteData( const int index,const char *dataB64 )
 
 const char * JcSecBox::SecboxReadData( const int index )
 {
+	PRFN
 	if (0==g_hidHandle)
 	{
 		return "";
