@@ -28,10 +28,12 @@ namespace elockcstest808
 
         static void Main(string[] args)
         {
-            jclms.JcSecBox secBox=new JcSecBox();
+            //声明一个密盒对象；使用该对象的3个方法来认证，读取，写入，至于Open/Close由该对象内部自动完成；            
+            
             for (int i = 0; i < 3; i++)
             {
-                Console.Out.WriteLine("Secret Box Open");
+                jclms.JcSecBox secBox = new JcSecBox();
+                Console.Out.WriteLine("Secret Box Open###########################################################");
                 //打开密盒
                 jclms.JC_SECBOX_STATUS status =
                     secBox.SecboxAuth();

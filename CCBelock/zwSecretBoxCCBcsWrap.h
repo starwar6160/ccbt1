@@ -39,8 +39,7 @@ extern "C" {
 		JC_SECBOX_STATUS SecboxAuth(void);
 		void SecboxWriteData(const int index,const char *dataB64);
 		const char * SecboxReadData(const int index);
-	private:
-		int m_hidHandle;
+	private:		
 	};
 #ifdef __cplusplus
 }

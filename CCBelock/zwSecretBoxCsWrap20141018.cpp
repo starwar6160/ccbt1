@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <assert.h>
 #include <string.h>
+#include <windows.h>
 
 #ifdef _DEBUG_1018
 ////////////////////////////////C#封装函数//////////////////////////////////////////
@@ -23,11 +24,20 @@ void zwWriteData2SecretBox(int handleHid,const int index,const char *dataB64);
 const char * zwReadDataFromSecretBox(int handleHid,const int index);
 #endif // _DEBUG_1018
 
+//最简单的不是单例的单例模式，实际上达到了单例的效果，HID HANDLE用一个全局变量来保存；
+//无论多少个JcSecBox类对象，打开的都是同一个密盒端口，而且不会重复打开；
+int g_hidHandle=0;
+
+
 JcSecBox::JcSecBox()
 {
-	m_hidHandle=zwSecboxHidOpen();
-	assert(NULL!=m_hidHandle);
-	if (NULL==m_hidHandle)
+	OutputDebugStringA(__FUNCTION__);
+	if (0==g_hidHandle)
+	{
+		g_hidHandle=zwSecboxHidOpen();
+	}	
+	assert(NULL!=g_hidHandle);
+	if (NULL==g_hidHandle)
 	{
 		printf("%s OPEN HID JINCHU SECRET BOX FAIL!\n");
 	}
@@ -35,8 +45,9 @@ JcSecBox::JcSecBox()
 
 JcSecBox::~JcSecBox()
 {
-	assert(NULL!=m_hidHandle);
-	zwSecboxHidClose(m_hidHandle);
+	OutputDebugStringA(__FUNCTION__);
+	assert(NULL!=g_hidHandle);
+	//zwSecboxHidClose(m_hidHandle);
 }
 
 
@@ -45,9 +56,9 @@ JC_SECBOX_STATUS JcSecBox::SecboxAuth(void)
 {
 
 	printf("*****************************SecretBox zwSendAuthReq2SecBox\n");
-	zwSendAuthReq2SecBox(m_hidHandle);
+	zwSendAuthReq2SecBox(g_hidHandle);
 	printf("*****************************SecretBox zwVerifyAuthRspFromSecBox\n");
-	int AuthRes=zwVerifyAuthRspFromSecBox(m_hidHandle);
+	int AuthRes=zwVerifyAuthRspFromSecBox(g_hidHandle);
 	
 	if (0==AuthRes)
 	{
@@ -77,7 +88,7 @@ void JcSecBox::SecboxWriteData( const int index,const char *dataB64 )
 	JC_SECBOX_STATUS status=SecboxAuth();
 	if (JC_SECBOX_SUCCESS==status)
 	{
-		zwWriteData2SecretBox(m_hidHandle,index,dataB64);
+		zwWriteData2SecretBox(g_hidHandle,index,dataB64);
 	}	
 }
 
@@ -92,7 +103,7 @@ const char * JcSecBox::SecboxReadData( const int index )
 	JC_SECBOX_STATUS status=SecboxAuth();
 	if (JC_SECBOX_SUCCESS==status)
 	{
-		retStr=zwReadDataFromSecretBox(m_hidHandle,index);
+		retStr=zwReadDataFromSecretBox(g_hidHandle,index);
 	}	
 	return retStr;
 }
