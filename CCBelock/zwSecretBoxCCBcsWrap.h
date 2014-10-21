@@ -33,7 +33,7 @@ extern "C" {
 		JcSecBox();
 		~JcSecBox();
 		int SecboxAuth(void);
-		void SecboxWriteData(const int index,const char *dataB64);
+		int SecboxWriteData(const int index,const char *dataB64);
 		const char * SecboxReadData(const int index);
 	private:		
 	};

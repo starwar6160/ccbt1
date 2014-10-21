@@ -82,44 +82,48 @@ int JcSecBox::SecboxAuth( void )
 	}
 }
 
-void JcSecBox::SecboxWriteData( const int index,const char *dataB64 )
+int JcSecBox::SecboxWriteData( const int index,const char *dataB64 )
 {
 	PRFN
 	if (0==g_hidHandle)
 	{
-		return ;
+		return 1;
 	}
 	assert(index>=0 && index<=16);
 	assert(NULL!=dataB64 && strlen(dataB64)>0);
 	if (index<0 || index>16)
 	{
 		printf("Data Index out of range! must in 0 to 16\n");
+		return 1;
 	}
 	if (NULL==dataB64 || strlen(dataB64)==0)
 	{
 		printf("input must base64 encoded string!\n");
-		return ;
+		return 1;
 	}
 	int status=SecboxAuth();
 	if (JC_SECBOX_SUCCESS==status)
 	{
-		zwWriteData2SecretBox(g_hidHandle,index,dataB64);
+		zwWriteData2SecretBox(g_hidHandle,index,dataB64);		
 	}	
+	return 0;
 }
 
 const char * JcSecBox::SecboxReadData( const int index )
 {
 	PRFN
+	const char *retStr="";
 	if (0==g_hidHandle)
 	{
-		return "";
+		return retStr;
 	}
 	assert(index>=0 && index<=16);
 	if (index<0 || index>16)
 	{
 		printf("Data Index out of range! must in 0 to 16\n");
+		return retStr;
 	}
-	const char *retStr=NULL;
+	
 	int status=SecboxAuth();
 	if (JC_SECBOX_SUCCESS==status)
 	{
