@@ -32,8 +32,8 @@ namespace elockcstest808
             //const int ZWPAUSE = 1500;
             //声明一个密盒对象；使用该对象的3个方法来认证，读取，写入，至于Open/Close由该对象内部自动完成；            
             
-            //for (int i = 0; i < 500; i++)
-            while(true)
+            for (int i = 0; i < 5; i++)
+            //while(true)
             {
                 jclms.JcSecBox secBox = new JcSecBox();
                 Console.Out.WriteLine("Secret Box Open###########################################################");

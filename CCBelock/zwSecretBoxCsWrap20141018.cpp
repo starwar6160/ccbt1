@@ -41,11 +41,10 @@ JcSecBox::JcSecBox()
 			pocoLog->information("jcSecBox OpenFirst");
 			g_hidHandle=zwSecboxHidOpen();
 		}		
-		assert(NULL!=g_hidHandle);
 		if (NULL==g_hidHandle)
 		{
 			OutputDebugStringA("JcSecBox open FAIL");
-			printf("%s OPEN HID JINCHU SECRET BOX FAIL!\n");
+			printf("%s OPEN HID JINCHU SECRET BOX FAIL!\n",__FUNCTION__);
 			pocoLog->error("jcSecBox OpenNULL");
 		}
 }
