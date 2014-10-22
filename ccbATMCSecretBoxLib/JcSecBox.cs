@@ -46,8 +46,9 @@ public class JcSecBox : global::System.IDisposable {
     return ret;
   }
 
-  public void SecboxWriteData(int index, string dataB64) {
-    HidProtocolPINVOKE.JcSecBox_SecboxWriteData(swigCPtr, index, dataB64);
+  public int SecboxWriteData(int index, string dataB64) {
+    int ret = HidProtocolPINVOKE.JcSecBox_SecboxWriteData(swigCPtr, index, dataB64);
+    return ret;
   }
 
   public string SecboxReadData(int index) {

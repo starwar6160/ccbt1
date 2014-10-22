@@ -321,15 +321,19 @@ SWIGEXPORT int SWIGSTDCALL CSharp_JcSecBox_SecboxAuth(void * jarg1) {
 }
 
 
-SWIGEXPORT void SWIGSTDCALL CSharp_JcSecBox_SecboxWriteData(void * jarg1, int jarg2, char * jarg3) {
+SWIGEXPORT int SWIGSTDCALL CSharp_JcSecBox_SecboxWriteData(void * jarg1, int jarg2, char * jarg3) {
+  int jresult ;
   JcSecBox *arg1 = (JcSecBox *) 0 ;
   int arg2 ;
   char *arg3 = (char *) 0 ;
+  int result;
   
   arg1 = (JcSecBox *)jarg1; 
   arg2 = (int)jarg2; 
   arg3 = (char *)jarg3; 
-  (arg1)->SecboxWriteData(arg2,(char const *)arg3);
+  result = (int)(arg1)->SecboxWriteData(arg2,(char const *)arg3);
+  jresult = result; 
+  return jresult;
 }
 
 

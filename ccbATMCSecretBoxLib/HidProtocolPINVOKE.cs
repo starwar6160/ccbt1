@@ -196,7 +196,7 @@ class HidProtocolPINVOKE {
   public static extern int JcSecBox_SecboxAuth(global::System.Runtime.InteropServices.HandleRef jarg1);
 
   [global::System.Runtime.InteropServices.DllImport("HidProtocol", EntryPoint="CSharp_JcSecBox_SecboxWriteData")]
-  public static extern void JcSecBox_SecboxWriteData(global::System.Runtime.InteropServices.HandleRef jarg1, int jarg2, string jarg3);
+  public static extern int JcSecBox_SecboxWriteData(global::System.Runtime.InteropServices.HandleRef jarg1, int jarg2, string jarg3);
 
   [global::System.Runtime.InteropServices.DllImport("HidProtocol", EntryPoint="CSharp_JcSecBox_SecboxReadData")]
   public static extern string JcSecBox_SecboxReadData(global::System.Runtime.InteropServices.HandleRef jarg1, int jarg2);
