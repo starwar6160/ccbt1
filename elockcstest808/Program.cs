@@ -29,16 +29,15 @@ namespace elockcstest808
 
         static void Main(string[] args)
         {
-            //const int ZWPAUSE = 1500;
+            const int ZWPAUSE = 1500;
             //声明一个密盒对象；使用该对象的3个方法来认证，读取，写入，至于Open/Close由该对象内部自动完成；            
             
-            for (int i = 0; i < 5; i++)
+            for (int i = 0; i < 2; i++)
             //while(true)
             {
                 jclms.JcSecBox secBox = new JcSecBox();
                 Console.Out.WriteLine("Secret Box Open###########################################################");
-                //打开密盒
-                //System.Threading.Thread.Sleep(ZWPAUSE*2);
+                //打开密盒                
                 int status =
                     secBox.SecboxAuth();
 
@@ -62,8 +61,8 @@ namespace elockcstest808
                 secBox.SecboxWriteData(1, myLongB64Str1);
                 //Console.Out.WriteLine("Secret Box ReadData");
                 String recvFromSecBox = secBox.SecboxReadData(1);
-
-                //secBox.jcClose();
+                Console.Out.WriteLine("WAIT 4 SECONDS FOR PLUG OUT/IN SECRET BOX");
+                System.Threading.Thread.Sleep(ZWPAUSE*5);
             }
         }
 
