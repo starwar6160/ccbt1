@@ -1,16 +1,19 @@
 #include "stdafx.h"
+#include <string>
 #include "zwSecretBoxCCBcsWrap.h"
+using std::string;
 
 void zwSecboxWDXtest20141023(void)
 {
 	const int ZWPAUSE = 1500;
 	//声明一个密盒对象；使用该对象的3个方法来认证，读取，写入，至于Open/Close由该对象内部自动完成；            
-
+	int i=0;
 	//for (int i = 0; i < 2; i++)
-	while(true)
+	while(1)
 	{
+		i++;
 		JcSecBox secBox;
-		printf("Secret Box Open###############################################TestByCPP\n");
+		printf("Secret Box Open###############################################TestByCPP %04d\n",i);
 		//打开密盒                
 		int status =
 			secBox.SecboxAuth();

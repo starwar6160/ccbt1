@@ -18,6 +18,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "zwBaseLibStatic", "..\lms\z
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ccbATMCSecretBoxLib", "ccbATMCSecretBoxLib\ccbATMCSecretBoxLib.csproj", "{9C55E743-748D-490D-A22A-D1C2A14EF2BF}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "cppSecretBoxTest20141023", "cppSecretBoxTest20141023\cppSecretBoxTest20141023.vcxproj", "{C28C2296-B623-49D1-94DC-6510180CDB9C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -114,6 +116,18 @@ Global
 		{9C55E743-748D-490D-A22A-D1C2A14EF2BF}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{9C55E743-748D-490D-A22A-D1C2A14EF2BF}.Release|Win32.ActiveCfg = Release|Any CPU
 		{9C55E743-748D-490D-A22A-D1C2A14EF2BF}.Release|x86.ActiveCfg = Release|Any CPU
+		{C28C2296-B623-49D1-94DC-6510180CDB9C}.Debug|Any CPU.ActiveCfg = Debug|Win32
+		{C28C2296-B623-49D1-94DC-6510180CDB9C}.Debug|Mixed Platforms.ActiveCfg = Debug|Win32
+		{C28C2296-B623-49D1-94DC-6510180CDB9C}.Debug|Mixed Platforms.Build.0 = Debug|Win32
+		{C28C2296-B623-49D1-94DC-6510180CDB9C}.Debug|Win32.ActiveCfg = Debug|Win32
+		{C28C2296-B623-49D1-94DC-6510180CDB9C}.Debug|Win32.Build.0 = Debug|Win32
+		{C28C2296-B623-49D1-94DC-6510180CDB9C}.Debug|x86.ActiveCfg = Debug|Win32
+		{C28C2296-B623-49D1-94DC-6510180CDB9C}.Release|Any CPU.ActiveCfg = Release|Win32
+		{C28C2296-B623-49D1-94DC-6510180CDB9C}.Release|Mixed Platforms.ActiveCfg = Release|Win32
+		{C28C2296-B623-49D1-94DC-6510180CDB9C}.Release|Mixed Platforms.Build.0 = Release|Win32
+		{C28C2296-B623-49D1-94DC-6510180CDB9C}.Release|Win32.ActiveCfg = Release|Win32
+		{C28C2296-B623-49D1-94DC-6510180CDB9C}.Release|Win32.Build.0 = Release|Win32
+		{C28C2296-B623-49D1-94DC-6510180CDB9C}.Release|x86.ActiveCfg = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
