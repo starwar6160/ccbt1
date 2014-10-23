@@ -34,7 +34,7 @@ void zwWriteData2SecretBox(int handleHid,const int index,const char *dataB64);
 const char * zwReadDataFromSecretBox(int handleHid,const int index);
 #endif // _DEBUG_1018
 
-JcSecBox::JcSecBox()
+CCBELOCK_API JcSecBox::JcSecBox()
 {
 	PRFN	
 		if(NULL==g_hidHandle){
@@ -49,7 +49,7 @@ JcSecBox::JcSecBox()
 		}
 }
 
-JcSecBox::~JcSecBox()
+CCBELOCK_API JcSecBox::~JcSecBox()
 {
 	PRFN
 		if (NULL!=g_hidHandle)
@@ -61,7 +61,7 @@ JcSecBox::~JcSecBox()
 
 
 
-int JcSecBox::SecboxAuth( void )
+CCBELOCK_API int JcSecBox::SecboxAuth( void )
 {
 	PRFN	
 	if (0==g_hidHandle)
@@ -73,7 +73,7 @@ int JcSecBox::SecboxAuth( void )
 	pocoLog->information()<<"zwSendAuthReq2SecBox"<<g_hidHandle<<endl;
 	zwSendAuthReq2SecBox(g_hidHandle);
 	printf("*****************************SecretBox zwVerifyAuthRspFromSecBox\n");
-	pocoLog->information()<<"zwVerifyAuthRspFromSecBox"<<g_hidHandle<<endl;
+	pocoLog->information()<<"zwVerifyAuthRspFromSecBox g_hidHandle="<<g_hidHandle<<endl;
 	int AuthRes=zwVerifyAuthRspFromSecBox(g_hidHandle);
 	
 	if (0==AuthRes)
@@ -91,7 +91,7 @@ int JcSecBox::SecboxAuth( void )
 	}
 }
 
-int JcSecBox::SecboxWriteData( const int index,const char *dataB64 )
+CCBELOCK_API int JcSecBox::SecboxWriteData( const int index,const char *dataB64 )
 {
 	PRFN
 	if (0==g_hidHandle)
@@ -126,7 +126,7 @@ int JcSecBox::SecboxWriteData( const int index,const char *dataB64 )
 	return 0;
 }
 
-const char * JcSecBox::SecboxReadData( const int index )
+CCBELOCK_API const char * JcSecBox::SecboxReadData( const int index )
 {
 	PRFN
 	const char *retStr="";

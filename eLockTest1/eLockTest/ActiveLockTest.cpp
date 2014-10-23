@@ -2,6 +2,8 @@
 #include "jcElockTestHdr.h"
 #include "CCBelock.h"
 
+void zwSecboxWDXtest20141023(void);
+
 string s_repActReqXML;	//从锁具收到的激活请求的返回报文
 string s_repLockInitXML;//从锁具收到的初始化请求的返回报文
 
@@ -117,4 +119,7 @@ TEST_F(ccbElockTest, LockSendActInfoTest0001)
 #endif // _DEBUG_SEND_ACTINFO
 
 
-
+TEST_F(secBoxTest, WenDingXingTestZJY20141023)
+{
+	zwSecboxWDXtest20141023();
+}

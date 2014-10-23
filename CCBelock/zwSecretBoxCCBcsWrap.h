@@ -30,11 +30,11 @@ extern "C" {
 	CCBELOCK_API class JcSecBox
 	{
 	public:
-		JcSecBox();
-		~JcSecBox();
-		int SecboxAuth(void);
-		int SecboxWriteData(const int index,const char *dataB64);
-		const char * SecboxReadData(const int index);
+		CCBELOCK_API JcSecBox();
+		CCBELOCK_API ~JcSecBox();
+		CCBELOCK_API int SecboxAuth(void);
+		CCBELOCK_API int SecboxWriteData(const int index,const char *dataB64);
+		CCBELOCK_API const char * SecboxReadData(const int index);
 	private:		
 	};
 #ifdef __cplusplus
