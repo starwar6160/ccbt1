@@ -11,8 +11,8 @@ void zwSecboxWDXtest20141023(void)
 	const int ZWPAUSE = 1500;
 	//声明一个密盒对象；使用该对象的3个方法来认证，读取，写入，至于Open/Close由该对象内部自动完成；            
 	int i=0;
-	//for (int i = 0; i < 2; i++)
-	while(1)
+	for (int i = 0; i < 3; i++)
+	//while(1)
 	{
 		i++;
 		JcSecBox secBox;
@@ -24,14 +24,16 @@ void zwSecboxWDXtest20141023(void)
 		int status =
 			secBox.SecboxAuth();
 
+#ifdef _DEBUG_ZWHIDCOMM
 		if (0==status)
 		{
 			printf("Good Secret Box\n");
 		}
+#endif // _DEBUG_ZWHIDCOMM
 		if (1==status)
 		{
-			OutputDebugStringA("SECFAIL1615");
-			printf("Fake Secret Box\n");
+			OutputDebugStringA("SECBOX_FAIL");
+			printf("SECBOX_FAIL\n");
 			continue;
 		}
 		//////////////////////////////////////////////////////////
@@ -49,7 +51,7 @@ void zwSecboxWDXtest20141023(void)
 		//System.Threading.Thread.Sleep(ZWPAUSE*5);
 		sprintf(zwbuf,"end of secBox test loop %d\n",i);
 		OutputDebugStringA(zwbuf);
-		printf(zwbuf);
+		//printf(zwbuf);
 	}
 
 }

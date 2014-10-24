@@ -7,7 +7,8 @@
 #include <string.h>
 #include <windows.h>
 extern Poco::LogStream * pocoLog;
-#define PRFN	OutputDebugStringA(__FUNCTION__);pocoLog->information()<<__FUNCTION__<<endl;printf("%s\n",__FUNCTION__);
+#define PRFN	OutputDebugStringA(__FUNCTION__);pocoLog->information()<<__FUNCTION__<<endl;
+//printf("%s\n",__FUNCTION__);
 
 static int g_hidHandle;	//单例模式密盒HID句柄，new多少个类都是这个全局变量保存HID通信句柄，等于一个类；
 
@@ -69,17 +70,17 @@ CCBELOCK_API int JcSecBox::SecboxAuth( void )
 		pocoLog->error("jcSecbox Error HandleZero");
 		return JC_SECBOX_FAIL ;
 	}
-	printf("*****************************SecretBox zwSendAuthReq2SecBox\n");
+	//printf("*****************************SecretBox zwSendAuthReq2SecBox\n");
 	pocoLog->information()<<"zwSendAuthReq2SecBox"<<g_hidHandle<<endl;
 	zwSendAuthReq2SecBox(g_hidHandle);
-	printf("*****************************SecretBox zwVerifyAuthRspFromSecBox\n");
+	//printf("*****************************SecretBox zwVerifyAuthRspFromSecBox\n");
 	pocoLog->information()<<"zwVerifyAuthRspFromSecBox g_hidHandle="<<g_hidHandle<<endl;
 	int AuthRes=zwVerifyAuthRspFromSecBox(g_hidHandle);
 	
 	if (0==AuthRes)
 	{
 		pocoLog->information()<<"SecboxAuth SUCCESSJC"<<endl;
-		printf("1021.1355.****************************************** *SecretBox Auth SUCCESS\n");
+		//printf("1021.1355.****************************************** *SecretBox Auth SUCCESS\n");
 		return JC_SECBOX_SUCCESS;
 	}
 	else
@@ -114,14 +115,14 @@ CCBELOCK_API int JcSecBox::SecboxWriteData( const int index,const char *dataB64 
 		return 1;
 	}
 	pocoLog->information()<<__FUNCTION__<<"index="<<index<<" input Data="<<dataB64<<endl;
-	pocoLog->information("WriteData Auth Start");
+	//pocoLog->information("WriteData Auth Start");
 	int status=SecboxAuth();
-	pocoLog->information("WriteData Auth End");
+	//pocoLog->information("WriteData Auth End");
 	if (JC_SECBOX_SUCCESS==status)
 	{
-		pocoLog->information()<<"WriteData Authed,start write"<<endl;
+		//pocoLog->information()<<"WriteData Authed,start write"<<endl;
 		zwWriteData2SecretBox(g_hidHandle,index,dataB64);		
-		pocoLog->information()<<"WriteData end"<<endl;
+		//pocoLog->information()<<"WriteData end"<<endl;
 	}	
 	return 0;
 }
@@ -143,14 +144,14 @@ CCBELOCK_API const char * JcSecBox::SecboxReadData( const int index )
 		return retStr;
 	}
 	pocoLog->information()<<__FUNCTION__<<" index="<<index<<endl;
-	pocoLog->information("ReadData Auth Start");
+	//pocoLog->information("ReadData Auth Start");
 	int status=SecboxAuth();
-	pocoLog->information("ReadData Auth End");
+	//pocoLog->information("ReadData Auth End");
 	if (JC_SECBOX_SUCCESS==status)
 	{
-		pocoLog->information()<<"ReadData Authed,start read"<<endl;
+		//pocoLog->information()<<"ReadData Authed,start read"<<endl;
 		retStr=zwReadDataFromSecretBox(g_hidHandle,index);
-		pocoLog->information()<<"ReadData end"<<endl;
+		//pocoLog->information()<<"ReadData end"<<endl;
 	}	
 	pocoLog->information()<<__FUNCTION__<<"Return "<<retStr<<endl;
 	return retStr;
