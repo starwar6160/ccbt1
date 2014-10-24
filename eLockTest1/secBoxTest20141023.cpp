@@ -17,9 +17,9 @@ void zwSecboxWDXtest20141023(void)
 		i++;
 		JcSecBox secBox;
 
-		sprintf(zwbuf,"Secret Box Open###############################################TestByCPP %04d\n",i);
-		printf(zwbuf);
-		OutputDebugStringA(zwbuf);
+		//sprintf(zwbuf,"Secret Box Open###############################################TestByCPP %04d\n",i);
+		//printf(zwbuf);
+		//OutputDebugStringA(zwbuf);
 		//´ò¿ªÃÜºÐ                
 		int status =
 			secBox.SecboxAuth();
@@ -50,8 +50,8 @@ void zwSecboxWDXtest20141023(void)
 		//Console.Out.WriteLine("WAIT 4 SECONDS FOR PLUG OUT/IN SECRET BOX");
 		//System.Threading.Thread.Sleep(ZWPAUSE*5);
 		sprintf(zwbuf,"end of secBox test loop %d\n",i);
-		OutputDebugStringA(zwbuf);
+		//OutputDebugStringA(zwbuf);
 		//printf(zwbuf);
 	}
-
+	printf("\n");
 }
