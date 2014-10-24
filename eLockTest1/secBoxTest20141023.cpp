@@ -1,10 +1,13 @@
 #include "stdafx.h"
 #include <string>
+#include <windows.h>
 #include "zwSecretBoxCCBcsWrap.h"
 using std::string;
 
 void zwSecboxWDXtest20141023(void)
 {
+	char zwbuf[256];
+	memset(zwbuf,0,256);
 	const int ZWPAUSE = 1500;
 	//声明一个密盒对象；使用该对象的3个方法来认证，读取，写入，至于Open/Close由该对象内部自动完成；            
 	int i=0;
@@ -13,7 +16,10 @@ void zwSecboxWDXtest20141023(void)
 	{
 		i++;
 		JcSecBox secBox;
-		printf("Secret Box Open###############################################TestByCPP %04d\n",i);
+
+		sprintf(zwbuf,"Secret Box Open###############################################TestByCPP %04d\n",i);
+		printf(zwbuf);
+		OutputDebugStringA(zwbuf);
 		//打开密盒                
 		int status =
 			secBox.SecboxAuth();
@@ -24,6 +30,7 @@ void zwSecboxWDXtest20141023(void)
 		}
 		if (1==status)
 		{
+			OutputDebugStringA("SECFAIL1615");
 			printf("Fake Secret Box\n");
 			continue;
 		}
@@ -40,6 +47,9 @@ void zwSecboxWDXtest20141023(void)
 		std::string recvFromSecBox = secBox.SecboxReadData(1);
 		//Console.Out.WriteLine("WAIT 4 SECONDS FOR PLUG OUT/IN SECRET BOX");
 		//System.Threading.Thread.Sleep(ZWPAUSE*5);
+		sprintf(zwbuf,"end of secBox test loop %d\n",i);
+		OutputDebugStringA(zwbuf);
+		printf(zwbuf);
 	}
 
 }

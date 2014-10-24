@@ -54,8 +54,8 @@ CCBELOCK_API JcSecBox::~JcSecBox()
 	PRFN
 		if (NULL!=g_hidHandle)
 		{
-			pocoLog->information()<<"jcSecBox Closed handle="<<g_hidHandle<<endl;
-			zwSecboxHidClose(g_hidHandle);
+			//pocoLog->information()<<"jcSecBox Closed handle="<<g_hidHandle<<endl;
+			//zwSecboxHidClose(g_hidHandle);
 		}	
 }
 
