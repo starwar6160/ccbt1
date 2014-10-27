@@ -59,7 +59,7 @@ public:
 		double fLifeMs=(nEnd.QuadPart-nStart.QuadPart)*1000.0/nPerf.QuadPart;
 		sprintf(m_buf,"%s [END] elps %.1f ms",m_strClass,fLifeMs);		
 		OutputDebugStringA(m_buf);
-		//pocoLog->information()<<m_buf<<endl;
+		pocoLog->information()<<m_buf<<endl;
 	}
 };
 
