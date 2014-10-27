@@ -7,7 +7,6 @@
 #include <string.h>
 #include <windows.h>
 extern Poco::LogStream * pocoLog;
-#define PRFN	OutputDebugStringA(__FUNCTION__);pocoLog->information()<<__FUNCTION__<<endl;
 #define ZWTRC	zwTrace1027 zwtrace(__FUNCTION__);
 //printf("%s\n",__FUNCTION__);
 
@@ -40,26 +39,33 @@ class zwTrace1027
 {
 	char *m_strClass;
 	char m_buf[64];
+	LARGE_INTEGER nStart,nEnd;
 public:
 	zwTrace1027(const char *strClassName)
 	{
 		m_strClass=(char *)strClassName;
 		memset(m_buf,0,64);
-		sprintf(m_buf,"%s [START]",m_strClass);
+		sprintf(m_buf,"%s [START]",m_strClass);		
 		OutputDebugStringA(m_buf);
+		QueryPerformanceCounter(&nStart);
 	}
 	~zwTrace1027()
 	{
-		memset(m_buf,0,64);
-		sprintf(m_buf,"%s [END]",m_strClass);
+		QueryPerformanceCounter(&nEnd);
+		memset(m_buf,0,64);				
+		LARGE_INTEGER nPerf;
+		QueryPerformanceFrequency(&nPerf);
+		//实际高精度计时器精度一般都在1.2M到2.8M左右，也就是都可以精确到0.9-0.4微秒左右；
+		double fLifeMs=(nEnd.QuadPart-nStart.QuadPart)*1000.0/nPerf.QuadPart;
+		sprintf(m_buf,"%s [END] elps %.1f ms",m_strClass,fLifeMs);		
 		OutputDebugStringA(m_buf);
+		pocoLog->information()<<m_buf<<endl;
 	}
 };
 
 
 CCBELOCK_API JcSecBox::JcSecBox()
 {
-	PRFN	
 	ZWTRC
 		if(NULL==g_hidHandle){
 			pocoLog->information("jcSecBox OpenFirst");
@@ -75,7 +81,6 @@ CCBELOCK_API JcSecBox::JcSecBox()
 
 CCBELOCK_API JcSecBox::~JcSecBox()
 {
-	PRFN
 	ZWTRC
 		if (NULL!=g_hidHandle)
 		{
@@ -88,7 +93,6 @@ CCBELOCK_API JcSecBox::~JcSecBox()
 
 CCBELOCK_API int JcSecBox::SecboxAuth( void )
 {
-	PRFN		
 	ZWTRC
 	if (0==g_hidHandle)
 	{
@@ -120,7 +124,6 @@ CCBELOCK_API int JcSecBox::SecboxAuth( void )
 
 CCBELOCK_API int JcSecBox::SecboxWriteData( const int index,const char *dataB64 )
 {
-	PRFN
 	ZWTRC
 	if (0==g_hidHandle)
 	{
@@ -156,7 +159,6 @@ CCBELOCK_API int JcSecBox::SecboxWriteData( const int index,const char *dataB64 
 
 CCBELOCK_API const char * JcSecBox::SecboxReadData( const int index )
 {
-	PRFN
 	ZWTRC
 	const char *retStr="";
 	if (0==g_hidHandle)
