@@ -8,6 +8,7 @@
 #include <windows.h>
 extern Poco::LogStream * pocoLog;
 #define PRFN	OutputDebugStringA(__FUNCTION__);pocoLog->information()<<__FUNCTION__<<endl;
+#define ZWTRC	zwTrace1027 zwtrace(__FUNCTION__);
 //printf("%s\n",__FUNCTION__);
 
 static int g_hidHandle;	//单例模式密盒HID句柄，new多少个类都是这个全局变量保存HID通信句柄，等于一个类；
@@ -35,9 +36,31 @@ void zwWriteData2SecretBox(int handleHid,const int index,const char *dataB64);
 const char * zwReadDataFromSecretBox(int handleHid,const int index);
 #endif // _DEBUG_1018
 
+class zwTrace1027
+{
+	char *m_strClass;
+	char m_buf[64];
+public:
+	zwTrace1027(const char *strClassName)
+	{
+		m_strClass=(char *)strClassName;
+		memset(m_buf,0,64);
+		sprintf(m_buf,"%s [START]",m_strClass);
+		OutputDebugStringA(m_buf);
+	}
+	~zwTrace1027()
+	{
+		memset(m_buf,0,64);
+		sprintf(m_buf,"%s [END]",m_strClass);
+		OutputDebugStringA(m_buf);
+	}
+};
+
+
 CCBELOCK_API JcSecBox::JcSecBox()
 {
 	PRFN	
+	ZWTRC
 		if(NULL==g_hidHandle){
 			pocoLog->information("jcSecBox OpenFirst");
 			g_hidHandle=zwSecboxHidOpen();
@@ -53,6 +76,7 @@ CCBELOCK_API JcSecBox::JcSecBox()
 CCBELOCK_API JcSecBox::~JcSecBox()
 {
 	PRFN
+	ZWTRC
 		if (NULL!=g_hidHandle)
 		{
 			//pocoLog->information()<<"jcSecBox Closed handle="<<g_hidHandle<<endl;
@@ -64,7 +88,8 @@ CCBELOCK_API JcSecBox::~JcSecBox()
 
 CCBELOCK_API int JcSecBox::SecboxAuth( void )
 {
-	PRFN	
+	PRFN		
+	ZWTRC
 	if (0==g_hidHandle)
 	{
 		pocoLog->error("jcSecbox Error HandleZero");
@@ -90,11 +115,13 @@ CCBELOCK_API int JcSecBox::SecboxAuth( void )
 		printf("************************************************** ***SecretBox Auth FAIL\n");
 		return JC_SECBOX_FAIL;
 	}
+
 }
 
 CCBELOCK_API int JcSecBox::SecboxWriteData( const int index,const char *dataB64 )
 {
 	PRFN
+	ZWTRC
 	if (0==g_hidHandle)
 	{
 		pocoLog->error("jcSecbox Error HandleZero");
@@ -130,6 +157,7 @@ CCBELOCK_API int JcSecBox::SecboxWriteData( const int index,const char *dataB64 
 CCBELOCK_API const char * JcSecBox::SecboxReadData( const int index )
 {
 	PRFN
+	ZWTRC
 	const char *retStr="";
 	if (0==g_hidHandle)
 	{
