@@ -10,6 +10,17 @@ extern Poco::LogStream * pocoLog;
 #define ZWTRC	zwTrace1027 zwtrace(__FUNCTION__);
 //printf("%s\n",__FUNCTION__);
 
+class zwTrace1027
+{
+	char *m_strClass;
+	char m_buf[64];
+	LARGE_INTEGER nStart,nEnd;
+public:
+	zwTrace1027(const char *strClassName);
+	~zwTrace1027();
+};
+
+
 static int g_hidHandle;	//单例模式密盒HID句柄，new多少个类都是这个全局变量保存HID通信句柄，等于一个类；
 
 typedef enum jc_secret_box_status_t{
@@ -35,33 +46,7 @@ void zwWriteData2SecretBox(int handleHid,const int index,const char *dataB64);
 const char * zwReadDataFromSecretBox(int handleHid,const int index);
 #endif // _DEBUG_1018
 
-class zwTrace1027
-{
-	char *m_strClass;
-	char m_buf[64];
-	LARGE_INTEGER nStart,nEnd;
-public:
-	zwTrace1027(const char *strClassName)
-	{
-		m_strClass=(char *)strClassName;
-		memset(m_buf,0,64);
-		sprintf(m_buf,"%s [START]",m_strClass);		
-		OutputDebugStringA(m_buf);
-		QueryPerformanceCounter(&nStart);
-	}
-	~zwTrace1027()
-	{
-		QueryPerformanceCounter(&nEnd);
-		memset(m_buf,0,64);				
-		LARGE_INTEGER nPerf;
-		QueryPerformanceFrequency(&nPerf);
-		//实际高精度计时器精度一般都在1.2M到2.8M左右，也就是都可以精确到0.9-0.4微秒左右；
-		double fLifeMs=(nEnd.QuadPart-nStart.QuadPart)*1000.0/nPerf.QuadPart;
-		sprintf(m_buf,"%s [END] elps %.1f ms",m_strClass,fLifeMs);		
-		OutputDebugStringA(m_buf);
-		pocoLog->information()<<m_buf<<endl;
-	}
-};
+
 
 
 CCBELOCK_API JcSecBox::JcSecBox()
