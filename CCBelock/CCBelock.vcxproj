@@ -95,7 +95,8 @@
       <AdditionalDependencies>zwBaseLibStatic.lib;setupapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>COPY /y $(TargetPath) F:\mydoc\work\zwsrc\CCBelock\Release</Command>
+      <Command>
+      </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
