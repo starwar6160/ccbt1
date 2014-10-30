@@ -52,7 +52,7 @@
       <WarningLevel>Level4</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;POCO_STATIC;CCBELOCK_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(BOOST)\;$(POCO)\Foundation\include;$(POCO)\Net\include;$(POCO)\XML\include;$(POCO)\Util\include;.\;$(ZWBASELIB)\zwBaseLib\SerialPortTestCode\;$(ZWBASELIB)\zwBaseLib\SecretBox;$(ZWBASELIB)\zwBaseLib\HidSplitMsg;$(ZWBASELIB)\zwBaseLib\nanopb_Code;$(PYTHON)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ZWLIB)\boost;$(ZWLIB)\POCO\Foundation\include;$(ZWLIB)\POCO\Net\include;$(ZWLIB)\POCO\XML\include;$(ZWLIB)\POCO\Util\include;.\;$(ZWSRC)\zwBaseLib\zwBaseLib\SerialPortTestCode\;$(ZWSRC)\zwBaseLib\zwBaseLib\SecretBox;$(ZWSRC)\zwBaseLib\zwBaseLib\HidSplitMsg;$(ZWSRC)\zwBaseLib\zwBaseLib\nanopb_Code;$(PYTHON)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <ExceptionHandling>Sync</ExceptionHandling>
       <AdditionalOptions>-Zm113 %(AdditionalOptions)</AdditionalOptions>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
@@ -61,7 +61,7 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ModuleDefinitionFile>ccbElock.def</ModuleDefinitionFile>
-      <AdditionalLibraryDirectories>$(BOOST)\lib;$(POCO)\lib;$(ZWBINJCLOCK)\$(Configuration)\;$(PYTHON)\libs</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(ZWLIB)\boost\lib;$(ZWLIB)\POCO\lib;$(ZWBINJCLOCK)\$(Configuration)\;$(PYTHON)\libs</AdditionalLibraryDirectories>
       <GenerateMapFile>false</GenerateMapFile>
       <MapExports>false</MapExports>
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
@@ -80,7 +80,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;POCO_STATIC;CCBELOCK_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(BOOST)\;$(POCO)\Foundation\include;$(POCO)\Net\include;$(POCO)\XML\include;$(POCO)\Util\include;.\;$(ZWBASELIB)\zwBaseLib\SerialPortTestCode\;$(ZWBASELIB)\zwBaseLib\SecretBox;$(ZWBASELIB)\zwBaseLib\HidSplitMsg;$(ZWBASELIB)\zwBaseLib\nanopb_Code;$(PYTHON)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ZWLIB)\boost;$(ZWLIB)\POCO\Foundation\include;$(ZWLIB)\POCO\Net\include;$(ZWLIB)\POCO\XML\include;$(ZWLIB)\POCO\Util\include;.\;$(ZWSRC)\zwBaseLib\zwBaseLib\SerialPortTestCode\;$(ZWSRC)\zwBaseLib\zwBaseLib\SecretBox;$(ZWSRC)\zwBaseLib\zwBaseLib\HidSplitMsg;$(ZWSRC)\zwBaseLib\zwBaseLib\nanopb_Code;$(PYTHON)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalOptions>-Zm113 %(AdditionalOptions)</AdditionalOptions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
@@ -90,7 +90,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <ModuleDefinitionFile>ccbElock.def</ModuleDefinitionFile>
-      <AdditionalLibraryDirectories>$(BOOST)\lib;$(POCO)\lib;$(ZWBINJCLOCK)\$(Configuration)\;$(PYTHON)\libs</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(ZWLIB)\boost\lib;$(ZWLIB)\POCO\lib;$(ZWBINJCLOCK)\$(Configuration)\;$(PYTHON)\libs</AdditionalLibraryDirectories>
       <GenerateMapFile>false</GenerateMapFile>
       <AdditionalDependencies>zwBaseLibStatic.lib;setupapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>

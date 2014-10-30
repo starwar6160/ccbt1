@@ -52,14 +52,14 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\CCBelock;$(GTEST)\include\;$(BOOST);$(JCLMSCCB)\zwECIES;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\CCBelock;$(ZWLIB)\gtest\include\;$(ZWLIB)\boost;$(JCLMSCCB)\zwECIES;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalOptions>-Zm139 %(AdditionalOptions)</AdditionalOptions>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(ZWBINJCLOCK)\$(Configuration)\;$(GTEST)\msvc\gtest-md\$(Configuration)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(ZWBINJCLOCK)\$(Configuration)\;$(ZWLIB)\gtest\msvc\gtest-md\$(Configuration)</AdditionalLibraryDirectories>
       <AdditionalDependencies>jclmsCCB2014.lib;zwBaseLibStatic.lib;HidProtocol.lib;MSVCRTD.LIB;LIBCMTD.LIB;%(AdditionalDependencies)</AdditionalDependencies>
       <ShowProgress>NotSet</ShowProgress>
       <IgnoreSpecificDefaultLibraries>MSVCRTD.LIB;LITCMTD.LIB</IgnoreSpecificDefaultLibraries>
@@ -74,7 +74,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\CCBelock;$(GTEST)\include\;$(BOOST);$(JCLMSCCB)\zwECIES;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\CCBelock;$(ZWLIB)\gtest\include\;$(ZWLIB)\boost;$(JCLMSCCB)\zwECIES;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalOptions>-Zm139 %(AdditionalOptions)</AdditionalOptions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
     </ClCompile>
@@ -83,7 +83,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>$(ZWBINJCLOCK)\$(Configuration)\;$(GTEST)\msvc\gtest-md\$(Configuration)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(ZWBINJCLOCK)\$(Configuration)\;$(ZWLIB)\gtest\msvc\gtest-md\$(Configuration)</AdditionalLibraryDirectories>
       <AdditionalDependencies>jclmsCCB2014.lib;zwBaseLibStatic.lib;HidProtocol.lib;MSVCRT.LIB;LIBCMT.LIB;%(AdditionalDependencies)</AdditionalDependencies>
       <IgnoreSpecificDefaultLibraries>MSVCRT.LIB;LIBCMT.LIB;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
     </Link>
