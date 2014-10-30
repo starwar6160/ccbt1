@@ -45,8 +45,8 @@ extern "C" {
 #endif
 
 
-#include "miracl.h"
-#include "octet.h"
+#include <miracl.h>
+#include <octet.h>
 
 #define EAS 16 /* Symmetric Key size - 128 bits */
 #define EGS 32 /* ECCSI Group Size - 256 bits */
