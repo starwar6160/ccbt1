@@ -60,7 +60,7 @@ namespace zwCfg {
 	 boost::thread * thr = NULL;
 } //namespace zwCfg{ 
 
-//static bool s_hidOpened=false;
+static bool s_hidOpened=false;
 
 CCBELOCK_API long JCAPISTD Open(long lTimeOut)
 {
@@ -84,10 +84,10 @@ CCBELOCK_API long JCAPISTD Open(long lTimeOut)
 	try{
 
 #ifdef ZWUSE_HID_MSG_SPLIT		
-		//if (true==s_hidOpened)
-		//{
-		//	return ELOCK_ERROR_SUCCESS;
-		//}
+		if (true==s_hidOpened)
+		{
+			return ELOCK_ERROR_SUCCESS;
+		}
 		memset(&zwccbthr::hidHandle,0,sizeof(JCHID));
 		zwccbthr::hidHandle.vid=0x0483;
 		zwccbthr::hidHandle.pid=0x5710;		
@@ -95,7 +95,7 @@ CCBELOCK_API long JCAPISTD Open(long lTimeOut)
 		{
 			return ELOCK_ERROR_PARAMINVALID;
 		}
-		//s_hidOpened=true;
+		s_hidOpened=true;
 #else
 		//´ò¿ª´®¿Ú
 		myLockIp = zwccbthr::zwGetLockIP();
@@ -125,7 +125,6 @@ CCBELOCK_API long JCAPISTD Close()
 		//if (true==s_hidOpened)
 		//{
 			jcHidClose(&zwccbthr::hidHandle);
-			//s_hidOpened=false;
 		//}		
 	}
 #else

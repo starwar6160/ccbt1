@@ -10,11 +10,10 @@
 using namespace boost::property_tree;
 using Poco::AutoPtr;
 using Poco::Util::IniFileConfiguration;
-static std::string G_HID_PUSH_STRING="";	//用于暂存要发送的字符窜，在阻塞接收之前，先把这个发出去；
+
 
 namespace zwccbthr {
 	boost::mutex thr_mutex;
-	boost::mutex send_mutex;	//用于保护发送字符串的操作；
 	//建行给的接口，没有设置连接参数的地方，也就是说，完全可以端口，抑或是从配置文件读取
 	jcSerialPort *zwComPort = NULL;
 	boost::mutex recv_mutex;
@@ -61,18 +60,8 @@ namespace zwccbthr {
 				try {					
 #ifdef ZWUSE_HID_MSG_SPLIT
 					OutputDebugStringA("20141017.1116.Thread.MaHaoTest3");
-					{						
-						//上锁，防止后台线程和前台pushString同时操作G_HID_PUSH_STRING
-						boost::mutex::scoped_lock lock(zwccbthr::send_mutex);					
-						//如果有要发送的东西，就先发送出去再接收
-						if (G_HID_PUSH_STRING.length()>0)
-						{
-							jcHidSendData(&zwccbthr::hidHandle,G_HID_PUSH_STRING.c_str(),G_HID_PUSH_STRING.length());						
-							G_HID_PUSH_STRING="";
-						}						
-					}
-					printf("\n");
 					jcHidRecvData(&zwccbthr::hidHandle,recvBuf,BLEN,&outLen);
+					printf("\n");
 					OutputDebugStringA("20141017.1116.Thread.MaHaoTest4");
 #else
 					zwComPort->RecvData(recvBuf, BLEN,&outLen);
@@ -159,7 +148,7 @@ CCBELOCK_API void zwPushString(const char *str)
 	ZWFUNCTRACE assert(NULL!=str && strlen(str) > 0);
 	if (NULL==str || strlen(str) == 0) {
 		return;
-	}	
+	}
 #ifndef ZWUSE_HID_MSG_SPLIT
 	if (NULL == zwccbthr::zwComPort) {
 		ZWFATAL("串口对象指针为空！");
@@ -168,10 +157,7 @@ CCBELOCK_API void zwPushString(const char *str)
 #endif // ZWUSE_HID_MSG_SPLIT
 	try {
 #ifdef ZWUSE_HID_MSG_SPLIT
-		boost::mutex::scoped_lock lock(zwccbthr::send_mutex);
-		G_HID_PUSH_STRING=str;
-		//jcHidSendData(&zwccbthr::hidHandle,str,strlen(str));
-		//放到接收线程里面阻塞接收前一步，发出去这个，然后置空
+		jcHidSendData(&zwccbthr::hidHandle,str,strlen(str));
 #else
 zwccbthr::zwComPort->SendData(str,strlen(str));
 #endif // ZWUSE_HID_MSG_SPLIT		

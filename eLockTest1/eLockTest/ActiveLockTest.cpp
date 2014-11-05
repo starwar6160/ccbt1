@@ -119,7 +119,9 @@ TEST_F(ccbElockTest, LockSendActInfoTest0001)
 #endif // _DEBUG_SEND_ACTINFO
 
 
+#ifdef _DEBUG_SECBOX_WDXTEST1
 TEST_F(secBoxTest, WenDingXingTestZJY20141023)
 {
 	zwSecboxWDXtest20141023();
 }
+#endif // _DEBUG_SECBOX_WDXTEST1
