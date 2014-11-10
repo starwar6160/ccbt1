@@ -13,15 +13,22 @@ TEST_F(ccbElockTest, QueryLockStatusTest0002)
 	ptree pt;
 	jcAtmcMsg::zwAtmcTestMsgGen(msgType, strSendLockActInfoXML);
 
-	if (ELOCK_ERROR_SUCCESS == m_connStatus) {
-		EXPECT_EQ(ELOCK_ERROR_SUCCESS,
-			  Notify(strSendLockActInfoXML.c_str()));
-	} else {
-		EXPECT_EQ(ELOCK_ERROR_CONNECTLOST,
-			  Notify(strSendLockActInfoXML.c_str()));
-		cout << "Server not Start!" << endl;
+	//if (ELOCK_ERROR_SUCCESS == m_connStatus) {
+	//	EXPECT_EQ(ELOCK_ERROR_SUCCESS,
+	//		  Notify(strSendLockActInfoXML.c_str()));
+	//} else {
+	//	EXPECT_EQ(ELOCK_ERROR_CONNECTLOST,
+	//		  Notify(strSendLockActInfoXML.c_str()));
+	//	cout << "Server not Start!" << endl;
+	//}
+	//Sleep(1 * 1000);
+
+	for (int i=0;i<100;i++)
+	{
+		printf("LOCK BULK LOG BUG TEST 20141110.1657");
+		Notify(strSendLockActInfoXML.c_str());
+		Sleep(1 * 100);
 	}
-	Sleep(1 * 1000);
 }
 #endif // _DEBUG_QUERY_LOCK_STATUS
 

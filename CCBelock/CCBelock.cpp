@@ -134,13 +134,21 @@ CCBELOCK_API long JCAPISTD Close()
 		zwccbthr::zwComPort=NULL;
 	}
 #endif // ZWUSE_HID_MSG_SPLIT
-	CloseHidEnd:
+CloseHidEnd:
+	s_hidOpened=false;
 	ZWNOTICE("关闭 到锁具的连接")
 	    return ELOCK_ERROR_SUCCESS;
 }
 
 CCBELOCK_API long JCAPISTD Notify(const char *pszMsg)
 {
+	//通过在Notify函数开始检测是否端口已经打开，没有打开就直接返回，避免
+	//2014年11月初在广州遇到的没有连接锁具时，ATMC执行0002报文查询锁具状态，
+	//反复查询，大量无用日志产生的情况。
+	if (false==s_hidOpened)
+	{
+		return ELOCK_ERROR_CONNECTLOST;
+	}
 	ZWFUNCTRACE 
 	assert(pszMsg != NULL && strlen(pszMsg) >= 42);	//XML至少42字节utf8
 	if (pszMsg==NULL || strlen(pszMsg)<42)
