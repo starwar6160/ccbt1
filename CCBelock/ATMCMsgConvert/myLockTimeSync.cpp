@@ -79,19 +79,45 @@ namespace jcAtmcConvertDLL {
 //////////////////////////////////////////////////////////////////////////
 //20141111万敏.温度振动传感器报文支持
 	void zwconvTemptureSenseDown(const ptree &ptccb, ptree & ptjc) {
-
+		ZWFUNCTRACE
+		ptjc.put(jcAtmcConvertDLL::JCSTR_CMDTITLE,
+		jcAtmcConvertDLL::JCSTR_SENSE_TEMPTURE);
+		ptjc.put("Temperature", ptccb.get<int>("Temperature"));
 	}
 
 	void zwconvTemptureSenseUp(const ptree & ptjc, ptree & ptccb) {
-
+		ZWFUNCTRACE 
+		ptccb.put(CCBSTR_CODE, "5000");
+		ptccb.put(CCBSTR_NAME, "Set_Senser_Temperature");
+		string zwDate, zwTime;
+		zwGetLocalDateTimeString(time(NULL), zwDate, zwTime);
+		ptccb.put(CCBSTR_DATE, zwDate);
+		ptccb.put(CCBSTR_TIME, zwTime);
+		//实质性有用字段
+		ptccb.put(CCBSTR_DEVCODE, ptjc.get < string > ("Atm_Serial"));
+		ptccb.put("root.LockId", ptjc.get < string > ("Lock_Serial"));
+		ptccb.put("root.Status", ptjc.get<int>("Status"));
 	}
 
 	void zwconvShockSenseDown(const ptree &ptccb, ptree & ptjc) {
-
+		ZWFUNCTRACE
+		ptjc.put(jcAtmcConvertDLL::JCSTR_CMDTITLE,
+		jcAtmcConvertDLL::JCSTR_SENSE_SHOCK);
+		ptjc.put("Shock", ptccb.get<int>("Shock"));
 	}
 
 	void zwconvShockSenseUp(const ptree & ptjc, ptree & ptccb) {
-
+		ZWFUNCTRACE 
+			ptccb.put(CCBSTR_CODE, "5001");
+		ptccb.put(CCBSTR_NAME, "Set_Senser_Shock");
+		string zwDate, zwTime;
+		zwGetLocalDateTimeString(time(NULL), zwDate, zwTime);
+		ptccb.put(CCBSTR_DATE, zwDate);
+		ptccb.put(CCBSTR_TIME, zwTime);
+		//实质性有用字段
+		ptccb.put(CCBSTR_DEVCODE, ptjc.get < string > ("Atm_Serial"));
+		ptccb.put("root.LockId", ptjc.get < string > ("Lock_Serial"));
+		ptccb.put("root.Status", ptjc.get<int>("Status"));
 	}
 
 }				//namespace jcAtmcConvertDLL{
