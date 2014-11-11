@@ -150,7 +150,8 @@ CCBELOCK_API long JCAPISTD Notify(const char *pszMsg)
 		return ELOCK_ERROR_CONNECTLOST;
 	}
 	ZWFUNCTRACE 
-	assert(pszMsg != NULL && strlen(pszMsg) >= 42);	//XML至少42字节utf8
+	assert(pszMsg != NULL);	
+	assert(strlen(pszMsg) >= 42);	//XML至少42字节utf8
 	if (pszMsg==NULL || strlen(pszMsg)<42)
 	{
 		return ELOCK_ERROR_PARAMINVALID;

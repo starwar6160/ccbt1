@@ -197,7 +197,7 @@ namespace jcAtmcConvertDLL {
 		ZWDBGMSG
 		    ("*********************金储应答XML开始******************####\n");
 		ZWDBGMSG(upXML.c_str());
-		printf("%s\n",upXML.c_str());
+		//printf("%s\n",upXML.c_str());
 		ZWDBGMSG
 		    ("*********************金储应答XML结束******************####\n");
 		try {

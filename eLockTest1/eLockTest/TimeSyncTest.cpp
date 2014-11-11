@@ -28,18 +28,37 @@ TEST_F(ccbElockTest, TimeSyncTest0003)
 }
 #endif // _DEBUG_TIMESYNC
 
+//20141111.1720.为万敏做的测试程序
 TEST_F(ccbElockTest, WanMinTools_20141111)
 {
-	const char * zwInputFile="W:\\zwWorkSrc\\2014BinOut\\Debug\\jcinput.xml";
-	//const char * zwInputFile="jcinput.xml";
+	//const char * zwInputFile="W:\\zwWorkSrc\\2014BinOut\\Debug\\jcinput.xml";
+	const char * zwInputFile="jcinput.xml";
 	FILE *ifp=fopen(zwInputFile,"rb");
 	assert(NULL!=ifp);
+	if (NULL==ifp)
+	{
+		printf("error open input file %s\n",zwInputFile);
+		return ;
+	}
 	const int BUFLEN=512;
-	char buf[BUFLEN+1];
+	const int CMDLEN=BUFLEN*4;
+	char buf[BUFLEN+1];	
+	char cmdXML[CMDLEN+1];
+	memset(cmdXML,0,CMDLEN+1);
+	while(!feof(ifp))
+	{
 		memset(buf,0,BUFLEN+1);
-		int frr=fread(buf,1,BUFLEN,ifp);
-		assert(frr>=0 && frr <=BUFLEN);	
+		fgets(buf,BUFLEN,ifp);
+		//过滤掉回车换行
+		char *strend=strstr(buf,"\r\n");
+		if (NULL!=strend)
+		{
+			*strend=NULL;			
+		}				
+		strcat(cmdXML,buf);
+	}
 	fclose(ifp);
 	SetRecvMsgRotine(myATMCRecvMsgRotine);
-	Notify(buf);
+	Notify(cmdXML);
+	Sleep(3000);
 }
