@@ -28,6 +28,12 @@ namespace jcAtmcConvertDLL {
 	void zwconvRecvVerifyCodeUp(const ptree & ptjc, ptree & ptccb);
 	void zwconvLockPushWarnUp(const ptree & ptjc, ptree & ptccb);
 	void zwconvLockReqTimeSyncUp(const ptree & ptjc, ptree & ptccb);
+//20141111.万敏昨天要求增加的我们内部自定义报文，温度，振动传感器
+	void zwconvTemptureSenseDown(const ptree &ptccb, ptree & ptjc);
+	void zwconvTemptureSenseUp(const ptree & ptjc, ptree & ptccb);
+	void zwconvShockSenseDown(const ptree &ptccb, ptree & ptjc);
+	void zwconvShockSenseUp(const ptree & ptjc, ptree & ptccb);
+
 //以下4个字段，为的是在上下转换期间保存建行报文中冗余的，我们基本不用但又必须返回给建行的字段
 	extern string ns_ActReqName;
 	extern string ns_LockInitName;

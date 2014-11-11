@@ -76,5 +76,23 @@ namespace jcAtmcConvertDLL {
 		ptccb.put("root.LockMan", LOCKMAN_NAME);
 		ptccb.put("root.LockId", ptjc.get < string > ("Lock_Serial"));
 	}
+//////////////////////////////////////////////////////////////////////////
+//20141111万敏.温度振动传感器报文支持
+	void zwconvTemptureSenseDown(const ptree &ptccb, ptree & ptjc) {
+
+	}
+
+	void zwconvTemptureSenseUp(const ptree & ptjc, ptree & ptccb) {
+
+	}
+
+	void zwconvShockSenseDown(const ptree &ptccb, ptree & ptjc) {
+
+	}
+
+	void zwconvShockSenseUp(const ptree & ptjc, ptree & ptccb) {
+
+	}
 
 }				//namespace jcAtmcConvertDLL{
+

@@ -74,6 +74,17 @@ namespace jcAtmcConvertDLL {
 			zwconvLockReqTimeSyncDown(ptCCB, ptJC);
 		}
 		//////////////////////////////////////////////////////////////////////////
+		//20141111.万敏要求增加的温度和振动传感器支持报文
+		if ("5000" == transCode) {	//温度传感器报文
+			msgType = JCMSG_SENSE_TEMPTURE;
+			zwconvTemptureSenseDown(ptCCB, ptJC);
+		}
+		if ("5001" == transCode) {	//振动传感器报文
+			msgType = JCMSG_SENSE_SHOCK;
+			zwconvShockSenseDown(ptCCB, ptJC);
+		}
+
+		//////////////////////////////////////////////////////////////////////////
 		//锁具单向上传消息的配合一问一答测试消息：
 		if ("1000" == transCode) {	//接收初始闭锁码
 			msgType = JCMSG_SEND_INITCLOSECODE;
@@ -153,6 +164,15 @@ namespace jcAtmcConvertDLL {
 		if (JCSTR_REQUEST_TIME_SYNC == jcCmd) {	//接收锁具主动的时间同步请求
 			zwconvLockReqTimeSyncUp(ptJC, ptCCB);
 		}
+		//////////////////////////////////////////////////////////////////////////
+		//20141111万敏.温度振动传感器报文支持
+		if (JCSTR_SENSE_TEMPTURE == jcCmd) {	//温度传感器
+			zwconvTemptureSenseUp(ptJC, ptCCB);
+		}
+		if (JCSTR_SENSE_SHOCK == jcCmd) {	//振动传感器
+			zwconvShockSenseUp(ptJC, ptCCB);
+		}
+
 		//////////////////////////////////////////////////////////////////////////
 		std::stringstream sst2;
 		OutputDebugStringA("20141017.1116.MaHaoTest3");

@@ -15,6 +15,10 @@ typedef enum jcmsg_ccb_elock_t{
 	JCMSG_PUSH_WARNING,				//锁具主动上送告警
 	JCMSG_SEND_UNLOCK_CERTCODE,	//锁具发送开锁验证码
 	JCMSG_REQUEST_TIME_SYNC,	//锁具主动要求时间同步
+	//////////////////////////////////////////////////////////////////////////
+	//20141111.万敏要求增加的温度和振动传感器支持报文
+	JCMSG_SENSE_TEMPTURE,		//温度传感器
+	JCMSG_SENSE_SHOCK			//振动传感器
 }JC_MSG_TYPE;
 
 //为了日志，报警等用途设计的数据结构
@@ -46,6 +50,10 @@ namespace jcAtmcConvertDLL{
 	extern const char *JCSTR_GET_LOCK_LOG;			//读取日志
 	extern const char *JCSTR_PUSH_WARNING;			//锁具主动上送告警
 	extern const char *JCSTR_REQUEST_TIME_SYNC;		//锁具主动要求时间同步
+	//20141111万敏.温度振动传感器报文支持
+	extern const char *JCSTR_SENSE_TEMPTURE;		//温度传感器
+	extern const char *JCSTR_SENSE_SHOCK;			//振动传感器
+
 
 	extern const char *CCBSTR_CODE;
 	extern const char *CCBSTR_NAME;
