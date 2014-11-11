@@ -101,6 +101,7 @@ namespace jcAtmcConvertDLL {
 		ZWDBGMSG
 		    ("***金储JSON下发请求开始***********************************\n");
 		ZWDBGMSG(downJson.c_str());
+		printf("%s\n",downJson.c_str());
 		ZWDBGMSG
 		    ("***金储JSON下发请求结束***********************************\n");
 
@@ -123,6 +124,7 @@ namespace jcAtmcConvertDLL {
 		ZWDBGMSG
 		    ("***金储锁具返回的JSON应答开始*************************####\n");
 		ZWDBGMSG(jsonJc.c_str());
+		printf("%s\n",jsonJc.c_str());
 		ZWDBGMSG
 		    ("***金储锁具返回的JSON应答结束*************************####\n");
 
@@ -195,6 +197,7 @@ namespace jcAtmcConvertDLL {
 		ZWDBGMSG
 		    ("*********************金储应答XML开始******************####\n");
 		ZWDBGMSG(upXML.c_str());
+		printf("%s\n",upXML.c_str());
 		ZWDBGMSG
 		    ("*********************金储应答XML结束******************####\n");
 		try {

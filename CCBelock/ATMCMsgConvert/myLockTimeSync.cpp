@@ -59,7 +59,6 @@ namespace jcAtmcConvertDLL {
 		assert(ccbUTCSec>1400*1000*1000);
 		//建行字符串格式的日期和时间字段合成转换为UTC秒数.结束
 
-
 		ptjc.put("Lock_Time", ccbUTCSec);		
 	}
 
@@ -82,7 +81,7 @@ namespace jcAtmcConvertDLL {
 		ZWFUNCTRACE
 		ptjc.put(jcAtmcConvertDLL::JCSTR_CMDTITLE,
 		jcAtmcConvertDLL::JCSTR_SENSE_TEMPTURE);
-		ptjc.put("Temperature", ptccb.get<int>("Temperature"));
+		ptjc.put("Temperature", ptccb.get<int>("root.Temperature"));
 	}
 
 	void zwconvTemptureSenseUp(const ptree & ptjc, ptree & ptccb) {
@@ -103,7 +102,7 @@ namespace jcAtmcConvertDLL {
 		ZWFUNCTRACE
 		ptjc.put(jcAtmcConvertDLL::JCSTR_CMDTITLE,
 		jcAtmcConvertDLL::JCSTR_SENSE_SHOCK);
-		ptjc.put("Shock", ptccb.get<int>("Shock"));
+		ptjc.put("Shock", ptccb.get<int>("root.Shock"));
 	}
 
 	void zwconvShockSenseUp(const ptree & ptjc, ptree & ptccb) {

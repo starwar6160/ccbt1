@@ -27,3 +27,19 @@ TEST_F(ccbElockTest, TimeSyncTest0003)
 	Sleep(1 * 1000);
 }
 #endif // _DEBUG_TIMESYNC
+
+TEST_F(ccbElockTest, WanMinTools_20141111)
+{
+	const char * zwInputFile="W:\\zwWorkSrc\\2014BinOut\\Debug\\jcinput.xml";
+	//const char * zwInputFile="jcinput.xml";
+	FILE *ifp=fopen(zwInputFile,"rb");
+	assert(NULL!=ifp);
+	const int BUFLEN=512;
+	char buf[BUFLEN+1];
+		memset(buf,0,BUFLEN+1);
+		int frr=fread(buf,1,BUFLEN,ifp);
+		assert(frr>=0 && frr <=BUFLEN);	
+	fclose(ifp);
+	SetRecvMsgRotine(myATMCRecvMsgRotine);
+	Notify(buf);
+}
