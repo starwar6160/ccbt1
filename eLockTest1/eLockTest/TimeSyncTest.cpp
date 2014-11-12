@@ -28,37 +28,58 @@ TEST_F(ccbElockTest, TimeSyncTest0003)
 }
 #endif // _DEBUG_TIMESYNC
 
+//清理行尾的回车，换行，空格，制表符，直接修改字符串
+int zwCutLineEndSpace(char *str)
+{
+	int len=strlen(str);
+	int spaceEnd=0;	//去掉空格后的末尾
+	if (NULL==str || 0==len)
+	{
+		return 0;
+	}
+
+	//从尾部往前，找到第一个不是回车/换行/空格/制表符/NULL的字符，然后该字符后面开始截断
+	for (int i=len;i>=0;i--)
+	{
+		if (0x20!=str[i] && '\n'!=str[i] && '\r'!=str[i] && '\t'!=str[i] && 0!=str[i])
+		{
+			spaceEnd=i+1;
+			str[spaceEnd]=NULL;
+			break;
+		}
+	}
+	for (int i=spaceEnd;i<=len;i++)
+	{
+		str[i]=NULL;	//清理掉空白部分为NULL符号以免后患
+	}
+	return spaceEnd;
+}
+
 //20141111.1720.为万敏做的测试程序
 TEST_F(ccbElockTest, WanMinTools_20141111)
 {
-	//const char * zwInputFile="W:\\zwWorkSrc\\2014BinOut\\Debug\\jcinput.xml";
 	const char * zwInputFile="jcinput.xml";
-	FILE *ifp=fopen(zwInputFile,"rb");
+	FILE *ifp=fopen(zwInputFile,"r");
 	assert(NULL!=ifp);
 	if (NULL==ifp)
 	{
 		printf("error open input file %s\n",zwInputFile);
 		return ;
 	}
+	string sbuf,sXML;
 	const int BUFLEN=512;
-	const int CMDLEN=BUFLEN*4;
-	char buf[BUFLEN+1];	
-	char cmdXML[CMDLEN+1];
-	memset(cmdXML,0,CMDLEN+1);
-	while(!feof(ifp))
+	char lineBuf[BUFLEN];
+	while (!feof(ifp))
 	{
-		memset(buf,0,BUFLEN+1);
-		fgets(buf,BUFLEN,ifp);
-		//过滤掉回车换行
-		char *strend=strstr(buf,"\r\n");
-		if (NULL!=strend)
-		{
-			*strend=NULL;			
-		}				
-		strcat(cmdXML,buf);
+		memset(lineBuf,0,BUFLEN);
+		fgets(lineBuf,BUFLEN,ifp);
+		zwCutLineEndSpace(lineBuf);
+		printf("%s",lineBuf);
+		sXML+=lineBuf;
 	}
+	printf("\n");
 	fclose(ifp);
 	SetRecvMsgRotine(myATMCRecvMsgRotine);
-	Notify(cmdXML);
+	Notify(sXML.c_str());
 	Sleep(3000);
 }
