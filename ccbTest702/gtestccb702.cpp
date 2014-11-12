@@ -465,7 +465,7 @@ TEST_F(jclmsCCBV11_Test,getDynaCodePass1)
 	//此处期待值由于时间秒数按照一百万秒取整的原因，每隔12天需要更新一次
 	//这里是一个自检测试，如果失败，就说明有比较大的问题了，比如类似发生过的
 	//ARM编译器优化级别问题导致的生成错误的二进制代码等等
-	EXPECT_EQ(56274641,initCloseCode);
+	EXPECT_EQ(28062210,initCloseCode);
 	//dynaPass1
 	//注意现在合法的时间值应该是1.4G以上了，注意位数。20140721.1709	
 	JcLockSetInt(handle,JCI_DATETIME,static_cast<int>(time(NULL)));
