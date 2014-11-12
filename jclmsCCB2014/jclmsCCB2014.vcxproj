@@ -97,13 +97,11 @@
     <None Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="mydefs.h" />
     <ClInclude Include="src\dCodeHdr.h" />
     <ClInclude Include="src\jclmsCCB2014.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="zwECIES\sm3.h" />
-    <ClInclude Include="zwstdafx.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">

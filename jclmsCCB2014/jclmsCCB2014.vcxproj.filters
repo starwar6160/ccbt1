@@ -36,12 +36,6 @@
     <ClInclude Include="targetver.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="mydefs.h">
-      <Filter>源文件</Filter>
-    </ClInclude>
-    <ClInclude Include="zwstdafx.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="zwECIES\sm3.h">
       <Filter>源文件\hashalg</Filter>
     </ClInclude>

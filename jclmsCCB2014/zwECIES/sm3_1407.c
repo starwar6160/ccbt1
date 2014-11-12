@@ -2,8 +2,6 @@
 #include "SM3.h"
 #include <math.h>
 
-
-
 //消息扩展与压缩函数
 static void SM3_transform(SM3 * sm)
 {
@@ -16,20 +14,22 @@ static void SM3_transform(SM3 * sm)
 
 	for (j = 16; j < 68; j++) {
 		sm->w[j] =
-			P1(sm->w[j - 16] ^ sm->
-			w[j - 9] ^ L_R(sm->w[j - 3], 15)) ^ L_R(sm->w[j - 13],
-			7) ^ sm->w[j - 6];
+		    P1(sm->
+		       w[j - 16] ^ sm->w[j - 9] ^ L_R(sm->w[j - 3],
+						      15)) ^ L_R(sm->w[j - 13],
+								 7) ^ sm->w[j -
+									    6];
 		/*
-		printf("%08x ",sm->w[j]);
-		if(((j+1) % 8) == 0) printf("\n");
-		*/
+		   printf("%08x ",sm->w[j]);
+		   if(((j+1) % 8) == 0) printf("\n");
+		 */
 	}
 	for (j = 0; j < 64; j++) {
 		w2[j] = sm->w[j] ^ sm->w[j + 4];
 		/*
-		printf("%08x ",w2[j]);
-		if(((j+1) % 8) == 0) printf("\n");
-		*/
+		   printf("%08x ",w2[j]);
+		   if(((j+1) % 8) == 0) printf("\n");
+		 */
 	}
 
 	a = sm->h[0];
@@ -105,9 +105,9 @@ void SM3_init(SM3 * sm)
 void SM3_process(SM3 * sm, int byte)
 {
 	int cnt;
-	cnt = (int) ((sm->length[0] / 32) % 16);
+	cnt = (int)((sm->length[0] / 32) % 16);
 	sm->w[cnt] <<= 8;
-	sm->w[cnt] |= (unsigned int) (byte & 0xFF);
+	sm->w[cnt] |= (unsigned int)(byte & 0xFF);
 	sm->length[0] += 8;
 	if (sm->length[0] == 0) {
 		sm->length[1]++;
@@ -132,8 +132,7 @@ void SM3_hash(SM3 * sm, char hash[HASHLEN])
 
 	SM3_transform(sm);
 	for (i = 0; i < 32; i++) {
-		hash[i] = (char) ((sm->h[i / 4] >> (8 * (3 - i % 4))) & 0xFF);
+		hash[i] = (char)((sm->h[i / 4] >> (8 * (3 - i % 4))) & 0xFF);
 	}
 	SM3_init(sm);
 }
-
