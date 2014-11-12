@@ -23,10 +23,10 @@ namespace zwccbthr {
 	void ThreadLockComm();	//与锁具之间的通讯线程
 	extern jcSerialPort *zwComPort;
 	string zwGetLockIP(void);
-	extern std::deque<string> dqOutXML;;
+	extern std::deque < string > dqOutXML;;
 	extern boost::mutex recv_mutex;
 	extern JCHID hidHandle;
-} //namespace zwccbthr{ 
+} //namespace zwccbthr{  
 
 void ZWDBGMSG(const char *x)
 {
@@ -58,55 +58,56 @@ namespace zwCfg {
 	 boost::mutex ComPort_mutex;	//用于保护串口连接对象
 	//线程对象作为一个全局静态变量，则不需要显示启动就能启动一个线程
 	 boost::thread * thr = NULL;
-} //namespace zwCfg{ 
+} //namespace zwCfg{  
 
-static bool s_hidOpened=false;
+static bool s_hidOpened = false;
 
 CCBELOCK_API long JCAPISTD Open(long lTimeOut)
 {
 	char buf[256];
-	memset(buf,0,256);
-	sprintf(buf,"Open incoming timeout value seconds is %d",lTimeOut);
+	memset(buf, 0, 256);
+	sprintf(buf, "Open incoming timeout value seconds is %d", lTimeOut);
 	OutputDebugStringA(buf);
 	assert(lTimeOut >= -1 && lTimeOut <= zwCfg::JC_CCBDLL_TIMEOUT);
-	if (lTimeOut<-1 || lTimeOut>zwCfg::JC_CCBDLL_TIMEOUT)
-	{
-		memset(buf,0,256);
-		sprintf(buf,"Open Function incoming timeout Value must in -1 to %d seconds",zwCfg::JC_CCBDLL_TIMEOUT);
+	if (lTimeOut < -1 || lTimeOut > zwCfg::JC_CCBDLL_TIMEOUT) {
+		memset(buf, 0, 256);
+		sprintf(buf,
+			"Open Function incoming timeout Value must in -1 to %d seconds",
+			zwCfg::JC_CCBDLL_TIMEOUT);
 		OutputDebugStringA(buf);
-		pocoLog->error()<<"Open Function incoming timeout Value must in -1 to "<<zwCfg::JC_CCBDLL_TIMEOUT<<"seconds";
+		pocoLog->
+		    error() <<
+		    "Open Function incoming timeout Value must in -1 to " <<
+		    zwCfg::JC_CCBDLL_TIMEOUT << "seconds";
 		return ELOCK_ERROR_PARAMINVALID;
 	}
 	ZWFUNCTRACE boost::mutex::scoped_lock lock(zwCfg::ComPort_mutex);
 	//必须大于0，小于JC_CCBDLL_TIMEOUT，限制在一个合理范围内
 	pocoLog->notice() << "Open Return " << ELOCK_ERROR_SUCCESS << endl;
 	string myLockIp;
-	try{
+	try {
 
-#ifdef ZWUSE_HID_MSG_SPLIT		
-		if (true==s_hidOpened)
-		{
+#ifdef ZWUSE_HID_MSG_SPLIT
+		if (true == s_hidOpened) {
 			return ELOCK_ERROR_SUCCESS;
 		}
-		memset(&zwccbthr::hidHandle,0,sizeof(JCHID));
-		zwccbthr::hidHandle.vid=0x0483;
-		zwccbthr::hidHandle.pid=0x5710;		
-		if (JCHID_STATUS_OK!=jcHidOpen(&zwccbthr::hidHandle))
-		{
+		memset(&zwccbthr::hidHandle, 0, sizeof(JCHID));
+		zwccbthr::hidHandle.vid = 0x0483;
+		zwccbthr::hidHandle.pid = 0x5710;
+		if (JCHID_STATUS_OK != jcHidOpen(&zwccbthr::hidHandle)) {
 			return ELOCK_ERROR_PARAMINVALID;
 		}
-		s_hidOpened=true;
+		s_hidOpened = true;
 #else
 		//打开串口
 		myLockIp = zwccbthr::zwGetLockIP();
-		zwccbthr::zwComPort=new jcSerialPort(myLockIp.c_str());
+		zwccbthr::zwComPort = new jcSerialPort(myLockIp.c_str());
 #endif // ZWUSE_HID_MSG_SPLIT
 		//启动通信线程
 		boost::thread thr(zwccbthr::ThreadLockComm);
 	}
-	catch(...)
-	{
-		string errMsg="打开端口"+myLockIp+"失败";
+	catch(...) {
+		string errMsg = "打开端口" + myLockIp + "失败";
 		ZWFATAL(errMsg.c_str())
 	}
 
@@ -120,22 +121,20 @@ CCBELOCK_API long JCAPISTD Close()
 	zwCfg::g_WarnCallback = NULL;
 #ifdef ZWUSE_HID_MSG_SPLIT
 	goto CloseHidEnd;
-	if (NULL!=zwccbthr::hidHandle.vid && NULL!=zwccbthr::hidHandle.pid)
-	{
+	if (NULL != zwccbthr::hidHandle.vid && NULL != zwccbthr::hidHandle.pid) {
 		//if (true==s_hidOpened)
 		//{
-			jcHidClose(&zwccbthr::hidHandle);
-		//}		
+		jcHidClose(&zwccbthr::hidHandle);
+		//}             
 	}
 #else
-	if (NULL!=zwccbthr::zwComPort)
-	{
+	if (NULL != zwccbthr::zwComPort) {
 		delete zwccbthr::zwComPort;
-		zwccbthr::zwComPort=NULL;
+		zwccbthr::zwComPort = NULL;
 	}
 #endif // ZWUSE_HID_MSG_SPLIT
-CloseHidEnd:
-	s_hidOpened=false;
+      CloseHidEnd:
+	s_hidOpened = false;
 	ZWNOTICE("关闭 到锁具的连接")
 	    return ELOCK_ERROR_SUCCESS;
 }
@@ -145,20 +144,17 @@ CCBELOCK_API long JCAPISTD Notify(const char *pszMsg)
 	//通过在Notify函数开始检测是否端口已经打开，没有打开就直接返回，避免
 	//2014年11月初在广州遇到的没有连接锁具时，ATMC执行0002报文查询锁具状态，
 	//反复查询，大量无用日志产生的情况。
-	if (false==s_hidOpened)
-	{
+	if (false == s_hidOpened) {
 		return ELOCK_ERROR_CONNECTLOST;
 	}
-	ZWFUNCTRACE 
-	assert(pszMsg != NULL);	
+	ZWFUNCTRACE assert(pszMsg != NULL);
 	assert(strlen(pszMsg) >= 42);	//XML至少42字节utf8
-	if (pszMsg==NULL || strlen(pszMsg)<42)
-	{
+	if (pszMsg == NULL || strlen(pszMsg) < 42) {
 		return ELOCK_ERROR_PARAMINVALID;
 	}
 	if (NULL != pszMsg && strlen(pszMsg) > 0) {
-		pocoLog->
-		    information() << "CCB下发XML=" << endl << pszMsg << endl;
+		pocoLog->information() << "CCB下发XML=" << endl << pszMsg <<
+		    endl;
 	}
 	boost::mutex::scoped_lock lock(zwCfg::ComPort_mutex);
 	string strJsonSend;
@@ -237,19 +233,16 @@ CCBELOCK_API int JCAPISTD SetRecvMsgRotine(RecvMsgRotine pRecvMsgFun)
 	return ELOCK_ERROR_SUCCESS;
 }
 
-CCBELOCK_API const char * dbgGetLockReturnXML(void)
+CCBELOCK_API const char *dbgGetLockReturnXML(void)
 {
 	boost::mutex::scoped_lock lock(zwccbthr::recv_mutex);
 	static string sg_outxml;
-	if (!zwccbthr::dqOutXML.empty())
-	{
-		sg_outxml=zwccbthr::dqOutXML.front();
+	if (!zwccbthr::dqOutXML.empty()) {
+		sg_outxml = zwccbthr::dqOutXML.front();
 		zwccbthr::dqOutXML.pop_front();
 		return sg_outxml.c_str();
-	}
-	else
-	{
+	} else {
 		return "NODATA916";
 	}
-	
+
 }

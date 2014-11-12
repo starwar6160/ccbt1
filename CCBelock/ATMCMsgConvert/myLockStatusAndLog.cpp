@@ -8,8 +8,7 @@ namespace jcAtmcConvertDLL {
 		ZWFUNCTRACE
 		    ptjc.put(jcAtmcConvertDLL::JCSTR_CMDTITLE,
 			     JCSTR_QUERY_LOCK_STATUS);
-	} 
-	void zwconvCheckLockStatusUp(const ptree & ptjc, ptree & ptccb) {
+	} void zwconvCheckLockStatusUp(const ptree & ptjc, ptree & ptccb) {
 		ZWFUNCTRACE
 		    //"Command": "Lock_Now_Info",
 		    //"Lock_Time": "1408434961",
@@ -67,7 +66,7 @@ namespace jcAtmcConvertDLL {
 		ptccb.put(CCBSTR_TIME, zwTime);
 		ptccb.put("root.RevResult", ptjc.get < int >("State"));
 		string LockStatus = ptjc.get < string > ("Journal");
-		assert(LockStatus.size()>0);
+		assert(LockStatus.size() > 0);
 
 //////////////////////////////////////////////////////////////////////////
 //20140916.1458.万敏给我的测试电路板对于0005报文返回的日志内容有问题，所以

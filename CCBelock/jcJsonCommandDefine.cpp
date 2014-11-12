@@ -16,8 +16,8 @@ namespace jcAtmcConvertDLL {
 	const char *JCSTR_REQUEST_TIME_SYNC = "Lock_Time_Sync_Lock";
 	//////////////////////////////////////////////////////////////////////////
 	//20141111万敏.温度振动传感器报文支持
-	const char *JCSTR_SENSE_TEMPTURE="Set_Senser_Temperature";
-	const char *JCSTR_SENSE_SHOCK="Set_Senser_Shock";
+	const char *JCSTR_SENSE_TEMPTURE = "Set_Senser_Temperature";
+	const char *JCSTR_SENSE_SHOCK = "Set_Senser_Shock";
 
 	const char *CCBSTR_CODE = "root.TransCode";
 	const char *CCBSTR_NAME = "root.TransName";
@@ -25,4 +25,3 @@ namespace jcAtmcConvertDLL {
 	const char *CCBSTR_TIME = "root.TransTime";
 	const char *CCBSTR_DEVCODE = "root.DevCode";
 }
-

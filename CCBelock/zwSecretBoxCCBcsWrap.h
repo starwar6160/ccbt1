@@ -5,18 +5,15 @@
 #define CCBELOCK_API
 #else
 #ifdef CCBELOCK_EXPORTS
-#define CCBELOCK_API __declspec(dllexport) 
+#define CCBELOCK_API __declspec(dllexport)
 #else
 #define CCBELOCK_API __declspec(dllimport)
 #endif
 #endif
 
-
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-
 
 	////////////////////////////////C#封装函数//////////////////////////////////////////
 	////向密盒发送认证请求，返回成功或者结果
@@ -27,17 +24,17 @@ extern "C" {
 	////指定密盒HID句柄，以及索引号，读取密盒的数据，返回base64编码的数据字符串
 	//CCBELOCK_API const char * SecboxReadData(const int index);
 
-	CCBELOCK_API class JcSecBox
-	{
-	public:
+	CCBELOCK_API class JcSecBox {
+	      public:
 		CCBELOCK_API JcSecBox();
-		CCBELOCK_API ~JcSecBox();
+		CCBELOCK_API ~ JcSecBox();
 		CCBELOCK_API int SecboxAuth(void);
-		CCBELOCK_API int SecboxWriteData(const int index,const char *dataB64);
-		CCBELOCK_API const char * SecboxReadData(const int index);
-	private:		
+		CCBELOCK_API int SecboxWriteData(const int index,
+						 const char *dataB64);
+		CCBELOCK_API const char *SecboxReadData(const int index);
+	      private:
 	};
 #ifdef __cplusplus
 }
 #endif
-#endif // zwSecretBoxCCBcsWrap_h__
+#endif				// zwSecretBoxCCBcsWrap_h__

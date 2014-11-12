@@ -7,10 +7,9 @@ using boost::is_any_of;
 
 void zwLockStatusDataSplit(const char *LockStatus, JCLOCKSTATUS & lst)
 {
-	assert(NULL!=LockStatus);
-	assert(strlen(LockStatus)>0);
-	if (NULL==LockStatus || strlen(LockStatus)==0)
-	{
+	assert(NULL != LockStatus);
+	assert(strlen(LockStatus) > 0);
+	if (NULL == LockStatus || strlen(LockStatus) == 0) {
 		return;
 	}
 	string LockStatusStr = LockStatus;
@@ -19,59 +18,79 @@ void zwLockStatusDataSplit(const char *LockStatus, JCLOCKSTATUS & lst)
 	// "0,0,0,0,100,0,1,20,100,0,0"
 	//锁具已激活 | 锁具允许使用 | 锁关闭 | 门关闭 | 电池状态100%% | 震动正常 | 震动幅值1g 
 	// |  | 温度探头温度100摄氏度 | 密码错误不多 | 开锁时间正常 |
-	//2014/9/12 15:14:50 [星期五] 万敏  15:10:59	这个是加时间后的日志
+	//2014/9/12 15:14:50 [星期五] 万敏  15:10:59    这个是加时间后的日志
 	//{"Command":"Lock_System_Journal","Lock_Time":1409023166,"State":"0","Journal":"1409023024,0,0,1,0,100,0,00,0,000,0,0"}
 	JCLOCKSTATUS ostr;
-	int nIndex=0;
-	int vecSize=StatusVec.size();
-	if(vecSize==0)return;
-	if(vecSize==12)
-	{
-	//有万敏要求加上的日期字段的话，就从1开始
-	lst.LogGenDate=StatusVec[0];
-	nIndex=1;
+	int nIndex = 0;
+	int vecSize = StatusVec.size();
+	if (vecSize == 0)
+		return;
+	if (vecSize == 12) {
+		//有万敏要求加上的日期字段的话，就从1开始
+		lst.LogGenDate = StatusVec[0];
+		nIndex = 1;
 	}
-	if (nIndex>=vecSize) return;	//为了预防下位机返回的数据项目不足的临时措施
-	lst.ActiveStatus = StatusVec[nIndex];nIndex++;
-	if (nIndex>=vecSize) return;	//为了预防下位机返回的数据项目不足的临时措施
-	lst.EnableStatus = StatusVec[nIndex];nIndex++;
-	if (nIndex>=vecSize) return;	//为了预防下位机返回的数据项目不足的临时措施
-	lst.LockStatus = StatusVec[nIndex];nIndex++;
-	if (nIndex>=vecSize) return;	//为了预防下位机返回的数据项目不足的临时措施
-	lst.DoorStatus = StatusVec[nIndex];nIndex++;
-	if (nIndex>=vecSize) return;	//为了预防下位机返回的数据项目不足的临时措施
-	lst.BatteryStatus = StatusVec[nIndex];nIndex++;
-	if (nIndex>=vecSize) return;	//为了预防下位机返回的数据项目不足的临时措施
-	lst.ShockAlert = StatusVec[nIndex];nIndex++;
-	if (nIndex>=vecSize) return;	//为了预防下位机返回的数据项目不足的临时措施
-	lst.ShockValue = StatusVec[nIndex];nIndex++;
+	if (nIndex >= vecSize)
+		return;		//为了预防下位机返回的数据项目不足的临时措施
+	lst.ActiveStatus = StatusVec[nIndex];
+	nIndex++;
+	if (nIndex >= vecSize)
+		return;		//为了预防下位机返回的数据项目不足的临时措施
+	lst.EnableStatus = StatusVec[nIndex];
+	nIndex++;
+	if (nIndex >= vecSize)
+		return;		//为了预防下位机返回的数据项目不足的临时措施
+	lst.LockStatus = StatusVec[nIndex];
+	nIndex++;
+	if (nIndex >= vecSize)
+		return;		//为了预防下位机返回的数据项目不足的临时措施
+	lst.DoorStatus = StatusVec[nIndex];
+	nIndex++;
+	if (nIndex >= vecSize)
+		return;		//为了预防下位机返回的数据项目不足的临时措施
+	lst.BatteryStatus = StatusVec[nIndex];
+	nIndex++;
+	if (nIndex >= vecSize)
+		return;		//为了预防下位机返回的数据项目不足的临时措施
+	lst.ShockAlert = StatusVec[nIndex];
+	nIndex++;
+	if (nIndex >= vecSize)
+		return;		//为了预防下位机返回的数据项目不足的临时措施
+	lst.ShockValue = StatusVec[nIndex];
+	nIndex++;
 	//20141011.1438.以下4个判断，预计下位机返回的哪怕项目不足应该也最多少4项，再多的话仍然会出错
-	if (nIndex>=vecSize) return;	//为了预防下位机返回的数据项目不足的临时措施
-	lst.TempAlert = StatusVec[nIndex];nIndex++;	//这里值是20，但是合法值只有0,1,2,3，为什么？
-	if (nIndex>=vecSize) return;	//为了预防下位机返回的数据项目不足的临时措施
-	lst.nodeTemp = StatusVec[nIndex];nIndex++;	//探头温度100摄氏度？
-	if (nIndex>=vecSize) return;	//为了预防下位机返回的数据项目不足的临时措施
-	lst.PswTryAlert = StatusVec[nIndex];nIndex++;
+	if (nIndex >= vecSize)
+		return;		//为了预防下位机返回的数据项目不足的临时措施
+	lst.TempAlert = StatusVec[nIndex];
+	nIndex++;		//这里值是20，但是合法值只有0,1,2,3，为什么？
+	if (nIndex >= vecSize)
+		return;		//为了预防下位机返回的数据项目不足的临时措施
+	lst.nodeTemp = StatusVec[nIndex];
+	nIndex++;		//探头温度100摄氏度？
+	if (nIndex >= vecSize)
+		return;		//为了预防下位机返回的数据项目不足的临时措施
+	lst.PswTryAlert = StatusVec[nIndex];
+	nIndex++;
 	//20141011.结构体有12个项目，但是下位机返回的只有11项数据，需要万敏修复；
-	if (nIndex>=vecSize) return;	//为了预防下位机返回的数据项目不足的临时措施
+	if (nIndex >= vecSize)
+		return;		//为了预防下位机返回的数据项目不足的临时措施
 	lst.LockOverTime = StatusVec[nIndex];
 }
 
 void zwStatusData2String(const JCLOCKSTATUS & lst, JCLOCKSTATUS & ostr)
 {
-try{
-	if (lst.LogGenDate.length()==0)
-	{
-		return;
+	try {
+		if (lst.LogGenDate.length() == 0) {
+			return;
+		}
+		time_t logGenData =
+		    boost::lexical_cast < time_t > (lst.LogGenDate);
+		string exDate, exTime;
+		zwGetLocalDateTimeString(logGenData, exDate, exTime);
+		ostr.LogGenDate = exDate + "." + exTime;
 	}
-	time_t logGenData=boost::lexical_cast<time_t>(lst.LogGenDate);
-	string exDate, exTime;
-	zwGetLocalDateTimeString(logGenData, exDate, exTime);
-	ostr.LogGenDate=exDate+"."+exTime;
-	}
-	catch(...)
-	{
-		cout<<__FUNCTION__<<"error!20141011"<<endl;
+	catch(...) {
+		cout << __FUNCTION__ << "error!20141011" << endl;
 		return;
 	}
 //////////////////////////////////////////////////////////////////////////
@@ -161,8 +180,8 @@ string LockStatusStringMerge(JCLOCKSTATUS & ostr)
 	string sep = " | ";
 	//20140912.1552.应万敏的要求，添加了日志生成的时间，但是为了防止新增字段造成
 	//建行后台分割处理这些字符串出问题，暂时采用将时间与激活状态两者拼接在一起的方法
-	string ccbStatusStr = ostr.LogGenDate+":"
-		+ostr.ActiveStatus + sep + ostr.EnableStatus + sep
+	string ccbStatusStr = ostr.LogGenDate + ":"
+	    + ostr.ActiveStatus + sep + ostr.EnableStatus + sep
 	    + ostr.LockStatus + sep + ostr.DoorStatus + sep
 	    + ostr.BatteryStatus + sep
 	    + ostr.ShockAlert + sep + ostr.ShockValue + sep

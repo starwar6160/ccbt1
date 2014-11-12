@@ -83,7 +83,6 @@ namespace jcAtmcConvertDLL {
 			msgType = JCMSG_SENSE_SHOCK;
 			zwconvShockSenseDown(ptCCB, ptJC);
 		}
-
 		//////////////////////////////////////////////////////////////////////////
 		//锁具单向上传消息的配合一问一答测试消息：
 		if ("1000" == transCode) {	//接收初始闭锁码
@@ -101,7 +100,7 @@ namespace jcAtmcConvertDLL {
 		ZWDBGMSG
 		    ("***金储JSON下发请求开始***********************************\n");
 		ZWDBGMSG(downJson.c_str());
-		printf("%s\n",downJson.c_str());
+		printf("%s\n", downJson.c_str());
 		ZWDBGMSG
 		    ("***金储JSON下发请求结束***********************************\n");
 
@@ -124,7 +123,7 @@ namespace jcAtmcConvertDLL {
 		ZWDBGMSG
 		    ("***金储锁具返回的JSON应答开始*************************####\n");
 		ZWDBGMSG(jsonJc.c_str());
-		printf("%s\n",jsonJc.c_str());
+		printf("%s\n", jsonJc.c_str());
 		ZWDBGMSG
 		    ("***金储锁具返回的JSON应答结束*************************####\n");
 
@@ -174,7 +173,6 @@ namespace jcAtmcConvertDLL {
 		if (JCSTR_SENSE_SHOCK == jcCmd) {	//振动传感器
 			zwconvShockSenseUp(ptJC, ptCCB);
 		}
-
 		//////////////////////////////////////////////////////////////////////////
 		std::stringstream sst2;
 		OutputDebugStringA("20141017.1116.MaHaoTest3");

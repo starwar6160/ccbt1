@@ -4,24 +4,24 @@
 
 namespace jcAtmcConvertDLL {
 	//时间同步
-	void zwconvTimeSyncDown(const ptree &ptccb, ptree & ptjc) {
+	void zwconvTimeSyncDown(const ptree & ptccb, ptree & ptjc) {
 		ZWFUNCTRACE
 		    ptjc.put(jcAtmcConvertDLL::JCSTR_CMDTITLE, JCSTR_TIME_SYNC);
 		//建行字符串格式的日期和时间字段合成转换为UTC秒数.开始
-		time_t nowSec=time(NULL);
-		string ccbDate=ptccb.get<string>(CCBSTR_DATE);
-		string ccbTime=ptccb.get<string>(CCBSTR_TIME);
-		time_t ccbUTCSec=0;
-		zwCCBDateTime2UTC(ccbDate.c_str(),ccbTime.c_str(),&ccbUTCSec);
-		assert(ccbUTCSec>1400*1000*1000);
-		
+		time_t nowSec = time(NULL);
+		string ccbDate = ptccb.get < string > (CCBSTR_DATE);
+		string ccbTime = ptccb.get < string > (CCBSTR_TIME);
+		time_t ccbUTCSec = 0;
+		 zwCCBDateTime2UTC(ccbDate.c_str(), ccbTime.c_str(),
+				   &ccbUTCSec);
+		 assert(ccbUTCSec > 1400 * 1000 * 1000);
+
 		//建行字符串格式的日期和时间字段合成转换为UTC秒数.结束
-		
-		ptjc.put < time_t > ("Lock_Time", ccbUTCSec);
+
+		 ptjc.put < time_t > ("Lock_Time", ccbUTCSec);
 		//ptjc.put < time_t > ("Lock_Time", nowSec);
 	}
-	
-	//时间同步 
+	//时间同步  
 	void zwconvTimeSyncUp(const ptree & ptjc, ptree & ptccb) {
 		ZWFUNCTRACE
 		    //无用的形式化部分
@@ -47,19 +47,19 @@ namespace jcAtmcConvertDLL {
 
 	//////////////////////////////////////////////////////////////////////////
 
-	void zwconvLockReqTimeSyncDown(const ptree &ptccb, ptree & ptjc) {
+	void zwconvLockReqTimeSyncDown(const ptree & ptccb, ptree & ptjc) {
 		ZWFUNCTRACE
 		    ptjc.put(jcAtmcConvertDLL::JCSTR_CMDTITLE,
 			     jcAtmcConvertDLL::JCSTR_REQUEST_TIME_SYNC);
 		//建行字符串格式的日期和时间字段合成转换为UTC秒数.开始
-		string ccbDate=ptccb.get<string>(CCBSTR_DATE);
-		string ccbTime=ptccb.get<string>(CCBSTR_TIME);
-		time_t ccbUTCSec=0;
-		zwCCBDateTime2UTC(ccbDate.c_str(),ccbTime.c_str(),&ccbUTCSec);
-		assert(ccbUTCSec>1400*1000*1000);
+		string ccbDate = ptccb.get < string > (CCBSTR_DATE);
+		string ccbTime = ptccb.get < string > (CCBSTR_TIME);
+		time_t ccbUTCSec = 0;
+		zwCCBDateTime2UTC(ccbDate.c_str(), ccbTime.c_str(), &ccbUTCSec);
+		assert(ccbUTCSec > 1400 * 1000 * 1000);
 		//建行字符串格式的日期和时间字段合成转换为UTC秒数.结束
 
-		ptjc.put("Lock_Time", ccbUTCSec);		
+		ptjc.put("Lock_Time", ccbUTCSec);
 	}
 
 	void zwconvLockReqTimeSyncUp(const ptree & ptjc, ptree & ptccb) {
@@ -77,16 +77,15 @@ namespace jcAtmcConvertDLL {
 	}
 //////////////////////////////////////////////////////////////////////////
 //20141111万敏.温度振动传感器报文支持
-	void zwconvTemptureSenseDown(const ptree &ptccb, ptree & ptjc) {
+	void zwconvTemptureSenseDown(const ptree & ptccb, ptree & ptjc) {
 		ZWFUNCTRACE
-		ptjc.put(jcAtmcConvertDLL::JCSTR_CMDTITLE,
-		jcAtmcConvertDLL::JCSTR_SENSE_TEMPTURE);
-		ptjc.put("Temperature", ptccb.get<int>("root.Temperature"));
+		    ptjc.put(jcAtmcConvertDLL::JCSTR_CMDTITLE,
+			     jcAtmcConvertDLL::JCSTR_SENSE_TEMPTURE);
+		ptjc.put("Temperature", ptccb.get < int >("root.Temperature"));
 	}
 
 	void zwconvTemptureSenseUp(const ptree & ptjc, ptree & ptccb) {
-		ZWFUNCTRACE 
-		ptccb.put(CCBSTR_CODE, "5000");
+		ZWFUNCTRACE ptccb.put(CCBSTR_CODE, "5000");
 		ptccb.put(CCBSTR_NAME, "Set_Senser_Temperature");
 		string zwDate, zwTime;
 		zwGetLocalDateTimeString(time(NULL), zwDate, zwTime);
@@ -95,19 +94,18 @@ namespace jcAtmcConvertDLL {
 		//实质性有用字段
 		ptccb.put(CCBSTR_DEVCODE, ptjc.get < string > ("Atm_Serial"));
 		ptccb.put("root.LockId", ptjc.get < string > ("Lock_Serial"));
-		ptccb.put("root.Status", ptjc.get<int>("Status"));
+		ptccb.put("root.Status", ptjc.get < int >("Status"));
 	}
 
-	void zwconvShockSenseDown(const ptree &ptccb, ptree & ptjc) {
+	void zwconvShockSenseDown(const ptree & ptccb, ptree & ptjc) {
 		ZWFUNCTRACE
-		ptjc.put(jcAtmcConvertDLL::JCSTR_CMDTITLE,
-		jcAtmcConvertDLL::JCSTR_SENSE_SHOCK);
-		ptjc.put("Shock", ptccb.get<int>("root.Shock"));
+		    ptjc.put(jcAtmcConvertDLL::JCSTR_CMDTITLE,
+			     jcAtmcConvertDLL::JCSTR_SENSE_SHOCK);
+		ptjc.put("Shock", ptccb.get < int >("root.Shock"));
 	}
 
 	void zwconvShockSenseUp(const ptree & ptjc, ptree & ptccb) {
-		ZWFUNCTRACE 
-			ptccb.put(CCBSTR_CODE, "5001");
+		ZWFUNCTRACE ptccb.put(CCBSTR_CODE, "5001");
 		ptccb.put(CCBSTR_NAME, "Set_Senser_Shock");
 		string zwDate, zwTime;
 		zwGetLocalDateTimeString(time(NULL), zwDate, zwTime);
@@ -116,8 +114,7 @@ namespace jcAtmcConvertDLL {
 		//实质性有用字段
 		ptccb.put(CCBSTR_DEVCODE, ptjc.get < string > ("Atm_Serial"));
 		ptccb.put("root.LockId", ptjc.get < string > ("Lock_Serial"));
-		ptccb.put("root.Status", ptjc.get<int>("Status"));
+		ptccb.put("root.Status", ptjc.get < int >("Status"));
 	}
 
 }				//namespace jcAtmcConvertDLL{
-

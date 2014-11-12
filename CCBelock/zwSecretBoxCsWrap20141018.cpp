@@ -10,23 +10,21 @@ extern Poco::LogStream * pocoLog;
 #define ZWTRC	zwTrace1027 zwtrace(__FUNCTION__);
 //printf("%s\n",__FUNCTION__);
 
-class zwTrace1027
-{
+class zwTrace1027 {
 	char *m_strClass;
 	char m_buf[64];
-	LARGE_INTEGER nStart,nEnd;
-public:
+	LARGE_INTEGER nStart, nEnd;
+      public:
 	zwTrace1027(const char *strClassName);
 	~zwTrace1027();
 };
 
+static int g_hidHandle;		//单例模式密盒HID句柄，new多少个类都是这个全局变量保存HID通信句柄，等于一个类；
 
-static int g_hidHandle;	//单例模式密盒HID句柄，new多少个类都是这个全局变量保存HID通信句柄，等于一个类；
-
-typedef enum jc_secret_box_status_t{
-	JC_SECBOX_SUCCESS=0,
-	JC_SECBOX_FAIL=1
-}JC_SECBOX_STATUS;
+typedef enum jc_secret_box_status_t {
+	JC_SECBOX_SUCCESS = 0,
+	JC_SECBOX_FAIL = 1
+} JC_SECBOX_STATUS;
 
 #ifdef _DEBUG_1018
 ////////////////////////////////C#封装函数//////////////////////////////////////////
@@ -41,108 +39,94 @@ int zwVerifyAuthRspFromSecBox(int handleHid);
 
 //写入数据到密盒，最大400多字节，输入格式为base64编码的字符串。需要指定zwSecboxHidOpen给出的句柄，以及索引号
 //索引号大约为1-8左右，具体还需要和赵工确定；
-void zwWriteData2SecretBox(int handleHid,const int index,const char *dataB64);
+void zwWriteData2SecretBox(int handleHid, const int index, const char *dataB64);
 //指定密盒HID句柄，以及索引号，读取密盒的数据，返回base64编码的数据字符串
-const char * zwReadDataFromSecretBox(int handleHid,const int index);
+const char *zwReadDataFromSecretBox(int handleHid, const int index);
 #endif // _DEBUG_1018
-
-
-
 
 CCBELOCK_API JcSecBox::JcSecBox()
 {
-	ZWTRC
-		if(NULL==g_hidHandle){
+	ZWTRC if (NULL == g_hidHandle) {
 #ifdef _DEBUG_USEPOCOLOG1027
-pocoLog->information("jcSecBox OpenFirst");
+		pocoLog->information("jcSecBox OpenFirst");
 #endif // _DEBUG_USEPOCOLOG1027
-			g_hidHandle=zwSecboxHidOpen();
-		}		
-		if (NULL==g_hidHandle)
-		{
-			OutputDebugStringA("JcSecBox open FAIL");
-			printf("%s OPEN HID JINCHU SECRET BOX FAIL!\n",__FUNCTION__);
+		g_hidHandle = zwSecboxHidOpen();
+	}
+	if (NULL == g_hidHandle) {
+		OutputDebugStringA("JcSecBox open FAIL");
+		printf("%s OPEN HID JINCHU SECRET BOX FAIL!\n", __FUNCTION__);
 #ifdef _DEBUG_USEPOCOLOG1027
-			pocoLog->error("jcSecBox OpenNULL");
+		pocoLog->error("jcSecBox OpenNULL");
 #endif // _DEBUG_USEPOCOLOG1027
-		}
+	}
 }
 
 CCBELOCK_API JcSecBox::~JcSecBox()
 {
-	ZWTRC
-		if (NULL!=g_hidHandle)
-		{
-			//pocoLog->information()<<"jcSecBox Closed handle="<<g_hidHandle<<endl;
-			//zwSecboxHidClose(g_hidHandle);
-		}	
+	ZWTRC if (NULL != g_hidHandle) {
+		//pocoLog->information()<<"jcSecBox Closed handle="<<g_hidHandle<<endl;
+		//zwSecboxHidClose(g_hidHandle);
+	}
 }
 
-
-
-CCBELOCK_API int JcSecBox::SecboxAuth( void )
+CCBELOCK_API int JcSecBox::SecboxAuth(void)
 {
-	ZWTRC
-	if (0==g_hidHandle)
-	{
+	ZWTRC if (0 == g_hidHandle) {
 #ifdef _DEBUG_USEPOCOLOG1027
 		pocoLog->error("jcSecbox Error HandleZero");
 #endif // _DEBUG_USEPOCOLOG1027
-		return JC_SECBOX_FAIL ;
+		return JC_SECBOX_FAIL;
 	}
 	//printf("*****************************SecretBox zwSendAuthReq2SecBox\n");
 #ifdef _DEBUG_USEPOCOLOG1027
-	pocoLog->information()<<"zwSendAuthReq2SecBox"<<g_hidHandle<<endl;
+	pocoLog->information() << "zwSendAuthReq2SecBox" << g_hidHandle << endl;
 #endif // _DEBUG_USEPOCOLOG1027
 	zwSendAuthReq2SecBox(g_hidHandle);
 	//printf("*****************************SecretBox zwVerifyAuthRspFromSecBox\n");
 #ifdef _DEBUG_USEPOCOLOG1027
-	pocoLog->information()<<"zwVerifyAuthRspFromSecBox g_hidHandle="<<g_hidHandle<<endl;
+	pocoLog->
+	    information() << "zwVerifyAuthRspFromSecBox g_hidHandle=" <<
+	    g_hidHandle << endl;
 #endif // _DEBUG_USEPOCOLOG1027
-	int AuthRes=zwVerifyAuthRspFromSecBox(g_hidHandle);
-	
-	if (0==AuthRes)
-	{
+	int AuthRes = zwVerifyAuthRspFromSecBox(g_hidHandle);
+
+	if (0 == AuthRes) {
 #ifdef _DEBUG_USEPOCOLOG1027
-		pocoLog->information()<<"SecboxAuth SUCCESSJC"<<endl;
+		pocoLog->information() << "SecboxAuth SUCCESSJC" << endl;
 #endif // _DEBUG_USEPOCOLOG1027
 		//printf("1021.1355.****************************************** *SecretBox Auth SUCCESS\n");
 		return JC_SECBOX_SUCCESS;
-	}
-	else
-	{
+	} else {
 #ifdef _DEBUG_USEPOCOLOG1027
-		pocoLog->error()<<"SecboxAuth FAILJC"<<endl;
+		pocoLog->error() << "SecboxAuth FAILJC" << endl;
 #endif // _DEBUG_USEPOCOLOG1027
-		OutputDebugStringA("JcSecBox AUTH FAIL###########################");
-		printf("************************************************** ***SecretBox Auth FAIL\n");
+		OutputDebugStringA
+		    ("JcSecBox AUTH FAIL###########################");
+		printf
+		    ("************************************************** ***SecretBox Auth FAIL\n");
 		return JC_SECBOX_FAIL;
 	}
 
 }
 
-CCBELOCK_API int JcSecBox::SecboxWriteData( const int index,const char *dataB64 )
+CCBELOCK_API int JcSecBox::SecboxWriteData(const int index, const char *dataB64)
 {
-	ZWTRC
-	if (0==g_hidHandle)
-	{
+	ZWTRC if (0 == g_hidHandle) {
 #ifdef _DEBUG_USEPOCOLOG1027
 		pocoLog->error("jcSecbox Error HandleZero");
 #endif // _DEBUG_USEPOCOLOG1027
 		return 1;
 	}
-	assert(index>=0 && index<=16);
-	assert(NULL!=dataB64 && strlen(dataB64)>0);
-	if (index<0 || index>16)
-	{
+	assert(index >= 0 && index <= 16);
+	assert(NULL != dataB64 && strlen(dataB64) > 0);
+	if (index < 0 || index > 16) {
 #ifdef _DEBUG_USEPOCOLOG1027
 		pocoLog->error("jcSecbox Error IndexOutofRange");
 #endif // _DEBUG_USEPOCOLOG1027
 		printf("Data Index out of range! must in 0 to 16\n");
 		return 1;
 	}
-	if (NULL==dataB64 || strlen(dataB64)==0)
-	{
+	if (NULL == dataB64 || strlen(dataB64) == 0) {
 #ifdef _DEBUG_USEPOCOLOG1027
 		pocoLog->error("jcSecbox Error InputDataZero");
 #endif // _DEBUG_USEPOCOLOG1027
@@ -150,34 +134,32 @@ CCBELOCK_API int JcSecBox::SecboxWriteData( const int index,const char *dataB64 
 		return 1;
 	}
 #ifdef _DEBUG_USEPOCOLOG1027
-	pocoLog->information()<<__FUNCTION__<<"index="<<index<<" input Data="<<dataB64<<endl;
+	pocoLog->
+	    information() << __FUNCTION__ << "index=" << index << " input Data="
+	    << dataB64 << endl;
 #endif // _DEBUG_USEPOCOLOG1027
 	//pocoLog->information("WriteData Auth Start");
-	int status=SecboxAuth();
+	int status = SecboxAuth();
 	//pocoLog->information("WriteData Auth End");
-	if (JC_SECBOX_SUCCESS==status)
-	{
+	if (JC_SECBOX_SUCCESS == status) {
 		//pocoLog->information()<<"WriteData Authed,start write"<<endl;
-		zwWriteData2SecretBox(g_hidHandle,index,dataB64);		
+		zwWriteData2SecretBox(g_hidHandle, index, dataB64);
 		//pocoLog->information()<<"WriteData end"<<endl;
-	}	
+	}
 	return 0;
 }
 
-CCBELOCK_API const char * JcSecBox::SecboxReadData( const int index )
+CCBELOCK_API const char *JcSecBox::SecboxReadData(const int index)
 {
-	ZWTRC
-	const char *retStr="";
-	if (0==g_hidHandle)
-	{
+	ZWTRC const char *retStr = "";
+	if (0 == g_hidHandle) {
 #ifdef _DEBUG_USEPOCOLOG1027
 		pocoLog->error("jcSecbox Error HandleZero");
 #endif // _DEBUG_USEPOCOLOG1027
 		return retStr;
 	}
-	assert(index>=0 && index<=16);
-	if (index<0 || index>16)
-	{
+	assert(index >= 0 && index <= 16);
+	if (index < 0 || index > 16) {
 #ifdef _DEBUG_USEPOCOLOG1027
 		pocoLog->error("jcSecbox Error IndexOutofRange");
 #endif // _DEBUG_USEPOCOLOG1027
@@ -185,19 +167,18 @@ CCBELOCK_API const char * JcSecBox::SecboxReadData( const int index )
 		return retStr;
 	}
 #ifdef _DEBUG_USEPOCOLOG1027
-	pocoLog->information()<<__FUNCTION__<<" index="<<index<<endl;
+	pocoLog->information() << __FUNCTION__ << " index=" << index << endl;
 #endif // _DEBUG_USEPOCOLOG1027
 	//pocoLog->information("ReadData Auth Start");
-	int status=SecboxAuth();
+	int status = SecboxAuth();
 	//pocoLog->information("ReadData Auth End");
-	if (JC_SECBOX_SUCCESS==status)
-	{
+	if (JC_SECBOX_SUCCESS == status) {
 		//pocoLog->information()<<"ReadData Authed,start read"<<endl;
-		retStr=zwReadDataFromSecretBox(g_hidHandle,index);
+		retStr = zwReadDataFromSecretBox(g_hidHandle, index);
 		//pocoLog->information()<<"ReadData end"<<endl;
-	}	
+	}
 #ifdef _DEBUG_USEPOCOLOG1027
-	pocoLog->information()<<__FUNCTION__<<"Return "<<retStr<<endl;
+	pocoLog->information() << __FUNCTION__ << "Return " << retStr << endl;
 #endif // _DEBUG_USEPOCOLOG1027
 	return retStr;
 }
