@@ -75,7 +75,12 @@ void myGetInitCloseCodeVarItem(int *mdatetime, int *mvalidity, int *mclosecode)
 	if (NULL == mdatetime || NULL == mvalidity || NULL == mclosecode) {
 		return;
 	}
-	*mdatetime = myGetNormalTime(time(NULL), ZWMEGA);
+	//*mdatetime = myGetNormalTime(time(NULL), ZWMEGA);
+	//20141113.1748.经过前两天的讨论，锁具初始闭锁码不能因为时间变化而变化
+	//所以时间值定死为1400M秒，或者其实哪个过去的方便人识别的时间点都可以；
+	//这些参数后续要改为可以配置的，起码要可以通过函数调用来配置，最好能
+	//使用配置文件来配置
+	*mdatetime = 1400*ZWMEGA;
 	*mvalidity = 1000;
 	*mclosecode = 10000000;
 }

@@ -471,10 +471,11 @@ namespace CcbV11Test722Ecies {
 		EXPECT_GT(initCloseCode, 0);
 		EXPECT_LT(initCloseCode, 100000000);
 		printf("initCloseCode=\t%d\n", initCloseCode);
-		//此处期待值由于时间秒数按照一百万秒取整的原因，每隔12天需要更新一次
+		//此处期待值已经改为固定依赖1400M秒的时间值，应该不会再变了。
+		//20141113.1751根据前两天开会决定做的修改。周伟
 		//这里是一个自检测试，如果失败，就说明有比较大的问题了，比如类似发生过的
 		//ARM编译器优化级别问题导致的生成错误的二进制代码等等
-		EXPECT_EQ(28062210, initCloseCode);
+		EXPECT_EQ(38149728, initCloseCode);
 		//dynaPass1
 		//注意现在合法的时间值应该是1.4G以上了，注意位数。20140721.1709 
 		JcLockSetInt(handle, JCI_DATETIME,
