@@ -12,6 +12,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "cstest702", "cstest702\cste
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "jclmsCCBcsLib", "jclmsCCBcsLib\jclmsCCBcsLib.csproj", "{6C9B957B-8742-41B1-BE1B-3E80F9B18583}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "eccRomMaker", "eccRomMaker\eccRomMaker.vcxproj", "{FA1AD826-BA25-45CE-AF19-C27A79C424F7}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MIRACL2014", "..\..\zwWorkLibs\MIRACL2014\MIRACL2014\MIRACL2014.vcxproj", "{2360FD43-07EE-448A-8C96-B9E5D6DCC737}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -72,6 +76,30 @@ Global
 		{6C9B957B-8742-41B1-BE1B-3E80F9B18583}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{6C9B957B-8742-41B1-BE1B-3E80F9B18583}.Release|Win32.ActiveCfg = Release|Any CPU
 		{6C9B957B-8742-41B1-BE1B-3E80F9B18583}.Release|x86.ActiveCfg = Release|Any CPU
+		{FA1AD826-BA25-45CE-AF19-C27A79C424F7}.Debug|Any CPU.ActiveCfg = Debug|Win32
+		{FA1AD826-BA25-45CE-AF19-C27A79C424F7}.Debug|Mixed Platforms.ActiveCfg = Debug|Win32
+		{FA1AD826-BA25-45CE-AF19-C27A79C424F7}.Debug|Mixed Platforms.Build.0 = Debug|Win32
+		{FA1AD826-BA25-45CE-AF19-C27A79C424F7}.Debug|Win32.ActiveCfg = Debug|Win32
+		{FA1AD826-BA25-45CE-AF19-C27A79C424F7}.Debug|Win32.Build.0 = Debug|Win32
+		{FA1AD826-BA25-45CE-AF19-C27A79C424F7}.Debug|x86.ActiveCfg = Debug|Win32
+		{FA1AD826-BA25-45CE-AF19-C27A79C424F7}.Release|Any CPU.ActiveCfg = Release|Win32
+		{FA1AD826-BA25-45CE-AF19-C27A79C424F7}.Release|Mixed Platforms.ActiveCfg = Release|Win32
+		{FA1AD826-BA25-45CE-AF19-C27A79C424F7}.Release|Mixed Platforms.Build.0 = Release|Win32
+		{FA1AD826-BA25-45CE-AF19-C27A79C424F7}.Release|Win32.ActiveCfg = Release|Win32
+		{FA1AD826-BA25-45CE-AF19-C27A79C424F7}.Release|Win32.Build.0 = Release|Win32
+		{FA1AD826-BA25-45CE-AF19-C27A79C424F7}.Release|x86.ActiveCfg = Release|Win32
+		{2360FD43-07EE-448A-8C96-B9E5D6DCC737}.Debug|Any CPU.ActiveCfg = Debug|Win32
+		{2360FD43-07EE-448A-8C96-B9E5D6DCC737}.Debug|Mixed Platforms.ActiveCfg = Debug|Win32
+		{2360FD43-07EE-448A-8C96-B9E5D6DCC737}.Debug|Mixed Platforms.Build.0 = Debug|Win32
+		{2360FD43-07EE-448A-8C96-B9E5D6DCC737}.Debug|Win32.ActiveCfg = Debug|Win32
+		{2360FD43-07EE-448A-8C96-B9E5D6DCC737}.Debug|Win32.Build.0 = Debug|Win32
+		{2360FD43-07EE-448A-8C96-B9E5D6DCC737}.Debug|x86.ActiveCfg = Debug|Win32
+		{2360FD43-07EE-448A-8C96-B9E5D6DCC737}.Release|Any CPU.ActiveCfg = Release|Win32
+		{2360FD43-07EE-448A-8C96-B9E5D6DCC737}.Release|Mixed Platforms.ActiveCfg = Release|Win32
+		{2360FD43-07EE-448A-8C96-B9E5D6DCC737}.Release|Mixed Platforms.Build.0 = Release|Win32
+		{2360FD43-07EE-448A-8C96-B9E5D6DCC737}.Release|Win32.ActiveCfg = Release|Win32
+		{2360FD43-07EE-448A-8C96-B9E5D6DCC737}.Release|Win32.Build.0 = Release|Win32
+		{2360FD43-07EE-448A-8C96-B9E5D6DCC737}.Release|x86.ActiveCfg = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

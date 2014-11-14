@@ -146,6 +146,7 @@ namespace CcbV11Test722Ecies {
 				   s_syncKey, s_hash, s_crypt);
 		EXPECT_EQ(eciesEncRet, ECIES_SUCCESS);
 		EXPECT_GT(strlen(plainOut), 0);
+		EXPECT_EQ(0,strcmp(plainOut,s_PlainText));
 #ifdef _DEBUG
 		cout << "plainOut=\t" << plainOut << endl;
 #endif // _DEBUG
@@ -157,10 +158,6 @@ namespace CcbV11Test722Ecies {
 
 	TEST_F(ECIES_Test, NormalKeyPairGen_BadInput) {
 		int keygenResult = ECIES_SUCCESS;
-		//keygenResult = zwEciesKeyPairGen("",
-		//				 s_priKey, ZW_ECIES_PRIKEY_LEN,
-		//				 s_pubKey, ZW_ECIES_PUBKEY_LEN);
-		//EXPECT_NE(keygenResult, ECIES_SUCCESS);
 		keygenResult = zwEciesKeyPairGen("aaa",
 						 NULL, ZW_ECIES_PRIKEY_LEN,
 						 s_pubKey, ZW_ECIES_PUBKEY_LEN);
