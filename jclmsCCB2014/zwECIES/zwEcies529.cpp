@@ -30,7 +30,7 @@ extern "C" {
 #include "zwEcies529.h"
 
 	//此处的初始化值控制着同样的明文，出来不同的对称密钥
-	void myPrngInit(csprng * RNG);
+	void myPrngInit(csprng * RNG,bool bRandom);
 	/* Convert an octet string to base64 string */
 	//输入b的大小要是w->max的2倍+1个字节
 	void ZWOCTET_FROM_ASCII(octet * dstOct, const char *srcAscii);
@@ -69,14 +69,17 @@ class jcOctex {
 };
 
 //此处的初始化值控制着同样的明文，出来不同的对称密钥
-void myPrngInit(csprng * RNG)
+void myPrngInit( csprng * RNG,bool bRandom )
 {
 	assert(RNG != NULL);
 	int i;
 	/* Crypto Strong RNG */
 	jcOctex RAW(EFS * 3);
 	RAW.Value().len = EFS * 3;	/* fake random seed source */
-	zwRandSeedGen603(RAW.Value().val, RAW.Value().max);
+	if (true==bRandom)
+	{
+		zwRandSeedGen603(RAW.Value().val, RAW.Value().max);
+	}	
 	assert(RNG != NULL);
 	//for (i=0;i<EFS*3;i++) RAW.Value().val[i]=i+1;
 	//用前面的假的随机数种子来初始化“密码学强度伪随机数生成器”
@@ -185,9 +188,6 @@ ZWECIES_API int zwEciesKeyPairGen(const char *password, char *outPriKeyStr,
 				  const int priLen, char *outPublicKeyStr,
 				  const int pubLen)
 {
-	if (password == NULL || strlen(password) == 0) {
-		return ECIES_INPUT_TOO_SHORT;
-	}
 	if (priLen == 0 || pubLen == 0) {
 		return ECIES_INPUT_TOO_SHORT;
 	}
@@ -195,7 +195,7 @@ ZWECIES_API int zwEciesKeyPairGen(const char *password, char *outPriKeyStr,
 		return ECIES_INPUT_NULL;
 	}
 
-	assert(password != NULL && strlen(password) > 0);
+	//assert(password != NULL && strlen(password) > 0);
 	assert(outPriKeyStr != NULL);
 	assert(outPublicKeyStr != NULL);
 	assert(priLen > 0 && pubLen > 0);
@@ -210,7 +210,10 @@ ZWECIES_API int zwEciesKeyPairGen(const char *password, char *outPriKeyStr,
 	//注意此处，SALT的长度必须要正确初始化，否则SALT就会不起作用导致
 	//同一个password生成的密钥对始终是同一个
 	SALT.Value().len = EFS;
-	zwRandSeedGen603(SALT.Value().val, EFS);
+	//此处是为了便于测试，password为空，则不进行随机数初始化，便于有一个固定的比较值
+	if (password != NULL && strlen(password) > 0) {	
+		zwRandSeedGen603(SALT.Value().val, EFS);
+	}	
 	//把pp的字符串密码放到PW的OCTET里面
 	OCTET_JOIN_STRING(password, &PW.Value());	// set Password from string
 	/* private key S0 of size EGS bytes derived from Password and Salt */
@@ -289,7 +292,16 @@ ZWECIES_API int zwEciesEncrypt(const char *pubkeyStr, const char *PlainText,
 	jcOctex KDF2Seed(EFS), HmacSeed(EFS);
 	myKDFHMACSeed(&KDF2Seed.Value(), &HmacSeed.Value());
 	csprng RNG;
-	myPrngInit(&RNG);
+	//如果明文是特殊值，就不随机数初始化，以便单元测试
+	if (0==strcmp(PlainText,"zhouweiPlaintext20140722.1534Test"))
+	{
+		myPrngInit(&RNG, false);
+	}
+	else
+	{
+		myPrngInit(&RNG, true);
+	}
+	
 	//此处加密时MSGHASH的长度最大值，也就是MsgHash->max指定多长，出来就有多长
 	//而并不影响解密结果的正确性，不知道开始的MIRACL例子代码中直接指定魔术数字12
 	//是什么意思？  20140522.1045.周伟
