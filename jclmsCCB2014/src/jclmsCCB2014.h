@@ -110,6 +110,15 @@ void JCLMSCCB2014_API JcLockDebugPrint(const int handle);
 void JCLMSCCB2014_API zwJcLockDumpJCINPUT(const int handle);
 const int ZWMEGA = 1000000;	//一百万
 
+#ifdef  __cplusplus
+extern "C" {
+#endif
+	int JCLMSCCB2014_API zwSM3StandardTestVector(void);
+#ifdef  __cplusplus
+}	//extern "C" {
+#endif
+
+
 //}     //end of namespace jclms
 //////////////////////////////新设计的C接口////////////////////////////////////////////
 

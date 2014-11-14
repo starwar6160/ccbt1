@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <cassert>
-//#include <memory.h>
+#include <winsock2.h>
 #include <cstring>
 #include "sm3.h"
 #include "jclmsCCB2014.h"
@@ -78,4 +78,36 @@ namespace zwTools {
 		//返回值是实际结果与正确值之差，如果非零，就说明SM3算法验证失败
 		return (*correctSM3Result) - dstCorrectSM3Result;
 	}
+
 }				//namespace jclms{
+
+//////////////////////////////////////////////////////////////////////////
+
+int zwSM3StandardTestVector(void) {
+	const char *msg = "abc";
+	const int sm3TestVecResult1[]={0X66c7f0f4,0X62eeedd9,0Xd1f2d46b,0Xdc10e4e2,
+		0X4167c487,0X5cf2f7a2,0X297da02b,0X8f4ba8e0};
+	SM3 sm3;
+	int i = 0;
+	uint8_t buf[ZWSM3_BLOCK_LEN];
+	uint8_t outHmac[ZWSM3_DGST_LEN];
+
+	memset(&sm3, 0, sizeof(sm3));
+	memset(buf, 0, ZWSM3_BLOCK_LEN);
+	int srcLen=strlen(msg);
+	memcpy(buf, msg, srcLen);
+
+	SM3_init(&sm3);
+	for (i = 0; i < srcLen; i++) {
+		SM3_process(&sm3, buf[i]);
+	}
+	memset(outHmac, 0, ZWSM3_DGST_LEN);
+	SM3_hash(&sm3, (char *)(outHmac));
+	int *oTmp=(int *)outHmac;
+	for (int i=0;i<8;i++)
+	{
+		printf("%08X\t",ntohl(oTmp[i]));
+	}
+	printf("\n");
+	return sm3TestVecResult1[0]-ntohl(oTmp[0]);
+}

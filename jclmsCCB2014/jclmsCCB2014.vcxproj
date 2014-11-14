@@ -61,7 +61,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <OutputFile>$(ZWSRC)\2014BinOut\$(Configuration)\$(TargetName)$(TargetExt)</OutputFile>
       <AdditionalLibraryDirectories>$(ZWSRC)\2014BinOut\$(Configuration);$(ZWLIB)\MIRACL2014\$(Configuration);$(ZWLIB)\python27\libs</AdditionalLibraryDirectories>
-      <AdditionalDependencies>miracl2014.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>miracl2014.lib;Ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ShowProgress>LinkVerboseLib</ShowProgress>
     </Link>
     <PostBuildEvent>
@@ -87,7 +87,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <OutputFile>$(ZWSRC)\2014BinOut\$(Configuration)\$(TargetName)$(TargetExt)</OutputFile>
       <AdditionalLibraryDirectories>$(ZWSRC)\2014BinOut\$(Configuration);$(ZWLIB)\MIRACL2014\$(Configuration);$(ZWLIB)\python27\libs</AdditionalLibraryDirectories>
-      <AdditionalDependencies>miracl2014.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>miracl2014.lib;Ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>COPY /y $(TargetPath) $(TargetDir)\_$(ProjectName).pyd</Command>

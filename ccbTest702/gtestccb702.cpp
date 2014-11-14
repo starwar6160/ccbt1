@@ -144,6 +144,10 @@ namespace CcbV11Test722Ecies {
 #endif // _DEBUG
 	}
 
+	TEST_F(ECIES_Test, SM3_StandTestVector) {
+		EXPECT_EQ(0,zwSM3StandardTestVector());
+	}
+
 	TEST_F(ECIES_Test, NormalKeyPairGen_BadInput) {
 		int keygenResult = ECIES_SUCCESS;
 		keygenResult = zwEciesKeyPairGen("",
