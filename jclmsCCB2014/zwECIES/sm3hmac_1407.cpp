@@ -28,27 +28,27 @@ namespace zwTools {
 		 memcpy(inpad, inPsk.getBin(), inPsk.getBinLen());
 		 memset(&sm3p1, 0, sizeof(sm3p1));
 		//计算第一趟HASH结果
-		 SM3_init(&sm3p1);
+		 SM3_Init(&sm3p1);
 		for (i = 0; i < ZWSM3_BLOCK_LEN; i++) {
-			SM3_process(&sm3p1, inpad[i]);
+			SM3_Update(&sm3p1, inpad[i]);
 		} for (i = 0; i < inMessage.getBinLen(); i++) {
-			SM3_process(&sm3p1, *(inMessage.getBin() + i));
+			SM3_Update(&sm3p1, *(inMessage.getBin() + i));
 		}
 		memset(sm3hash_t1, 0, ZWSM3_DGST_LEN);
-		SM3_hash(&sm3p1, (char *)sm3hash_t1);
+		SM3_Final(&sm3p1, (char *)sm3hash_t1);
 		//////////////////////////////////////////////////////////////////////////
 		//计算第二趟HASH结果
 		memset(outpad, ZW_OUTPAD_FILL_CHAR, ZWSM3_BLOCK_LEN);
 		memcpy(outpad, inPsk.getBin(), inPsk.getBinLen());
 		memset(&sm3p2, 0, sizeof(sm3p2));
-		SM3_init(&sm3p2);
+		SM3_Init(&sm3p2);
 		for (i = 0; i < ZWSM3_BLOCK_LEN; i++) {
-			SM3_process(&sm3p2, outpad[i]);
+			SM3_Update(&sm3p2, outpad[i]);
 		}
 		for (i = 0; i < ZWSM3_DGST_LEN; i++) {
-			SM3_process(&sm3p2, sm3hash_t1[i]);
+			SM3_Update(&sm3p2, sm3hash_t1[i]);
 		}
-		SM3_hash(&sm3p2, outHmac.getBin());
+		SM3_Final(&sm3p2, outHmac.getBin());
 		return 0;
 	}
 #endif // _DEBUG_USE_OLD_SM3HMAC20140703
@@ -66,12 +66,12 @@ namespace zwTools {
 		memset(&sm3, 0, sizeof(sm3));
 		memset(buf, 0, ZWSM3_BLOCK_LEN);
 		memcpy(buf, msg, strlen(msg));
-		SM3_init(&sm3);
+		SM3_Init(&sm3);
 		for (i = 0; i < ZWSM3_BLOCK_LEN; i++) {
-			SM3_process(&sm3, buf[i]);
+			SM3_Update(&sm3, buf[i]);
 		}
 		memset(outHmac, 0, ZWSM3_DGST_LEN);
-		SM3_hash(&sm3, (char *)(outHmac));
+		SM3_Final(&sm3, (char *)(outHmac));
 		//强制转换outHmac开头4字节为一个无符号整数，用作检验结果是否正确
 		//的一个高概率方案，错误几率是2的32次方之一
 		correctSM3Result = (int *)outHmac;
@@ -82,7 +82,8 @@ namespace zwTools {
 }				//namespace jclms{
 
 //////////////////////////////////////////////////////////////////////////
-
+//国密办网站给出的SM3算法标准测试向量，函数返回值为0代表成功，也就是说算出来
+//的值与标准测试向量没有差距，非零就是失败；尽管只检测了头32位，已经足够了；
 int zwSM3StandardTestVector(void) {
 	const char *msg = "abc";
 	const int sm3TestVecResult1[]={0X66c7f0f4,0X62eeedd9,0Xd1f2d46b,0Xdc10e4e2,
@@ -97,12 +98,12 @@ int zwSM3StandardTestVector(void) {
 	int srcLen=strlen(msg);
 	memcpy(buf, msg, srcLen);
 
-	SM3_init(&sm3);
+	SM3_Init(&sm3);
 	for (i = 0; i < srcLen; i++) {
-		SM3_process(&sm3, buf[i]);
+		SM3_Update(&sm3, buf[i]);
 	}
 	memset(outHmac, 0, ZWSM3_DGST_LEN);
-	SM3_hash(&sm3, (char *)(outHmac));
+	SM3_Final(&sm3, (char *)(outHmac));
 	int *oTmp=(int *)outHmac;
 	for (int i=0;i<8;i++)
 	{

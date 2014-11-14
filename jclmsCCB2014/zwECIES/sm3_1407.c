@@ -84,7 +84,7 @@ static void SM3_transform(SM3 * sm)
 }
 
 //SM3初始化
-void SM3_init(SM3 * sm)
+void SM3_Init(SM3 * sm)
 {
 	int i;
 	sm->length[0] = 0;
@@ -102,7 +102,7 @@ void SM3_init(SM3 * sm)
 	}
 }
 
-void SM3_process(SM3 * sm, int byte)
+void SM3_Update(SM3 * sm, int byte)
 {
 	int cnt;
 	cnt = (int)((sm->length[0] / 32) % 16);
@@ -118,15 +118,15 @@ void SM3_process(SM3 * sm, int byte)
 	}
 }
 
-void SM3_hash(SM3 * sm, char hash[HASHLEN])
+void SM3_Final(SM3 * sm, char hash[HASHLEN])
 {
 	unsigned int len0, len1;
 	int i;
 	len0 = sm->length[0];
 	len1 = sm->length[1];
-	SM3_process(sm, PAD);
+	SM3_Update(sm, PAD);
 	while ((sm->length[0] % 512) != 448)
-		SM3_process(sm, ZERO);
+		SM3_Update(sm, ZERO);
 	sm->w[14] = len1;
 	sm->w[15] = len0;
 
@@ -134,5 +134,5 @@ void SM3_hash(SM3 * sm, char hash[HASHLEN])
 	for (i = 0; i < 32; i++) {
 		hash[i] = (char)((sm->h[i / 4] >> (8 * (3 - i % 4))) & 0xFF);
 	}
-	SM3_init(sm);
+	SM3_Init(sm);
 }

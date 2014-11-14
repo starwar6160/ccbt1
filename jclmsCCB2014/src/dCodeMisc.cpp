@@ -29,7 +29,7 @@ void mySm3Process(SM3 * ctx, const char *data, const int len)
 	assert(data != NULL);
 	assert(len > 0);
 	for (int i = 0; i < len; i++) {
-		SM3_process(ctx, *(data + i));
+		SM3_Update(ctx, *(data + i));
 	}
 }
 
@@ -41,7 +41,7 @@ void mySm3Process(SM3 * ctx, const int data)
 	int td = data;
 	for (int i = 0; i < sizeof(data); i++) {
 		unsigned char t = td & 0xff;
-		SM3_process(ctx, t);
+		SM3_Update(ctx, t);
 		td = td >> 8;
 	}
 	assert(td == 0);

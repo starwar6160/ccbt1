@@ -60,11 +60,11 @@ extern "C" {
 
 	static void SM3_transform(SM3 * sm);
 
-	void SM3_init(SM3 * sm);
+	void SM3_Init(SM3 * sm);
 
-	void SM3_process(SM3 * sm, int byte);
+	void SM3_Update(SM3 * sm, int byte);
 
-	void SM3_hash(SM3 * sm, char hash[HASHLEN]);
+	void SM3_Final(SM3 * sm, char hash[HASHLEN]);
 
 	//6个参数实际上是3个，密钥，消息，输出的摘要
 	int32_t zwSm3Hmac(const char *psk,const int32_t pskLen,

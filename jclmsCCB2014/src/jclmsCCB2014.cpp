@@ -60,7 +60,7 @@ int myGetDynaCodeImplCCB201407a(const int handle)
 		return err;
 	}
 
-	SM3_init(&sm3);
+	SM3_Init(&sm3);
 
 	//限度是小于14开头的时间(1.4G秒)或者快要超出2048M秒的话就是非法了
 	/////////////////////////////逐个元素进行HASH运算/////////////////////////////////////////////
@@ -76,7 +76,7 @@ int myGetDynaCodeImplCCB201407a(const int handle)
 	mySm3Process(&sm3, lock->m_cmdtype);
 	//////////////////////////////HASH运算结束////////////////////////////////////////////
 	memset(outHmac, 0, ZWSM3_DGST_LEN);
-	SM3_hash(&sm3, (char *)(outHmac));
+	SM3_Final(&sm3, (char *)(outHmac));
 	//把HASH结果转化为8位数字输出
 	unsigned int res = zwBinString2Int32(outHmac, ZWSM3_DGST_LEN);
 	return res;
@@ -121,7 +121,7 @@ JCMATCH JCLMSCCB2014_API JcLockReverseVerifyDynaCode(const int handle,
 			SM3 sm3;
 			char outHmac[ZW_SM3_DGST_SIZE];
 
-			SM3_init(&sm3);
+			SM3_Init(&sm3);
 			/////////////////////////////逐个元素进行HASH运算/////////////////////////////////////////////
 			mySm3Process(&sm3, jcp->m_atmno, sizeof(jcp->m_atmno));
 			mySm3Process(&sm3, jcp->m_lockno,
@@ -134,7 +134,7 @@ JCMATCH JCLMSCCB2014_API JcLockReverseVerifyDynaCode(const int handle,
 			mySm3Process(&sm3, jcp->m_cmdtype);
 			//////////////////////////////HASH运算结束////////////////////////////////////////////
 			memset(outHmac, 0, ZWSM3_DGST_LEN);
-			SM3_hash(&sm3, (char *)(outHmac));
+			SM3_Final(&sm3, (char *)(outHmac));
 			unsigned int res =
 			    zwBinString2Int32(outHmac, ZWSM3_DGST_LEN);
 			if (dstCode == res)	//发现了匹配的时间和有效期
