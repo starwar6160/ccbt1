@@ -16,8 +16,8 @@ const int ZW_CLOSECODE_STEP = 12;	//闭锁码的计算步长时间精度
 //这是20140821在建行广开中心发现的问题；
 const int JC_DCODE_MATCH_FUTURE_SEC = 60 * 3;
 
-void mySm3Process(SM3 * ctx, const char *data, const int len);
-void mySm3Process(SM3 * ctx, const int data);
+void mySM3Update(SM3 * ctx, const char *data, const int len);
+void mySM3Update(SM3 * ctx, const int data);
 //从包含二进制数据的字符串输入，获得一个8位整数的输出
 unsigned int zwBinString2Int32(const char *data, const int len);
 //获取闭锁码的3个可变条件的“固定值”
@@ -25,11 +25,11 @@ void myGetCloseCodeVarItem(int *mdatetime, int *mvalidity, int *mclosecode);
 
 int JCLMSCCB2014_API JcLockGetDynaCode(const int handle)
 {
-	return myGetDynaCodeImplCCB201407a(handle);
+	return zwJcLockGetDynaCode(handle);
 }
 
 	//生成各种类型的动态码
-int myGetDynaCodeImplCCB201407a(const int handle)
+int zwJcLockGetDynaCode(const int handle)
 {
 	zwJcLockDumpJCINPUT(handle);
 	const JCINPUT *lock = (const JCINPUT *)handle;
@@ -65,15 +65,15 @@ int myGetDynaCodeImplCCB201407a(const int handle)
 	//限度是小于14开头的时间(1.4G秒)或者快要超出2048M秒的话就是非法了
 	/////////////////////////////逐个元素进行HASH运算/////////////////////////////////////////////
 	//首先处理固定字段的HASH值输入
-	mySm3Process(&sm3, lock->m_atmno, sizeof(lock->m_atmno));
-	mySm3Process(&sm3, lock->m_lockno, sizeof(lock->m_lockno));
-	mySm3Process(&sm3, lock->m_psk, sizeof(lock->m_psk));
+	mySM3Update(&sm3, lock->m_atmno, sizeof(lock->m_atmno));
+	mySM3Update(&sm3, lock->m_lockno, sizeof(lock->m_lockno));
+	mySM3Update(&sm3, lock->m_psk, sizeof(lock->m_psk));
 
 	//继续输入各个可变字段的HASH值
-	mySm3Process(&sm3, l_datetime);
-	mySm3Process(&sm3, l_validity);
-	mySm3Process(&sm3, l_closecode);
-	mySm3Process(&sm3, lock->m_cmdtype);
+	mySM3Update(&sm3, l_datetime);
+	mySM3Update(&sm3, l_validity);
+	mySM3Update(&sm3, l_closecode);
+	mySM3Update(&sm3, lock->m_cmdtype);
 	//////////////////////////////HASH运算结束////////////////////////////////////////////
 	memset(outHmac, 0, ZWSM3_DGST_LEN);
 	SM3_Final(&sm3, (char *)(outHmac));
@@ -123,15 +123,15 @@ JCMATCH JCLMSCCB2014_API JcLockReverseVerifyDynaCode(const int handle,
 
 			SM3_Init(&sm3);
 			/////////////////////////////逐个元素进行HASH运算/////////////////////////////////////////////
-			mySm3Process(&sm3, jcp->m_atmno, sizeof(jcp->m_atmno));
-			mySm3Process(&sm3, jcp->m_lockno,
+			mySM3Update(&sm3, jcp->m_atmno, sizeof(jcp->m_atmno));
+			mySM3Update(&sm3, jcp->m_lockno,
 				     sizeof(jcp->m_lockno));
-			mySm3Process(&sm3, jcp->m_psk, sizeof(jcp->m_psk));
+			mySM3Update(&sm3, jcp->m_psk, sizeof(jcp->m_psk));
 
-			mySm3Process(&sm3, tdate);
-			mySm3Process(&sm3, jcp->m_validity_array[v]);
-			mySm3Process(&sm3, l_closecode);
-			mySm3Process(&sm3, jcp->m_cmdtype);
+			mySM3Update(&sm3, tdate);
+			mySM3Update(&sm3, jcp->m_validity_array[v]);
+			mySM3Update(&sm3, l_closecode);
+			mySM3Update(&sm3, jcp->m_cmdtype);
 			//////////////////////////////HASH运算结束////////////////////////////////////////////
 			memset(outHmac, 0, ZWSM3_DGST_LEN);
 			SM3_Final(&sm3, (char *)(outHmac));
@@ -140,7 +140,7 @@ JCMATCH JCLMSCCB2014_API JcLockReverseVerifyDynaCode(const int handle,
 			if (dstCode == res)	//发现了匹配的时间和有效期
 			{
 				//填写匹配的时间和有效期到结果
-				printf("FOUND MATCH %d %d\n", tdate,
+				printf("FOUND MATCH UTC SECONDS:%d\tMinites:%d\n", tdate,
 				       jcp->m_validity_array[v]);
 				jcoff.s_datetime = tdate;
 				jcoff.s_validity = jcp->m_validity_array[v];

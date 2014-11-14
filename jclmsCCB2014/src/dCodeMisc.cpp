@@ -5,7 +5,7 @@
 //只是作为一个基本的块规整大小单位方便处理
 const int ZW_SYNCALG_BLOCK_SIZE = (128 / 8);
 
-int myGetDynaCodeImplCCB201407a(const int handle);
+int zwJcLockGetDynaCode(const int handle);
 //从包含二进制数据的字符串输入，获得一个8位整数的输出
 unsigned int zwBinString2Int32(const char *data, const int len);
 
@@ -22,7 +22,7 @@ int myGetNormalTime(int gmtTime, const int TIMEMOD)
 	return gmtTime - tail;
 }
 
-void mySm3Process(SM3 * ctx, const char *data, const int len)
+void mySM3Update(SM3 * ctx, const char *data, const int len)
 {
 	assert(ctx != NULL);
 	assert(ctx->length > 0);
@@ -33,7 +33,7 @@ void mySm3Process(SM3 * ctx, const char *data, const int len)
 	}
 }
 
-void mySm3Process(SM3 * ctx, const int data)
+void mySM3Update(SM3 * ctx, const int data)
 {
 	assert(ctx != NULL);
 	assert(ctx->length > 0);

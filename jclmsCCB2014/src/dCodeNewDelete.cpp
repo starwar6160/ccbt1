@@ -73,13 +73,16 @@ void JCLMSCCB2014_API zwJcLockDumpJCINPUT(const int handle)
 		printf("%s input is NULL", __FUNCTION__);
 		return;
 	}
-	printf("########JCINPUT DUMP START############\n");
+	//printf("########JCINPUT DUMP START############\n");
+	printf("\n[");
 	printf("ATMNO:%s\t", jcp->m_atmno);
 	printf("LOCKNO:%s\t", jcp->m_lockno);
 	printf("PSK:%s\n", jcp->m_psk);
-	printf("DATETIME:%d\t%s\n", jcp->m_datetime,
+	printf("DATETIME:%d\t%s\t", jcp->m_datetime,
 	       zwTimeSecond2String(jcp->m_datetime).c_str());
-	printf("VALIDITY:%d\tCloseCode:%d\t", jcp->m_validity,
+	printf("STEP:%d\t", jcp->m_stepoftime);
+	printf("RTIME:%d\n", jcp->m_reverse_time_length);
+	printf("VAL:%d\tCloseCode:%d\t", jcp->m_validity,
 	       jcp->m_closecode);
 	printf("CMDTYPE:");
 	switch (jcp->m_cmdtype) {
@@ -108,14 +111,12 @@ void JCLMSCCB2014_API zwJcLockDumpJCINPUT(const int handle)
 		printf("JCI_TIMESTEP");
 		break;
 	}
-	printf("\n");
-	printf("M_STEPOFTIME:%d\t", jcp->m_stepoftime);
-	printf("M_REVERSE_TIME_LENGTH:%d\n", jcp->m_reverse_time_length);
-	printf("M_VALIDITY_ARRAY:\n");
-	for (int i = 0; i < NUM_VALIDITY; i++) {
-		printf("%d\t", jcp->m_validity_array[i]);
-	}
-	printf("\n########JCINPUT DUMP END############\n");
+	//printf("\n");
+	//printf("M_VALIDITY_ARRAY:\n");
+	//for (int i = 0; i < NUM_VALIDITY; i++) {
+	//	printf("%d\t", jcp->m_validity_array[i]);
+	//}
+	printf("]\n");
 }
 
 void JCLMSCCB2014_API JcLockDebugPrint(const int handle)

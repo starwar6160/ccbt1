@@ -29,7 +29,7 @@ int myGetNormalTime(int gmtTime, const int TIMEMOD);
 void myGetInitCloseCodeVarItem(int *mdatetime, int *mvalidity, int *mclosecode);
 
 //生成各种类型的动态码
-int myGetDynaCodeImplCCB201407a(const int handle);
+int zwJcLockGetDynaCode(const int handle);
 
 extern const int ZW_CLOSECODE_STEP;	//闭锁码的计算步长时间精度
 
