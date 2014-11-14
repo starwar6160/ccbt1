@@ -18,8 +18,10 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-#define MIRACL 32
-#include "miracl.h"
+
+#include"mirdef.h"
+#include"miracl.h"
+
 
 //#define MICROSOFT64
 
@@ -97,7 +99,17 @@ void bprint(mr_small *n,int len,int words,int wsize,BOOL last)
 }
 
 
+int main2()
+{
+	big x;
+	miracl *mip=mirsys(1000,16);
+	mip->IOBASE=16; // input large hex number into big x	
 
+	x=mirvar(0);
+	cinstr(x,"AF12398065BFE4C96DB723A");
+	//cinstr(x,"1A23");
+	cotnum(x,stdout);
+}
 
 int main()
 {
@@ -118,8 +130,9 @@ int main()
     r=mirvar(0);
     t=mirvar(0);
 
-    printf("Enter name of .ecs file= ");
-    gets(fname);
+    //printf("Enter name of .ecs file= ");
+    //gets(fname);
+	strcpy(fname,"C:\\tmp9\\MIRACL-master\\source\\secp160.ecs");
     strip(fname);
     strcat(fname,".ecs");
 

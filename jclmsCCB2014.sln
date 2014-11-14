@@ -13,6 +13,9 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "jclmsCCBcsLib", "jclmsCCBcsLib\jclmsCCBcsLib.csproj", "{6C9B957B-8742-41B1-BE1B-3E80F9B18583}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "eccRomMaker", "eccRomMaker\eccRomMaker.vcxproj", "{FA1AD826-BA25-45CE-AF19-C27A79C424F7}"
+	ProjectSection(ProjectDependencies) = postProject
+		{2360FD43-07EE-448A-8C96-B9E5D6DCC737} = {2360FD43-07EE-448A-8C96-B9E5D6DCC737}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MIRACL2014", "..\..\zwWorkLibs\MIRACL2014\MIRACL2014\MIRACL2014.vcxproj", "{2360FD43-07EE-448A-8C96-B9E5D6DCC737}"
 EndProject
