@@ -3,6 +3,11 @@
 #include "jclmsCCB2014.h"
 void myJcLockInputTest1();
 
+//#define _DEBUG_ECIES_NORMAL_TEST1117
+//#define _DEBUG_ECIES_BADINPUT_TEST1117
+//#define _DEBUG_ECIES_CSTEST1117
+//#define _DEBUG_JCLMS_GTEST1117
+
 namespace CcbV11Test722Ecies {
 	const int ZWMEGA = 1000 * 1000;
 	const int ZW_MATCHTIME_DIFF_START = 60 * 15;	//判断匹配结果时间往早允许的误差
@@ -73,6 +78,7 @@ namespace CcbV11Test722Ecies {
 
 	char *ECIES_Test::s_PlainText;
 
+#ifdef _DEBUG_ECIES_NORMAL_TEST1117
 	TEST_F(ECIES_Test, NormalKeyPairGen) {
 		//只有明文是这一个特定值时，输出才会不随机化，便于单元测试；
 		s_PlainText = "zhouweiPlaintext20140722.1534Test";
@@ -151,11 +157,13 @@ namespace CcbV11Test722Ecies {
 		cout << "plainOut=\t" << plainOut << endl;
 #endif // _DEBUG
 	}
+#endif // _DEBUG_ECIES_NORMAL_TEST1117
 
 	TEST_F(ECIES_Test, SM3_StandTestVector) {
 		EXPECT_EQ(0,zwSM3StandardTestVector());
 	}
 
+#ifdef _DEBUG_ECIES_BADINPUT_TEST1117
 	TEST_F(ECIES_Test, NormalKeyPairGen_BadInput) {
 		int keygenResult = ECIES_SUCCESS;
 		keygenResult = zwEciesKeyPairGen("aaa",
@@ -297,7 +305,9 @@ namespace CcbV11Test722Ecies {
 		EXPECT_NE(eciesEncRet, ECIES_SUCCESS);
 
 	}
+#endif // _DEBUG_ECIES_BADINPUT_TEST1117
 
+#ifdef _DEBUG_ECIES_CSTEST1117
 	TEST_F(ECIES_Test, csGenKeyPair) {
 		int hd = 0;
 		hd = EciesGenKeyPair();
@@ -411,6 +421,7 @@ namespace CcbV11Test722Ecies {
 		EXPECT_EQ(NULL, crypt);
 
 	}
+#endif // _DEBUG_ECIES_CSTEST1117
 
 	class jclmsCCBV11_Test:public testing::Test {
 		// Some expensive resource shared by all tests.
@@ -443,6 +454,7 @@ namespace CcbV11Test722Ecies {
 	int jclmsCCBV11_Test::pass2DyCode;
 
 /////////////////////////////////JCLMS算法测试/////////////////////////////////////////
+#ifdef _DEBUG_JCLMS_GTEST1117
 	TEST_F(jclmsCCBV11_Test, CloseCode) {
 		JcLockSetCmdType(handle, JCI_CMDTYPE, JCCMD_CCB_CLOSECODE);
 		int CloseCode = JcLockGetDynaCode(handle);
@@ -488,6 +500,7 @@ namespace CcbV11Test722Ecies {
 		//注意现在合法的时间值应该是1.4G以上了，注意位数。20140721.1709 
 		JcLockSetInt(handle, JCI_DATETIME,
 			     static_cast < int >(time(NULL)));
+				 
 		JcLockSetCmdType(handle, JCI_CMDTYPE, JCCMD_CCB_DYPASS1);
 		JcLockSetInt(handle, JCI_CLOSECODE, initCloseCode);
 		JcLockDebugPrint(handle);
@@ -547,6 +560,35 @@ namespace CcbV11Test722Ecies {
 		printf("pass2Match Time =\t%d\tValidity=%d\n",
 		       pass2Match.s_datetime, pass2Match.s_validity);
 	}
+#endif // _DEBUG_JCLMS_GTEST1117
+
+	TEST_F(jclmsCCBV11_Test, zwOpenLockFixTest20141117) {
+		//固定开锁时间,应该出来固定的结果
+		const int ZWFIX_STARTTIME=1416*ZWMEGA;
+		JcLockSetCmdType(handle, JCI_CMDTYPE, JCCMD_INIT_CLOSECODE);
+		int initCloseCode = JcLockGetDynaCode(handle);
+		//此处期待值已经改为固定依赖1400M秒的时间值，应该不会再变了。
+		//20141113.1751根据前两天开会决定做的修改。周伟
+		//这里是一个自检测试，如果失败，就说明有比较大的问题了，比如类似发生过的
+		//ARM编译器优化级别问题导致的生成错误的二进制代码等等
+		EXPECT_EQ(38149728, initCloseCode);
+		//dynaPass1
+		//注意现在合法的时间值应该是1.4G以上了，注意位数。20140721.1709 
+		JcLockSetInt(handle, JCI_DATETIME,ZWFIX_STARTTIME);
+
+		JcLockSetCmdType(handle, JCI_CMDTYPE, JCCMD_CCB_DYPASS1);
+		JcLockSetInt(handle, JCI_CLOSECODE, initCloseCode);
+		JcLockDebugPrint(handle);
+		pass1DyCode = JcLockGetDynaCode(handle);
+		EXPECT_EQ(pass1DyCode, 57174184);
+		JCMATCH pass1Match =
+			JcLockReverseVerifyDynaCode(handle, pass1DyCode);
+		EXPECT_EQ(pass1Match.s_datetime,ZWFIX_STARTTIME);
+		printf("input time=\t\t%d\n", ZWFIX_STARTTIME);
+		printf("pass1Match Time =\t%d\tValidity=%d\n",
+			pass1Match.s_datetime, pass1Match.s_validity);
+	}
+
 
 //////////////////////////////////////////////////////////////////////////
 }				//namespace ccbtest722{
