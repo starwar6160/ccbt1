@@ -2,9 +2,28 @@
 #include "jclmsCCB2014.h"
 #include "dCodeHdr.h"
 
+
+//只是作为一个基本的块规整大小单位方便处理
+const int ZW_SYNCALG_BLOCK_SIZE = (128 / 8);
 const int ZW_MAXDATA32 = 2048 * ZWMEGA - 3;	//32位有符号整数可能表示的最大时间值
 const int ZW_LOWEST_DATE = 1400 * ZWMEGA - 24 * 3600;	//考虑到取整运算可能使得时间值低于1400M，所以把最低点时间提前一整天该足够了
 const int ZW_ONE_DAY = 24 * 60 * 60;
+
+//时间GMT秒数转为字符串
+static string zwTimeSecond2String(const time_t sec)
+{
+	char strTime[32];
+	memset(strTime, 0, 32);
+	struct tm *p;
+	time_t tsec = sec;
+	p = localtime(&tsec);
+	sprintf(strTime, "%04d.%02d%02d:%02d:%02d:%02d",
+		(1900 + p->tm_year), (1 + p->tm_mon), p->tm_mday,
+		p->tm_hour, p->tm_min, p->tm_sec);
+	string rStr = strTime;
+	return rStr;
+}
+
 
 //设置命令类型(第一开锁码，初始闭锁码等等)
 JCERROR JCLMSCCB2014_API JcLockSetCmdType(const int handle, const JCITYPE mtype,
@@ -161,3 +180,135 @@ JCERROR JCLMSCCB2014_API JcLockCheckInput(const int handle)
 	}
 	return EJC_SUSSESS;
 }
+
+void JCLMSCCB2014_API JcLockDebugPrint(const int handle)
+{
+	JCINPUT *jcp = (JCINPUT *) handle;
+	zwJcLockDumpJCINPUT(handle);
+	if (EJC_SUSSESS != JcLockCheckInput((const int)jcp)) {
+		printf("JcLock Input Para Error!\n");
+	}
+	//三个固定条件组合在一起,还要为NULL，连接符等留出余量
+	char mainstr[JC_ATMNO_MAXLEN + JC_LOCKNO_MAXLEN + JC_PSK_LEN + 5];
+	memset(mainstr, 0, sizeof(mainstr));
+	sprintf(mainstr, "%s.%s.%s.", jcp->AtmNo, jcp->LockNo, jcp->PSK);
+	//可变条件逐个化为字符串，组合到一起
+	char vstr[40];		//大致把各个可变字段的位数估计一下
+	int mdatetime = jcp->CodeGenDateTime;
+	int mvalidity = jcp->Validity;
+	int mclosecode = jcp->CloseCode;
+	if (JCCMD_INIT_CLOSECODE == jcp->CmdType) {	//如果是生成初始闭锁码，就用临时计算的值替代之
+		myGetInitCloseCodeVarItem(&mdatetime, &mvalidity, &mclosecode);
+	}
+	sprintf(vstr, "%d.%d.%d.%d", mdatetime, mvalidity,
+		mclosecode, jcp->CmdType
+		//,jcp->m_stepoftime,jcp->m_reverse_time_length
+		);
+	//allItems=allItems+buf;
+	char allStr[128];
+	memset(allStr, 0, 128);
+	strncpy(allStr, mainstr, 128);
+	strcat(allStr, vstr);
+	printf("All Items = %s \n", allStr);
+}
+
+void JCLMSCCB2014_API zwJcLockDumpJCINPUT(const int handle)
+{
+	JCINPUT *jcp = (JCINPUT *) handle;
+	assert(NULL != jcp);
+	if (NULL == jcp) {
+		printf("%s input is NULL", __FUNCTION__);
+		return;
+	}
+	static int dedupTime;
+	//防止重复输出同一个数据结构
+	if (dedupTime==jcp->CodeGenDateTime)
+	{
+		return;
+	}
+
+	//printf("########JCINPUT DUMP START############\n");
+	printf("\n[");
+	printf("ATMNO:%s\t", jcp->AtmNo);
+	printf("LOCKNO:%s\t", jcp->LockNo);
+	printf("PSK:%s\n", jcp->PSK);
+	printf("DATETIME:%d\t%s\t", jcp->CodeGenDateTime,
+		zwTimeSecond2String(jcp->CodeGenDateTime).c_str());
+	printf("STEP:%d\t", jcp->SearchTimeStep);
+	printf("RTIME:%d\n", jcp->SearchTimeLength);
+	printf("VAL:%d\tCloseCode:%d\t", jcp->Validity,
+		jcp->CloseCode);
+	printf("CMDTYPE:");
+	switch (jcp->CmdType) {
+	case JCI_ATMNO:
+		printf("JCI_ATMNO");
+		break;
+	case JCI_LOCKNO:
+		printf("JCI_LOCKNO");
+		break;
+	case JCI_PSK:
+		printf("JCI_PSK");
+		break;
+	case JCI_DATETIME:
+		printf("JCI_DATETIME");
+		break;
+	case JCI_VALIDITY:
+		printf("JCI_VALIDITY");
+		break;
+	case JCI_CLOSECODE:
+		printf("JCI_CLOSECODE");
+		break;
+	case JCI_CMDTYPE:
+		printf("JCI_CMDTYPE");
+		break;
+	case JCI_TIMESTEP:
+		printf("JCI_TIMESTEP");
+		break;
+	}
+	//printf("\n");
+	//printf("M_VALIDITY_ARRAY:\n");
+	//for (int i = 0; i < NUM_VALIDITY; i++) {
+	//	printf("%d\t", jcp->m_validity_array[i]);
+	//}
+	printf("]\n");
+	dedupTime=jcp->CodeGenDateTime;
+}
+
+int JcLockGetVersion(void)
+{
+	//含义是是日期
+	return 20140901;
+}
+
+//获得规格化的时间，也就是按照某个值取整的时间
+int myGetNormalTime(int gmtTime, const int TIMEMOD)
+{
+	int tail = gmtTime % TIMEMOD;
+	return gmtTime - tail;
+}
+
+void mySM3Update(SM3 * ctx, const char *data, const int len)
+{
+	assert(ctx != NULL);
+	assert(ctx->length > 0);
+	assert(data != NULL);
+	assert(len > 0);
+	for (int i = 0; i < len; i++) {
+		SM3_Update(ctx, *(data + i));
+	}
+}
+
+void mySM3Update(SM3 * ctx, const int data)
+{
+	assert(ctx != NULL);
+	assert(ctx->length > 0);
+	assert(data >= 0);	//几个整数参数，都是0或者正整数
+	int td = data;
+	for (int i = 0; i < sizeof(data); i++) {
+		unsigned char t = td & 0xff;
+		SM3_Update(ctx, t);
+		td = td >> 8;
+	}
+	assert(td == 0);
+}
+

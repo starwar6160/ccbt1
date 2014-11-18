@@ -34,7 +34,6 @@ DECLARE_HANDLE(HINSTANCE);
 typedef HINSTANCE HMODULE;      /* HMODULEs can be used in place of HINSTANCEs */
 typedef unsigned long       DWORD;
 typedef void *            *LPVOID;	//此处和windef.h不太一样，去掉了过时的far关键字
-
 #define DLL_PROCESS_ATTACH   1    
 #define DLL_THREAD_ATTACH    2    
 #define DLL_THREAD_DETACH    3    
@@ -54,3 +53,4 @@ typedef void *            *LPVOID;	//此处和windef.h不太一样，去掉了过时的far关键
 
 //////////////////////替换windows.h中用到的部分定义结束///////////////////////////////
 
+	

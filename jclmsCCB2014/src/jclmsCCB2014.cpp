@@ -22,10 +22,61 @@ void mySM3Update(SM3 * ctx, const int data);
 unsigned int zwBinString2Int32(const char *data, const int len);
 //获取闭锁码的3个可变条件的“固定值”
 void myGetCloseCodeVarItem(int *mdatetime, int *mvalidity, int *mclosecode);
+//生成各种类型的动态码
+int zwJcLockGetDynaCode(const int handle);
+
+
 
 int JCLMSCCB2014_API JcLockGetDynaCode(const int handle)
 {
 	return zwJcLockGetDynaCode(handle);
+}
+
+//////////////////////////////////////////////////////////////////////////
+int JCLMSCCB2014_API JcLockNew(void)
+{
+	JCINPUT *pjc = new JCINPUT;
+	assert(pjc != NULL);
+	memset(pjc, 0, sizeof(JCINPUT));
+	memset(pjc->AtmNo, 0, JC_ATMNO_MAXLEN + 1);
+	memset(pjc->LockNo, 0, JC_LOCKNO_MAXLEN + 1);
+	memset(pjc->PSK, 0, JC_PSK_LEN + 1);
+	//为没有可变输入的初始闭锁码指定3个常量
+	pjc->CodeGenDateTime = 1400 * 1000 * 1000;
+	pjc->Validity = 5;	//用的最多的是5分钟有效期，所以直接初始化为5
+	pjc->CloseCode = 0;	//防备初始闭锁码生成的时候此处未初始化
+	pjc->CmdType = JCCMD_INIT_CLOSECODE;
+	pjc->dbgSearchTimeStart=time(NULL);
+	pjc->SearchTimeStep = 6;
+	//默认在线模式，反推时间步长60秒.
+	//20140805.0903.按照昨天张靖钰的要求，暂时改为5分钟默认值
+	// 20140820.2329.按照建行要求从任意时间点开始5分钟有效期的要求，
+	// 步长改为6秒 以便尽量接近该要求
+	//默认在线模式(由于起始值会往将来方向偏移3分钟所以是)反推6分钟，比要求的5分钟多一点，保险一点
+	pjc->SearchTimeLength = 9 * 60;
+	////将5分钟，4小时这样最常用到的有效期排列在前面，提高效率
+	//int valarr[]={5,MIN_OF_HOUR*4,MIN_OF_HOUR*8,MIN_OF_HOUR*12,15,30,60,MIN_OF_HOUR*24};
+	pjc->ValidityArray[0] = 5;
+	pjc->ValidityArray[1] = 60 * 4;
+	pjc->ValidityArray[2] = 60 * 8;
+	pjc->ValidityArray[3] = 60 * 12;
+	pjc->ValidityArray[4] = 15;
+	pjc->ValidityArray[5] = 30;
+	pjc->ValidityArray[6] = 60;
+	pjc->ValidityArray[7] = 60 * 24;
+	return (int)pjc;
+}
+
+int JCLMSCCB2014_API JcLockDelete(const int handle)
+{
+	JCINPUT *jcp = (JCINPUT *) handle;
+	assert(NULL != jcp);
+	if (NULL == jcp) {
+		return EJC_INPUT_NULL;
+	}
+	memset(jcp, 0xCC, sizeof(JCINPUT));
+	delete jcp;
+	return EJC_SUSSESS;
 }
 
 	//生成各种类型的动态码
@@ -154,4 +205,56 @@ JCMATCH JCLMSCCB2014_API JcLockReverseVerifyDynaCode(const int handle,
 	}			//END OF DATE LOOP
       foundMatch:
 	return jcoff;
+}
+
+//////////////////////////////////////////////////////////////////////////
+//从包含二进制数据的字符串输入，获得一个8位整数的输出
+unsigned int zwBinString2Int32(const char *data, const int len)
+{
+	//比1开头的8位数稍微大一些的质数
+	const int dyLow = 10000019;
+	//比9开头的8位数稍微小一些的质数
+	const int dyMod = 89999969;
+	const int dyMul = 257;	//随便找的一个质数作为相乘的因子
+
+	unsigned __int64 sum = 0;
+	for (int i = 0; i < len; i++) {
+		unsigned char t = *(data + i);
+		sum *= dyMul;
+		sum += t;
+	}
+	//这两个数字结合使用，产生肯定是8位数的动态码
+	sum %= dyMod;
+	sum += dyLow;
+	return sum;
+}
+
+//获取初始闭锁码的3个可变条件的“固定值”
+void myGetInitCloseCodeVarItem(int *mdatetime, int *mvalidity, int *mclosecode)
+{
+	assert(NULL != mdatetime && NULL != mvalidity && NULL != mclosecode);
+	if (NULL == mdatetime || NULL == mvalidity || NULL == mclosecode) {
+		return;
+	}
+	//*mdatetime = myGetNormalTime(time(NULL), ZWMEGA);
+	//20141113.1748.经过前两天的讨论，锁具初始闭锁码不能因为时间变化而变化
+	//所以时间值定死为1400M秒，或者其实哪个过去的方便人识别的时间点都可以；
+	//这些参数后续要改为可以配置的，起码要可以通过函数调用来配置，最好能
+	//使用配置文件来配置
+	*mdatetime = 1400*ZWMEGA;
+	*mvalidity = 1000;
+	*mclosecode = 10000000;
+}
+
+//获取闭锁码的3个可变条件的“固定值”
+void myGetCloseCodeVarItem(int *mdatetime, int *mvalidity, int *mclosecode)
+{
+	const int ZW_CLOSECODE_BASEINPUT = 20000000;	//计算正常的闭锁码时，m_closecode字段的固定值
+	assert(NULL != mdatetime && NULL != mvalidity && NULL != mclosecode);
+	if (NULL == mdatetime || NULL == mvalidity || NULL == mclosecode) {
+		return;
+	}
+	*mdatetime = myGetNormalTime(time(NULL), ZW_CLOSECODE_STEP);
+	*mvalidity = 1440;
+	*mclosecode = ZW_CLOSECODE_BASEINPUT;
 }

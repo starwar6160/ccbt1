@@ -56,9 +56,6 @@
     <ClCompile Include="jclmsccb_csharp_wrap.cxx">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="notuse\zwtest1.c">
-      <Filter>源文件\src</Filter>
-    </ClCompile>
     <ClCompile Include="zwECIES\sm3_1407.c">
       <Filter>源文件\hashalg</Filter>
     </ClCompile>
@@ -80,19 +77,10 @@
     <ClCompile Include="zwECIES\zwRand201406.cpp">
       <Filter>源文件\ECIES</Filter>
     </ClCompile>
-    <ClCompile Include="zwOutputDebugString.cpp">
-      <Filter>源文件\src</Filter>
-    </ClCompile>
     <ClCompile Include="src\jclmsCCB2014.cpp">
       <Filter>源文件\dyCode</Filter>
     </ClCompile>
-    <ClCompile Include="src\dCodeMisc.cpp">
-      <Filter>源文件\dyCode</Filter>
-    </ClCompile>
     <ClCompile Include="src\dCodeIO.cpp">
-      <Filter>源文件\dyCode</Filter>
-    </ClCompile>
-    <ClCompile Include="src\dCodeNewDelete.cpp">
       <Filter>源文件\dyCode</Filter>
     </ClCompile>
   </ItemGroup>

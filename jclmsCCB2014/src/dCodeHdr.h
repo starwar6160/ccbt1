@@ -21,7 +21,6 @@ typedef struct JcLockInput {
 	//有效期，共有NUM_VALIDITY个,默认值是从5分钟到24小时那一系列，单位是分钟；可以自己设定
 	//可以把最常用的有效期设置在更靠近开始处加快匹配速度
 	int ValidityArray[NUM_VALIDITY];
-	//      void DebugPrint(void);  //
 } JCINPUT;
 
 //获得规格化的时间，也就是按照某个值取整的时间
@@ -29,9 +28,5 @@ int myGetNormalTime(int gmtTime, const int TIMEMOD);
 //获取初始闭锁码的3个可变条件的“固定值”
 void myGetInitCloseCodeVarItem(int *mdatetime, int *mvalidity, int *mclosecode);
 
-//生成各种类型的动态码
-int zwJcLockGetDynaCode(const int handle);
-
-extern const int ZW_CLOSECODE_STEP;	//闭锁码的计算步长时间精度
 
 #endif // dCodeHdr_h__
