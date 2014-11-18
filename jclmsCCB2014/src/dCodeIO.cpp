@@ -98,6 +98,14 @@ JCERROR JCLMSCCB2014_API JcLockSetInt(const int handle, const JCITYPE mtype,
 		}
 		jcp->SearchTimeStep = num;
 		break;
+	case JCI_DBG_TIMESTART:	//反推时间起始值
+		//时间必须经过规格化
+		if (num < (1400 * 1000 * 1000)) {
+			return EJC_DATETIME_INVALID;
+		}
+		jcp->dbgSearchTimeStart = myGetNormalTime(num, jcp->SearchTimeStep);
+		break;
+
 	}
 	return EJC_SUSSESS;
 }

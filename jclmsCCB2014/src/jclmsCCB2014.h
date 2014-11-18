@@ -65,6 +65,7 @@ typedef enum jc_input_type {
 	JCI_CLOSECODE,		//闭锁码
 	JCI_CMDTYPE,		//要生成什么类型的动态码
 	JCI_TIMESTEP,		//时间往前推算的间隔，单位为秒
+	JCI_DBG_TIMESTART,		//搜索时间起始值，默认为当前时间，一般不用设置，主要为了调试和单元测试目的设置。20141118新增；
 	JCI_END			//无效值，用于界定上下范围
 } JCITYPE;
 

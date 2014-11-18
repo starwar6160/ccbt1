@@ -18,6 +18,7 @@ int JCLMSCCB2014_API JcLockNew(void)
 	pjc->Validity = 5;	//用的最多的是5分钟有效期，所以直接初始化为
 	pjc->CloseCode = 0;	//防备初始闭锁码生成的时候此处未初始化
 	pjc->CmdType = JCCMD_INIT_CLOSECODE;
+	pjc->dbgSearchTimeStart=time(NULL);
 	pjc->SearchTimeStep = 6;
 	//默认在线模式，反推时间步长60秒.
 	//20140805.0903.按照昨天张靖钰的要求，暂时改为5分钟默认值
