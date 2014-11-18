@@ -455,7 +455,7 @@ namespace CcbV11Test722Ecies {
 
 /////////////////////////////////JCLMS算法测试/////////////////////////////////////////
 #ifdef _DEBUG_JCLMS_GTEST1117
-	TEST_F(jclmsCCBV11_Test, CloseCode) {
+	TEST_F(jclmsCCBV11_Test, CloseCode) {		
 		JcLockSetCmdType(handle, JCI_CMDTYPE, JCCMD_CCB_CLOSECODE);
 		int CloseCode = JcLockGetDynaCode(handle);
 		cout << "CloseCode729=\t" << CloseCode << endl;
@@ -473,6 +473,7 @@ namespace CcbV11Test722Ecies {
 	}
 
 	TEST_F(jclmsCCBV11_Test, inputCheck) {
+		JcLockSetInt(handle,JCI_TIMESTEP,110);
 		//生成初始闭锁码的时候，有效期和闭锁码字段都无效，随便填写，是正整数就可以
 		JcLockSetInt(handle, JCI_VALIDITY, 5);
 		JcLockSetInt(handle, JCI_CLOSECODE, 0);
@@ -565,6 +566,7 @@ namespace CcbV11Test722Ecies {
 	TEST_F(jclmsCCBV11_Test, zwOpenLockFixTest20141117) {
 		//固定开锁时间,应该出来固定的结果
 		const int ZWFIX_STARTTIME=1416*ZWMEGA;
+		JcLockSetInt(handle,JCI_TIMESTEP,30);
 		JcLockSetCmdType(handle, JCI_CMDTYPE, JCCMD_INIT_CLOSECODE);
 		int initCloseCode = JcLockGetDynaCode(handle);
 		//此处期待值已经改为固定依赖1400M秒的时间值，应该不会再变了。
@@ -575,6 +577,7 @@ namespace CcbV11Test722Ecies {
 		//dynaPass1
 		//注意现在合法的时间值应该是1.4G以上了，注意位数。20140721.1709 
 		JcLockSetInt(handle, JCI_DATETIME,ZWFIX_STARTTIME);
+		JcLockSetInt(handle,JCI_SEARCH_TIME_LENGTH,8*60);
 
 		JcLockSetCmdType(handle, JCI_CMDTYPE, JCCMD_CCB_DYPASS1);
 		JcLockSetInt(handle, JCI_CLOSECODE, initCloseCode);

@@ -108,9 +108,10 @@ JCMATCH JCLMSCCB2014_API JcLockReverseVerifyDynaCode(const int handle,
 		l_timestep = ZW_CLOSECODE_STEP;
 		assert(ZW_CLOSECODE_STEP > 0 && ZW_CLOSECODE_STEP < 60);
 	}
-	//搜索时间的起始点必须落在m_stepoftime的整倍数上，否则就无法匹配
-	//l_datetime=1416*ZWMEGA+123;
-	l_datetime=jcp->dbgSearchTimeStart;
+	//搜索时间的起始点必须落在m_stepoftime的整倍数上，否则就无法匹配	
+	//本来起始点在设置时已经规格化过了，但是为了防止之后又设置步长，
+	//所以在此，用到的时候，再次根据步长规格化起始点时间
+	l_datetime=myGetNormalTime(jcp->dbgSearchTimeStart, jcp->SearchTimeStep);;
 	l_datetime = myGetNormalTime(l_datetime, l_timestep);
 	int tail = l_datetime % l_timestep;
 	l_datetime -= tail;	//取整到数据结构中指定的步长

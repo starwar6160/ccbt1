@@ -105,7 +105,12 @@ JCERROR JCLMSCCB2014_API JcLockSetInt(const int handle, const JCITYPE mtype,
 		}
 		jcp->dbgSearchTimeStart = myGetNormalTime(num, jcp->SearchTimeStep);
 		break;
-
+	case JCI_SEARCH_TIME_LENGTH:	//反推时间长度
+		if (num<=0 || num >(25*3600))	//一般而言反推最多不超过一天
+		{
+			return EJC_CMDTYPE_TIMELEN_INVALID;
+		}
+		jcp->SearchTimeLength=num;
 	}
 	return EJC_SUSSESS;
 }

@@ -15,7 +15,7 @@ int JCLMSCCB2014_API JcLockNew(void)
 	memset(pjc->PSK, 0, JC_PSK_LEN + 1);
 	//为没有可变输入的初始闭锁码指定3个常量
 	pjc->CodeGenDateTime = 1400 * 1000 * 1000;
-	pjc->Validity = 5;	//用的最多的是5分钟有效期，所以直接初始化为
+	pjc->Validity = 5;	//用的最多的是5分钟有效期，所以直接初始化为5
 	pjc->CloseCode = 0;	//防备初始闭锁码生成的时候此处未初始化
 	pjc->CmdType = JCCMD_INIT_CLOSECODE;
 	pjc->dbgSearchTimeStart=time(NULL);
@@ -24,7 +24,7 @@ int JCLMSCCB2014_API JcLockNew(void)
 	//20140805.0903.按照昨天张靖钰的要求，暂时改为5分钟默认值
 	// 20140820.2329.按照建行要求从任意时间点开始5分钟有效期的要求，
 	// 步长改为6秒 以便尽量接近该要求
-	//默认在线模式，反推6分钟，比要求的5分钟多一点，保险一点
+	//默认在线模式(由于起始值会往将来方向偏移3分钟所以是)反推6分钟，比要求的5分钟多一点，保险一点
 	pjc->SearchTimeLength = 9 * 60;
 	////将5分钟，4小时这样最常用到的有效期排列在前面，提高效率
 	//int valarr[]={5,MIN_OF_HOUR*4,MIN_OF_HOUR*8,MIN_OF_HOUR*12,15,30,60,MIN_OF_HOUR*24};
