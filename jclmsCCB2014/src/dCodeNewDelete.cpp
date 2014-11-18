@@ -74,6 +74,13 @@ void JCLMSCCB2014_API zwJcLockDumpJCINPUT(const int handle)
 		printf("%s input is NULL", __FUNCTION__);
 		return;
 	}
+	static int dedupTime;
+	//防止重复输出同一个数据结构
+	if (dedupTime==jcp->CodeGenDateTime)
+	{
+		return;
+	}
+
 	//printf("########JCINPUT DUMP START############\n");
 	printf("\n[");
 	printf("ATMNO:%s\t", jcp->AtmNo);
@@ -118,6 +125,7 @@ void JCLMSCCB2014_API zwJcLockDumpJCINPUT(const int handle)
 	//	printf("%d\t", jcp->m_validity_array[i]);
 	//}
 	printf("]\n");
+	dedupTime=jcp->CodeGenDateTime;
 }
 
 void JCLMSCCB2014_API JcLockDebugPrint(const int handle)
