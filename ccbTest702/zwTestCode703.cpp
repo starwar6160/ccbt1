@@ -19,16 +19,16 @@ using std::sort;
 void myJcLockInputTest1()
 {
 	JcLockInput jc;
-	strncpy(jc.m_atmno, "atmnodddd0123456789", JC_ATMNO_MAXLEN);
-	strncpy(jc.m_lockno, "locknossssssa1234", JC_LOCKNO_MAXLEN);
-	strncpy(jc.m_psk,
+	strncpy(jc.AtmNo, "atmnodddd0123456789", JC_ATMNO_MAXLEN);
+	strncpy(jc.LockNo, "locknossssssa1234", JC_LOCKNO_MAXLEN);
+	strncpy(jc.PSK,
 		"pskabcdefghijabcdefghijabcdefghijabcdefghijabcdefghijabcdefghij1234",
 		JC_PSK_LEN);
 	//注意现在合法的时间值应该是1.4G以上了，注意位数。20140721.1709
-	jc.m_datetime = 1400077751;
-	jc.m_validity = 5;
-	jc.m_closecode = 87654325;
-	jc.m_cmdtype = JCCMD_CCB_DYPASS1;
+	jc.CodeGenDateTime = 1400077751;
+	jc.Validity = 5;
+	jc.CloseCode = 87654325;
+	jc.CmdType = JCCMD_CCB_DYPASS1;
 	//aa.DebugPrint();
 	set < int >rset;
 	//基本上做到了40K个批量生成时重复在个位数，13K个无重复
@@ -43,7 +43,7 @@ void myJcLockInputTest1()
 		//后期做的时间规格化到10秒，导致变更时间不足10秒的话出来的结果是一样的
 		//所以测试结果大量重复，改为变更闭锁码的条件，结果就不重复了；
 		//周伟.20140722.
-		jc.m_closecode++;
+		jc.CloseCode++;
 		int dycode = JcLockGetDynaCode((int)&jc);
 		rset.insert(dycode);
 		if (i % (RCOUNT / 32) == 0) {
