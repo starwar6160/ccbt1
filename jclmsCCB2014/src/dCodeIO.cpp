@@ -10,9 +10,9 @@ const int ZW_LOWEST_DATE = 1400 * ZWMEGA - 24 * 3600;	//考虑到取整运算可
 const int ZW_ONE_DAY = 24 * 60 * 60;
 
 //时间GMT秒数转为字符串
-static string zwTimeSecond2String(const time_t sec)
+char * zwTimeSecond2String(const time_t sec)
 {
-	char strTime[32];
+	static char strTime[32];
 	memset(strTime, 0, 32);
 	struct tm *p;
 	time_t tsec = sec;
@@ -20,8 +20,7 @@ static string zwTimeSecond2String(const time_t sec)
 	sprintf(strTime, "%04d.%02d%02d:%02d:%02d:%02d",
 		(1900 + p->tm_year), (1 + p->tm_mon), p->tm_mday,
 		p->tm_hour, p->tm_min, p->tm_sec);
-	string rStr = strTime;
-	return rStr;
+	return strTime;
 }
 
 
@@ -233,7 +232,7 @@ void JCLMSCCB2014_API zwJcLockDumpJCINPUT(const int handle)
 	printf("LOCKNO:%s\t", jcp->LockNo);
 	printf("PSK:%s\n", jcp->PSK);
 	printf("DATETIME:%d\t%s\t", jcp->CodeGenDateTime,
-		zwTimeSecond2String(jcp->CodeGenDateTime).c_str());
+		zwTimeSecond2String(jcp->CodeGenDateTime));
 	printf("STEP:%d\t", jcp->SearchTimeStep);
 	printf("RTIME:%d\n", jcp->SearchTimeLength);
 	printf("VAL:%d\tCloseCode:%d\t", jcp->Validity,

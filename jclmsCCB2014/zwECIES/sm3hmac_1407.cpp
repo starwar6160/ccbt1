@@ -1,16 +1,21 @@
 #include <stdio.h>
 #include <cassert>
-#include <winsock2.h>
 #include <cstring>
 #include "sm3.h"
 #include "jclmsCCB2014.h"
 using namespace std;
 typedef unsigned char BYTE;
 
+extern "C"
+{
+	// 模拟ntohl函数，网络字节序转本机字节序
+	unsigned long int NtoHl(unsigned long int n);
+};
+
 namespace zwTools {
+#ifdef _DEBUG_USE_OLD_SM3HMAC20140703
 	const uint8_t ZW_INPAD_FILL_CHAR = 0x36;
 	const uint8_t ZW_OUTPAD_FILL_CHAR = 0x5C;
-#ifdef _DEBUG_USE_OLD_SM3HMAC20140703
 //密钥，消息，输出的摘要,都是二进制格式
 	int32_t zwSm3Hmac7(zwHexTool & inPsk,
 			   zwHexTool & inMessage, zwHexTool & outHmac) {
@@ -107,8 +112,8 @@ int zwSM3StandardTestVector(void) {
 	int *oTmp=(int *)outHmac;
 	for (int i=0;i<8;i++)
 	{
-		printf("%08X\t",ntohl(oTmp[i]));
+		printf("%08X\t",NtoHl(oTmp[i]));
 	}
 	printf("\n");
-	return sm3TestVecResult1[0]-ntohl(oTmp[0]);
+	return sm3TestVecResult1[0]-NtoHl(oTmp[0]);
 }

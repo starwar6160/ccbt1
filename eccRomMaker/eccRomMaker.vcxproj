@@ -55,7 +55,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(ZWLIB)\MIRACL2014\$(Configuration)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(ZWSRC)\2014BinOut\$(Configuration)</AdditionalLibraryDirectories>
       <AdditionalDependencies>MIRACL2014.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
@@ -75,7 +75,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>$(ZWLIB)\MIRACL2014\$(Configuration)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(ZWSRC)\2014BinOut\$(Configuration)</AdditionalLibraryDirectories>
       <AdditionalDependencies>MIRACL2014.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
