@@ -1,7 +1,8 @@
 #ifndef jclmsCCB2014_h__
 #define jclmsCCB2014_h__
-//#include "zwstdafx.h"
-
+#ifdef  __cplusplus
+extern "C" {
+#endif
 // 下列 ifdef 块是创建使从 DLL 导出更简单的
 // 宏的标准方法。此 DLL 中的所有文件都是用命令行上定义的 JCLMSCCB2014_EXPORTS
 // 符号编译的。在使用此 DLL 的
@@ -21,7 +22,6 @@
 #endif //_ZWUSE_AS_JNI
 
 //////////////////////////////////////////////////////////////////////////
-//namespace jclms{
 extern const int ZW_SYNCALG_BLOCK_SIZE;
 extern const int ZW_SM3_DGST_SIZE;
 
@@ -74,7 +74,6 @@ typedef enum jc_input_type {
 typedef struct jcLockReverseMatchResult {
 	int s_datetime;		//匹配结果秒数
 	int s_validity;		//匹配结果有效期分钟数
-	//int s_matchTimes;     //匹配所用计算次数
 } JCMATCH;
 
 //有效期数组大小；更改此处以后请对应更改源代码中JcLockInput类初始化代码中
@@ -111,17 +110,10 @@ int JCLMSCCB2014_API JcLockGetVersion(void);
 void JCLMSCCB2014_API JcLockDebugPrint(const int handle);
 void JCLMSCCB2014_API zwJcLockDumpJCINPUT(const int handle);
 const int ZWMEGA = 1000000;	//一百万
+int JCLMSCCB2014_API zwSM3StandardTestVector(void);
 
-#ifdef  __cplusplus
-extern "C" {
-#endif
-	int JCLMSCCB2014_API zwSM3StandardTestVector(void);
 #ifdef  __cplusplus
 }	//extern "C" {
 #endif
-
-
-//}     //end of namespace jclms
-//////////////////////////////新设计的C接口////////////////////////////////////////////
 
 #endif // jclmsCCB2014_h__
