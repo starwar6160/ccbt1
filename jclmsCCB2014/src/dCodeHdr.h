@@ -1,7 +1,7 @@
 #ifndef dCodeHdr_h__
 #define dCodeHdr_h__
 #include "sm3.h"
-
+#include "jclmsCCB2014.h"
 #pragma pack(1)
 typedef struct JcLockInput {
 	//固定因素部分
@@ -23,6 +23,19 @@ typedef struct JcLockInput {
 	//可以把最常用的有效期设置在更靠近开始处加快匹配速度
 	int ValidityArray[NUM_VALIDITY];
 } JCINPUT;
+
+//用于HID等通信接口返回结果，统一在一个结构体里面
+typedef struct JcLockResult{
+	JCCMD type;	//指明下面联合里面的内容哪一项有效
+	union{
+		int initCloseCode;			//初始闭锁码    
+		int CloseCode;				//闭锁码             
+		int dynaCodePass1;			//第一动态码
+		int dynaCodePass2;			//第二动态码
+		int verifyCodeMatchTime;	//验证码匹配日期时间
+	};	
+	int verifyCodeMatchValidity;//验证码匹配有效期，只有在type为验证码的时候有效
+}JCRESULT;
 #pragma pack()
 
 //获得规格化的时间，也就是按照某个值取整的时间
