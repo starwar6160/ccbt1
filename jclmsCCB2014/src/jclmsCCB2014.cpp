@@ -41,6 +41,9 @@ int JCLMSCCB2014_API JcLockNew(void)
 	memset(pjc->AtmNo, 0, JC_ATMNO_MAXLEN + 1);
 	memset(pjc->LockNo, 0, JC_LOCKNO_MAXLEN + 1);
 	memset(pjc->PSK, 0, JC_PSK_LEN + 1);
+#ifdef _DEBUG
+	printf("sizeof JCINPUT=%d\n",sizeof(JCINPUT));
+#endif // _DEBUG
 	//为没有可变输入的初始闭锁码指定3个常量
 	pjc->CodeGenDateTime = 1400 * 1000 * 1000;
 	pjc->Validity = 5;	//用的最多的是5分钟有效期，所以直接初始化为5

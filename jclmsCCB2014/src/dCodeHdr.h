@@ -2,6 +2,7 @@
 #define dCodeHdr_h__
 #include "sm3.h"
 
+#pragma pack(1)
 typedef struct JcLockInput {
 	//固定因素部分
 	char AtmNo[JC_ATMNO_MAXLEN + 1];	//ATM号
@@ -22,6 +23,7 @@ typedef struct JcLockInput {
 	//可以把最常用的有效期设置在更靠近开始处加快匹配速度
 	int ValidityArray[NUM_VALIDITY];
 } JCINPUT;
+#pragma pack()
 
 //获得规格化的时间，也就是按照某个值取整的时间
 int myGetNormalTime(int gmtTime, const int TIMEMOD);
