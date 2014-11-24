@@ -82,6 +82,21 @@ int JCLMSCCB2014_API JcLockDelete(const int handle)
 	return EJC_SUSSESS;
 }
 
+//从密盒生成各种类型的动态码
+int zwJcLockGetDynaCodeFromSecBox(const int handle)
+{
+
+}
+
+//从密盒执行离线模式匹配，时间点精度为取整到一个小时的零点，有效期精度为1小时起
+//如果找到了，返回JCOFFLINE中是匹配的时间和有效期，否则其中的值都是0
+JCMATCH JCLMSCCB2014_API JcLockReverseVerifyDynaCodeFromSecBox(const int handle,
+	const int dstCode)
+{
+
+}
+
+
 	//生成各种类型的动态码
 int zwJcLockGetDynaCode(const int handle)
 {

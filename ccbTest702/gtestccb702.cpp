@@ -602,14 +602,21 @@ namespace CcbV11Test722Ecies {
 		printf("%s codesum=%d\n",__FUNCTION__,codesum);
 	}
 
+#include "dCodeHdr.h"
+//这里使用第二个句柄模拟密盒，每次更改了本地句柄内部的数据以后，就memcpy
+//到第二个句柄，模拟通信过程
+#define EMUHIDLMS	memcpy((void *)hnd2,(void *)handle,sizeof(JCINPUT));
 //用于测试模拟两个机器之间通信的最基础测试
 	TEST_F(jclmsCCBV11_Test, zwHidSecboxLMSTest20141124) {
 		int codesum=0;
+		int hnd2=JcLockNew();
+		assert(sizeof(JCINPUT)==159);		
 			//固定开锁时间,应该出来固定的结果
 			const int ZWFIX_STARTTIME=1416*ZWMEGA;
 			JcLockSetInt(handle,JCI_TIMESTEP,30);
 			JcLockSetCmdType(handle, JCI_CMDTYPE, JCCMD_INIT_CLOSECODE);
-			int initCloseCode = JcLockGetDynaCode(handle);
+			EMUHIDLMS
+			int initCloseCode = JcLockGetDynaCode(hnd2);
 			//此处期待值已经改为固定依赖1400M秒的时间值，应该不会再变了。
 			//20141113.1751根据前两天开会决定做的修改。周伟
 			//这里是一个自检测试，如果失败，就说明有比较大的问题了，比如类似发生过的
@@ -623,17 +630,20 @@ namespace CcbV11Test722Ecies {
 			JcLockSetCmdType(handle, JCI_CMDTYPE, JCCMD_CCB_DYPASS1);
 			JcLockSetInt(handle, JCI_CLOSECODE, initCloseCode);
 			JcLockDebugPrint(handle);
-			pass1DyCode = JcLockGetDynaCode(handle);
+			EMUHIDLMS
+			pass1DyCode = JcLockGetDynaCode(hnd2);
 			codesum+=pass1DyCode;
 			EXPECT_EQ(pass1DyCode, 57174184);
 			JcLockSetInt(handle,JCI_DBG_TIMESTART,1416*ZWMEGA+123);
+			EMUHIDLMS
 			JCMATCH pass1Match =
-				JcLockReverseVerifyDynaCode(handle, pass1DyCode);
+				JcLockReverseVerifyDynaCode(hnd2, pass1DyCode);
 			EXPECT_EQ(pass1Match.s_datetime,ZWFIX_STARTTIME);
 			//#ifdef _DEBUG
 			printf("input time=\t\t%d\n", ZWFIX_STARTTIME);
 			printf("pass1Match Time =\t%d\tValidity=%d\n",
 				pass1Match.s_datetime, pass1Match.s_validity);
+			JcLockDelete(hnd2);
 			//#endif // _DEBUG
 		}
 
