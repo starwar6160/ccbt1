@@ -616,7 +616,7 @@ namespace CcbV11Test722Ecies {
 			const int ZWFIX_STARTTIME=1416*ZWMEGA;
 			JcLockSetInt(handle,JCI_TIMESTEP,30);
 			JcLockSetCmdType(handle, JCI_CMDTYPE, JCCMD_INIT_CLOSECODE);
-			EMUHIDLMS
+			//////////////////////////////////////////////////////////////////////////
 			JCLMSREQ lmsReq;
 			memcpy(&lmsReq.inputData,(JCINPUT *)handle,sizeof(JCINPUT));
 			lmsReq.op=JCLMS_CCB_CODEGEN;
@@ -636,13 +636,17 @@ namespace CcbV11Test722Ecies {
 			JcLockSetCmdType(handle, JCI_CMDTYPE, JCCMD_CCB_DYPASS1);
 			JcLockSetInt(handle, JCI_CLOSECODE, initCloseCode);
 			JcLockDebugPrint(handle);
-			EMUHIDLMS
-			pass1DyCode = JcLockGetDynaCode(hnd2);
+			//////////////////////////////////////////////////////////////////////////
+			memcpy(&lmsReq.inputData,(JCINPUT *)handle,sizeof(JCINPUT));
+			pass1DyCode = zwJclmsReq(&lmsReq);
 			codesum+=pass1DyCode;
 			EXPECT_EQ(pass1DyCode, 57174184);
 			JcLockSetInt(handle,JCI_DBG_TIMESTART,1416*ZWMEGA+123);
 			EMUHIDLMS
+			memcpy(&lmsReq.inputData,(JCINPUT *)handle,sizeof(JCINPUT));
+			lmsReq.op=JCLMS_CCB_CODEVERIFY;
 			JCMATCH pass1Match =
+				//zwJclmsReq(&lmsReq);
 				JcLockReverseVerifyDynaCode(hnd2, pass1DyCode);
 			EXPECT_EQ(pass1Match.s_datetime,ZWFIX_STARTTIME);
 			//#ifdef _DEBUG

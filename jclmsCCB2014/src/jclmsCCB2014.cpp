@@ -289,19 +289,21 @@ void zwJclmsRsp(void)
 	JCLMSREQ inData;
 	memcpy(&inData,g_zwDemoHidBuf,sizeof(JCLMSREQ));
 	printf("%s input datetime is %d\n",__FUNCTION__,inData.inputData.CodeGenDateTime);
+	//模拟发送返回结果
+	JCRESULT outData;
+	memset(&outData,0,sizeof(JCRESULT));
+
 	int dyCode=0;
 	if (JCLMS_CCB_CODEGEN==inData.op)
 	{
 		dyCode=zwJcLockGetDynaCode((int)(&inData.inputData));
+		outData.dynaCodePass1=dyCode;
 	}
 	if (JCLMS_CCB_CODEVERIFY==inData.op)
 	{
-	}
-	//模拟发送返回结果
-	JCRESULT outData;
-	memset(&outData,0,sizeof(JCRESULT));
-	outData.dynaCodePass1=dyCode;
-	outData.CmdType=JCCMD_CCB_DYPASS1;
+		JCMATCH jm=JcLockReverseVerifyDynaCode((int)(&inData.inputData),inData.dstCode);
+		memcpy(&outData.verCodeMatch,&jm,sizeof(JCMATCH));
+	}	
 	memset(g_zwDemoHidBuf,0,ZWDMBUFLEN);
 	memcpy(g_zwDemoHidBuf,&outData,sizeof(JCRESULT));
 }
