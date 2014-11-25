@@ -12,6 +12,7 @@ typedef struct JcLockInput {
 	int CodeGenDateTime;		//日期时间
 	int Validity;		//有效期
 	int CloseCode;	//闭锁码             
+	int dstCode;	//反推运算的输入动态码
 	JCCMD CmdType;	//模式代码，比如开锁模式，远程重置模式，建行的流程要求的各种模式等等
 	///////////////////////////////////以下为配置算法运作模式的数据///////////////////////////////////////
 	int dbgSearchTimeStart;	//搜索时间起始点，默认值应该是当前时间，但是比如测试时可以额外设定。20141118新增,主要供调试和单元测试使用
@@ -24,17 +25,26 @@ typedef struct JcLockInput {
 	int ValidityArray[NUM_VALIDITY];
 } JCINPUT;
 
+typedef enum jclmsd_request{
+	JCLMS_CCB_CODEGEN,		//动态码生成
+	JCLMS_CCB_CODEVERIFY	//动态码反推
+}JCLMSOP;
+
+typedef struct jcLmsRequest{
+	JCLMSOP op;
+	JCINPUT inputData;
+}JCLMSREQ;
+
 //用于HID等通信接口返回结果，统一在一个结构体里面
 typedef struct JcLockResult{
-	JCCMD type;	//指明下面联合里面的内容哪一项有效
+	JCCMD CmdType;	//指明下面联合里面的内容哪一项有效
 	union{
 		int initCloseCode;			//初始闭锁码    
 		int CloseCode;				//闭锁码             
 		int dynaCodePass1;			//第一动态码
 		int dynaCodePass2;			//第二动态码
-		int verifyCodeMatchTime;	//验证码匹配日期时间
+		JCMATCH verCodeMatch;		//验证码匹配日期时间和有效期
 	};	
-	int verifyCodeMatchValidity;//验证码匹配有效期，只有在type为验证码的时候有效
 }JCRESULT;
 #pragma pack()
 

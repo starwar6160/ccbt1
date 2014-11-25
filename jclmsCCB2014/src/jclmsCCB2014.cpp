@@ -51,6 +51,7 @@ int JCLMSCCB2014_API JcLockNew(void)
 	pjc->CmdType = JCCMD_INIT_CLOSECODE;
 	pjc->dbgSearchTimeStart=time(NULL);
 	pjc->SearchTimeStep = 6;
+	pjc->dstCode=0;	//反推运算的输入动态码，正向运算时为0
 	//默认在线模式，反推时间步长60秒.
 	//20140805.0903.按照昨天张靖钰的要求，暂时改为5分钟默认值
 	// 20140820.2329.按照建行要求从任意时间点开始5分钟有效期的要求，
@@ -82,22 +83,7 @@ int JCLMSCCB2014_API JcLockDelete(const int handle)
 	return EJC_SUSSESS;
 }
 
-//从密盒生成各种类型的动态码
-int zwJcLockGetDynaCodeFromSecBox(const int handle)
-{
-
-}
-
-//从密盒执行离线模式匹配，时间点精度为取整到一个小时的零点，有效期精度为1小时起
-//如果找到了，返回JCOFFLINE中是匹配的时间和有效期，否则其中的值都是0
-JCMATCH JCLMSCCB2014_API JcLockReverseVerifyDynaCodeFromSecBox(const int handle,
-	const int dstCode)
-{
-
-}
-
-
-	//生成各种类型的动态码
+//生成各种类型的动态码
 int zwJcLockGetDynaCode(const int handle)
 {
 	zwJcLockDumpJCINPUT(handle);
