@@ -8,6 +8,7 @@ using std::vector;
 extern "C" {
 #endif
 #include "ecdh.h"
+void WINAPI OutputDebugStringA(char * lpOutputString);
 #ifdef  __cplusplus
 }
 #endif
@@ -564,11 +565,16 @@ static string myMergeEncOutItems(int eciesHandle)
 ZWECIES_API const char *EciesEncrypt(const char *pubKey, const char *plainText)
 {
 	//1043test
+	const int BUFLEN=384;
+	char dbgBuf[BUFLEN];
+	memset(dbgBuf,0,BUFLEN);
 	assert(NULL != pubKey && strlen(pubKey) > 0);
 	assert(*(int *)pubKey != 0xCCCCCCCC);
 	assert(NULL != plainText && strlen(plainText) > 0);
 	assert(*(int *)plainText != 0xCCCCCCCC);
 	static string g_retStr;
+	sprintf(dbgBuf,"pubKey=%s plainText=%s",pubKey,plainText);
+	OutputDebugStringA(dbgBuf);
 #define SKELEN	(ZW_ECIES_ENCSYNCKEY_LEN*2)
 #define HASHLEN	(EFS*2+ZW_EXA)
 #define CRLEN	(ZW_ECIES_MESSAGE_MAXLEN*2)
@@ -587,6 +593,9 @@ ZWECIES_API const char *EciesEncrypt(const char *pubKey, const char *plainText)
 				 cryptText, CRLEN);
 	string dot = ".";
 	g_retStr = encSyncKey + dot + msgHashBuf + dot + cryptText;
+	memset(dbgBuf,0,BUFLEN);
+	sprintf(dbgBuf,"zwEciesEncrypt result=%d encSyncKey=%s msgHashBuf=%s cryptText=%s",res,encSyncKey,msgHashBuf,cryptText);
+	OutputDebugStringA(dbgBuf);
 	if (ECIES_SUCCESS != res || strlen(encSyncKey) == 0 ||
 	    strlen(msgHashBuf) == 0 || strlen(cryptText) == 0) {
 		return NULL;

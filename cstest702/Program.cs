@@ -18,12 +18,12 @@ namespace cstest702
         static void Main(string[] args)
         {
             //安全初始化例子
-            //myECIEStest();
+            myECIEStest();
             //String aa = Console.ReadLine();
             //myECIEStest2();
             //建行1.1版本动态码验证流程例子
             //myV11DynaCodeTest();
-            myV11DynaCodeTestKeyBoardInput();
+            //myV11DynaCodeTestKeyBoardInput();
         }
 
         //安全初始化例子
@@ -37,7 +37,9 @@ namespace cstest702
             //存储器中比如磁盘或者FLASH中
             //String ecPub = jclmsCCB2014.EciesGetPubKey(hec);
             //String ecPri = jclmsCCB2014.EciesGetPriKey(hec);
-            String ecPub = "BNtNCJWl769SUMXlAA9zgO0G2OgqOscwU15rJ29GsUpJWdFw+OISxJz5s2+Xe9mXnzHxrvkdAxLOcTRjT9LWm8U=,";
+            String ecPub = "BGN5aG7J5MLBFCiMQhaHJUI54SOVEO+Amti+cYmh17wgiJm+dnUq/C2p5daHrCmc3XxbVeVQWNEOGXDoHajwcNU=";
+                //"BNtNCJWl769SUMXlAA9zgO0G2OgqOscwU15rJ29GsUpJWdFw+OISxJz5s2+Xe9mXnzHxrvkdAxLOcTRjT9LWm8U=,";
+            
             String ecPri = "vKikXLMXWZPK831V021NiMVSC4YPGlYT/j2BFHhtpYE=";
 
             Console.Out.WriteLine("CCB 1.1版本算法ECIES(椭圆曲线集成加密公钥算法)安全初始化演示开始");
@@ -48,7 +50,10 @@ namespace cstest702
             String plainText =
                 //mypsk;
                 //"myplaintext20140717.0918.012myplaintext20140717.0918.012end920";  //明文
-            "77498EB7D7CE8B92D871791C99B85AB337FF73235A89E7A20764EFE6EA41E4CE";
+                //"77498EB7D7CE8B92D871791C99B85AB337FF73235A89E7A20764EFE6EA41E4CE";
+                "77498EB7D7CE8B92D871791C99B85AB337FF73235A89E7A20764EFE6EA41E4CE";
+            //"emhvdXdlaXRlc3RPdXRwdXREZWJ1Z1N0cmluZ0";
+            //"FuZEppbkNodUVMb2NraW5kZXg9MFRvdGFsQmxvY2s9MkN1ckJsb2NrTGVuPTU4U2VkaW5nIERhdGEgQmxvY2sgIzBSZWNldmVkIERhdGEgRnJvbSBKQ0VMb2NrIGlzOg==";
             //用对方的公钥加密后发给对方
             String cryptText = jclmsCCB2014.EciesEncrypt(ecPub, plainText);
             //对方使用自己的私钥解密，还原出来明文
