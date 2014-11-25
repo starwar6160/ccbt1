@@ -18,6 +18,10 @@ namespace jcAtmcConvertDLL {
 	//20141111万敏.温度振动传感器报文支持
 	const char *JCSTR_SENSE_TEMPTURE = "Set_Senser_Temperature";
 	const char *JCSTR_SENSE_SHOCK = "Set_Senser_Shock";
+	//20141125.万敏.温度振动传感器新增3条命令报文支持
+	const char *JCSTR_SENSE_SET_INSIDE_LOOP_TIMES="Set_Inside_Loop_Times";
+	const char *JCSTR_SENSE_SET_INSIDE_LOOP_PERIOD="Set_Inside_Loop_Period";
+	const char *JCSTR_SENSE_SET_OUTSIDE_LOOP_PERIOD="Set_Outside_Loop_Period";
 
 	const char *CCBSTR_CODE = "root.TransCode";
 	const char *CCBSTR_NAME = "root.TransName";

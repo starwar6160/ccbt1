@@ -77,6 +77,7 @@ namespace jcAtmcConvertDLL {
 	}
 //////////////////////////////////////////////////////////////////////////
 //20141111万敏.温度振动传感器报文支持
+
 	void zwconvTemptureSenseDown(const ptree & ptccb, ptree & ptjc) {
 		ZWFUNCTRACE
 		    ptjc.put(jcAtmcConvertDLL::JCSTR_CMDTITLE,
@@ -116,5 +117,32 @@ namespace jcAtmcConvertDLL {
 		ptccb.put("root.LockId", ptjc.get < string > ("Lock_Serial"));
 		ptccb.put("root.Status", ptjc.get < int >("Status"));
 	}
+//////////////////////////////////////////////////////////////////////////
+//20141125.1508.万敏新增的5002/3/4三条命令
+	////ATM机设置上传的小循环次数命令
+	void zwconvTemptureSetInsideLoopTimesDown(const ptree & ptccb, ptree & ptjc) {
+
+	}
+
+	void zwconvTemptureSetInsideLoopTimesUp(const ptree & ptccb, ptree & ptjc) {
+
+	}
+	//ATM机设置上传的小循环周期(单位秒)命令
+	void zwconvTemptureSetInsideLoopPeriodDown(const ptree & ptccb, ptree & ptjc) {
+
+	}
+
+	void zwconvTemptureSetInsideLoopPeriodUp(const ptree & ptccb, ptree & ptjc) {
+
+	}
+	//ATM机设置上传的大循环周期(单位分钟)命令
+	void zwconvTemptureSetOutsideLoopPeriodDown(const ptree & ptccb, ptree & ptjc) {
+
+	}
+
+	void zwconvTemptureSetOutsideLoopPeriodUp(const ptree & ptccb, ptree & ptjc) {
+
+	}
+
 
 }				//namespace jcAtmcConvertDLL{

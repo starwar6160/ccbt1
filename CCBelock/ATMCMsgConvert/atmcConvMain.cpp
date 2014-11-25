@@ -83,6 +83,19 @@ namespace jcAtmcConvertDLL {
 			msgType = JCMSG_SENSE_SHOCK;
 			zwconvShockSenseDown(ptCCB, ptJC);
 		}
+		if ("5002" == transCode) {	//ATM机设置上传的小循环次数命令
+			msgType = JCMSG_SENSE_SET_INSIDE_LOOP_TIMES;
+			zwconvTemptureSetInsideLoopTimesDown(ptCCB, ptJC);
+		}
+		if ("5003" == transCode) {	//ATM机设置上传的小循环周期(单位秒)命令
+			msgType = JCMSG_SENSE_SET_INSIDE_LOOP_PERIOD;
+			zwconvTemptureSetInsideLoopPeriodDown(ptCCB, ptJC);
+		}
+		if ("5004" == transCode) {	//ATM机设置上传的大循环周期(单位分钟)命令
+			msgType = JCMSG_SENSE_SET_OUTSIDE_LOOP_PERIOD;
+			zwconvTemptureSetOutsideLoopPeriodDown(ptCCB, ptJC);
+		}
+
 		//////////////////////////////////////////////////////////////////////////
 		//锁具单向上传消息的配合一问一答测试消息：
 		if ("1000" == transCode) {	//接收初始闭锁码
@@ -173,6 +186,16 @@ namespace jcAtmcConvertDLL {
 		if (JCSTR_SENSE_SHOCK == jcCmd) {	//振动传感器
 			zwconvShockSenseUp(ptJC, ptCCB);
 		}
+		if (JCSTR_SENSE_SET_INSIDE_LOOP_TIMES == jcCmd) {	//ATM机设置上传的小循环次数命令
+			zwconvTemptureSetInsideLoopTimesUp(ptJC, ptCCB);
+		}
+		if (JCSTR_SENSE_SET_INSIDE_LOOP_PERIOD == jcCmd) {	//ATM机设置上传的小循环周期(单位秒)命令
+			zwconvTemptureSetInsideLoopPeriodUp(ptJC, ptCCB);
+		}
+		if (JCSTR_SENSE_SET_OUTSIDE_LOOP_PERIOD == jcCmd) {	//ATM机设置上传的大循环周期(单位分钟)命令
+			zwconvTemptureSetOutsideLoopPeriodUp(ptJC, ptCCB);
+		}
+
 		//////////////////////////////////////////////////////////////////////////
 		std::stringstream sst2;
 		OutputDebugStringA("20141017.1116.MaHaoTest3");

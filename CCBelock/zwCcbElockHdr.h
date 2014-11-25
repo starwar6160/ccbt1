@@ -18,7 +18,10 @@ typedef enum jcmsg_ccb_elock_t {
 	//////////////////////////////////////////////////////////////////////////
 	//20141111.万敏要求增加的温度和振动传感器支持报文
 	JCMSG_SENSE_TEMPTURE,	//温度传感器
-	JCMSG_SENSE_SHOCK	//振动传感器
+	JCMSG_SENSE_SHOCK,	//振动传感器
+	JCMSG_SENSE_SET_INSIDE_LOOP_TIMES,//ATM机设置上传的小循环次数命令
+	JCMSG_SENSE_SET_INSIDE_LOOP_PERIOD,//ATM机设置上传的小循环周期(单位秒)命令
+	JCMSG_SENSE_SET_OUTSIDE_LOOP_PERIOD,//ATM机设置上传的大循环周期(单位分钟)命令
 } JC_MSG_TYPE;
 
 //为了日志，报警等用途设计的数据结构
@@ -53,6 +56,10 @@ namespace jcAtmcConvertDLL {
 	//20141111万敏.温度振动传感器报文支持
 	extern const char *JCSTR_SENSE_TEMPTURE;	//温度传感器
 	extern const char *JCSTR_SENSE_SHOCK;	//振动传感器
+	extern const char *JCSTR_SENSE_SET_INSIDE_LOOP_TIMES;//ATM机设置上传的小循环次数命令
+	extern const char *JCSTR_SENSE_SET_INSIDE_LOOP_PERIOD;//ATM机设置上传的小循环周期(单位秒)命令
+	extern const char *JCSTR_SENSE_SET_OUTSIDE_LOOP_PERIOD;//ATM机设置上传的大循环周期(单位分钟)命令
+
 
 	extern const char *CCBSTR_CODE;
 	extern const char *CCBSTR_NAME;

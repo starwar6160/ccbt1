@@ -33,6 +33,17 @@ namespace jcAtmcConvertDLL {
 	void zwconvTemptureSenseUp(const ptree & ptjc, ptree & ptccb);
 	void zwconvShockSenseDown(const ptree & ptccb, ptree & ptjc);
 	void zwconvShockSenseUp(const ptree & ptjc, ptree & ptccb);
+//20151125.万敏新增的3个命令报文
+	//ATM机设置上传的小循环次数命令
+	void zwconvTemptureSetInsideLoopTimesDown(const ptree & ptccb, ptree & ptjc);
+	void zwconvTemptureSetInsideLoopTimesUp(const ptree & ptccb, ptree & ptjc);
+	//ATM机设置上传的小循环周期(单位秒)命令
+	void zwconvTemptureSetInsideLoopPeriodDown(const ptree & ptccb, ptree & ptjc);
+	void zwconvTemptureSetInsideLoopPeriodUp(const ptree & ptccb, ptree & ptjc) ;
+	//ATM机设置上传的大循环周期(单位分钟)命令
+	void zwconvTemptureSetOutsideLoopPeriodDown(const ptree & ptccb, ptree & ptjc) ;
+	void zwconvTemptureSetOutsideLoopPeriodUp(const ptree & ptccb, ptree & ptjc) ;
+
 
 //以下4个字段，为的是在上下转换期间保存建行报文中冗余的，我们基本不用但又必须返回给建行的字段
 	extern string ns_ActReqName;
