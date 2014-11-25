@@ -112,7 +112,8 @@ void JCLMSCCB2014_API zwJcLockDumpJCINPUT(const int handle);
 const int ZWMEGA = 1000000;	//一百万
 int JCLMSCCB2014_API zwSM3StandardTestVector(void);
 //20141125新增，密盒通信函数
-int JCLMSCCB2014_API zwJclmsReq(const int handle);
+typedef struct jcLmsRequest JCLMSREQ;
+int JCLMSCCB2014_API zwJclmsReq(JCLMSREQ *req);
 void JCLMSCCB2014_API zwJclmsRsp(void);
 
 

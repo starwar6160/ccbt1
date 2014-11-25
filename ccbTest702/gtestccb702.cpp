@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "zwEcies529.h"
 #include "jclmsCCB2014.h"
+#include "dCodeHdr.h"
 void myJcLockInputTest1();
 
 //#define _DEBUG_ECIES_NORMAL_TEST1117
@@ -602,7 +603,7 @@ namespace CcbV11Test722Ecies {
 		printf("%s codesum=%d\n",__FUNCTION__,codesum);
 	}
 
-#include "dCodeHdr.h"
+
 //这里使用第二个句柄模拟密盒，每次更改了本地句柄内部的数据以后，就memcpy
 //到第二个句柄，模拟通信过程
 #define EMUHIDLMS	memcpy((void *)hnd2,(void *)handle,sizeof(JCINPUT));
@@ -616,7 +617,8 @@ namespace CcbV11Test722Ecies {
 			JcLockSetInt(handle,JCI_TIMESTEP,30);
 			JcLockSetCmdType(handle, JCI_CMDTYPE, JCCMD_INIT_CLOSECODE);
 			EMUHIDLMS
-			zwJclmsReq(handle);
+			JCLMSREQ lmsReq;
+			zwJclmsReq(&lmsReq);
 			zwJclmsRsp();
 			int initCloseCode = JcLockGetDynaCode(hnd2);
 			//此处期待值已经改为固定依赖1400M秒的时间值，应该不会再变了。
