@@ -11,8 +11,7 @@ typedef struct JcLockInput {
 	//可变因素部分
 	int CodeGenDateTime;		//日期时间
 	int Validity;		//有效期
-	int CloseCode;	//闭锁码             
-	int dstCode;	//反推运算的输入动态码
+	int CloseCode;	//闭锁码             	
 	JCCMD CmdType;	//模式代码，比如开锁模式，远程重置模式，建行的流程要求的各种模式等等
 	///////////////////////////////////以下为配置算法运作模式的数据///////////////////////////////////////
 	int dbgSearchTimeStart;	//搜索时间起始点，默认值应该是当前时间，但是比如测试时可以额外设定。20141118新增,主要供调试和单元测试使用
@@ -32,6 +31,7 @@ typedef enum jclmsd_request{
 
 typedef struct jcLmsRequest{
 	JCLMSOP op;
+	int dstCode;	//反推运算的输入动态码
 	JCINPUT inputData;
 }JCLMSREQ;
 

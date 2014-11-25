@@ -616,6 +616,8 @@ namespace CcbV11Test722Ecies {
 			JcLockSetInt(handle,JCI_TIMESTEP,30);
 			JcLockSetCmdType(handle, JCI_CMDTYPE, JCCMD_INIT_CLOSECODE);
 			EMUHIDLMS
+			zwJclmsReq(handle);
+			zwJclmsRsp();
 			int initCloseCode = JcLockGetDynaCode(hnd2);
 			//此处期待值已经改为固定依赖1400M秒的时间值，应该不会再变了。
 			//20141113.1751根据前两天开会决定做的修改。周伟

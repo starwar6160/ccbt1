@@ -111,6 +111,10 @@ void JCLMSCCB2014_API JcLockDebugPrint(const int handle);
 void JCLMSCCB2014_API zwJcLockDumpJCINPUT(const int handle);
 const int ZWMEGA = 1000000;	//一百万
 int JCLMSCCB2014_API zwSM3StandardTestVector(void);
+//20141125新增，密盒通信函数
+int JCLMSCCB2014_API zwJclmsReq(const int handle);
+void JCLMSCCB2014_API zwJclmsRsp(void);
+
 
 #ifdef  __cplusplus
 }	//extern "C" {

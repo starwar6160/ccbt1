@@ -8,6 +8,11 @@
 #include "jclmsCCB2014.h"
 #include "sm3.h"
 #include "dCodeHdr.h"
+//extern "C"
+//{
+//void	WINAPI	Sleep(uint32_t dwMilliseconds	);
+//};
+
 
 const int ZW_SM3_DGST_SIZE = (256 / 8);
 const int ZW_CLOSECODE_STEP = 12;	//闭锁码的计算步长时间精度
@@ -51,7 +56,6 @@ int JCLMSCCB2014_API JcLockNew(void)
 	pjc->CmdType = JCCMD_INIT_CLOSECODE;
 	pjc->dbgSearchTimeStart=time(NULL);
 	pjc->SearchTimeStep = 6;
-	pjc->dstCode=0;	//反推运算的输入动态码，正向运算时为0
 	//默认在线模式，反推时间步长60秒.
 	//20140805.0903.按照昨天张靖钰的要求，暂时改为5分钟默认值
 	// 20140820.2329.按照建行要求从任意时间点开始5分钟有效期的要求，
@@ -262,3 +266,38 @@ void myGetCloseCodeVarItem(int *mdatetime, int *mvalidity, int *mclosecode)
 	*mvalidity = 1440;
 	*mclosecode = ZW_CLOSECODE_BASEINPUT;
 }
+
+const int ZWDMBUFLEN=58*3;	//58字节是HID包做了切分封装之后的有效载荷最大长度
+static char g_zwDemoHidBuf[ZWDMBUFLEN];
+int zwJclmsReq(const int handle)
+{
+	zwJcLockDumpJCINPUT(handle);
+	JCINPUT *jcp = (JCINPUT *) handle;
+	assert(sizeof(JCINPUT)<=ZWDMBUFLEN);
+	//////////////////////////////////模拟发送数据////////////////////////////////////////
+	memset(g_zwDemoHidBuf,0,ZWDMBUFLEN);
+	memcpy(g_zwDemoHidBuf,jcp,sizeof(JCINPUT));
+	//Sleep(100);	//模拟等待密盒处理完毕
+	zwJclmsRsp();
+	//模拟接收返回数据
+	JCRESULT rsp;
+	memcpy(&rsp,g_zwDemoHidBuf,sizeof(JCRESULT));
+	return rsp.dynaCodePass1;
+}
+
+void zwJclmsRsp(void)
+{
+	//模拟接收数据
+	JCINPUT inData;
+	memcpy(&inData,g_zwDemoHidBuf,sizeof(JCINPUT));
+	printf("%s input datetime is %d\n",__FUNCTION__,inData.CodeGenDateTime);
+	//模拟发送返回结果
+	JCRESULT outData;
+	memset(&outData,0,sizeof(JCRESULT));
+	outData.dynaCodePass1=20141125;
+	memset(g_zwDemoHidBuf,0,ZWDMBUFLEN);
+	memcpy(g_zwDemoHidBuf,&outData,sizeof(JCRESULT));
+}
+
+
+
