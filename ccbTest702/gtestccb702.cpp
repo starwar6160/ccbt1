@@ -645,12 +645,13 @@ namespace CcbV11Test722Ecies {
 			codesum+=pass1DyCode;
 			EXPECT_EQ(pass1DyCode, 57174184);
 			JcLockSetInt(handle,JCI_DBG_TIMESTART,1416*ZWMEGA+123);
-			EMUHIDLMS
+			//验证第一开锁码
 			memcpy(&lmsReq.inputData,(JCINPUT *)handle,sizeof(JCINPUT));
 			lmsReq.op=JCLMS_CCB_CODEVERIFY;
-			JCMATCH pass1Match =
-				//zwJclmsReq(&lmsReq);
-				JcLockReverseVerifyDynaCode(hnd2, pass1DyCode);
+			lmsReq.dstCode=57174184;
+			zwJclmsReq(&lmsReq,&lmsRsp);
+			JCMATCH pass1Match ;
+			memcpy(&pass1Match,&lmsRsp.verCodeMatch,sizeof(JCMATCH));
 			EXPECT_EQ(pass1Match.s_datetime,ZWFIX_STARTTIME);
 			//#ifdef _DEBUG
 			printf("input time=\t\t%d\n", ZWFIX_STARTTIME);
