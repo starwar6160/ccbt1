@@ -2,6 +2,12 @@
 #define dCodeHdr_h__
 #include "sm3.h"
 #include "jclmsCCB2014.h"
+
+#ifdef  __cplusplus
+extern "C" {
+#endif
+
+
 #pragma pack(1)
 typedef struct JcLockInput {
 	//固定因素部分
@@ -53,5 +59,8 @@ int myGetNormalTime(int gmtTime, const int TIMEMOD);
 //获取初始闭锁码的3个可变条件的“固定值”
 void myGetInitCloseCodeVarItem(int *mdatetime, int *mvalidity, int *mclosecode);
 
+#ifdef  __cplusplus
+}	//extern "C" {
+#endif
 
 #endif // dCodeHdr_h__

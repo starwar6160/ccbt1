@@ -269,7 +269,7 @@ void myGetCloseCodeVarItem(int *mdatetime, int *mvalidity, int *mclosecode)
 
 const int ZWDMBUFLEN=58*3;	//58字节是HID包做了切分封装之后的有效载荷最大长度
 static char g_zwDemoHidBuf[ZWDMBUFLEN];
-int zwJclmsReq(JCLMSREQ *req)
+void JCLMSCCB2014_API zwJclmsReq( JCLMSREQ *req,JCRESULT *rsp )
 {
 	assert(sizeof(JCLMSREQ)<=ZWDMBUFLEN);
 	//////////////////////////////////模拟发送数据////////////////////////////////////////
@@ -278,9 +278,8 @@ int zwJclmsReq(JCLMSREQ *req)
 	//此处由于是模拟，时序不好控制，为了便于调试，在此直接调用密盒端的函数zwJclmsRsp来做处理
 	zwJclmsRsp();
 	//模拟接收返回数据
-	JCRESULT rsp;
-	memcpy(&rsp,g_zwDemoHidBuf,sizeof(JCRESULT));
-	return rsp.dynaCodePass1;
+	//JCRESULT rsp;
+	memcpy(rsp,g_zwDemoHidBuf,sizeof(JCRESULT));
 }
 
 void zwJclmsRsp(void)

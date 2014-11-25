@@ -618,9 +618,11 @@ namespace CcbV11Test722Ecies {
 			JcLockSetCmdType(handle, JCI_CMDTYPE, JCCMD_INIT_CLOSECODE);
 			//////////////////////////////////////////////////////////////////////////
 			JCLMSREQ lmsReq;
+			JCRESULT lmsRsp;
 			memcpy(&lmsReq.inputData,(JCINPUT *)handle,sizeof(JCINPUT));
 			lmsReq.op=JCLMS_CCB_CODEGEN;
-			int initCloseCode=zwJclmsReq(&lmsReq);
+			zwJclmsReq(&lmsReq,&lmsRsp);
+			int initCloseCode=lmsRsp.dynaCodePass1;
 			
 			//int initCloseCode = JcLockGetDynaCode(hnd2);
 			//此处期待值已经改为固定依赖1400M秒的时间值，应该不会再变了。
@@ -638,7 +640,8 @@ namespace CcbV11Test722Ecies {
 			JcLockDebugPrint(handle);
 			//////////////////////////////////////////////////////////////////////////
 			memcpy(&lmsReq.inputData,(JCINPUT *)handle,sizeof(JCINPUT));
-			pass1DyCode = zwJclmsReq(&lmsReq);
+			zwJclmsReq(&lmsReq,&lmsRsp);
+			pass1DyCode = lmsRsp.dynaCodePass1;
 			codesum+=pass1DyCode;
 			EXPECT_EQ(pass1DyCode, 57174184);
 			JcLockSetInt(handle,JCI_DBG_TIMESTART,1416*ZWMEGA+123);

@@ -114,7 +114,7 @@ int JCLMSCCB2014_API zwSM3StandardTestVector(void);
 //20141125新增，密盒通信函数
 typedef struct jcLmsRequest JCLMSREQ;
 typedef struct JcLockResult JCRESULT;
-int JCLMSCCB2014_API zwJclmsReq(JCLMSREQ *req);
+void JCLMSCCB2014_API zwJclmsReq(JCLMSREQ *req,JCRESULT *rsp);
 void JCLMSCCB2014_API zwJclmsRsp(void);
 
 
