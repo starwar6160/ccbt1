@@ -43,14 +43,8 @@ typedef struct jcLmsRequest{
 
 //用于HID等通信接口返回结果，统一在一个结构体里面
 typedef struct JcLockResult{
-	JCCMD CmdType;	//指明下面联合里面的内容哪一项有效
-	union{
-		int initCloseCode;			//初始闭锁码    
-		int CloseCode;				//闭锁码             
-		int dynaCodePass1;			//第一动态码
-		int dynaCodePass2;			//第二动态码
-		JCMATCH verCodeMatch;		//验证码匹配日期时间和有效期
-	};	
+		int dynaCode;			//动态码结果
+		JCMATCH verCodeMatch;		//验证码匹配日期时间和有效期结果
 }JCRESULT;
 #pragma pack()
 

@@ -296,7 +296,7 @@ void zwJclmsRsp(void)
 	if (JCLMS_CCB_CODEGEN==inData.op)
 	{
 		dyCode=zwJcLockGetDynaCode((int)(&inData.inputData));
-		outData.dynaCodePass1=dyCode;
+		outData.dynaCode=dyCode;
 	}
 	if (JCLMS_CCB_CODEVERIFY==inData.op)
 	{
