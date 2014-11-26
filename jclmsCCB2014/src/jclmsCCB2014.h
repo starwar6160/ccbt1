@@ -122,7 +122,7 @@ int JCLMSCCB2014_API zwSM3StandardTestVector(void);
 //20141125新增，密盒通信函数
 void JCLMSCCB2014_API zwJclmsReqGenDyCode(int lmsHandle,JCRESULT *rsp);
 void JCLMSCCB2014_API zwJclmsReqVerifyDyCode( int lmsHandle,int dstCode,JCRESULT *rsp );
-void JCLMSCCB2014_API zwJclmsRsp(void);
+void JCLMSCCB2014_API zwJclmsRsp( void * inLmsReq,const int inLmsReqLen,JCRESULT *lmsResult);
 
 
 #ifdef  __cplusplus

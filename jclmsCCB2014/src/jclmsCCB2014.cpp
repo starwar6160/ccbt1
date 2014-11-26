@@ -281,10 +281,7 @@ void JCLMSCCB2014_API zwJclmsReqGenDyCode( int lmsHandle,JCRESULT *rsp )
 	memset(g_zwDemoHidBuf,0,ZWDMBUFLEN);
 	memcpy(g_zwDemoHidBuf,&req,sizeof(JCLMSREQ));
 	//此处由于是模拟，时序不好控制，为了便于调试，在此直接调用密盒端的函数zwJclmsRsp来做处理
-	zwJclmsRsp();
-	//模拟接收返回数据
-	//JCRESULT rsp;
-	memcpy(rsp,g_zwDemoHidBuf,sizeof(JCRESULT));
+	zwJclmsRsp(g_zwDemoHidBuf,sizeof(JCLMSREQ),rsp);
 }
 
 void JCLMSCCB2014_API zwJclmsReqVerifyDyCode( int lmsHandle,int dstCode,JCRESULT *rsp )
@@ -300,35 +297,29 @@ void JCLMSCCB2014_API zwJclmsReqVerifyDyCode( int lmsHandle,int dstCode,JCRESULT
 	memset(g_zwDemoHidBuf,0,ZWDMBUFLEN);
 	memcpy(g_zwDemoHidBuf,&req,sizeof(JCLMSREQ));
 	//此处由于是模拟，时序不好控制，为了便于调试，在此直接调用密盒端的函数zwJclmsRsp来做处理
-	zwJclmsRsp();
-	//模拟接收返回数据
-	//JCRESULT rsp;
-	memcpy(rsp,g_zwDemoHidBuf,sizeof(JCRESULT));
+	zwJclmsRsp(g_zwDemoHidBuf,sizeof(JCLMSREQ),rsp);
 }
 
-void zwJclmsRsp(void)
+void JCLMSCCB2014_API zwJclmsRsp( void * inLmsReq,const int inLmsReqLen,JCRESULT *lmsResult )
 {
 	//模拟接收数据
-	JCLMSREQ inData;
-	memcpy(&inData,g_zwDemoHidBuf,sizeof(JCLMSREQ));
-	zwJcLockDumpJCINPUT((int)(&inData));
+	JCLMSREQ lmsReq;
+	memcpy(&lmsReq,inLmsReq,inLmsReqLen);
+	zwJcLockDumpJCINPUT((int)(&lmsReq));
 	//模拟发送返回结果
-	JCRESULT outData;
-	memset(&outData,0,sizeof(JCRESULT));
+
 
 	int dyCode=0;
-	if (JCLMS_CCB_CODEGEN==inData.op)
+	if (JCLMS_CCB_CODEGEN==lmsReq.op)
 	{
-		dyCode=zwJcLockGetDynaCode((int)(&inData.inputData));
-		outData.dynaCode=dyCode;
+		dyCode=zwJcLockGetDynaCode((int)(&lmsReq.inputData));
+		lmsResult->dynaCode=dyCode;
 	}
-	if (JCLMS_CCB_CODEVERIFY==inData.op)
+	if (JCLMS_CCB_CODEVERIFY==lmsReq.op)
 	{
-		JCMATCH jm=JcLockReverseVerifyDynaCode((int)(&inData.inputData),inData.dstCode);
-		memcpy(&outData.verCodeMatch,&jm,sizeof(JCMATCH));
+		JCMATCH jm=JcLockReverseVerifyDynaCode((int)(&lmsReq.inputData),lmsReq.dstCode);
+		memcpy(&(lmsResult->verCodeMatch),&jm,sizeof(JCMATCH));
 	}	
-	memset(g_zwDemoHidBuf,0,ZWDMBUFLEN);
-	memcpy(g_zwDemoHidBuf,&outData,sizeof(JCRESULT));
 }
 
 
