@@ -573,7 +573,7 @@ ZWECIES_API const char *EciesEncrypt(const char *pubKey, const char *plainText)
 	assert(NULL != plainText && strlen(plainText) > 0);
 	assert(*(int *)plainText != 0xCCCCCCCC);
 	static string g_retStr;
-	sprintf(dbgBuf,"pubKey=%s plainText=%s",pubKey,plainText);
+	sprintf(dbgBuf,"1701.pubKey=%s plainText=%s",pubKey,plainText);
 	OutputDebugStringA(dbgBuf);
 #define SKELEN	(ZW_ECIES_ENCSYNCKEY_LEN*2)
 #define HASHLEN	(EFS*2+ZW_EXA)
@@ -594,12 +594,13 @@ ZWECIES_API const char *EciesEncrypt(const char *pubKey, const char *plainText)
 	string dot = ".";
 	g_retStr = encSyncKey + dot + msgHashBuf + dot + cryptText;
 	memset(dbgBuf,0,BUFLEN);
-	sprintf(dbgBuf,"zwEciesEncrypt result=%d encSyncKey=%s msgHashBuf=%s cryptText=%s",res,encSyncKey,msgHashBuf,cryptText);
+	sprintf(dbgBuf,"R1 zwEciesEncrypt result=%d encSyncKey=%s msgHashBuf=%s cryptText=%s",res,encSyncKey,msgHashBuf,cryptText);
 	OutputDebugStringA(dbgBuf);
 	if (ECIES_SUCCESS != res || strlen(encSyncKey) == 0 ||
 	    strlen(msgHashBuf) == 0 || strlen(cryptText) == 0) {
 		return NULL;
 	}
+	OutputDebugStringA((char *)g_retStr.c_str());
 	return g_retStr.c_str();
 }
 

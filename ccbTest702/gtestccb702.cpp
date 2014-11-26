@@ -617,11 +617,8 @@ namespace CcbV11Test722Ecies {
 			JcLockSetInt(handle,JCI_TIMESTEP,30);
 			JcLockSetCmdType(handle, JCI_CMDTYPE, JCCMD_INIT_CLOSECODE);
 			//////////////////////////////////////////////////////////////////////////
-			JCLMSREQ lmsReq;
 			JCRESULT lmsRsp;
-			memcpy(&lmsReq.inputData,(JCINPUT *)handle,sizeof(JCINPUT));
-			lmsReq.op=JCLMS_CCB_CODEGEN;
-			zwJclmsReq(&lmsReq,&lmsRsp);
+			zwJclmsReqGenDyCode(handle,&lmsRsp);
 			int initCloseCode=lmsRsp.dynaCode;
 			
 			//int initCloseCode = JcLockGetDynaCode(hnd2);
@@ -639,17 +636,13 @@ namespace CcbV11Test722Ecies {
 			JcLockSetInt(handle, JCI_CLOSECODE, initCloseCode);
 			JcLockDebugPrint(handle);
 			//////////////////////////////////////////////////////////////////////////
-			memcpy(&lmsReq.inputData,(JCINPUT *)handle,sizeof(JCINPUT));
-			zwJclmsReq(&lmsReq,&lmsRsp);
+			zwJclmsReqGenDyCode(handle,&lmsRsp);
 			pass1DyCode = lmsRsp.dynaCode;
 			codesum+=pass1DyCode;
 			EXPECT_EQ(pass1DyCode, 57174184);
 			JcLockSetInt(handle,JCI_DBG_TIMESTART,1416*ZWMEGA+123);
 			//验证第一开锁码
-			memcpy(&lmsReq.inputData,(JCINPUT *)handle,sizeof(JCINPUT));
-			lmsReq.op=JCLMS_CCB_CODEVERIFY;
-			lmsReq.dstCode=57174184;
-			zwJclmsReq(&lmsReq,&lmsRsp);
+			zwJclmsReqVerifyDyCode(handle,57174184,&lmsRsp);
 			JCMATCH pass1Match ;
 			memcpy(&pass1Match,&lmsRsp.verCodeMatch,sizeof(JCMATCH));
 			EXPECT_EQ(pass1Match.s_datetime,ZWFIX_STARTTIME);

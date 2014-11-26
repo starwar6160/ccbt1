@@ -269,12 +269,36 @@ void myGetCloseCodeVarItem(int *mdatetime, int *mvalidity, int *mclosecode)
 
 const int ZWDMBUFLEN=58*3;	//58字节是HID包做了切分封装之后的有效载荷最大长度
 static char g_zwDemoHidBuf[ZWDMBUFLEN];
-void JCLMSCCB2014_API zwJclmsReq( JCLMSREQ *req,JCRESULT *rsp )
+void JCLMSCCB2014_API zwJclmsReqGenDyCode( int lmsHandle,JCRESULT *rsp )
 {
+	zwJcLockDumpJCINPUT(lmsHandle);
 	assert(sizeof(JCLMSREQ)<=ZWDMBUFLEN);
+	JCLMSREQ req;
+	memset(&req,0,sizeof(JCLMSREQ));
+	req.op=JCLMS_CCB_CODEGEN;
+	memcpy(&req.inputData,(JCINPUT *)lmsHandle,sizeof(JCINPUT));
 	//////////////////////////////////模拟发送数据////////////////////////////////////////
 	memset(g_zwDemoHidBuf,0,ZWDMBUFLEN);
-	memcpy(g_zwDemoHidBuf,req,sizeof(JCLMSREQ));
+	memcpy(g_zwDemoHidBuf,&req,sizeof(JCLMSREQ));
+	//此处由于是模拟，时序不好控制，为了便于调试，在此直接调用密盒端的函数zwJclmsRsp来做处理
+	zwJclmsRsp();
+	//模拟接收返回数据
+	//JCRESULT rsp;
+	memcpy(rsp,g_zwDemoHidBuf,sizeof(JCRESULT));
+}
+
+void JCLMSCCB2014_API zwJclmsReqVerifyDyCode( int lmsHandle,int dstCode,JCRESULT *rsp )
+{
+	zwJcLockDumpJCINPUT(lmsHandle);
+	assert(sizeof(JCLMSREQ)<=ZWDMBUFLEN);
+	JCLMSREQ req;
+	memset(&req,0,sizeof(JCLMSREQ));
+	req.op=JCLMS_CCB_CODEVERIFY;
+	req.dstCode=dstCode;
+	memcpy(&req.inputData,(JCINPUT *)lmsHandle,sizeof(JCINPUT));
+	//////////////////////////////////模拟发送数据////////////////////////////////////////
+	memset(g_zwDemoHidBuf,0,ZWDMBUFLEN);
+	memcpy(g_zwDemoHidBuf,&req,sizeof(JCLMSREQ));
 	//此处由于是模拟，时序不好控制，为了便于调试，在此直接调用密盒端的函数zwJclmsRsp来做处理
 	zwJclmsRsp();
 	//模拟接收返回数据
@@ -287,7 +311,7 @@ void zwJclmsRsp(void)
 	//模拟接收数据
 	JCLMSREQ inData;
 	memcpy(&inData,g_zwDemoHidBuf,sizeof(JCLMSREQ));
-	printf("%s input datetime is %d\n",__FUNCTION__,inData.inputData.CodeGenDateTime);
+	zwJcLockDumpJCINPUT((int)(&inData));
 	//模拟发送返回结果
 	JCRESULT outData;
 	memset(&outData,0,sizeof(JCRESULT));

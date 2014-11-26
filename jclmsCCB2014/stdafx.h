@@ -51,6 +51,16 @@ typedef void *            *LPVOID;	//此处和windef.h不太一样，去掉了过时的far关键
 #endif
 #endif
 
+#ifdef  __cplusplus
+extern "C" {
+#endif
+
+void WINAPI OutputDebugStringA(char * lpOutputString);
+
+#ifdef  __cplusplus
+}
+#endif
+
 //////////////////////替换windows.h中用到的部分定义结束///////////////////////////////
 
 	
