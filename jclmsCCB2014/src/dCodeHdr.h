@@ -41,11 +41,6 @@ typedef struct jcLmsRequest{
 	JCINPUT inputData;
 }JCLMSREQ;
 
-//用于HID等通信接口返回结果，统一在一个结构体里面
-typedef struct JcLockResult{
-		int dynaCode;			//动态码结果
-		JCMATCH verCodeMatch;		//验证码匹配日期时间和有效期结果
-}JCRESULT;
 #pragma pack()
 
 //获得规格化的时间，也就是按照某个值取整的时间

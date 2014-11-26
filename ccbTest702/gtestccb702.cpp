@@ -604,13 +604,9 @@ namespace CcbV11Test722Ecies {
 	}
 
 
-//这里使用第二个句柄模拟密盒，每次更改了本地句柄内部的数据以后，就memcpy
-//到第二个句柄，模拟通信过程
-#define EMUHIDLMS	memcpy((void *)hnd2,(void *)handle,sizeof(JCINPUT));
 //用于测试模拟两个机器之间通信的最基础测试
 	TEST_F(jclmsCCBV11_Test, zwHidSecboxLMSTest20141124) {
 		int codesum=0;
-		int hnd2=JcLockNew();
 		//assert(sizeof(JCINPUT)==163);		
 			//固定开锁时间,应该出来固定的结果
 			const int ZWFIX_STARTTIME=1416*ZWMEGA;
@@ -618,6 +614,7 @@ namespace CcbV11Test722Ecies {
 			JcLockSetCmdType(handle, JCI_CMDTYPE, JCCMD_INIT_CLOSECODE);
 			//////////////////////////////////////////////////////////////////////////
 			JCRESULT lmsRsp;
+			printf("zwJclmsReqGenDyCode initCloseCode\n");
 			zwJclmsReqGenDyCode(handle,&lmsRsp);
 			int initCloseCode=lmsRsp.dynaCode;
 			
@@ -636,12 +633,14 @@ namespace CcbV11Test722Ecies {
 			JcLockSetInt(handle, JCI_CLOSECODE, initCloseCode);
 			JcLockDebugPrint(handle);
 			//////////////////////////////////////////////////////////////////////////
+			printf("zwJclmsReqGenDyCode pass1DyCode\n");
 			zwJclmsReqGenDyCode(handle,&lmsRsp);
 			pass1DyCode = lmsRsp.dynaCode;
 			codesum+=pass1DyCode;
 			EXPECT_EQ(pass1DyCode, 57174184);
 			JcLockSetInt(handle,JCI_DBG_TIMESTART,1416*ZWMEGA+123);
 			//验证第一开锁码
+			printf("zwJclmsReqVerifyDyCode pass1DyCode\n");
 			zwJclmsReqVerifyDyCode(handle,57174184,&lmsRsp);
 			JCMATCH pass1Match ;
 			memcpy(&pass1Match,&lmsRsp.verCodeMatch,sizeof(JCMATCH));
@@ -650,7 +649,6 @@ namespace CcbV11Test722Ecies {
 			printf("input time=\t\t%d\n", ZWFIX_STARTTIME);
 			printf("pass1Match Time =\t%d\tValidity=%d\n",
 				pass1Match.s_datetime, pass1Match.s_validity);
-			JcLockDelete(hnd2);
 			//#endif // _DEBUG
 		}
 

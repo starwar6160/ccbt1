@@ -76,6 +76,14 @@ typedef struct jcLockReverseMatchResult {
 	int s_validity;		//匹配结果有效期分钟数
 } JCMATCH;
 
+#pragma pack(1)
+//用于HID等通信接口返回结果，统一在一个结构体里面
+typedef struct JcLockResult{
+	int dynaCode;			//动态码结果
+	JCMATCH verCodeMatch;		//验证码匹配日期时间和有效期结果
+}JCRESULT;
+#pragma pack()
+
 //有效期数组大小；更改此处以后请对应更改源代码中JcLockInput类初始化代码中
 //为有效期数组m_validity_array赋予初值的相应语句
 #define NUM_VALIDITY (8)
@@ -112,7 +120,6 @@ void JCLMSCCB2014_API zwJcLockDumpJCINPUT(const int handle);
 const int ZWMEGA = 1000000;	//一百万
 int JCLMSCCB2014_API zwSM3StandardTestVector(void);
 //20141125新增，密盒通信函数
-typedef struct JcLockResult JCRESULT;
 void JCLMSCCB2014_API zwJclmsReqGenDyCode(int lmsHandle,JCRESULT *rsp);
 void JCLMSCCB2014_API zwJclmsReqVerifyDyCode( int lmsHandle,int dstCode,JCRESULT *rsp );
 void JCLMSCCB2014_API zwJclmsRsp(void);
