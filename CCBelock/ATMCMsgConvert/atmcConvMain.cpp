@@ -187,13 +187,13 @@ namespace jcAtmcConvertDLL {
 			zwconvShockSenseUp(ptJC, ptCCB);
 		}
 		if (JCSTR_SENSE_SET_INSIDE_LOOP_TIMES == jcCmd) {	//ATM机设置上传的小循环次数命令
-			zwconvTemptureSetInsideLoopTimesUp(ptJC, ptCCB);
+			zwconvTemptureSetInsideLoopTimesUp(ptCCB, ptJC);
 		}
 		if (JCSTR_SENSE_SET_INSIDE_LOOP_PERIOD == jcCmd) {	//ATM机设置上传的小循环周期(单位秒)命令
-			zwconvTemptureSetInsideLoopPeriodUp(ptJC, ptCCB);
+			zwconvTemptureSetInsideLoopPeriodUp(ptCCB, ptJC);
 		}
 		if (JCSTR_SENSE_SET_OUTSIDE_LOOP_PERIOD == jcCmd) {	//ATM机设置上传的大循环周期(单位分钟)命令
-			zwconvTemptureSetOutsideLoopPeriodUp(ptJC, ptCCB);
+			zwconvTemptureSetOutsideLoopPeriodUp(ptCCB, ptJC);
 		}
 
 		//////////////////////////////////////////////////////////////////////////

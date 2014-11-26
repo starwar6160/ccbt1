@@ -121,27 +121,67 @@ namespace jcAtmcConvertDLL {
 //20141125.1508.万敏新增的5002/3/4三条命令
 	////ATM机设置上传的小循环次数命令
 	void zwconvTemptureSetInsideLoopTimesDown(const ptree & ptccb, ptree & ptjc) {
-
+		ZWFUNCTRACE
+			ptjc.put(jcAtmcConvertDLL::JCSTR_CMDTITLE,
+			jcAtmcConvertDLL::JCSTR_SENSE_SET_INSIDE_LOOP_TIMES);
+		ptjc.put("Times", ptccb.get < int >("root.Times"));
 	}
 
-	void zwconvTemptureSetInsideLoopTimesUp(const ptree & ptccb, ptree & ptjc) {
-
+	void zwconvTemptureSetInsideLoopTimesUp( const ptree & ptjc, ptree & ptccb )
+	{
+		ZWFUNCTRACE 
+		ptccb.put(CCBSTR_CODE, "5002");
+		ptccb.put(CCBSTR_NAME, jcAtmcConvertDLL::JCSTR_SENSE_SET_INSIDE_LOOP_TIMES);
+		string zwDate, zwTime;
+		zwGetLocalDateTimeString(time(NULL), zwDate, zwTime);
+		ptccb.put(CCBSTR_DATE, zwDate);
+		ptccb.put(CCBSTR_TIME, zwTime);
+		//实质性有用字段
+		ptccb.put(CCBSTR_DEVCODE, ptjc.get < string > ("Atm_Serial"));
+		ptccb.put("root.LockId", ptjc.get < string > ("Lock_Serial"));
+		ptccb.put("root.Status", ptjc.get < int >("Status"));
 	}
 	//ATM机设置上传的小循环周期(单位秒)命令
 	void zwconvTemptureSetInsideLoopPeriodDown(const ptree & ptccb, ptree & ptjc) {
-
+		ZWFUNCTRACE
+			ptjc.put(jcAtmcConvertDLL::JCSTR_CMDTITLE,
+			jcAtmcConvertDLL::JCSTR_SENSE_SET_INSIDE_LOOP_PERIOD);
+		ptjc.put("Period", ptccb.get < int >("root.Period"));
 	}
 
-	void zwconvTemptureSetInsideLoopPeriodUp(const ptree & ptccb, ptree & ptjc) {
-
+	void zwconvTemptureSetInsideLoopPeriodUp( const ptree & ptjc, ptree & ptccb )
+	{
+		ZWFUNCTRACE ptccb.put(CCBSTR_CODE, "5003");
+		ptccb.put(CCBSTR_NAME, jcAtmcConvertDLL::JCSTR_SENSE_SET_INSIDE_LOOP_PERIOD);
+		string zwDate, zwTime;
+		zwGetLocalDateTimeString(time(NULL), zwDate, zwTime);
+		ptccb.put(CCBSTR_DATE, zwDate);
+		ptccb.put(CCBSTR_TIME, zwTime);
+		//实质性有用字段
+		ptccb.put(CCBSTR_DEVCODE, ptjc.get < string > ("Atm_Serial"));
+		ptccb.put("root.LockId", ptjc.get < string > ("Lock_Serial"));
+		ptccb.put("root.Status", ptjc.get < int >("Status"));
 	}
 	//ATM机设置上传的大循环周期(单位分钟)命令
 	void zwconvTemptureSetOutsideLoopPeriodDown(const ptree & ptccb, ptree & ptjc) {
-
+		ZWFUNCTRACE
+			ptjc.put(jcAtmcConvertDLL::JCSTR_CMDTITLE,
+			jcAtmcConvertDLL::JCSTR_SENSE_SET_OUTSIDE_LOOP_PERIOD);
+		ptjc.put("Period", ptccb.get < int >("root.Period"));
 	}
 
-	void zwconvTemptureSetOutsideLoopPeriodUp(const ptree & ptccb, ptree & ptjc) {
-
+	void zwconvTemptureSetOutsideLoopPeriodUp( const ptree & ptjc, ptree & ptccb )
+	{
+		ZWFUNCTRACE ptccb.put(CCBSTR_CODE, "5004");
+		ptccb.put(CCBSTR_NAME, jcAtmcConvertDLL::JCSTR_SENSE_SET_OUTSIDE_LOOP_PERIOD);
+		string zwDate, zwTime;
+		zwGetLocalDateTimeString(time(NULL), zwDate, zwTime);
+		ptccb.put(CCBSTR_DATE, zwDate);
+		ptccb.put(CCBSTR_TIME, zwTime);
+		//实质性有用字段
+		ptccb.put(CCBSTR_DEVCODE, ptjc.get < string > ("Atm_Serial"));
+		ptccb.put("root.LockId", ptjc.get < string > ("Lock_Serial"));
+		ptccb.put("root.Status", ptjc.get < int >("Status"));
 	}
 
 
