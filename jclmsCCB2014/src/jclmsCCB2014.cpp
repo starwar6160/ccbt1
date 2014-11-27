@@ -287,7 +287,20 @@ void JCLMSCCB2014_API zwJclmsReqGenDyCode( int lmsHandle,int *dyCode )
 	*dyCode=rsp.dynaCode;
 	crc32testmain1127();
 	//printf("JCLMSREQ CRC8 is %u\n",crc8(&rsp,sizeof(rsp)));
-	printf("JCLMSREQ CRC8 is %u\n",crc8(&req,sizeof(req)));
+	//printf("JCLMSREQ CRC8 is %u\n",crc8(&req,sizeof(req)));
+	JCLMSREQ req2;
+	memcpy(&req2,&req,sizeof(req));
+	printf("JCLMSREQ2 CRC8 is %u\n",crc8(&req2,sizeof(req2)));
+	req2.dstCode++;
+	printf("JCLMSREQ2 CRC8 is %u\n",crc8(&req2,sizeof(req2)));
+	req2.dstCode++;
+	printf("JCLMSREQ2 CRC8 is %u\n",crc8(&req2,sizeof(req2)));
+	req2.dstCode++;
+	printf("JCLMSREQ2 CRC8 is %u\n",crc8(&req2,sizeof(req2)));
+	req2.dstCode++;
+	printf("JCLMSREQ2 CRC8 is %u\n",crc8(&req2,sizeof(req2)));
+	req2.dstCode++;
+
 }
 
 //填写完毕handle里面的数据结构以后，调用该函数验证动态码（第一和第二动态码中间，锁具生成的校验码
