@@ -57,6 +57,7 @@ extern "C" {
 
 void WINAPI OutputDebugStringA(char * lpOutputString);
 unsigned int crc32(char *input,const int len);
+unsigned char crc8(void *p, int len);
 #ifdef  __cplusplus
 }
 #endif
