@@ -615,8 +615,9 @@ namespace CcbV11Test722Ecies {
 			//////////////////////////////////////////////////////////////////////////
 			JCRESULT lmsRsp;
 			printf("zwJclmsReqGenDyCode initCloseCode\n");
-			zwJclmsReqGenDyCode(handle,&lmsRsp);
-			int initCloseCode=lmsRsp.dynaCode;
+			int initCloseCode=0;
+			zwJclmsReqGenDyCode(handle,&initCloseCode);
+			
 			
 			//int initCloseCode = JcLockGetDynaCode(hnd2);
 			//此处期待值已经改为固定依赖1400M秒的时间值，应该不会再变了。
@@ -634,16 +635,14 @@ namespace CcbV11Test722Ecies {
 			JcLockDebugPrint(handle);
 			//////////////////////////////////////////////////////////////////////////
 			printf("zwJclmsReqGenDyCode pass1DyCode\n");
-			zwJclmsReqGenDyCode(handle,&lmsRsp);
-			pass1DyCode = lmsRsp.dynaCode;
+			zwJclmsReqGenDyCode(handle,&pass1DyCode);
 			codesum+=pass1DyCode;
 			EXPECT_EQ(pass1DyCode, 57174184);
 			JcLockSetInt(handle,JCI_DBG_TIMESTART,1416*ZWMEGA+123);
 			//验证第一开锁码
-			printf("zwJclmsReqVerifyDyCode pass1DyCode\n");
-			zwJclmsReqVerifyDyCode(handle,57174184,&lmsRsp);
 			JCMATCH pass1Match ;
-			memcpy(&pass1Match,&lmsRsp.verCodeMatch,sizeof(JCMATCH));
+			printf("zwJclmsReqVerifyDyCode pass1DyCode\n");
+			zwJclmsReqVerifyDyCode(handle,57174184,&pass1Match);						
 			EXPECT_EQ(pass1Match.s_datetime,ZWFIX_STARTTIME);
 			//#ifdef _DEBUG
 			printf("input time=\t\t%d\n", ZWFIX_STARTTIME);

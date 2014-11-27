@@ -267,29 +267,39 @@ void myGetCloseCodeVarItem(int *mdatetime, int *mvalidity, int *mclosecode)
 	*mclosecode = ZW_CLOSECODE_BASEINPUT;
 }
 
-void JCLMSCCB2014_API zwJclmsReqGenDyCode( int lmsHandle,JCRESULT *rsp )
+
+//////////////////////////////////////////////////////////////////////////
+void JCLMSCCB2014_API zwJclmsRsp( void * inLmsReq,const int inLmsReqLen,JCRESULT *lmsResult );
+
+//填写完毕handle里面的数据结构以后，调用该函数生成动态码，该函数在底层将请求
+//通过HID等通信线路发送到密盒，然后阻塞接收密盒返回结果，通过出参返回；
+void JCLMSCCB2014_API zwJclmsReqGenDyCode( int lmsHandle,int *dyCode )
 {
 	zwJcLockDumpJCINPUT(lmsHandle);	
 	JCLMSREQ req;
+	JCRESULT rsp;
 	memset(&req,0,sizeof(JCLMSREQ));
 	req.op=JCLMS_CCB_CODEGEN;
 	memcpy(&req.inputData,(JCINPUT *)lmsHandle,sizeof(JCINPUT));
 	//////////////////////////////////模拟发送数据////////////////////////////////////////
 	//此处由于是模拟，时序不好控制，为了便于调试，在此直接调用密盒端的函数zwJclmsRsp来做处理
-	zwJclmsRsp(&req,sizeof(JCLMSREQ),rsp);
+	zwJclmsRsp(&req,sizeof(JCLMSREQ),&rsp);
+	*dyCode=rsp.dynaCode;
 }
 
-void JCLMSCCB2014_API zwJclmsReqVerifyDyCode( int lmsHandle,int dstCode,JCRESULT *rsp )
+void JCLMSCCB2014_API zwJclmsReqVerifyDyCode( int lmsHandle,int dstCode,JCMATCH *match )
 {
 	zwJcLockDumpJCINPUT(lmsHandle);
 	JCLMSREQ req;
+	JCRESULT rsp;
 	memset(&req,0,sizeof(JCLMSREQ));
 	req.op=JCLMS_CCB_CODEVERIFY;
 	req.dstCode=dstCode;
 	memcpy(&req.inputData,(JCINPUT *)lmsHandle,sizeof(JCINPUT));
 	//////////////////////////////////模拟发送数据////////////////////////////////////////
 	//此处由于是模拟，时序不好控制，为了便于调试，在此直接调用密盒端的函数zwJclmsRsp来做处理
-	zwJclmsRsp(&req,sizeof(JCLMSREQ),rsp);
+	zwJclmsRsp(&req,sizeof(JCLMSREQ),&rsp);
+	memcpy(match,&rsp.verCodeMatch,sizeof(JCMATCH));
 }
 
 void JCLMSCCB2014_API zwJclmsRsp( void * inLmsReq,const int inLmsReqLen,JCRESULT *lmsResult )
