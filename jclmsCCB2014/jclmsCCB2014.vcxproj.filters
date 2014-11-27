@@ -83,5 +83,8 @@
     <ClCompile Include="src\dCodeIO.cpp">
       <Filter>源文件\dyCode</Filter>
     </ClCompile>
+    <ClCompile Include="src\crc32\zwcrc32.c">
+      <Filter>源文件\hashalg</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
