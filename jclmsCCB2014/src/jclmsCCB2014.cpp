@@ -270,7 +270,7 @@ void myGetCloseCodeVarItem(int *mdatetime, int *mvalidity, int *mclosecode)
 
 //////////////////////////////////////////////////////////////////////////
 void JCLMSCCB2014_API zwJclmsRsp( void * inLmsReq,const int inLmsReqLen,JCRESULT *lmsResult );
-
+//两个zwJclmsReq函数是上位机专用
 //填写完毕handle里面的数据结构以后，调用该函数生成动态码，该函数在底层将请求
 //通过HID等通信线路发送到密盒，然后阻塞接收密盒返回结果，通过出参返回；
 void JCLMSCCB2014_API zwJclmsReqGenDyCode( int lmsHandle,int *dyCode )
@@ -287,6 +287,9 @@ void JCLMSCCB2014_API zwJclmsReqGenDyCode( int lmsHandle,int *dyCode )
 	*dyCode=rsp.dynaCode;
 }
 
+//填写完毕handle里面的数据结构以后，调用该函数验证动态码（第一和第二动态码中间，锁具生成的校验码
+//也是使用其他两个动态码的同样算法生成的，所以也算一种动态码，该函数在底层将验证请求通过HID等
+//通信线路发送到密盒，然后阻塞接收密盒返回结果，通过出参返回；
 void JCLMSCCB2014_API zwJclmsReqVerifyDyCode( int lmsHandle,int dstCode,JCMATCH *match )
 {
 	zwJcLockDumpJCINPUT(lmsHandle);
@@ -302,6 +305,7 @@ void JCLMSCCB2014_API zwJclmsReqVerifyDyCode( int lmsHandle,int dstCode,JCMATCH 
 	memcpy(match,&rsp.verCodeMatch,sizeof(JCMATCH));
 }
 
+//该函数是下位机专用
 void JCLMSCCB2014_API zwJclmsRsp( void * inLmsReq,const int inLmsReqLen,JCRESULT *lmsResult )
 {
 	//从外部接收数据
