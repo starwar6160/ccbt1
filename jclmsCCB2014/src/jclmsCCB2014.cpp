@@ -276,7 +276,6 @@ void JCLMSCCB2014_API zwJclmsRsp( void * inLmsReq,const int inLmsReqLen,JCRESULT
 //通过HID等通信线路发送到密盒，然后阻塞接收密盒返回结果，通过出参返回；
 int JCLMSCCB2014_API zwJclmsReqGenDyCode( int lmsHandle,int *dyCode )
 {
-	zwJcLockDumpJCINPUT(lmsHandle);	
 	JCLMSREQ req;
 	JCRESULT rsp;
 	memset(&req,0,sizeof(JCLMSREQ));
@@ -290,7 +289,10 @@ int JCLMSCCB2014_API zwJclmsReqGenDyCode( int lmsHandle,int *dyCode )
 	if (JCHID_STATUS_OK != jcHidOpen(&hidHandle)) {
 		return -1118;
 	}
+	printf("%s Send Data to Secbox for Gen DynaCode:\n",__FUNCTION__);
+	zwJcLockDumpJCINPUT(lmsHandle);	
 	jcHidSendData(&hidHandle,(char *)&req,sizeof(req));
+	printf("Wait To SecBox Return Result now..\n");
 	int rspRealLen=0;
 	jcHidRecvData(&hidHandle,(char *)&rsp,sizeof(rsp),&rspRealLen);
 	assert(sizeof(rsp)==rspRealLen);
@@ -300,6 +302,7 @@ int JCLMSCCB2014_API zwJclmsReqGenDyCode( int lmsHandle,int *dyCode )
 	}
 	//zwJclmsRsp(&req,sizeof(JCLMSREQ),&rsp);
 	*dyCode=rsp.dynaCode;
+	printf("%s Return dynaCode=%d\n",__FUNCTION__,rsp.dynaCode);
 	jcHidClose(&hidHandle);
 	return 0;
 }
@@ -309,7 +312,6 @@ int JCLMSCCB2014_API zwJclmsReqGenDyCode( int lmsHandle,int *dyCode )
 //通信线路发送到密盒，然后阻塞接收密盒返回结果，通过出参返回；
 int JCLMSCCB2014_API zwJclmsReqVerifyDyCode( int lmsHandle,int dstCode,JCMATCH *match )
 {
-	zwJcLockDumpJCINPUT(lmsHandle);
 	JCLMSREQ req;
 	JCRESULT rsp;
 	memset(&req,0,sizeof(JCLMSREQ));
@@ -324,7 +326,10 @@ int JCLMSCCB2014_API zwJclmsReqVerifyDyCode( int lmsHandle,int dstCode,JCMATCH *
 	if (JCHID_STATUS_OK != jcHidOpen(&hidHandle)) {
 		return -1118;
 	}
+	printf("%s Send Data to Secbox with Wait To Verify DestCode %d\n",__FUNCTION__,dstCode);
+	zwJcLockDumpJCINPUT(lmsHandle);
 	jcHidSendData(&hidHandle,(char *)&req,sizeof(req));
+	printf("Wait To SecBox Return Result now..\n");
 	int rspRealLen=0;
 	jcHidRecvData(&hidHandle,(char *)&rsp,sizeof(rsp),&rspRealLen);
 	assert(sizeof(rsp)==rspRealLen);
@@ -333,6 +338,7 @@ int JCLMSCCB2014_API zwJclmsReqVerifyDyCode( int lmsHandle,int dstCode,JCMATCH *
 		printf("Secbox Return of LMS result size not match JCRESULT!\n");
 	}
 	memcpy(match,&rsp.verCodeMatch,sizeof(JCMATCH));
+	printf("%s Match DateTime=%d\tValidity=%d\n",__FUNCTION__,match->s_datetime,match->s_validity);
 	jcHidClose(&hidHandle);
 	return 0;
 }
