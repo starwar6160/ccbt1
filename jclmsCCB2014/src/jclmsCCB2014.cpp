@@ -4,7 +4,7 @@
 #include <assert.h>
 #include <stdio.h>
 #include <string.h>
-#include <time.h>
+//#include <time.h>
 #include "jclmsCCB2014.h"
 #include "sm3.h"
 #include "dCodeHdr.h"
@@ -18,21 +18,20 @@ extern "C"
 //为了修补密盒没有RTC时钟做的临时性措施，从上位机传递时间下去
 //保存在全局变量g_armEmuTime里面
 ////密盒没有RTC时钟的临时修补，20141128.1358.周伟
-#ifndef _WIN32
-#define time	zwArmEmuTime	
-static time_t g_armEmuTime=0;
-
-time_t zwArmEmuTime(time_t *inputTime)
-{
-	printf("DEBUG1128 %s g_armEmuTime=%d\n",__FUNCTION__,g_armEmuTime);
-	if (NULL!=inputTime)
-	{
-		return 0;
-	}
-	return g_armEmuTime;
-}
-
-#endif // _WIN32
+//#ifndef _WIN32
+//#define time	zwArmEmuTime	
+//static time_t g_armEmuTime=0;
+//
+//time_t zwArmEmuTime(time_t *inputTime)
+//{
+//	printf("DEBUG1128 %s g_armEmuTime=%d\n",__FUNCTION__,g_armEmuTime);
+//	if (NULL!=inputTime)
+//	{
+//		return 0;
+//	}
+//	return g_armEmuTime;
+//}
+//#endif // _WIN32
 
 const int ZW_SM3_DGST_SIZE = (256 / 8);
 const int ZW_CLOSECODE_STEP = 12;	//闭锁码的计算步长时间精度
@@ -73,7 +72,7 @@ int JCLMSCCB2014_API JcLockNew(void)
 	pjc->Validity = 5;	//用的最多的是5分钟有效期，所以直接初始化为5
 	pjc->CloseCode = 0;	//防备初始闭锁码生成的时候此处未初始化
 	pjc->CmdType = JCCMD_INIT_CLOSECODE;
-	pjc->dbgSearchTimeStart=time(NULL);
+	//pjc->dbgSearchTimeStart=time(NULL);
 	pjc->SearchTimeStep = 6;
 	//默认在线模式，反推时间步长60秒.
 	//20140805.0903.按照昨天张靖钰的要求，暂时改为5分钟默认值
@@ -175,7 +174,7 @@ JCMATCH JCLMSCCB2014_API JcLockReverseVerifyDynaCode(const int handle,
 
 	//根据建行广开中心发现的问题，从“将来”几分钟的时间开始往过去方向
 	//匹配，以防密码服务器和锁具之间有时间误差；
-	int l_datetime = time(NULL) + JC_DCODE_MATCH_FUTURE_SEC;
+	int l_datetime = jcp->dbgSearchTimeStart + JC_DCODE_MATCH_FUTURE_SEC;
 	int l_closecode = jcp->CloseCode;
 	int l_timestep = jcp->SearchTimeStep;
 	if (JCCMD_CCB_CLOSECODE == jcp->CmdType) {

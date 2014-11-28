@@ -440,7 +440,8 @@ namespace CcbV11Test722Ecies {
 			//shared_resource_ = new ;
 			//memset(s_priKey,0,sizeof(s_priKey));
 			handle = JcLockNew();
-			JcLockSetInt(handle,JCI_DATETIME,1401*ZWMEGA);
+			JcLockSetInt(handle,JCI_DATETIME,time(NULL));
+			JcLockSetInt(handle,JCI_SEARCH_TIME_START,time(NULL));
 			JcLockSetString(handle, JCI_ATMNO, "atm10455761");
 			JcLockSetString(handle, JCI_LOCKNO, "lock14771509");
 			JcLockSetString(handle, JCI_PSK, "PSKDEMO728");
@@ -460,17 +461,6 @@ namespace CcbV11Test722Ecies {
 
 /////////////////////////////////JCLMS算法测试/////////////////////////////////////////
 #ifdef _DEBUG_JCLMS_GTEST1117
-	TEST_F(jclmsCCBV11_Test, CloseCode) {		
-		JcLockSetCmdType(handle, JCI_CMDTYPE, JCCMD_CCB_CLOSECODE);
-		int CloseCode = JcLockGetDynaCode(handle);
-		cout << "CloseCode729=\t" << CloseCode << endl;
-		//检查闭锁码是否在正常范围内
-		EXPECT_GT(CloseCode, 10 * ZWMEGA);
-		EXPECT_LT(CloseCode, 100 * ZWMEGA);
-		JCMATCH ccodeMatch =
-		    JcLockReverseVerifyDynaCode(handle, CloseCode);
-		EXPECT_GT(ccodeMatch.s_datetime, 1400 * ZWMEGA-10);
-	}
 
 	TEST_F(jclmsCCBV11_Test, inputNew) {
 		//简单检查几个值，基本就可以判断是否初始化成功了
@@ -486,6 +476,18 @@ namespace CcbV11Test722Ecies {
 		//JcLockDebugPrint(handle);
 		//检查输入是否合法
 		EXPECT_EQ(EJC_SUSSESS, JcLockCheckInput(handle));
+	}
+
+	TEST_F(jclmsCCBV11_Test, CloseCode) {		
+		JcLockSetCmdType(handle, JCI_CMDTYPE, JCCMD_CCB_CLOSECODE);
+		int CloseCode = JcLockGetDynaCode(handle);
+		cout << "CloseCode729=\t" << CloseCode << endl;
+		//检查闭锁码是否在正常范围内
+		EXPECT_GT(CloseCode, 10 * ZWMEGA);
+		EXPECT_LT(CloseCode, 100 * ZWMEGA);
+		JCMATCH ccodeMatch =
+			JcLockReverseVerifyDynaCode(handle, CloseCode);
+		EXPECT_GT(ccodeMatch.s_datetime, 1400 * ZWMEGA-10);
 	}
 
 //第一开锁码测试
@@ -593,7 +595,7 @@ namespace CcbV11Test722Ecies {
 			pass1DyCode = JcLockGetDynaCode(handle);
 			codesum+=pass1DyCode;
 			EXPECT_EQ(pass1DyCode, 57174184);
-			JcLockSetInt(handle,JCI_DBG_TIMESTART,1416*ZWMEGA+123);
+			JcLockSetInt(handle,JCI_SEARCH_TIME_START,1416*ZWMEGA+123);
 			JCMATCH pass1Match =
 				JcLockReverseVerifyDynaCode(handle, pass1DyCode);
 			EXPECT_EQ(pass1Match.s_datetime,ZWFIX_STARTTIME);
@@ -643,7 +645,7 @@ namespace CcbV11Test722Ecies {
 			zwJclmsReqGenDyCode(handle,&pass1DyCode);
 			codesum+=pass1DyCode;
 			EXPECT_EQ(pass1DyCode, 57174184);
-			JcLockSetInt(handle,JCI_DBG_TIMESTART,1416*ZWMEGA+123);
+			JcLockSetInt(handle,JCI_SEARCH_TIME_START,1416*ZWMEGA+123);
 			//验证第一开锁码
 			JCMATCH pass1Match ;
 			printf("zwJclmsReqVerifyDyCode pass1DyCode\n");
@@ -692,7 +694,7 @@ namespace CcbV11Test722Ecies {
 		zwJclmsReqGenDyCode(handle,&pass1DyCode);
 		codesum+=pass1DyCode;
 		EXPECT_EQ(pass1DyCode, 57174184);
-		JcLockSetInt(handle,JCI_DBG_TIMESTART,1416*ZWMEGA+123);
+		JcLockSetInt(handle,JCI_SEARCH_TIME_START,1416*ZWMEGA+123);
 		//验证第一开锁码
 		JCMATCH pass1Match ;
 		printf("zwJclmsReqVerifyDyCode pass1DyCode\n");
