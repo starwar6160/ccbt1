@@ -4,10 +4,11 @@
 #include "dCodeHdr.h"
 void myJcLockInputTest1();
 
-#define _DEBUG_ECIES_NORMAL_TEST1117
-#define _DEBUG_ECIES_BADINPUT_TEST1117
-#define _DEBUG_ECIES_CSTEST1117
+//#define _DEBUG_ECIES_NORMAL_TEST1117
+//#define _DEBUG_ECIES_BADINPUT_TEST1117
+//#define _DEBUG_ECIES_CSTEST1117
 //#define _DEBUG_JCLMS_GTEST1117
+#define _ZWLMSHID_TEST1128
 
 namespace CcbV11Test722Ecies {
 	const int ZWMEGA = 1000 * 1000;
@@ -604,7 +605,7 @@ namespace CcbV11Test722Ecies {
 
 
 //用于测试模拟两个机器之间通信的最基础测试
-	TEST_F(jclmsCCBV11_Test, zwHidSecboxLMSTest20141124) {
+	TEST_F(jclmsCCBV11_Test, zwHidSecboxLMSemuTest20141124) {
 		int codesum=0;
 		//assert(sizeof(JCINPUT)==163);		
 			//固定开锁时间,应该出来固定的结果
@@ -650,5 +651,58 @@ namespace CcbV11Test722Ecies {
 			//#endif // _DEBUG
 		}
 #endif // _DEBUG_JCLMS_GTEST1117
+
+
+#ifdef _ZWLMSHID_TEST1128
+	//用于测试模拟两个机器之间通信的最基础测试
+	TEST_F(jclmsCCBV11_Test, zwHidSecboxLMSTest20141128) {
+		int codesum=0;
+		//assert(sizeof(JCINPUT)==163);		
+		//固定开锁时间,应该出来固定的结果
+		const int ZWFIX_STARTTIME=1416*ZWMEGA;
+		JcLockSetInt(handle,JCI_TIMESTEP,6);
+		JcLockSetCmdType(handle, JCI_CMDTYPE, JCCMD_INIT_CLOSECODE);
+		//////////////////////////////////////////////////////////////////////////
+		JCRESULT lmsRsp;
+		printf("zwJclmsReqGenDyCode initCloseCode\n");
+		int initCloseCode=0;
+		zwJclmsReqGenDyCode(handle,&initCloseCode);
+
+
+		//int initCloseCode = JcLockGetDynaCode(hnd2);
+		//此处期待值已经改为固定依赖1400M秒的时间值，应该不会再变了。
+		//20141113.1751根据前两天开会决定做的修改。周伟
+		//这里是一个自检测试，如果失败，就说明有比较大的问题了，比如类似发生过的
+		//ARM编译器优化级别问题导致的生成错误的二进制代码等等
+		EXPECT_EQ(38149728, initCloseCode);
+#ifdef _DEBUG_LMS1128
+		//dynaPass1
+		//注意现在合法的时间值应该是1.4G以上了，注意位数。20140721.1709 
+		JcLockSetInt(handle, JCI_DATETIME,ZWFIX_STARTTIME);
+		JcLockSetInt(handle,JCI_SEARCH_TIME_LENGTH,8*60);
+
+		JcLockSetCmdType(handle, JCI_CMDTYPE, JCCMD_CCB_DYPASS1);
+		JcLockSetInt(handle, JCI_CLOSECODE, initCloseCode);
+		JcLockDebugPrint(handle);
+		//////////////////////////////////////////////////////////////////////////
+		printf("zwJclmsReqGenDyCode pass1DyCode\n");
+		zwJclmsReqGenDyCode(handle,&pass1DyCode);
+		codesum+=pass1DyCode;
+		EXPECT_EQ(pass1DyCode, 57174184);
+		JcLockSetInt(handle,JCI_DBG_TIMESTART,1416*ZWMEGA+123);
+		//验证第一开锁码
+		JCMATCH pass1Match ;
+		printf("zwJclmsReqVerifyDyCode pass1DyCode\n");
+		zwJclmsReqVerifyDyCode(handle,57174184,&pass1Match);						
+		EXPECT_EQ(pass1Match.s_datetime,ZWFIX_STARTTIME);
+		//#ifdef _DEBUG
+		printf("input time=\t\t%d\n", ZWFIX_STARTTIME);
+		printf("pass1Match Time =\t%d\tValidity=%d\n",
+			pass1Match.s_datetime, pass1Match.s_validity);
+#endif // _DEBUG_LMS1128
+		//#endif // _DEBUG
+	}
+#endif // _ZWLMSHID_TEST1128
+
 //////////////////////////////////////////////////////////////////////////
 }				//namespace ccbtest722{

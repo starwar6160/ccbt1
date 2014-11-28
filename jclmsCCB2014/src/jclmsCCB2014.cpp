@@ -291,6 +291,7 @@ int JCLMSCCB2014_API zwJclmsReqGenDyCode( int lmsHandle,int *dyCode )
 	}
 	printf("%s Send Data to Secbox for Gen DynaCode:\n",__FUNCTION__);
 	zwJcLockDumpJCINPUT(lmsHandle);	
+	req.timeNow=time(NULL);	//密盒没有RTC时钟，从上位机发送下去时间
 	jcHidSendData(&hidHandle,(char *)&req,sizeof(req));
 	printf("Wait To SecBox Return Result now..\n");
 	int rspRealLen=0;
@@ -328,6 +329,7 @@ int JCLMSCCB2014_API zwJclmsReqVerifyDyCode( int lmsHandle,int dstCode,JCMATCH *
 	}
 	printf("%s Send Data to Secbox with Wait To Verify DestCode %d\n",__FUNCTION__,dstCode);
 	zwJcLockDumpJCINPUT(lmsHandle);
+	req.timeNow=time(NULL);	//密盒没有RTC时钟，从上位机发送下去时间
 	jcHidSendData(&hidHandle,(char *)&req,sizeof(req));
 	printf("Wait To SecBox Return Result now..\n");
 	int rspRealLen=0;
