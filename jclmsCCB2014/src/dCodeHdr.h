@@ -38,6 +38,7 @@ typedef enum jclmsd_request{
 typedef struct jcLmsRequest{
 	JCLMSOP op;
 	int dstCode;	//反推运算的输入动态码
+	unsigned int timeNow;	//当前时间，为没有RTC，需要对时的密盒准备的
 	JCINPUT inputData;
 }JCLMSREQ;
 

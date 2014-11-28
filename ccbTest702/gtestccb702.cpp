@@ -7,7 +7,7 @@ void myJcLockInputTest1();
 #define _DEBUG_ECIES_NORMAL_TEST1117
 #define _DEBUG_ECIES_BADINPUT_TEST1117
 #define _DEBUG_ECIES_CSTEST1117
-#define _DEBUG_JCLMS_GTEST1117
+//#define _DEBUG_JCLMS_GTEST1117
 
 namespace CcbV11Test722Ecies {
 	const int ZWMEGA = 1000 * 1000;

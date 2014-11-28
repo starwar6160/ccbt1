@@ -280,7 +280,7 @@ int JCLMSCCB2014_API zwJclmsReqGenDyCode( int lmsHandle,int *dyCode )
 	JCRESULT rsp;
 	memset(&req,0,sizeof(JCLMSREQ));
 	req.op=JCLMS_CCB_CODEGEN;
-	memcpy(&req.inputData,(JCINPUT *)lmsHandle,sizeof(JCINPUT));
+	memcpy((void *)&req.inputData,(void *)lmsHandle,sizeof(JCINPUT));
 	//////////////////////////////////模拟发送数据////////////////////////////////////////
 	//此处由于是模拟，时序不好控制，为了便于调试，在此直接调用密盒端的函数zwJclmsRsp来做处理
 	JCHID hidHandle;
@@ -317,7 +317,7 @@ int JCLMSCCB2014_API zwJclmsReqVerifyDyCode( int lmsHandle,int dstCode,JCMATCH *
 	memset(&req,0,sizeof(JCLMSREQ));
 	req.op=JCLMS_CCB_CODEVERIFY;
 	req.dstCode=dstCode;
-	memcpy(&req.inputData,(JCINPUT *)lmsHandle,sizeof(JCINPUT));
+	memcpy((void *)&req.inputData,(void *)lmsHandle,sizeof(JCINPUT));
 	//////////////////////////////////模拟发送数据////////////////////////////////////////
 	//此处由于是模拟，时序不好控制，为了便于调试，在此直接调用密盒端的函数zwJclmsRsp来做处理
 	JCHID hidHandle;
@@ -337,7 +337,7 @@ int JCLMSCCB2014_API zwJclmsReqVerifyDyCode( int lmsHandle,int dstCode,JCMATCH *
 	{
 		printf("Secbox Return of LMS result size not match JCRESULT!\n");
 	}
-	memcpy(match,&rsp.verCodeMatch,sizeof(JCMATCH));
+	memcpy((void *)match,(void *)&rsp.verCodeMatch,sizeof(JCMATCH));
 	printf("%s Match DateTime=%d\tValidity=%d\n",__FUNCTION__,match->s_datetime,match->s_validity);
 	jcHidClose(&hidHandle);
 	return 0;
@@ -348,7 +348,7 @@ void JCLMSCCB2014_API zwJclmsRsp( void * inLmsReq,const int inLmsReqLen,JCRESULT
 {
 	//从外部接收数据
 	JCLMSREQ lmsReq;
-	memcpy(&lmsReq,inLmsReq,inLmsReqLen);
+	memcpy((void *)&lmsReq,inLmsReq,inLmsReqLen);
 	zwJcLockDumpJCINPUT((int)(&lmsReq));
 	//通过出参结构体返回计算结果给外部
 	
@@ -361,7 +361,7 @@ void JCLMSCCB2014_API zwJclmsRsp( void * inLmsReq,const int inLmsReqLen,JCRESULT
 	if (JCLMS_CCB_CODEVERIFY==lmsReq.op)
 	{
 		JCMATCH jm=JcLockReverseVerifyDynaCode((int)(&lmsReq.inputData),lmsReq.dstCode);
-		memcpy(&(lmsResult->verCodeMatch),&jm,sizeof(JCMATCH));
+		memcpy((void *)&(lmsResult->verCodeMatch),(void *)&jm,sizeof(JCMATCH));
 	}	
 }
 
