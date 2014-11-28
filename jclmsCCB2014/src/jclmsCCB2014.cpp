@@ -285,21 +285,18 @@ void JCLMSCCB2014_API zwJclmsReqGenDyCode( int lmsHandle,int *dyCode )
 	//此处由于是模拟，时序不好控制，为了便于调试，在此直接调用密盒端的函数zwJclmsRsp来做处理
 	zwJclmsRsp(&req,sizeof(JCLMSREQ),&rsp);
 	*dyCode=rsp.dynaCode;
+#ifdef _DEBUG
+	////////////////////////////////CRCTest//////////////////////////////////////////
 	crc32testmain1127();
 	//printf("JCLMSREQ CRC8 is %u\n",crc8(&rsp,sizeof(rsp)));
 	//printf("JCLMSREQ CRC8 is %u\n",crc8(&req,sizeof(req)));
 	JCLMSREQ req2;
 	memcpy(&req2,&req,sizeof(req));
-	printf("JCLMSREQ2 CRC8 is %u\n",crc8(&req2,sizeof(req2)));
-	req2.dstCode++;
-	printf("JCLMSREQ2 CRC8 is %u\n",crc8(&req2,sizeof(req2)));
-	req2.dstCode++;
-	printf("JCLMSREQ2 CRC8 is %u\n",crc8(&req2,sizeof(req2)));
-	req2.dstCode++;
-	printf("JCLMSREQ2 CRC8 is %u\n",crc8(&req2,sizeof(req2)));
-	req2.dstCode++;
-	printf("JCLMSREQ2 CRC8 is %u\n",crc8(&req2,sizeof(req2)));
-	req2.dstCode++;
+	unsigned char crc8r=crc8s(0,&req2.dstCode,sizeof(req2.dstCode));
+	crc8r=crc8s(crc8r,&req2.op,sizeof(req2.op));
+	crc8r=crc8s(crc8r,&req2.inputData,sizeof(req2.inputData));
+	printf("JCLMSREQ2 CRC8 is %u\n",crc8r);
+#endif // _DEBUG
 
 }
 

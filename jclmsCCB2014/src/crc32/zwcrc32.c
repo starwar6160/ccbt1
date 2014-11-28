@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-unsigned int crc32(char *input,const int len);
+unsigned int crc32(const unsigned int crcstart,const char *input,const int len);
 
 #define CRCPOLYNOMIAL 0xEDB88320 
 
@@ -36,27 +36,28 @@ UINT *create_table(UINT *t)
 	return t;
 }
 
-unsigned int crc32(char *input,const int len)
+unsigned int crc32(const unsigned int crc32Input,const char *inputData,const int inputLen)
 {
 	int i;
-	UINT crcstart= 0xFFFFFFFF;
+	unsigned int crcTmp=crc32Input;
 	UINT temp[256];
 	UINT *table = (UINT*)create_table(temp);
-	for (i = 0; i < len; ++i)
+
+	for (i = 0; i < inputLen; ++i)
 	{
-		UINT index = (crcstart ^ input[i]) & 0xFF;
-		crcstart = (crcstart >> 8) ^ table[index];
+		UINT index = (crcTmp ^ inputData[i]) & 0xFF;
+		crcTmp = (crcTmp >> 8) ^ table[index];
 	}
-	return crcstart;
+	return crcTmp;
 }
 
 int crc32testmain1127()
 {
 	char data[] = "Enter something here";
-	UINT a = crc32(data,strlen(data));
-
-	DWORD chksum = a;
-	printf("%s %lu\n", __FUNCTION__,chksum);
+	const char *data2="zhouweitest2forcrc32";
+	UINT a = crc32(0,data,strlen(data));
+	a = crc32(a,data2,strlen(data2));
+	printf("%s %lu\n", __FUNCTION__,a);
 
 	return 0;
 }
@@ -99,17 +100,34 @@ unsigned char crc_array[256] = {
 	0xb6, 0xe8, 0x0a, 0x54, 0xd7, 0x89, 0x6b, 0x35, 
 };
 
-unsigned char crc8( void *p, int len )
+
+//只能用于计算单段CRC8
+unsigned char crc8( const void *inputData,const int inputLen )
 {
 	unsigned char crc8 = 0;
-	unsigned char *pt=(unsigned char *)p;
-	for( ; len > 0; len--)
+	unsigned char *pt=(unsigned char *)inputData;
+	int mLen=inputLen;
+	for( ; mLen > 0; mLen--)
 
 	{
 		crc8 = crc_array[crc8^(*pt)]; //查表得到CRC码
 		pt++;
 	}
 	return crc8;
+}
 
+//可以用于多段CRC8计算，第一次使用时,crc8参数输入必须为0
+unsigned char crc8s(const unsigned char crc8Input,const void *inputData, const int inputLen )
+{
+	unsigned char *pt=(unsigned char *)inputData;
+	int mLen=inputLen;
+	unsigned char crc8=crc8Input;
+	for( ; mLen > 0; mLen--)
+
+	{
+		crc8 = crc_array[crc8^(*pt)]; //查表得到CRC码
+		pt++;
+	}
+	return crc8;
 }
 /////////////////////////////////CRC8 END/////////////////////////////////////////
