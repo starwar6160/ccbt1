@@ -15,6 +15,24 @@ extern "C"
 	int crc32testmain1127();
 };
 
+//为了修补密盒没有RTC时钟做的临时性措施，从上位机传递时间下去
+//保存在全局变量g_armEmuTime里面
+////密盒没有RTC时钟的临时修补，20141128.1358.周伟
+#ifndef _WIN32
+#define time	zwArmEmuTime	
+static time_t g_armEmuTime=0;
+
+time_t zwArmEmuTime(time_t *inputTime)
+{
+	printf("DEBUG1128 %s g_armEmuTime=%d\n",__FUNCTION__,g_armEmuTime);
+	if (NULL!=inputTime)
+	{
+		return 0;
+	}
+	return g_armEmuTime;
+}
+
+#endif // _WIN32
 
 const int ZW_SM3_DGST_SIZE = (256 / 8);
 const int ZW_CLOSECODE_STEP = 12;	//闭锁码的计算步长时间精度
@@ -270,6 +288,8 @@ void myGetCloseCodeVarItem(int *mdatetime, int *mvalidity, int *mclosecode)
 
 
 //////////////////////////////////////////////////////////////////////////
+
+
 void JCLMSCCB2014_API zwJclmsRsp( void * inLmsReq,const int inLmsReqLen,JCRESULT *lmsResult );
 //两个zwJclmsReq函数是上位机专用
 //填写完毕handle里面的数据结构以后，调用该函数生成动态码，该函数在底层将请求
@@ -352,6 +372,9 @@ void JCLMSCCB2014_API zwJclmsRsp( void * inLmsReq,const int inLmsReqLen,JCRESULT
 	JCLMSREQ lmsReq;
 	memcpy((void *)&lmsReq,inLmsReq,inLmsReqLen);
 	zwJcLockDumpJCINPUT((int)(&lmsReq));
+#ifndef _WIN32
+	g_armEmuTime= lmsReq.timeNow;	//密盒没有RTC时钟的临时修补，20141128.1358.周伟
+#endif // _WIN32
 	//通过出参结构体返回计算结果给外部
 	
 	int dyCode=0;
