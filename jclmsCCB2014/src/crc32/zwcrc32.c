@@ -130,4 +130,9 @@ unsigned char crc8s(const unsigned char crc8Input,const void *inputData, const i
 	}
 	return crc8;
 }
+
+
+void myCrc8Test1128(void)
+{
+}
 /////////////////////////////////CRC8 END/////////////////////////////////////////
