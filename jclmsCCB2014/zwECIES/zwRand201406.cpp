@@ -50,7 +50,9 @@ ZWECIES_API const char * zwMergePsk(const char *pskInput)
 	memset(g_zwPskAsc,0,sizeof(g_zwPskAsc));
 	sha256_ctx shactx;
 	sha256_init(&shactx);
-	rnd = time(NULL);
+	//在此,特地不初始化rnd,使用其内部可能遗留的垃圾数据作为"随机"种子,
+	//这是为了消除对于时间的依赖.20141128.周伟
+	//rnd = time(NULL);	
 	sha256_update(&shactx,(unsigned char *)pskInput,strlen(pskInput));
 	sha256_update(&shactx,(unsigned char *)&rnd,sizeof(rnd));
 	sha256_final(&shactx,(unsigned char *)g_zwPskBuf);

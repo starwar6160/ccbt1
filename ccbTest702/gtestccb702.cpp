@@ -7,8 +7,8 @@ void myJcLockInputTest1();
 //#define _DEBUG_ECIES_NORMAL_TEST1117
 //#define _DEBUG_ECIES_BADINPUT_TEST1117
 //#define _DEBUG_ECIES_CSTEST1117
-//#define _DEBUG_JCLMS_GTEST1117
-#define _ZWLMSHID_TEST1128
+#define _DEBUG_JCLMS_GTEST1117
+//#define _ZWLMSHID_TEST1128
 
 namespace CcbV11Test722Ecies {
 	const int ZWMEGA = 1000 * 1000;
@@ -440,6 +440,7 @@ namespace CcbV11Test722Ecies {
 			//shared_resource_ = new ;
 			//memset(s_priKey,0,sizeof(s_priKey));
 			handle = JcLockNew();
+			JcLockSetInt(handle,JCI_DATETIME,1401*ZWMEGA);
 			JcLockSetString(handle, JCI_ATMNO, "atm10455761");
 			JcLockSetString(handle, JCI_LOCKNO, "lock14771509");
 			JcLockSetString(handle, JCI_PSK, "PSKDEMO728");
@@ -468,7 +469,7 @@ namespace CcbV11Test722Ecies {
 		EXPECT_LT(CloseCode, 100 * ZWMEGA);
 		JCMATCH ccodeMatch =
 		    JcLockReverseVerifyDynaCode(handle, CloseCode);
-		EXPECT_GT(ccodeMatch.s_datetime, 1400 * ZWMEGA);
+		EXPECT_GT(ccodeMatch.s_datetime, 1400 * ZWMEGA-10);
 	}
 
 	TEST_F(jclmsCCBV11_Test, inputNew) {
@@ -604,8 +605,10 @@ namespace CcbV11Test722Ecies {
 		}
 		printf("%s codesum=%d\n",__FUNCTION__,codesum);
 	}
+#endif // _DEBUG_JCLMS_GTEST1117
 
 
+#ifdef _ZWLMSHID_TEST1128	
 //用于测试模拟两个机器之间通信的最基础测试
 	TEST_F(jclmsCCBV11_Test, zwHidSecboxLMSemuTest20141124) {
 		int codesum=0;
@@ -652,10 +655,8 @@ namespace CcbV11Test722Ecies {
 				pass1Match.s_datetime, pass1Match.s_validity);
 			//#endif // _DEBUG
 		}
-#endif // _DEBUG_JCLMS_GTEST1117
 
 
-#ifdef _ZWLMSHID_TEST1128
 	//用于测试模拟两个机器之间通信的最基础测试
 	TEST_F(jclmsCCBV11_Test, zwHidSecboxLMSTest20141128) {
 		int codesum=0;

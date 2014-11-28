@@ -93,6 +93,7 @@ JCERROR JCLMSCCB2014_API JcLockSetInt(const int handle, const JCITYPE mtype,
 			return EJC_DATETIME_INVALID;
 		}
 		jcp->CodeGenDateTime = myGetNormalTime(num, jcp->SearchTimeStep);
+		jcp->dbgSearchTimeStart=jcp->CodeGenDateTime;	//20141128.从外部传入时间,不再依赖time函数
 		break;
 	case JCI_VALIDITY:
 		assert(num > 0 && num <= 1440 * 7);
