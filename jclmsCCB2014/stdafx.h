@@ -56,9 +56,14 @@ extern "C" {
 #endif
 
 void WINAPI OutputDebugStringA(char * lpOutputString);
-unsigned int crc32(const unsigned int crc32Input,const char *inputData,const int inputLen);
-//可以用于多段CRC8计算，第一次使用时,crc8参数输入必须为0
-unsigned char crc8s(const unsigned char crc8Input,const void *inputData, const int inputLen );
+//单段CRC8
+unsigned char crc8Short( const void *inputData,const int inputLen );
+//单段CRC32
+unsigned int crc32Short(const void *inputData,const int inputLen);
+//多段CRC8,第一次使用时,crc8Input参数输入必须为0
+unsigned char crc8(const unsigned char crc8Input,const void *inputData, const int inputLen );
+//多段CRC32,第一次使用时,crc32Input参数输入必须为0
+unsigned int crc32(const unsigned int crc32Input,const void *inputData,const int inputLen);
 
 #ifdef  __cplusplus
 }

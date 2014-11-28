@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-unsigned int crc32(const unsigned int crcstart,const char *input,const int len);
+
 
 #define CRCPOLYNOMIAL 0xEDB88320 
 
@@ -36,16 +36,33 @@ UINT *create_table(UINT *t)
 	return t;
 }
 
-unsigned int crc32(const unsigned int crc32Input,const char *inputData,const int inputLen)
+unsigned int crc32Short(const void *inputData,const int inputLen)
 {
 	int i;
-	unsigned int crcTmp=crc32Input;
+	unsigned int crcTmp=0;
+	char *dataTmp=(char *)inputData;
 	UINT temp[256];
 	UINT *table = (UINT*)create_table(temp);
 
 	for (i = 0; i < inputLen; ++i)
 	{
-		UINT index = (crcTmp ^ inputData[i]) & 0xFF;
+		UINT index = (crcTmp ^ dataTmp[i]) & 0xFF;
+		crcTmp = (crcTmp >> 8) ^ table[index];
+	}
+	return crcTmp;
+}
+
+unsigned int crc32(const unsigned int crc32Input,const void *inputData,const int inputLen)
+{
+	int i;
+	unsigned int crcTmp=crc32Input;
+	char *dataTmp=(char *)inputData;
+	UINT temp[256];
+	UINT *table = (UINT*)create_table(temp);
+
+	for (i = 0; i < inputLen; ++i)
+	{
+		UINT index = (crcTmp ^ dataTmp[i]) & 0xFF;
 		crcTmp = (crcTmp >> 8) ^ table[index];
 	}
 	return crcTmp;
@@ -102,7 +119,7 @@ unsigned char crc_array[256] = {
 
 
 //只能用于计算单段CRC8
-unsigned char crc8( const void *inputData,const int inputLen )
+unsigned char crc8Short( const void *inputData,const int inputLen )
 {
 	unsigned char crc8 = 0;
 	unsigned char *pt=(unsigned char *)inputData;
@@ -117,7 +134,7 @@ unsigned char crc8( const void *inputData,const int inputLen )
 }
 
 //可以用于多段CRC8计算，第一次使用时,crc8参数输入必须为0
-unsigned char crc8s(const unsigned char crc8Input,const void *inputData, const int inputLen )
+unsigned char crc8(const unsigned char crc8Input,const void *inputData, const int inputLen )
 {
 	unsigned char *pt=(unsigned char *)inputData;
 	int mLen=inputLen;
