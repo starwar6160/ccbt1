@@ -51,7 +51,7 @@
       <WarningLevel>Level1</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_CRT_SECURE_NO_WARNINGS;ZWECIES_EXPORTS;_DEBUG;_WINDOWS;_USRDLL;JCLMSCCB2014_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(ZWLIB)\MIRACL2014\MIRACL2014\miraclSrc\include\;.\src;.\zwECIES;$(ZWLIB)\python27\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ZWLIB)\MIRACL2014\MIRACL2014\miraclSrc\include\;.\src;.\zwECIES;$(ZWLIB)\python27\include;$(ZWSRC)\zwBaseLib\zwBaseLib\HidSplitMsg;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DisableLanguageExtensions>false</DisableLanguageExtensions>
       <DisableSpecificWarnings>4731;4819</DisableSpecificWarnings>
       <InlineFunctionExpansion>Disabled</InlineFunctionExpansion>
@@ -61,7 +61,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <OutputFile>$(ZWSRC)\2014BinOut\$(Configuration)\$(TargetName)$(TargetExt)</OutputFile>
       <AdditionalLibraryDirectories>$(ZWSRC)\2014BinOut\$(Configuration);$(ZWLIB)\MIRACL2014\$(Configuration);$(ZWLIB)\python27\libs</AdditionalLibraryDirectories>
-      <AdditionalDependencies>miracl2014.lib;zwBaseLibStatic.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>setupapi.lib;miracl2014.lib;zwBaseLibStatic.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ShowProgress>LinkVerboseLib</ShowProgress>
     </Link>
     <PostBuildEvent>
@@ -76,7 +76,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;_CRT_SECURE_NO_WARNINGS;ZWECIES_EXPORTS;NDEBUG;_WINDOWS;_USRDLL;JCLMSCCB2014_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(ZWLIB)\MIRACL2014\MIRACL2014\miraclSrc\include\;.\src;.\zwECIES;$(ZWLIB)\python27\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ZWLIB)\MIRACL2014\MIRACL2014\miraclSrc\include\;.\src;.\zwECIES;$(ZWLIB)\python27\include;$(ZWSRC)\zwBaseLib\zwBaseLib\HidSplitMsg;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DisableLanguageExtensions>false</DisableLanguageExtensions>
       <DisableSpecificWarnings>4731;4819</DisableSpecificWarnings>
     </ClCompile>
@@ -87,7 +87,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <OutputFile>$(ZWSRC)\2014BinOut\$(Configuration)\$(TargetName)$(TargetExt)</OutputFile>
       <AdditionalLibraryDirectories>$(ZWSRC)\2014BinOut\$(Configuration);$(ZWLIB)\MIRACL2014\$(Configuration);$(ZWLIB)\python27\libs</AdditionalLibraryDirectories>
-      <AdditionalDependencies>miracl2014.lib;zwBaseLibStatic.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>setupapi.lib;miracl2014.lib;zwBaseLibStatic.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>COPY /y $(TargetPath) $(TargetDir)\_$(ProjectName).pyd</Command>

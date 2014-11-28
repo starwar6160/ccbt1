@@ -8,6 +8,7 @@
 #include "jclmsCCB2014.h"
 #include "sm3.h"
 #include "dCodeHdr.h"
+#include "zwhidComm.h"
 extern "C"
 {
 //void	WINAPI	Sleep(uint32_t dwMilliseconds	);
@@ -273,7 +274,7 @@ void JCLMSCCB2014_API zwJclmsRsp( void * inLmsReq,const int inLmsReqLen,JCRESULT
 //两个zwJclmsReq函数是上位机专用
 //填写完毕handle里面的数据结构以后，调用该函数生成动态码，该函数在底层将请求
 //通过HID等通信线路发送到密盒，然后阻塞接收密盒返回结果，通过出参返回；
-void JCLMSCCB2014_API zwJclmsReqGenDyCode( int lmsHandle,int *dyCode )
+int JCLMSCCB2014_API zwJclmsReqGenDyCode( int lmsHandle,int *dyCode )
 {
 	zwJcLockDumpJCINPUT(lmsHandle);	
 	JCLMSREQ req;
@@ -283,14 +284,30 @@ void JCLMSCCB2014_API zwJclmsReqGenDyCode( int lmsHandle,int *dyCode )
 	memcpy(&req.inputData,(JCINPUT *)lmsHandle,sizeof(JCINPUT));
 	//////////////////////////////////模拟发送数据////////////////////////////////////////
 	//此处由于是模拟，时序不好控制，为了便于调试，在此直接调用密盒端的函数zwJclmsRsp来做处理
-	zwJclmsRsp(&req,sizeof(JCLMSREQ),&rsp);
+	JCHID hidHandle;
+	hidHandle.vid=0x0483;
+	hidHandle.pid=0x5710;
+	if (JCHID_STATUS_OK != jcHidOpen(&hidHandle)) {
+		return -1118;
+	}
+	jcHidSendData(&hidHandle,(char *)&req,sizeof(req));
+	int rspRealLen=0;
+	jcHidRecvData(&hidHandle,(char *)&rsp,sizeof(rsp),&rspRealLen);
+	assert(sizeof(rsp)==rspRealLen);
+	if (sizeof(rsp)!=rspRealLen)
+	{
+		printf("Secbox Return of LMS result size not match JCRESULT!\n");
+	}
+	//zwJclmsRsp(&req,sizeof(JCLMSREQ),&rsp);
 	*dyCode=rsp.dynaCode;
+	jcHidClose(&hidHandle);
+	return 0;
 }
 
 //填写完毕handle里面的数据结构以后，调用该函数验证动态码（第一和第二动态码中间，锁具生成的校验码
 //也是使用其他两个动态码的同样算法生成的，所以也算一种动态码，该函数在底层将验证请求通过HID等
 //通信线路发送到密盒，然后阻塞接收密盒返回结果，通过出参返回；
-void JCLMSCCB2014_API zwJclmsReqVerifyDyCode( int lmsHandle,int dstCode,JCMATCH *match )
+int JCLMSCCB2014_API zwJclmsReqVerifyDyCode( int lmsHandle,int dstCode,JCMATCH *match )
 {
 	zwJcLockDumpJCINPUT(lmsHandle);
 	JCLMSREQ req;
@@ -301,8 +318,23 @@ void JCLMSCCB2014_API zwJclmsReqVerifyDyCode( int lmsHandle,int dstCode,JCMATCH 
 	memcpy(&req.inputData,(JCINPUT *)lmsHandle,sizeof(JCINPUT));
 	//////////////////////////////////模拟发送数据////////////////////////////////////////
 	//此处由于是模拟，时序不好控制，为了便于调试，在此直接调用密盒端的函数zwJclmsRsp来做处理
-	zwJclmsRsp(&req,sizeof(JCLMSREQ),&rsp);
+	JCHID hidHandle;
+	hidHandle.vid=0x0483;
+	hidHandle.pid=0x5710;
+	if (JCHID_STATUS_OK != jcHidOpen(&hidHandle)) {
+		return -1118;
+	}
+	jcHidSendData(&hidHandle,(char *)&req,sizeof(req));
+	int rspRealLen=0;
+	jcHidRecvData(&hidHandle,(char *)&rsp,sizeof(rsp),&rspRealLen);
+	assert(sizeof(rsp)==rspRealLen);
+	if (sizeof(rsp)!=rspRealLen)
+	{
+		printf("Secbox Return of LMS result size not match JCRESULT!\n");
+	}
 	memcpy(match,&rsp.verCodeMatch,sizeof(JCMATCH));
+	jcHidClose(&hidHandle);
+	return 0;
 }
 
 //该函数是下位机专用

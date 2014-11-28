@@ -562,7 +562,6 @@ namespace CcbV11Test722Ecies {
 		printf("pass2Match Time =\t%d\tValidity=%d\n",
 		       pass2Match.s_datetime, pass2Match.s_validity);
 	}
-#endif // _DEBUG_JCLMS_GTEST1117
 
 	TEST_F(jclmsCCBV11_Test, zwOpenLockFixTest20141117) {
 		int codesum=0;
@@ -650,6 +649,6 @@ namespace CcbV11Test722Ecies {
 				pass1Match.s_datetime, pass1Match.s_validity);
 			//#endif // _DEBUG
 		}
-
+#endif // _DEBUG_JCLMS_GTEST1117
 //////////////////////////////////////////////////////////////////////////
 }				//namespace ccbtest722{
