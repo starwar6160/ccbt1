@@ -291,6 +291,7 @@ void myGetCloseCodeVarItem(int *mdatetime, int *mvalidity, int *mclosecode)
 
 
 void JCLMSCCB2014_API zwJclmsRsp( void * inLmsReq,const int inLmsReqLen,JCRESULT *lmsResult );
+#ifdef _WIN32
 //两个zwJclmsReq函数是上位机专用
 //填写完毕handle里面的数据结构以后，调用该函数生成动态码，该函数在底层将请求
 //通过HID等通信线路发送到密盒，然后阻塞接收密盒返回结果，通过出参返回；
@@ -364,6 +365,7 @@ int JCLMSCCB2014_API zwJclmsReqVerifyDyCode( int lmsHandle,int dstCode,JCMATCH *
 	jcHidClose(&hidHandle);
 	return 0;
 }
+#endif // _WIN32
 
 //该函数是下位机专用
 void JCLMSCCB2014_API zwJclmsRsp( void * inLmsReq,const int inLmsReqLen,JCRESULT *lmsResult )
