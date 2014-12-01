@@ -9,6 +9,8 @@
 #include "sm3.h"
 #include "dCodeHdr.h"
 #include "zwhidComm.h"
+#include "zwSecretBoxAuth.h"
+
 extern "C"
 {
 void	WINAPI	Sleep(uint32_t dwMilliseconds	);
@@ -290,6 +292,7 @@ void myGetCloseCodeVarItem(int *mdatetime, int *mvalidity, int *mclosecode)
 
 void JCLMSCCB2014_API zwJclmsRsp( void * inLmsReq,const int inLmsReqLen,JCRESULT *lmsResult );
 #ifdef _WIN32
+const int ZWHIDBUFLEN=512;
 //两个zwJclmsReq函数是上位机专用
 //填写完毕handle里面的数据结构以后，调用该函数生成动态码，该函数在底层将请求
 //通过HID等通信线路发送到密盒，然后阻塞接收密盒返回结果，通过出参返回；
@@ -312,7 +315,22 @@ int JCLMSCCB2014_API zwJclmsReqGenDyCode( int lmsHandle,int *dyCode )
 	printf("%s Send Data to Secbox for Gen DynaCode:\n",__FUNCTION__);
 	zwJcLockDumpJCINPUT(lmsHandle);	
 	req.timeNow=time(NULL);	//密盒没有RTC时钟，从上位机发送下去时间
-	jcHidSendData(&hidHandle,(char *)&req,sizeof(req));
+//////////////////////////////////////////////////////////////////////////
+	//HID有效载荷的头部
+	SECBOX_DATA_INFO bufHid;
+	memset(&bufHid,0,sizeof(SECBOX_DATA_INFO));
+	bufHid.data_index=1;
+	bufHid.msg_type=JC_SECBOX_LMS_GENDYCODE;
+	bufHid.data_len=sizeof(JCLMSREQ);
+	//构建整个HID发送数据包，给下层HID函数去切分和发送
+	char hidDataBuf[ZWHIDBUFLEN];
+	memset(hidDataBuf,0,ZWHIDBUFLEN);
+	//先加入头部
+	memcpy(hidDataBuf,&bufHid,sizeof(bufHid));
+	//然后加入实际的请求部分
+	memcpy(hidDataBuf+sizeof(bufHid),&req,sizeof(req));
+//////////////////////////////////////////////////////////////////////////
+	jcHidSendData(&hidHandle,hidDataBuf,sizeof(bufHid)+sizeof(req));
 	printf("GenWait To SecBox Return Result now..\n");
 	Sleep(500);
 	int rspRealLen=0;
@@ -351,6 +369,22 @@ int JCLMSCCB2014_API zwJclmsReqVerifyDyCode( int lmsHandle,int dstCode,JCMATCH *
 	printf("%s Send Data to Secbox with Wait To Verify DestCode %d\n",__FUNCTION__,dstCode);
 	zwJcLockDumpJCINPUT(lmsHandle);
 	req.timeNow=time(NULL);	//密盒没有RTC时钟，从上位机发送下去时间
+	//////////////////////////////////////////////////////////////////////////
+	//HID有效载荷的头部
+	SECBOX_DATA_INFO bufHid;
+	memset(&bufHid,0,sizeof(SECBOX_DATA_INFO));
+	bufHid.data_index=1;
+	bufHid.msg_type=JC_SECBOX_LMS_VERDYCODE;
+	bufHid.data_len=sizeof(JCLMSREQ);
+	//构建整个HID发送数据包，给下层HID函数去切分和发送
+	char hidDataBuf[ZWHIDBUFLEN];
+	memset(hidDataBuf,0,ZWHIDBUFLEN);
+	//先加入头部
+	memcpy(hidDataBuf,&bufHid,sizeof(bufHid));
+	//然后加入实际的请求部分
+	memcpy(hidDataBuf+sizeof(bufHid),&req,sizeof(req));
+	//////////////////////////////////////////////////////////////////////////
+
 	jcHidSendData(&hidHandle,(char *)&req,sizeof(req));
 	printf("VerWait To SecBox Return Result now..\n");
 	Sleep(500);

@@ -51,7 +51,7 @@
       <WarningLevel>Level1</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_CRT_SECURE_NO_WARNINGS;ZWECIES_EXPORTS;_DEBUG;_WINDOWS;_USRDLL;JCLMSCCB2014_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(ZWLIB)\MIRACL2014\MIRACL2014\miraclSrc\include\;.\src;.\zwECIES;$(ZWLIB)\python27\include;$(ZWSRC)\zwBaseLib\zwBaseLib\HidSplitMsg;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ZWLIB)\MIRACL2014\MIRACL2014\miraclSrc\include\;.\src;.\zwECIES;$(ZWLIB)\python27\include;$(ZWSRC)\zwBaseLib\zwBaseLib\HidSplitMsg;$(ZWSRC)\zwBaseLib\zwBaseLib\SecretBox;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DisableLanguageExtensions>false</DisableLanguageExtensions>
       <DisableSpecificWarnings>4731;4819</DisableSpecificWarnings>
       <InlineFunctionExpansion>Disabled</InlineFunctionExpansion>
@@ -76,7 +76,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;_CRT_SECURE_NO_WARNINGS;ZWECIES_EXPORTS;NDEBUG;_WINDOWS;_USRDLL;JCLMSCCB2014_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(ZWLIB)\MIRACL2014\MIRACL2014\miraclSrc\include\;.\src;.\zwECIES;$(ZWLIB)\python27\include;$(ZWSRC)\zwBaseLib\zwBaseLib\HidSplitMsg;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ZWLIB)\MIRACL2014\MIRACL2014\miraclSrc\include\;.\src;.\zwECIES;$(ZWLIB)\python27\include;$(ZWSRC)\zwBaseLib\zwBaseLib\HidSplitMsg;$(ZWSRC)\zwBaseLib\zwBaseLib\SecretBox;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DisableLanguageExtensions>false</DisableLanguageExtensions>
       <DisableSpecificWarnings>4731;4819</DisableSpecificWarnings>
     </ClCompile>
