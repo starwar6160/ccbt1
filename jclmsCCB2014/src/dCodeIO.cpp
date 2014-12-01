@@ -224,7 +224,7 @@ void JCLMSCCB2014_API zwJcLockDumpJCINPUT(const int handle)
 	//防止重复输出同一个数据结构
 	if (dedupTime==jcp->CodeGenDateTime)
 	{
-		return;
+		//return;
 	}
 
 	//printf("########JCINPUT DUMP START############\n");

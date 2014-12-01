@@ -11,7 +11,7 @@
 #include "zwhidComm.h"
 extern "C"
 {
-//void	WINAPI	Sleep(uint32_t dwMilliseconds	);
+void	WINAPI	Sleep(uint32_t dwMilliseconds	);
 	int crc32testmain1127();
 };
 
@@ -303,6 +303,7 @@ int JCLMSCCB2014_API zwJclmsReqGenDyCode( int lmsHandle,int *dyCode )
 	//////////////////////////////////模拟发送数据////////////////////////////////////////
 	//此处由于是模拟，时序不好控制，为了便于调试，在此直接调用密盒端的函数zwJclmsRsp来做处理
 	JCHID hidHandle;
+	memset(&hidHandle,0,sizeof(JCHID));
 	hidHandle.vid=0x0483;
 	hidHandle.pid=0x5710;
 	if (JCHID_STATUS_OK != jcHidOpen(&hidHandle)) {
@@ -312,7 +313,8 @@ int JCLMSCCB2014_API zwJclmsReqGenDyCode( int lmsHandle,int *dyCode )
 	zwJcLockDumpJCINPUT(lmsHandle);	
 	req.timeNow=time(NULL);	//密盒没有RTC时钟，从上位机发送下去时间
 	jcHidSendData(&hidHandle,(char *)&req,sizeof(req));
-	printf("Wait To SecBox Return Result now..\n");
+	printf("GenWait To SecBox Return Result now..\n");
+	Sleep(500);
 	int rspRealLen=0;
 	jcHidRecvData(&hidHandle,(char *)&rsp,sizeof(rsp),&rspRealLen);
 	assert(sizeof(rsp)==rspRealLen);
@@ -350,7 +352,8 @@ int JCLMSCCB2014_API zwJclmsReqVerifyDyCode( int lmsHandle,int dstCode,JCMATCH *
 	zwJcLockDumpJCINPUT(lmsHandle);
 	req.timeNow=time(NULL);	//密盒没有RTC时钟，从上位机发送下去时间
 	jcHidSendData(&hidHandle,(char *)&req,sizeof(req));
-	printf("Wait To SecBox Return Result now..\n");
+	printf("VerWait To SecBox Return Result now..\n");
+	Sleep(500);
 	int rspRealLen=0;
 	jcHidRecvData(&hidHandle,(char *)&rsp,sizeof(rsp),&rspRealLen);
 	assert(sizeof(rsp)==rspRealLen);
