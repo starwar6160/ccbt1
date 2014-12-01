@@ -9,6 +9,7 @@
 #include "sm3.h"
 #include "dCodeHdr.h"
 #include "zwhidComm.h"
+#include "zwHidSplitMsg.h"
 #include "zwSecretBoxAuth.h"
 
 extern "C"
@@ -291,6 +292,55 @@ void myGetCloseCodeVarItem(int *mdatetime, int *mvalidity, int *mclosecode)
 
 
 void JCLMSCCB2014_API zwJclmsRsp( void * inLmsReq,const int inLmsReqLen,JCRESULT *lmsResult );
+
+void myJcInputHton(JCINPUT *p)
+{
+	p->CodeGenDateTime=HtoNl(p->CodeGenDateTime);
+	p->Validity=HtoNl(p->Validity);
+	p->CloseCode=HtoNl(p->CloseCode);
+	p->CmdType=static_cast<JCCMD>(HtoNl(p->CmdType));
+
+	p->dbgSearchTimeStart=HtoNl(p->dbgSearchTimeStart);
+	p->SearchTimeStep=HtoNl(p->SearchTimeStep);
+	p->SearchTimeLength=HtoNl(p->SearchTimeLength);
+	for (int i=0;i<NUM_VALIDITY;i++)
+	{
+		p->ValidityArray[i]=HtoNl(p->ValidityArray[i]);
+	}
+}
+
+void myJcInputNtoh(JCINPUT *p)
+{
+	p->CodeGenDateTime=NtoHl(p->CodeGenDateTime);
+	p->Validity=NtoHl(p->Validity);
+	p->CloseCode=NtoHl(p->CloseCode);
+	p->CmdType=static_cast<JCCMD>(NtoHl(p->CmdType));
+
+	p->dbgSearchTimeStart=NtoHl(p->dbgSearchTimeStart);
+	p->SearchTimeStep=NtoHl(p->SearchTimeStep);
+	p->SearchTimeLength=NtoHl(p->SearchTimeLength);
+	for (int i=0;i<NUM_VALIDITY;i++)
+	{
+		p->ValidityArray[i]=NtoHl(p->ValidityArray[i]);
+	}
+}
+
+void myLmsReqZHton(JCLMSREQ *req)
+{
+	myJcInputHton(&req->inputData);
+	req->op=static_cast<JCLMSOP>(HtoNl(req->op));
+	req->dstCode=HtoNl(req->dstCode);
+	req->timeNow=HtoNl(req->timeNow);
+}
+
+void myLmsReqZNtoh(JCLMSREQ *req)
+{
+	myJcInputNtoh(&req->inputData);
+	req->op=static_cast<JCLMSOP>(NtoHl(req->op));
+	req->dstCode=NtoHl(req->dstCode);
+	req->timeNow=NtoHl(req->timeNow);
+}
+
 #ifdef _WIN32
 const int ZWHIDBUFLEN=512;
 //两个zwJclmsReq函数是上位机专用
@@ -328,6 +378,7 @@ int JCLMSCCB2014_API zwJclmsReqGenDyCode( int lmsHandle,int *dyCode )
 	//先加入头部
 	memcpy(hidDataBuf,&bufHid,sizeof(bufHid));
 	//然后加入实际的请求部分
+	myLmsReqZHton(&req);
 	memcpy(hidDataBuf+sizeof(bufHid),&req,sizeof(req));
 //////////////////////////////////////////////////////////////////////////
 	jcHidSendData(&hidHandle,hidDataBuf,sizeof(bufHid)+sizeof(req));
@@ -382,6 +433,7 @@ int JCLMSCCB2014_API zwJclmsReqVerifyDyCode( int lmsHandle,int dstCode,JCMATCH *
 	//先加入头部
 	memcpy(hidDataBuf,&bufHid,sizeof(bufHid));
 	//然后加入实际的请求部分
+	myLmsReqZHton(&req);
 	memcpy(hidDataBuf+sizeof(bufHid),&req,sizeof(req));
 	//////////////////////////////////////////////////////////////////////////
 
@@ -415,6 +467,7 @@ void JCLMSCCB2014_API zwJclmsRsp( void * inLmsReq,const int inLmsReqLen,JCRESULT
 	//通过出参结构体返回计算结果给外部
 	
 	int dyCode=0;
+	myLmsReqZNtoh(&lmsReq);
 	if (JCLMS_CCB_CODEGEN==lmsReq.op)
 	{
 		dyCode=zwJcLockGetDynaCode((int)(&lmsReq.inputData));
