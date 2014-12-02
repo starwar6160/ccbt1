@@ -359,9 +359,6 @@ int JCLMSCCB2014_API zwJclmsReqGenDyCode( int lmsHandle,int *dyCode )
 	memset(&hidHandle,0,sizeof(JCHID));
 	hidHandle.vid=0x0483;
 	hidHandle.pid=0x5710;
-	if (JCHID_STATUS_OK != jcHidOpen(&hidHandle)) {
-		return -1118;
-	}
 	printf("%s Send Data to Secbox for Gen DynaCode:\n",__FUNCTION__);
 	zwJcLockDumpJCINPUT(lmsHandle);	
 	req.timeNow=time(NULL);	//密盒没有RTC时钟，从上位机发送下去时间
@@ -381,6 +378,9 @@ int JCLMSCCB2014_API zwJclmsReqGenDyCode( int lmsHandle,int *dyCode )
 	myLmsReqZHton(&req);
 	memcpy(hidDataBuf+sizeof(bufHid),&req,sizeof(req));
 //////////////////////////////////////////////////////////////////////////
+	if (JCHID_STATUS_OK != jcHidOpen(&hidHandle)) {
+		return -1118;
+	}
 	jcHidSendData(&hidHandle,hidDataBuf,sizeof(bufHid)+sizeof(req));
 	printf("GenWait To SecBox Return Result now..\n");
 	Sleep(500);

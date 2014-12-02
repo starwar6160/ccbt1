@@ -661,6 +661,7 @@ namespace CcbV11Test722Ecies {
 		//固定开锁时间,应该出来固定的结果
 		const int ZWFIX_STARTTIME=1416*ZWMEGA;
 		JcLockSetInt(handle,JCI_TIMESTEP,6);
+		JcLockSetInt(handle,JCI_SEARCH_TIME_START,time(NULL));
 		JcLockSetCmdType(handle, JCI_CMDTYPE, JCCMD_INIT_CLOSECODE);
 		//////////////////////////////////////////////////////////////////////////
 		JCRESULT lmsRsp;
