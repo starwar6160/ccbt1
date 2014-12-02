@@ -371,6 +371,7 @@ int JCLMSCCB2014_API zwJclmsReqGenDyCode( int lmsHandle,int *dyCode )
 	hidPayloadHeader.data_index=1;
 	hidPayloadHeader.msg_type=JC_SECBOX_LMS_GENDYCODE;
 	hidPayloadHeader.data_len=sizeof(JCLMSREQ);
+	hidPayloadHeader.data_len=HtoNs(hidPayloadHeader.data_len);
 	//先加入头部
 	memcpy(hidSendBuf,&hidPayloadHeader,sizeof(hidPayloadHeader));
 	//然后加入实际的请求部分
@@ -441,6 +442,7 @@ int JCLMSCCB2014_API zwJclmsReqVerifyDyCode( int lmsHandle,int dstCode,JCMATCH *
 	hidPayloadHeader.data_index=1;
 	hidPayloadHeader.msg_type=JC_SECBOX_LMS_VERDYCODE;
 	hidPayloadHeader.data_len=sizeof(JCLMSREQ);
+	hidPayloadHeader.data_len=HtoNs(hidPayloadHeader.data_len);
 	//构建整个HID发送数据包，给下层HID函数去切分和发送
 	char hidSendBuf[ZWHIDBUFLEN];
 	memset(hidSendBuf,0,ZWHIDBUFLEN);
