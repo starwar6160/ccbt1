@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "zwEcies529.h"
 #include "jclmsCCB2014.h"
-#include "dCodeHdr.h"
 void myJcLockInputTest1();
 
 //#define _DEBUG_ECIES_NORMAL_TEST1117

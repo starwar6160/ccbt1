@@ -4,7 +4,6 @@
 #include <assert.h>
 #include <stdio.h>
 #include <string.h>
-//#include <time.h>
 #include "jclmsCCB2014.h"
 #include "sm3.h"
 #include "dCodeHdr.h"
@@ -341,7 +340,7 @@ void myLmsReqZNtoh(JCLMSREQ *req)
 	req->timeNow=NtoHl(req->timeNow);
 }
 
-#define _DEBUG_SHR_MEMORY_1202
+//#define _DEBUG_SHR_MEMORY_1202
 #ifdef _WIN32
 void myHexDump(const void * hidSendBuf,const int outLen );
 const int ZWHIDBUFLEN=512;
@@ -365,6 +364,7 @@ int JCLMSCCB2014_API zwJclmsReqGenDyCode( int lmsHandle,int *dyCode )
 	char hidSendBuf[ZWHIDBUFLEN];
 	memset(hidSendBuf,0,ZWHIDBUFLEN);
 	//HID有效载荷的头部
+	const int outLen=sizeof(SECBOX_DATA_INFO)+sizeof(JCLMSREQ);
 	SECBOX_DATA_INFO hidPayloadHeader;
 	memset(&hidPayloadHeader,0,sizeof(SECBOX_DATA_INFO));
 	hidPayloadHeader.data_index=1;
@@ -375,10 +375,12 @@ int JCLMSCCB2014_API zwJclmsReqGenDyCode( int lmsHandle,int *dyCode )
 	//然后加入实际的请求部分
 	myLmsReqZHton(&req);
 	memcpy(hidSendBuf+sizeof(hidPayloadHeader),&req,sizeof(req));
-	//////////////////////////////////////////////////////////////////////////
-	const int outLen=sizeof(SECBOX_DATA_INFO)+sizeof(JCLMSREQ);
+	printf("HidSend Data is(Net ByteOrder)\n");
+	myHexDump(hidSendBuf, outLen);
+	//////////////////////////////////////////////////////////////////////////	
 	JCRESULT rsp;
 	memset(&rsp,0,sizeof(rsp));
+
 #ifdef _DEBUG_SHR_MEMORY_1202
 	//调试状态，直接调用下位机函数即可
 	zwJclmsRsp(hidSendBuf,outLen,&rsp);
@@ -387,8 +389,6 @@ int JCLMSCCB2014_API zwJclmsReqGenDyCode( int lmsHandle,int *dyCode )
 	memset(&hidHandle,0,sizeof(JCHID));
 	hidHandle.vid=0x0483;
 	hidHandle.pid=0x5710;
-	printf("HidSend Data is\n");
-	myHexDump(hidSendBuf, outLen);
 
 	if (JCHID_STATUS_OK != jcHidOpen(&hidHandle)) {
 		return -1118;
@@ -434,6 +434,7 @@ int JCLMSCCB2014_API zwJclmsReqVerifyDyCode( int lmsHandle,int dstCode,JCMATCH *
 	zwJcLockDumpJCINPUT(lmsHandle);
 	//////////////////////////////////////////////////////////////////////////
 	//HID有效载荷的头部
+	const int outLen=sizeof(SECBOX_DATA_INFO)+sizeof(JCLMSREQ);
 	SECBOX_DATA_INFO hidPayloadHeader;
 	memset(&hidPayloadHeader,0,sizeof(SECBOX_DATA_INFO));
 	hidPayloadHeader.data_index=1;
@@ -447,8 +448,10 @@ int JCLMSCCB2014_API zwJclmsReqVerifyDyCode( int lmsHandle,int dstCode,JCMATCH *
 	//然后加入实际的请求部分
 	myLmsReqZHton(&req);
 	memcpy(hidSendBuf+sizeof(hidPayloadHeader),&req,sizeof(req));
+	printf("HidSend Data is(Net ByteOrder)\n");
+	myHexDump(hidSendBuf, outLen);
+
 	//////////////////////////////////////////////////////////////////////////
-	const int outLen=sizeof(SECBOX_DATA_INFO)+sizeof(JCLMSREQ);
 	JCRESULT rsp;
 	memset(&rsp,0,sizeof(rsp));
 
@@ -466,6 +469,8 @@ int JCLMSCCB2014_API zwJclmsReqVerifyDyCode( int lmsHandle,int dstCode,JCMATCH *
 	printf("VerWait To SecBox Return Result now..\n");
 	int rspRealLen=0;
 	jcHidRecvData(&hidHandle,(char *)&rsp,sizeof(rsp),&rspRealLen);
+	printf("HidRecv Data is\n");
+	myHexDump(&rsp, rspRealLen);
 	assert(rsp.verCodeMatch.s_datetime>1400*ZWMEGA);
 	assert(sizeof(rsp)==rspRealLen);
 	if (sizeof(rsp)!=rspRealLen)
@@ -530,8 +535,13 @@ void myHexDump( const void * hidSendBuf,const int outLen )
 	const char *pt=static_cast<const char *>(hidSendBuf);
 	for (int i=0;i<outLen;i++)
 	{
+		if (i>0)
+		{
+			if(i%8==0 && i%16!=0)printf("\t");
+			if(i%16==0)printf("\n");
+		}
 		unsigned char c=pt[i] & 0xFF;
-		printf("%02X ");
+		printf("%02X ",c);
 	}
 	printf("\n");
 }
