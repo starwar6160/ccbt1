@@ -159,11 +159,13 @@ namespace CcbV11Test722Ecies {
 		cout << "plainOut=\t" << plainOut << endl;
 #endif // _DEBUG
 	}
-#endif // _DEBUG_ECIES_NORMAL_TEST1117
 
 	TEST_F(ECIES_Test, SM3_StandTestVector) {
 		EXPECT_EQ(0,zwSM3StandardTestVector());
 	}
+#endif // _DEBUG_ECIES_NORMAL_TEST1117
+
+
 
 #ifdef _DEBUG_ECIES_BADINPUT_TEST1117
 	TEST_F(ECIES_Test, NormalKeyPairGen_BadInput) {

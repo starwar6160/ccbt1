@@ -5,8 +5,8 @@ int zwLoadExtEXE(const char *exePathName,const char *exeCmdLine);
 BOOL APIENTRY DllMain(HMODULE hModule,
 		      DWORD ul_reason_for_call, LPVOID lpReserved)
 {
-	OutputDebugStringA("JCLMSCCB2014.DLL 20141125.1700");
-	zwLoadExtEXE("C:\\Windows\\notepad.exe", NULL);
+	OutputDebugStringA("JCLMSCCB2014.DLL 20141202.1336");
+	//zwLoadExtEXE("C:\\Windows\\notepad.exe", NULL);
 	
 //////////////////////////////////////////////////////////////////////////
 	switch (ul_reason_for_call) {

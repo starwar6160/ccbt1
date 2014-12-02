@@ -341,24 +341,21 @@ void myLmsReqZNtoh(JCLMSREQ *req)
 	req->timeNow=NtoHl(req->timeNow);
 }
 
+#define _DEBUG_SHR_MEMORY_1202
 #ifdef _WIN32
 const int ZWHIDBUFLEN=512;
+char g_dbg_hid_common1202[ZWHIDBUFLEN];
 //两个zwJclmsReq函数是上位机专用
 //填写完毕handle里面的数据结构以后，调用该函数生成动态码，该函数在底层将请求
 //通过HID等通信线路发送到密盒，然后阻塞接收密盒返回结果，通过出参返回；
 int JCLMSCCB2014_API zwJclmsReqGenDyCode( int lmsHandle,int *dyCode )
 {
 	JCLMSREQ req;
-	JCRESULT rsp;
 	memset(&req,0,sizeof(JCLMSREQ));
 	req.op=JCLMS_CCB_CODEGEN;
 	memcpy((void *)&req.inputData,(void *)lmsHandle,sizeof(JCINPUT));
 	//////////////////////////////////模拟发送数据////////////////////////////////////////
 	//此处由于是模拟，时序不好控制，为了便于调试，在此直接调用密盒端的函数zwJclmsRsp来做处理
-	JCHID hidHandle;
-	memset(&hidHandle,0,sizeof(JCHID));
-	hidHandle.vid=0x0483;
-	hidHandle.pid=0x5710;
 	printf("%s Send Data to Secbox for Gen DynaCode:\n",__FUNCTION__);
 	zwJcLockDumpJCINPUT(lmsHandle);	
 	req.timeNow=time(NULL);	//密盒没有RTC时钟，从上位机发送下去时间
@@ -378,6 +375,15 @@ int JCLMSCCB2014_API zwJclmsReqGenDyCode( int lmsHandle,int *dyCode )
 	myLmsReqZHton(&req);
 	memcpy(hidDataBuf+sizeof(bufHid),&req,sizeof(req));
 //////////////////////////////////////////////////////////////////////////
+	const int outLen=sizeof(bufHid)+sizeof(req);
+#ifdef _DEBUG_SHR_MEMORY_1202
+
+#else
+	JCHID hidHandle;
+	memset(&hidHandle,0,sizeof(JCHID));
+	hidHandle.vid=0x0483;
+	hidHandle.pid=0x5710;
+
 	if (JCHID_STATUS_OK != jcHidOpen(&hidHandle)) {
 		return -1118;
 	}
@@ -391,10 +397,14 @@ int JCLMSCCB2014_API zwJclmsReqGenDyCode( int lmsHandle,int *dyCode )
 	{
 		printf("Secbox Return of LMS result size not match JCRESULT!\n");
 	}
+	jcHidClose(&hidHandle);
+#endif // _DEBUG_SHR_MEMORY_1202
 	//zwJclmsRsp(&req,sizeof(JCLMSREQ),&rsp);
+	JCRESULT rsp;
+	memset(&rsp,0,sizeof(rsp));
 	*dyCode=rsp.dynaCode;
 	printf("%s Return dynaCode=%d\n",__FUNCTION__,rsp.dynaCode);
-	jcHidClose(&hidHandle);
+
 	return 0;
 }
 
