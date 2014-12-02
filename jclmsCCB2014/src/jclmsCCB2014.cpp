@@ -11,6 +11,7 @@
 #include "zwHidSplitMsg.h"
 #include "zwSecretBoxAuth.h"
 
+#define _DEBUG_USE_LMS_FUNC_CALL_20141202
 extern "C"
 {
 void	WINAPI	Sleep(uint32_t dwMilliseconds	);
@@ -340,7 +341,7 @@ void myLmsReqZNtoh(JCLMSREQ *req)
 	req->timeNow=NtoHl(req->timeNow);
 }
 
-//#define _DEBUG_SHR_MEMORY_1202
+
 #ifdef _WIN32
 void myHexDump(const void * hidSendBuf,const int outLen );
 const int ZWHIDBUFLEN=512;
@@ -381,7 +382,7 @@ int JCLMSCCB2014_API zwJclmsReqGenDyCode( int lmsHandle,int *dyCode )
 	JCRESULT rsp;
 	memset(&rsp,0,sizeof(rsp));
 
-#ifdef _DEBUG_SHR_MEMORY_1202
+#ifdef _DEBUG_USE_LMS_FUNC_CALL_20141202
 	//调试状态，直接调用下位机函数即可
 	zwJclmsRsp(hidSendBuf,outLen,&rsp);
 #else
@@ -408,7 +409,7 @@ int JCLMSCCB2014_API zwJclmsReqGenDyCode( int lmsHandle,int *dyCode )
 		printf("Secbox Return of LMS result size not match JCRESULT!\n");
 	}
 	jcHidClose(&hidHandle);
-#endif // _DEBUG_SHR_MEMORY_1202
+#endif // _DEBUG_USE_LMS_FUNC_CALL_20141202
 	//zwJclmsRsp(&req,sizeof(JCLMSREQ),&rsp);
 	assert(0!=rsp.dynaCode);
 	*dyCode=rsp.dynaCode;
@@ -455,7 +456,7 @@ int JCLMSCCB2014_API zwJclmsReqVerifyDyCode( int lmsHandle,int dstCode,JCMATCH *
 	JCRESULT rsp;
 	memset(&rsp,0,sizeof(rsp));
 
-#ifdef _DEBUG_SHR_MEMORY_1202
+#ifdef _DEBUG_USE_LMS_FUNC_CALL_20141202
 	//调试状态，直接调用下位机函数即可
 	zwJclmsRsp(hidSendBuf,outLen,&rsp);
 #else
@@ -478,7 +479,7 @@ int JCLMSCCB2014_API zwJclmsReqVerifyDyCode( int lmsHandle,int dstCode,JCMATCH *
 		printf("Secbox Return of LMS result size not match JCRESULT!\n");
 	}
 	jcHidClose(&hidHandle);
-#endif // _DEBUG_SHR_MEMORY_1202
+#endif // _DEBUG_USE_LMS_FUNC_CALL_20141202
 	memcpy((void *)match,(void *)&rsp.verCodeMatch,sizeof(JCMATCH));
 	printf("%s Match DateTime=%d\tValidity=%d\n",__FUNCTION__,match->s_datetime,match->s_validity);	
 	return 0;
@@ -497,7 +498,7 @@ void JCLMSCCB2014_API zwJclmsRsp( void * inLmsReq,const int inLmsReqLen,JCRESULT
 
 	assert(NULL!=inLmsReq);
 	assert(NULL!=lmsResult);
-#ifdef _DEBUG_SHR_MEMORY_1202
+#ifdef _DEBUG_USE_LMS_FUNC_CALL_20141202
 	//PC调试时输入大小必须是HID有效载荷头部+JCLMSREQ的大小
 	assert(sizeof(SECBOX_DATA_INFO)+sizeof(JCLMSREQ)==inLmsReqLen);
 	//跳过HID有效载荷头部
@@ -507,7 +508,7 @@ void JCLMSCCB2014_API zwJclmsRsp( void * inLmsReq,const int inLmsReqLen,JCRESULT
 	assert(sizeof(JCLMSREQ)==inLmsReqLen);
 	//跳过HID有效载荷头部
 	memcpy((void *)&lmsReq,(char *)inLmsReq,inLmsReqLen);
-#endif // _DEBUG_SHR_MEMORY_1202
+#endif // _DEBUG_USE_LMS_FUNC_CALL_20141202
 
 	myLmsReqZNtoh(&lmsReq);
 	zwJcLockDumpJCINPUT((int)(&lmsReq));
