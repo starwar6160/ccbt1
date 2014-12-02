@@ -85,6 +85,49 @@ typedef struct jcLockReverseMatchResult {
 #define JC_PSK_LEN (256/4)	//256bit HEX+NULL,这是定长值
 #define JC_INVALID_VALUE	(-1)
 
+#pragma pack(1)
+typedef struct JcLockInput {
+	//固定因素部分
+	char AtmNo[JC_ATMNO_MAXLEN + 1];	//ATM号
+	char LockNo[JC_LOCKNO_MAXLEN + 1];	//锁号
+	char PSK[JC_PSK_LEN + 1];	//PSK，上下位机共同持有的唯一机密因素
+	//可变因素部分
+	int CodeGenDateTime;		//日期时间
+	int Validity;		//有效期
+	int CloseCode;	//闭锁码             	
+	JCCMD CmdType;	//模式代码，比如开锁模式，远程重置模式，建行的流程要求的各种模式等等
+	///////////////////////////////////以下为配置算法运作模式的数据///////////////////////////////////////
+	int dbgSearchTimeStart;	//搜索时间起始点，默认值应该是当前时间，但是比如测试时可以额外设定。20141118新增,主要供调试和单元测试使用
+	//反推时间步长秒数，默认为在线模式，精度1分钟，值为60，离线模式请自己设置为3600秒或者其他数值
+	int SearchTimeStep;
+	//往前反推的时间长度秒数，默认为在线模式，10分钟，值为600，其他值比如离线24小时请自己设置
+	int SearchTimeLength;
+	//有效期，共有NUM_VALIDITY个,默认值是从5分钟到24小时那一系列，单位是分钟；可以自己设定
+	//可以把最常用的有效期设置在更靠近开始处加快匹配速度
+	int ValidityArray[NUM_VALIDITY];
+} JCINPUT;
+
+typedef enum jclmsd_request{
+	JCLMS_CCB_CODEGEN,		//动态码生成
+	JCLMS_CCB_CODEVERIFY	//动态码反推
+}JCLMSOP;
+
+typedef struct jcLmsRequest{
+	JCLMSOP op;
+	int dstCode;	//反推运算的输入动态码
+	unsigned int timeNow;	//当前时间，为没有RTC，需要对时的密盒准备的
+	JCINPUT inputData;
+}JCLMSREQ;
+
+//用于HID等通信接口返回结果，统一在一个结构体里面
+typedef union JcLockResult{
+	int dynaCode;			//动态码结果
+	JCMATCH verCodeMatch;		//验证码匹配日期时间和有效期结果
+}JCRESULT;
+
+#pragma pack()
+
+
 //分配一个内部数据结构，返回句柄，以后所有操作均以该句柄为对象
 int JCLMSCCB2014_API JcLockNew(void);
 //删除内部数据结构，释放内存空间，请在所有JCLMS相关代码结束前调用

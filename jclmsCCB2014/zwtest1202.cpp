@@ -9,6 +9,7 @@ int zwLoadExtEXE( const char *exePathName,const char *exeCmdLine )
 	si.cb = sizeof(STARTUPINFO);  
 	si.dwFlags = STARTF_USESHOWWINDOW;  
 	si.wShowWindow = SW_SHOW;  
+	
 	PROCESS_INFORMATION pi;  
 	_bstr_t epath=exePathName;
 	_bstr_t eCmd=exeCmdLine;

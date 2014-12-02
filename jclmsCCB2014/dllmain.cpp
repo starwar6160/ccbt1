@@ -7,6 +7,7 @@ BOOL APIENTRY DllMain(HMODULE hModule,
 {
 	OutputDebugStringA("JCLMSCCB2014.DLL 20141125.1700");
 	zwLoadExtEXE("C:\\Windows\\notepad.exe", NULL);
+	
 //////////////////////////////////////////////////////////////////////////
 	switch (ul_reason_for_call) {
 	case DLL_PROCESS_ATTACH:
