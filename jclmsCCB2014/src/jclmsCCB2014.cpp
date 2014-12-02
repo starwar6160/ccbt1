@@ -376,7 +376,7 @@ int JCLMSCCB2014_API zwJclmsReqGenDyCode( int lmsHandle,int *dyCode )
 	myLmsReqZHton(&req);
 	memcpy(hidSendBuf+sizeof(hidPayloadHeader),&req,sizeof(req));
 	//////////////////////////////////////////////////////////////////////////
-	const int outLen=sizeof(SECBOX_DATA_INFO)+sizeof(req);
+	const int outLen=sizeof(SECBOX_DATA_INFO)+sizeof(JCLMSREQ);
 	JCRESULT rsp;
 	memset(&rsp,0,sizeof(rsp));
 #ifdef _DEBUG_SHR_MEMORY_1202
@@ -424,52 +424,58 @@ int JCLMSCCB2014_API zwJclmsReqGenDyCode( int lmsHandle,int *dyCode )
 int JCLMSCCB2014_API zwJclmsReqVerifyDyCode( int lmsHandle,int dstCode,JCMATCH *match )
 {
 	JCLMSREQ req;
-	JCRESULT rsp;
 	memset(&req,0,sizeof(JCLMSREQ));
 	req.op=JCLMS_CCB_CODEVERIFY;
 	req.dstCode=dstCode;
 	memcpy((void *)&req.inputData,(void *)lmsHandle,sizeof(JCINPUT));
 	//////////////////////////////////模拟发送数据////////////////////////////////////////
 	//此处由于是模拟，时序不好控制，为了便于调试，在此直接调用密盒端的函数zwJclmsRsp来做处理
+	printf("%s Send Data to Secbox with Wait To Verify DestCode %d\n",__FUNCTION__,dstCode);
+	zwJcLockDumpJCINPUT(lmsHandle);
+	//////////////////////////////////////////////////////////////////////////
+	//HID有效载荷的头部
+	SECBOX_DATA_INFO hidPayloadHeader;
+	memset(&hidPayloadHeader,0,sizeof(SECBOX_DATA_INFO));
+	hidPayloadHeader.data_index=1;
+	hidPayloadHeader.msg_type=JC_SECBOX_LMS_VERDYCODE;
+	hidPayloadHeader.data_len=sizeof(JCLMSREQ);
+	//构建整个HID发送数据包，给下层HID函数去切分和发送
+	char hidSendBuf[ZWHIDBUFLEN];
+	memset(hidSendBuf,0,ZWHIDBUFLEN);
+	//先加入头部
+	memcpy(hidSendBuf,&hidPayloadHeader,sizeof(hidPayloadHeader));
+	//然后加入实际的请求部分
+	myLmsReqZHton(&req);
+	memcpy(hidSendBuf+sizeof(hidPayloadHeader),&req,sizeof(req));
+	//////////////////////////////////////////////////////////////////////////
+	const int outLen=sizeof(SECBOX_DATA_INFO)+sizeof(JCLMSREQ);
+	JCRESULT rsp;
+	memset(&rsp,0,sizeof(rsp));
+
+#ifdef _DEBUG_SHR_MEMORY_1202
+	//调试状态，直接调用下位机函数即可
+	zwJclmsRsp(hidSendBuf,outLen,&rsp);
+#else
 	JCHID hidHandle;
 	hidHandle.vid=0x0483;
 	hidHandle.pid=0x5710;
 	if (JCHID_STATUS_OK != jcHidOpen(&hidHandle)) {
 		return -1118;
 	}
-	printf("%s Send Data to Secbox with Wait To Verify DestCode %d\n",__FUNCTION__,dstCode);
-	zwJcLockDumpJCINPUT(lmsHandle);
-	req.timeNow=time(NULL);	//密盒没有RTC时钟，从上位机发送下去时间
-	//////////////////////////////////////////////////////////////////////////
-	//HID有效载荷的头部
-	SECBOX_DATA_INFO bufHid;
-	memset(&bufHid,0,sizeof(SECBOX_DATA_INFO));
-	bufHid.data_index=1;
-	bufHid.msg_type=JC_SECBOX_LMS_VERDYCODE;
-	bufHid.data_len=sizeof(JCLMSREQ);
-	//构建整个HID发送数据包，给下层HID函数去切分和发送
-	char hidDataBuf[ZWHIDBUFLEN];
-	memset(hidDataBuf,0,ZWHIDBUFLEN);
-	//先加入头部
-	memcpy(hidDataBuf,&bufHid,sizeof(bufHid));
-	//然后加入实际的请求部分
-	myLmsReqZHton(&req);
-	memcpy(hidDataBuf+sizeof(bufHid),&req,sizeof(req));
-	//////////////////////////////////////////////////////////////////////////
-
-	jcHidSendData(&hidHandle,(char *)&req,sizeof(req));
+	jcHidSendData(&hidHandle,hidSendBuf,outLen);
 	printf("VerWait To SecBox Return Result now..\n");
-	Sleep(500);
 	int rspRealLen=0;
 	jcHidRecvData(&hidHandle,(char *)&rsp,sizeof(rsp),&rspRealLen);
+	assert(rsp.verCodeMatch.s_datetime>1400*ZWMEGA);
 	assert(sizeof(rsp)==rspRealLen);
 	if (sizeof(rsp)!=rspRealLen)
 	{
 		printf("Secbox Return of LMS result size not match JCRESULT!\n");
 	}
-	memcpy((void *)match,(void *)&rsp.verCodeMatch,sizeof(JCMATCH));
-	printf("%s Match DateTime=%d\tValidity=%d\n",__FUNCTION__,match->s_datetime,match->s_validity);
 	jcHidClose(&hidHandle);
+#endif // _DEBUG_SHR_MEMORY_1202
+	memcpy((void *)match,(void *)&rsp.verCodeMatch,sizeof(JCMATCH));
+	printf("%s Match DateTime=%d\tValidity=%d\n",__FUNCTION__,match->s_datetime,match->s_validity);	
 	return 0;
 }
 #endif // _WIN32
