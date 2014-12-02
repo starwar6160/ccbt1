@@ -406,29 +406,39 @@ int JCLMSCCB2014_API zwJclmsReqVerifyDyCode( int lmsHandle,int dstCode,JCMATCH *
 //该函数是下位机专用
 void JCLMSCCB2014_API zwJclmsRsp( void * inLmsReq,const int inLmsReqLen,JCRESULT *lmsResult )
 {
-	assert(NULL!=inLmsReq);
-	assert(sizeof(SECBOX_DATA_INFO)+sizeof(JCLMSREQ)==inLmsReqLen);
-	assert(NULL!=lmsResult);
 	//从外部接收数据
 	JCLMSREQ lmsReq;
+
+	assert(NULL!=inLmsReq);
+	assert(NULL!=lmsResult);
+#ifdef _DEBUG_SHR_MEMORY_1202
+	//PC调试时输入大小必须是HID有效载荷头部+JCLMSREQ的大小
+	assert(sizeof(SECBOX_DATA_INFO)+sizeof(JCLMSREQ)==inLmsReqLen);
 	//跳过HID有效载荷头部
 	memcpy((void *)&lmsReq,(char *)inLmsReq+sizeof(SECBOX_DATA_INFO),inLmsReqLen-sizeof(SECBOX_DATA_INFO));
+#else
+	//在ARM上输入大小必须是JCLMSREQ大小
+	assert(sizeof(JCLMSREQ)==inLmsReqLen);
+	//跳过HID有效载荷头部
+	memcpy((void *)&lmsReq,(char *)inLmsReq,inLmsReqLen);
+#endif // _DEBUG_SHR_MEMORY_1202
+
 	myLmsReqZNtoh(&lmsReq);
 	zwJcLockDumpJCINPUT((int)(&lmsReq));
-#ifndef _WIN32
-	g_armEmuTime= lmsReq.timeNow;	//密盒没有RTC时钟的临时修补，20141128.1358.周伟
-#endif // _WIN32
+
 	//通过出参结构体返回计算结果给外部
-	
 	int dyCode=0;
 	if (JCLMS_CCB_CODEGEN==lmsReq.op)
 	{
 		dyCode=zwJcLockGetDynaCode((int)(&lmsReq.inputData));
+		assert(dyCode>10*ZWMEGA);
 		lmsResult->dynaCode=dyCode;
 	}
 	if (JCLMS_CCB_CODEVERIFY==lmsReq.op)
 	{
 		JCMATCH jm=JcLockReverseVerifyDynaCode((int)(&lmsReq.inputData),lmsReq.dstCode);
+		assert(jm.s_datetime>1400*ZWMEGA);
+		assert(jm.s_validity>0 && jm.s_validity<=1440);
 		memcpy((void *)&(lmsResult->verCodeMatch),(void *)&jm,sizeof(JCMATCH));
 	}	
 }
