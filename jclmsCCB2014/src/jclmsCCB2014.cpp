@@ -500,6 +500,10 @@ void JCLMSCCB2014_API zwJclmsRsp( void * inLmsReq,const int inLmsReqLen,JCRESULT
 
 	assert(NULL!=inLmsReq);
 	assert(NULL!=lmsResult);
+	if (NULL==inLmsReq || NULL==lmsResult)
+	{
+		return;
+	}
 #ifdef _DEBUG_USE_LMS_FUNC_CALL_20141202
 	//PC调试时输入大小必须是HID有效载荷头部+JCLMSREQ的大小
 	assert(sizeof(SECBOX_DATA_INFO)+sizeof(JCLMSREQ)==inLmsReqLen);

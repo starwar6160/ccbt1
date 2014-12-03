@@ -20,7 +20,7 @@ enum zwOutputASCII_Format {
 	ZWOUTFMT_BASE64
 };
 //控制ECIES算法的输入输出封装使用BASE64还是HEX抑或是其他可能的格式
-const static int MYOUT_FORMAT = ZWOUTFMT_BASE64;
+static int MYOUT_FORMAT = ZWOUTFMT_BASE64;
 	//ZWOUTFMT_HEX;
 
 #ifdef  __cplusplus
@@ -97,6 +97,10 @@ int ZWOCTET_TO_ASCII(const octet * srcOct, char *dstAscii, const int dstLen)
 	int i = 0;
 	assert(dstAscii != NULL);
 	assert(srcOct != NULL);
+	if (NULL==srcOct)
+	{
+		return ECIES_INPUT_NULL;
+	}
 	assert(srcOct->len > 0);
 	assert(srcOct->max >= srcOct->len);
 	assert(dstAscii != 0);
@@ -145,7 +149,7 @@ void ZWOCTET_FROM_ASCII(octet * dstOct, const char *srcAscii)
 	if (ZWOUTFMT_HEX == MYOUT_FORMAT) {
 		for (i = 0; i < inLen / 2; i++) {
 			char *dst = dstOct->val + i;
-			sscanf(srcAscii + 2 * i, "%02X", dst);
+			int ssr=sscanf(srcAscii + 2 * i, "%02X", dst);
 			dstOct->len++;
 		}
 	}			//ZWOUTFMT_HEX
@@ -153,8 +157,14 @@ void ZWOCTET_FROM_ASCII(octet * dstOct, const char *srcAscii)
 
 void myKDFHMACSeed(octet * KDF2Seed, octet * HmacSeed)
 {
-	assert(KDF2Seed != NULL && KDF2Seed->max > 0);
-	assert(HmacSeed != NULL && HmacSeed->max > 0);
+	assert(KDF2Seed != NULL);
+	assert(HmacSeed != NULL);
+	if (NULL==KDF2Seed || NULL==HmacSeed)
+	{
+		return;
+	}
+	assert(KDF2Seed->max > 0);
+	assert(HmacSeed->max > 0);
 	HmacSeed->val[3] = 0x3;
 	//KDF2Seed是用在KDF2中  HmacSeed是计算MAC中的,都可以随意指定，只需要两端保持一致
 	//所以，KDF2Seed的变更会引起CryptedText的变更，HmacSeed的变更会引起MsgHash的变更
@@ -564,13 +574,18 @@ static string myMergeEncOutItems(int eciesHandle)
 //要求eciesHandle已经被设置了公钥才能成功，返回值是3个元素的组合，不必理解其意义
 ZWECIES_API const char *EciesEncrypt(const char *pubKey, const char *plainText)
 {
-	//1043test
+	assert(NULL != pubKey);
+	assert(NULL != plainText);
+	if (NULL==pubKey || NULL==plainText)
+	{
+		return NULL;
+	}
 	const int BUFLEN=384;
 	char dbgBuf[BUFLEN];
 	memset(dbgBuf,0,BUFLEN);
-	assert(NULL != pubKey && strlen(pubKey) > 0);
-	assert(*(int *)pubKey != 0xCCCCCCCC);
-	assert(NULL != plainText && strlen(plainText) > 0);
+	assert(strlen(pubKey) > 0);
+	assert(*(int *)pubKey != 0xCCCCCCCC);	
+	assert(strlen(plainText) > 0);
 	assert(*(int *)plainText != 0xCCCCCCCC);
 	static string g_retStr;
 	sprintf(dbgBuf,"1701.pubKey=%s plainText=%s",pubKey,plainText);
