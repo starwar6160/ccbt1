@@ -3,11 +3,11 @@
 #include "jclmsCCB2014.h"
 void myJcLockInputTest1();
 
-//#define _DEBUG_ECIES_NORMAL_TEST1117
-//#define _DEBUG_ECIES_BADINPUT_TEST1117
-//#define _DEBUG_ECIES_CSTEST1117
-//#define _DEBUG_JCLMS_GTEST1117
-//#define _ZWLMSHID_TEST1128
+#define _DEBUG_ECIES_NORMAL_TEST1117
+#define _DEBUG_ECIES_BADINPUT_TEST1117
+#define _DEBUG_ECIES_CSTEST1117
+#define _DEBUG_JCLMS_GTEST1117
+#define _ZWLMSHID_TEST1128
 
 namespace CcbV11Test722Ecies {
 	const int ZWMEGA = 1000 * 1000;
@@ -680,7 +680,7 @@ int zwLmsAlgStandTest20141203(void)
 	JcLockSetCmdType(handle, JCI_CMDTYPE, JCCMD_INIT_CLOSECODE);
 	//////////////////////////////////////////////////////////////////////////
 	JCRESULT lmsRsp;
-	printf("zwJclmsReqGenDyCode initCloseCode\n");
+	//printf("zwJclmsReqGenDyCode initCloseCode\n");
 	int initCloseCode=0;
 	initCloseCode=JcLockGetDynaCode(handle);
 	//这里是一个自检测试，如果失败，就说明有比较大的问题了，比如类似发生过的

@@ -68,9 +68,9 @@ int JCLMSCCB2014_API JcLockNew(void)
 	memset(pjc->AtmNo, 0, JC_ATMNO_MAXLEN + 1);
 	memset(pjc->LockNo, 0, JC_LOCKNO_MAXLEN + 1);
 	memset(pjc->PSK, 0, JC_PSK_LEN + 1);
-#ifdef _DEBUG
-	printf("sizeof JCINPUT=%d\n",sizeof(JCINPUT));
-#endif // _DEBUG
+//#ifdef _DEBUG
+//	printf("sizeof JCINPUT=%d\n",sizeof(JCINPUT));
+//#endif // _DEBUG
 	//为没有可变输入的初始闭锁码指定3个常量
 	pjc->CodeGenDateTime = 1400 * 1000 * 1000;
 	pjc->Validity = 5;	//用的最多的是5分钟有效期，所以直接初始化为5
@@ -113,7 +113,8 @@ int JCLMSCCB2014_API JcLockDelete(const int handle)
 int zwJcLockGetDynaCode(const int handle)
 {
 	printf("%s\n",__FUNCTION__);
-	zwJcLockDumpJCINPUT(handle);
+	JcLockDebugPrint(handle);
+	//zwJcLockDumpJCINPUT(handle);
 	const JCINPUT *lock = (const JCINPUT *)handle;
 	SM3 sm3;
 	char outHmac[ZW_SM3_DGST_SIZE];
@@ -170,8 +171,9 @@ int zwJcLockGetDynaCode(const int handle)
 JCMATCH JCLMSCCB2014_API JcLockReverseVerifyDynaCode(const int handle,
 						     const int dstCode)
 {
-	printf("%s\n",__FUNCTION__);
-	zwJcLockDumpJCINPUT(handle);
+	printf("%s dstCode=%d\n",__FUNCTION__,dstCode);
+	JcLockDebugPrint(handle);
+	//zwJcLockDumpJCINPUT(handle);
 	JCINPUT *jcp = (JCINPUT *) handle;
 	const int MIN_OF_HOUR = 60;	//一小时的分钟数
 	JCMATCH jcoff;
@@ -203,8 +205,7 @@ JCMATCH JCLMSCCB2014_API JcLockReverseVerifyDynaCode(const int handle,
 	//结束时间，往前推数据结构所指定的一段时间，几分钟到一整天不等
 	int tend = l_datetime - jcp->SearchTimeLength;
 
-	for (int tdate = l_datetime; tdate >= tend; tdate -= l_timestep) {
-		printf("%d\t",tdate);
+	for (int tdate = l_datetime; tdate >= tend; tdate -= l_timestep) {			
 		for (int v = 0; v < NUM_VALIDITY; v++) {
 			SM3 sm3;
 			char outHmac[ZW_SM3_DGST_SIZE];
@@ -225,6 +226,11 @@ JCMATCH JCLMSCCB2014_API JcLockReverseVerifyDynaCode(const int handle,
 			SM3_Final(&sm3, (char *)(outHmac));
 			unsigned int res =
 			    zwBinString2Int32(outHmac, ZWSM3_DGST_LEN);
+			printf("%d:%d\t",tdate,res);	
+			if (3==v)
+			{
+				printf("\n");
+			}
 			if (dstCode == res)	//发现了匹配的时间和有效期
 			{
 				//填写匹配的时间和有效期到结果
@@ -233,8 +239,9 @@ JCMATCH JCLMSCCB2014_API JcLockReverseVerifyDynaCode(const int handle,
 				jcoff.s_datetime = tdate;
 				jcoff.s_validity = jcp->ValidityArray[v];
 				goto foundMatch;
-			}
-		}		//END OF VALIDITY LOOP
+			}			
+		}		//END OF VALIDITY LOOP		
+		printf("\n");
 	}			//END OF DATE LOOP
       foundMatch:
 	return jcoff;

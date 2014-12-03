@@ -189,7 +189,7 @@ JCERROR JCLMSCCB2014_API JcLockCheckInput(const int handle)
 void JCLMSCCB2014_API JcLockDebugPrint(const int handle)
 {
 	JCINPUT *jcp = (JCINPUT *) handle;
-	zwJcLockDumpJCINPUT(handle);
+	//zwJcLockDumpJCINPUT(handle);
 	if (EJC_SUSSESS != JcLockCheckInput((const int)jcp)) {
 		printf("JcLock Input Para Error!\n");
 	}
