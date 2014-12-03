@@ -144,7 +144,12 @@ JCERROR JCLMSCCB2014_API JcLockCheckInput(const int handle)
 	assert(sizeof(jcp->CodeGenDateTime) == sizeof(int));
 	assert(sizeof(jcp->Validity) == sizeof(int));
 	assert(sizeof(jcp->CloseCode) == sizeof(int));
+#ifdef _WIN32
+	//似乎ARM上枚举大小和整型大小不一样，所以只在PC端检查这一点。20141203.1108
+	//但是由于我最后计算HASH时，是使用该字段的数字值作为整数传入的，所以这个差异
+	//并没有产生实质性影响；
 	assert(sizeof(jcp->CmdType) == sizeof(int));
+#endif // _WIN32
 
 	assert(jcp->CodeGenDateTime >= (ZW_LOWEST_DATE)
 	       && jcp->CodeGenDateTime < ZW_MAXDATA32);
@@ -290,8 +295,12 @@ int myGetNormalTime(int gmtTime, const int TIMEMOD)
 void mySM3Update(SM3 * ctx, const char *data, const int len)
 {
 	assert(ctx != NULL);
-	assert(ctx->length > 0);
 	assert(data != NULL);
+	if (NULL==ctx || NULL==data)
+	{
+		return;
+	}
+	assert(ctx->length > 0);
 	assert(len > 0);
 	for (int i = 0; i < len; i++) {
 		SM3_Update(ctx, *(data + i));
@@ -301,6 +310,10 @@ void mySM3Update(SM3 * ctx, const char *data, const int len)
 void mySM3Update(SM3 * ctx, const int data)
 {
 	assert(ctx != NULL);
+	if (NULL==ctx)
+	{
+		return;
+	}
 	assert(ctx->length > 0);
 	assert(data >= 0);	//几个整数参数，都是0或者正整数
 	int td = data;
