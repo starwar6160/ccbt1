@@ -112,6 +112,7 @@ int JCLMSCCB2014_API JcLockDelete(const int handle)
 //生成各种类型的动态码
 int zwJcLockGetDynaCode(const int handle)
 {
+	printf("%s\n",__FUNCTION__);
 	zwJcLockDumpJCINPUT(handle);
 	const JCINPUT *lock = (const JCINPUT *)handle;
 	SM3 sm3;
@@ -160,6 +161,7 @@ int zwJcLockGetDynaCode(const int handle)
 	SM3_Final(&sm3, (char *)(outHmac));
 	//把HASH结果转化为8位数字输出
 	unsigned int res = zwBinString2Int32(outHmac, ZWSM3_DGST_LEN);
+	printf("%s:dyCode=%d\n",__FUNCTION__,res);
 	return res;
 }
 
@@ -168,6 +170,7 @@ int zwJcLockGetDynaCode(const int handle)
 JCMATCH JCLMSCCB2014_API JcLockReverseVerifyDynaCode(const int handle,
 						     const int dstCode)
 {
+	printf("%s\n",__FUNCTION__);
 	zwJcLockDumpJCINPUT(handle);
 	JCINPUT *jcp = (JCINPUT *) handle;
 	const int MIN_OF_HOUR = 60;	//一小时的分钟数
@@ -201,7 +204,7 @@ JCMATCH JCLMSCCB2014_API JcLockReverseVerifyDynaCode(const int handle,
 	int tend = l_datetime - jcp->SearchTimeLength;
 
 	for (int tdate = l_datetime; tdate >= tend; tdate -= l_timestep) {
-		//printf("%d\t",tdate);
+		printf("%d\t",tdate);
 		for (int v = 0; v < NUM_VALIDITY; v++) {
 			SM3 sm3;
 			char outHmac[ZW_SM3_DGST_SIZE];

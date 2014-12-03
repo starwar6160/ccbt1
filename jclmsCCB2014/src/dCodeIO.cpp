@@ -56,7 +56,7 @@ JCERROR JCLMSCCB2014_API JcLockSetString(const int handle, const JCITYPE mtype,
 		return EJC_INPUT_NULL;
 	}
 	JCINPUT *jcp = (JCINPUT *) handle;
-	zwJcLockDumpJCINPUT(handle);
+	//zwJcLockDumpJCINPUT(handle);
 	switch (mtype) {
 	case JCI_ATMNO:
 		strncpy(jcp->AtmNo, str, sizeof(jcp->AtmNo));
@@ -85,7 +85,7 @@ JCERROR JCLMSCCB2014_API JcLockSetInt(const int handle, const JCITYPE mtype,
 	}
 	JCINPUT *jcp = (JCINPUT *) handle;
 	assert(jcp->SearchTimeStep >= 6 && jcp->SearchTimeStep <= ZW_ONE_DAY);
-	zwJcLockDumpJCINPUT(handle);
+	//zwJcLockDumpJCINPUT(handle);
 	switch (mtype) {
 	case JCI_DATETIME:
 		//时间必须经过规格化
@@ -136,7 +136,7 @@ JCERROR JCLMSCCB2014_API JcLockSetInt(const int handle, const JCITYPE mtype,
 
 JCERROR JCLMSCCB2014_API JcLockCheckInput(const int handle)
 {
-	zwJcLockDumpJCINPUT(handle);
+	//zwJcLockDumpJCINPUT(handle);
 	const int ZW_DIGI8_LOW = 10 * ZWMEGA;
 	const int ZW_DIGI8_HIGH = 100 * ZWMEGA;
 	JCINPUT *jcp = (JCINPUT *) handle;
@@ -229,11 +229,11 @@ void JCLMSCCB2014_API zwJcLockDumpJCINPUT(const int handle)
 	//防止重复输出同一个数据结构
 	if (dedupTime==jcp->CodeGenDateTime)
 	{
-		return;
+		//return;
 	}
 
 	//printf("########JCINPUT DUMP START############\n");
-	printf("\n[");
+	printf("[");
 	printf("ATMNO:%s\t", jcp->AtmNo);
 	printf("LOCKNO:%s\t", jcp->LockNo);
 	printf("PSK:%s\n", jcp->PSK);
