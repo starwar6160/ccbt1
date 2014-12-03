@@ -11,7 +11,7 @@
 #include "zwHidSplitMsg.h"
 #include "zwSecretBoxAuth.h"
 
-
+void myCjsonTest1(void);
 
 #define _DEBUG_USE_LMS_FUNC_CALL_20141202
 extern "C"
@@ -63,6 +63,7 @@ int JCLMSCCB2014_API JcLockGetDynaCode(const int handle)
 //////////////////////////////////////////////////////////////////////////
 int JCLMSCCB2014_API JcLockNew(void)
 {
+	myCjsonTest1();
 	JCINPUT *pjc = new JCINPUT;
 	assert(pjc != NULL);
 	memset(pjc, 0, sizeof(JCINPUT));

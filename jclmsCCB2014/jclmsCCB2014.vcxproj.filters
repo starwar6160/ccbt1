@@ -45,6 +45,9 @@
     <ClInclude Include="src\jclmsCCB2014.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="src\crc32\cJSON.h">
+      <Filter>源文件\hashalg</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -88,6 +91,9 @@
     </ClCompile>
     <ClCompile Include="zwtest1202.cpp">
       <Filter>源文件\src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\crc32\cJSON.c">
+      <Filter>源文件\hashalg</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

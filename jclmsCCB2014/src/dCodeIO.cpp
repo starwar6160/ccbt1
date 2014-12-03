@@ -5,6 +5,7 @@
 #include <assert.h>
 #include "jclmsCCB2014.h"
 #include "dCodeHdr.h"
+#include "cJSON.h"
 extern "C"
 {
 unsigned char crc8(const unsigned char crc8Input,const void *inputData, const int inputLen );
@@ -343,3 +344,16 @@ void mySM3Update(SM3 * ctx, const int data)
 	assert(td == 0);
 }
 
+void myCjsonTest1(void)
+{
+	cJSON *root,*fmt;   
+	root=cJSON_CreateObject();     
+	cJSON_AddItemToObject(root, "name", cJSON_CreateString("Jack Nimble"));   
+	cJSON_AddItemToObject(root, "format", fmt=cJSON_CreateObject());   
+	cJSON_AddStringToObject(fmt,"type",     "rect");   
+	cJSON_AddNumberToObject(fmt,"width",        1920);   
+	cJSON_AddNumberToObject(fmt,"height",       1080);   
+	cJSON_AddFalseToObject (fmt,"interlace");   
+	cJSON_AddNumberToObject(fmt,"frame rate",   24); 
+	printf("%s\n",cJSON_Print(root));
+}
