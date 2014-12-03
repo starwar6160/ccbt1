@@ -7,7 +7,7 @@ void myJcLockInputTest1();
 //#define _DEBUG_ECIES_BADINPUT_TEST1117
 //#define _DEBUG_ECIES_CSTEST1117
 //#define _DEBUG_JCLMS_GTEST1117
-#define _ZWLMSHID_TEST1128
+//#define _ZWLMSHID_TEST1128
 
 namespace CcbV11Test722Ecies {
 	const int ZWMEGA = 1000 * 1000;
@@ -652,6 +652,53 @@ namespace CcbV11Test722Ecies {
 			//#endif // _DEBUG
 		}
 #endif // _DEBUG_JCLMS_GTEST1117
+
+//一个纯算法层面的标准测试，测试了动态码生成和验证两个环节，用于ARM校验自己是否有编译器优化问题等等；
+//20141203.1001.周伟
+int zwLmsAlgStandTest20141203(void)
+{
+	int handle=0;
+	int pass1DyCode=0;
+	handle = JcLockNew();
+	JcLockSetString(handle, JCI_ATMNO, "atm10455761");
+	JcLockSetString(handle, JCI_LOCKNO, "lock14771509");
+	JcLockSetString(handle, JCI_PSK, "PSKDEMO728");
+	//////////////////////////////////////////////////////////////////////////
+	//固定开锁时间,应该出来固定的结果
+	const int ZWFIX_STARTTIME=1416*ZWMEGA;
+	JcLockSetInt(handle,JCI_TIMESTEP,6);
+	JcLockSetInt(handle,JCI_SEARCH_TIME_START,time(NULL));
+	JcLockSetCmdType(handle, JCI_CMDTYPE, JCCMD_INIT_CLOSECODE);
+	//////////////////////////////////////////////////////////////////////////
+	JCRESULT lmsRsp;
+	printf("zwJclmsReqGenDyCode initCloseCode\n");
+	int initCloseCode=0;
+	initCloseCode=JcLockGetDynaCode(handle);
+	//这里是一个自检测试，如果失败，就说明有比较大的问题了，比如类似发生过的
+	//ARM编译器优化级别问题导致的生成错误的二进制代码等等
+	if(38149728!=initCloseCode)
+	{
+		printf("initCloseCode Gen Error! JCLMS Algorithm GenDynaCode Self Check Fail! 20141203\n");
+		return -1;
+	}
+	JcLockSetInt(handle, JCI_CLOSECODE, initCloseCode);
+	JcLockSetInt(handle,JCI_SEARCH_TIME_START,1416*ZWMEGA+127);
+	JcLockSetCmdType(handle, JCI_CMDTYPE, JCCMD_CCB_DYPASS1);
+	JCMATCH pass1Match =
+		JcLockReverseVerifyDynaCode(handle, 57174184);
+	if(ZWFIX_STARTTIME!=pass1Match.s_datetime)
+	{
+		printf("JcLockReverseVerifyDynaCode Error! JCLMS Algorithm Reverse DynaCode Self Check Fail! 20141203\n");
+		return -2;
+	}	
+	//////////////////////////////////////////////////////////////////////////
+	JcLockDelete(handle);
+	return 0;
+}
+
+TEST_F(jclmsCCBV11_Test, zwHidSecboxLMSTest20141203StandTestVector) {
+	EXPECT_EQ(0,zwLmsAlgStandTest20141203());
+}
 
 
 #ifdef _ZWLMSHID_TEST1128
