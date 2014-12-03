@@ -1,5 +1,4 @@
 #include "..\stdafx.h"
-//#include <assert.h>
 #include <string>
 #include <vector>
 using std::string;

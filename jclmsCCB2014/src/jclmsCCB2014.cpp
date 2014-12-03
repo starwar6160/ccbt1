@@ -1,7 +1,6 @@
 // jclmsCCB2014.cpp : 定义 DLL 应用程序的导出函数。
 //
 #include "stdafx.h"
-#include <assert.h>
 #include <stdio.h>
 #include <string.h>
 #include "jclmsCCB2014.h"
@@ -11,10 +10,12 @@
 #include "zwHidSplitMsg.h"
 #include "zwSecretBoxAuth.h"
 
+
+
 #define _DEBUG_USE_LMS_FUNC_CALL_20141202
 extern "C"
 {
-void	WINAPI	Sleep(uint32_t dwMilliseconds	);
+//void	WINAPI	Sleep(uint32_t dwMilliseconds	);
 	int crc32testmain1127();
 };
 

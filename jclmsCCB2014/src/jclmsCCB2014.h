@@ -21,6 +21,8 @@ extern "C" {
 #endif
 #endif //_ZWUSE_AS_JNI
 
+
+
 //////////////////////////////////////////////////////////////////////////
 extern const int ZW_SYNCALG_BLOCK_SIZE;
 extern const int ZW_SM3_DGST_SIZE;
@@ -164,6 +166,11 @@ int JCLMSCCB2014_API zwJclmsReqGenDyCode( int lmsHandle,int *dyCode);
 //也是使用其他两个动态码的同样算法生成的，所以也算一种动态码，该函数在底层将验证请求通过HID等
 //通信线路发送到密盒，然后阻塞接收密盒返回结果，通过出参返回；
 int JCLMSCCB2014_API zwJclmsReqVerifyDyCode( int lmsHandle,int dstCode,JCMATCH *match );
+
+//#define _ARMCUTASSERT20141203
+#ifdef _ARMCUTASSERT20141203
+#define assert
+#endif // _ARMCUTASSERT20141203
 
 #ifdef  __cplusplus
 }	//extern "C" {

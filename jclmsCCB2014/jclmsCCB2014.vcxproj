@@ -64,7 +64,7 @@
       <OutputFile>$(ZWSRC)\2014BinOut\$(Configuration)\$(TargetName)$(TargetExt)</OutputFile>
       <AdditionalLibraryDirectories>$(ZWSRC)\2014BinOut\$(Configuration);$(ZWLIB)\MIRACL2014\$(Configuration);$(ZWLIB)\python27\libs</AdditionalLibraryDirectories>
       <AdditionalDependencies>setupapi.lib;comsuppw.lib;miracl2014.lib;zwBaseLibStatic.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <ShowProgress>LinkVerboseLib</ShowProgress>
+      <ShowProgress>NotSet</ShowProgress>
     </Link>
     <PostBuildEvent>
       <Command>COPY /y $(TargetPath) $(TargetDir)\_$(ProjectName).pyd</Command>

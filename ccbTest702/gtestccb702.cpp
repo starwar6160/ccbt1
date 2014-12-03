@@ -3,11 +3,11 @@
 #include "jclmsCCB2014.h"
 void myJcLockInputTest1();
 
-//#define _DEBUG_ECIES_NORMAL_TEST1117
-//#define _DEBUG_ECIES_BADINPUT_TEST1117
-//#define _DEBUG_ECIES_CSTEST1117
+#define _DEBUG_ECIES_NORMAL_TEST1117
+#define _DEBUG_ECIES_BADINPUT_TEST1117
+#define _DEBUG_ECIES_CSTEST1117
 //#define _DEBUG_JCLMS_GTEST1117
-//#define _ZWLMSHID_TEST1128
+#define _ZWLMSHID_TEST1128
 
 namespace CcbV11Test722Ecies {
 	const int ZWMEGA = 1000 * 1000;
@@ -591,7 +591,7 @@ namespace CcbV11Test722Ecies {
 			pass1DyCode = JcLockGetDynaCode(handle);
 			codesum+=pass1DyCode;
 			EXPECT_EQ(pass1DyCode, 57174184);
-			JcLockSetInt(handle,JCI_DBG_TIMESTART,1416*ZWMEGA+123);
+			JcLockSetInt(handle,JCI_SEARCH_TIME_START,1416*ZWMEGA+123);
 			JCMATCH pass1Match =
 				JcLockReverseVerifyDynaCode(handle, pass1DyCode);
 			EXPECT_EQ(pass1Match.s_datetime,ZWFIX_STARTTIME);
@@ -639,7 +639,7 @@ namespace CcbV11Test722Ecies {
 			zwJclmsReqGenDyCode(handle,&pass1DyCode);
 			codesum+=pass1DyCode;
 			EXPECT_EQ(pass1DyCode, 57174184);
-			JcLockSetInt(handle,JCI_DBG_TIMESTART,1416*ZWMEGA+123);
+			JcLockSetInt(handle,JCI_SEARCH_TIME_START,1416*ZWMEGA+123);
 			//验证第一开锁码
 			JCMATCH pass1Match ;
 			printf("zwJclmsReqVerifyDyCode pass1DyCode\n");
