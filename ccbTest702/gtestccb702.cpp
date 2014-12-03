@@ -3,11 +3,11 @@
 #include "jclmsCCB2014.h"
 void myJcLockInputTest1();
 
-#define _DEBUG_ECIES_NORMAL_TEST1117
-#define _DEBUG_ECIES_BADINPUT_TEST1117
-#define _DEBUG_ECIES_CSTEST1117
-#define _DEBUG_JCLMS_GTEST1117
-#define _ZWLMSHID_TEST1128
+//#define _DEBUG_ECIES_NORMAL_TEST1117
+//#define _DEBUG_ECIES_BADINPUT_TEST1117
+//#define _DEBUG_ECIES_CSTEST1117
+//#define _DEBUG_JCLMS_GTEST1117
+//#define _ZWLMSHID_TEST1128
 
 namespace CcbV11Test722Ecies {
 	const int ZWMEGA = 1000 * 1000;
@@ -691,10 +691,13 @@ int zwLmsAlgStandTest20141203(void)
 		return -1;
 	}
 	JcLockSetInt(handle, JCI_CLOSECODE, initCloseCode);
+	JcLockSetInt(handle,JCI_DATETIME,1416*ZWMEGA);
 	JcLockSetInt(handle,JCI_SEARCH_TIME_START,1416*ZWMEGA+127);
 	JcLockSetCmdType(handle, JCI_CMDTYPE, JCCMD_CCB_DYPASS1);
+	pass1DyCode=JcLockGetDynaCode(handle);
+	assert(57174184==pass1DyCode);
 	JCMATCH pass1Match =
-		JcLockReverseVerifyDynaCode(handle, 57174184);
+		JcLockReverseVerifyDynaCode(handle,pass1DyCode);
 	if(ZWFIX_STARTTIME!=pass1Match.s_datetime)
 	{
 		printf("JcLockReverseVerifyDynaCode Error! JCLMS Algorithm Reverse DynaCode Self Check Fail! 20141203\n");

@@ -167,11 +167,6 @@ int JCLMSCCB2014_API zwJclmsReqGenDyCode( int lmsHandle,int *dyCode);
 //通信线路发送到密盒，然后阻塞接收密盒返回结果，通过出参返回；
 int JCLMSCCB2014_API zwJclmsReqVerifyDyCode( int lmsHandle,int dstCode,JCMATCH *match );
 
-//#define _ARMCUTASSERT20141203
-#ifdef _ARMCUTASSERT20141203
-#define assert
-#endif // _ARMCUTASSERT20141203
-
 #ifdef  __cplusplus
 }	//extern "C" {
 #endif
