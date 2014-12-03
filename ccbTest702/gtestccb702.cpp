@@ -6,7 +6,7 @@ void myJcLockInputTest1();
 #define _DEBUG_ECIES_NORMAL_TEST1117
 #define _DEBUG_ECIES_BADINPUT_TEST1117
 #define _DEBUG_ECIES_CSTEST1117
-//#define _DEBUG_JCLMS_GTEST1117
+#define _DEBUG_JCLMS_GTEST1117
 #define _ZWLMSHID_TEST1128
 
 namespace CcbV11Test722Ecies {
@@ -442,7 +442,7 @@ namespace CcbV11Test722Ecies {
 			JcLockSetString(handle, JCI_ATMNO, "atm10455761");
 			JcLockSetString(handle, JCI_LOCKNO, "lock14771509");
 			JcLockSetString(handle, JCI_PSK, "PSKDEMO728");
-
+			JcLockSetInt(handle,JCI_SEARCH_TIME_START,time(NULL));
 		} static void TearDownTestCase() {
 			//delete shared_resource_;
 			//shared_resource_ = NULL;
@@ -458,17 +458,22 @@ namespace CcbV11Test722Ecies {
 
 /////////////////////////////////JCLMS算法测试/////////////////////////////////////////
 #ifdef _DEBUG_JCLMS_GTEST1117
+
 	TEST_F(jclmsCCBV11_Test, CloseCode) {		
+		//New一个数据结构的时候默认的CmdType不是生成闭锁码，所以不设置
+		//JCI_CMDTYPE就生成的动态码，就无法通过验证
 		JcLockSetCmdType(handle, JCI_CMDTYPE, JCCMD_CCB_CLOSECODE);
+		JcLockSetInt(handle,JCI_DATETIME,time(NULL));
 		int CloseCode = JcLockGetDynaCode(handle);
 		cout << "CloseCode729=\t" << CloseCode << endl;
 		//检查闭锁码是否在正常范围内
 		EXPECT_GT(CloseCode, 10 * ZWMEGA);
 		EXPECT_LT(CloseCode, 100 * ZWMEGA);
 		JCMATCH ccodeMatch =
-		    JcLockReverseVerifyDynaCode(handle, CloseCode);
+			JcLockReverseVerifyDynaCode(handle, CloseCode);
 		EXPECT_GT(ccodeMatch.s_datetime, 1400 * ZWMEGA);
 	}
+
 
 	TEST_F(jclmsCCBV11_Test, inputNew) {
 		//简单检查几个值，基本就可以判断是否初始化成功了
@@ -485,6 +490,8 @@ namespace CcbV11Test722Ecies {
 		//检查输入是否合法
 		EXPECT_EQ(EJC_SUSSESS, JcLockCheckInput(handle));
 	}
+
+
 
 //第一开锁码测试
 	TEST_F(jclmsCCBV11_Test, getDynaCodePass1) {
@@ -522,6 +529,8 @@ namespace CcbV11Test722Ecies {
 		printf("pass1Match Time =\t%d\tValidity=%d\n",
 		       pass1Match.s_datetime, pass1Match.s_validity);
 	}
+
+
 
 //下位机校验码测试
 	TEST_F(jclmsCCBV11_Test, getDynaCodeVerifyCode) {
