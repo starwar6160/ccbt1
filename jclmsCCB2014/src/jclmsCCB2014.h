@@ -166,7 +166,8 @@ int JCLMSCCB2014_API zwJclmsReqGenDyCode( int lmsHandle,int *dyCode);
 //也是使用其他两个动态码的同样算法生成的，所以也算一种动态码，该函数在底层将验证请求通过HID等
 //通信线路发送到密盒，然后阻塞接收密盒返回结果，通过出参返回；
 int JCLMSCCB2014_API zwJclmsReqVerifyDyCode( int lmsHandle,int dstCode,JCMATCH *match );
-
+int JCLMSCCB2014_API zwLmsAlgStandTest20141203(void);
+void JCLMSCCB2014_API zwJclmsRsp( void * inLmsReq,const int inLmsReqLen,JCRESULT *lmsResult );
 #ifdef  __cplusplus
 }	//extern "C" {
 #endif

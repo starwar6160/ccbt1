@@ -1,4 +1,8 @@
-#include "stdafx.h"
+//#include "stdafx.h"
+#include <stdio.h>
+#include <time.h>
+#include <string.h>
+#include <assert.h>
 #include "jclmsCCB2014.h"
 #include "dCodeHdr.h"
 

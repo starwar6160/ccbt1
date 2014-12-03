@@ -1,8 +1,9 @@
 // jclmsCCB2014.cpp : 定义 DLL 应用程序的导出函数。
 //
-#include "stdafx.h"
+//#include "stdafx.h"
 #include <stdio.h>
 #include <string.h>
+#include <assert.h>
 #include "jclmsCCB2014.h"
 #include "sm3.h"
 #include "dCodeHdr.h"
@@ -564,3 +565,48 @@ void myHexDump( const void * hidSendBuf,const int outLen )
 	printf("\n");
 }
 
+//一个纯算法层面的标准测试，测试了动态码生成和验证两个环节，用于ARM校验自己是否有编译器优化问题等等；
+//20141203.1001.周伟
+int zwLmsAlgStandTest20141203(void)
+{
+	int handle=0;
+	int pass1DyCode=0;
+	handle = JcLockNew();
+	JcLockSetString(handle, JCI_ATMNO, "atm10455761");
+	JcLockSetString(handle, JCI_LOCKNO, "lock14771509");
+	JcLockSetString(handle, JCI_PSK, "PSKDEMO728");
+	//////////////////////////////////////////////////////////////////////////
+	//固定开锁时间,应该出来固定的结果
+	const int ZWFIX_STARTTIME=1416*ZWMEGA;
+	JcLockSetInt(handle,JCI_TIMESTEP,6);
+	JcLockSetInt(handle,JCI_SEARCH_TIME_START,1416*ZWMEGA+127);
+	JcLockSetCmdType(handle, JCI_CMDTYPE, JCCMD_INIT_CLOSECODE);
+	//////////////////////////////////////////////////////////////////////////
+	JCRESULT lmsRsp;
+	//printf("zwJclmsReqGenDyCode initCloseCode\n");
+	int initCloseCode=0;
+	initCloseCode=JcLockGetDynaCode(handle);
+	//这里是一个自检测试，如果失败，就说明有比较大的问题了，比如类似发生过的
+	//ARM编译器优化级别问题导致的生成错误的二进制代码等等
+	if(38149728!=initCloseCode)
+	{
+		printf("initCloseCode Gen Error! JCLMS Algorithm GenDynaCode Self Check Fail! 20141203\n");
+		return -1;
+	}
+	JcLockSetInt(handle, JCI_CLOSECODE, initCloseCode);
+	JcLockSetInt(handle,JCI_DATETIME,1416*ZWMEGA);
+	JcLockSetInt(handle,JCI_SEARCH_TIME_START,1416*ZWMEGA+127);
+	JcLockSetCmdType(handle, JCI_CMDTYPE, JCCMD_CCB_DYPASS1);
+	pass1DyCode=JcLockGetDynaCode(handle);
+	assert(57174184==pass1DyCode);
+	JCMATCH pass1Match =
+		JcLockReverseVerifyDynaCode(handle,pass1DyCode);
+	if(ZWFIX_STARTTIME!=pass1Match.s_datetime)
+	{
+		printf("JcLockReverseVerifyDynaCode Error! JCLMS Algorithm Reverse DynaCode Self Check Fail! 20141203\n");
+		return -2;
+	}	
+	//////////////////////////////////////////////////////////////////////////
+	JcLockDelete(handle);
+	return 0;
+}
