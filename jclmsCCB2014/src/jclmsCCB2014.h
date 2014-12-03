@@ -11,6 +11,11 @@ extern "C" {
 // 符号视为是被导出的。
 //在ARM上使用请打开该宏定义以便消除windows的DLL相关定义的编译错误
 //#define _USEON_NONWIN32
+#ifndef _WIN32	
+//20141203.1709.为了便于ARM移植时减少修改工作量而添加
+#define _ZWUSE_AS_JNI
+#endif
+
 #ifdef _ZWUSE_AS_JNI
 #define JCLMSCCB2014_API
 #else

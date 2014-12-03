@@ -243,24 +243,24 @@ void JCLMSCCB2014_API zwJcLockDumpJCINPUT(const int handle)
 	//printf("########JCINPUT DUMP START############\n");
 	printf("[");
 	printf("ATMNO:%s\t", jcp->AtmNo);
-	crc=crc8(crc,jcp->AtmNo,sizeof(jcp->AtmNo));
+	crc=crc8(crc,(void *)&jcp->AtmNo,sizeof(jcp->AtmNo));
 	printf("LOCKNO:%s\t", jcp->LockNo);
-	crc=crc8(crc,jcp->LockNo,sizeof(jcp->LockNo));
+	crc=crc8(crc,(void *)&jcp->LockNo,sizeof(jcp->LockNo));
 	printf("PSK:%s\n", jcp->PSK);
-	crc=crc8(crc,jcp->PSK,sizeof(jcp->PSK));
+	crc=crc8(crc,(void *)&jcp->PSK,sizeof(jcp->PSK));
 	printf("DATETIME:%d\t%s\t", jcp->CodeGenDateTime,
 		zwTimeSecond2String(jcp->CodeGenDateTime));
-	crc=crc8(crc,&jcp->CodeGenDateTime,sizeof(jcp->CodeGenDateTime));
+	crc=crc8(crc,(void *)&jcp->CodeGenDateTime,sizeof(jcp->CodeGenDateTime));
 	printf("STEP:%d\t", jcp->SearchTimeStep);
-	crc=crc8(crc,&jcp->SearchTimeStep,sizeof(jcp->SearchTimeStep));
+	crc=crc8(crc,(void *)&jcp->SearchTimeStep,sizeof(jcp->SearchTimeStep));
 	printf("RTIME:%d\n", jcp->SearchTimeLength);
-	crc=crc8(crc,&jcp->SearchTimeLength,sizeof(jcp->SearchTimeLength));
+	crc=crc8(crc,(void *)&jcp->SearchTimeLength,sizeof(jcp->SearchTimeLength));
 	printf("VAL:%d\tCloseCode:%d\t", jcp->Validity,
 		jcp->CloseCode);
-	crc=crc8(crc,&jcp->Validity,sizeof(jcp->Validity));
-	crc=crc8(crc,&jcp->CloseCode,sizeof(jcp->CloseCode));
+	crc=crc8(crc,(void *)&jcp->Validity,sizeof(jcp->Validity));
+	crc=crc8(crc,(void *)&jcp->CloseCode,sizeof(jcp->CloseCode));
 	printf("CMDTYPE:");
-	crc=crc8(crc,&jcp->CmdType,sizeof(jcp->CmdType));
+	crc=crc8(crc,(void *)&jcp->CmdType,sizeof(jcp->CmdType));
 	printf("CRC8=%u\n",crc);
 	switch (jcp->CmdType) {
 	case JCI_ATMNO:
