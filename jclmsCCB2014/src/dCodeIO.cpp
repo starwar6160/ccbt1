@@ -5,7 +5,10 @@
 #include <assert.h>
 #include "jclmsCCB2014.h"
 #include "dCodeHdr.h"
-
+extern "C"
+{
+unsigned char crc8(const unsigned char crc8Input,const void *inputData, const int inputLen );
+};
 
 //只是作为一个基本的块规整大小单位方便处理
 const int ZW_SYNCALG_BLOCK_SIZE = (128 / 8);
@@ -223,6 +226,7 @@ void JCLMSCCB2014_API JcLockDebugPrint(const int handle)
 
 void JCLMSCCB2014_API zwJcLockDumpJCINPUT(const int handle)
 {
+	unsigned char crc=0;
 	JCINPUT *jcp = (JCINPUT *) handle;
 	assert(NULL != jcp);
 	if (NULL == jcp) {
@@ -239,15 +243,25 @@ void JCLMSCCB2014_API zwJcLockDumpJCINPUT(const int handle)
 	//printf("########JCINPUT DUMP START############\n");
 	printf("[");
 	printf("ATMNO:%s\t", jcp->AtmNo);
+	crc=crc8(crc,jcp->AtmNo,sizeof(jcp->AtmNo));
 	printf("LOCKNO:%s\t", jcp->LockNo);
+	crc=crc8(crc,jcp->LockNo,sizeof(jcp->LockNo));
 	printf("PSK:%s\n", jcp->PSK);
+	crc=crc8(crc,jcp->PSK,sizeof(jcp->PSK));
 	printf("DATETIME:%d\t%s\t", jcp->CodeGenDateTime,
 		zwTimeSecond2String(jcp->CodeGenDateTime));
+	crc=crc8(crc,&jcp->CodeGenDateTime,sizeof(jcp->CodeGenDateTime));
 	printf("STEP:%d\t", jcp->SearchTimeStep);
+	crc=crc8(crc,&jcp->SearchTimeStep,sizeof(jcp->SearchTimeStep));
 	printf("RTIME:%d\n", jcp->SearchTimeLength);
+	crc=crc8(crc,&jcp->SearchTimeLength,sizeof(jcp->SearchTimeLength));
 	printf("VAL:%d\tCloseCode:%d\t", jcp->Validity,
 		jcp->CloseCode);
+	crc=crc8(crc,&jcp->Validity,sizeof(jcp->Validity));
+	crc=crc8(crc,&jcp->CloseCode,sizeof(jcp->CloseCode));
 	printf("CMDTYPE:");
+	crc=crc8(crc,&jcp->CmdType,sizeof(jcp->CmdType));
+	printf("CRC8=%u\n",crc);
 	switch (jcp->CmdType) {
 	case JCI_ATMNO:
 		printf("JCI_ATMNO");

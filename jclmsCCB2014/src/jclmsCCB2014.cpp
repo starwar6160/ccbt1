@@ -207,6 +207,7 @@ JCMATCH JCLMSCCB2014_API JcLockReverseVerifyDynaCode(const int handle,
 	int tend = l_datetime - jcp->SearchTimeLength;
 
 	for (int tdate = l_datetime; tdate >= tend; tdate -= l_timestep) {			
+		printf("%d\t",tdate);	
 		for (int v = 0; v < NUM_VALIDITY; v++) {
 			SM3 sm3;
 			char outHmac[ZW_SM3_DGST_SIZE];
@@ -227,11 +228,11 @@ JCMATCH JCLMSCCB2014_API JcLockReverseVerifyDynaCode(const int handle,
 			SM3_Final(&sm3, (char *)(outHmac));
 			unsigned int res =
 			    zwBinString2Int32(outHmac, ZWSM3_DGST_LEN);
-			printf("%d:%d\t",tdate,res);	
-			if (3==v)
-			{
-				printf("\n");
-			}
+			//printf("%d:%d\t",tdate,res);	
+			//if (3==v)
+			//{
+			//	printf("\n");
+			//}
 			if (dstCode == res)	//发现了匹配的时间和有效期
 			{
 				//填写匹配的时间和有效期到结果
@@ -242,7 +243,7 @@ JCMATCH JCLMSCCB2014_API JcLockReverseVerifyDynaCode(const int handle,
 				goto foundMatch;
 			}			
 		}		//END OF VALIDITY LOOP		
-		printf("\n");
+		//printf("\n");
 	}			//END OF DATE LOOP
       foundMatch:
 	return jcoff;
