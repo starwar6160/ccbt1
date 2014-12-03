@@ -130,7 +130,7 @@ JCERROR JCLMSCCB2014_API JcLockSetInt(const int handle, const JCITYPE mtype,
 		if (num < (1400 * 1000 * 1000)) {
 			return EJC_DATETIME_INVALID;
 		}
-		jcp->dbgSearchTimeStart = myGetNormalTime(num, jcp->SearchTimeStep);
+		jcp->SearchTimeStart = myGetNormalTime(num, jcp->SearchTimeStep);
 		break;
 	case JCI_SEARCH_TIME_LENGTH:	//反推时间长度
 		if (num<=0 || num >(25*3600))	//一般而言反推最多不超过一天
@@ -349,11 +349,40 @@ void myCjsonTest1(void)
 	cJSON *root,*fmt;   
 	root=cJSON_CreateObject();     
 	cJSON_AddItemToObject(root, "name", cJSON_CreateString("Jack Nimble"));   
+	//又一层json对象，添加到根对象里面
 	cJSON_AddItemToObject(root, "format", fmt=cJSON_CreateObject());   
 	cJSON_AddStringToObject(fmt,"type",     "rect");   
 	cJSON_AddNumberToObject(fmt,"width",        1920);   
 	cJSON_AddNumberToObject(fmt,"height",       1080);   
 	cJSON_AddFalseToObject (fmt,"interlace");   
-	cJSON_AddNumberToObject(fmt,"frame rate",   24); 
-	printf("%s\n",cJSON_Print(root));
+	cJSON_AddNumberToObject(fmt,"frame rate",   24.7); 
+	char *cjout=cJSON_Print(root);
+	printf("%s\n",cjout);
+}
+
+char *zwJcinput2Json(const JCINPUT *p)
+{
+	cJSON *root,*validityArray;   
+	root=cJSON_CreateObject();     
+	cJSON_AddItemToObject(root, "ATMNO", cJSON_CreateString(p->AtmNo));   
+	cJSON_AddItemToObject(root, "LOCKNO", cJSON_CreateString(p->LockNo));   
+	cJSON_AddItemToObject(root, "PSK", cJSON_CreateString(p->PSK));   
+	cJSON_AddNumberToObject(root,"CodeGenDateTime",        p->CodeGenDateTime);   
+	cJSON_AddNumberToObject(root,"Validity",        p->Validity);  
+	cJSON_AddNumberToObject(root,"CloseCode",        p->CloseCode);  
+	cJSON_AddNumberToObject(root,"CmdType",        p->CmdType);  
+
+	cJSON_AddNumberToObject(root,"SearchTimeStart",        p->SearchTimeStart);  
+	cJSON_AddNumberToObject(root,"SearchTimeStep",        p->SearchTimeStep);  
+	cJSON_AddNumberToObject(root,"SearchTimeLength",        p->SearchTimeLength);  
+	//又一层json对象，添加到根对象里面
+	//cJSON_AddItemToObject(root, "format", fmt=cJSON_CreateObject());   
+	//cJSON_AddStringToObject(fmt,"type",     "rect");   
+	//cJSON_AddNumberToObject(fmt,"width",        1920);   
+	//cJSON_AddNumberToObject(fmt,"height",       1080);   
+	//cJSON_AddFalseToObject (fmt,"interlace");   
+	//cJSON_AddNumberToObject(fmt,"frame rate",   24.7); 
+	char *cjout=cJSON_Print(root);
+	printf("%s\n",cjout);
+	return cjout;
 }

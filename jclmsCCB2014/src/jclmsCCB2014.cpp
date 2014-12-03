@@ -185,7 +185,7 @@ JCMATCH JCLMSCCB2014_API JcLockReverseVerifyDynaCode(const int handle,
 
 	//根据建行广开中心发现的问题，从“将来”几分钟的时间开始往过去方向
 	//匹配，以防密码服务器和锁具之间有时间误差；
-	int l_datetime = jcp->dbgSearchTimeStart + JC_DCODE_MATCH_FUTURE_SEC;
+	int l_datetime = jcp->SearchTimeStart + JC_DCODE_MATCH_FUTURE_SEC;
 	int l_closecode = jcp->CloseCode;
 	int l_timestep = jcp->SearchTimeStep;
 	if (JCCMD_CCB_CLOSECODE == jcp->CmdType) {
@@ -199,7 +199,7 @@ JCMATCH JCLMSCCB2014_API JcLockReverseVerifyDynaCode(const int handle,
 	//搜索时间的起始点必须落在m_stepoftime的整倍数上，否则就无法匹配	
 	//本来起始点在设置时已经规格化过了，但是为了防止之后又设置步长，
 	//所以在此，用到的时候，再次根据步长规格化起始点时间
-	l_datetime=myGetNormalTime(jcp->dbgSearchTimeStart, jcp->SearchTimeStep);;
+	l_datetime=myGetNormalTime(jcp->SearchTimeStart, jcp->SearchTimeStep);;
 	l_datetime = myGetNormalTime(l_datetime, l_timestep);
 	int tail = l_datetime % l_timestep;
 	l_datetime -= tail;	//取整到数据结构中指定的步长
@@ -314,7 +314,7 @@ void myJcInputHton(JCINPUT *p)
 	p->CloseCode=HtoNl(p->CloseCode);
 	p->CmdType=static_cast<JCCMD>(HtoNl(p->CmdType));
 
-	p->dbgSearchTimeStart=HtoNl(p->dbgSearchTimeStart);
+	p->SearchTimeStart=HtoNl(p->SearchTimeStart);
 	p->SearchTimeStep=HtoNl(p->SearchTimeStep);
 	p->SearchTimeLength=HtoNl(p->SearchTimeLength);
 	for (int i=0;i<NUM_VALIDITY;i++)
@@ -330,7 +330,7 @@ void myJcInputNtoh(JCINPUT *p)
 	p->CloseCode=NtoHl(p->CloseCode);
 	p->CmdType=static_cast<JCCMD>(NtoHl(p->CmdType));
 
-	p->dbgSearchTimeStart=NtoHl(p->dbgSearchTimeStart);
+	p->SearchTimeStart=NtoHl(p->SearchTimeStart);
 	p->SearchTimeStep=NtoHl(p->SearchTimeStep);
 	p->SearchTimeLength=NtoHl(p->SearchTimeLength);
 	for (int i=0;i<NUM_VALIDITY;i++)
