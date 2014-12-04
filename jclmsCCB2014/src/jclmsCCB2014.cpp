@@ -2,17 +2,20 @@
 //
 //#include "stdafx.h"
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include <assert.h>
-#include "jclmsCCB2014.h"
+
 #include "sm3.h"
+#include "cJSON.h"
+#include "jclmsCCB2014.h"
+
 #include "dCodeHdr.h"
 #include "zwhidComm.h"
 #include "zwHidSplitMsg.h"
 #include "zwSecretBoxAuth.h"
 
 void myCjsonTest1(void);
-void zwJclmsReq2Json(const JCINPUT *p,char *outJson,const int outBufLen);
 
 #define _DEBUG_USE_LMS_FUNC_CALL_20141202
 extern "C"
@@ -371,6 +374,23 @@ int JCLMSCCB2014_API zwJclmsReqGenDyCode( int lmsHandle,int *dyCode )
 	memset(&req,0,sizeof(JCLMSREQ));
 	req.op=JCLMS_CCB_CODEGEN;
 	memcpy((void *)&req.inputData,(void *)lmsHandle,sizeof(JCINPUT));
+////////////////////////////JSON序列化开始//////////////////////////////////////////////
+	const int ZWBUFLEN=640;
+	char tmpjson[ZWBUFLEN];
+	memset(tmpjson,0,ZWBUFLEN);
+	JCINPUT *jcp=reinterpret_cast<JCINPUT *>(lmsHandle);
+	//zwJclmsReq2Json(jcp,tmpjson,ZWBUFLEN);
+	cJSON *json,*jsReq;
+	//把主要的JCINPUT结构体转换为JSON内部格式
+	zwJcInputConv2Json(&json,jcp);
+	cJSON_AddItemToObject(json, "LMSRequest", jsReq=cJSON_CreateObject()); 
+	cJSON_AddStringToObject(jsReq,"Type",     "JCLMS_CCB_CODEGEN");   
+	char *cjout=cJSON_Print(json);
+	strcpy(tmpjson,cjout);
+	free(cjout);
+	printf("%s jsonLen=%d\n%s\n",__FUNCTION__,strlen(tmpjson),tmpjson);
+	
+////////////////////////////JSON序列化结束//////////////////////////////////////////////
 	//////////////////////////////////模拟发送数据////////////////////////////////////////
 	//此处由于是模拟，时序不好控制，为了便于调试，在此直接调用密盒端的函数zwJclmsRsp来做处理
 	printf("%s Send Data to Secbox for Gen DynaCode:\n",__FUNCTION__);
@@ -445,6 +465,7 @@ int JCLMSCCB2014_API zwJclmsReqVerifyDyCode( int lmsHandle,int dstCode,JCMATCH *
 	req.op=JCLMS_CCB_CODEVERIFY;
 	req.dstCode=dstCode;
 	memcpy((void *)&req.inputData,(void *)lmsHandle,sizeof(JCINPUT));
+
 	//////////////////////////////////模拟发送数据////////////////////////////////////////
 	//此处由于是模拟，时序不好控制，为了便于调试，在此直接调用密盒端的函数zwJclmsRsp来做处理
 	printf("%s Send Data to Secbox with Wait To Verify DestCode %d\n",__FUNCTION__,dstCode);

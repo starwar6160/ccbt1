@@ -235,11 +235,6 @@ void JCLMSCCB2014_API zwJcLockDumpJCINPUT(const int handle)
 		printf("%s input is NULL", __FUNCTION__);
 		return;
 	}
-	const int ZWBUFLEN=512;
-	char tmpjson[ZWBUFLEN];
-	memset(tmpjson,0,ZWBUFLEN);
-	zwJclmsReq2Json(jcp,tmpjson,ZWBUFLEN);
-	printf("%s jsonLen=%d\n%s\n",__FUNCTION__,strlen(tmpjson),tmpjson);
 	static int dedupTime;
 	//防止重复输出同一个数据结构
 	if (dedupTime==jcp->CodeGenDateTime)
