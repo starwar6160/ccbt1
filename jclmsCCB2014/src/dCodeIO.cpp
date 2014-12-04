@@ -368,21 +368,26 @@ void myCjsonTest1(void)
 
 void zwJcinput2Json(const JCINPUT *p,char *outJson,const int outBufLen)
 {
-	cJSON *root,*validityArray;   
+	cJSON *root,*jcInput,*validityArray;   
+	//root:整个json的root,第一级别
+	//jcInput:JCINPUT结构体的root，第二级别
+	//validityArray:有效期数组的root，第三级别
 	root=cJSON_CreateObject();     
-	cJSON_AddItemToObject(root, "ATMNO", cJSON_CreateString(p->AtmNo));   
-	cJSON_AddItemToObject(root, "LOCKNO", cJSON_CreateString(p->LockNo));   
-	cJSON_AddItemToObject(root, "PSK", cJSON_CreateString(p->PSK));   
-	cJSON_AddNumberToObject(root,"CodeGenDateTime",        p->CodeGenDateTime);   
-	cJSON_AddNumberToObject(root,"Validity",        p->Validity);  
-	cJSON_AddNumberToObject(root,"CloseCode",        p->CloseCode);  
-	cJSON_AddNumberToObject(root,"CmdType",        p->CmdType);  
+	//jciRoot=cJSON_CreateObject();     
+	cJSON_AddItemToObject(root, "JCINPUT", jcInput=cJSON_CreateObject());   
+	cJSON_AddItemToObject(jcInput, "ATMNO", cJSON_CreateString(p->AtmNo));   
+	cJSON_AddItemToObject(jcInput, "LOCKNO", cJSON_CreateString(p->LockNo));   
+	cJSON_AddItemToObject(jcInput, "PSK", cJSON_CreateString(p->PSK));   
+	cJSON_AddNumberToObject(jcInput,"CodeGenDateTime",        p->CodeGenDateTime);   
+	cJSON_AddNumberToObject(jcInput,"Validity",        p->Validity);  
+	cJSON_AddNumberToObject(jcInput,"CloseCode",        p->CloseCode);  
+	cJSON_AddNumberToObject(jcInput,"CmdType",        p->CmdType);  
 
-	cJSON_AddNumberToObject(root,"SearchTimeStart",        p->SearchTimeStart);  
-	cJSON_AddNumberToObject(root,"SearchTimeStep",        p->SearchTimeStep);  
-	cJSON_AddNumberToObject(root,"SearchTimeLength",        p->SearchTimeLength);  
+	cJSON_AddNumberToObject(jcInput,"SearchTimeStart",        p->SearchTimeStart);  
+	cJSON_AddNumberToObject(jcInput,"SearchTimeStep",        p->SearchTimeStep);  
+	cJSON_AddNumberToObject(jcInput,"SearchTimeLength",        p->SearchTimeLength);  
 
-	cJSON_AddItemToObject(root, "ValidityArray", validityArray=cJSON_CreateObject());   
+	cJSON_AddItemToObject(jcInput, "ValidityArray", validityArray=cJSON_CreateObject());   
 	for(int i=0;i<NUM_VALIDITY;i++)
 	{
 		cJSON_AddNumberToObject(validityArray,"Min",        p->ValidityArray[i]);  
