@@ -369,9 +369,6 @@ std::string zwJcCmd2String(const JCCMD cmd)
 	std::string cmdStr;
 	switch (cmd)
 	{
-	case JCCMD_INIT_CLOSECODE:
-		cmdStr="JCCMD_INIT_CLOSECODE";
-		break;
 	case JCCMD_CCB_DYPASS1:
 		cmdStr="JCCMD_CCB_DYPASS1";
 		break;
@@ -384,10 +381,38 @@ std::string zwJcCmd2String(const JCCMD cmd)
 	case JCCMD_CCB_CLOSECODE:
 		cmdStr="JCCMD_CCB_CLOSECODE";
 		break;
+	case JCCMD_INIT_CLOSECODE:
+		cmdStr="JCCMD_INIT_CLOSECODE";
+		break;
 	default:
 		cmdStr="JCCMD_INVALID_COMMAND";
 	}
 	return cmdStr;
+}
+
+JCCMD zwString2JcCmd(const char *cmdStr)
+{
+	if (0==strcmp("JCCMD_CCB_DYPASS1",cmdStr))
+	{		
+		return JCCMD_CCB_DYPASS1;
+	}
+	if (0==strcmp("JCCMD_CCB_LOCK_VERCODE",cmdStr))
+	{		
+		return JCCMD_CCB_LOCK_VERCODE;
+	}
+	if (0==strcmp("JCCMD_CCB_DYPASS2",cmdStr))
+	{		
+		return JCCMD_CCB_DYPASS2;
+	}
+	if (0==strcmp("JCCMD_CCB_CLOSECODE",cmdStr))
+	{		
+		return JCCMD_CCB_CLOSECODE;
+	}
+	if (0==strcmp("JCCMD_INIT_CLOSECODE",cmdStr))
+	{		
+		return JCCMD_INIT_CLOSECODE;
+	}
+	return JCCMD_START;	//什么都没找到就返回一个无效值
 }
 
 cJSON * zwJcInputConv2Json( cJSON ** root, const JCINPUT * p )
