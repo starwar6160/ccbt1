@@ -12,6 +12,7 @@
 #include "zwSecretBoxAuth.h"
 
 void myCjsonTest1(void);
+void zwJcinput2Json(const JCINPUT *p,char *outJson,const int outBufLen);
 
 #define _DEBUG_USE_LMS_FUNC_CALL_20141202
 extern "C"
@@ -63,7 +64,7 @@ int JCLMSCCB2014_API JcLockGetDynaCode(const int handle)
 //////////////////////////////////////////////////////////////////////////
 int JCLMSCCB2014_API JcLockNew(void)
 {
-	myCjsonTest1();
+	//myCjsonTest1();
 	JCINPUT *pjc = new JCINPUT;
 	assert(pjc != NULL);
 	memset(pjc, 0, sizeof(JCINPUT));

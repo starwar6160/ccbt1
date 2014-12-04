@@ -3,6 +3,7 @@
 #include <time.h>
 #include <string.h>
 #include <assert.h>
+#include <malloc.h>
 #include "jclmsCCB2014.h"
 #include "dCodeHdr.h"
 #include "cJSON.h"
@@ -234,6 +235,11 @@ void JCLMSCCB2014_API zwJcLockDumpJCINPUT(const int handle)
 		printf("%s input is NULL", __FUNCTION__);
 		return;
 	}
+	const int ZWBUFLEN=512;
+	char tmpjson[ZWBUFLEN];
+	memset(tmpjson,0,ZWBUFLEN);
+	zwJcinput2Json(jcp,tmpjson,ZWBUFLEN);
+	printf("%s jsonLen=%d\n%s\n",__FUNCTION__,strlen(tmpjson),tmpjson);
 	static int dedupTime;
 	//防止重复输出同一个数据结构
 	if (dedupTime==jcp->CodeGenDateTime)
@@ -360,7 +366,7 @@ void myCjsonTest1(void)
 	printf("%s\n",cjout);
 }
 
-char *zwJcinput2Json(const JCINPUT *p)
+void zwJcinput2Json(const JCINPUT *p,char *outJson,const int outBufLen)
 {
 	cJSON *root,*validityArray;   
 	root=cJSON_CreateObject();     
@@ -375,6 +381,12 @@ char *zwJcinput2Json(const JCINPUT *p)
 	cJSON_AddNumberToObject(root,"SearchTimeStart",        p->SearchTimeStart);  
 	cJSON_AddNumberToObject(root,"SearchTimeStep",        p->SearchTimeStep);  
 	cJSON_AddNumberToObject(root,"SearchTimeLength",        p->SearchTimeLength);  
+
+	cJSON_AddItemToObject(root, "ValidityArray", validityArray=cJSON_CreateObject());   
+	for(int i=0;i<NUM_VALIDITY;i++)
+	{
+		cJSON_AddNumberToObject(validityArray,"Min",        p->ValidityArray[i]);  
+	}
 	//又一层json对象，添加到根对象里面
 	//cJSON_AddItemToObject(root, "format", fmt=cJSON_CreateObject());   
 	//cJSON_AddStringToObject(fmt,"type",     "rect");   
@@ -383,6 +395,12 @@ char *zwJcinput2Json(const JCINPUT *p)
 	//cJSON_AddFalseToObject (fmt,"interlace");   
 	//cJSON_AddNumberToObject(fmt,"frame rate",   24.7); 
 	char *cjout=cJSON_Print(root);
-	printf("%s\n",cjout);
-	return cjout;
+	int cjLen=strlen(cjout);
+	if (cjLen>outBufLen)
+	{
+		cjLen=outBufLen;
+	}
+	strncpy(outJson,cjout,cjLen);
+	free(cjout);
+	printf("%s\n",outJson);
 }
