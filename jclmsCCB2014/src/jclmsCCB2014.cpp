@@ -364,6 +364,9 @@ void myLmsReqZNtoh(JCLMSREQ *req)
 void myHexDump(const void * hidSendBuf,const int outLen );
 const int ZWHIDBUFLEN=512;
 char g_dbg_hid_common1202[ZWHIDBUFLEN];
+
+void myLmsReq2Json( int lmsHandle, char * tmpjson );
+
 //两个zwJclmsReq函数是上位机专用
 
 //填写完毕handle里面的数据结构以后，调用该函数生成动态码，该函数在底层将请求
@@ -378,17 +381,10 @@ int JCLMSCCB2014_API zwJclmsReqGenDyCode( int lmsHandle,int *dyCode )
 	const int ZWBUFLEN=640;
 	char tmpjson[ZWBUFLEN];
 	memset(tmpjson,0,ZWBUFLEN);
-	JCINPUT *jcp=reinterpret_cast<JCINPUT *>(lmsHandle);
-	//zwJclmsReq2Json(jcp,tmpjson,ZWBUFLEN);
-	cJSON *json,*jsReq;
-	//把主要的JCINPUT结构体转换为JSON内部格式
-	zwJcInputConv2Json(&json,jcp);
-	cJSON_AddItemToObject(json, "LMSRequest", jsReq=cJSON_CreateObject()); 
-	cJSON_AddStringToObject(jsReq,"Type",     "JCLMS_CCB_CODEGEN");   
-	char *cjout=cJSON_Print(json);
-	strcpy(tmpjson,cjout);
-	free(cjout);
-	printf("%s jsonLen=%d\n%s\n",__FUNCTION__,strlen(tmpjson),tmpjson);
+	//////////////////////////////////////////////////////////////////////////
+	
+	myLmsReq2Json(lmsHandle, tmpjson);
+
 	
 ////////////////////////////JSON序列化结束//////////////////////////////////////////////
 	//////////////////////////////////模拟发送数据////////////////////////////////////////
@@ -633,4 +629,19 @@ int zwLmsAlgStandTest20141203(void)
 	//////////////////////////////////////////////////////////////////////////
 	JcLockDelete(handle);
 	return 0;
+}
+
+void myLmsReq2Json( int lmsHandle, char * tmpjson )
+{
+	JCINPUT *jcp=reinterpret_cast<JCINPUT *>(lmsHandle);
+	//zwJclmsReq2Json(jcp,tmpjson,ZWBUFLEN);
+	cJSON *json,*jsReq;
+	//把主要的JCINPUT结构体转换为JSON内部格式
+	zwJcInputConv2Json(&json,jcp);
+	cJSON_AddItemToObject(json, "LMSRequest", jsReq=cJSON_CreateObject()); 
+	cJSON_AddStringToObject(jsReq,"Type",     "JCLMS_CCB_CODEGEN");   
+	char *cjout=cJSON_Print(json);
+	strcpy(tmpjson,cjout);
+	free(cjout);
+	printf("%s jsonLen=%d\n%s\n",__FUNCTION__,strlen(tmpjson),tmpjson);
 }
