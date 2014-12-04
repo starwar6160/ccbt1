@@ -83,7 +83,7 @@ namespace jcAtmcConvertDLL {
 		ZWFUNCTRACE
 		    ptjc.put(jcAtmcConvertDLL::JCSTR_CMDTITLE,
 			     jcAtmcConvertDLL::JCSTR_PUSH_WARNING);
-		ptjc.put("State", ptccb.get < int >("RevResult"));
+		ptjc.put("State", ptccb.get < int >("root.RevResult"));
 	}
 
 	void zwconvLockPushWarnUp(const ptree & ptjc, ptree & ptccb) {
