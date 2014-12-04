@@ -238,7 +238,7 @@ void JCLMSCCB2014_API zwJcLockDumpJCINPUT(const int handle)
 	const int ZWBUFLEN=512;
 	char tmpjson[ZWBUFLEN];
 	memset(tmpjson,0,ZWBUFLEN);
-	zwJcinput2Json(jcp,tmpjson,ZWBUFLEN);
+	zwJclmsReq2Json(jcp,tmpjson,ZWBUFLEN);
 	printf("%s jsonLen=%d\n%s\n",__FUNCTION__,strlen(tmpjson),tmpjson);
 	static int dedupTime;
 	//防止重复输出同一个数据结构
@@ -366,15 +366,15 @@ void myCjsonTest1(void)
 	printf("%s\n",cjout);
 }
 
-void zwJcinput2Json(const JCINPUT *p,char *outJson,const int outBufLen)
+cJSON * zwJcInputConv2Json( cJSON ** root, const JCINPUT * p )
 {
-	cJSON *root,*jcInput,*validityArray;   
+	cJSON *jcInput,*validityArray;   
 	//root:整个json的root,第一级别
 	//jcInput:JCINPUT结构体的root，第二级别
 	//validityArray:有效期数组的root，第三级别
-	root=cJSON_CreateObject();     
+	*root=cJSON_CreateObject();
 	//jciRoot=cJSON_CreateObject();     
-	cJSON_AddItemToObject(root, "JCINPUT", jcInput=cJSON_CreateObject());   
+	cJSON_AddItemToObject(*root, "JCINPUT", jcInput=cJSON_CreateObject());   
 	cJSON_AddItemToObject(jcInput, "ATMNO", cJSON_CreateString(p->AtmNo));   
 	cJSON_AddItemToObject(jcInput, "LOCKNO", cJSON_CreateString(p->LockNo));   
 	cJSON_AddItemToObject(jcInput, "PSK", cJSON_CreateString(p->PSK));   
@@ -392,6 +392,17 @@ void zwJcinput2Json(const JCINPUT *p,char *outJson,const int outBufLen)
 	{
 		cJSON_AddNumberToObject(validityArray,"Min",        p->ValidityArray[i]);  
 	}
+	return *root;
+}
+
+void zwJclmsReq2Json(const JCINPUT *p,char *outJson,const int outBufLen)
+{
+	cJSON *root;     ;
+	zwJcInputConv2Json(&root, p);
+	cJSON *ztNode1;
+	cJSON_AddItemToObject(root, "ztNode1", ztNode1=cJSON_CreateObject());   
+	cJSON_AddStringToObject(ztNode1,"ztype",     "ZWrect");   
+	cJSON_AddNumberToObject(ztNode1,"zwidth",        780);   
 	//又一层json对象，添加到根对象里面
 	//cJSON_AddItemToObject(root, "format", fmt=cJSON_CreateObject());   
 	//cJSON_AddStringToObject(fmt,"type",     "rect");   

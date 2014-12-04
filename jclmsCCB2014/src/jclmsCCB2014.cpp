@@ -12,7 +12,7 @@
 #include "zwSecretBoxAuth.h"
 
 void myCjsonTest1(void);
-void zwJcinput2Json(const JCINPUT *p,char *outJson,const int outBufLen);
+void zwJclmsReq2Json(const JCINPUT *p,char *outJson,const int outBufLen);
 
 #define _DEBUG_USE_LMS_FUNC_CALL_20141202
 extern "C"
