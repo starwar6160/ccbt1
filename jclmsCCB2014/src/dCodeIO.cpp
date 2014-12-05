@@ -415,6 +415,12 @@ JCCMD zwString2JcCmd(const char *cmdStr)
 	return JCCMD_START;	//什么都没找到就返回一个无效值
 }
 
+const char *jclmsRequestType_t[]={
+	"JCLMS_CCB_CODEGEN",
+	"JCLMS_CCB_CODEVERIFY"
+};
+
+
 cJSON * zwJcInputConv2Json( cJSON ** root, const JCINPUT * p )
 {
 	cJSON *jcInput,*validityArray;   
@@ -444,14 +450,13 @@ cJSON * zwJcInputConv2Json( cJSON ** root, const JCINPUT * p )
 	return *root;
 }
 
-void zwJclmsReq2Json(const JCINPUT *p,char *outJson,const int outBufLen)
+void zwJclmsGenReq2Json(const JCINPUT *p,char *outJson,const int outBufLen)
 {
 	cJSON *root;     ;
 	zwJcInputConv2Json(&root, p);
 	cJSON *ztNode1;
-	cJSON_AddItemToObject(root, "ztNode1", ztNode1=cJSON_CreateObject());   
-	cJSON_AddStringToObject(ztNode1,"ztype",     "ZWrect");   
-	cJSON_AddNumberToObject(ztNode1,"zwidth",        780);   
+	cJSON_AddItemToObject(root, "jcLmsRequest", ztNode1=cJSON_CreateObject());   
+	cJSON_AddStringToObject(ztNode1,"Type",     jclmsRequestType_t[JCLMS_CCB_CODEGEN]);   
 	//又一层json对象，添加到根对象里面
 	//cJSON_AddItemToObject(root, "format", fmt=cJSON_CreateObject());   
 	//cJSON_AddStringToObject(fmt,"type",     "rect");   

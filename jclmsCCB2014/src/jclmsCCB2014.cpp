@@ -346,17 +346,15 @@ void myJcInputNtoh(JCINPUT *p)
 void myLmsReqZHton(JCLMSREQ *req)
 {
 	myJcInputHton(&req->inputData);
-	req->op=static_cast<JCLMSOP>(HtoNl(req->op));
+	req->Type=static_cast<JCLMSOP>(HtoNl(req->Type));
 	req->dstCode=HtoNl(req->dstCode);
-	req->timeNow=HtoNl(req->timeNow);
 }
 
 void myLmsReqZNtoh(JCLMSREQ *req)
 {
 	myJcInputNtoh(&req->inputData);
-	req->op=static_cast<JCLMSOP>(NtoHl(req->op));
+	req->Type=static_cast<JCLMSOP>(NtoHl(req->Type));
 	req->dstCode=NtoHl(req->dstCode);
-	req->timeNow=NtoHl(req->timeNow);
 }
 
 
@@ -375,7 +373,7 @@ int JCLMSCCB2014_API zwJclmsReqGenDyCode( int lmsHandle,int *dyCode )
 {
 	JCLMSREQ req;
 	memset(&req,0,sizeof(JCLMSREQ));
-	req.op=JCLMS_CCB_CODEGEN;
+	req.Type=JCLMS_CCB_CODEGEN;
 	memcpy((void *)&req.inputData,(void *)lmsHandle,sizeof(JCINPUT));
 ////////////////////////////JSON序列化开始//////////////////////////////////////////////
 	const int ZWBUFLEN=640;
@@ -383,8 +381,8 @@ int JCLMSCCB2014_API zwJclmsReqGenDyCode( int lmsHandle,int *dyCode )
 	memset(tmpjson,0,ZWBUFLEN);
 	//////////////////////////////////////////////////////////////////////////
 	
-	myLmsReq2Json(lmsHandle, tmpjson);
-
+	//myLmsReq2Json(lmsHandle, tmpjson);
+	zwJclmsGenReq2Json(reinterpret_cast<JCINPUT *>(lmsHandle),tmpjson,ZWBUFLEN);
 	
 ////////////////////////////JSON序列化结束//////////////////////////////////////////////
 	//////////////////////////////////模拟发送数据////////////////////////////////////////
@@ -458,7 +456,7 @@ int JCLMSCCB2014_API zwJclmsReqVerifyDyCode( int lmsHandle,int dstCode,JCMATCH *
 {
 	JCLMSREQ req;
 	memset(&req,0,sizeof(JCLMSREQ));
-	req.op=JCLMS_CCB_CODEVERIFY;
+	req.Type=JCLMS_CCB_CODEVERIFY;
 	req.dstCode=dstCode;
 	memcpy((void *)&req.inputData,(void *)lmsHandle,sizeof(JCINPUT));
 
@@ -553,13 +551,13 @@ void JCLMSCCB2014_API zwJclmsRsp( void * inLmsReq,const int inLmsReqLen,JCRESULT
 
 	//通过出参结构体返回计算结果给外部
 	int dyCode=0;
-	if (JCLMS_CCB_CODEGEN==lmsReq.op)
+	if (JCLMS_CCB_CODEGEN==lmsReq.Type)
 	{
 		dyCode=zwJcLockGetDynaCode((int)(&lmsReq.inputData));
 		assert(dyCode>10*ZWMEGA);
 		lmsResult->dynaCode=dyCode;
 	}
-	if (JCLMS_CCB_CODEVERIFY==lmsReq.op)
+	if (JCLMS_CCB_CODEVERIFY==lmsReq.Type)
 	{
 		JCMATCH jm=JcLockReverseVerifyDynaCode((int)(&lmsReq.inputData),lmsReq.dstCode);
 		assert(jm.s_datetime>1400*ZWMEGA);
@@ -631,6 +629,7 @@ int zwLmsAlgStandTest20141203(void)
 	return 0;
 }
 
+#ifdef _DEBUG_1205
 void myLmsReq2Json( int lmsHandle, char * tmpjson )
 {
 	JCINPUT *jcp=reinterpret_cast<JCINPUT *>(lmsHandle);
@@ -645,3 +644,4 @@ void myLmsReq2Json( int lmsHandle, char * tmpjson )
 	free(cjout);
 	printf("%s jsonLen=%d\n%s\n",__FUNCTION__,strlen(tmpjson),tmpjson);
 }
+#endif // _DEBUG_1205

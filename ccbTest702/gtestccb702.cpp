@@ -442,7 +442,7 @@ namespace CcbV11Test722Ecies {
 			JcLockSetString(handle, JCI_ATMNO, "atm10455761");
 			JcLockSetString(handle, JCI_LOCKNO, "lock14771509");
 			JcLockSetString(handle, JCI_PSK, "PSKDEMO728");
-			JcLockSetInt(handle,JCI_SEARCH_TIME_START,time(NULL));
+			JcLockSetInt(handle,JCI_SEARCH_TIME_START,static_cast<int>(time(NULL)));
 		} static void TearDownTestCase() {
 			//delete shared_resource_;
 			//shared_resource_ = NULL;
