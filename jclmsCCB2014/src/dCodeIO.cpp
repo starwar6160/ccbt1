@@ -364,30 +364,28 @@ void myCjsonTest1(void)
 	printf("%s\n",cjout);
 }
 
-std::string zwJcCmd2String(const JCCMD cmd)
+const char * zwJcCmd2String(const JCCMD cmd)
 {
-	std::string cmdStr;
 	switch (cmd)
 	{
 	case JCCMD_CCB_DYPASS1:
-		cmdStr="JCCMD_CCB_DYPASS1";
+		return "JCCMD_CCB_DYPASS1";
 		break;
 	case JCCMD_CCB_LOCK_VERCODE:
-		cmdStr="JCCMD_CCB_LOCK_VERCODE";
+		return "JCCMD_CCB_LOCK_VERCODE";
 		break;
 	case JCCMD_CCB_DYPASS2:
-		cmdStr="JCCMD_CCB_DYPASS2";
+		return "JCCMD_CCB_DYPASS2";
 		break;
 	case JCCMD_CCB_CLOSECODE:
-		cmdStr="JCCMD_CCB_CLOSECODE";
+		return "JCCMD_CCB_CLOSECODE";
 		break;
 	case JCCMD_INIT_CLOSECODE:
-		cmdStr="JCCMD_INIT_CLOSECODE";
+		return "JCCMD_INIT_CLOSECODE";
 		break;
 	default:
-		cmdStr="JCCMD_INVALID_COMMAND";
+		return "JCCMD_INVALID_COMMAND";
 	}
-	return cmdStr;
 }
 
 JCCMD zwString2JcCmd(const char *cmdStr)
@@ -436,7 +434,7 @@ cJSON * zwJcInputConv2Json( cJSON ** root, const JCINPUT * p )
 	cJSON_AddNumberToObject(jcInput,"CodeGenDateTime",        p->CodeGenDateTime);   
 	cJSON_AddNumberToObject(jcInput,"Validity",        p->Validity);  
 	cJSON_AddNumberToObject(jcInput,"CloseCode",        p->CloseCode);  
-	cJSON_AddStringToObject(jcInput,"CmdType",        zwJcCmd2String(p->CmdType).c_str());  
+	cJSON_AddStringToObject(jcInput,"CmdType",        zwJcCmd2String(p->CmdType));  
 
 	cJSON_AddNumberToObject(jcInput,"SearchTimeStart",        p->SearchTimeStart);  
 	cJSON_AddNumberToObject(jcInput,"SearchTimeStep",        p->SearchTimeStep);  
