@@ -115,6 +115,7 @@ typedef struct JcLockInput {
 } JCINPUT;
 
 typedef enum jclmsd_request{
+	JCLMS_CCB_INVALID,		//无效值
 	JCLMS_CCB_CODEGEN,		//动态码生成
 	JCLMS_CCB_CODEVERIFY	//动态码反推
 }JCLMSOP;

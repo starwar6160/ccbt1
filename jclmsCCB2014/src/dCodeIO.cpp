@@ -364,7 +364,7 @@ void myCjsonTest1(void)
 	printf("%s\n",cjout);
 }
 
-const char * zwJcCmd2String(const JCCMD cmd)
+const char * zwJcCmdToString(const JCCMD cmd)
 {
 	switch (cmd)
 	{
@@ -388,7 +388,7 @@ const char * zwJcCmd2String(const JCCMD cmd)
 	}
 }
 
-JCCMD zwString2JcCmd(const char *cmdStr)
+JCCMD zwJcCmdFromString(const char *cmdStr)
 {
 	if (0==strcmp("JCCMD_CCB_DYPASS1",cmdStr))
 	{		
@@ -418,6 +418,35 @@ const char *jclmsRequestType_t[]={
 	"JCLMS_CCB_CODEVERIFY"
 };
 
+const char * zwJclmsopToString(const JCLMSOP cmd)
+{
+	switch (cmd)
+	{
+	case JCLMS_CCB_CODEGEN:
+		return "JCLMS_CCB_CODEGEN";
+		break;
+	case JCLMS_CCB_CODEVERIFY:
+		return "JCLMS_CCB_CODEVERIFY";
+		break;
+	default:
+		return "JCLMS_CCB_INVALID_COMMAND";
+	}
+}
+
+JCLMSOP zwJclmsopFromString(const char *cmdStr)
+{
+	if (0==strcmp("JCLMS_CCB_CODEGEN",cmdStr))
+	{		
+		return JCLMS_CCB_CODEGEN;
+	}
+	if (0==strcmp("JCLMS_CCB_CODEVERIFY",cmdStr))
+	{		
+		return JCLMS_CCB_CODEVERIFY;
+	}
+	return JCLMS_CCB_INVALID;	//什么都没找到就返回一个无效值
+}
+
+
 
 cJSON * zwJcInputConv2Json( cJSON ** root, const JCINPUT * p )
 {
@@ -434,7 +463,7 @@ cJSON * zwJcInputConv2Json( cJSON ** root, const JCINPUT * p )
 	cJSON_AddNumberToObject(jcInput,"CodeGenDateTime",        p->CodeGenDateTime);   
 	cJSON_AddNumberToObject(jcInput,"Validity",        p->Validity);  
 	cJSON_AddNumberToObject(jcInput,"CloseCode",        p->CloseCode);  
-	cJSON_AddStringToObject(jcInput,"CmdType",        zwJcCmd2String(p->CmdType));  
+	cJSON_AddStringToObject(jcInput,"CmdType",        zwJcCmdToString(p->CmdType));  
 
 	cJSON_AddNumberToObject(jcInput,"SearchTimeStart",        p->SearchTimeStart);  
 	cJSON_AddNumberToObject(jcInput,"SearchTimeStep",        p->SearchTimeStep);  
