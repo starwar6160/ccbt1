@@ -22,6 +22,11 @@ void zwJclmsGenReq2Json(const JCINPUT *p,char *outJson,const int outBufLen);
 #define assert
 #endif // _WIN32
 
+void myJcInputHton(JCINPUT *p);
+void myJcInputNtoh(JCINPUT *p);
+void myLmsReqZHton(JCLMSREQ *req);
+void myLmsReqZNtoh(JCLMSREQ *req);
+
 
 #ifdef  __cplusplus
 }	//extern "C" {
