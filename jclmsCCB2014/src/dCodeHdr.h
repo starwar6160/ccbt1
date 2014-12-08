@@ -26,7 +26,8 @@ void myJcInputHton(JCINPUT *p);
 void myJcInputNtoh(JCINPUT *p);
 void myLmsReqZHton(JCLMSREQ *req);
 void myLmsReqZNtoh(JCLMSREQ *req);
-
+//生成各种类型的动态码
+int zwJcLockGetDynaCode(const int handle);
 
 #ifdef  __cplusplus
 }	//extern "C" {
