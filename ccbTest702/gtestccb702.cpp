@@ -683,7 +683,6 @@ TEST_F(jclmsCCBV11_Test, zwHidSecboxLMSTest20141203StandTestVector) {
 		printf("zwJclmsReqGenDyCode initCloseCode\n");
 		int initCloseCode=0;
 		zwJclmsReqGenDyCode(handle,&initCloseCode);
-		return ;
 
 		//int initCloseCode = JcLockGetDynaCode(hnd2);
 		//此处期待值已经改为固定依赖1400M秒的时间值，应该不会再变了。
@@ -705,7 +704,7 @@ TEST_F(jclmsCCBV11_Test, zwHidSecboxLMSTest20141203StandTestVector) {
 		zwJclmsReqGenDyCode(handle,&pass1DyCode);
 		codesum+=pass1DyCode;
 		EXPECT_EQ(pass1DyCode, 57174184);
-
+		return ;
 		JcLockSetInt(handle,JCI_SEARCH_TIME_START,1416*ZWMEGA+123);
 		//验证第一开锁码
 		JCMATCH pass1Match ;

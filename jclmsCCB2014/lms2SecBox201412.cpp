@@ -160,19 +160,13 @@ void JCLMSCCB2014_API zwJclmsRsp( void * inLmsReq,const int inLmsReqLen,JCRESULT
 	}
 	char inJson[ZW_JSONBUF_LEN];
 	memset(inJson,0,ZW_JSONBUF_LEN);
-#ifdef _DEBUG_USE_LMS_FUNC_CALL_20141202
+
 	//PC调试时输入大小必须是HID有效载荷头部+JCLMSREQ JSON的大小
 	assert(inLmsReqLen+sizeof(SECBOX_DATA_INFO)<=ZW_JSONBUF_LEN);
 	//跳过HID有效载荷头部
 	//memcpy((void *)&lmsReq,(char *)inLmsReq+sizeof(SECBOX_DATA_INFO),inLmsReqLen-sizeof(SECBOX_DATA_INFO));
 	strncpy(inJson,(char *)inLmsReq+sizeof(SECBOX_DATA_INFO),ZW_JSONBUF_LEN);
 	zwJclmsReqDecode(inJson,&lmsReq);
-#else
-	//在ARM上输入大小必须是JCLMSREQ大小
-	assert(sizeof(JCLMSREQ)==inLmsReqLen);
-	//跳过HID有效载荷头部
-	memcpy((void *)&lmsReq,(char *)inLmsReq,inLmsReqLen);
-#endif // _DEBUG_USE_LMS_FUNC_CALL_20141202
 
 	//myLmsReqZNtoh(&lmsReq);
 	zwJcLockDumpJCINPUT((int)(&lmsReq));
@@ -196,7 +190,7 @@ void JCLMSCCB2014_API zwJclmsRsp( void * inLmsReq,const int inLmsReqLen,JCRESULT
 
 #ifdef _WIN32
 void myHexDump(const void * hidSendBuf,const int outLen );
-const int ZWHIDBUFLEN=512;
+const int ZWHIDBUFLEN=640;
 char g_dbg_hid_common1202[ZWHIDBUFLEN];
 
 void myLmsReq2Json( int lmsHandle, char * tmpjson );
@@ -216,8 +210,6 @@ int JCLMSCCB2014_API zwJclmsReqGenDyCode( int lmsHandle,int *dyCode )
 	int tmpJsonLen=0;
 	memset(tmpjson,0,ZW_JSONBUF_LEN);
 	//////////////////////////////////////////////////////////////////////////
-
-	//myLmsReq2Json(lmsHandle, tmpjson);
 	zwJclmsGenReq2Json(reinterpret_cast<JCINPUT *>(lmsHandle),tmpjson,ZW_JSONBUF_LEN);
 	tmpJsonLen=strlen(tmpjson);
 	//JCLMSREQ req2t;
@@ -271,13 +263,7 @@ int JCLMSCCB2014_API zwJclmsReqGenDyCode( int lmsHandle,int *dyCode )
 	int rspRealLen=0;
 	jcHidRecvData(&hidHandle,(char *)&rsp,sizeof(rsp),&rspRealLen);
 	printf("HidRecv Data is\n");
-	myHexDump(&rsp, rspRealLen);
-
-	assert(sizeof(rsp)==rspRealLen);
-	if (sizeof(rsp)!=rspRealLen)
-	{
-		printf("Secbox Return of LMS result size not match JCRESULT!\n");
-	}
+	//myHexDump(&rsp, rspRealLen);
 	jcHidClose(&hidHandle);
 #endif // _DEBUG_USE_LMS_FUNC_CALL_20141202
 	//zwJclmsRsp(&req,sizeof(JCLMSREQ),&rsp);
@@ -294,12 +280,13 @@ int JCLMSCCB2014_API zwJclmsReqGenDyCode( int lmsHandle,int *dyCode )
 //通信线路发送到密盒，然后阻塞接收密盒返回结果，通过出参返回；
 int JCLMSCCB2014_API zwJclmsReqVerifyDyCode( int lmsHandle,int dstCode,JCMATCH *match )
 {
-	JCLMSREQ req;
-	memset(&req,0,sizeof(JCLMSREQ));
-	req.Type=JCLMS_CCB_CODEVERIFY;
-	req.dstCode=dstCode;
-	memcpy((void *)&req.inputData,(void *)lmsHandle,sizeof(JCINPUT));
-
+	////////////////////////////JSON序列化开始//////////////////////////////////////////////	
+	char tmpjson[ZW_JSONBUF_LEN];
+	int tmpJsonLen=0;
+	memset(tmpjson,0,ZW_JSONBUF_LEN);
+	//////////////////////////////////////////////////////////////////////////
+	zwJclmsVerReq2Json(reinterpret_cast<JCINPUT *>(lmsHandle),dstCode,tmpjson,ZW_JSONBUF_LEN);
+	tmpJsonLen=strlen(tmpjson);
 	//////////////////////////////////模拟发送数据////////////////////////////////////////
 	//此处由于是模拟，时序不好控制，为了便于调试，在此直接调用密盒端的函数zwJclmsRsp来做处理
 	printf("%s Send Data to Secbox with Wait To Verify DestCode %d\n",__FUNCTION__,dstCode);
@@ -311,7 +298,7 @@ int JCLMSCCB2014_API zwJclmsReqVerifyDyCode( int lmsHandle,int dstCode,JCMATCH *
 	memset(&hidPayloadHeader,0,sizeof(SECBOX_DATA_INFO));
 	hidPayloadHeader.data_index=1;
 	hidPayloadHeader.msg_type=JC_SECBOX_LMS_VERDYCODE;
-	hidPayloadHeader.data_len=sizeof(JCLMSREQ);
+	hidPayloadHeader.data_len=tmpJsonLen;
 	hidPayloadHeader.data_len=HtoNs(hidPayloadHeader.data_len);
 	//构建整个HID发送数据包，给下层HID函数去切分和发送
 	char hidSendBuf[ZWHIDBUFLEN];
@@ -319,8 +306,10 @@ int JCLMSCCB2014_API zwJclmsReqVerifyDyCode( int lmsHandle,int dstCode,JCMATCH *
 	//先加入头部
 	memcpy(hidSendBuf,&hidPayloadHeader,sizeof(hidPayloadHeader));
 	//然后加入实际的请求部分
-	myLmsReqZHton(&req);
-	memcpy(hidSendBuf+sizeof(hidPayloadHeader),&req,sizeof(req));
+	//myLmsReqZHton(&req);
+	//memcpy(hidSendBuf+sizeof(hidPayloadHeader),&req,sizeof(req));
+	assert(sizeof(hidPayloadHeader)+tmpJsonLen<ZWHIDBUFLEN);
+	strncpy(hidSendBuf+sizeof(hidPayloadHeader),tmpjson,ZWHIDBUFLEN-sizeof(hidPayloadHeader));
 	//printf("HidSend Data is(Net ByteOrder)\n");
 	//myHexDump(hidSendBuf, outLen);
 
@@ -342,14 +331,9 @@ int JCLMSCCB2014_API zwJclmsReqVerifyDyCode( int lmsHandle,int dstCode,JCMATCH *
 	printf("VerWait To SecBox Return Result now..\n");
 	int rspRealLen=0;
 	jcHidRecvData(&hidHandle,(char *)&rsp,sizeof(rsp),&rspRealLen);
-	printf("HidRecv Data is\n");
-	myHexDump(&rsp, rspRealLen);
+	//printf("HidRecv Data is\n");
+	//myHexDump(&rsp, rspRealLen);
 	assert(rsp.verCodeMatch.s_datetime>1400*ZWMEGA);
-	assert(sizeof(rsp)==rspRealLen);
-	if (sizeof(rsp)!=rspRealLen)
-	{
-		printf("Secbox Return of LMS result size not match JCRESULT!\n");
-	}
 	jcHidClose(&hidHandle);
 #endif // _DEBUG_USE_LMS_FUNC_CALL_20141202
 	memcpy((void *)match,(void *)&rsp.verCodeMatch,sizeof(JCMATCH));

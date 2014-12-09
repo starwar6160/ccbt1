@@ -502,6 +502,31 @@ void zwJclmsGenReq2Json(const JCINPUT *p,char *outJson,const int outBufLen)
 	printf("%s\n",outJson);
 }
 
+void zwJclmsVerReq2Json(const JCINPUT *p,const int dstCode,char *outJson,const int outBufLen)
+{
+	cJSON *root;     ;
+	zwJcInputConv2Json(&root, p);
+	cJSON *ztNode1;
+	cJSON_AddItemToObject(root, "jcLmsRequest", ztNode1=cJSON_CreateObject());   
+	cJSON_AddStringToObject(ztNode1,"Type",     zwJclmsopToString(JCLMS_CCB_CODEVERIFY));   
+	cJSON_AddNumberToObject(ztNode1,"dstCode",dstCode);
+	//又一层json对象，添加到根对象里面
+	//cJSON_AddItemToObject(root, "format", fmt=cJSON_CreateObject());   
+	//cJSON_AddStringToObject(fmt,"type",     "rect");   
+	//cJSON_AddNumberToObject(fmt,"width",        1920);   
+	//cJSON_AddNumberToObject(fmt,"height",       1080);   
+	//cJSON_AddFalseToObject (fmt,"interlace");   
+	//cJSON_AddNumberToObject(fmt,"frame rate",   24.7); 
+	char *cjout=cJSON_Print(root);
+	int cjLen=strlen(cjout);
+	if (cjLen>outBufLen)
+	{
+		cjLen=outBufLen;
+	}
+	strncpy(outJson,cjout,cjLen);
+	free(cjout);
+	printf("%s\n",outJson);
+}
 void zwJclmsReqDecode(const char *inJclmsReqJson,JCLMSREQ *outReq)
 {
 	cJSON *root=cJSON_Parse(inJclmsReqJson); 
