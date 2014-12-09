@@ -532,6 +532,14 @@ void zwJclmsReqDecode(const char *inJclmsReqJson,JCLMSREQ *outReq)
 	cJSON *root=cJSON_Parse(inJclmsReqJson); 
 	cJSON *req = cJSON_GetObjectItem(root,"jcLmsRequest");   	
 	outReq->Type=zwJclmsopFromString(cJSON_GetObjectItem(req,"Type")->valuestring);
+	cJSON *dstCodeJson=cJSON_GetObjectItem(req,"dstCode");
+	//给dstCode一个默认值0，然后如果有该项目，用实际值体代之
+	outReq->dstCode=0;
+	if (NULL!=dstCodeJson)
+	{
+		outReq->dstCode=dstCodeJson->valueint;
+	}
+	
 	//JCINPUT
 	cJSON *jci = cJSON_GetObjectItem(root,"JCINPUT");   
 	//注意此处，所有最终参与动态码计算的字符串输入因素字段都需要先清零，

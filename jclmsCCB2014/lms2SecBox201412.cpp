@@ -170,6 +170,14 @@ void JCLMSCCB2014_API zwJclmsRsp( void * inLmsReq,const int inLmsReqLen,JCRESULT
 
 	//myLmsReqZNtoh(&lmsReq);
 	zwJcLockDumpJCINPUT((int)(&lmsReq));
+	printf("%s dstCode=%d\n",__FUNCTION__,lmsReq.dstCode);
+	//既不是0，又不是8位数字，那么就是错误值了
+	if (0!=lmsReq.dstCode &&(lmsReq.dstCode<10*ZWMEGA || lmsReq.dstCode>100*ZWMEGA) )
+	{
+		lmsResult->dynaCode=-20141209;
+		return ;
+	}
+
 
 	//通过出参结构体返回计算结果给外部
 	int dyCode=0;

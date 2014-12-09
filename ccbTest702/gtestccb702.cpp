@@ -704,7 +704,7 @@ TEST_F(jclmsCCBV11_Test, zwHidSecboxLMSTest20141203StandTestVector) {
 		zwJclmsReqGenDyCode(handle,&pass1DyCode);
 		codesum+=pass1DyCode;
 		EXPECT_EQ(pass1DyCode, 57174184);
-		return ;
+		//return;
 		JcLockSetInt(handle,JCI_SEARCH_TIME_START,1416*ZWMEGA+123);
 		//验证第一开锁码
 		JCMATCH pass1Match ;
