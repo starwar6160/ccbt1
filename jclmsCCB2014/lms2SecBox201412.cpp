@@ -12,7 +12,7 @@
 #include "zwHidSplitMsg.h"
 #include "zwSecretBoxAuth.h"
 
-#define _DEBUG_USE_LMS_FUNC_CALL_20141202
+//#define _DEBUG_USE_LMS_FUNC_CALL_20141202
 
 void JCLMSCCB2014_API zwJclmsRsp( void * inLmsReq,const int inLmsReqLen,char *outJson,const int outJsonLen );
 
@@ -256,7 +256,7 @@ int JCLMSCCB2014_API zwJclmsReqGenDyCode( int lmsHandle,int *dyCode )
 	char resJson[ZW_JSONBUF_LEN];
 #ifdef _DEBUG_USE_LMS_FUNC_CALL_20141202
 	//调试状态，直接调用下位机函数即可
-	zwJclmsRsp(hidSendBuf,outLen,resJson,ZW_JSONBUF_LEN);
+	zwJclmsRsp(hidSendBuf,outLen,resJson,ZW_JSONBUF_LEN);	
 	zwJclmsResultFromJson(resJson,&rsp);
 #else
 	JCHID hidHandle;
@@ -272,11 +272,13 @@ int JCLMSCCB2014_API zwJclmsReqGenDyCode( int lmsHandle,int *dyCode )
 
 	printf("GenWait To SecBox Return Result now..\n");
 	int rspRealLen=0;
-	jcHidRecvData(&hidHandle,(char *)&rsp,sizeof(rsp),&rspRealLen);
+	jcHidRecvData(&hidHandle,resJson,ZW_JSONBUF_LEN,&rspRealLen);
 	printf("HidRecv Data is\n");
 	//myHexDump(&rsp, rspRealLen);
 	jcHidClose(&hidHandle);
+	zwJclmsResultFromJson(resJson+sizeof(short int),&rsp);
 #endif // _DEBUG_USE_LMS_FUNC_CALL_20141202
+	
 	assert(0!=rsp.dynaCode);
 	*dyCode=rsp.dynaCode;
 	printf("%s Return dynaCode=%d\n",__FUNCTION__,rsp.dynaCode);
@@ -337,11 +339,12 @@ int JCLMSCCB2014_API zwJclmsReqVerifyDyCode( int lmsHandle,int dstCode,JCMATCH *
 	jcHidSendData(&hidHandle,hidSendBuf,outLen);
 	printf("VerWait To SecBox Return Result now..\n");
 	int rspRealLen=0;
-	jcHidRecvData(&hidHandle,(char *)&rsp,sizeof(rsp),&rspRealLen);
+	jcHidRecvData(&hidHandle,resJson,ZW_JSONBUF_LEN,&rspRealLen);
 	//printf("HidRecv Data is\n");
 	//myHexDump(&rsp, rspRealLen);
-	assert(rsp.verCodeMatch.s_datetime>1400*ZWMEGA);
+	//assert(rsp.verCodeMatch.s_datetime>1400*ZWMEGA);
 	jcHidClose(&hidHandle);
+	zwJclmsResultFromJson(resJson+sizeof(short int),&rsp);
 #endif // _DEBUG_USE_LMS_FUNC_CALL_20141202
 	memcpy((void *)match,(void *)&rsp.verCodeMatch,sizeof(JCMATCH));
 	printf("%s Match DateTime=%d\tValidity=%d\n",__FUNCTION__,match->s_datetime,match->s_validity);	
