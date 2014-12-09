@@ -144,9 +144,11 @@ void myLmsReq2Json( int lmsHandle, char * tmpjson )
 const int ZW_JSONBUF_LEN=640;
 
 //该函数是下位机专用
-//Input:void * inLmsReq:pointer of a JCLMSREQ struct
-//input:const int inLmsReqLen:sizeof(JCLMSREQ)
-//output:JCRESULT
+//输入：inLmsReq，指向一个HID接收到的，拼装完毕的整条jclms请求消息。该消息具有一个标准的
+//SECBOX_DATA_INFO结构的HID头部，余下的部分就是JSON的数据包了，JSON长度在HID头部的长度字段中
+//注意HID头部长度字段是网络字节序的
+//输入：inLmsReqLen，是整条JCLMS请求消息的长度，包含HID头部在内
+//输出：JCRESULT联合体，取决于是生成请求还是验证请求，相应的哪一个字段有效；
 void JCLMSCCB2014_API zwJclmsRsp( void * inLmsReq,const int inLmsReqLen,JCRESULT *lmsResult )
 {	
 	//从外部接收数据
@@ -179,6 +181,9 @@ void JCLMSCCB2014_API zwJclmsRsp( void * inLmsReq,const int inLmsReqLen,JCRESULT
 	}
 
 
+	char outJson[ZW_JSONBUF_LEN];
+	memset(outJson,0,ZW_JSONBUF_LEN);
+
 	//通过出参结构体返回计算结果给外部
 	int dyCode=0;
 	if (JCLMS_CCB_CODEGEN==lmsReq.Type)
@@ -186,6 +191,7 @@ void JCLMSCCB2014_API zwJclmsRsp( void * inLmsReq,const int inLmsReqLen,JCRESULT
 		dyCode=zwJcLockGetDynaCode((int)(&lmsReq.inputData));
 		assert(dyCode>10*ZWMEGA);
 		lmsResult->dynaCode=dyCode;
+		zwJclmsRersult2Json(lmsResult,JCLMS_CCB_CODEGEN,outJson,ZW_JSONBUF_LEN);
 	}
 	if (JCLMS_CCB_CODEVERIFY==lmsReq.Type)
 	{
@@ -193,7 +199,9 @@ void JCLMSCCB2014_API zwJclmsRsp( void * inLmsReq,const int inLmsReqLen,JCRESULT
 		assert(jm.s_datetime>1400*ZWMEGA);
 		assert(jm.s_validity>0 && jm.s_validity<=1440);
 		memcpy((void *)&(lmsResult->verCodeMatch),(void *)&jm,sizeof(JCMATCH));
+		zwJclmsRersult2Json(lmsResult,JCLMS_CCB_CODEVERIFY,outJson,ZW_JSONBUF_LEN);
 	}	
+	
 }
 
 #ifdef _WIN32
@@ -206,7 +214,7 @@ void myLmsReq2Json( int lmsHandle, char * tmpjson );
 //两个zwJclmsReq函数是上位机专用
 
 //填写完毕handle里面的数据结构以后，调用该函数生成动态码，该函数在底层将请求
-//通过HID等通信线路发送到密盒，然后阻塞接收密盒返回结果，通过出参返回；
+//做JSON序列化以后通过HID等通信线路发送到密盒，然后阻塞接收密盒返回结果，通过出参返回；
 int JCLMSCCB2014_API zwJclmsReqGenDyCode( int lmsHandle,int *dyCode )
 {
 	JCLMSREQ req;
@@ -284,8 +292,8 @@ int JCLMSCCB2014_API zwJclmsReqGenDyCode( int lmsHandle,int *dyCode )
 
 
 //填写完毕handle里面的数据结构以后，调用该函数验证动态码（第一和第二动态码中间，锁具生成的校验码
-//也是使用其他两个动态码的同样算法生成的，所以也算一种动态码，该函数在底层将验证请求通过HID等
-//通信线路发送到密盒，然后阻塞接收密盒返回结果，通过出参返回；
+//也是使用其他两个动态码的同样算法生成的，所以也算一种动态码，该函数在底层将验证请求做JSON序列化
+//以后通过HID等通信线路发送到密盒，然后阻塞接收密盒返回结果，通过出参返回；
 int JCLMSCCB2014_API zwJclmsReqVerifyDyCode( int lmsHandle,int dstCode,JCMATCH *match )
 {
 	////////////////////////////JSON序列化开始//////////////////////////////////////////////	

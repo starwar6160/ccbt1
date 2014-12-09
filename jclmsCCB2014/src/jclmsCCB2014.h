@@ -165,11 +165,11 @@ int JCLMSCCB2014_API zwSM3StandardTestVector(void);
 //20141125新增，密盒通信函数,上位机部分
 //两个zwJclmsReq函数是上位机专用
 //填写完毕handle里面的数据结构以后，调用该函数生成动态码，该函数在底层将请求
-//通过HID等通信线路发送到密盒，然后阻塞接收密盒返回结果，通过出参返回；
+//做JSON序列化以后通过HID等通信线路发送到密盒，然后阻塞接收密盒返回结果，通过出参返回；
 int JCLMSCCB2014_API zwJclmsReqGenDyCode( int lmsHandle,int *dyCode);
 //填写完毕handle里面的数据结构以后，调用该函数验证动态码（第一和第二动态码中间，锁具生成的校验码
-//也是使用其他两个动态码的同样算法生成的，所以也算一种动态码，该函数在底层将验证请求通过HID等
-//通信线路发送到密盒，然后阻塞接收密盒返回结果，通过出参返回；
+//也是使用其他两个动态码的同样算法生成的，所以也算一种动态码，该函数在底层将验证请求做JSON序列化
+//以后通过HID等通信线路发送到密盒，然后阻塞接收密盒返回结果，通过出参返回；
 int JCLMSCCB2014_API zwJclmsReqVerifyDyCode( int lmsHandle,int dstCode,JCMATCH *match );
 int JCLMSCCB2014_API zwLmsAlgStandTest20141203(void);
 void JCLMSCCB2014_API zwJclmsRsp( void * inLmsReq,const int inLmsReqLen,JCRESULT *lmsResult );

@@ -19,6 +19,7 @@ cJSON * zwJcInputConv2Json( cJSON ** root, const JCINPUT * p );
 void zwJclmsGenReq2Json(const JCINPUT *p,char *outJson,const int outBufLen);
 void zwJclmsVerReq2Json(const JCINPUT *p,const int dstCode,char *outJson,const int outBufLen);
 void zwJclmsReqDecode(const char *inJclmsReqJson,JCLMSREQ *outReq);
+void zwJclmsRersult2Json(const JCRESULT *p,const JCLMSOP op,char *outJson,const int outBufLen);
 //ARM编译去掉assert，避免链接找不到符号
 #ifndef _WIN32
 #define assert

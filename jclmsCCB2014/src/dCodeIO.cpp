@@ -567,3 +567,32 @@ void zwJclmsReqDecode(const char *inJclmsReqJson,JCLMSREQ *outReq)
 		cJSON_GetArrayItem(valArr,i)->valueint;
 	}
 }
+
+
+void zwJclmsRersult2Json(const JCRESULT *p,const JCLMSOP op,char *outJson,const int outBufLen)
+{
+	cJSON *root=cJSON_CreateObject();;     ;	
+	cJSON *ztNode1;
+	cJSON_AddItemToObject(root, "JCRESULT", ztNode1=cJSON_CreateObject());  
+	cJSON_AddStringToObject(ztNode1,"Type",     zwJclmsopToString(op));   
+	if (JCLMS_CCB_CODEGEN==op)
+	{
+		cJSON_AddNumberToObject(ztNode1,"dynaCode",p->dynaCode);   
+	}
+	if (JCLMS_CCB_CODEVERIFY==op)
+	{
+		cJSON *vMatch;
+		cJSON_AddItemToObject(ztNode1, "verCodeMatch", vMatch=cJSON_CreateObject());
+		cJSON_AddNumberToObject(vMatch,"s_datetime",p->verCodeMatch.s_datetime);
+		cJSON_AddNumberToObject(vMatch,"s_validity",p->verCodeMatch.s_validity);
+	}
+	char *cjout=cJSON_Print(root);
+	int cjLen=strlen(cjout);
+	if (cjLen>outBufLen)
+	{
+		cjLen=outBufLen;
+	}
+	strncpy(outJson,cjout,cjLen);
+	free(cjout);
+	printf("%s\n",outJson);
+}
