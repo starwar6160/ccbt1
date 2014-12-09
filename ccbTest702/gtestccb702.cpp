@@ -676,10 +676,9 @@ TEST_F(jclmsCCBV11_Test, zwHidSecboxLMSTest20141203StandTestVector) {
 		//固定开锁时间,应该出来固定的结果
 		const int ZWFIX_STARTTIME=1416*ZWMEGA;
 		JcLockSetInt(handle,JCI_TIMESTEP,6);
-		JcLockSetInt(handle,JCI_SEARCH_TIME_START,time(NULL));
+		JcLockSetInt(handle,JCI_SEARCH_TIME_START,static_cast<int>(time(NULL)));
 		JcLockSetCmdType(handle, JCI_CMDTYPE, JCCMD_INIT_CLOSECODE);
 		//////////////////////////////////////////////////////////////////////////
-		JCRESULT lmsRsp;
 		printf("zwJclmsReqGenDyCode initCloseCode\n");
 		int initCloseCode=0;
 		zwJclmsReqGenDyCode(handle,&initCloseCode);

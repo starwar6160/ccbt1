@@ -14,7 +14,7 @@
 
 #define _DEBUG_USE_LMS_FUNC_CALL_20141202
 
-void JCLMSCCB2014_API zwJclmsRsp( void * inLmsReq,const int inLmsReqLen,JCRESULT *lmsResult );
+void JCLMSCCB2014_API zwJclmsRsp( void * inLmsReq,const int inLmsReqLen,JCRESULT *lmsResult,char *outJson,const int outJsonLen );
 
 void myJcInputHton(JCINPUT *p)
 {
@@ -149,7 +149,7 @@ const int ZW_JSONBUF_LEN=640;
 //注意HID头部长度字段是网络字节序的
 //输入：inLmsReqLen，是整条JCLMS请求消息的长度，包含HID头部在内
 //输出：JCRESULT联合体，取决于是生成请求还是验证请求，相应的哪一个字段有效；
-void JCLMSCCB2014_API zwJclmsRsp( void * inLmsReq,const int inLmsReqLen,JCRESULT *lmsResult )
+void JCLMSCCB2014_API zwJclmsRsp( void * inLmsReq,const int inLmsReqLen,JCRESULT *lmsResult,char *outJson,const int outJsonLen )
 {	
 	//从外部接收数据
 	JCLMSREQ lmsReq;
@@ -181,8 +181,8 @@ void JCLMSCCB2014_API zwJclmsRsp( void * inLmsReq,const int inLmsReqLen,JCRESULT
 	}
 
 
-	char outJson[ZW_JSONBUF_LEN];
-	memset(outJson,0,ZW_JSONBUF_LEN);
+	//char outJson[ZW_JSONBUF_LEN];
+	memset(outJson,0,outJsonLen);
 
 	//通过出参结构体返回计算结果给外部
 	int dyCode=0;
@@ -191,7 +191,7 @@ void JCLMSCCB2014_API zwJclmsRsp( void * inLmsReq,const int inLmsReqLen,JCRESULT
 		dyCode=zwJcLockGetDynaCode((int)(&lmsReq.inputData));
 		assert(dyCode>10*ZWMEGA);
 		lmsResult->dynaCode=dyCode;
-		zwJclmsRersult2Json(lmsResult,JCLMS_CCB_CODEGEN,outJson,ZW_JSONBUF_LEN);
+		zwJclmsRersult2Json(lmsResult,JCLMS_CCB_CODEGEN,outJson,outJsonLen);
 	}
 	if (JCLMS_CCB_CODEVERIFY==lmsReq.Type)
 	{
@@ -199,7 +199,7 @@ void JCLMSCCB2014_API zwJclmsRsp( void * inLmsReq,const int inLmsReqLen,JCRESULT
 		assert(jm.s_datetime>1400*ZWMEGA);
 		assert(jm.s_validity>0 && jm.s_validity<=1440);
 		memcpy((void *)&(lmsResult->verCodeMatch),(void *)&jm,sizeof(JCMATCH));
-		zwJclmsRersult2Json(lmsResult,JCLMS_CCB_CODEVERIFY,outJson,ZW_JSONBUF_LEN);
+		zwJclmsRersult2Json(lmsResult,JCLMS_CCB_CODEVERIFY,outJson,outJsonLen);
 	}	
 	
 }
@@ -259,10 +259,10 @@ int JCLMSCCB2014_API zwJclmsReqGenDyCode( int lmsHandle,int *dyCode )
 	//////////////////////////////////////////////////////////////////////////	
 	JCRESULT rsp;
 	memset(&rsp,0,sizeof(rsp));
-
+	char resJson[ZW_JSONBUF_LEN];
 #ifdef _DEBUG_USE_LMS_FUNC_CALL_20141202
 	//调试状态，直接调用下位机函数即可
-	zwJclmsRsp(hidSendBuf,outLen,&rsp);
+	zwJclmsRsp(hidSendBuf,outLen,&rsp,resJson,ZW_JSONBUF_LEN);
 #else
 	JCHID hidHandle;
 	memset(&hidHandle,0,sizeof(JCHID));
@@ -282,7 +282,6 @@ int JCLMSCCB2014_API zwJclmsReqGenDyCode( int lmsHandle,int *dyCode )
 	//myHexDump(&rsp, rspRealLen);
 	jcHidClose(&hidHandle);
 #endif // _DEBUG_USE_LMS_FUNC_CALL_20141202
-	//zwJclmsRsp(&req,sizeof(JCLMSREQ),&rsp);
 	assert(0!=rsp.dynaCode);
 	*dyCode=rsp.dynaCode;
 	printf("%s Return dynaCode=%d\n",__FUNCTION__,rsp.dynaCode);
@@ -332,10 +331,10 @@ int JCLMSCCB2014_API zwJclmsReqVerifyDyCode( int lmsHandle,int dstCode,JCMATCH *
 	//////////////////////////////////////////////////////////////////////////
 	JCRESULT rsp;
 	memset(&rsp,0,sizeof(rsp));
-
+	char resJson[ZW_JSONBUF_LEN];
 #ifdef _DEBUG_USE_LMS_FUNC_CALL_20141202
 	//调试状态，直接调用下位机函数即可
-	zwJclmsRsp(hidSendBuf,outLen,&rsp);
+	zwJclmsRsp(hidSendBuf,outLen,&rsp,resJson,ZW_JSONBUF_LEN);
 #else
 	JCHID hidHandle;
 	hidHandle.vid=0x0483;
