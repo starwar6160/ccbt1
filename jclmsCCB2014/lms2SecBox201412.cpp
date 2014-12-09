@@ -141,13 +141,14 @@ void myLmsReq2Json( int lmsHandle, char * tmpjson )
 }
 #endif // _DEBUG_1205
 
+const int ZW_JSONBUF_LEN=640;
 
 //该函数是下位机专用
 //Input:void * inLmsReq:pointer of a JCLMSREQ struct
 //input:const int inLmsReqLen:sizeof(JCLMSREQ)
 //output:JCRESULT
 void JCLMSCCB2014_API zwJclmsRsp( void * inLmsReq,const int inLmsReqLen,JCRESULT *lmsResult )
-{
+{	
 	//从外部接收数据
 	JCLMSREQ lmsReq;
 
@@ -157,11 +158,15 @@ void JCLMSCCB2014_API zwJclmsRsp( void * inLmsReq,const int inLmsReqLen,JCRESULT
 	{
 		return;
 	}
+	char inJson[ZW_JSONBUF_LEN];
+	memset(inJson,0,ZW_JSONBUF_LEN);
 #ifdef _DEBUG_USE_LMS_FUNC_CALL_20141202
-	//PC调试时输入大小必须是HID有效载荷头部+JCLMSREQ的大小
-	assert(sizeof(SECBOX_DATA_INFO)+sizeof(JCLMSREQ)==inLmsReqLen);
+	//PC调试时输入大小必须是HID有效载荷头部+JCLMSREQ JSON的大小
+	assert(inLmsReqLen+sizeof(SECBOX_DATA_INFO)<=ZW_JSONBUF_LEN);
 	//跳过HID有效载荷头部
-	memcpy((void *)&lmsReq,(char *)inLmsReq+sizeof(SECBOX_DATA_INFO),inLmsReqLen-sizeof(SECBOX_DATA_INFO));
+	//memcpy((void *)&lmsReq,(char *)inLmsReq+sizeof(SECBOX_DATA_INFO),inLmsReqLen-sizeof(SECBOX_DATA_INFO));
+	strncpy(inJson,(char *)inLmsReq+sizeof(SECBOX_DATA_INFO),ZW_JSONBUF_LEN);
+	return ;
 #else
 	//在ARM上输入大小必须是JCLMSREQ大小
 	assert(sizeof(JCLMSREQ)==inLmsReqLen);
@@ -169,8 +174,8 @@ void JCLMSCCB2014_API zwJclmsRsp( void * inLmsReq,const int inLmsReqLen,JCRESULT
 	memcpy((void *)&lmsReq,(char *)inLmsReq,inLmsReqLen);
 #endif // _DEBUG_USE_LMS_FUNC_CALL_20141202
 
-	myLmsReqZNtoh(&lmsReq);
-	zwJcLockDumpJCINPUT((int)(&lmsReq));
+	//myLmsReqZNtoh(&lmsReq);
+	//zwJcLockDumpJCINPUT((int)(&lmsReq));
 
 	//通过出参结构体返回计算结果给外部
 	int dyCode=0;
@@ -206,21 +211,22 @@ int JCLMSCCB2014_API zwJclmsReqGenDyCode( int lmsHandle,int *dyCode )
 	memset(&req,0,sizeof(JCLMSREQ));
 	req.Type=JCLMS_CCB_CODEGEN;
 	memcpy((void *)&req.inputData,(void *)lmsHandle,sizeof(JCINPUT));
-	////////////////////////////JSON序列化开始//////////////////////////////////////////////
-	const int ZWBUFLEN=640;
-	char tmpjson[ZWBUFLEN];
-	memset(tmpjson,0,ZWBUFLEN);
+	////////////////////////////JSON序列化开始//////////////////////////////////////////////	
+	char tmpjson[ZW_JSONBUF_LEN];
+	int tmpJsonLen=0;
+	memset(tmpjson,0,ZW_JSONBUF_LEN);
 	//////////////////////////////////////////////////////////////////////////
 
 	//myLmsReq2Json(lmsHandle, tmpjson);
-	zwJclmsGenReq2Json(reinterpret_cast<JCINPUT *>(lmsHandle),tmpjson,ZWBUFLEN);
-	JCLMSREQ req2t;
-	zwJclmsReqDecode(tmpjson,&req2t);
+	zwJclmsGenReq2Json(reinterpret_cast<JCINPUT *>(lmsHandle),tmpjson,ZW_JSONBUF_LEN);
+	tmpJsonLen=strlen(tmpjson);
+	//JCLMSREQ req2t;
+	//zwJclmsReqDecode(tmpjson,&req2t);
 	////////////////////////////JSON序列化结束//////////////////////////////////////////////
 	//////////////////////////////////模拟发送数据////////////////////////////////////////
 	//此处由于是模拟，时序不好控制，为了便于调试，在此直接调用密盒端的函数zwJclmsRsp来做处理
-	printf("%s Send Data to Secbox for Gen DynaCode:\n",__FUNCTION__);
-	zwJcLockDumpJCINPUT(lmsHandle);	
+	//printf("%s Send Data to Secbox for Gen DynaCode:\n",__FUNCTION__);
+	//zwJcLockDumpJCINPUT(lmsHandle);	
 	//////////////////////////////////////////////////////////////////////////
 	//构建整个HID发送数据包，给下层HID函数去切分和发送
 	char hidSendBuf[ZWHIDBUFLEN];
@@ -231,13 +237,15 @@ int JCLMSCCB2014_API zwJclmsReqGenDyCode( int lmsHandle,int *dyCode )
 	memset(&hidPayloadHeader,0,sizeof(SECBOX_DATA_INFO));
 	hidPayloadHeader.data_index=1;
 	hidPayloadHeader.msg_type=JC_SECBOX_LMS_GENDYCODE;
-	hidPayloadHeader.data_len=sizeof(JCLMSREQ);
+	hidPayloadHeader.data_len=tmpJsonLen;
 	hidPayloadHeader.data_len=HtoNs(hidPayloadHeader.data_len);
 	//先加入头部
 	memcpy(hidSendBuf,&hidPayloadHeader,sizeof(hidPayloadHeader));
 	//然后加入实际的请求部分
-	myLmsReqZHton(&req);
-	memcpy(hidSendBuf+sizeof(hidPayloadHeader),&req,sizeof(req));
+	//myLmsReqZHton(&req);
+	//memcpy(hidSendBuf+sizeof(hidPayloadHeader),&req,sizeof(req));
+	assert(sizeof(hidPayloadHeader)+tmpJsonLen<ZWHIDBUFLEN);
+	strncpy(hidSendBuf+sizeof(hidPayloadHeader),tmpjson,ZWHIDBUFLEN-sizeof(hidPayloadHeader));
 	//printf("HidSend Data is(Net ByteOrder)\n");
 	//myHexDump(hidSendBuf, outLen);
 	//////////////////////////////////////////////////////////////////////////	

@@ -499,7 +499,7 @@ void zwJclmsGenReq2Json(const JCINPUT *p,char *outJson,const int outBufLen)
 	}
 	strncpy(outJson,cjout,cjLen);
 	free(cjout);
-	printf("%s\n",outJson);
+	//printf("%s\n",outJson);
 }
 
 void zwJclmsReqDecode(const char *inJclmsReqJson,JCLMSREQ *outReq)
