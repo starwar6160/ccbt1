@@ -17,6 +17,7 @@ void myGetInitCloseCodeVarItem(int *mdatetime, int *mvalidity, int *mclosecode);
 //void zwJclmsReq2Json(const JCINPUT *p,char *outJson,const int outBufLen);
 cJSON * zwJcInputConv2Json( cJSON ** root, const JCINPUT * p );
 void zwJclmsGenReq2Json(const JCINPUT *p,char *outJson,const int outBufLen);
+void zwJclmsReqDecode(const char *inJclmsReqJson,JCLMSREQ *outReq);
 //ARM编译去掉assert，避免链接找不到符号
 #ifndef _WIN32
 #define assert

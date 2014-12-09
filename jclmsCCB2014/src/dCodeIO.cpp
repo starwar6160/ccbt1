@@ -501,3 +501,30 @@ void zwJclmsGenReq2Json(const JCINPUT *p,char *outJson,const int outBufLen)
 	free(cjout);
 	printf("%s\n",outJson);
 }
+
+void zwJclmsReqDecode(const char *inJclmsReqJson,JCLMSREQ *outReq)
+{
+	cJSON *root=cJSON_Parse(inJclmsReqJson); 
+	cJSON *req = cJSON_GetObjectItem(root,"jcLmsRequest");   	
+	outReq->Type=zwJclmsopFromString(cJSON_GetObjectItem(req,"Type")->valuestring);
+	//JCINPUT
+	cJSON *jci = cJSON_GetObjectItem(root,"JCINPUT");   
+	strncpy(outReq->inputData.AtmNo,cJSON_GetObjectItem(jci,"ATMNO")->valuestring,JC_ATMNO_MAXLEN);
+	strncpy(outReq->inputData.LockNo,cJSON_GetObjectItem(jci,"LOCKNO")->valuestring,JC_LOCKNO_MAXLEN);
+	strncpy(outReq->inputData.PSK,cJSON_GetObjectItem(jci,"PSK")->valuestring,JC_PSK_LEN);
+	outReq->inputData.CodeGenDateTime=cJSON_GetObjectItem(jci,"CodeGenDateTime")->valueint;
+	outReq->inputData.Validity=cJSON_GetObjectItem(jci,"Validity")->valueint;
+	outReq->inputData.CloseCode=cJSON_GetObjectItem(jci,"CloseCode")->valueint;
+	outReq->inputData.CmdType=zwJcCmdFromString(cJSON_GetObjectItem(jci,"CmdType")->valuestring);
+	outReq->inputData.SearchTimeStart=cJSON_GetObjectItem(jci,"SearchTimeStart")->valueint;
+	outReq->inputData.SearchTimeStep=cJSON_GetObjectItem(jci,"SearchTimeStep")->valueint;
+	outReq->inputData.SearchTimeLength=cJSON_GetObjectItem(jci,"SearchTimeLength")->valueint;
+	//有效期数组
+	cJSON *valArr=cJSON_GetObjectItem(jci,"ValidityArray");   
+	for (int i=0;i<NUM_VALIDITY;i++)
+	{
+		outReq->inputData.ValidityArray[i]=
+			//cJSON_GetObjectItem(valArr,"Min")->valueint;
+		cJSON_GetArrayItem(valArr,i)->valueint;
+	}
+}

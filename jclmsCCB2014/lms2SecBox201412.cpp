@@ -214,7 +214,8 @@ int JCLMSCCB2014_API zwJclmsReqGenDyCode( int lmsHandle,int *dyCode )
 
 	//myLmsReq2Json(lmsHandle, tmpjson);
 	zwJclmsGenReq2Json(reinterpret_cast<JCINPUT *>(lmsHandle),tmpjson,ZWBUFLEN);
-
+	JCLMSREQ req2t;
+	zwJclmsReqDecode(tmpjson,&req2t);
 	////////////////////////////JSON序列化结束//////////////////////////////////////////////
 	//////////////////////////////////模拟发送数据////////////////////////////////////////
 	//此处由于是模拟，时序不好控制，为了便于调试，在此直接调用密盒端的函数zwJclmsRsp来做处理
@@ -237,8 +238,8 @@ int JCLMSCCB2014_API zwJclmsReqGenDyCode( int lmsHandle,int *dyCode )
 	//然后加入实际的请求部分
 	myLmsReqZHton(&req);
 	memcpy(hidSendBuf+sizeof(hidPayloadHeader),&req,sizeof(req));
-	printf("HidSend Data is(Net ByteOrder)\n");
-	myHexDump(hidSendBuf, outLen);
+	//printf("HidSend Data is(Net ByteOrder)\n");
+	//myHexDump(hidSendBuf, outLen);
 	//////////////////////////////////////////////////////////////////////////	
 	JCRESULT rsp;
 	memset(&rsp,0,sizeof(rsp));
@@ -312,8 +313,8 @@ int JCLMSCCB2014_API zwJclmsReqVerifyDyCode( int lmsHandle,int dstCode,JCMATCH *
 	//然后加入实际的请求部分
 	myLmsReqZHton(&req);
 	memcpy(hidSendBuf+sizeof(hidPayloadHeader),&req,sizeof(req));
-	printf("HidSend Data is(Net ByteOrder)\n");
-	myHexDump(hidSendBuf, outLen);
+	//printf("HidSend Data is(Net ByteOrder)\n");
+	//myHexDump(hidSendBuf, outLen);
 
 	//////////////////////////////////////////////////////////////////////////
 	JCRESULT rsp;
