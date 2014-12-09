@@ -500,6 +500,7 @@ void zwJclmsGenReq2Json(const JCINPUT *p,char *outJson,const int outBufLen)
 	strncpy(outJson,cjout,cjLen);
 	free(cjout);
 	printf("%s\n",outJson);
+	cJSON_Delete(root);	
 }
 
 void zwJclmsVerReq2Json(const JCINPUT *p,const int dstCode,char *outJson,const int outBufLen)
@@ -526,6 +527,7 @@ void zwJclmsVerReq2Json(const JCINPUT *p,const int dstCode,char *outJson,const i
 	strncpy(outJson,cjout,cjLen);
 	free(cjout);
 	printf("%s\n",outJson);
+	cJSON_Delete(root);	
 }
 void zwJclmsReqDecode(const char *inJclmsReqJson,JCLMSREQ *outReq)
 {
@@ -566,6 +568,7 @@ void zwJclmsReqDecode(const char *inJclmsReqJson,JCLMSREQ *outReq)
 		outReq->inputData.ValidityArray[i]=
 		cJSON_GetArrayItem(valArr,i)->valueint;
 	}
+	cJSON_Delete(root);	
 }
 
 
@@ -595,4 +598,29 @@ void zwJclmsRersult2Json(const JCRESULT *p,const JCLMSOP op,char *outJson,const 
 	strncpy(outJson,cjout,cjLen);
 	free(cjout);
 	printf("%s\n",outJson);
+	cJSON_Delete(root);	
+}
+
+void zwJclmsResultFromJson(const char *inJson,JCRESULT *p)
+{	
+	cJSON *root=cJSON_Parse(inJson); 
+	assert(NULL!=root);
+	cJSON *result = cJSON_GetObjectItem(root,"JCRESULT");   	
+	assert(NULL!=result);
+	cJSON *type=cJSON_GetObjectItem(result,"Type");   	
+	assert(NULL!=type);
+	JCCMD jcType=zwJcCmdFromString(type->valuestring);
+	memset(p,0,sizeof(JCRESULT));
+	switch(jcType)
+	{
+	case JCLMS_CCB_CODEGEN:
+		p->dynaCode=cJSON_GetObjectItem(result,"dynaCode")->valueint;
+		break;
+	case JCLMS_CCB_CODEVERIFY:
+		cJSON *vMatch=cJSON_GetObjectItem(result,"verCodeMatch");
+		p->verCodeMatch.s_datetime=cJSON_GetObjectItem(vMatch,"s_datetime")->valueint;
+		p->verCodeMatch.s_validity=cJSON_GetObjectItem(vMatch,"s_validity")->valueint;
+		break;
+	}
+	cJSON_Delete(root);
 }
