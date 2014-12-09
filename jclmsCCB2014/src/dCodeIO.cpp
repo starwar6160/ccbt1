@@ -483,7 +483,7 @@ void zwJclmsGenReq2Json(const JCINPUT *p,char *outJson,const int outBufLen)
 	zwJcInputConv2Json(&root, p);
 	cJSON *ztNode1;
 	cJSON_AddItemToObject(root, "jcLmsRequest", ztNode1=cJSON_CreateObject());   
-	cJSON_AddStringToObject(ztNode1,"Type",     jclmsRequestType_t[JCLMS_CCB_CODEGEN]);   
+	cJSON_AddStringToObject(ztNode1,"Type",     zwJclmsopToString(JCLMS_CCB_CODEGEN));   
 	//又一层json对象，添加到根对象里面
 	//cJSON_AddItemToObject(root, "format", fmt=cJSON_CreateObject());   
 	//cJSON_AddStringToObject(fmt,"type",     "rect");   
@@ -499,7 +499,7 @@ void zwJclmsGenReq2Json(const JCINPUT *p,char *outJson,const int outBufLen)
 	}
 	strncpy(outJson,cjout,cjLen);
 	free(cjout);
-	//printf("%s\n",outJson);
+	printf("%s\n",outJson);
 }
 
 void zwJclmsReqDecode(const char *inJclmsReqJson,JCLMSREQ *outReq)

@@ -691,7 +691,7 @@ TEST_F(jclmsCCBV11_Test, zwHidSecboxLMSTest20141203StandTestVector) {
 		//这里是一个自检测试，如果失败，就说明有比较大的问题了，比如类似发生过的
 		//ARM编译器优化级别问题导致的生成错误的二进制代码等等
 		EXPECT_EQ(38149728, initCloseCode);
-
+		return;
 		//dynaPass1
 		//注意现在合法的时间值应该是1.4G以上了，注意位数。20140721.1709 
 		JcLockSetInt(handle, JCI_DATETIME,ZWFIX_STARTTIME);

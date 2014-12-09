@@ -166,7 +166,7 @@ void JCLMSCCB2014_API zwJclmsRsp( void * inLmsReq,const int inLmsReqLen,JCRESULT
 	//跳过HID有效载荷头部
 	//memcpy((void *)&lmsReq,(char *)inLmsReq+sizeof(SECBOX_DATA_INFO),inLmsReqLen-sizeof(SECBOX_DATA_INFO));
 	strncpy(inJson,(char *)inLmsReq+sizeof(SECBOX_DATA_INFO),ZW_JSONBUF_LEN);
-	return ;
+	zwJclmsReqDecode(inJson,&lmsReq);
 #else
 	//在ARM上输入大小必须是JCLMSREQ大小
 	assert(sizeof(JCLMSREQ)==inLmsReqLen);
@@ -175,7 +175,7 @@ void JCLMSCCB2014_API zwJclmsRsp( void * inLmsReq,const int inLmsReqLen,JCRESULT
 #endif // _DEBUG_USE_LMS_FUNC_CALL_20141202
 
 	//myLmsReqZNtoh(&lmsReq);
-	//zwJcLockDumpJCINPUT((int)(&lmsReq));
+	zwJcLockDumpJCINPUT((int)(&lmsReq));
 
 	//通过出参结构体返回计算结果给外部
 	int dyCode=0;
