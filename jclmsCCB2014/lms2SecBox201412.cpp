@@ -95,7 +95,6 @@ int zwLmsAlgStandTest20141203(void)
 	JcLockSetInt(handle,JCI_SEARCH_TIME_START,1416*ZWMEGA+127);
 	JcLockSetCmdType(handle, JCI_CMDTYPE, JCCMD_INIT_CLOSECODE);
 	//////////////////////////////////////////////////////////////////////////
-	JCRESULT lmsRsp;
 	//printf("zwJclmsReqGenDyCode initCloseCode\n");
 	int initCloseCode=0;
 	initCloseCode=JcLockGetDynaCode(handle);
@@ -163,10 +162,10 @@ void JCLMSCCB2014_API zwJclmsRsp( void * inLmsReq,const int inLmsReqLen,char *ou
 	memset(inJson,0,ZW_JSONBUF_LEN);
 
 	//PC调试时输入大小必须是HID有效载荷头部+JCLMSREQ JSON的大小
-	assert(inLmsReqLen+sizeof(SECBOX_DATA_INFO)<=ZW_JSONBUF_LEN);
+	assert(inLmsReqLen+sizeof(short int)<=ZW_JSONBUF_LEN);
 	//跳过HID有效载荷头部
 	//memcpy((void *)&lmsReq,(char *)inLmsReq+sizeof(SECBOX_DATA_INFO),inLmsReqLen-sizeof(SECBOX_DATA_INFO));
-	strncpy(inJson,(char *)inLmsReq+sizeof(SECBOX_DATA_INFO),ZW_JSONBUF_LEN);
+	strncpy(inJson,(char *)inLmsReq+sizeof(short int),ZW_JSONBUF_LEN);
 	zwJclmsReqDecode(inJson,&lmsReq);
 
 	//myLmsReqZNtoh(&lmsReq);
@@ -239,19 +238,15 @@ int JCLMSCCB2014_API zwJclmsReqGenDyCode( int lmsHandle,int *dyCode )
 	char hidSendBuf[ZWHIDBUFLEN];
 	memset(hidSendBuf,0,ZWHIDBUFLEN);
 	//HID有效载荷的头部
-	const int outLen=sizeof(SECBOX_DATA_INFO)+sizeof(JCLMSREQ);
-	SECBOX_DATA_INFO hidPayloadHeader;
-	memset(&hidPayloadHeader,0,sizeof(SECBOX_DATA_INFO));
-	hidPayloadHeader.data_index=1;
-	hidPayloadHeader.msg_type=JC_SECBOX_LMS_GENDYCODE;
-	hidPayloadHeader.data_len=tmpJsonLen;
-	hidPayloadHeader.data_len=HtoNs(hidPayloadHeader.data_len);
+	short int hidPayloadHeader=HtoNs(JC_SECBOX_LMS_GENDYCODE);
+	const int outLen=sizeof(hidPayloadHeader)+tmpJsonLen;
+	
 	//先加入头部
 	memcpy(hidSendBuf,&hidPayloadHeader,sizeof(hidPayloadHeader));
 	//然后加入实际的请求部分
 	//myLmsReqZHton(&req);
 	//memcpy(hidSendBuf+sizeof(hidPayloadHeader),&req,sizeof(req));
-	assert(sizeof(hidPayloadHeader)+tmpJsonLen<ZWHIDBUFLEN);
+	assert(outLen<ZWHIDBUFLEN);
 	strncpy(hidSendBuf+sizeof(hidPayloadHeader),tmpjson,ZWHIDBUFLEN-sizeof(hidPayloadHeader));
 	//printf("HidSend Data is(Net ByteOrder)\n");
 	//myHexDump(hidSendBuf, outLen);
@@ -307,17 +302,13 @@ int JCLMSCCB2014_API zwJclmsReqVerifyDyCode( int lmsHandle,int dstCode,JCMATCH *
 	printf("%s Send Data to Secbox with Wait To Verify DestCode %d\n",__FUNCTION__,dstCode);
 	zwJcLockDumpJCINPUT(lmsHandle);
 	//////////////////////////////////////////////////////////////////////////
-	//HID有效载荷的头部
-	const int outLen=sizeof(SECBOX_DATA_INFO)+sizeof(JCLMSREQ);
-	SECBOX_DATA_INFO hidPayloadHeader;
-	memset(&hidPayloadHeader,0,sizeof(SECBOX_DATA_INFO));
-	hidPayloadHeader.data_index=1;
-	hidPayloadHeader.msg_type=JC_SECBOX_LMS_VERDYCODE;
-	hidPayloadHeader.data_len=tmpJsonLen;
-	hidPayloadHeader.data_len=HtoNs(hidPayloadHeader.data_len);
 	//构建整个HID发送数据包，给下层HID函数去切分和发送
 	char hidSendBuf[ZWHIDBUFLEN];
 	memset(hidSendBuf,0,ZWHIDBUFLEN);
+	//HID有效载荷的头部
+	short int hidPayloadHeader=HtoNs(JC_SECBOX_LMS_VERDYCODE);
+	const int outLen=sizeof(hidPayloadHeader)+tmpJsonLen;
+
 	//先加入头部
 	memcpy(hidSendBuf,&hidPayloadHeader,sizeof(hidPayloadHeader));
 	//然后加入实际的请求部分
