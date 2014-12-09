@@ -509,6 +509,13 @@ void zwJclmsReqDecode(const char *inJclmsReqJson,JCLMSREQ *outReq)
 	outReq->Type=zwJclmsopFromString(cJSON_GetObjectItem(req,"Type")->valuestring);
 	//JCINPUT
 	cJSON *jci = cJSON_GetObjectItem(root,"JCINPUT");   
+	//注意此处，所有最终参与动态码计算的字符串输入因素字段都需要先清零，
+	//否则就可能有垃圾数据干扰，导致动态码计算出错误值	
+	//20141209.1007.周伟
+	memset(outReq->inputData.AtmNo,0,JC_ATMNO_MAXLEN+1);
+	memset(outReq->inputData.LockNo,0,JC_LOCKNO_MAXLEN+1);
+	memset(outReq->inputData.PSK,0,JC_PSK_LEN+1);
+
 	strncpy(outReq->inputData.AtmNo,cJSON_GetObjectItem(jci,"ATMNO")->valuestring,JC_ATMNO_MAXLEN);
 	strncpy(outReq->inputData.LockNo,cJSON_GetObjectItem(jci,"LOCKNO")->valuestring,JC_LOCKNO_MAXLEN);
 	strncpy(outReq->inputData.PSK,cJSON_GetObjectItem(jci,"PSK")->valuestring,JC_PSK_LEN);
@@ -524,7 +531,6 @@ void zwJclmsReqDecode(const char *inJclmsReqJson,JCLMSREQ *outReq)
 	for (int i=0;i<NUM_VALIDITY;i++)
 	{
 		outReq->inputData.ValidityArray[i]=
-			//cJSON_GetObjectItem(valArr,"Min")->valueint;
 		cJSON_GetArrayItem(valArr,i)->valueint;
 	}
 }
