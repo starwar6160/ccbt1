@@ -609,7 +609,12 @@ void zwJclmsResultFromJson(const char *inJson,JCRESULT *p)
 	assert(NULL!=result);
 	cJSON *type=cJSON_GetObjectItem(result,"Type");   	
 	assert(NULL!=type);
-	JCCMD jcType=zwJcCmdFromString(type->valuestring);
+	if (NULL==type)
+	{
+		p->dynaCode=-1209;
+		return;
+	}
+	JCLMSOP jcType=zwJclmsopFromString(type->valuestring);
 	memset(p,0,sizeof(JCRESULT));
 	switch(jcType)
 	{
