@@ -221,6 +221,7 @@ void JCLMSCCB2014_API zwJclmsRsp( void * inLmsReq,const int inLmsReqLen,char *ou
 		memcpy((void *)&(lmsResult.verCodeMatch),(void *)&jm,sizeof(JCMATCH));
 		zwJclmsRersult2Json(&lmsResult,JCLMS_CCB_CODEVERIFY,outJson,outJsonLen);
 	}	
+	printf("INFO:%s:jclms Result JSON is:\n%s\n",__FUNCTION__,outJson);
 	
 }
 
@@ -276,6 +277,7 @@ int JCLMSCCB2014_API zwJclmsReqGenDyCode( int lmsHandle,int *dyCode )
 	JCRESULT rsp;
 	memset(&rsp,0,sizeof(rsp));
 	char resJson[ZW_JSONBUF_LEN];
+	printf("%s:jclms Request Json is:\n%s\n",__FUNCTION__,hidSendBuf+sizeof(short int));
 #ifdef _DEBUG_USE_LMS_FUNC_CALL_20141202
 	//调试状态，直接调用下位机函数即可
 	zwJclmsRsp(hidSendBuf,outLen,resJson,ZW_JSONBUF_LEN);	
@@ -300,7 +302,7 @@ int JCLMSCCB2014_API zwJclmsReqGenDyCode( int lmsHandle,int *dyCode )
 	jcHidClose(&hidHandle);
 	zwJclmsResultFromJson(resJson+sizeof(short int),&rsp);
 #endif // _DEBUG_USE_LMS_FUNC_CALL_20141202
-	
+	printf("%s:jclms Respone Json is:\n%s\n",__FUNCTION__,resJson);
 	assert(0!=rsp.dynaCode);
 	*dyCode=rsp.dynaCode;
 	printf("%s Return dynaCode=%d\n",__FUNCTION__,rsp.dynaCode);
@@ -347,6 +349,7 @@ int JCLMSCCB2014_API zwJclmsReqVerifyDyCode( int lmsHandle,int dstCode,JCMATCH *
 	JCRESULT rsp;
 	memset(&rsp,0,sizeof(rsp));
 	char resJson[ZW_JSONBUF_LEN];
+	printf("%s:jclms Request Json is:\n%s\n",__FUNCTION__,hidSendBuf+sizeof(short int));
 #ifdef _DEBUG_USE_LMS_FUNC_CALL_20141202
 	//调试状态，直接调用下位机函数即可
 	zwJclmsRsp(hidSendBuf,outLen,resJson,ZW_JSONBUF_LEN);
@@ -368,6 +371,7 @@ int JCLMSCCB2014_API zwJclmsReqVerifyDyCode( int lmsHandle,int dstCode,JCMATCH *
 	jcHidClose(&hidHandle);
 	zwJclmsResultFromJson(resJson+sizeof(short int),&rsp);
 #endif // _DEBUG_USE_LMS_FUNC_CALL_20141202
+	printf("%s:jclms Respone Json is:\n%s\n",__FUNCTION__,resJson);
 	memcpy((void *)match,(void *)&rsp.verCodeMatch,sizeof(JCMATCH));
 	printf("%s Match DateTime=%d\tValidity=%d\n",__FUNCTION__,match->s_datetime,match->s_validity);	
 	return 0;
