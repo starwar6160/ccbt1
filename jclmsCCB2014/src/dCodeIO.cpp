@@ -531,23 +531,29 @@ void zwJclmsVerReq2Json(const JCINPUT *p,const int dstCode,char *outJson,const i
 }
 void zwJclmsReqDecode(const char *inJclmsReqJson,JCLMSREQ *outReq)
 {
+	assert(NULL!=inJclmsReqJson && strlen(inJclmsReqJson)>0 && NULL!=outReq);
+	if (NULL==inJclmsReqJson || strlen(inJclmsReqJson)==0 ||NULL==outReq)
+	{
+		printf("ERROR:%s:Input jclms Json Request is NULL!Return.\n",__FUNCTION__);
+		return;
+	}
 printf("%s:inJclmsReqJson:\n%s\n",__FUNCTION__,inJclmsReqJson);
 	cJSON *root=cJSON_Parse(inJclmsReqJson); 
 	if (NULL==root)
 	{
-		printf("JCLMS REQUEST JSON Pares Fail.Return");
+		printf("ERROR:JCLMS REQUEST JSON Pares Fail.Return");
 		return;
 	}
 	cJSON *req = cJSON_GetObjectItem(root,"jcLmsRequest");   	
 	if (NULL==req)
 	{
-		printf("jcLmsRequest not found!Return\n");
+		printf("ERROR:jcLmsRequest not found!Return\n");
 		return;
 	}
 	cJSON *jsType=cJSON_GetObjectItem(req,"Type");
 	if (NULL==jsType)
 	{
-		printf("jcLmsRequest Operate Type Item not found!Return\n");
+		printf("ERROR:jcLmsRequest Operate Type Item not found!Return\n");
 		return;
 	}
 	outReq->Type=zwJclmsopFromString(jsType->valuestring);
@@ -568,7 +574,7 @@ printf("%s:inJclmsReqJson:\n%s\n",__FUNCTION__,inJclmsReqJson);
 	cJSON *jci = cJSON_GetObjectItem(root,"JCINPUT");   
 	if (NULL==jci)
 	{
-		printf("JCINPUT not found!Return\n");
+		printf("ERROR:JCINPUT not found!Return\n");
 		return;
 	}
 
@@ -593,7 +599,7 @@ printf("%s:inJclmsReqJson:\n%s\n",__FUNCTION__,inJclmsReqJson);
 	cJSON *valArr=cJSON_GetObjectItem(jci,"ValidityArray");   
 	if (NULL==valArr)
 	{
-		printf("ValidityArray not found!Return\n");
+		printf("ERROR:ValidityArray not found!Return\n");
 		return;
 	}
 	for (int i=0;i<NUM_VALIDITY;i++)

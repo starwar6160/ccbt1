@@ -150,36 +150,46 @@ const int ZW_JSONBUF_LEN=640;
 //输出：JCRESULT联合体，取决于是生成请求还是验证请求，相应的哪一个字段有效；
 void JCLMSCCB2014_API zwJclmsRsp( void * inLmsReq,const int inLmsReqLen,char *outJson,const int outJsonLen )
 {	
+	assert(NULL!=inLmsReq && inLmsReqLen>0);
+	assert(NULL!=outJson && outJsonLen>0);
+	if (NULL==inLmsReq || inLmsReqLen<=0)
+	{
+		printf("ERROR:%s:input LMS Request is NULL! Return",__FUNCTION__);
+		return;
+	}
+	if (NULL==outJson || outJsonLen<=0)
+	{
+		printf("ERROR:%s:output LMS Respon JSON Buffer is NULL! Return",__FUNCTION__);
+		return;
+	}
+
 	//从外部接收数据
 	JCLMSREQ lmsReq;
 	JCRESULT lmsResult;
-	assert(NULL!=inLmsReq);
-	if (NULL==inLmsReq)
-	{
-		return;
-	}
 	char inJson[ZW_JSONBUF_LEN];
 	memset(inJson,0,ZW_JSONBUF_LEN);
 
 	//PC调试时输入大小必须是HID有效载荷头部+JCLMSREQ JSON的大小
 	assert(inLmsReqLen+sizeof(short int)<=ZW_JSONBUF_LEN);
+	if (inLmsReqLen+sizeof(short int)>ZW_JSONBUF_LEN)
+	{
+		printf("ERROR:%s:INTERNAL JSON Input Buffer Tool Small.",__FUNCTION__);
+	}
 	//跳过HID有效载荷头部
 	//memcpy((void *)&lmsReq,(char *)inLmsReq+sizeof(SECBOX_DATA_INFO),inLmsReqLen-sizeof(SECBOX_DATA_INFO));
 	strncpy(inJson,(char *)inLmsReq+sizeof(short int),ZW_JSONBUF_LEN);
 	zwJclmsReqDecode(inJson,&lmsReq);
 
-	//myLmsReqZNtoh(&lmsReq);
 	zwJcLockDumpJCINPUT((int)(&lmsReq));
 	printf("%s dstCode=%d\n",__FUNCTION__,lmsReq.dstCode);
 	//既不是0，又不是8位数字，那么就是错误值了
 	if (0!=lmsReq.dstCode &&(lmsReq.dstCode<10*ZWMEGA || lmsReq.dstCode>100*ZWMEGA) )
 	{
 		lmsResult.dynaCode=-1208;
+		printf("ERROR:%s:dstCode Invalid!\n",__FUNCTION__);
 		return ;
 	}
 
-
-	//char outJson[ZW_JSONBUF_LEN];
 	memset(outJson,0,outJsonLen);
 
 	//通过出参结构体返回计算结果给外部
@@ -187,7 +197,11 @@ void JCLMSCCB2014_API zwJclmsRsp( void * inLmsReq,const int inLmsReqLen,char *ou
 	if (JCLMS_CCB_CODEGEN==lmsReq.Type)
 	{
 		dyCode=zwJcLockGetDynaCode((int)(&lmsReq.inputData));
-		assert(dyCode>10*ZWMEGA);
+		assert(dyCode>=10*ZWMEGA && dyCode<100*ZWMEGA);
+		if (dyCode<10*ZWMEGA || dyCode>=100*ZWMEGA)
+		{
+			printf("ERROR:%s:dyCode result Out of Range Invalid!\n",__FUNCTION__);
+		}
 		lmsResult.dynaCode=dyCode;
 		zwJclmsRersult2Json(&lmsResult,JCLMS_CCB_CODEGEN,outJson,outJsonLen);
 	}
@@ -196,6 +210,14 @@ void JCLMSCCB2014_API zwJclmsRsp( void * inLmsReq,const int inLmsReqLen,char *ou
 		JCMATCH jm=JcLockReverseVerifyDynaCode((int)(&lmsReq.inputData),lmsReq.dstCode);
 		assert(jm.s_datetime>1400*ZWMEGA);
 		assert(jm.s_validity>0 && jm.s_validity<=1440);
+		if (jm.s_datetime<=1400*ZWMEGA)
+		{
+			printf("WARN:%s:Match s_datetime too old!\n",__FUNCTION__);
+		}
+		if (jm.s_validity<=0 || jm.s_validity>1440)
+		{
+			printf("WARN:%s:Match Validity out of Range!\n",__FUNCTION__);
+		}
 		memcpy((void *)&(lmsResult.verCodeMatch),(void *)&jm,sizeof(JCMATCH));
 		zwJclmsRersult2Json(&lmsResult,JCLMS_CCB_CODEVERIFY,outJson,outJsonLen);
 	}	
