@@ -531,26 +531,53 @@ void zwJclmsVerReq2Json(const JCINPUT *p,const int dstCode,char *outJson,const i
 }
 void zwJclmsReqDecode(const char *inJclmsReqJson,JCLMSREQ *outReq)
 {
+printf("%s:inJclmsReqJson:\n%s\n",__FUNCTION__,inJclmsReqJson);
 	cJSON *root=cJSON_Parse(inJclmsReqJson); 
+	if (NULL==root)
+	{
+		printf("JCLMS REQUEST JSON Pares Fail.Return");
+		return;
+	}
 	cJSON *req = cJSON_GetObjectItem(root,"jcLmsRequest");   	
-	outReq->Type=zwJclmsopFromString(cJSON_GetObjectItem(req,"Type")->valuestring);
+	if (NULL==req)
+	{
+		printf("jcLmsRequest not found!Return\n");
+		return;
+	}
+	cJSON *jsType=cJSON_GetObjectItem(req,"Type");
+	if (NULL==jsType)
+	{
+		printf("jcLmsRequest Operate Type Item not found!Return\n");
+		return;
+	}
+	outReq->Type=zwJclmsopFromString(jsType->valuestring);
 	cJSON *dstCodeJson=cJSON_GetObjectItem(req,"dstCode");
 	//给dstCode一个默认值0，然后如果有该项目，用实际值体代之
 	outReq->dstCode=0;
 	if (NULL!=dstCodeJson)
-	{
+	{		
 		outReq->dstCode=dstCodeJson->valueint;
+		printf("dstCode=%d\n",outReq->dstCode);
+	}
+	else
+	{
+		printf("dstCode Not Found\n");
 	}
 	
 	//JCINPUT
 	cJSON *jci = cJSON_GetObjectItem(root,"JCINPUT");   
+	if (NULL==jci)
+	{
+		printf("JCINPUT not found!Return\n");
+		return;
+	}
+
 	//注意此处，所有最终参与动态码计算的字符串输入因素字段都需要先清零，
 	//否则就可能有垃圾数据干扰，导致动态码计算出错误值	
 	//20141209.1007.周伟
 	memset(outReq->inputData.AtmNo,0,JC_ATMNO_MAXLEN+1);
 	memset(outReq->inputData.LockNo,0,JC_LOCKNO_MAXLEN+1);
 	memset(outReq->inputData.PSK,0,JC_PSK_LEN+1);
-
 	strncpy(outReq->inputData.AtmNo,cJSON_GetObjectItem(jci,"ATMNO")->valuestring,JC_ATMNO_MAXLEN);
 	strncpy(outReq->inputData.LockNo,cJSON_GetObjectItem(jci,"LOCKNO")->valuestring,JC_LOCKNO_MAXLEN);
 	strncpy(outReq->inputData.PSK,cJSON_GetObjectItem(jci,"PSK")->valuestring,JC_PSK_LEN);
@@ -561,13 +588,21 @@ void zwJclmsReqDecode(const char *inJclmsReqJson,JCLMSREQ *outReq)
 	outReq->inputData.SearchTimeStart=cJSON_GetObjectItem(jci,"SearchTimeStart")->valueint;
 	outReq->inputData.SearchTimeStep=cJSON_GetObjectItem(jci,"SearchTimeStep")->valueint;
 	outReq->inputData.SearchTimeLength=cJSON_GetObjectItem(jci,"SearchTimeLength")->valueint;
+	printf("jclms Json Main Item Parsed\n");
 	//有效期数组
 	cJSON *valArr=cJSON_GetObjectItem(jci,"ValidityArray");   
+	if (NULL==valArr)
+	{
+		printf("ValidityArray not found!Return\n");
+		return;
+	}
 	for (int i=0;i<NUM_VALIDITY;i++)
 	{
 		outReq->inputData.ValidityArray[i]=
 		cJSON_GetArrayItem(valArr,i)->valueint;
 	}
+	printf("jclms Json Parse Result is:\n");
+	zwJcLockDumpJCINPUT(reinterpret_cast<int>(&outReq->inputData));
 	cJSON_Delete(root);	
 }
 
