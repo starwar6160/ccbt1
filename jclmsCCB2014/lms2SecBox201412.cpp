@@ -143,8 +143,8 @@ void myLmsReq2Json( int lmsHandle, char * tmpjson )
 const int ZW_JSONBUF_LEN=640;
 
 //该函数是下位机专用
-//输入：inLmsReq，指向一个HID接收到的，拼装完毕的整条jclms请求消息。该消息具有一个标准的
-//SECBOX_DATA_INFO结构的HID头部，余下的部分就是JSON的数据包了，JSON长度在HID头部的长度字段中
+//输入：inLmsReq，指向一个HID接收到的，拼装完毕的整条jclms请求消息。该消息只有一个网络字节序
+//short int头部，余下的部分就是JSON的数据包了，JSON长度在HID头部的长度字段中
 //注意HID头部长度字段是网络字节序的
 //输入：inLmsReqLen，是整条JCLMS请求消息的长度，包含HID头部在内
 //输出：JCRESULT联合体，取决于是生成请求还是验证请求，相应的哪一个字段有效；
@@ -278,6 +278,7 @@ int JCLMSCCB2014_API zwJclmsReqGenDyCode( int lmsHandle,int *dyCode )
 	JCRESULT rsp;
 	memset(&rsp,0,sizeof(rsp));
 	char resJson[ZW_JSONBUF_LEN];
+	memset(resJson,0,ZW_JSONBUF_LEN);
 	printf("%s:jclms Request Json is:\n%s\n",__FUNCTION__,hidSendBuf+sizeof(short int));
 #ifdef _DEBUG_USE_LMS_FUNC_CALL_20141202
 	//调试状态，直接调用下位机函数即可
@@ -290,7 +291,7 @@ int JCLMSCCB2014_API zwJclmsReqGenDyCode( int lmsHandle,int *dyCode )
 	hidHandle.pid=0x5710;
 
 	if (JCHID_STATUS_OK != jcHidOpen(&hidHandle)) {
-		return -1118;
+		//return -1118;
 	}
 	jcHidSendData(&hidHandle,hidSendBuf,outLen);
 
@@ -304,6 +305,8 @@ int JCLMSCCB2014_API zwJclmsReqGenDyCode( int lmsHandle,int *dyCode )
 	zwJclmsResultFromJson(resJson+sizeof(short int),&rsp);
 #endif // _DEBUG_USE_LMS_FUNC_CALL_20141202
 	printf("%s:jclms Respone Json is:\n%s\n",__FUNCTION__,resJson);
+	printf("Received lms Respon is:\n");
+	myHexDump(resJson,ZW_JSONBUF_LEN);
 	assert(0!=rsp.dynaCode);
 	*dyCode=rsp.dynaCode;
 	printf("%s Return dynaCode=%d\n",__FUNCTION__,rsp.dynaCode);
@@ -350,6 +353,7 @@ int JCLMSCCB2014_API zwJclmsReqVerifyDyCode( int lmsHandle,int dstCode,JCMATCH *
 	JCRESULT rsp;
 	memset(&rsp,0,sizeof(rsp));
 	char resJson[ZW_JSONBUF_LEN];
+	memset(resJson,0,ZW_JSONBUF_LEN);
 	printf("%s:jclms Request Json is:\n%s\n",__FUNCTION__,hidSendBuf+sizeof(short int));
 #ifdef _DEBUG_USE_LMS_FUNC_CALL_20141202
 	//调试状态，直接调用下位机函数即可
@@ -373,6 +377,8 @@ int JCLMSCCB2014_API zwJclmsReqVerifyDyCode( int lmsHandle,int dstCode,JCMATCH *
 	zwJclmsResultFromJson(resJson+sizeof(short int),&rsp);
 #endif // _DEBUG_USE_LMS_FUNC_CALL_20141202
 	printf("%s:jclms Respone Json is:\n%s\n",__FUNCTION__,resJson);
+	printf("Received lms Respon is:\n");
+	myHexDump(resJson,ZW_JSONBUF_LEN);
 	memcpy((void *)match,(void *)&rsp.verCodeMatch,sizeof(JCMATCH));
 	printf("%s Match DateTime=%d\tValidity=%d\n",__FUNCTION__,match->s_datetime,match->s_validity);	
 	return 0;
