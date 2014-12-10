@@ -12,7 +12,7 @@
 #include "zwHidSplitMsg.h"
 #include "zwSecretBoxAuth.h"
 
-#define _DEBUG_USE_LMS_FUNC_CALL_20141202
+//#define _DEBUG_USE_LMS_FUNC_CALL_20141202
 
 void JCLMSCCB2014_API zwJclmsRsp( void * inLmsReq,const int inLmsReqLen,char *outJson,const int outJsonLen );
 
@@ -162,7 +162,8 @@ void JCLMSCCB2014_API zwJclmsRsp( void * inLmsReq,const int inLmsReqLen,char *ou
 		printf("ERROR:%s:output LMS Respon JSON Buffer is NULL! Return",__FUNCTION__);
 		return;
 	}
-
+	printf("INFO:%s:input LMS Request Data is:\n",__FUNCTION__);
+	myHexDump(inLmsReq,inLmsReqLen);
 	//从外部接收数据
 	JCLMSREQ lmsReq;
 	JCRESULT lmsResult;
@@ -271,8 +272,8 @@ int JCLMSCCB2014_API zwJclmsReqGenDyCode( int lmsHandle,int *dyCode )
 	//memcpy(hidSendBuf+sizeof(hidPayloadHeader),&req,sizeof(req));
 	assert(outLen<ZWHIDBUFLEN);
 	strncpy(hidSendBuf+sizeof(hidPayloadHeader),tmpjson,ZWHIDBUFLEN-sizeof(hidPayloadHeader));
-	//printf("HidSend Data is(Net ByteOrder)\n");
-	//myHexDump(hidSendBuf, outLen);
+	printf("HidSend Data is(Net ByteOrder)\n");
+	myHexDump(hidSendBuf, outLen);
 	//////////////////////////////////////////////////////////////////////////	
 	JCRESULT rsp;
 	memset(&rsp,0,sizeof(rsp));
@@ -342,8 +343,8 @@ int JCLMSCCB2014_API zwJclmsReqVerifyDyCode( int lmsHandle,int dstCode,JCMATCH *
 	//memcpy(hidSendBuf+sizeof(hidPayloadHeader),&req,sizeof(req));
 	assert(sizeof(hidPayloadHeader)+tmpJsonLen<ZWHIDBUFLEN);
 	strncpy(hidSendBuf+sizeof(hidPayloadHeader),tmpjson,ZWHIDBUFLEN-sizeof(hidPayloadHeader));
-	//printf("HidSend Data is(Net ByteOrder)\n");
-	//myHexDump(hidSendBuf, outLen);
+	printf("HidSend Data is(Net ByteOrder)\n");
+	myHexDump(hidSendBuf, outLen);
 
 	//////////////////////////////////////////////////////////////////////////
 	JCRESULT rsp;
