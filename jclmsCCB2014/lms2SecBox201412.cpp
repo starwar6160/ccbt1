@@ -12,7 +12,7 @@
 #include "zwHidSplitMsg.h"
 #include "zwSecretBoxAuth.h"
 
-//#define _DEBUG_USE_LMS_FUNC_CALL_20141202
+#define _DEBUG_USE_LMS_FUNC_CALL_20141202
 
 void JCLMSCCB2014_API zwJclmsRsp( void * inLmsReq,const int inLmsReqLen,char *outJson,const int outJsonLen );
 
@@ -65,7 +65,12 @@ void myLmsReqZNtoh(JCLMSREQ *req)
 void myHexDump( const void * hidSendBuf,const int outLen )
 {
 	const char *pt=static_cast<const char *>(hidSendBuf);
-	for (int i=0;i<outLen;i++)
+	int Last=outLen-1;
+	while (NULL==pt[Last])
+	{
+		Last--;
+	}
+	for (int i=0;i<Last;i++)
 	{
 		if (i>0)
 		{
@@ -74,6 +79,22 @@ void myHexDump( const void * hidSendBuf,const int outLen )
 		}
 		unsigned char c=pt[i] & 0xFF;
 		printf("%02X ",c);
+	}
+	printf("\n");
+}
+
+void myPrintBinAsString(const void *binData,const int binLen)
+{
+	const char *b=reinterpret_cast<const char *>(binData);
+	int Last=binLen-1;
+	while (NULL==b[Last])
+	{
+		Last--;
+	}
+	for (int i=0;i<Last;i++)
+	{		
+		char c=b[i];
+		printf("%c",c);
 	}
 	printf("\n");
 }
@@ -275,6 +296,7 @@ int JCLMSCCB2014_API zwJclmsReqGenDyCode( int lmsHandle,int *dyCode )
 	printf("HidSend Data is(Net ByteOrder)\n");
 	myHexDump(hidSendBuf, outLen);
 	//////////////////////////////////////////////////////////////////////////	
+	int rspRealLen=0;
 	JCRESULT rsp;
 	memset(&rsp,0,sizeof(rsp));
 	char resJson[ZW_JSONBUF_LEN];
@@ -283,6 +305,8 @@ int JCLMSCCB2014_API zwJclmsReqGenDyCode( int lmsHandle,int *dyCode )
 #ifdef _DEBUG_USE_LMS_FUNC_CALL_20141202
 	//调试状态，直接调用下位机函数即可
 	zwJclmsRsp(hidSendBuf,outLen,resJson,ZW_JSONBUF_LEN);	
+	printf("HidRecv Data ASCII is\n");
+	myPrintBinAsString(resJson,ZW_JSONBUF_LEN);
 	zwJclmsResultFromJson(resJson,&rsp);
 #else
 	JCHID hidHandle;
@@ -297,14 +321,16 @@ int JCLMSCCB2014_API zwJclmsReqGenDyCode( int lmsHandle,int *dyCode )
 
 
 	printf("GenWait To SecBox Return Result now..\n");
-	int rspRealLen=0;
 	jcHidRecvData(&hidHandle,resJson,ZW_JSONBUF_LEN,&rspRealLen);
-	printf("HidRecv Data is\n");
-	//myHexDump(&rsp, rspRealLen);
+	printf("HidRecv Data HEX is\n");
+	myHexDump(resJson, rspRealLen);
+	//printf("%s:jclms Respone Json is:\n%s\n",__FUNCTION__,resJson);	
 	jcHidClose(&hidHandle);
+	printf("HidRecv Data ASCII is\n");
+	myPrintBinAsString(resJson,rspRealLen);
 	zwJclmsResultFromJson(resJson+sizeof(short int),&rsp);
 #endif // _DEBUG_USE_LMS_FUNC_CALL_20141202
-	printf("%s:jclms Respone Json is:\n%s\n",__FUNCTION__,resJson);
+
 	printf("Received lms Respon is:\n");
 	myHexDump(resJson,ZW_JSONBUF_LEN);
 	assert(0!=rsp.dynaCode);
