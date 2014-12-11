@@ -55,7 +55,7 @@ int JCLMSCCB2014_API JcLockNew(void)
 	memset(pjc->LockNo, 0, JC_LOCKNO_MAXLEN + 1);
 	memset(pjc->PSK, 0, JC_PSK_LEN + 1);
 //#ifdef _DEBUG
-//	printf("sizeof JCINPUT=%d\n",sizeof(JCINPUT));
+//	ZWPRINTF("sizeof JCINPUT=%d\n",sizeof(JCINPUT));
 //#endif // _DEBUG
 	//为没有可变输入的初始闭锁码指定3个常量
 	pjc->CodeGenDateTime = 1400 * 1000 * 1000;
@@ -98,7 +98,7 @@ int JCLMSCCB2014_API JcLockDelete(const int handle)
 //生成各种类型的动态码
 int zwJcLockGetDynaCode(const int handle)
 {
-	printf("%s\n",__FUNCTION__);
+	ZWDBG_DEBUG("%s\n",__FUNCTION__);
 	JcLockDebugPrint(handle);
 	zwJcLockDumpJCINPUT(handle);
 	const JCINPUT *lock = (const JCINPUT *)handle;
@@ -148,7 +148,7 @@ int zwJcLockGetDynaCode(const int handle)
 	SM3_Final(&sm3, (char *)(outHmac));
 	//把HASH结果转化为8位数字输出
 	unsigned int res = zwBinString2Int32(outHmac, ZWSM3_DGST_LEN);
-	printf("%s:dyCode=%d\n",__FUNCTION__,res);
+	ZWDBG_DEBUG("%s:dyCode=%d\n",__FUNCTION__,res);
 	return res;
 }
 
@@ -157,7 +157,7 @@ int zwJcLockGetDynaCode(const int handle)
 JCMATCH JCLMSCCB2014_API JcLockReverseVerifyDynaCode(const int handle,
 						     const int dstCode)
 {
-	printf("%s dstCode=%d\n",__FUNCTION__,dstCode);
+	ZWDBG_DEBUG("%s dstCode=%d\n",__FUNCTION__,dstCode);
 	JcLockDebugPrint(handle);
 	zwJcLockDumpJCINPUT(handle);
 	JCINPUT *jcp = (JCINPUT *) handle;
@@ -192,7 +192,7 @@ JCMATCH JCLMSCCB2014_API JcLockReverseVerifyDynaCode(const int handle,
 	int tend = l_datetime - jcp->SearchTimeLength;
 
 	for (int tdate = l_datetime; tdate >= tend; tdate -= l_timestep) {			
-		printf("%d\t",tdate);	
+		ZWDBG_DEBUG("%d\t",tdate);	
 		for (int v = 0; v < NUM_VALIDITY; v++) {
 			SM3 sm3;
 			char outHmac[ZW_SM3_DGST_SIZE];
@@ -213,22 +213,22 @@ JCMATCH JCLMSCCB2014_API JcLockReverseVerifyDynaCode(const int handle,
 			SM3_Final(&sm3, (char *)(outHmac));
 			unsigned int res =
 			    zwBinString2Int32(outHmac, ZWSM3_DGST_LEN);
-			//printf("%d:%d\t",tdate,res);	
+			//ZWPRINTF("%d:%d\t",tdate,res);	
 			//if (3==v)
 			//{
-			//	printf("\n");
+			//	ZWPRINTF("\n");
 			//}
 			if (dstCode == res)	//发现了匹配的时间和有效期
 			{
 				//填写匹配的时间和有效期到结果
-				printf("FOUND MATCH UTC SECONDS:%d\tMinites:%d\n", tdate,
+				ZWDBG_DEBUG("FOUND MATCH UTC SECONDS:%d\tMinites:%d\n", tdate,
 				       jcp->ValidityArray[v]);
 				jcoff.s_datetime = tdate;
 				jcoff.s_validity = jcp->ValidityArray[v];
 				goto foundMatch;
 			}			
 		}		//END OF VALIDITY LOOP		
-		//printf("\n");
+		//ZWPRINTF("\n");
 	}			//END OF DATE LOOP
       foundMatch:
 	return jcoff;
