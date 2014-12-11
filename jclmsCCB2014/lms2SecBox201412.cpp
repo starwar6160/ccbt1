@@ -12,7 +12,7 @@
 #include "zwHidSplitMsg.h"
 #include "zwSecretBoxAuth.h"
 
-#define _DEBUG_USE_LMS_FUNC_CALL_20141202
+//#define _DEBUG_USE_LMS_FUNC_CALL_20141202
 
 void JCLMSCCB2014_API zwJclmsRsp( void * inLmsReq,const int inLmsReqLen,char *outJson,const int outJsonLen );
 
@@ -70,6 +70,7 @@ void myHexDump( const void * hidSendBuf,const int outLen )
 	{
 		Last--;
 	}
+	Last++;
 	for (int i=0;i<Last;i++)
 	{
 		if (i>0)
@@ -91,6 +92,7 @@ void myPrintBinAsString(const void *binData,const int binLen)
 	{
 		Last--;
 	}
+	Last++;
 	for (int i=0;i<Last;i++)
 	{		
 		char c=b[i];
@@ -328,7 +330,7 @@ int JCLMSCCB2014_API zwJclmsReqGenDyCode( int lmsHandle,int *dyCode )
 	jcHidClose(&hidHandle);
 	printf("HidRecv Data ASCII is\n");
 	myPrintBinAsString(resJson,rspRealLen);
-	zwJclmsResultFromJson(resJson+sizeof(short int),&rsp);
+	zwJclmsResultFromJson(resJson,&rsp);
 #endif // _DEBUG_USE_LMS_FUNC_CALL_20141202
 
 	printf("Received lms Respon is:\n");
