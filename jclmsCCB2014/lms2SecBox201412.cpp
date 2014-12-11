@@ -80,15 +80,15 @@ void myHexDump( const void * hidSendBuf,const int outLen )
 		if (i>0)
 		{
 			if(i%8==0 && i%16!=0)
-				ZWDBG_DEBUG("\t");
+				ZWDBG_INFO("\t");
 
 			if(i%16==0)
-				ZWDBG_DEBUG("\n");
+				ZWDBG_INFO("\n");
 		}
 		unsigned char c=pt[i] & 0xFF;
-		ZWDBG_DEBUG("%02X ",c);
+		ZWDBG_INFO("%02X ",c);
 	}
-	ZWDBG_DEBUG("\n");
+	ZWDBG_INFO("\n");
 
 #ifdef _WIN32
 #pragma warning( default : 4390)
@@ -107,9 +107,9 @@ void myPrintBinAsString(const void *binData,const int binLen)
 	for (int i=0;i<Last;i++)
 	{		
 		char c=b[i];
-		ZWDBG_DEBUG("%c",c);
+		ZWDBG_INFO("%c",c);
 	}
-	ZWDBG_DEBUG("\n");
+	ZWDBG_INFO("\n");
 }
 
 //一个纯算法层面的标准测试，测试了动态码生成和验证两个环节，用于ARM校验自己是否有编译器优化问题等等；
@@ -136,7 +136,7 @@ int zwLmsAlgStandTest20141203(void)
 	//ARM编译器优化级别问题导致的生成错误的二进制代码等等
 	if(38149728!=initCloseCode)
 	{
-		ZWDBG_DEBUG("initCloseCode Gen Error! JCLMS Algorithm GenDynaCode Self Check Fail! 20141203\n");
+		ZWDBG_INFO("initCloseCode Gen Error! JCLMS Algorithm GenDynaCode Self Check Fail! 20141203\n");
 		return -1;
 	}
 	JcLockSetInt(handle, JCI_CLOSECODE, initCloseCode);
@@ -149,7 +149,7 @@ int zwLmsAlgStandTest20141203(void)
 		JcLockReverseVerifyDynaCode(handle,pass1DyCode);
 	if(ZWFIX_STARTTIME!=pass1Match.s_datetime)
 	{
-		ZWDBG_DEBUG("JcLockReverseVerifyDynaCode Error! JCLMS Algorithm Reverse DynaCode Self Check Fail! 20141203\n");
+		ZWDBG_INFO("JcLockReverseVerifyDynaCode Error! JCLMS Algorithm Reverse DynaCode Self Check Fail! 20141203\n");
 		return -2;
 	}	
 	//////////////////////////////////////////////////////////////////////////
@@ -170,7 +170,7 @@ void myLmsReq2Json( int lmsHandle, char * tmpjson )
 	char *cjout=cJSON_Print(json);
 	strcpy(tmpjson,cjout);
 	free(cjout);
-	ZWDBG_DEBUG("%s jsonLen=%d\n%s\n",__FUNCTION__,strlen(tmpjson),tmpjson);
+	ZWDBG_INFO("%s jsonLen=%d\n%s\n",__FUNCTION__,strlen(tmpjson),tmpjson);
 }
 #endif // _DEBUG_1205
 
@@ -188,15 +188,15 @@ void JCLMSCCB2014_API zwJclmsRsp( void * inLmsReq,const int inLmsReqLen,char *ou
 	assert(NULL!=outJson && outJsonLen>0);
 	if (NULL==inLmsReq || inLmsReqLen<=0)
 	{
-		ZWDBG_DEBUG("ERROR:%s:input LMS Request is NULL! Return",__FUNCTION__);
+		ZWDBG_INFO("ERROR:%s:input LMS Request is NULL! Return",__FUNCTION__);
 		return;
 	}
 	if (NULL==outJson || outJsonLen<=0)
 	{
-		ZWDBG_DEBUG("ERROR:%s:output LMS Respon JSON Buffer is NULL! Return",__FUNCTION__);
+		ZWDBG_INFO("ERROR:%s:output LMS Respon JSON Buffer is NULL! Return",__FUNCTION__);
 		return;
 	}
-	ZWDBG_DEBUG("INFO:%s:input LMS Request Data is:\n",__FUNCTION__);
+	ZWDBG_INFO("INFO:%s:input LMS Request Data is:\n",__FUNCTION__);
 	myHexDump(inLmsReq,inLmsReqLen);
 	//从外部接收数据
 	JCLMSREQ lmsReq;
@@ -208,7 +208,7 @@ void JCLMSCCB2014_API zwJclmsRsp( void * inLmsReq,const int inLmsReqLen,char *ou
 	assert(inLmsReqLen+sizeof(short int)<=ZW_JSONBUF_LEN);
 	if (inLmsReqLen+sizeof(short int)>ZW_JSONBUF_LEN)
 	{
-		ZWDBG_DEBUG("ERROR:%s:INTERNAL JSON Input Buffer Tool Small.",__FUNCTION__);
+		ZWDBG_INFO("ERROR:%s:INTERNAL JSON Input Buffer Tool Small.",__FUNCTION__);
 	}
 	//跳过HID有效载荷头部
 	//memcpy((void *)&lmsReq,(char *)inLmsReq+sizeof(SECBOX_DATA_INFO),inLmsReqLen-sizeof(SECBOX_DATA_INFO));
@@ -216,12 +216,12 @@ void JCLMSCCB2014_API zwJclmsRsp( void * inLmsReq,const int inLmsReqLen,char *ou
 	zwJclmsReqDecode(inJson,&lmsReq);
 
 	zwJcLockDumpJCINPUT((int)(&lmsReq));
-	ZWDBG_DEBUG("%s dstCode=%d\n",__FUNCTION__,lmsReq.dstCode);
+	ZWDBG_INFO("%s dstCode=%d\n",__FUNCTION__,lmsReq.dstCode);
 	//既不是0，又不是8位数字，那么就是错误值了
 	if (0!=lmsReq.dstCode &&(lmsReq.dstCode<10*ZWMEGA || lmsReq.dstCode>100*ZWMEGA) )
 	{
 		lmsResult.dynaCode=-1208;
-		ZWDBG_DEBUG("ERROR:%s:dstCode Invalid!\n",__FUNCTION__);
+		ZWDBG_INFO("ERROR:%s:dstCode Invalid!\n",__FUNCTION__);
 		return ;
 	}
 
@@ -235,7 +235,7 @@ void JCLMSCCB2014_API zwJclmsRsp( void * inLmsReq,const int inLmsReqLen,char *ou
 		assert(dyCode>=10*ZWMEGA && dyCode<100*ZWMEGA);
 		if (dyCode<10*ZWMEGA || dyCode>=100*ZWMEGA)
 		{
-			ZWDBG_DEBUG("ERROR:%s:dyCode result Out of Range Invalid!\n",__FUNCTION__);
+			ZWDBG_INFO("ERROR:%s:dyCode result Out of Range Invalid!\n",__FUNCTION__);
 		}
 		lmsResult.dynaCode=dyCode;
 		zwJclmsRersult2Json(&lmsResult,JCLMS_CCB_CODEGEN,outJson,outJsonLen);
@@ -247,16 +247,16 @@ void JCLMSCCB2014_API zwJclmsRsp( void * inLmsReq,const int inLmsReqLen,char *ou
 		assert(jm.s_validity>0 && jm.s_validity<=1440);
 		if (jm.s_datetime<=1400*ZWMEGA)
 		{
-			ZWDBG_DEBUG("WARN:%s:Match s_datetime too old!\n",__FUNCTION__);
+			ZWDBG_INFO("WARN:%s:Match s_datetime too old!\n",__FUNCTION__);
 		}
 		if (jm.s_validity<=0 || jm.s_validity>1440)
 		{
-			ZWDBG_DEBUG("WARN:%s:Match Validity out of Range!\n",__FUNCTION__);
+			ZWDBG_INFO("WARN:%s:Match Validity out of Range!\n",__FUNCTION__);
 		}
 		memcpy((void *)&(lmsResult.verCodeMatch),(void *)&jm,sizeof(JCMATCH));
 		zwJclmsRersult2Json(&lmsResult,JCLMS_CCB_CODEVERIFY,outJson,outJsonLen);
 	}	
-	ZWDBG_DEBUG("INFO:%s:jclms Result JSON is:\n%s\n",__FUNCTION__,outJson);
+	ZWDBG_INFO("INFO:%s:jclms Result JSON is:\n%s\n",__FUNCTION__,outJson);
 	
 }
 
@@ -306,7 +306,7 @@ int JCLMSCCB2014_API zwJclmsReqGenDyCode( int lmsHandle,int *dyCode )
 	//memcpy(hidSendBuf+sizeof(hidPayloadHeader),&req,sizeof(req));
 	assert(outLen<ZWHIDBUFLEN);
 	strncpy(hidSendBuf+sizeof(hidPayloadHeader),tmpjson,ZWHIDBUFLEN-sizeof(hidPayloadHeader));
-	ZWDBG_DEBUG("HidSend Data is(Net ByteOrder)\n");
+	ZWDBG_INFO("HidSend Data is(Net ByteOrder)\n");
 	myHexDump(hidSendBuf, outLen);
 	//////////////////////////////////////////////////////////////////////////	
 	int rspRealLen=0;
@@ -314,11 +314,11 @@ int JCLMSCCB2014_API zwJclmsReqGenDyCode( int lmsHandle,int *dyCode )
 	memset(&rsp,0,sizeof(rsp));
 	char resJson[ZW_JSONBUF_LEN];
 	memset(resJson,0,ZW_JSONBUF_LEN);
-	ZWDBG_DEBUG("%s:jclms Request Json is:\n%s\n",__FUNCTION__,hidSendBuf+sizeof(short int));
+	ZWDBG_INFO("%s:jclms Request Json is:\n%s\n",__FUNCTION__,hidSendBuf+sizeof(short int));
 #ifdef _DEBUG_USE_LMS_FUNC_CALL_20141202
 	//调试状态，直接调用下位机函数即可
 	zwJclmsRsp(hidSendBuf,outLen,resJson,ZW_JSONBUF_LEN);	
-	ZWDBG_DEBUG("HidRecv Data ASCII is\n");
+	ZWDBG_INFO("HidRecv Data ASCII is\n");
 	myPrintBinAsString(resJson,ZW_JSONBUF_LEN);
 	zwJclmsResultFromJson(resJson,&rsp);
 #else
@@ -333,22 +333,22 @@ int JCLMSCCB2014_API zwJclmsReqGenDyCode( int lmsHandle,int *dyCode )
 	jcHidSendData(&hidHandle,hidSendBuf,outLen);
 
 
-	ZWDBG_DEBUG("GenWait To SecBox Return Result now..\n");
+	ZWDBG_INFO("GenWait To SecBox Return Result now..\n");
 	jcHidRecvData(&hidHandle,resJson,ZW_JSONBUF_LEN,&rspRealLen);
-	ZWDBG_DEBUG("HidRecv Data HEX is\n");
+	ZWDBG_INFO("HidRecv Data HEX is\n");
 	myHexDump(resJson, rspRealLen);
 	//ZWPRINTF("%s:jclms Respone Json is:\n%s\n",__FUNCTION__,resJson);	
 	jcHidClose(&hidHandle);
-	ZWDBG_DEBUG("HidRecv Data ASCII is\n");
+	ZWDBG_INFO("HidRecv Data ASCII is\n");
 	myPrintBinAsString(resJson,rspRealLen);
 	zwJclmsResultFromJson(resJson,&rsp);
 #endif // _DEBUG_USE_LMS_FUNC_CALL_20141202
 
-	ZWDBG_DEBUG("Received lms Respon is:\n");
+	ZWDBG_INFO("Received lms Respon is:\n");
 	myHexDump(resJson,ZW_JSONBUF_LEN);
 	assert(0!=rsp.dynaCode);
 	*dyCode=rsp.dynaCode;
-	ZWDBG_DEBUG("%s Return dynaCode=%d\n",__FUNCTION__,rsp.dynaCode);
+	ZWDBG_INFO("%s Return dynaCode=%d\n",__FUNCTION__,rsp.dynaCode);
 
 	return 0;
 }
@@ -368,7 +368,7 @@ int JCLMSCCB2014_API zwJclmsReqVerifyDyCode( int lmsHandle,int dstCode,JCMATCH *
 	tmpJsonLen=strlen(tmpjson);
 	//////////////////////////////////模拟发送数据////////////////////////////////////////
 	//此处由于是模拟，时序不好控制，为了便于调试，在此直接调用密盒端的函数zwJclmsRsp来做处理
-	ZWDBG_DEBUG("%s Send Data to Secbox with Wait To Verify DestCode %d\n",__FUNCTION__,dstCode);
+	ZWDBG_INFO("%s Send Data to Secbox with Wait To Verify DestCode %d\n",__FUNCTION__,dstCode);
 	zwJcLockDumpJCINPUT(lmsHandle);
 	//////////////////////////////////////////////////////////////////////////
 	//构建整个HID发送数据包，给下层HID函数去切分和发送
@@ -385,7 +385,7 @@ int JCLMSCCB2014_API zwJclmsReqVerifyDyCode( int lmsHandle,int dstCode,JCMATCH *
 	//memcpy(hidSendBuf+sizeof(hidPayloadHeader),&req,sizeof(req));
 	assert(sizeof(hidPayloadHeader)+tmpJsonLen<ZWHIDBUFLEN);
 	strncpy(hidSendBuf+sizeof(hidPayloadHeader),tmpjson,ZWHIDBUFLEN-sizeof(hidPayloadHeader));
-	ZWDBG_DEBUG("HidSend Data is(Net ByteOrder)\n");
+	ZWDBG_INFO("HidSend Data is(Net ByteOrder)\n");
 	myHexDump(hidSendBuf, outLen);
 
 	//////////////////////////////////////////////////////////////////////////
@@ -393,7 +393,7 @@ int JCLMSCCB2014_API zwJclmsReqVerifyDyCode( int lmsHandle,int dstCode,JCMATCH *
 	memset(&rsp,0,sizeof(rsp));
 	char resJson[ZW_JSONBUF_LEN];
 	memset(resJson,0,ZW_JSONBUF_LEN);
-	ZWDBG_DEBUG("%s:jclms Request Json is:\n%s\n",__FUNCTION__,hidSendBuf+sizeof(short int));
+	ZWDBG_INFO("%s:jclms Request Json is:\n%s\n",__FUNCTION__,hidSendBuf+sizeof(short int));
 #ifdef _DEBUG_USE_LMS_FUNC_CALL_20141202
 	//调试状态，直接调用下位机函数即可
 	zwJclmsRsp(hidSendBuf,outLen,resJson,ZW_JSONBUF_LEN);
@@ -406,25 +406,25 @@ int JCLMSCCB2014_API zwJclmsReqVerifyDyCode( int lmsHandle,int dstCode,JCMATCH *
 		return -1118;
 	}
 	jcHidSendData(&hidHandle,hidSendBuf,outLen);
-	ZWDBG_DEBUG("VerWait To SecBox Return Result now..\n");
+	ZWDBG_INFO("VerWait To SecBox Return Result now..\n");
 	int rspRealLen=0;
 	jcHidRecvData(&hidHandle,resJson,ZW_JSONBUF_LEN,&rspRealLen);
 	//ZWPRINTF("HidRecv Data is\n");
 	//myHexDump(&rsp, rspRealLen);
 	//assert(rsp.verCodeMatch.s_datetime>1400*ZWMEGA);
-	ZWDBG_DEBUG("HidRecv Data HEX is\n");
+	ZWDBG_INFO("HidRecv Data HEX is\n");
 	myHexDump(resJson, rspRealLen);
 	//ZWPRINTF("%s:jclms Respone Json is:\n%s\n",__FUNCTION__,resJson);	
 	jcHidClose(&hidHandle);
-	ZWDBG_DEBUG("HidRecv Data ASCII is\n");
+	ZWDBG_INFO("HidRecv Data ASCII is\n");
 	myPrintBinAsString(resJson,rspRealLen);
 	zwJclmsResultFromJson(resJson,&rsp);
 #endif // _DEBUG_USE_LMS_FUNC_CALL_20141202
-	ZWDBG_DEBUG("%s:jclms Respone Json is:\n%s\n",__FUNCTION__,resJson);
-	ZWDBG_DEBUG("Received lms Respon is:\n");
+	ZWDBG_INFO("%s:jclms Respone Json is:\n%s\n",__FUNCTION__,resJson);
+	ZWDBG_INFO("Received lms Respon is:\n");
 	myHexDump(resJson,ZW_JSONBUF_LEN);
 	memcpy((void *)match,(void *)&rsp.verCodeMatch,sizeof(JCMATCH));
-	ZWDBG_DEBUG("%s Match DateTime=%d\tValidity=%d\n",__FUNCTION__,match->s_datetime,match->s_validity);	
+	ZWDBG_INFO("%s Match DateTime=%d\tValidity=%d\n",__FUNCTION__,match->s_datetime,match->s_validity);	
 	return 0;
 }
 #endif // _WIN32

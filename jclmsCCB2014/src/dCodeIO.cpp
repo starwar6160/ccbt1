@@ -203,7 +203,7 @@ void JCLMSCCB2014_API JcLockDebugPrint(const int handle)
 	JCINPUT *jcp = (JCINPUT *) handle;
 	//zwJcLockDumpJCINPUT(handle);
 	if (EJC_SUSSESS != JcLockCheckInput((const int)jcp)) {
-		ZWDBG_DEBUG("JcLock Input Para Error!\n");
+		ZWDBG_INFO("JcLock Input Para Error!\n");
 	}
 	//三个固定条件组合在一起,还要为NULL，连接符等留出余量
 	char mainstr[JC_ATMNO_MAXLEN + JC_LOCKNO_MAXLEN + JC_PSK_LEN + 5];
@@ -226,7 +226,7 @@ void JCLMSCCB2014_API JcLockDebugPrint(const int handle)
 	memset(allStr, 0, 128);
 	strncpy(allStr, mainstr, 128);
 	strcat(allStr, vstr);
-	ZWDBG_DEBUG("All Items = %s \n", allStr);
+	ZWDBG_INFO("All Items = %s \n", allStr);
 }
 
 void JCLMSCCB2014_API zwJcLockDumpJCINPUT(const int handle)
@@ -235,7 +235,7 @@ void JCLMSCCB2014_API zwJcLockDumpJCINPUT(const int handle)
 	JCINPUT *jcp = (JCINPUT *) handle;
 	assert(NULL != jcp);
 	if (NULL == jcp) {
-		ZWDBG_DEBUG("%s input is NULL", __FUNCTION__);
+		ZWDBG_INFO("%s input is NULL", __FUNCTION__);
 		return;
 	}
 	static int dedupTime;
@@ -246,51 +246,51 @@ void JCLMSCCB2014_API zwJcLockDumpJCINPUT(const int handle)
 	}
 
 	//ZWPRINTF("########JCINPUT DUMP START############\n");
-	ZWDBG_DEBUG("[");
-	ZWDBG_DEBUG("ATMNO:%s\t", jcp->AtmNo);
+	ZWDBG_INFO("[");
+	ZWDBG_INFO("ATMNO:%s\t", jcp->AtmNo);
 	crc=crc8(crc,(void *)&jcp->AtmNo,sizeof(jcp->AtmNo));
-	ZWDBG_DEBUG("LOCKNO:%s\t", jcp->LockNo);
+	ZWDBG_INFO("LOCKNO:%s\t", jcp->LockNo);
 	crc=crc8(crc,(void *)&jcp->LockNo,sizeof(jcp->LockNo));
-	ZWDBG_DEBUG("PSK:%s\n", jcp->PSK);
+	ZWDBG_INFO("PSK:%s\n", jcp->PSK);
 	crc=crc8(crc,(void *)&jcp->PSK,sizeof(jcp->PSK));
-	ZWDBG_DEBUG("DATETIME:%d\t%s\t", jcp->CodeGenDateTime,
+	ZWDBG_INFO("DATETIME:%d\t%s\t", jcp->CodeGenDateTime,
 		zwTimeSecond2String(jcp->CodeGenDateTime));
 	crc=crc8(crc,(void *)&jcp->CodeGenDateTime,sizeof(jcp->CodeGenDateTime));
-	ZWDBG_DEBUG("STEP:%d\t", jcp->SearchTimeStep);
+	ZWDBG_INFO("STEP:%d\t", jcp->SearchTimeStep);
 	crc=crc8(crc,(void *)&jcp->SearchTimeStep,sizeof(jcp->SearchTimeStep));
-	ZWDBG_DEBUG("RTIME:%d\n", jcp->SearchTimeLength);
+	ZWDBG_INFO("RTIME:%d\n", jcp->SearchTimeLength);
 	crc=crc8(crc,(void *)&jcp->SearchTimeLength,sizeof(jcp->SearchTimeLength));
-	ZWDBG_DEBUG("VAL:%d\tCloseCode:%d\t", jcp->Validity,
+	ZWDBG_INFO("VAL:%d\tCloseCode:%d\t", jcp->Validity,
 		jcp->CloseCode);
 	crc=crc8(crc,(void *)&jcp->Validity,sizeof(jcp->Validity));
 	crc=crc8(crc,(void *)&jcp->CloseCode,sizeof(jcp->CloseCode));
-	ZWDBG_DEBUG("CMDTYPE:");
+	ZWDBG_INFO("CMDTYPE:");
 	crc=crc8(crc,(void *)&jcp->CmdType,sizeof(jcp->CmdType));
-	ZWDBG_DEBUG("CRC8=%u\n",crc);
+	ZWDBG_INFO("CRC8=%u\n",crc);
 	switch (jcp->CmdType) {
 	case JCI_ATMNO:
-		ZWDBG_DEBUG("JCI_ATMNO");
+		ZWDBG_INFO("JCI_ATMNO");
 		break;
 	case JCI_LOCKNO:
-		ZWDBG_DEBUG("JCI_LOCKNO");
+		ZWDBG_INFO("JCI_LOCKNO");
 		break;
 	case JCI_PSK:
-		ZWDBG_DEBUG("JCI_PSK");
+		ZWDBG_INFO("JCI_PSK");
 		break;
 	case JCI_DATETIME:
-		ZWDBG_DEBUG("JCI_DATETIME");
+		ZWDBG_INFO("JCI_DATETIME");
 		break;
 	case JCI_VALIDITY:
-		ZWDBG_DEBUG("JCI_VALIDITY");
+		ZWDBG_INFO("JCI_VALIDITY");
 		break;
 	case JCI_CLOSECODE:
-		ZWDBG_DEBUG("JCI_CLOSECODE");
+		ZWDBG_INFO("JCI_CLOSECODE");
 		break;
 	case JCI_CMDTYPE:
-		ZWDBG_DEBUG("JCI_CMDTYPE");
+		ZWDBG_INFO("JCI_CMDTYPE");
 		break;
 	case JCI_TIMESTEP:
-		ZWDBG_DEBUG("JCI_TIMESTEP");
+		ZWDBG_INFO("JCI_TIMESTEP");
 		break;
 	}
 	//ZWPRINTF("\n");
@@ -298,7 +298,7 @@ void JCLMSCCB2014_API zwJcLockDumpJCINPUT(const int handle)
 	//for (int i = 0; i < NUM_VALIDITY; i++) {
 	//	ZWPRINTF("%d\t", jcp->m_validity_array[i]);
 	//}
-	ZWDBG_DEBUG("]\n");
+	ZWDBG_INFO("]\n");
 	dedupTime=jcp->CodeGenDateTime;
 }
 
@@ -361,7 +361,7 @@ void myCjsonTest1(void)
 	cJSON_AddFalseToObject (fmt,"interlace");   
 	cJSON_AddNumberToObject(fmt,"frame rate",   24.7); 
 	char *cjout=cJSON_Print(root);
-	ZWDBG_DEBUG("%s\n",cjout);
+	ZWDBG_INFO("%s\n",cjout);
 }
 
 const char * zwJcCmdToString(const JCCMD cmd)
@@ -499,7 +499,7 @@ void zwJclmsGenReq2Json(const JCINPUT *p,char *outJson,const int outBufLen)
 	}
 	strncpy(outJson,cjout,cjLen);
 	free(cjout);
-	ZWDBG_DEBUG("%s\n",outJson);
+	ZWDBG_INFO("%s\n",outJson);
 	cJSON_Delete(root);	
 }
 
@@ -526,7 +526,7 @@ void zwJclmsVerReq2Json(const JCINPUT *p,const int dstCode,char *outJson,const i
 	}
 	strncpy(outJson,cjout,cjLen);
 	free(cjout);
-	ZWDBG_DEBUG("%s\n",outJson);
+	ZWDBG_INFO("%s\n",outJson);
 	cJSON_Delete(root);	
 }
 void zwJclmsReqDecode(const char *inJclmsReqJson,JCLMSREQ *outReq)
@@ -534,26 +534,26 @@ void zwJclmsReqDecode(const char *inJclmsReqJson,JCLMSREQ *outReq)
 	assert(NULL!=inJclmsReqJson && strlen(inJclmsReqJson)>0 && NULL!=outReq);
 	if (NULL==inJclmsReqJson || strlen(inJclmsReqJson)==0 ||NULL==outReq)
 	{
-		ZWDBG_DEBUG("ERROR:%s:Input jclms Json Request is NULL!Return.\n",__FUNCTION__);
+		ZWDBG_INFO("ERROR:%s:Input jclms Json Request is NULL!Return.\n",__FUNCTION__);
 		return;
 	}
-ZWDBG_DEBUG("%s:inJclmsReqJson:\n%s\n",__FUNCTION__,inJclmsReqJson);
+ZWDBG_INFO("%s:inJclmsReqJson:\n%s\n",__FUNCTION__,inJclmsReqJson);
 	cJSON *root=cJSON_Parse(inJclmsReqJson); 
 	if (NULL==root)
 	{
-		ZWDBG_DEBUG("ERROR:JCLMS REQUEST JSON Pares Fail.Return");
+		ZWDBG_INFO("ERROR:JCLMS REQUEST JSON Pares Fail.Return");
 		return;
 	}
 	cJSON *req = cJSON_GetObjectItem(root,"jcLmsRequest");   	
 	if (NULL==req)
 	{
-		ZWDBG_DEBUG("ERROR:jcLmsRequest not found!Return\n");
+		ZWDBG_INFO("ERROR:jcLmsRequest not found!Return\n");
 		return;
 	}
 	cJSON *jsType=cJSON_GetObjectItem(req,"Type");
 	if (NULL==jsType)
 	{
-		ZWDBG_DEBUG("ERROR:jcLmsRequest Operate Type Item not found!Return\n");
+		ZWDBG_INFO("ERROR:jcLmsRequest Operate Type Item not found!Return\n");
 		return;
 	}
 	outReq->Type=zwJclmsopFromString(jsType->valuestring);
@@ -563,18 +563,18 @@ ZWDBG_DEBUG("%s:inJclmsReqJson:\n%s\n",__FUNCTION__,inJclmsReqJson);
 	if (NULL!=dstCodeJson)
 	{		
 		outReq->dstCode=dstCodeJson->valueint;
-		ZWDBG_DEBUG("dstCode=%d\n",outReq->dstCode);
+		ZWDBG_INFO("dstCode=%d\n",outReq->dstCode);
 	}
 	else
 	{
-		ZWDBG_DEBUG("dstCode Not Found\n");
+		ZWDBG_INFO("dstCode Not Found\n");
 	}
 	
 	//JCINPUT
 	cJSON *jci = cJSON_GetObjectItem(root,"JCINPUT");   
 	if (NULL==jci)
 	{
-		ZWDBG_DEBUG("ERROR:JCINPUT not found!Return\n");
+		ZWDBG_INFO("ERROR:JCINPUT not found!Return\n");
 		return;
 	}
 
@@ -594,12 +594,12 @@ ZWDBG_DEBUG("%s:inJclmsReqJson:\n%s\n",__FUNCTION__,inJclmsReqJson);
 	outReq->inputData.SearchTimeStart=cJSON_GetObjectItem(jci,"SearchTimeStart")->valueint;
 	outReq->inputData.SearchTimeStep=cJSON_GetObjectItem(jci,"SearchTimeStep")->valueint;
 	outReq->inputData.SearchTimeLength=cJSON_GetObjectItem(jci,"SearchTimeLength")->valueint;
-	ZWDBG_DEBUG("jclms Json Main Item Parsed\n");
+	ZWDBG_INFO("jclms Json Main Item Parsed\n");
 	//有效期数组
 	cJSON *valArr=cJSON_GetObjectItem(jci,"ValidityArray");   
 	if (NULL==valArr)
 	{
-		ZWDBG_DEBUG("ERROR:ValidityArray not found!Return\n");
+		ZWDBG_INFO("ERROR:ValidityArray not found!Return\n");
 		return;
 	}
 	for (int i=0;i<NUM_VALIDITY;i++)
@@ -607,7 +607,7 @@ ZWDBG_DEBUG("%s:inJclmsReqJson:\n%s\n",__FUNCTION__,inJclmsReqJson);
 		outReq->inputData.ValidityArray[i]=
 		cJSON_GetArrayItem(valArr,i)->valueint;
 	}
-	ZWDBG_DEBUG("jclms Json Parse Result is:\n");
+	ZWDBG_INFO("jclms Json Parse Result is:\n");
 	zwJcLockDumpJCINPUT(reinterpret_cast<int>(&outReq->inputData));
 	cJSON_Delete(root);	
 }
@@ -638,7 +638,7 @@ void zwJclmsRersult2Json(const JCRESULT *p,const JCLMSOP op,char *outJson,const 
 	}
 	strncpy(outJson,cjout,cjLen);
 	free(cjout);
-	ZWDBG_DEBUG("%s\n",outJson);
+	ZWDBG_INFO("%s\n",outJson);
 	cJSON_Delete(root);	
 }
 
