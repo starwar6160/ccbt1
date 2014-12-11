@@ -671,15 +671,16 @@ TEST_F(jclmsCCBV11_Test, zwHidSecboxLMSTest20141203StandTestVector) {
 
 #ifdef _ZWLMSHID_TEST1128
 	//用于测试模拟两个机器之间通信的最基础测试
-	TEST_F(jclmsCCBV11_Test, zwHidSecboxLMSTest20141128) {
+	TEST_F(jclmsCCBV11_Test, zwHidSecboxLMSTest20141211S1) {
 		int codesum=0;
 		//assert(sizeof(JCINPUT)==163);		
 		//固定开锁时间,应该出来固定的结果
 		const int ZWFIX_STARTTIME=1416*ZWMEGA;
 		JcLockSetInt(handle,JCI_TIMESTEP,6);
-		JcLockSetInt(handle,JCI_SEARCH_TIME_START,static_cast<int>(time(NULL)));
-		JcLockSetCmdType(handle, JCI_CMDTYPE, JCCMD_INIT_CLOSECODE);
+		JcLockSetInt(handle,JCI_SEARCH_TIME_START,static_cast<int>(time(NULL)));		
 		//////////////////////////////////////////////////////////////////////////
+		//goto step3;
+		JcLockSetCmdType(handle, JCI_CMDTYPE, JCCMD_INIT_CLOSECODE);
 		printf("zwJclmsReqGenDyCode initCloseCode\n");
 		int initCloseCode=0;
 		zwJclmsReqGenDyCode(handle,&initCloseCode);
@@ -690,7 +691,20 @@ TEST_F(jclmsCCBV11_Test, zwHidSecboxLMSTest20141203StandTestVector) {
 		//这里是一个自检测试，如果失败，就说明有比较大的问题了，比如类似发生过的
 		//ARM编译器优化级别问题导致的生成错误的二进制代码等等
 		EXPECT_EQ(38149728, initCloseCode);
-		
+		//#endif // _DEBUG
+	}
+
+	TEST_F(jclmsCCBV11_Test, zwHidSecboxLMSTest20141211S2) {
+		int codesum=0;
+		//assert(sizeof(JCINPUT)==163);		
+		//固定开锁时间,应该出来固定的结果
+		const int ZWFIX_STARTTIME=1416*ZWMEGA;
+		JcLockSetInt(handle,JCI_TIMESTEP,6);
+		JcLockSetInt(handle,JCI_SEARCH_TIME_START,static_cast<int>(time(NULL)));		
+		//////////////////////////////////////////////////////////////////////////
+		//goto step3;
+		JcLockSetCmdType(handle, JCI_CMDTYPE, JCCMD_INIT_CLOSECODE);		
+		int initCloseCode=38149728;
 		//dynaPass1
 		//注意现在合法的时间值应该是1.4G以上了，注意位数。20140721.1709 
 		JcLockSetInt(handle, JCI_DATETIME,ZWFIX_STARTTIME);
@@ -704,7 +718,31 @@ TEST_F(jclmsCCBV11_Test, zwHidSecboxLMSTest20141203StandTestVector) {
 		zwJclmsReqGenDyCode(handle,&pass1DyCode);
 		codesum+=pass1DyCode;
 		EXPECT_EQ(pass1DyCode, 57174184);
-		//return;
+		//#endif // _DEBUG
+	}
+
+	TEST_F(jclmsCCBV11_Test, zwHidSecboxLMSTest20141211S3) {
+		int codesum=0;
+		//assert(sizeof(JCINPUT)==163);		
+		//固定开锁时间,应该出来固定的结果
+		const int ZWFIX_STARTTIME=1416*ZWMEGA;
+		JcLockSetInt(handle,JCI_TIMESTEP,6);
+		JcLockSetInt(handle,JCI_SEARCH_TIME_START,static_cast<int>(time(NULL)));		
+		//////////////////////////////////////////////////////////////////////////
+		//goto step3;
+		JcLockSetCmdType(handle, JCI_CMDTYPE, JCCMD_INIT_CLOSECODE);
+		printf("zwJclmsReqGenDyCode initCloseCode\n");
+		int initCloseCode=38149728;
+		//dynaPass1
+		//注意现在合法的时间值应该是1.4G以上了，注意位数。20140721.1709 
+		JcLockSetInt(handle, JCI_DATETIME,ZWFIX_STARTTIME);
+		JcLockSetInt(handle,JCI_SEARCH_TIME_LENGTH,8*60);
+
+		JcLockSetCmdType(handle, JCI_CMDTYPE, JCCMD_CCB_DYPASS1);
+		JcLockSetInt(handle, JCI_CLOSECODE, initCloseCode);
+		JcLockDebugPrint(handle);
+		//////////////////////////////////////////////////////////////////////////
+		JcLockSetCmdType(handle, JCI_CMDTYPE, JCCMD_CCB_DYPASS1);
 		JcLockSetInt(handle,JCI_SEARCH_TIME_START,1416*ZWMEGA+123);
 		//验证第一开锁码
 		JCMATCH pass1Match ;
@@ -719,6 +757,7 @@ TEST_F(jclmsCCBV11_Test, zwHidSecboxLMSTest20141203StandTestVector) {
 #endif // _DEBUG_LMS1128
 		//#endif // _DEBUG
 	}
+
 #endif // _ZWLMSHID_TEST1128
 
 //////////////////////////////////////////////////////////////////////////

@@ -401,8 +401,13 @@ int JCLMSCCB2014_API zwJclmsReqVerifyDyCode( int lmsHandle,int dstCode,JCMATCH *
 	//printf("HidRecv Data is\n");
 	//myHexDump(&rsp, rspRealLen);
 	//assert(rsp.verCodeMatch.s_datetime>1400*ZWMEGA);
+	printf("HidRecv Data HEX is\n");
+	myHexDump(resJson, rspRealLen);
+	//printf("%s:jclms Respone Json is:\n%s\n",__FUNCTION__,resJson);	
 	jcHidClose(&hidHandle);
-	zwJclmsResultFromJson(resJson+sizeof(short int),&rsp);
+	printf("HidRecv Data ASCII is\n");
+	myPrintBinAsString(resJson,rspRealLen);
+	zwJclmsResultFromJson(resJson,&rsp);
 #endif // _DEBUG_USE_LMS_FUNC_CALL_20141202
 	printf("%s:jclms Respone Json is:\n%s\n",__FUNCTION__,resJson);
 	printf("Received lms Respon is:\n");
