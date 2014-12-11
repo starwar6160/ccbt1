@@ -9,6 +9,7 @@ static void myShowDLLVersion(const char *fnName)
 	memset(version, 0, 256);
 	sprintf(version, "%s Version is %s %s\n", fnName, __DATE__, __TIME__);
 	zwOutDebugString(version);
+	printf("jclmsDLL Version 2014.1114.1156.V205.Fixed zwMergePsk");
 }
 
 BOOL APIENTRY DllMain(HMODULE hModule,

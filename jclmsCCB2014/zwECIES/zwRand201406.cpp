@@ -45,12 +45,13 @@ char g_zwPskBuf[SHA256_DIGEST_SIZE];
 char g_zwPskAsc[SHA256_DIGEST_SIZE*2+1];
 ZWECIES_API const char * zwMergePsk(const char *pskInput)
 {
-	time_t rnd;
+	//现在特地把rnd初始化为一个已知值，为的是给建行的版本添加一个固定，但是我们以后可以更改的第三因素；
+	time_t rnd=20141210;
 	memset(g_zwPskBuf,0,sizeof(g_zwPskBuf));
 	memset(g_zwPskAsc,0,sizeof(g_zwPskAsc));
 	sha256_ctx shactx;
 	sha256_init(&shactx);
-	rnd = time(NULL);
+
 	sha256_update(&shactx,(unsigned char *)pskInput,strlen(pskInput));
 	sha256_update(&shactx,(unsigned char *)&rnd,sizeof(rnd));
 	sha256_final(&shactx,(unsigned char *)g_zwPskBuf);
