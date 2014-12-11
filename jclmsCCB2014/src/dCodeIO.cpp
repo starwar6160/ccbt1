@@ -203,7 +203,7 @@ void JCLMSCCB2014_API JcLockDebugPrint(const int handle)
 	JCINPUT *jcp = (JCINPUT *) handle;
 	//zwJcLockDumpJCINPUT(handle);
 	if (EJC_SUSSESS != JcLockCheckInput((const int)jcp)) {
-		ZWDBG_INFO("JcLock Input Para Error!\n");
+		ZWDBG_ERROR("JcLock Input Para Error!\n");
 	}
 	//三个固定条件组合在一起,还要为NULL，连接符等留出余量
 	char mainstr[JC_ATMNO_MAXLEN + JC_LOCKNO_MAXLEN + JC_PSK_LEN + 5];
@@ -226,7 +226,7 @@ void JCLMSCCB2014_API JcLockDebugPrint(const int handle)
 	memset(allStr, 0, 128);
 	strncpy(allStr, mainstr, 128);
 	strcat(allStr, vstr);
-	ZWDBG_INFO("All Items = %s \n", allStr);
+	ZWDBG_NOTICE("All Items = %s \n", allStr);
 }
 
 void JCLMSCCB2014_API zwJcLockDumpJCINPUT(const int handle)
@@ -235,7 +235,7 @@ void JCLMSCCB2014_API zwJcLockDumpJCINPUT(const int handle)
 	JCINPUT *jcp = (JCINPUT *) handle;
 	assert(NULL != jcp);
 	if (NULL == jcp) {
-		ZWDBG_INFO("%s input is NULL", __FUNCTION__);
+		ZWDBG_ERROR("%s input is NULL", __FUNCTION__);
 		return;
 	}
 	static int dedupTime;
@@ -253,7 +253,7 @@ void JCLMSCCB2014_API zwJcLockDumpJCINPUT(const int handle)
 	crc=crc8(crc,(void *)&jcp->LockNo,sizeof(jcp->LockNo));
 	ZWDBG_INFO("PSK:%s\n", jcp->PSK);
 	crc=crc8(crc,(void *)&jcp->PSK,sizeof(jcp->PSK));
-	ZWDBG_INFO("DATETIME:%d\t%s\t", jcp->CodeGenDateTime,
+	ZWDBG_NOTICE("DATETIME:%d\t%s\t", jcp->CodeGenDateTime,
 		zwTimeSecond2String(jcp->CodeGenDateTime));
 	crc=crc8(crc,(void *)&jcp->CodeGenDateTime,sizeof(jcp->CodeGenDateTime));
 	ZWDBG_INFO("STEP:%d\t", jcp->SearchTimeStep);
@@ -266,7 +266,7 @@ void JCLMSCCB2014_API zwJcLockDumpJCINPUT(const int handle)
 	crc=crc8(crc,(void *)&jcp->CloseCode,sizeof(jcp->CloseCode));
 	ZWDBG_INFO("CMDTYPE:");
 	crc=crc8(crc,(void *)&jcp->CmdType,sizeof(jcp->CmdType));
-	ZWDBG_INFO("CRC8=%u\n",crc);
+	ZWDBG_NOTICE("CRC8=%u\n",crc);
 	switch (jcp->CmdType) {
 	case JCI_ATMNO:
 		ZWDBG_INFO("JCI_ATMNO");
@@ -499,7 +499,7 @@ void zwJclmsGenReq2Json(const JCINPUT *p,char *outJson,const int outBufLen)
 	}
 	strncpy(outJson,cjout,cjLen);
 	free(cjout);
-	ZWDBG_INFO("%s\n",outJson);
+	ZWDBG_NOTICE("%s\n",outJson);
 	cJSON_Delete(root);	
 }
 
@@ -526,7 +526,7 @@ void zwJclmsVerReq2Json(const JCINPUT *p,const int dstCode,char *outJson,const i
 	}
 	strncpy(outJson,cjout,cjLen);
 	free(cjout);
-	ZWDBG_INFO("%s\n",outJson);
+	ZWDBG_NOTICE("%s\n",outJson);
 	cJSON_Delete(root);	
 }
 void zwJclmsReqDecode(const char *inJclmsReqJson,JCLMSREQ *outReq)
@@ -534,26 +534,26 @@ void zwJclmsReqDecode(const char *inJclmsReqJson,JCLMSREQ *outReq)
 	assert(NULL!=inJclmsReqJson && strlen(inJclmsReqJson)>0 && NULL!=outReq);
 	if (NULL==inJclmsReqJson || strlen(inJclmsReqJson)==0 ||NULL==outReq)
 	{
-		ZWDBG_INFO("ERROR:%s:Input jclms Json Request is NULL!Return.\n",__FUNCTION__);
+		ZWDBG_ERROR("ERROR:%s:Input jclms Json Request is NULL!Return.\n",__FUNCTION__);
 		return;
 	}
 ZWDBG_INFO("%s:inJclmsReqJson:\n%s\n",__FUNCTION__,inJclmsReqJson);
 	cJSON *root=cJSON_Parse(inJclmsReqJson); 
 	if (NULL==root)
 	{
-		ZWDBG_INFO("ERROR:JCLMS REQUEST JSON Pares Fail.Return");
+		ZWDBG_ERROR("ERROR:JCLMS REQUEST JSON Pares Fail.Return");
 		return;
 	}
 	cJSON *req = cJSON_GetObjectItem(root,"jcLmsRequest");   	
 	if (NULL==req)
 	{
-		ZWDBG_INFO("ERROR:jcLmsRequest not found!Return\n");
+		ZWDBG_ERROR("ERROR:jcLmsRequest not found!Return\n");
 		return;
 	}
 	cJSON *jsType=cJSON_GetObjectItem(req,"Type");
 	if (NULL==jsType)
 	{
-		ZWDBG_INFO("ERROR:jcLmsRequest Operate Type Item not found!Return\n");
+		ZWDBG_ERROR("ERROR:jcLmsRequest Operate Type Item not found!Return\n");
 		return;
 	}
 	outReq->Type=zwJclmsopFromString(jsType->valuestring);
@@ -563,7 +563,7 @@ ZWDBG_INFO("%s:inJclmsReqJson:\n%s\n",__FUNCTION__,inJclmsReqJson);
 	if (NULL!=dstCodeJson)
 	{		
 		outReq->dstCode=dstCodeJson->valueint;
-		ZWDBG_INFO("dstCode=%d\n",outReq->dstCode);
+		ZWDBG_NOTICE("dstCode=%d\n",outReq->dstCode);
 	}
 	else
 	{
@@ -574,7 +574,7 @@ ZWDBG_INFO("%s:inJclmsReqJson:\n%s\n",__FUNCTION__,inJclmsReqJson);
 	cJSON *jci = cJSON_GetObjectItem(root,"JCINPUT");   
 	if (NULL==jci)
 	{
-		ZWDBG_INFO("ERROR:JCINPUT not found!Return\n");
+		ZWDBG_ERROR("ERROR:JCINPUT not found!Return\n");
 		return;
 	}
 
@@ -599,7 +599,7 @@ ZWDBG_INFO("%s:inJclmsReqJson:\n%s\n",__FUNCTION__,inJclmsReqJson);
 	cJSON *valArr=cJSON_GetObjectItem(jci,"ValidityArray");   
 	if (NULL==valArr)
 	{
-		ZWDBG_INFO("ERROR:ValidityArray not found!Return\n");
+		ZWDBG_ERROR("ERROR:ValidityArray not found!Return\n");
 		return;
 	}
 	for (int i=0;i<NUM_VALIDITY;i++)

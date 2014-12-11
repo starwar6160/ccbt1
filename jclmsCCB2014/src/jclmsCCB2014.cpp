@@ -148,7 +148,7 @@ int zwJcLockGetDynaCode(const int handle)
 	SM3_Final(&sm3, (char *)(outHmac));
 	//把HASH结果转化为8位数字输出
 	unsigned int res = zwBinString2Int32(outHmac, ZWSM3_DGST_LEN);
-	ZWDBG_INFO("%s:dyCode=%d\n",__FUNCTION__,res);
+	ZWDBG_WARN("%s:dyCode=%d\n",__FUNCTION__,res);
 	return res;
 }
 
@@ -157,7 +157,7 @@ int zwJcLockGetDynaCode(const int handle)
 JCMATCH JCLMSCCB2014_API JcLockReverseVerifyDynaCode(const int handle,
 						     const int dstCode)
 {
-	ZWDBG_INFO("%s dstCode=%d\n",__FUNCTION__,dstCode);
+	ZWDBG_WARN("%s dstCode=%d\n",__FUNCTION__,dstCode);
 	JcLockDebugPrint(handle);
 	zwJcLockDumpJCINPUT(handle);
 	JCINPUT *jcp = (JCINPUT *) handle;
@@ -221,7 +221,7 @@ JCMATCH JCLMSCCB2014_API JcLockReverseVerifyDynaCode(const int handle,
 			if (dstCode == res)	//发现了匹配的时间和有效期
 			{
 				//填写匹配的时间和有效期到结果
-				ZWDBG_INFO("FOUND MATCH UTC SECONDS:%d\tMinites:%d\n", tdate,
+				ZWDBG_WARN("FOUND MATCH UTC SECONDS:%d\tMinites:%d\n", tdate,
 				       jcp->ValidityArray[v]);
 				jcoff.s_datetime = tdate;
 				jcoff.s_validity = jcp->ValidityArray[v];
