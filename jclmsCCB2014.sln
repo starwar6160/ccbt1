@@ -19,6 +19,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "eccRomMaker", "eccRomMaker\
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MIRACL2014", "..\..\zwWorkLibs\MIRACL2014\MIRACL2014\MIRACL2014.vcxproj", "{2360FD43-07EE-448A-8C96-B9E5D6DCC737}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "zwBaseLibStatic", "..\zwBaseLib\zwBaseLibStatic\zwBaseLibStatic.vcxproj", "{AA8F4DC7-84A6-41CE-AFFA-1EB303F6702E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -103,6 +105,18 @@ Global
 		{2360FD43-07EE-448A-8C96-B9E5D6DCC737}.Release|Win32.ActiveCfg = Release|Win32
 		{2360FD43-07EE-448A-8C96-B9E5D6DCC737}.Release|Win32.Build.0 = Release|Win32
 		{2360FD43-07EE-448A-8C96-B9E5D6DCC737}.Release|x86.ActiveCfg = Release|Win32
+		{AA8F4DC7-84A6-41CE-AFFA-1EB303F6702E}.Debug|Any CPU.ActiveCfg = Debug|Win32
+		{AA8F4DC7-84A6-41CE-AFFA-1EB303F6702E}.Debug|Mixed Platforms.ActiveCfg = Debug|Win32
+		{AA8F4DC7-84A6-41CE-AFFA-1EB303F6702E}.Debug|Mixed Platforms.Build.0 = Debug|Win32
+		{AA8F4DC7-84A6-41CE-AFFA-1EB303F6702E}.Debug|Win32.ActiveCfg = Debug|Win32
+		{AA8F4DC7-84A6-41CE-AFFA-1EB303F6702E}.Debug|Win32.Build.0 = Debug|Win32
+		{AA8F4DC7-84A6-41CE-AFFA-1EB303F6702E}.Debug|x86.ActiveCfg = Debug|Win32
+		{AA8F4DC7-84A6-41CE-AFFA-1EB303F6702E}.Release|Any CPU.ActiveCfg = Release|Win32
+		{AA8F4DC7-84A6-41CE-AFFA-1EB303F6702E}.Release|Mixed Platforms.ActiveCfg = Release|Win32
+		{AA8F4DC7-84A6-41CE-AFFA-1EB303F6702E}.Release|Mixed Platforms.Build.0 = Release|Win32
+		{AA8F4DC7-84A6-41CE-AFFA-1EB303F6702E}.Release|Win32.ActiveCfg = Release|Win32
+		{AA8F4DC7-84A6-41CE-AFFA-1EB303F6702E}.Release|Win32.Build.0 = Release|Win32
+		{AA8F4DC7-84A6-41CE-AFFA-1EB303F6702E}.Release|x86.ActiveCfg = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
