@@ -12,7 +12,7 @@
 #include "zwHidSplitMsg.h"
 #include "zwSecretBoxAuth.h"
 
-//#define _DEBUG_USE_LMS_FUNC_CALL_20141202
+#define _DEBUG_USE_LMS_FUNC_CALL_20141202
 
 void JCLMSCCB2014_API zwJclmsRsp( void * inLmsReq,const int inLmsReqLen,char *outJson,const int outJsonLen );
 
@@ -105,6 +105,7 @@ void myPrintBinAsString(const void *binData,const int binLen)
 //20141203.1001.÷‹Œ∞
 int zwLmsAlgStandTest20141203(void)
 {
+	ZWDEBUG("DBG2014.1211 %d\n",1545);
 	int handle=0;
 	int pass1DyCode=0;
 	handle = JcLockNew();
