@@ -365,9 +365,13 @@ int JCLMSCCB2014_API zwJclmsReqGenDyCode( int lmsHandle,int *dyCode )
 	myHexDump(resJson, rspRealLen);
 	//ZWPRINTF("%s:jclms Respone Json is:\n%s\n",__FUNCTION__,resJson);	
 	jcHidClose(&hidHandle);
+
+	char *pureJson=resJson+sizeof(hidPayloadHeader);
+	int pureJsonLen=strlen(pureJson);
 	ZWDBG_INFO("HidRecv Data ASCII is\n");
-	myPrintBinAsString(resJson,rspRealLen);
-	zwJclmsResultFromJson(resJson,&rsp);
+	myPrintBinAsString(pureJson,pureJsonLen);
+	ZWDBG_NOTICE("jclmsHidRespone Json is:\n%s\n",pureJson);
+	zwJclmsResultFromJson(pureJson,&rsp);
 #endif // _DEBUG_USE_LMS_FUNC_CALL_20141202
 	ZWDBG_NOTICE("%s:jclms Respone Json is:\n%s\n",__FUNCTION__,resJson);
 	ZWDBG_INFO("Received lms Respon is:\n");
@@ -440,16 +444,16 @@ int JCLMSCCB2014_API zwJclmsReqVerifyDyCode( int lmsHandle,int dstCode,JCMATCH *
 	ZWDBG_INFO("VerWait To SecBox Return Result now..\n");
 	int rspRealLen=0;
 	jcHidRecvData(&hidHandle,resJson,ZW_JSONBUF_LEN,&rspRealLen);
-	//ZWPRINTF("HidRecv Data is\n");
-	//myHexDump(&rsp, rspRealLen);
-	//assert(rsp.verCodeMatch.s_datetime>1400*ZWMEGA);
 	ZWDBG_INFO("HidRecv Data HEX is\n");
 	myHexDump(resJson, rspRealLen);
-	//ZWPRINTF("%s:jclms Respone Json is:\n%s\n",__FUNCTION__,resJson);	
 	jcHidClose(&hidHandle);
+
+	char *pureJson=resJson+sizeof(hidPayloadHeader);
+	int pureJsonLen=strlen(pureJson);
 	ZWDBG_INFO("HidRecv Data ASCII is\n");
-	myPrintBinAsString(resJson,rspRealLen);
-	zwJclmsResultFromJson(resJson,&rsp);
+	myPrintBinAsString(pureJson,pureJsonLen);
+	ZWDBG_NOTICE("jclmsHidRespone Json is:\n%s\n",pureJson);
+	zwJclmsResultFromJson(pureJson,&rsp);
 #endif // _DEBUG_USE_LMS_FUNC_CALL_20141202
 	ZWDBG_NOTICE("%s:jclms Respone Json is:\n%s\n",__FUNCTION__,resJson);
 	ZWDBG_INFO("Received lms Respon is:\n");
