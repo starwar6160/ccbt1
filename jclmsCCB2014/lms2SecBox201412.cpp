@@ -12,10 +12,11 @@
 #include "zwHidSplitMsg.h"
 #include "zwSecretBoxAuth.h"
 
-//#define _DEBUG_USE_LMS_FUNC_CALL_20141202
+#define _DEBUG_USE_LMS_FUNC_CALL_20141202
 
 void JCLMSCCB2014_API zwJclmsRsp( void * inLmsReq,const int inLmsReqLen,char *outJson,const int outJsonLen );
 
+#ifdef _DEBUG_1205
 void myJcInputHton(JCINPUT *p)
 {
 	p->CodeGenDateTime=HtoNl(p->CodeGenDateTime);
@@ -61,6 +62,7 @@ void myLmsReqZNtoh(JCLMSREQ *req)
 	req->Type=static_cast<JCLMSOP>(NtoHl(req->Type));
 	req->dstCode=NtoHl(req->dstCode);
 }
+#endif // _DEBUG_1205
 
 void myHexDump( const void * hidSendBuf,const int outLen )
 {
@@ -205,14 +207,23 @@ void JCLMSCCB2014_API zwJclmsRsp( void * inLmsReq,const int inLmsReqLen,char *ou
 	memset(inJson,0,ZW_JSONBUF_LEN);
 
 	//PC调试时输入大小必须是HID有效载荷头部+JCLMSREQ JSON的大小
-	assert(inLmsReqLen+sizeof(short int)<=ZW_JSONBUF_LEN);
-	if (inLmsReqLen+sizeof(short int)>ZW_JSONBUF_LEN)
+	assert(inLmsReqLen+sizeof(SECBOX_DATA_INFO)<=ZW_JSONBUF_LEN);
+	if (inLmsReqLen+sizeof(SECBOX_DATA_INFO)>ZW_JSONBUF_LEN)
 	{
 		ZWDBG_ERROR("ERROR:%s:INTERNAL JSON Input Buffer Tool Small.",__FUNCTION__);
 	}
 	//跳过HID有效载荷头部
 	//memcpy((void *)&lmsReq,(char *)inLmsReq+sizeof(SECBOX_DATA_INFO),inLmsReqLen-sizeof(SECBOX_DATA_INFO));
-	strncpy(inJson,(char *)inLmsReq+sizeof(short int),ZW_JSONBUF_LEN);
+	strncpy(inJson,(char *)inLmsReq+sizeof(SECBOX_DATA_INFO),ZW_JSONBUF_LEN);
+	int inJsonLen=strlen(inJson);
+	int inJsonCRC8=crc8Short(inJson,inJsonLen);
+	SECBOX_DATA_INFO *inHdr=(SECBOX_DATA_INFO *)inLmsReq;
+	//备注：在JCLMS HID的数据包中，data_index无意义，被挪用作为CRC8校验码的地方
+	if(inHdr->data_index!=inJsonCRC8)
+	{
+		ZWDBG_ERROR("Input JCLMS Hid Request Json CRC8 Sum Check Fail!\nGood CRC8=%d\tReal CRC8=%d\n",
+			inHdr->data_index,inJsonCRC8);
+	}
 	zwJclmsReqDecode(inJson,&lmsReq);
 
 	zwJcLockDumpJCINPUT((int)(&lmsReq));
@@ -303,7 +314,11 @@ int JCLMSCCB2014_API zwJclmsReqGenDyCode( int lmsHandle,int *dyCode )
 	char hidSendBuf[ZWHIDBUFLEN];
 	memset(hidSendBuf,0,ZWHIDBUFLEN);
 	//HID有效载荷的头部
-	short int hidPayloadHeader=HtoNs(JC_SECBOX_LMS_GENDYCODE);
+	SECBOX_DATA_INFO hidPayloadHeader;
+	memset(&hidPayloadHeader,0,sizeof(hidPayloadHeader));
+	hidPayloadHeader.msg_type=HtoNs(JC_SECBOX_LMS_GENDYCODE);
+	hidPayloadHeader.data_index=crc8Short(tmpjson,tmpJsonLen);
+	hidPayloadHeader.data_len=tmpJsonLen;
 	const int outLen=sizeof(hidPayloadHeader)+tmpJsonLen;
 	
 	//先加入头部
@@ -382,7 +397,12 @@ int JCLMSCCB2014_API zwJclmsReqVerifyDyCode( int lmsHandle,int dstCode,JCMATCH *
 	char hidSendBuf[ZWHIDBUFLEN];
 	memset(hidSendBuf,0,ZWHIDBUFLEN);
 	//HID有效载荷的头部
-	short int hidPayloadHeader=HtoNs(JC_SECBOX_LMS_VERDYCODE);
+	SECBOX_DATA_INFO hidPayloadHeader;
+	memset(&hidPayloadHeader,0,sizeof(hidPayloadHeader));
+	hidPayloadHeader.msg_type=HtoNs(JC_SECBOX_LMS_GENDYCODE);
+	hidPayloadHeader.data_index=crc8Short(tmpjson,tmpJsonLen);
+	hidPayloadHeader.data_len=tmpJsonLen;
+
 	const int outLen=sizeof(hidPayloadHeader)+tmpJsonLen;
 
 	//先加入头部

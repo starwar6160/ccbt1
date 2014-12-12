@@ -30,6 +30,11 @@ void myJcInputHton(JCINPUT *p);
 void myJcInputNtoh(JCINPUT *p);
 void myLmsReqZHton(JCLMSREQ *req);
 void myLmsReqZNtoh(JCLMSREQ *req);
+//只能用于计算单段CRC8
+unsigned char crc8Short( const void *inputData,const int inputLen );
+//可以用于多段CRC8计算，第一次使用时,crc8参数输入必须为0
+unsigned char crc8(const unsigned char crc8Input,const void *inputData, const int inputLen );
+
 //生成各种类型的动态码
 int zwJcLockGetDynaCode(const int handle);
 

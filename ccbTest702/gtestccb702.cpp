@@ -7,7 +7,9 @@ void myJcLockInputTest1();
 //#define _DEBUG_ECIES_BADINPUT_TEST1117
 //#define _DEBUG_ECIES_CSTEST1117
 //#define _DEBUG_JCLMS_GTEST1117
-#define _ZWLMSHID_TEST1128
+#define _ZWLMSHID_TEST1212S1
+#define _ZWLMSHID_TEST1212S2
+#define _ZWLMSHID_TEST1212S3
 
 namespace CcbV11Test722Ecies {
 	const int ZWMEGA = 1000 * 1000;
@@ -669,7 +671,7 @@ TEST_F(jclmsCCBV11_Test, zwHidSecboxLMSTest20141203StandTestVector) {
 }
 
 
-#ifdef _ZWLMSHID_TEST1128
+#ifdef _ZWLMSHID_TEST1212S1
 	//用于测试模拟两个机器之间通信的最基础测试
 	TEST_F(jclmsCCBV11_Test, zwHidSecboxLMSTest20141211S1) {
 		int codesum=0;
@@ -693,7 +695,9 @@ TEST_F(jclmsCCBV11_Test, zwHidSecboxLMSTest20141203StandTestVector) {
 		EXPECT_EQ(38149728, initCloseCode);
 		//#endif // _DEBUG
 	}
+#endif	//_ZWLMSHID_TEST1212S1
 
+#ifdef _ZWLMSHID_TEST1212S2
 	TEST_F(jclmsCCBV11_Test, zwHidSecboxLMSTest20141211S2) {
 		int codesum=0;
 		//assert(sizeof(JCINPUT)==163);		
@@ -720,7 +724,9 @@ TEST_F(jclmsCCBV11_Test, zwHidSecboxLMSTest20141203StandTestVector) {
 		EXPECT_EQ(pass1DyCode, 57174184);
 		//#endif // _DEBUG
 	}
+#endif	//_ZWLMSHID_TEST1212S2
 
+#ifdef _ZWLMSHID_TEST1212S3
 	TEST_F(jclmsCCBV11_Test, zwHidSecboxLMSTest20141211S3) {
 		int codesum=0;
 		//assert(sizeof(JCINPUT)==163);		
@@ -753,12 +759,9 @@ TEST_F(jclmsCCBV11_Test, zwHidSecboxLMSTest20141203StandTestVector) {
 		printf("input time=\t\t%d\n", ZWFIX_STARTTIME);
 		printf("pass1Match Time =\t%d\tValidity=%d\n",
 			pass1Match.s_datetime, pass1Match.s_validity);
-#ifdef _DEBUG_LMS1128
-#endif // _DEBUG_LMS1128
 		//#endif // _DEBUG
 	}
-
-#endif // _ZWLMSHID_TEST1128
+#endif _ZWLMSHID_TEST1212S3
 
 //////////////////////////////////////////////////////////////////////////
 }				//namespace ccbtest722{
