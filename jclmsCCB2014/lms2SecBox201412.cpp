@@ -218,6 +218,8 @@ void JCLMSCCB2014_API zwJclmsRsp( void * inLmsReq,const int inLmsReqLen,char *ou
 	int inJsonLen=strlen(inJson);
 	int inJsonCRC8=crc8Short(inJson,inJsonLen);
 	SECBOX_DATA_INFO *inHdr=(SECBOX_DATA_INFO *)inLmsReq;
+	assert(inHdr->msg_type>JCI_START && inHdr->msg_type<JCI_END);
+	assert(NtoHs(inHdr->data_len)>0 && NtoHs(inHdr->data_len)<ZW_JSONBUF_LEN);
 	//备注：在JCLMS HID的数据包中，data_index无意义，被挪用作为CRC8校验码的地方
 	if(inHdr->data_index!=inJsonCRC8)
 	{
@@ -316,9 +318,9 @@ int JCLMSCCB2014_API zwJclmsReqGenDyCode( int lmsHandle,int *dyCode )
 	//HID有效载荷的头部
 	SECBOX_DATA_INFO hidPayloadHeader;
 	memset(&hidPayloadHeader,0,sizeof(hidPayloadHeader));
-	hidPayloadHeader.msg_type=HtoNs(JC_SECBOX_LMS_GENDYCODE);
+	hidPayloadHeader.msg_type=JC_SECBOX_LMS_GENDYCODE;
 	hidPayloadHeader.data_index=crc8Short(tmpjson,tmpJsonLen);
-	hidPayloadHeader.data_len=tmpJsonLen;
+	hidPayloadHeader.data_len=HtoNs(tmpJsonLen);
 	const int outLen=sizeof(hidPayloadHeader)+tmpJsonLen;
 	
 	//先加入头部
@@ -399,9 +401,9 @@ int JCLMSCCB2014_API zwJclmsReqVerifyDyCode( int lmsHandle,int dstCode,JCMATCH *
 	//HID有效载荷的头部
 	SECBOX_DATA_INFO hidPayloadHeader;
 	memset(&hidPayloadHeader,0,sizeof(hidPayloadHeader));
-	hidPayloadHeader.msg_type=HtoNs(JC_SECBOX_LMS_GENDYCODE);
+	hidPayloadHeader.msg_type=JC_SECBOX_LMS_GENDYCODE;
 	hidPayloadHeader.data_index=crc8Short(tmpjson,tmpJsonLen);
-	hidPayloadHeader.data_len=tmpJsonLen;
+	hidPayloadHeader.data_len=HtoNs(tmpJsonLen);
 
 	const int outLen=sizeof(hidPayloadHeader)+tmpJsonLen;
 
