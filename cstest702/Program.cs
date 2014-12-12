@@ -26,6 +26,7 @@ namespace cstest702
             //myV11DynaCodeTestKeyBoardInput();
             myLmsReq2SecBoxEx20141212GenInitCloseCode();
             myLmsReq2SecBoxEx20141212GenPass1DyCode();
+            myLmsReq2SecBoxEx20141212VerifyPass1DyCode();
         }
 
         //安全初始化例子
@@ -411,12 +412,12 @@ namespace cstest702
             if (38149728 != myInitCloseCode)
             {
                 Console.Out.WriteLine("密盒返回的初始闭锁码结果{0}是错误的，正确值是38149728", myInitCloseCode);
-                return;
             }
             else
             {
                 Console.Out.WriteLine("密盒返回的初始闭锁码结果{0}是正确的", myInitCloseCode);
             }
+            Console.Out.WriteLine("########################################################################");
         }
 
         private static void myLmsReq2SecBoxEx20141212GenPass1DyCode()
@@ -434,12 +435,12 @@ namespace cstest702
             if (57174184 != myDyCodePass1)
             {
                 Console.Out.WriteLine("密盒返回的第一开锁码结果{0}是错误的，正确值是57174184", myDyCodePass1);
-                return;
             }
             else
             {
                 Console.Out.WriteLine("密盒返回的初始闭锁码结果{0}是正确的", myDyCodePass1);
             }
+            Console.Out.WriteLine("########################################################################");
         }
 
         private static void myLmsReq2SecBoxEx20141212VerifyPass1DyCode()
@@ -452,19 +453,21 @@ namespace cstest702
             jclmsCCB2014.JcLockSetInt(handle, jclms.JCITYPE.JCI_DATETIME, ZWFIX_STARTTIME);
 
             jclmsCCB2014.JcLockSetInt(handle, jclms.JCITYPE.JCI_TIMESTEP, 6);
-            jclmsCCB2014.JcLockSetInt(handle, jclms.JCITYPE.JCI_SEARCH_TIME_START, zwGetUTCSeconds());
+            jclmsCCB2014.JcLockSetInt(handle, jclms.JCITYPE.JCI_SEARCH_TIME_START, 1416 * ZWMEGA + 123);
             jclmsCCB2014.JcLockSetCmdType(handle, jclms.JCITYPE.JCI_CMDTYPE, jclms.JCCMD.JCCMD_CCB_DYPASS1);
-            int myDyCodePass1 = jclmsCCB2014.csJclmsReqGenDyCode(handle);
+            JCMATCH match=new JCMATCH();
+            jclmsCCB2014.zwJclmsReqVerifyDyCode(handle, 57174184, match);
+            
 
-            if (57174184 != myDyCodePass1)
+            if (0!=match.s_datetime)
             {
-                Console.Out.WriteLine("密盒返回的第一开锁码结果{0}是错误的，正确值是57174184", myDyCodePass1);
-                return;
+                Console.Out.WriteLine("密盒返回的第一开锁码验证结果是正确的，时间是{0}", match.s_datetime);
             }
             else
             {
-                Console.Out.WriteLine("密盒返回的初始闭锁码结果{0}是正确的", myDyCodePass1);
+                Console.Out.WriteLine("密盒返回的第一开锁码验证结果是错误的，时间是{0}", match.s_datetime);
             }
+            Console.Out.WriteLine("########################################################################");
         }
 ///////////////////////////////////////////////////////////////////////////////////////////
     }   //class Program
