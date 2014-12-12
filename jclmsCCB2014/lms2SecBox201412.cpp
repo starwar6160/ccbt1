@@ -403,7 +403,7 @@ int JCLMSCCB2014_API zwJclmsReqVerifyDyCode( int lmsHandle,int dstCode,JCMATCH *
 	//HID有效载荷的头部
 	SECBOX_DATA_INFO hidPayloadHeader;
 	memset(&hidPayloadHeader,0,sizeof(hidPayloadHeader));
-	hidPayloadHeader.msg_type=JC_SECBOX_LMS_GENDYCODE;
+	hidPayloadHeader.msg_type=JC_SECBOX_LMS_VERDYCODE;
 	hidPayloadHeader.data_index=crc8Short(tmpjson,tmpJsonLen);
 	hidPayloadHeader.data_len=HtoNs(tmpJsonLen);
 

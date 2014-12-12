@@ -3,9 +3,11 @@
 #define _ZWLMSHID_TEST1212S1
 #define _ZWLMSHID_TEST1212S2
 #define _ZWLMSHID_TEST1212S3
-
+//#define _ZWLMSHID_TEST1212S4
 
 namespace CcbV11Test722Ecies {
+	void myHidSecBoxLmsTestGenFixInitCloseCode20141212();
+
 	class jclmsCCBV11_Test:public testing::Test {
 		// Some expensive resource shared by all tests.
 		//      static T* shared_resource_;
@@ -14,6 +16,7 @@ namespace CcbV11Test722Ecies {
 		static int pass1DyCode;
 		static int verifyCode;
 		static int pass2DyCode;
+	void myHidSecBoxLmsTestGenFixInitCloseCode20141212();
 	protected:
 		static void SetUpTestCase() {
 			//shared_resource_ = new ;
@@ -250,26 +253,7 @@ namespace CcbV11Test722Ecies {
 #ifdef _ZWLMSHID_TEST1212S1
 	//用于测试模拟两个机器之间通信的最基础测试
 	TEST_F(jclmsCCBV11_Test, zwHidSecboxLMSTest20141211S1) {
-		int codesum=0;
-		//assert(sizeof(JCINPUT)==163);		
-		//固定开锁时间,应该出来固定的结果
-		const int ZWFIX_STARTTIME=1416*ZWMEGA;
-		JcLockSetInt(handle,JCI_TIMESTEP,6);
-		JcLockSetInt(handle,JCI_SEARCH_TIME_START,static_cast<int>(time(NULL)));		
-		//////////////////////////////////////////////////////////////////////////
-		//goto step3;
-		JcLockSetCmdType(handle, JCI_CMDTYPE, JCCMD_INIT_CLOSECODE);
-		printf("zwJclmsReqGenDyCode initCloseCode\n");
-		int initCloseCode=0;
-		zwJclmsReqGenDyCode(handle,&initCloseCode);
-
-		//int initCloseCode = JcLockGetDynaCode(hnd2);
-		//此处期待值已经改为固定依赖1400M秒的时间值，应该不会再变了。
-		//20141113.1751根据前两天开会决定做的修改。周伟
-		//这里是一个自检测试，如果失败，就说明有比较大的问题了，比如类似发生过的
-		//ARM编译器优化级别问题导致的生成错误的二进制代码等等
-		EXPECT_EQ(38149728, initCloseCode);
-		//#endif // _DEBUG
+		myHidSecBoxLmsTestGenFixInitCloseCode20141212();
 	}
 #endif	//_ZWLMSHID_TEST1212S1
 
@@ -337,7 +321,32 @@ namespace CcbV11Test722Ecies {
 			pass1Match.s_datetime, pass1Match.s_validity);
 		//#endif // _DEBUG
 	}
+
 #endif _ZWLMSHID_TEST1212S3
+
+	void jclmsCCBV11_Test::myHidSecBoxLmsTestGenFixInitCloseCode20141212()
+	{
+		int initCloseCode=0;
+		//固定开锁时间,应该出来固定的结果
+		const int ZWFIX_STARTTIME=1416*ZWMEGA;
+		JcLockSetInt(handle,JCI_TIMESTEP,6);
+		//JcLockSetInt(handle,JCI_SEARCH_TIME_START,static_cast<int>(time(NULL)));		
+		JcLockSetCmdType(handle, JCI_CMDTYPE, JCCMD_INIT_CLOSECODE);
+		printf("zwJclmsReqGenDyCode initCloseCode\n");		
+		zwJclmsReqGenDyCode(handle,&initCloseCode);
+		//这里是一个自检测试，如果失败，就说明有比较大的问题了，比如类似发生过的
+		//ARM编译器优化级别问题导致的生成错误的二进制代码等等
+		EXPECT_EQ(38149728, initCloseCode);
+	}
+
+#ifdef _ZWLMSHID_TEST1212S4
+	TEST_F(jclmsCCBV11_Test, zwHidSecboxLMSTest20141211S4) {
+		for (int i=0;i<10;i++)
+		{
+			myHidSecBoxLmsTestGenFixInitCloseCode20141212();
+		}
+	}
+#endif // _ZWLMSHID_TEST1212S4
 
 
 }				//namespace ccbtest722{
