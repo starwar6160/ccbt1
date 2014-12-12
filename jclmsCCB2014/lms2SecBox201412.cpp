@@ -260,6 +260,13 @@ void JCLMSCCB2014_API zwJclmsRsp( void * inLmsReq,const int inLmsReqLen,char *ou
 	
 }
 
+int JCLMSCCB2014_API csJclmsReqGenDyCode( int lmsHandle )
+{
+	int dyCode;
+	zwJclmsReqGenDyCode(lmsHandle,&dyCode);
+	return dyCode;
+}
+
 #ifdef _WIN32
 void myHexDump(const void * hidSendBuf,const int outLen );
 const int ZWHIDBUFLEN=640;

@@ -424,6 +424,437 @@ SWIGEXPORT int SWIGSTDCALL CSharp_JC_INVALID_VALUE_get() {
 }
 
 
+SWIGEXPORT void SWIGSTDCALL CSharp_JCINPUT_AtmNo_set(void * jarg1, char * jarg2) {
+  JcLockInput *arg1 = (JcLockInput *) 0 ;
+  char *arg2 ;
+  
+  arg1 = (JcLockInput *)jarg1; 
+  arg2 = (char *)jarg2; 
+  {
+    if(arg2) {
+      strncpy((char*)arg1->AtmNo, (const char *)arg2, (16) +1-1);
+      arg1->AtmNo[(16) +1-1] = 0;
+    } else {
+      arg1->AtmNo[0] = 0;
+    }
+  }
+}
+
+
+SWIGEXPORT char * SWIGSTDCALL CSharp_JCINPUT_AtmNo_get(void * jarg1) {
+  char * jresult ;
+  JcLockInput *arg1 = (JcLockInput *) 0 ;
+  char *result = 0 ;
+  
+  arg1 = (JcLockInput *)jarg1; 
+  result = (char *)(char *) ((arg1)->AtmNo);
+  jresult = SWIG_csharp_string_callback((const char *)result); 
+  return jresult;
+}
+
+
+SWIGEXPORT void SWIGSTDCALL CSharp_JCINPUT_LockNo_set(void * jarg1, char * jarg2) {
+  JcLockInput *arg1 = (JcLockInput *) 0 ;
+  char *arg2 ;
+  
+  arg1 = (JcLockInput *)jarg1; 
+  arg2 = (char *)jarg2; 
+  {
+    if(arg2) {
+      strncpy((char*)arg1->LockNo, (const char *)arg2, (16) +1-1);
+      arg1->LockNo[(16) +1-1] = 0;
+    } else {
+      arg1->LockNo[0] = 0;
+    }
+  }
+}
+
+
+SWIGEXPORT char * SWIGSTDCALL CSharp_JCINPUT_LockNo_get(void * jarg1) {
+  char * jresult ;
+  JcLockInput *arg1 = (JcLockInput *) 0 ;
+  char *result = 0 ;
+  
+  arg1 = (JcLockInput *)jarg1; 
+  result = (char *)(char *) ((arg1)->LockNo);
+  jresult = SWIG_csharp_string_callback((const char *)result); 
+  return jresult;
+}
+
+
+SWIGEXPORT void SWIGSTDCALL CSharp_JCINPUT_PSK_set(void * jarg1, char * jarg2) {
+  JcLockInput *arg1 = (JcLockInput *) 0 ;
+  char *arg2 ;
+  
+  arg1 = (JcLockInput *)jarg1; 
+  arg2 = (char *)jarg2; 
+  {
+    if(arg2) {
+      strncpy((char*)arg1->PSK, (const char *)arg2, (256/4) +1-1);
+      arg1->PSK[(256/4) +1-1] = 0;
+    } else {
+      arg1->PSK[0] = 0;
+    }
+  }
+}
+
+
+SWIGEXPORT char * SWIGSTDCALL CSharp_JCINPUT_PSK_get(void * jarg1) {
+  char * jresult ;
+  JcLockInput *arg1 = (JcLockInput *) 0 ;
+  char *result = 0 ;
+  
+  arg1 = (JcLockInput *)jarg1; 
+  result = (char *)(char *) ((arg1)->PSK);
+  jresult = SWIG_csharp_string_callback((const char *)result); 
+  return jresult;
+}
+
+
+SWIGEXPORT void SWIGSTDCALL CSharp_JCINPUT_CodeGenDateTime_set(void * jarg1, int jarg2) {
+  JcLockInput *arg1 = (JcLockInput *) 0 ;
+  int arg2 ;
+  
+  arg1 = (JcLockInput *)jarg1; 
+  arg2 = (int)jarg2; 
+  if (arg1) (arg1)->CodeGenDateTime = arg2;
+}
+
+
+SWIGEXPORT int SWIGSTDCALL CSharp_JCINPUT_CodeGenDateTime_get(void * jarg1) {
+  int jresult ;
+  JcLockInput *arg1 = (JcLockInput *) 0 ;
+  int result;
+  
+  arg1 = (JcLockInput *)jarg1; 
+  result = (int) ((arg1)->CodeGenDateTime);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void SWIGSTDCALL CSharp_JCINPUT_Validity_set(void * jarg1, int jarg2) {
+  JcLockInput *arg1 = (JcLockInput *) 0 ;
+  int arg2 ;
+  
+  arg1 = (JcLockInput *)jarg1; 
+  arg2 = (int)jarg2; 
+  if (arg1) (arg1)->Validity = arg2;
+}
+
+
+SWIGEXPORT int SWIGSTDCALL CSharp_JCINPUT_Validity_get(void * jarg1) {
+  int jresult ;
+  JcLockInput *arg1 = (JcLockInput *) 0 ;
+  int result;
+  
+  arg1 = (JcLockInput *)jarg1; 
+  result = (int) ((arg1)->Validity);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void SWIGSTDCALL CSharp_JCINPUT_CloseCode_set(void * jarg1, int jarg2) {
+  JcLockInput *arg1 = (JcLockInput *) 0 ;
+  int arg2 ;
+  
+  arg1 = (JcLockInput *)jarg1; 
+  arg2 = (int)jarg2; 
+  if (arg1) (arg1)->CloseCode = arg2;
+}
+
+
+SWIGEXPORT int SWIGSTDCALL CSharp_JCINPUT_CloseCode_get(void * jarg1) {
+  int jresult ;
+  JcLockInput *arg1 = (JcLockInput *) 0 ;
+  int result;
+  
+  arg1 = (JcLockInput *)jarg1; 
+  result = (int) ((arg1)->CloseCode);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void SWIGSTDCALL CSharp_JCINPUT_CmdType_set(void * jarg1, int jarg2) {
+  JcLockInput *arg1 = (JcLockInput *) 0 ;
+  JCCMD arg2 ;
+  
+  arg1 = (JcLockInput *)jarg1; 
+  arg2 = (JCCMD)jarg2; 
+  if (arg1) (arg1)->CmdType = arg2;
+}
+
+
+SWIGEXPORT int SWIGSTDCALL CSharp_JCINPUT_CmdType_get(void * jarg1) {
+  int jresult ;
+  JcLockInput *arg1 = (JcLockInput *) 0 ;
+  JCCMD result;
+  
+  arg1 = (JcLockInput *)jarg1; 
+  result = (JCCMD) ((arg1)->CmdType);
+  jresult = (int)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void SWIGSTDCALL CSharp_JCINPUT_SearchTimeStart_set(void * jarg1, int jarg2) {
+  JcLockInput *arg1 = (JcLockInput *) 0 ;
+  int arg2 ;
+  
+  arg1 = (JcLockInput *)jarg1; 
+  arg2 = (int)jarg2; 
+  if (arg1) (arg1)->SearchTimeStart = arg2;
+}
+
+
+SWIGEXPORT int SWIGSTDCALL CSharp_JCINPUT_SearchTimeStart_get(void * jarg1) {
+  int jresult ;
+  JcLockInput *arg1 = (JcLockInput *) 0 ;
+  int result;
+  
+  arg1 = (JcLockInput *)jarg1; 
+  result = (int) ((arg1)->SearchTimeStart);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void SWIGSTDCALL CSharp_JCINPUT_SearchTimeStep_set(void * jarg1, int jarg2) {
+  JcLockInput *arg1 = (JcLockInput *) 0 ;
+  int arg2 ;
+  
+  arg1 = (JcLockInput *)jarg1; 
+  arg2 = (int)jarg2; 
+  if (arg1) (arg1)->SearchTimeStep = arg2;
+}
+
+
+SWIGEXPORT int SWIGSTDCALL CSharp_JCINPUT_SearchTimeStep_get(void * jarg1) {
+  int jresult ;
+  JcLockInput *arg1 = (JcLockInput *) 0 ;
+  int result;
+  
+  arg1 = (JcLockInput *)jarg1; 
+  result = (int) ((arg1)->SearchTimeStep);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void SWIGSTDCALL CSharp_JCINPUT_SearchTimeLength_set(void * jarg1, int jarg2) {
+  JcLockInput *arg1 = (JcLockInput *) 0 ;
+  int arg2 ;
+  
+  arg1 = (JcLockInput *)jarg1; 
+  arg2 = (int)jarg2; 
+  if (arg1) (arg1)->SearchTimeLength = arg2;
+}
+
+
+SWIGEXPORT int SWIGSTDCALL CSharp_JCINPUT_SearchTimeLength_get(void * jarg1) {
+  int jresult ;
+  JcLockInput *arg1 = (JcLockInput *) 0 ;
+  int result;
+  
+  arg1 = (JcLockInput *)jarg1; 
+  result = (int) ((arg1)->SearchTimeLength);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void SWIGSTDCALL CSharp_JCINPUT_ValidityArray_set(void * jarg1, void * jarg2) {
+  JcLockInput *arg1 = (JcLockInput *) 0 ;
+  int *arg2 ;
+  
+  arg1 = (JcLockInput *)jarg1; 
+  arg2 = (int *)jarg2; 
+  {
+    size_t ii;
+    int *b = (int *) arg1->ValidityArray;
+    for (ii = 0; ii < (size_t)(8); ii++) b[ii] = *((int *) arg2 + ii);
+  }
+}
+
+
+SWIGEXPORT void * SWIGSTDCALL CSharp_JCINPUT_ValidityArray_get(void * jarg1) {
+  void * jresult ;
+  JcLockInput *arg1 = (JcLockInput *) 0 ;
+  int *result = 0 ;
+  
+  arg1 = (JcLockInput *)jarg1; 
+  result = (int *)(int *) ((arg1)->ValidityArray);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void * SWIGSTDCALL CSharp_new_JCINPUT() {
+  void * jresult ;
+  JcLockInput *result = 0 ;
+  
+  result = (JcLockInput *)new JcLockInput();
+  jresult = (void *)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void SWIGSTDCALL CSharp_delete_JCINPUT(void * jarg1) {
+  JcLockInput *arg1 = (JcLockInput *) 0 ;
+  
+  arg1 = (JcLockInput *)jarg1; 
+  delete arg1;
+}
+
+
+SWIGEXPORT void SWIGSTDCALL CSharp_JCLMSREQ_Type_set(void * jarg1, int jarg2) {
+  jcLmsRequest *arg1 = (jcLmsRequest *) 0 ;
+  JCLMSOP arg2 ;
+  
+  arg1 = (jcLmsRequest *)jarg1; 
+  arg2 = (JCLMSOP)jarg2; 
+  if (arg1) (arg1)->Type = arg2;
+}
+
+
+SWIGEXPORT int SWIGSTDCALL CSharp_JCLMSREQ_Type_get(void * jarg1) {
+  int jresult ;
+  jcLmsRequest *arg1 = (jcLmsRequest *) 0 ;
+  JCLMSOP result;
+  
+  arg1 = (jcLmsRequest *)jarg1; 
+  result = (JCLMSOP) ((arg1)->Type);
+  jresult = (int)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void SWIGSTDCALL CSharp_JCLMSREQ_dstCode_set(void * jarg1, int jarg2) {
+  jcLmsRequest *arg1 = (jcLmsRequest *) 0 ;
+  int arg2 ;
+  
+  arg1 = (jcLmsRequest *)jarg1; 
+  arg2 = (int)jarg2; 
+  if (arg1) (arg1)->dstCode = arg2;
+}
+
+
+SWIGEXPORT int SWIGSTDCALL CSharp_JCLMSREQ_dstCode_get(void * jarg1) {
+  int jresult ;
+  jcLmsRequest *arg1 = (jcLmsRequest *) 0 ;
+  int result;
+  
+  arg1 = (jcLmsRequest *)jarg1; 
+  result = (int) ((arg1)->dstCode);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void SWIGSTDCALL CSharp_JCLMSREQ_inputData_set(void * jarg1, void * jarg2) {
+  jcLmsRequest *arg1 = (jcLmsRequest *) 0 ;
+  JCINPUT *arg2 = (JCINPUT *) 0 ;
+  
+  arg1 = (jcLmsRequest *)jarg1; 
+  arg2 = (JCINPUT *)jarg2; 
+  if (arg1) (arg1)->inputData = *arg2;
+}
+
+
+SWIGEXPORT void * SWIGSTDCALL CSharp_JCLMSREQ_inputData_get(void * jarg1) {
+  void * jresult ;
+  jcLmsRequest *arg1 = (jcLmsRequest *) 0 ;
+  JCINPUT *result = 0 ;
+  
+  arg1 = (jcLmsRequest *)jarg1; 
+  result = (JCINPUT *)& ((arg1)->inputData);
+  jresult = (void *)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void * SWIGSTDCALL CSharp_new_JCLMSREQ() {
+  void * jresult ;
+  jcLmsRequest *result = 0 ;
+  
+  result = (jcLmsRequest *)new jcLmsRequest();
+  jresult = (void *)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void SWIGSTDCALL CSharp_delete_JCLMSREQ(void * jarg1) {
+  jcLmsRequest *arg1 = (jcLmsRequest *) 0 ;
+  
+  arg1 = (jcLmsRequest *)jarg1; 
+  delete arg1;
+}
+
+
+SWIGEXPORT void SWIGSTDCALL CSharp_JCRESULT_dynaCode_set(void * jarg1, int jarg2) {
+  JcLockResult *arg1 = (JcLockResult *) 0 ;
+  int arg2 ;
+  
+  arg1 = (JcLockResult *)jarg1; 
+  arg2 = (int)jarg2; 
+  if (arg1) (arg1)->dynaCode = arg2;
+}
+
+
+SWIGEXPORT int SWIGSTDCALL CSharp_JCRESULT_dynaCode_get(void * jarg1) {
+  int jresult ;
+  JcLockResult *arg1 = (JcLockResult *) 0 ;
+  int result;
+  
+  arg1 = (JcLockResult *)jarg1; 
+  result = (int) ((arg1)->dynaCode);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void SWIGSTDCALL CSharp_JCRESULT_verCodeMatch_set(void * jarg1, void * jarg2) {
+  JcLockResult *arg1 = (JcLockResult *) 0 ;
+  JCMATCH *arg2 = (JCMATCH *) 0 ;
+  
+  arg1 = (JcLockResult *)jarg1; 
+  arg2 = (JCMATCH *)jarg2; 
+  if (arg1) (arg1)->verCodeMatch = *arg2;
+}
+
+
+SWIGEXPORT void * SWIGSTDCALL CSharp_JCRESULT_verCodeMatch_get(void * jarg1) {
+  void * jresult ;
+  JcLockResult *arg1 = (JcLockResult *) 0 ;
+  JCMATCH *result = 0 ;
+  
+  arg1 = (JcLockResult *)jarg1; 
+  result = (JCMATCH *)& ((arg1)->verCodeMatch);
+  jresult = (void *)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void * SWIGSTDCALL CSharp_new_JCRESULT() {
+  void * jresult ;
+  JcLockResult *result = 0 ;
+  
+  result = (JcLockResult *)new JcLockResult();
+  jresult = (void *)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void SWIGSTDCALL CSharp_delete_JCRESULT(void * jarg1) {
+  JcLockResult *arg1 = (JcLockResult *) 0 ;
+  
+  arg1 = (JcLockResult *)jarg1; 
+  delete arg1;
+}
+
+
 SWIGEXPORT int SWIGSTDCALL CSharp_JcLockNew() {
   int jresult ;
   int result;
@@ -550,11 +981,67 @@ SWIGEXPORT void SWIGSTDCALL CSharp_JcLockDebugPrint(int jarg1) {
 }
 
 
+SWIGEXPORT void SWIGSTDCALL CSharp_zwJcLockDumpJCINPUT(int jarg1) {
+  int arg1 ;
+  
+  arg1 = (int)jarg1; 
+  zwJcLockDumpJCINPUT(arg1);
+}
+
+
 SWIGEXPORT int SWIGSTDCALL CSharp_ZWMEGA_get() {
   int jresult ;
   int result;
   
   result = (int)(int)ZWMEGA;
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT int SWIGSTDCALL CSharp_zwSM3StandardTestVector() {
+  int jresult ;
+  int result;
+  
+  result = (int)zwSM3StandardTestVector();
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT int SWIGSTDCALL CSharp_csJclmsReqGenDyCode(int jarg1) {
+  int jresult ;
+  int arg1 ;
+  int result;
+  
+  arg1 = (int)jarg1; 
+  result = (int)csJclmsReqGenDyCode(arg1);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT int SWIGSTDCALL CSharp_zwJclmsReqVerifyDyCode(int jarg1, int jarg2, void * jarg3) {
+  int jresult ;
+  int arg1 ;
+  int arg2 ;
+  JCMATCH *arg3 = (JCMATCH *) 0 ;
+  int result;
+  
+  arg1 = (int)jarg1; 
+  arg2 = (int)jarg2; 
+  arg3 = (JCMATCH *)jarg3; 
+  result = (int)zwJclmsReqVerifyDyCode(arg1,arg2,arg3);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT int SWIGSTDCALL CSharp_zwLmsAlgStandTest20141203() {
+  int jresult ;
+  int result;
+  
+  result = (int)zwLmsAlgStandTest20141203();
   jresult = result; 
   return jresult;
 }

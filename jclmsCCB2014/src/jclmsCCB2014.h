@@ -166,7 +166,11 @@ int JCLMSCCB2014_API zwSM3StandardTestVector(void);
 //两个zwJclmsReq函数是上位机专用
 //填写完毕handle里面的数据结构以后，调用该函数生成动态码，该函数在底层将请求
 //做JSON序列化以后通过HID等通信线路发送到密盒，然后阻塞接收密盒返回结果，通过出参返回；
+int JCLMSCCB2014_API csJclmsReqGenDyCode( int lmsHandle );
+#ifndef _ZWUSE_AS_JNI
 int JCLMSCCB2014_API zwJclmsReqGenDyCode( int lmsHandle,int *dyCode);
+#endif // _ZWUSE_AS_JNI
+
 //填写完毕handle里面的数据结构以后，调用该函数验证动态码（第一和第二动态码中间，锁具生成的校验码
 //也是使用其他两个动态码的同样算法生成的，所以也算一种动态码，该函数在底层将验证请求做JSON序列化
 //以后通过HID等通信线路发送到密盒，然后阻塞接收密盒返回结果，通过出参返回；
@@ -174,7 +178,7 @@ int JCLMSCCB2014_API zwJclmsReqVerifyDyCode( int lmsHandle,int dstCode,JCMATCH *
 int JCLMSCCB2014_API zwLmsAlgStandTest20141203(void);
 //输入：接收到的整个合并完毕的HID数据以及该数据的长度；
 //输出：JSON格式的返回值，输出缓冲区最大长度由outJsonLen指定
-void JCLMSCCB2014_API zwJclmsRsp( void * inLmsReq,const int inLmsReqLen,char *outJson,const int outJsonLen );
+//void JCLMSCCB2014_API zwJclmsRsp( void * inLmsReq,const int inLmsReqLen,char *outJson,const int outJsonLen );
 
 #ifdef _DEBUG
 //#define ZWDEBUG(format,...) printf(" "__FILE__","__FUNCTION__",LINE:%d:"format"", __LINE__,##__VA_ARGS__)

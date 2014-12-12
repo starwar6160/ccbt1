@@ -18,12 +18,13 @@ namespace cstest702
         static void Main(string[] args)
         {
             //安全初始化例子
-            myECIEStest();
+            //myECIEStest();
             //String aa = Console.ReadLine();
             //myECIEStest2();
             //建行1.1版本动态码验证流程例子
             //myV11DynaCodeTest();
             //myV11DynaCodeTestKeyBoardInput();
+            myLmsReq2SecBoxEx20141212();
         }
 
         //安全初始化例子
@@ -144,14 +145,7 @@ namespace cstest702
             //从几个字节到几百字节乃至于更长都可以，只要内存足够
             //当然实践中建议限制在100字节以内
             //传入当前时间的GMT(格林尼治时间)
-            DateTime jcdt = DateTime.Now.ToUniversalTime();
-            Console.Out.WriteLine("当前的格林尼治时间(GMT)是{0},建行1.1版本算法上下位机都统一采用GMT来计算减少混乱"
-                , jcdt.ToString("yyyy MMdd HHmm ss"));
-            //计算当前时间距离GMT的秒数
-            DateTime dt = new DateTime(1970, 1, 1);
-            TimeSpan dp = jcdt - dt;
-            int seconddiff = (int)(dp.Ticks / 10000000);
-            Console.Out.WriteLine("当前的GMT秒数是\t{0}", seconddiff);
+            int curUTCSeconds = zwGetUTCSeconds();
 
             //锁具和上位机填入相同的初始条件，暂时替代初始化过程
             //固定条件部分
@@ -171,9 +165,9 @@ namespace cstest702
             Console.Out.WriteLine("锁具产生的初始闭锁码是 {0}", firstCloseCode);
 
             //可变条件部分.
-            jclmsCCB2014.JcLockSetInt(jcLock, JCITYPE.JCI_DATETIME, seconddiff);
+            jclmsCCB2014.JcLockSetInt(jcLock, JCITYPE.JCI_DATETIME, curUTCSeconds);
             jclmsCCB2014.JcLockSetInt(jcLock, JCITYPE.JCI_VALIDITY, validity);
-            jclmsCCB2014.JcLockSetInt(jcSrv, JCITYPE.JCI_DATETIME, seconddiff);
+            jclmsCCB2014.JcLockSetInt(jcSrv, JCITYPE.JCI_DATETIME, curUTCSeconds);
             jclmsCCB2014.JcLockSetInt(jcSrv, JCITYPE.JCI_VALIDITY, validity);
 
             //初始闭锁码输入到上位机DLL，其他条件已经准备好
@@ -248,6 +242,20 @@ namespace cstest702
             Console.Out.WriteLine("******************在线模式计算结束******************");
             jclmsCCB2014.JcLockDelete(jcLock);
             jclmsCCB2014.JcLockDelete(jcSrv);
+        }
+
+        private static int zwGetUTCSeconds()
+        {
+            int curUTCSeconds = 0;
+            DateTime jcdt = DateTime.Now.ToUniversalTime();
+            Console.Out.WriteLine("当前的格林尼治时间(GMT)是{0},建行1.1版本算法上下位机都统一采用GMT来计算减少混乱"
+                , jcdt.ToString("yyyy MMdd HHmm ss"));
+            //计算当前时间距离GMT的秒数
+            DateTime dt = new DateTime(1970, 1, 1);
+            TimeSpan dp = jcdt - dt;
+            curUTCSeconds = (int)(dp.Ticks / 10000000);
+            Console.Out.WriteLine("当前的GMT秒数是\t{0}", curUTCSeconds);
+            return curUTCSeconds;
         }
 
         //建行1.1版本动态码验证流程例子 WITH INPUT
@@ -381,6 +389,36 @@ namespace cstest702
             Console.Out.WriteLine("******************在线模式计算结束******************");
             jclmsCCB2014.JcLockDelete(jcLock);
             jclmsCCB2014.JcLockDelete(jcSrv);
+        }
+
+
+
+        private static void myLmsReq2SecBoxEx20141212()
+        {
+            int codesum = 0;
+            const int ZWMEGA=1000*1000;
+            //固定开锁时间,应该出来固定的结果
+            const int ZWFIX_STARTTIME = 1416 * ZWMEGA;
+            int handle = jclmsCCB2014.JcLockNew();
+            jclmsCCB2014.JcLockSetString(handle, jclms.JCITYPE.JCI_ATMNO, "atm10455761");
+            jclmsCCB2014.JcLockSetString(handle, jclms.JCITYPE.JCI_LOCKNO, "lock14771509");
+            jclmsCCB2014.JcLockSetString(handle, jclms.JCITYPE.JCI_PSK, "PSKDEMO728");
+
+            jclmsCCB2014.JcLockSetInt(handle, jclms.JCITYPE.JCI_TIMESTEP, 6);
+            jclmsCCB2014.JcLockSetInt(handle, jclms.JCITYPE.JCI_SEARCH_TIME_START, zwGetUTCSeconds());
+            jclmsCCB2014.JcLockSetCmdType(handle, jclms.JCITYPE.JCI_CMDTYPE, jclms.JCCMD.JCCMD_INIT_CLOSECODE);
+            //printf("zwJclmsReqGenDyCode initCloseCode\n");            
+            int myInitCloseCode = jclmsCCB2014.csJclmsReqGenDyCode(handle);
+            //EXPECT_EQ(38149728, initCloseCode);
+            if (38149728 != myInitCloseCode)
+            {
+                Console.Out.WriteLine("密盒返回的初始闭锁码结果{0}是错误的，正确值是38149728", myInitCloseCode);
+                return;
+            }
+            else
+            {
+                Console.Out.WriteLine("密盒返回的初始闭锁码结果{0}是正确的", myInitCloseCode);
+            }
         }
 ///////////////////////////////////////////////////////////////////////////////////////////
     }   //class Program

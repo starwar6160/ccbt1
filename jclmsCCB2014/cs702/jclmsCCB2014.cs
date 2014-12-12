@@ -72,11 +72,35 @@ public class jclmsCCB2014 {
     jclmsCCB2014PINVOKE.JcLockDebugPrint(handle);
   }
 
+  public static void zwJcLockDumpJCINPUT(int handle) {
+    jclmsCCB2014PINVOKE.zwJcLockDumpJCINPUT(handle);
+  }
+
   public static int ZWMEGA {
     get {
       int ret = jclmsCCB2014PINVOKE.ZWMEGA_get();
       return ret;
     } 
+  }
+
+  public static int zwSM3StandardTestVector() {
+    int ret = jclmsCCB2014PINVOKE.zwSM3StandardTestVector();
+    return ret;
+  }
+
+  public static int csJclmsReqGenDyCode(int lmsHandle) {
+    int ret = jclmsCCB2014PINVOKE.csJclmsReqGenDyCode(lmsHandle);
+    return ret;
+  }
+
+  public static int zwJclmsReqVerifyDyCode(int lmsHandle, int dstCode, JCMATCH match) {
+    int ret = jclmsCCB2014PINVOKE.zwJclmsReqVerifyDyCode(lmsHandle, dstCode, JCMATCH.getCPtr(match));
+    return ret;
+  }
+
+  public static int zwLmsAlgStandTest20141203() {
+    int ret = jclmsCCB2014PINVOKE.zwLmsAlgStandTest20141203();
+    return ret;
   }
 
   public static int ZWEFS {
