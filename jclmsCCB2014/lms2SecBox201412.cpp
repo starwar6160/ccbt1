@@ -12,7 +12,9 @@
 #include "zwHidSplitMsg.h"
 #include "zwSecretBoxAuth.h"
 
+#ifdef _DEBUG
 #define _DEBUG_USE_LMS_FUNC_CALL_20141202
+#endif // _DEBUG
 
 void JCLMSCCB2014_API zwJclmsRsp( void * inLmsReq,const int inLmsReqLen,char *outJson,const int outJsonLen );
 
@@ -82,15 +84,15 @@ void myHexDump( const void * hidSendBuf,const int outLen )
 		if (i>0)
 		{
 			if(i%8==0 && i%16!=0)
-				ZWDBG_INFO("\t");
+				ZWDBG_NOTICE("\t");
 
 			if(i%16==0)
-				ZWDBG_INFO("\n");
+				ZWDBG_NOTICE("\n");
 		}
 		unsigned char c=pt[i] & 0xFF;
-		ZWDBG_INFO("%02X ",c);
+		ZWDBG_NOTICE("%02X ",c);
 	}
-	ZWDBG_INFO("\n");
+	ZWDBG_NOTICE("\n");
 
 #ifdef _WIN32
 #pragma warning( default : 4390)
