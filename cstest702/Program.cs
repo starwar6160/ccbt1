@@ -24,7 +24,7 @@ namespace cstest702
             //建行1.1版本动态码验证流程例子
             //myV11DynaCodeTest();
             //myV11DynaCodeTestKeyBoardInput();
-            //myLmsReq2SecBoxEx20141212GenInitCloseCode();
+            myLmsReq2SecBoxEx20141212GenInitCloseCode();
             myLmsReq2SecBoxEx20141212GenPass1DyCode();
         }
 
@@ -392,25 +392,22 @@ namespace cstest702
             jclmsCCB2014.JcLockDelete(jcSrv);
         }
 
-
+/// <summary>
+///     20141212,JCLMS通过密盒计算的测试代码
+/// </summary>
+        const int ZWMEGA = 1000 * 1000;
+        //固定开锁时间,应该出来固定的结果
+        const int ZWFIX_STARTTIME = 1416 * ZWMEGA;            
 
         private static void myLmsReq2SecBoxEx20141212GenInitCloseCode()
         {
-            int codesum = 0;
-            const int ZWMEGA=1000*1000;
-            //固定开锁时间,应该出来固定的结果
-            const int ZWFIX_STARTTIME = 1416 * ZWMEGA;
             int handle = jclmsCCB2014.JcLockNew();
             jclmsCCB2014.JcLockSetString(handle, jclms.JCITYPE.JCI_ATMNO, "atm10455761");
             jclmsCCB2014.JcLockSetString(handle, jclms.JCITYPE.JCI_LOCKNO, "lock14771509");
             jclmsCCB2014.JcLockSetString(handle, jclms.JCITYPE.JCI_PSK, "PSKDEMO728");
+            jclmsCCB2014.JcLockSetCmdType(handle, jclms.JCITYPE.JCI_CMDTYPE, jclms.JCCMD.JCCMD_INIT_CLOSECODE);       
 
-            jclmsCCB2014.JcLockSetInt(handle, jclms.JCITYPE.JCI_TIMESTEP, 6);
-            jclmsCCB2014.JcLockSetInt(handle, jclms.JCITYPE.JCI_SEARCH_TIME_START, zwGetUTCSeconds());
-            jclmsCCB2014.JcLockSetCmdType(handle, jclms.JCITYPE.JCI_CMDTYPE, jclms.JCCMD.JCCMD_INIT_CLOSECODE);
-            //printf("zwJclmsReqGenDyCode initCloseCode\n");            
             int myInitCloseCode = jclmsCCB2014.csJclmsReqGenDyCode(handle);
-            //EXPECT_EQ(38149728, initCloseCode);
             if (38149728 != myInitCloseCode)
             {
                 Console.Out.WriteLine("密盒返回的初始闭锁码结果{0}是错误的，正确值是38149728", myInitCloseCode);
@@ -424,10 +421,29 @@ namespace cstest702
 
         private static void myLmsReq2SecBoxEx20141212GenPass1DyCode()
         {
-            int codesum = 0;
-            const int ZWMEGA = 1000 * 1000;
-            //固定开锁时间,应该出来固定的结果
-            const int ZWFIX_STARTTIME = 1416 * ZWMEGA;            
+            int handle = jclmsCCB2014.JcLockNew();
+            jclmsCCB2014.JcLockSetString(handle, jclms.JCITYPE.JCI_ATMNO, "atm10455761");
+            jclmsCCB2014.JcLockSetString(handle, jclms.JCITYPE.JCI_LOCKNO, "lock14771509");
+            jclmsCCB2014.JcLockSetString(handle, jclms.JCITYPE.JCI_PSK, "PSKDEMO728");
+            jclmsCCB2014.JcLockSetInt(handle, jclms.JCITYPE.JCI_CLOSECODE, 38149728);
+            jclmsCCB2014.JcLockSetInt(handle, jclms.JCITYPE.JCI_DATETIME, ZWFIX_STARTTIME);
+            jclmsCCB2014.JcLockSetCmdType(handle, jclms.JCITYPE.JCI_CMDTYPE, jclms.JCCMD.JCCMD_CCB_DYPASS1);            
+
+            int myDyCodePass1 = jclmsCCB2014.csJclmsReqGenDyCode(handle);
+            
+            if (57174184 != myDyCodePass1)
+            {
+                Console.Out.WriteLine("密盒返回的第一开锁码结果{0}是错误的，正确值是57174184", myDyCodePass1);
+                return;
+            }
+            else
+            {
+                Console.Out.WriteLine("密盒返回的初始闭锁码结果{0}是正确的", myDyCodePass1);
+            }
+        }
+
+        private static void myLmsReq2SecBoxEx20141212VerifyPass1DyCode()
+        {
             int handle = jclmsCCB2014.JcLockNew();
             jclmsCCB2014.JcLockSetString(handle, jclms.JCITYPE.JCI_ATMNO, "atm10455761");
             jclmsCCB2014.JcLockSetString(handle, jclms.JCITYPE.JCI_LOCKNO, "lock14771509");
@@ -437,9 +453,9 @@ namespace cstest702
 
             jclmsCCB2014.JcLockSetInt(handle, jclms.JCITYPE.JCI_TIMESTEP, 6);
             jclmsCCB2014.JcLockSetInt(handle, jclms.JCITYPE.JCI_SEARCH_TIME_START, zwGetUTCSeconds());
-            jclmsCCB2014.JcLockSetCmdType(handle, jclms.JCITYPE.JCI_CMDTYPE, jclms.JCCMD.JCCMD_CCB_DYPASS1);            
+            jclmsCCB2014.JcLockSetCmdType(handle, jclms.JCITYPE.JCI_CMDTYPE, jclms.JCCMD.JCCMD_CCB_DYPASS1);
             int myDyCodePass1 = jclmsCCB2014.csJclmsReqGenDyCode(handle);
-            
+
             if (57174184 != myDyCodePass1)
             {
                 Console.Out.WriteLine("密盒返回的第一开锁码结果{0}是错误的，正确值是57174184", myDyCodePass1);
