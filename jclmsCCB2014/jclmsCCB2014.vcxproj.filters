@@ -101,5 +101,8 @@
     <ClCompile Include="src\crc32\zwCCITTcrc16.c">
       <Filter>源文件\hashalg</Filter>
     </ClCompile>
+    <ClCompile Include="src\crc32\adler32.c">
+      <Filter>源文件\hashalg</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
