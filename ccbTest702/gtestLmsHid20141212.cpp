@@ -333,7 +333,9 @@ namespace CcbV11Test722Ecies {
 		//JcLockSetInt(handle,JCI_SEARCH_TIME_START,static_cast<int>(time(NULL)));		
 		JcLockSetCmdType(handle, JCI_CMDTYPE, JCCMD_INIT_CLOSECODE);
 		printf("zwJclmsReqGenDyCode initCloseCode\n");		
+		//printf("ZWLINE20141215.1710S1\n");
 		zwJclmsReqGenDyCode(handle,&initCloseCode);
+		//printf("ZWLINE20141215.1710S2\n");
 		//这里是一个自检测试，如果失败，就说明有比较大的问题了，比如类似发生过的
 		//ARM编译器优化级别问题导致的生成错误的二进制代码等等
 		EXPECT_EQ(38149728, initCloseCode);

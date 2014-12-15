@@ -499,7 +499,7 @@ void zwJclmsGenReq2Json(const JCINPUT *p,char *outJson,const int outBufLen)
 	}
 	strncpy(outJson,cjout,cjLen);
 	free(cjout);
-	ZWDBG_NOTICE("%s\n",outJson);
+	ZWDBG_INFO("%s\n",outJson);
 	cJSON_Delete(root);	
 }
 
@@ -526,7 +526,7 @@ void zwJclmsVerReq2Json(const JCINPUT *p,const int dstCode,char *outJson,const i
 	}
 	strncpy(outJson,cjout,cjLen);
 	free(cjout);
-	ZWDBG_NOTICE("%s\n",outJson);
+	ZWDBG_INFO("%s\n",outJson);
 	cJSON_Delete(root);	
 }
 void zwJclmsReqDecode(const char *inJclmsReqJson,JCLMSREQ *outReq)
