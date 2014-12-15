@@ -61,6 +61,7 @@
       <OutputFile>$(ZWSRC)\2014BinOut\$(Configuration)\$(TargetName)$(TargetExt)</OutputFile>
       <AdditionalLibraryDirectories>$(ZWSRC)\2014BinOut\$(Configuration)\;$(ZWLIB)\gtest\msvc\gtest-md\$(Configuration)</AdditionalLibraryDirectories>
       <ShowProgress>NotSet</ShowProgress>
+      <Profile>true</Profile>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -81,6 +82,7 @@
       <AdditionalDependencies>jclmsCCB2014.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(ZWSRC)\2014BinOut\$(Configuration)\$(TargetName)$(TargetExt)</OutputFile>
       <AdditionalLibraryDirectories>$(ZWSRC)\2014BinOut\$(Configuration)\;$(ZWLIB)\gtest\msvc\gtest-md\$(Configuration)</AdditionalLibraryDirectories>
+      <Profile>true</Profile>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
