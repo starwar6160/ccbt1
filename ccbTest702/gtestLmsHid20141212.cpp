@@ -1,9 +1,9 @@
 #include "stdafx.h"
 #include "jclmsCCB2014.h"
-#define _ZWLMSHID_TEST1212S1
-#define _ZWLMSHID_TEST1212S2
-#define _ZWLMSHID_TEST1212S3
-//#define _ZWLMSHID_TEST1212S4
+//#define _ZWLMSHID_TEST1212S1
+//#define _ZWLMSHID_TEST1212S2
+//#define _ZWLMSHID_TEST1212S3
+#define _ZWLMSHID_TEST1212S4
 
 namespace CcbV11Test722Ecies {
 	void myHidSecBoxLmsTestGenFixInitCloseCode20141212();
@@ -341,7 +341,7 @@ namespace CcbV11Test722Ecies {
 
 #ifdef _ZWLMSHID_TEST1212S4
 	TEST_F(jclmsCCBV11_Test, zwHidSecboxLMSTest20141211S4) {
-		for (int i=0;i<10;i++)
+		for (int i=0;i<3;i++)
 		{
 			myHidSecBoxLmsTestGenFixInitCloseCode20141212();
 		}

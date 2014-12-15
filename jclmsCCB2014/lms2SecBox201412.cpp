@@ -13,7 +13,7 @@
 #include "zwSecretBoxAuth.h"
 
 #ifdef _DEBUG
-#define _DEBUG_USE_LMS_FUNC_CALL_20141202
+//#define _DEBUG_USE_LMS_FUNC_CALL_20141202
 #endif // _DEBUG
 
 void JCLMSCCB2014_API zwJclmsRsp( void * inLmsReq,const int inLmsReqLen,char *outJson,const int outJsonLen );
@@ -116,10 +116,15 @@ void myPrintBinAsString(const void *binData,const int binLen)
 	ZWDBG_INFO("\n");
 }
 
+void myCRC16Test();
+
 //一个纯算法层面的标准测试，测试了动态码生成和验证两个环节，用于ARM校验自己是否有编译器优化问题等等；
 //20141203.1001.周伟
 int zwLmsAlgStandTest20141203(void)
 {
+	myCRC16Test();
+
+
 	int handle=0;
 	int pass1DyCode=0;
 	handle = JcLockNew();
@@ -462,4 +467,17 @@ int JCLMSCCB2014_API zwJclmsReqVerifyDyCode( int lmsHandle,int dstCode,JCMATCH *
 	ZWDBG_WARN("%s Match DateTime=%d\tValidity=%d\n",__FUNCTION__,match->s_datetime,match->s_validity);	
 	return 0;
 }
+
+void myCRC16Test()
+{
+	char zwd1[37];
+	memset(zwd1,0,37);
+	for (int i=0;i<37;i++)
+	{
+		zwd1[i]=10+i;
+	}
+	zwd1[36]--;
+	int zcrc16=crc16_ccitt(reinterpret_cast<unsigned char *>(zwd1),37);
+}
+
 #endif // _WIN32

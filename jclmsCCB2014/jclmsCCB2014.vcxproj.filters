@@ -98,5 +98,8 @@
     <ClCompile Include="lms2SecBox201412.cpp">
       <Filter>源文件\dyCode</Filter>
     </ClCompile>
+    <ClCompile Include="src\crc32\zwCCITTcrc16.c">
+      <Filter>源文件\hashalg</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
