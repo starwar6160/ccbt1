@@ -332,20 +332,30 @@ namespace CcbV11Test722Ecies {
 		JcLockSetInt(handle,JCI_TIMESTEP,6);
 		//JcLockSetInt(handle,JCI_SEARCH_TIME_START,static_cast<int>(time(NULL)));		
 		JcLockSetCmdType(handle, JCI_CMDTYPE, JCCMD_INIT_CLOSECODE);
-		printf("zwJclmsReqGenDyCode initCloseCode\n");		
+		//printf("zwJclmsReqGenDyCode initCloseCode\n");		
 		//printf("ZWLINE20141215.1710S1\n");
 		zwJclmsReqGenDyCode(handle,&initCloseCode);
 		//printf("ZWLINE20141215.1710S2\n");
 		//这里是一个自检测试，如果失败，就说明有比较大的问题了，比如类似发生过的
 		//ARM编译器优化级别问题导致的生成错误的二进制代码等等
 		EXPECT_EQ(38149728, initCloseCode);
+		//////////////////////////////////////////////////////////////////////////
+		//验证第一开锁码
+		JcLockSetInt(handle, JCI_CLOSECODE, initCloseCode);
+		JcLockSetCmdType(handle, JCI_CMDTYPE, JCCMD_CCB_DYPASS1);
+		JcLockSetInt(handle,JCI_SEARCH_TIME_START,1416*ZWMEGA+123);
+		JCMATCH pass1Match ;
+		printf("zwJclmsReqVerifyDyCode pass1DyCode\n");
+		zwJclmsReqVerifyDyCode(handle,57174184,&pass1Match);						
+		EXPECT_EQ(pass1Match.s_datetime,ZWFIX_STARTTIME);
 	}
 
 #ifdef _ZWLMSHID_TEST1212S4
 	TEST_F(jclmsCCBV11_Test, zwHidSecboxLMSTest20141211S4) {
-		for (int i=0;i<3;i++)
+		for (int i=0;i<10;i++)
 		{
 			myHidSecBoxLmsTestGenFixInitCloseCode20141212();
+			printf("Count %d\n",i);
 		}
 	}
 #endif // _ZWLMSHID_TEST1212S4

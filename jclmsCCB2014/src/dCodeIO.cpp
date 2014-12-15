@@ -266,7 +266,7 @@ void JCLMSCCB2014_API zwJcLockDumpJCINPUT(const int handle)
 	crc=crc8(crc,(void *)&jcp->CloseCode,sizeof(jcp->CloseCode));
 	ZWDBG_INFO("CMDTYPE:");
 	crc=crc8(crc,(void *)&jcp->CmdType,sizeof(jcp->CmdType));
-	ZWDBG_NOTICE("CRC8=%u\n",crc);
+	ZWDBG_INFO("CRC8=%u\n",crc);
 	switch (jcp->CmdType) {
 	case JCI_ATMNO:
 		ZWDBG_INFO("JCI_ATMNO");

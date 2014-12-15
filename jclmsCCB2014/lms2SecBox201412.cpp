@@ -404,7 +404,7 @@ int JCLMSCCB2014_API zwJclmsReqVerifyDyCode( int lmsHandle,int dstCode,JCMATCH *
 	tmpJsonLen=strlen(tmpjson);
 	//////////////////////////////////模拟发送数据////////////////////////////////////////
 	//此处由于是模拟，时序不好控制，为了便于调试，在此直接调用密盒端的函数zwJclmsRsp来做处理
-	ZWDBG_NOTICE("%s Send Data to Secbox with Wait To Verify DestCode %d\n",__FUNCTION__,dstCode);
+	ZWDBG_INFO("%s Send Data to Secbox with Wait To Verify DestCode %d\n",__FUNCTION__,dstCode);
 	zwJcLockDumpJCINPUT(lmsHandle);
 	//////////////////////////////////////////////////////////////////////////
 	//构建整个HID发送数据包，给下层HID函数去切分和发送
@@ -458,7 +458,7 @@ int JCLMSCCB2014_API zwJclmsReqVerifyDyCode( int lmsHandle,int dstCode,JCMATCH *
 	int pureJsonLen=strlen(pureJson);
 	ZWDBG_INFO("HidRecv Data ASCII is\n");
 	myPrintBinAsString(pureJson,pureJsonLen);
-	ZWDBG_NOTICE("jclmsHidRespone Json is:\n%s\n",pureJson);
+	ZWDBG_INFO("jclmsHidRespone Json is:\n%s\n",pureJson);
 	zwJclmsResultFromJson(pureJson,&rsp);
 #endif // _DEBUG_USE_LMS_FUNC_CALL_20141202
 	ZWDBG_NOTICE("%s:jclms Respone Json is:\n%s\n",__FUNCTION__,resJson);
