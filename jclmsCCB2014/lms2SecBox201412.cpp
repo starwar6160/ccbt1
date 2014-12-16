@@ -176,7 +176,7 @@ int zwLmsAlgStandTest20141203(void)
 int zwLmsAlgStandTest20141216GenPass1(void)
 {
 	printf("%s\n",__FUNCTION__);
-	for (int i=0;i<30;i++)
+	for (int i=0;i<3;i++)
 	{	
 	int handle=0;
 	int pass1DyCode=0;
@@ -201,6 +201,44 @@ int zwLmsAlgStandTest20141216GenPass1(void)
 		return -1;
 	}
 	JcLockDelete(handle);
+	}
+	return 0;
+}
+
+
+int zwLmsAlgStandTest20141216VerifyPass1(void)
+{
+	printf("%s\n",__FUNCTION__);
+	for (int i=0;i<3;i++)
+	{	
+		int handle=0;
+		int pass1DyCode=0;
+		handle = JcLockNew();
+		JcLockSetString(handle, JCI_ATMNO, "atm10455761");
+		JcLockSetString(handle, JCI_LOCKNO, "lock14771509");
+		JcLockSetString(handle, JCI_PSK, "PSKDEMO728");
+		//////////////////////////////////////////////////////////////////////////
+		//固定开锁时间,应该出来固定的结果
+		const int ZWFIX_STARTTIME=1416*ZWMEGA;
+		JcLockSetInt(handle,JCI_TIMESTEP,6);
+		//////////////////////////////////////////////////////////////////////////
+		int initCloseCode=38149728;
+		//这里是一个自检测试，如果失败，就说明有比较大的问题了，比如类似发生过的
+		//ARM编译器优化级别问题导致的生成错误的二进制代码等等
+		JcLockSetInt(handle, JCI_CLOSECODE, initCloseCode);
+		JcLockSetInt(handle,JCI_DATETIME,1416*ZWMEGA);
+		JcLockSetInt(handle,JCI_SEARCH_TIME_START,1416*ZWMEGA+127);
+		JcLockSetCmdType(handle, JCI_CMDTYPE, JCCMD_CCB_DYPASS1);
+		pass1DyCode=57174184;
+		JCMATCH pass1Match =
+			JcLockReverseVerifyDynaCode(handle,pass1DyCode);
+		if(ZWFIX_STARTTIME!=pass1Match.s_datetime)
+		{
+			ZWDBG_ERROR("JcLockReverseVerifyDynaCode Error! JCLMS Algorithm Reverse DynaCode Self Check Fail! 20141203\n");
+			return -2;
+		}	
+		//////////////////////////////////////////////////////////////////////////
+		JcLockDelete(handle);
 	}
 	return 0;
 }

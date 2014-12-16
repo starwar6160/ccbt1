@@ -177,6 +177,7 @@ int JCLMSCCB2014_API zwJclmsReqGenDyCode( int lmsHandle,int *dyCode);
 int JCLMSCCB2014_API zwJclmsReqVerifyDyCode( int lmsHandle,int dstCode,JCMATCH *match );
 int JCLMSCCB2014_API zwLmsAlgStandTest20141203(void);
 int JCLMSCCB2014_API zwLmsAlgStandTest20141216GenPass1(void);
+int JCLMSCCB2014_API zwLmsAlgStandTest20141216VerifyPass1(void);
 //输入：接收到的整个合并完毕的HID数据以及该数据的长度；
 //输出：JSON格式的返回值，输出缓冲区最大长度由outJsonLen指定
 //void JCLMSCCB2014_API zwJclmsRsp( void * inLmsReq,const int inLmsReqLen,char *outJson,const int outJsonLen );
