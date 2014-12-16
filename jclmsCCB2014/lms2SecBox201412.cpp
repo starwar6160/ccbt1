@@ -14,10 +14,10 @@
 #include "zwTimerHdr.h"
 
 #ifdef _DEBUG
-//#define _DEBUG_USE_LMS_FUNC_CALL_20141202
+#define _DEBUG_USE_LMS_FUNC_CALL_20141202
 #endif // _DEBUG
 //#define _DEBUG_USE_LMS_FUNC_CALL_20141202
-const int MYTESTLOOP=3;
+const int MYTESTLOOP=5;
 
 void JCLMSCCB2014_API zwJclmsRsp( void * inLmsReq,const int inLmsReqLen,char *outJson,const int outJsonLen );
 
@@ -533,7 +533,7 @@ void myPureHidTestDataGen20141216(void)
 	{
 		jcHidSendData(&hidHandle,mData,HDRLEN+MLEN);
 		int outLens=0;
-		jcHidRecvData(&hidHandle,mData,HDRLEN+MLEN,&outLens);
+		jcHidRecvData(&hidHandle,mData,100,&outLens);
 		assert(outLens>0 && outLens<=(HDRLEN+MLEN));
 	}
 	jcHidClose(&hidHandle);

@@ -13,6 +13,7 @@
 #include "zwhidComm.h"
 #include "zwHidSplitMsg.h"
 #include "zwSecretBoxAuth.h"
+#include "zwTimerHdr.h"
 
 void myCjsonTest1(void);
 
@@ -98,6 +99,7 @@ int JCLMSCCB2014_API JcLockDelete(const int handle)
 //生成各种类型的动态码
 int zwJcLockGetDynaCode(const int handle)
 {
+	zwTrace1027 tmr(__FUNCTION__"1");
 	ZWDBG_INFO("%s\n",__FUNCTION__);
 	JcLockDebugPrint(handle);
 	zwJcLockDumpJCINPUT(handle);
@@ -157,6 +159,7 @@ int zwJcLockGetDynaCode(const int handle)
 JCMATCH JCLMSCCB2014_API JcLockReverseVerifyDynaCode(const int handle,
 						     const int dstCode)
 {
+	zwTrace1027 tmr(__FUNCTION__"1");
 	ZWDBG_WARN("%s dstCode=%d\n",__FUNCTION__,dstCode);
 	JcLockDebugPrint(handle);
 	zwJcLockDumpJCINPUT(handle);
