@@ -249,6 +249,7 @@ namespace CcbV11Test722Ecies {
 
 	TEST_F(jclmsCCBV11_Test, zwHidSecboxLMSTest20141203StandTestVector) {
 		EXPECT_EQ(0,zwLmsAlgStandTest20141203());
+		EXPECT_EQ(0,zwLmsAlgStandTest20141216GenPass1());		
 	}
 
 

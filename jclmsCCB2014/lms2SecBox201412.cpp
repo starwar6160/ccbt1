@@ -16,8 +16,8 @@
 #ifdef _DEBUG
 #define _DEBUG_USE_LMS_FUNC_CALL_20141202
 #endif // _DEBUG
-//#define _DEBUG_USE_LMS_FUNC_CALL_20141202
-const int MYTESTLOOP=5;
+#define _DEBUG_USE_LMS_FUNC_CALL_20141202
+const int MYTESTLOOP=1;
 
 void JCLMSCCB2014_API zwJclmsRsp( void * inLmsReq,const int inLmsReqLen,char *outJson,const int outJsonLen );
 
@@ -125,8 +125,9 @@ void myAdler32Test();
 //20141203.1001.周伟
 int zwLmsAlgStandTest20141203(void)
 {
-	myCRC16Test();
-	myAdler32Test();
+	printf("%s\n",__FUNCTION__);
+	//myCRC16Test();
+	//myAdler32Test();
 	
 
 	int handle=0;
@@ -143,8 +144,10 @@ int zwLmsAlgStandTest20141203(void)
 	JcLockSetCmdType(handle, JCI_CMDTYPE, JCCMD_INIT_CLOSECODE);
 	//////////////////////////////////////////////////////////////////////////
 	//ZWPRINTF("zwJclmsReqGenDyCode initCloseCode\n");
+	zwTrace1027 *tmr=new zwTrace1027(__FUNCTION__"1");
 	int initCloseCode=0;
 	initCloseCode=JcLockGetDynaCode(handle);
+	delete tmr;
 	//这里是一个自检测试，如果失败，就说明有比较大的问题了，比如类似发生过的
 	//ARM编译器优化级别问题导致的生成错误的二进制代码等等
 	if(38149728!=initCloseCode)
@@ -169,6 +172,39 @@ int zwLmsAlgStandTest20141203(void)
 	JcLockDelete(handle);
 	return 0;
 }
+
+int zwLmsAlgStandTest20141216GenPass1(void)
+{
+	printf("%s\n",__FUNCTION__);
+	for (int i=0;i<30;i++)
+	{	
+	int handle=0;
+	int pass1DyCode=0;
+	handle = JcLockNew();
+	JcLockSetString(handle, JCI_ATMNO, "atm10455761");
+	JcLockSetString(handle, JCI_LOCKNO, "lock14771509");
+	JcLockSetString(handle, JCI_PSK, "PSKDEMO728");
+	//////////////////////////////////////////////////////////////////////////
+	//固定开锁时间,应该出来固定的结果
+	const int ZWFIX_STARTTIME=1416*ZWMEGA;
+	JcLockSetInt(handle,JCI_TIMESTEP,6);
+	JcLockSetInt(handle,JCI_SEARCH_TIME_START,1416*ZWMEGA+127);
+	JcLockSetCmdType(handle, JCI_CMDTYPE, JCCMD_INIT_CLOSECODE);
+	//////////////////////////////////////////////////////////////////////////
+	int initCloseCode=0;
+	initCloseCode=JcLockGetDynaCode(handle);
+	//这里是一个自检测试，如果失败，就说明有比较大的问题了，比如类似发生过的
+	//ARM编译器优化级别问题导致的生成错误的二进制代码等等
+	if(38149728!=initCloseCode)
+	{
+		ZWDBG_ERROR("initCloseCode Gen Error! JCLMS Algorithm GenDynaCode Self Check Fail! 20141203\n");
+		return -1;
+	}
+	JcLockDelete(handle);
+	}
+	return 0;
+}
+
 
 #ifdef _DEBUG_1205
 void myLmsReq2Json( int lmsHandle, char * tmpjson )
