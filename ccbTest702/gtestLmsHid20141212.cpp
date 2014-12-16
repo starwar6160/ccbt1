@@ -352,7 +352,7 @@ namespace CcbV11Test722Ecies {
 
 #ifdef _ZWLMSHID_TEST1212S4
 	TEST_F(jclmsCCBV11_Test, zwHidSecboxLMSTest20141211S4) {
-		for (int i=0;i<10;i++)
+		for (int i=0;i<30;i++)
 		{
 			myHidSecBoxLmsTestGenFixInitCloseCode20141212();
 			printf("Count %d\n",i);

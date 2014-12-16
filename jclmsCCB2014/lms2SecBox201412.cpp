@@ -11,11 +11,12 @@
 #include "zwhidComm.h"
 #include "zwHidSplitMsg.h"
 #include "zwSecretBoxAuth.h"
+#include "zwTimerHdr.h"
 
 #ifdef _DEBUG
-#define _DEBUG_USE_LMS_FUNC_CALL_20141202
+//#define _DEBUG_USE_LMS_FUNC_CALL_20141202
 #endif // _DEBUG
-
+#define _DEBUG_USE_LMS_FUNC_CALL_20141202
 
 void JCLMSCCB2014_API zwJclmsRsp( void * inLmsReq,const int inLmsReqLen,char *outJson,const int outJsonLen );
 
@@ -195,6 +196,7 @@ const int ZW_JSONBUF_LEN=640;
 //输出：JCRESULT联合体，取决于是生成请求还是验证请求，相应的哪一个字段有效；
 void JCLMSCCB2014_API zwJclmsRsp( void * inLmsReq,const int inLmsReqLen,char *outJson,const int outJsonLen )
 {	
+	//zwTrace1027 tmr(__FUNCTION__"1");
 	assert(NULL!=inLmsReq && inLmsReqLen>0);
 	assert(NULL!=outJson && outJsonLen>0);
 	if (NULL==inLmsReq || inLmsReqLen<=0)
@@ -295,13 +297,16 @@ const int ZWHIDBUFLEN=640;
 char g_dbg_hid_common1202[ZWHIDBUFLEN];
 
 void myLmsReq2Json( int lmsHandle, char * tmpjson );
-
+const int MYTESTLOOP=1000;
 //两个zwJclmsReq函数是上位机专用
 
 //填写完毕handle里面的数据结构以后，调用该函数生成动态码，该函数在底层将请求
 //做JSON序列化以后通过HID等通信线路发送到密盒，然后阻塞接收密盒返回结果，通过出参返回；
 int JCLMSCCB2014_API zwJclmsReqGenDyCode( int lmsHandle,int *dyCode )
 {
+	zwTrace1027 tmr(__FUNCTION__"1");
+	for (int i=0;i<MYTESTLOOP;i++)
+	{	
 	JCLMSREQ req;
 	memset(&req,0,sizeof(JCLMSREQ));
 	req.Type=JCLMS_CCB_CODEGEN;
@@ -380,12 +385,13 @@ int JCLMSCCB2014_API zwJclmsReqGenDyCode( int lmsHandle,int *dyCode )
 	ZWDBG_INFO("jclmsHidRespone Json is:\n%s\n",pureJson);
 	zwJclmsResultFromJson(pureJson,&rsp);
 #endif // _DEBUG_USE_LMS_FUNC_CALL_20141202
-	ZWDBG_INFO("%s:jclms Respone Json is:\n%s\n",__FUNCTION__,resJson);
+	ZWDBG_NOTICE("%s:jclms Respone Json is:\n%s\n",__FUNCTION__,resJson);
 	ZWDBG_INFO("Received lms Respon is:\n");
 	myHexDump(resJson,ZW_JSONBUF_LEN);
 	assert(0!=rsp.dynaCode);
 	*dyCode=rsp.dynaCode;
 	ZWDBG_WARN("%s Return dynaCode=%d\n",__FUNCTION__,rsp.dynaCode);
+	}	//DEBUG
 
 	return 0;
 }
@@ -396,6 +402,9 @@ int JCLMSCCB2014_API zwJclmsReqGenDyCode( int lmsHandle,int *dyCode )
 //以后通过HID等通信线路发送到密盒，然后阻塞接收密盒返回结果，通过出参返回；
 int JCLMSCCB2014_API zwJclmsReqVerifyDyCode( int lmsHandle,int dstCode,JCMATCH *match )
 {
+	zwTrace1027 tmr(__FUNCTION__"1");
+	for (int i=0;i<MYTESTLOOP;i++)
+	{
 	////////////////////////////JSON序列化开始//////////////////////////////////////////////	
 	char tmpjson[ZW_JSONBUF_LEN];
 	int tmpJsonLen=0;
@@ -467,6 +476,7 @@ int JCLMSCCB2014_API zwJclmsReqVerifyDyCode( int lmsHandle,int dstCode,JCMATCH *
 	myHexDump(resJson,ZW_JSONBUF_LEN);
 	memcpy((void *)match,(void *)&rsp.verCodeMatch,sizeof(JCMATCH));
 	ZWDBG_WARN("%s Match DateTime=%d\tValidity=%d\n",__FUNCTION__,match->s_datetime,match->s_validity);	
+	}	//DEBUG
 	return 0;
 }
 
