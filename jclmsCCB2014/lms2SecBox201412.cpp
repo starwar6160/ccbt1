@@ -16,7 +16,8 @@
 #ifdef _DEBUG
 //#define _DEBUG_USE_LMS_FUNC_CALL_20141202
 #endif // _DEBUG
-#define _DEBUG_USE_LMS_FUNC_CALL_20141202
+//#define _DEBUG_USE_LMS_FUNC_CALL_20141202
+const int MYTESTLOOP=3;
 
 void JCLMSCCB2014_API zwJclmsRsp( void * inLmsReq,const int inLmsReqLen,char *outJson,const int outJsonLen );
 
@@ -297,7 +298,6 @@ const int ZWHIDBUFLEN=640;
 char g_dbg_hid_common1202[ZWHIDBUFLEN];
 
 void myLmsReq2Json( int lmsHandle, char * tmpjson );
-const int MYTESTLOOP=1000;
 //两个zwJclmsReq函数是上位机专用
 
 //填写完毕handle里面的数据结构以后，调用该函数生成动态码，该函数在底层将请求
@@ -506,3 +506,35 @@ void myAdler32Test()
 
 
 #endif // _WIN32
+
+void myPureHidTestDataGen20141216(void)
+{
+	zwTrace1027 tmr(__FUNCTION__"1");
+//////////////////////////////////////////////////////////////////////////
+	//准备好要发送的数据
+	const int MLEN=600;
+	const int HDRLEN=sizeof(SECBOX_DATA_INFO);
+	char mData[HDRLEN+MLEN];
+	memset(mData+HDRLEN,'A',MLEN);
+	SECBOX_DATA_INFO hdr;
+	hdr.msg_type=250;	//特地设定的特殊包类型
+	hdr.data_index=crc8Short(mData,MLEN);
+	hdr.data_len=HtoNs(MLEN);
+	memcpy(mData,&hdr,HDRLEN);
+//////////////////////////////////////////////////////////////////////////
+	JCHID hidHandle;
+	hidHandle.vid=0x0483;
+	hidHandle.pid=0x5710;
+	if (JCHID_STATUS_OK != jcHidOpen(&hidHandle)) {
+		ZWDBG_ERROR("%s jcHidOpen FAIL\n",__FUNCTION__);
+		return;
+	}
+	for (int i=0;i<30;i++)
+	{
+		jcHidSendData(&hidHandle,mData,HDRLEN+MLEN);
+		int outLens=0;
+		jcHidRecvData(&hidHandle,mData,HDRLEN+MLEN,&outLens);
+		assert(outLens>0 && outLens<=(HDRLEN+MLEN));
+	}
+	jcHidClose(&hidHandle);
+}

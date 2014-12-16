@@ -179,7 +179,7 @@ int JCLMSCCB2014_API zwLmsAlgStandTest20141203(void);
 //输入：接收到的整个合并完毕的HID数据以及该数据的长度；
 //输出：JSON格式的返回值，输出缓冲区最大长度由outJsonLen指定
 //void JCLMSCCB2014_API zwJclmsRsp( void * inLmsReq,const int inLmsReqLen,char *outJson,const int outJsonLen );
-
+void JCLMSCCB2014_API myPureHidTestDataGen20141216(void);
 #ifdef _DEBUG
 //#define ZWDEBUG(format,...) printf(" "__FILE__","__FUNCTION__",LINE:%d:"format"", __LINE__,##__VA_ARGS__)
 //注意这里的format外面的双重引号一定要

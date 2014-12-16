@@ -4,6 +4,8 @@
 //#define _ZWLMSHID_TEST1212S2
 //#define _ZWLMSHID_TEST1212S3
 #define _ZWLMSHID_TEST1212S4
+#define _ZWLMSHID_TEST1212S5
+void myPureHidTestDataGen20141216(void);
 
 namespace CcbV11Test722Ecies {
 	void myHidSecBoxLmsTestGenFixInitCloseCode20141212();
@@ -352,7 +354,7 @@ namespace CcbV11Test722Ecies {
 
 #ifdef _ZWLMSHID_TEST1212S4
 	TEST_F(jclmsCCBV11_Test, zwHidSecboxLMSTest20141211S4) {
-		for (int i=0;i<30;i++)
+		for (int i=0;i<3;i++)
 		{
 			myHidSecBoxLmsTestGenFixInitCloseCode20141212();
 			printf("Count %d\n",i);
@@ -360,5 +362,14 @@ namespace CcbV11Test722Ecies {
 	}
 #endif // _ZWLMSHID_TEST1212S4
 
+#ifdef _ZWLMSHID_TEST1212S5
+	TEST_F(jclmsCCBV11_Test, zwHidSecboxLMSTest20141211S5) {
+		for (int i=0;i<3;i++)
+		{
+			myPureHidTestDataGen20141216();
+			printf("Count %d\n",i);
+		}
+	}
+#endif // _ZWLMSHID_TEST1212S5
 
 }				//namespace ccbtest722{
