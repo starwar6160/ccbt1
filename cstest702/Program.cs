@@ -24,10 +24,20 @@ namespace cstest702
             //建行1.1版本动态码验证流程例子
             //myV11DynaCodeTest();
             //myV11DynaCodeTestKeyBoardInput();
+            //初始闭锁码生成
             myLmsReq2SecBoxEx20141212GenInitCloseCode();
+            //第一开锁码生成
             myLmsReq2SecBoxEx20141212GenPass1DyCode();
+            //第一开锁码验证
             myLmsReq2SecBoxEx20141212VerifyPass1DyCode();
+            //验证码生成
             myLmsReq2SecBoxEx20141218GenVerifyCode();
+            //验证码验证
+            myLmsReq2SecBoxEx20141218VerifyVerifyCode();
+            //第二开锁码生成
+            myLmsReq2SecBoxEx20141218GenPass2DyCode();
+            //第二开锁码验证
+            myLmsReq2SecBoxEx20141218VerifyPass2DyCode();
         }
 
         //安全初始化例子
@@ -406,6 +416,7 @@ namespace cstest702
         const int MYT_INITCLOSECODE = 38149728;
         const int MYT_DYPASS1 = 57174184;
         const int MYT_VERCODE = 58387712;
+        const int MYT_DYPASS2 = 52451262;
 
         //设置几个测试共同的ATM编号，锁具编号，PSK3项输入值
         private static void mySetPubInput1218(int handle)
@@ -509,6 +520,83 @@ namespace cstest702
             }
             Console.Out.WriteLine("########################################################################");
         }
+
+        private static void myLmsReq2SecBoxEx20141218VerifyVerifyCode()
+        {
+            int handle = jclmsCCB2014.JcLockNew();
+            mySetPubInput1218(handle);
+            //验证码的验证,应该把第一开锁码作为输入要素填写在JCI_CLOSECODE里面
+            jclmsCCB2014.JcLockSetInt(handle, jclms.JCITYPE.JCI_CLOSECODE, MYT_DYPASS1);
+            //由于是预设好的距离现在有很多日子的一个时间值1416000000秒,所以需要特地设置搜索起始时间
+            //为该时间之后5分钟以内的某个时间点,此处设置2分钟多一点,应该具有一定的典型性;
+            jclmsCCB2014.JcLockSetInt(handle, jclms.JCITYPE.JCI_SEARCH_TIME_START, 1416 * ZWMEGA + 123);
+            //既然是验证验证,必须填写正确的类型,无论是生成还是验证
+            jclmsCCB2014.JcLockSetCmdType(handle, jclms.JCITYPE.JCI_CMDTYPE, jclms.JCCMD.JCCMD_CCB_LOCK_VERCODE);
+            JCMATCH match = new JCMATCH();
+            jclmsCCB2014.zwJclmsReqVerifyDyCode(handle, MYT_VERCODE, match);
+
+
+            if (0 != match.s_datetime)
+            {
+                Console.Out.WriteLine("密盒返回的验证码验证结果是正确的，时间是{0}", match.s_datetime);
+            }
+            else
+            {
+                Console.Out.WriteLine("密盒返回的验证码验证结果是错误的，时间是{0}", match.s_datetime);
+            }
+            Console.Out.WriteLine("########################################################################");
+        }
+
+        private static void myLmsReq2SecBoxEx20141218GenPass2DyCode()
+        {
+            int handle = jclmsCCB2014.JcLockNew();
+            mySetPubInput1218(handle);
+            //第二开锁码的生成,必须由验证码作为输入要素填写在JCI_CLOSECODE里面
+            jclmsCCB2014.JcLockSetInt(handle, jclms.JCITYPE.JCI_CLOSECODE, MYT_VERCODE);
+            //指定要为什么时间生成第二开锁码，现在假设是第一开锁码之后55秒
+            jclmsCCB2014.JcLockSetInt(handle, jclms.JCITYPE.JCI_DATETIME, ZWFIX_STARTTIME+55);
+            //生成第二开锁码,必须填写正确的类型
+            jclmsCCB2014.JcLockSetCmdType(handle, jclms.JCITYPE.JCI_CMDTYPE, jclms.JCCMD.JCCMD_CCB_DYPASS2);
+
+            int myDyCodePass1 = jclmsCCB2014.csJclmsReqGenDyCode(handle);
+
+            if (MYT_DYPASS2 != myDyCodePass1)
+            {
+                Console.Out.WriteLine("密盒返回的第二开锁码结果{0}是错误的，正确值是{1}", myDyCodePass1, MYT_DYPASS2);
+            }
+            else
+            {
+                Console.Out.WriteLine("密盒返回的第二开锁码结果{0}是正确的", myDyCodePass1);
+            }
+            Console.Out.WriteLine("########################################################################");
+        }
+
+        private static void myLmsReq2SecBoxEx20141218VerifyPass2DyCode()
+        {
+            int handle = jclmsCCB2014.JcLockNew();
+            mySetPubInput1218(handle);
+            //第二开锁码的验证,必须由验证码作为输入要素填写在JCI_CLOSECODE里面
+            jclmsCCB2014.JcLockSetInt(handle, jclms.JCITYPE.JCI_CLOSECODE, MYT_VERCODE);
+            //由于是预设好的距离现在有很多日子的一个时间值1416000000秒,所以需要特地设置搜索起始时间
+            //为该时间之后5分钟以内的某个时间点,此处设置2分钟多一点,应该具有一定的典型性;
+            jclmsCCB2014.JcLockSetInt(handle, jclms.JCITYPE.JCI_SEARCH_TIME_START, 1416 * ZWMEGA + 123);
+            //既然是验证第二开锁码,必须填写正确的类型,无论是生成还是验证
+            jclmsCCB2014.JcLockSetCmdType(handle, jclms.JCITYPE.JCI_CMDTYPE, jclms.JCCMD.JCCMD_CCB_DYPASS2);
+            JCMATCH match = new JCMATCH();
+            jclmsCCB2014.zwJclmsReqVerifyDyCode(handle, MYT_DYPASS2, match);
+
+
+            if (0 != match.s_datetime)
+            {
+                Console.Out.WriteLine("密盒返回的第二开锁码验证结果是正确的，时间是{0}", match.s_datetime);
+            }
+            else
+            {
+                Console.Out.WriteLine("密盒返回的第二开锁码验证结果是错误的，时间是{0}", match.s_datetime);
+            }
+            Console.Out.WriteLine("########################################################################");
+        }
+
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////
