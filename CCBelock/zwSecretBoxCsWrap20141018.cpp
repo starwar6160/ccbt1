@@ -115,7 +115,7 @@ CCBELOCK_API int JcSecBox::SecboxWriteData(const int index, const char *dataB64)
 #ifdef _DEBUG_USEPOCOLOG1027
 		pocoLog->error("jcSecbox Error HandleZero");
 #endif // _DEBUG_USEPOCOLOG1027
-		return 1;
+		//return 1;
 	}
 	assert(index >= 0 && index <= 16);
 	assert(NULL != dataB64 && strlen(dataB64) > 0);

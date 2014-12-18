@@ -4,6 +4,7 @@
 #include "zwSecretBoxCCBcsWrap.h"
 using std::string;
 
+#define _DEBUG_ZWHIDCOMM
 void zwSecboxWDXtest20141023(void)
 {
 	char zwbuf[256];
@@ -21,21 +22,24 @@ void zwSecboxWDXtest20141023(void)
 		//printf(zwbuf);
 		//OutputDebugStringA(zwbuf);
 		//打开密盒                
+#ifdef _DEBUG1212
+		printf("SecboxAuth:");
 		int status =
 			secBox.SecboxAuth();
 
-#ifdef _DEBUG_ZWHIDCOMM
 		if (0==status)
 		{
-			printf("Good Secret Box\n");
+			OutputDebugStringA("SecboxAuth_PASS");
+			printf("SecboxAuth_PASS\n");
 		}
-#endif // _DEBUG_ZWHIDCOMM
-		if (1==status)
-		{
-			OutputDebugStringA("SECBOX_FAIL");
-			printf("SECBOX_FAIL\n");
+		else{
+			OutputDebugStringA("SecboxAuth_FAIL");
+			printf("SecboxAuth_FAIL\n");
+			Sleep(500);
 			continue;
 		}
+#endif // _DEBUG1212
+
 		//////////////////////////////////////////////////////////
 		//随便用一段比较长的文字经过base64编码形成的下面这段有待写入的base64数据
 		//实践中，可以用二进制数据编码之后成为base64字符串写入；
