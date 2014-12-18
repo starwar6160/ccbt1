@@ -405,12 +405,20 @@ namespace cstest702
         const int MYT_INITCLOSECODE = 38149728;
         const int MYT_DYPASS1 = 57174184;
 
-        private static void myLmsReq2SecBoxEx20141212GenInitCloseCode()
+        //设置几个测试共同的ATM编号，锁具编号，PSK3项输入值
+        private static void mySetPubInput1218(int handle)
         {
-            int handle = jclmsCCB2014.JcLockNew();
             jclmsCCB2014.JcLockSetString(handle, jclms.JCITYPE.JCI_ATMNO, MYT_ATMNO);
             jclmsCCB2014.JcLockSetString(handle, jclms.JCITYPE.JCI_LOCKNO, MYT_LOCKNO);
             jclmsCCB2014.JcLockSetString(handle, jclms.JCITYPE.JCI_PSK, MYT_PSK);
+            jclmsCCB2014.JcLockSetInt(handle, jclms.JCITYPE.JCI_TIMESTEP, 6);
+        }
+
+        private static void myLmsReq2SecBoxEx20141212GenInitCloseCode()
+        {
+            int handle = jclmsCCB2014.JcLockNew();
+            mySetPubInput1218(handle);
+            //指明要生成初始闭锁码；由于初始闭锁码的日期时间，有效期等可变因素是预先定死的，所以不用设置了
             jclmsCCB2014.JcLockSetCmdType(handle, jclms.JCITYPE.JCI_CMDTYPE, jclms.JCCMD.JCCMD_INIT_CLOSECODE);       
 
             int myInitCloseCode = jclmsCCB2014.csJclmsReqGenDyCode(handle);
@@ -428,11 +436,12 @@ namespace cstest702
         private static void myLmsReq2SecBoxEx20141212GenPass1DyCode()
         {
             int handle = jclmsCCB2014.JcLockNew();
-            jclmsCCB2014.JcLockSetString(handle, jclms.JCITYPE.JCI_ATMNO, MYT_ATMNO);
-            jclmsCCB2014.JcLockSetString(handle, jclms.JCITYPE.JCI_LOCKNO, MYT_LOCKNO);
-            jclmsCCB2014.JcLockSetString(handle, jclms.JCITYPE.JCI_PSK, MYT_PSK);
+            mySetPubInput1218(handle);
+            //第一开锁码的生成,必须由初始闭锁码作为输入要素填写在JCI_CLOSECODE里面
             jclmsCCB2014.JcLockSetInt(handle, jclms.JCITYPE.JCI_CLOSECODE, MYT_INITCLOSECODE);
+            //指定要为什么时间生成第一开锁码，可以提前为将来某个时刻生成开锁码
             jclmsCCB2014.JcLockSetInt(handle, jclms.JCITYPE.JCI_DATETIME, ZWFIX_STARTTIME);
+            //生成第一开锁码,必须填写正确的类型
             jclmsCCB2014.JcLockSetCmdType(handle, jclms.JCITYPE.JCI_CMDTYPE, jclms.JCCMD.JCCMD_CCB_DYPASS1);            
 
             int myDyCodePass1 = jclmsCCB2014.csJclmsReqGenDyCode(handle);
@@ -451,14 +460,13 @@ namespace cstest702
         private static void myLmsReq2SecBoxEx20141212VerifyPass1DyCode()
         {
             int handle = jclmsCCB2014.JcLockNew();
-            jclmsCCB2014.JcLockSetString(handle, jclms.JCITYPE.JCI_ATMNO, MYT_ATMNO);
-            jclmsCCB2014.JcLockSetString(handle, jclms.JCITYPE.JCI_LOCKNO, MYT_LOCKNO);
-            jclmsCCB2014.JcLockSetString(handle, jclms.JCITYPE.JCI_PSK, MYT_PSK);
+            mySetPubInput1218(handle);
+            //第一开锁码的验证,必须要有初始闭锁码填写在JCI_CLOSECODE里面
             jclmsCCB2014.JcLockSetInt(handle, jclms.JCITYPE.JCI_CLOSECODE, MYT_INITCLOSECODE);
-            jclmsCCB2014.JcLockSetInt(handle, jclms.JCITYPE.JCI_DATETIME, ZWFIX_STARTTIME);
-
-            jclmsCCB2014.JcLockSetInt(handle, jclms.JCITYPE.JCI_TIMESTEP, 6);
+            //由于是预设好的距离现在有很多日子的一个时间值1416000000秒,所以需要特地设置搜索起始时间
+            //为该时间之后5分钟以内的某个时间点,此处设置2分钟多一点,应该具有一定的典型性;
             jclmsCCB2014.JcLockSetInt(handle, jclms.JCITYPE.JCI_SEARCH_TIME_START, 1416 * ZWMEGA + 123);
+            //既然是验证第一开锁码,必须填写正确的类型,无论是生成还是验证
             jclmsCCB2014.JcLockSetCmdType(handle, jclms.JCITYPE.JCI_CMDTYPE, jclms.JCCMD.JCCMD_CCB_DYPASS1);
             JCMATCH match=new JCMATCH();
             jclmsCCB2014.zwJclmsReqVerifyDyCode(handle, MYT_DYPASS1, match);
