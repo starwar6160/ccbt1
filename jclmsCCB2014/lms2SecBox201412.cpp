@@ -16,7 +16,7 @@
 #ifdef _DEBUG
 #define _DEBUG_USE_LMS_FUNC_CALL_20141202
 #endif // _DEBUG
-#define _DEBUG_USE_LMS_FUNC_CALL_20141202
+//#define _DEBUG_USE_LMS_FUNC_CALL_20141202
 const int MYTESTLOOP=1;
 
 void JCLMSCCB2014_API zwJclmsRsp( void * inLmsReq,const int inLmsReqLen,char *outJson,const int outJsonLen );
@@ -208,6 +208,7 @@ int zwLmsAlgStandTest20141216GenPass1(void)
 
 int zwLmsAlgStandTest20141216VerifyPass1(void)
 {
+	zwTrace1027 tmr(__FUNCTION__"1");
 	printf("%s\n",__FUNCTION__);
 	for (int i=0;i<3;i++)
 	{	
@@ -271,7 +272,7 @@ const int ZW_JSONBUF_LEN=640;
 //输出：JCRESULT联合体，取决于是生成请求还是验证请求，相应的哪一个字段有效；
 void JCLMSCCB2014_API zwJclmsRsp( void * inLmsReq,const int inLmsReqLen,char *outJson,const int outJsonLen )
 {	
-	//zwTrace1027 tmr(__FUNCTION__"1");
+	zwTrace1027 tmr(__FUNCTION__"1");
 	assert(NULL!=inLmsReq && inLmsReqLen>0);
 	assert(NULL!=outJson && outJsonLen>0);
 	if (NULL==inLmsReq || inLmsReqLen<=0)
@@ -356,7 +357,6 @@ void JCLMSCCB2014_API zwJclmsRsp( void * inLmsReq,const int inLmsReqLen,char *ou
 		zwJclmsRersult2Json(&lmsResult,JCLMS_CCB_CODEVERIFY,outJson,outJsonLen);
 	}	
 	ZWDBG_INFO("INFO:%s:jclms Result JSON is:\n%s\n",__FUNCTION__,outJson);
-	
 }
 
 int JCLMSCCB2014_API csJclmsReqGenDyCode( int lmsHandle )
@@ -521,7 +521,7 @@ int JCLMSCCB2014_API zwJclmsReqVerifyDyCode( int lmsHandle,int dstCode,JCMATCH *
 	ZWDBG_INFO("%s:jclms Request Json is:\n%s\n",__FUNCTION__,hidSendBuf+sizeof(short int));
 #ifdef _DEBUG_USE_LMS_FUNC_CALL_20141202
 	//调试状态，直接调用下位机函数即可
-	zwJclmsRsp(hidSendBuf,outLen,resJson,ZW_JSONBUF_LEN);
+	zwJclmsRsp(hidSendBuf,outLen,resJson,ZW_JSONBUF_LEN);	
 	zwJclmsResultFromJson(resJson,&rsp);
 #else
 	JCHID hidHandle;
