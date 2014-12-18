@@ -27,6 +27,7 @@ namespace cstest702
             myLmsReq2SecBoxEx20141212GenInitCloseCode();
             myLmsReq2SecBoxEx20141212GenPass1DyCode();
             myLmsReq2SecBoxEx20141212VerifyPass1DyCode();
+            myLmsReq2SecBoxEx20141218GenVerifyCode();
         }
 
         //安全初始化例子
@@ -404,6 +405,7 @@ namespace cstest702
         const String MYT_PSK = "PSKDEMO728";
         const int MYT_INITCLOSECODE = 38149728;
         const int MYT_DYPASS1 = 57174184;
+        const int MYT_VERCODE = 58387712;
 
         //设置几个测试共同的ATM编号，锁具编号，PSK3项输入值
         private static void mySetPubInput1218(int handle)
@@ -482,6 +484,33 @@ namespace cstest702
             }
             Console.Out.WriteLine("########################################################################");
         }
+
+        private static void myLmsReq2SecBoxEx20141218GenVerifyCode()
+        {
+            int handle = jclmsCCB2014.JcLockNew();
+            mySetPubInput1218(handle);
+            //验证码的生成,应该把第一开锁码作为输入要素填写在JCI_CLOSECODE里面
+            jclmsCCB2014.JcLockSetInt(handle, jclms.JCITYPE.JCI_CLOSECODE, MYT_DYPASS1);
+            //指定要为什么时间生成验证码,考虑到模拟实际情况，双人输入完毕自己的密码，获得第一开锁码之后
+            //再在锁具上输入，25秒应该是最小延迟了，所以加上25秒
+            jclmsCCB2014.JcLockSetInt(handle, jclms.JCITYPE.JCI_DATETIME, ZWFIX_STARTTIME+25);
+            //生成验证码,必须填写正确的类型
+            jclmsCCB2014.JcLockSetCmdType(handle, jclms.JCITYPE.JCI_CMDTYPE, jclms.JCCMD.JCCMD_CCB_LOCK_VERCODE);
+
+            int myVerifyCode = jclmsCCB2014.csJclmsReqGenDyCode(handle);
+
+            if (MYT_VERCODE != myVerifyCode)
+            {
+                Console.Out.WriteLine("密盒返回的验证码结果{0}是错误的，正确值是{1}", myVerifyCode, MYT_VERCODE);
+            }
+            else
+            {
+                Console.Out.WriteLine("密盒返回的验证码结果{0}是正确的", myVerifyCode);
+            }
+            Console.Out.WriteLine("########################################################################");
+        }
+
+
 ///////////////////////////////////////////////////////////////////////////////////////////
     }   //class Program
 }   //namespace cstest702
