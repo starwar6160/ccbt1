@@ -49,10 +49,12 @@ namespace jcAtmcConvertDLL {
 		ptccb.put("root.ShutLockcode", ptjc.get < int >("Code"));
 	}
 
-	void zwconvRecvInitCloseCodeDown(const ptree &, ptree & ptjc) {
+	void zwconvRecvInitCloseCodeDown( const ptree & ptccb, ptree & ptjc )
+	{
 		ZWFUNCTRACE
 		    ptjc.put(jcAtmcConvertDLL::JCSTR_CMDTITLE,
 			     "Lock_Close_Code_Lock");
+			ptjc.put("State",ptccb.get < int > ("RevResult"));
 	}
 
 	void zwconvRecvInitCloseCodeUp(const ptree & ptjc, ptree & ptccb) {
@@ -69,10 +71,12 @@ namespace jcAtmcConvertDLL {
 		ptccb.put("root.ShutLockcode", ptjc.get < int >("Code"));
 	}
 
-	void zwconvRecvVerifyCodeDown(const ptree &, ptree & ptjc) {
+	void zwconvRecvVerifyCodeDown( const ptree & ptccb, ptree & ptjc )
+	{
 		ZWFUNCTRACE
 		    ptjc.put(jcAtmcConvertDLL::JCSTR_CMDTITLE,
 			     "Lock_Open_Ident");
+		ptjc.put("State",ptccb.get < int > ("RevResult"));
 	}
 
 	void zwconvRecvVerifyCodeUp(const ptree & ptjc, ptree & ptccb) {
