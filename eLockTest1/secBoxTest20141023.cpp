@@ -3,7 +3,7 @@
 #include <windows.h>
 #include "zwSecretBoxCCBcsWrap.h"
 using std::string;
-
+#define _DEBUG1212
 #define _DEBUG_ZWHIDCOMM
 void zwSecboxWDXtest20141023(void)
 {
@@ -12,7 +12,7 @@ void zwSecboxWDXtest20141023(void)
 	const int ZWPAUSE = 1500;
 	//声明一个密盒对象；使用该对象的3个方法来认证，读取，写入，至于Open/Close由该对象内部自动完成；            
 	int i=0;
-	for (int i = 0; i < 3; i++)
+	for (int i = 0; i < 1; i++)
 	//while(1)
 	{
 		i++;
@@ -48,9 +48,10 @@ void zwSecboxWDXtest20141023(void)
 		const char  *myLongB64Str1 = "emhvdXdlaXRlc3RPdXRwdXREZWJ1Z1N0cmluZ0FuZEppbkNodUVMb2NraW5kZXg9MFRvdGFsQmxvY2s9MkN1ckJsb2NrTGVuPTU4U2VkaW5nIERhdGEgQmxvY2sgIzBSZWNldmVkIERhdGEgRnJvbSBKQ0VMb2NrIGlzOg==";
 		//通过句柄，索引号，读取密盒数据，返回的也是Base64编码过的字符串，解码后可能是文本，也可能是二进制数据
 		//Console.Out.WriteLine("Secret Box WriteData");
-		secBox.SecboxWriteData(1, myLongB64Str1);
+		
 		//Console.Out.WriteLine("Secret Box ReadData");
-		std::string recvFromSecBox = secBox.SecboxReadData(1);
+		std::string recvFromSecBox = secBox.SecboxReadData(2);
+		secBox.SecboxWriteData(2, myLongB64Str1);
 		//Console.Out.WriteLine("WAIT 4 SECONDS FOR PLUG OUT/IN SECRET BOX");
 		//System.Threading.Thread.Sleep(ZWPAUSE*5);
 		sprintf(zwbuf,"end of secBox test loop %d\n",i);
