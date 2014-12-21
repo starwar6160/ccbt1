@@ -3,7 +3,7 @@
 //#define _ZWLMSHID_TEST1212S1
 //#define _ZWLMSHID_TEST1212S2
 //#define _ZWLMSHID_TEST1212S3
-//#define _ZWLMSHID_TEST1212S4
+#define _ZWLMSHID_TEST1212S4
 //#define _ZWLMSHID_TEST1212S5
 void myPureHidTestDataGen20141216(void);
 

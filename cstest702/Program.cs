@@ -28,6 +28,7 @@ namespace cstest702
             myLmsReq2SecBoxEx20141212GenInitCloseCode();
             //第一开锁码生成
             myLmsReq2SecBoxEx20141212GenPass1DyCode();
+            return;
             //第一开锁码验证
             myLmsReq2SecBoxEx20141212VerifyPass1DyCode();
             //验证码生成

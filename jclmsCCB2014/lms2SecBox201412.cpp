@@ -14,7 +14,7 @@
 #include "zwTimerHdr.h"
 
 #ifdef _DEBUG
-#define _DEBUG_USE_LMS_FUNC_CALL_20141202
+//#define _DEBUG_USE_LMS_FUNC_CALL_20141202
 #endif // _DEBUG
 //#define _DEBUG_USE_LMS_FUNC_CALL_20141202
 const int MYTESTLOOP=1;
@@ -426,7 +426,7 @@ int JCLMSCCB2014_API zwJclmsReqGenDyCode( int lmsHandle,int *dyCode )
 	memset(&rsp,0,sizeof(rsp));
 	char resJson[ZW_JSONBUF_LEN];
 	memset(resJson,0,ZW_JSONBUF_LEN);
-	ZWDBG_INFO("%s:jclms Request Json is:\n%s\n",__FUNCTION__,hidSendBuf+sizeof(short int));
+	ZWDBG_NOTICE("%s:jclms Request Json is:\n%s\n",__FUNCTION__,hidSendBuf+sizeof(hidPayloadHeader));
 #ifdef _DEBUG_USE_LMS_FUNC_CALL_20141202
 	//调试状态，直接调用下位机函数即可
 	zwJclmsRsp(hidSendBuf,outLen,resJson,ZW_JSONBUF_LEN);	
@@ -459,7 +459,7 @@ int JCLMSCCB2014_API zwJclmsReqGenDyCode( int lmsHandle,int *dyCode )
 	ZWDBG_INFO("jclmsHidRespone Json is:\n%s\n",pureJson);
 	zwJclmsResultFromJson(pureJson,&rsp);
 #endif // _DEBUG_USE_LMS_FUNC_CALL_20141202
-	ZWDBG_NOTICE("%s:jclms Respone Json is:\n%s\n",__FUNCTION__,resJson);
+	ZWDBG_NOTICE("%s:jclms Respone Json is:\n%s\n",__FUNCTION__,pureJson);
 	ZWDBG_INFO("Received lms Respon is:\n");
 	myHexDump(resJson,ZW_JSONBUF_LEN);
 	assert(0!=rsp.dynaCode);
@@ -518,7 +518,7 @@ int JCLMSCCB2014_API zwJclmsReqVerifyDyCode( int lmsHandle,int dstCode,JCMATCH *
 	memset(&rsp,0,sizeof(rsp));
 	char resJson[ZW_JSONBUF_LEN];
 	memset(resJson,0,ZW_JSONBUF_LEN);
-	ZWDBG_INFO("%s:jclms Request Json is:\n%s\n",__FUNCTION__,hidSendBuf+sizeof(short int));
+	ZWDBG_NOTICE("%s:jclms Request Json is:\n%s\n",__FUNCTION__,hidSendBuf+sizeof(hidPayloadHeader));
 #ifdef _DEBUG_USE_LMS_FUNC_CALL_20141202
 	//调试状态，直接调用下位机函数即可
 	zwJclmsRsp(hidSendBuf,outLen,resJson,ZW_JSONBUF_LEN);	
@@ -545,7 +545,7 @@ int JCLMSCCB2014_API zwJclmsReqVerifyDyCode( int lmsHandle,int dstCode,JCMATCH *
 	ZWDBG_INFO("jclmsHidRespone Json is:\n%s\n",pureJson);
 	zwJclmsResultFromJson(pureJson,&rsp);
 #endif // _DEBUG_USE_LMS_FUNC_CALL_20141202
-	ZWDBG_NOTICE("%s:jclms Respone Json is:\n%s\n",__FUNCTION__,resJson);
+	ZWDBG_NOTICE("%s:jclms Respone Json is:\n%s\n",__FUNCTION__,pureJson);
 	ZWDBG_INFO("Received lms Respon is:\n");
 	myHexDump(resJson,ZW_JSONBUF_LEN);
 	memcpy((void *)match,(void *)&rsp.verCodeMatch,sizeof(JCMATCH));

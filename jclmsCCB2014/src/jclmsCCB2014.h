@@ -191,11 +191,12 @@ void JCLMSCCB2014_API myPureHidTestDataGen20141216(void);
 #define ZWDBG_ERROR(format,...) printf(""format"", ##__VA_ARGS__)
 #else
 #define ZWDBG_INFO(format,...) 
-#define ZWDBG_NOTICE(format,...) 
-#define ZWDBG_WARN(format,...) 
-#define ZWDBG_ERROR(format,...) 
-//#define ZWDBG_WARN(format,...) printf(""format"", ##__VA_ARGS__)
-//#define ZWDBG_ERROR(format,...) printf(""format"", ##__VA_ARGS__)
+//#define ZWDBG_NOTICE(format,...) 
+//#define ZWDBG_WARN(format,...) 
+//#define ZWDBG_ERROR(format,...) 
+#define ZWDBG_NOTICE(format,...) printf(""format"", ##__VA_ARGS__)
+#define ZWDBG_WARN(format,...) printf(""format"", ##__VA_ARGS__)
+#define ZWDBG_ERROR(format,...) printf(""format"", ##__VA_ARGS__)
 
 #endif // _DEBUG
 
