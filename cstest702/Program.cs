@@ -24,6 +24,10 @@ namespace cstest702
             //建行1.1版本动态码验证流程例子
             //myV11DynaCodeTest();
             //myV11DynaCodeTestKeyBoardInput();
+            mySecBoxTest1221();
+            tmyLmsReq2SecBoxEx20141221GenPass1DyCode();
+            return;
+
             //初始闭锁码生成
             myLmsReq2SecBoxEx20141212GenInitCloseCode();
             //第一开锁码生成
@@ -598,7 +602,87 @@ namespace cstest702
             Console.Out.WriteLine("########################################################################");
         }
 
+        private static void tmyLmsReq2SecBoxEx20141221GenPass1DyCode()
+        {
+            int handle = jclmsCCB2014.JcLockNew();
+                //"ATMNO":        "123456789012",
+                //"LOCKNO":       "1111222233334444",
+                //"PSK":  "A2E61F74FFB44E7F78282381732B0E280DD14882AAA91A1FD0511BF230DB23C3",
+                //"CodeGenDateTime":      1419150780,
+                //"Validity":     5,
+                //"CloseCode":    12345678,
+                //"CmdType":      "JCCMD_CCB_DYPASS1",
 
+            jclmsCCB2014.JcLockSetString(handle, jclms.JCITYPE.JCI_ATMNO, "123456789012");
+            jclmsCCB2014.JcLockSetString(handle, jclms.JCITYPE.JCI_LOCKNO, "1111222233334444");
+            jclmsCCB2014.JcLockSetString(handle, jclms.JCITYPE.JCI_PSK, "A2E61F74FFB44E7F78282381732B0E280DD14882AAA91A1FD0511BF230DB23C3");
+            jclmsCCB2014.JcLockSetInt(handle, jclms.JCITYPE.JCI_TIMESTEP, 6);
+
+            //第一开锁码的生成,必须由初始闭锁码作为输入要素填写在JCI_CLOSECODE里面
+            jclmsCCB2014.JcLockSetInt(handle, jclms.JCITYPE.JCI_CLOSECODE, MYT_INITCLOSECODE);
+            //指定要为什么时间生成第一开锁码，可以提前为将来某个时刻生成开锁码
+            jclmsCCB2014.JcLockSetInt(handle, jclms.JCITYPE.JCI_DATETIME, 1419150780);
+            //生成第一开锁码,必须填写正确的类型
+            jclmsCCB2014.JcLockSetCmdType(handle, jclms.JCITYPE.JCI_CMDTYPE, jclms.JCCMD.JCCMD_CCB_DYPASS1);
+
+            int myDyCodePass1 = jclmsCCB2014.csJclmsReqGenDyCode(handle);
+
+            if (MYT_DYPASS1 != myDyCodePass1)
+            {
+                Console.Out.WriteLine("密盒返回的第一开锁码结果{0}是错误的，正确值是{1}", myDyCodePass1, MYT_DYPASS1);
+            }
+            else
+            {
+                Console.Out.WriteLine("密盒返回的第一开锁码结果{0}是正确的", myDyCodePass1);
+            }
+            Console.Out.WriteLine("########################################################################");
+        }
+
+        private static void mySecBoxTest1221()
+        {
+            //声明一个密盒对象；使用该对象的3个方法来认证，读取，写入，至于Open/Close由该对象内部自动完成；            
+            
+            for (int i = 0; i < 1; i++)
+            //while(true)
+            {
+                jclms.JcSecBox secBox = new JcSecBox();
+                Console.Out.WriteLine("Secret Box Open###########################################################");
+                //打开密盒                
+                int status =
+                    secBox.SecboxAuth();
+
+                if (0==status)
+                {
+                    Console.Out.WriteLine("Good Secret Box");
+                }
+                if (1==status)
+                {
+                    Console.Out.WriteLine("Fake Secret Box");
+                    continue;
+                }
+                //////////////////////////////////////////////////////////
+                //随便用一段比较长的文字经过base64编码形成的下面这段有待写入的base64数据
+                //实践中，可以用二进制数据编码之后成为base64字符串写入；
+                //第二个参数是索引号，大致上是0到10左右，具体还得和赵工确认
+                //第三个参数，也就是数据，大体上可以达到最大400多个字节，具体多少还得和赵工确认
+                const String myLongB64Str1 = "12345678";
+                    //"emhvdXdlaXRlc3RPdXRwdXREZWJ1Z1N0cmluZ0FuZEppbkNodUVMb2NraW5kZXg9MFRvdGFsQmxvY2s9MkN1ckJsb2NrTGVuPTU4U2VkaW5nIERhdGEgQmxvY2sgIzBSZWNldmVkIERhdGEgRnJvbSBKQ0VMb2NrIGlzOg==";
+                //通过句柄，索引号，读取密盒数据，返回的也是Base64编码过的字符串，解码后可能是文本，也可能是二进制数据
+
+
+                String recvFromSecBox = secBox.SecboxReadData(2);
+                Console.Out.WriteLine("Secret Box ReadData is {0}", recvFromSecBox);
+                secBox.SecboxWriteData(2, myLongB64Str1);
+                Console.Out.WriteLine("Secret Box WriteData is {0}",myLongB64Str1);
+                secBox.SecboxReadData(2);
+                Console.Out.WriteLine("Secret Box ReadData2 is {0}", recvFromSecBox);
+                //Console.Out.WriteLine("Secret Box ReadData");
+                
+                Console.Out.WriteLine("WAIT 4 SECONDS FOR PLUG OUT/IN SECRET BOX");
+                //System.Threading.Thread.Sleep(ZWPAUSE*5);
+            }
+
+        }
 
 ///////////////////////////////////////////////////////////////////////////////////////////
     }   //class Program
