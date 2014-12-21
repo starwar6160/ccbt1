@@ -18,7 +18,9 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "zwBaseLibStatic", "..\lms\z
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ccbATMCSecretBoxLib", "ccbATMCSecretBoxLib\ccbATMCSecretBoxLib.csproj", "{9C55E743-748D-490D-A22A-D1C2A14EF2BF}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "cppSecretBoxTest20141023", "cppSecretBoxTest20141023\cppSecretBoxTest20141023.vcxproj", "{C28C2296-B623-49D1-94DC-6510180CDB9C}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "cppSecretBoxTest20141215", "cppSecretBoxTest20141023\cppSecretBoxTest20141023.vcxproj", "{C28C2296-B623-49D1-94DC-6510180CDB9C}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "atmcpy", "atmcpy\atmcpy.vcxproj", "{7F797590-B440-4BC3-9197-13CB43BC34BA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -128,6 +130,18 @@ Global
 		{C28C2296-B623-49D1-94DC-6510180CDB9C}.Release|Win32.ActiveCfg = Release|Win32
 		{C28C2296-B623-49D1-94DC-6510180CDB9C}.Release|Win32.Build.0 = Release|Win32
 		{C28C2296-B623-49D1-94DC-6510180CDB9C}.Release|x86.ActiveCfg = Release|Win32
+		{7F797590-B440-4BC3-9197-13CB43BC34BA}.Debug|Any CPU.ActiveCfg = Debug|Win32
+		{7F797590-B440-4BC3-9197-13CB43BC34BA}.Debug|Mixed Platforms.ActiveCfg = Debug|Win32
+		{7F797590-B440-4BC3-9197-13CB43BC34BA}.Debug|Mixed Platforms.Build.0 = Debug|Win32
+		{7F797590-B440-4BC3-9197-13CB43BC34BA}.Debug|Win32.ActiveCfg = Debug|Win32
+		{7F797590-B440-4BC3-9197-13CB43BC34BA}.Debug|Win32.Build.0 = Debug|Win32
+		{7F797590-B440-4BC3-9197-13CB43BC34BA}.Debug|x86.ActiveCfg = Debug|Win32
+		{7F797590-B440-4BC3-9197-13CB43BC34BA}.Release|Any CPU.ActiveCfg = Release|Win32
+		{7F797590-B440-4BC3-9197-13CB43BC34BA}.Release|Mixed Platforms.ActiveCfg = Release|Win32
+		{7F797590-B440-4BC3-9197-13CB43BC34BA}.Release|Mixed Platforms.Build.0 = Release|Win32
+		{7F797590-B440-4BC3-9197-13CB43BC34BA}.Release|Win32.ActiveCfg = Release|Win32
+		{7F797590-B440-4BC3-9197-13CB43BC34BA}.Release|Win32.Build.0 = Release|Win32
+		{7F797590-B440-4BC3-9197-13CB43BC34BA}.Release|x86.ActiveCfg = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
