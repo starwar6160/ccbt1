@@ -3,7 +3,7 @@
 
 #include "stdafx.h"
 #include "atmcpy.h"
-
+#include "zwSecretBoxCCBcsWrap.h"
 
 //// 这是导出变量的一个示例
 //ATMCPY_API int natmcpy=0;
@@ -52,6 +52,20 @@ int dumpPerson(EXPERSON *p)
 	return p->age;
 }
 
+
+#ifdef _DEBUG1221
+CCBELOCK_API class JcSecBox {
+public:
+	CCBELOCK_API JcSecBox();
+	CCBELOCK_API ~ JcSecBox();
+	CCBELOCK_API int SecboxAuth(void);
+	CCBELOCK_API int SecboxWriteData(const int index,
+		const char *dataB64);
+	CCBELOCK_API const char *SecboxReadData(const int index);
+private:
+};
+#endif // _DEBUG1221
+
 //同一个模块下，内部可以导出多个类/结构体，函数等等；
 BOOST_PYTHON_MODULE(atmcpy)      //定义导出的模块名atmcpy
 {
@@ -67,4 +81,11 @@ BOOST_PYTHON_MODULE(atmcpy)      //定义导出的模块名atmcpy
 		//.def_readonly("name", &Var::name)
 		.def_readwrite("age", &EXPERSON::age)
 		.def_readwrite("name", &EXPERSON::name);
+
+	class_<JcSecBox>("JcSecBox", init<>())
+		//.def_readonly("name", &Var::name)
+		.def("SecboxAuth",&JcSecBox::SecboxAuth)
+		.def("SecboxWriteData",&JcSecBox::SecboxWriteData)
+		.def("SecboxReadData",&JcSecBox::SecboxReadData)
+		;
 }
