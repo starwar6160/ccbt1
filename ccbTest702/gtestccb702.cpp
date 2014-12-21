@@ -1,7 +1,8 @@
 #include "stdafx.h"
+#include "jclmsCCB2014.h"
 #include "zwEcies529.h"
 
-//#define _DEBUG_ECIES_NORMAL_TEST1117
+#define _DEBUG_ECIES_NORMAL_TEST1117
 //#define _DEBUG_ECIES_BADINPUT_TEST1117
 //#define _DEBUG_ECIES_CSTEST1117
 //#define _DEBUG_JCLMS_GTEST1117
