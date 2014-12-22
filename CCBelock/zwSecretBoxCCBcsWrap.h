@@ -28,6 +28,7 @@ extern "C" {
 	      public:
 		CCBELOCK_API JcSecBox();
 		CCBELOCK_API ~ JcSecBox();
+		CCBELOCK_API void CloseHid();
 		CCBELOCK_API int SecboxAuth(void);
 		CCBELOCK_API int SecboxWriteData(const int index,
 						 const char *dataB64);

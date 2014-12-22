@@ -63,9 +63,19 @@ CCBELOCK_API JcSecBox::JcSecBox()
 
 CCBELOCK_API JcSecBox::~JcSecBox()
 {
-	ZWTRC if (NULL != g_hidHandle) {
-		//pocoLog->information()<<"jcSecBox Closed handle="<<g_hidHandle<<endl;
-		//zwSecboxHidClose(g_hidHandle);
+	ZWTRC 
+	CloseHid();
+}
+
+//20141222.0941.周伟.JcSecBox添加一个明确的CloseHid接口以后，解决了先密盒认证读写
+//之后再发送lms密盒请求就会打不开设备的问题。根源还是C#无法控制对象析构的时机，
+//导致JcSecBox没有及时调用释放HID设备；
+CCBELOCK_API void JcSecBox::CloseHid()
+{
+	if (NULL != g_hidHandle) {
+		pocoLog->information()<<"jcSecBox Closed handle="<<g_hidHandle<<endl;
+		zwSecboxHidClose(g_hidHandle);
+		g_hidHandle=NULL;
 	}
 }
 
