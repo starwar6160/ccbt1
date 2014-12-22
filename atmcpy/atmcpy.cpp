@@ -39,6 +39,32 @@ int dumpPerson(EXPERSON *p)
 
 #endif // _DEBUG1221
 
+
+class jclock_data_input_ccb11 {
+public:
+	//固定因素部分
+	std::string AtmNo;	//ATM号
+	std::string LockNo;	//锁号
+	std::string PSK;	//PSK，上下位机共同持有的唯一机密因素
+	//可变因素部分
+	int CodeGenDateTime;		//日期时间
+	int Validity;		//有效期
+	int CloseCode;	//闭锁码             	
+	JCCMD CmdType;	//模式代码，比如开锁模式，远程重置模式，建行的流程要求的各种模式等等
+	int SearchTimeStart;	//搜索时间起始点UTC秒数，默认值应该设定为当前时间
+	/////////////////////以下为配置算法运作模式的数据，有默认值，一般不用改动///////////////////	
+	//反推时间步长秒数，默认为在线模式，精度6秒，离线模式请自己设置为3600秒或者其他数值
+	int SearchTimeStep;
+	//往前反推的时间长度秒数，默认为在线模式，9分钟，值为540，其他值比如离线24小时请自己设置
+	int SearchTimeLength;
+	int getValItemNum(void);	//获取有效期数组元素个数N,索引从0到N-1
+	int setValItem(const int index,const int validity);
+private:
+	//有效期，共有NUM_VALIDITY个,默认值是从5分钟到24小时那一系列，单位是分钟；可以自己设定
+	//可以把最常用的有效期设置在更靠近开始处加快匹配速度
+	int ValidityArray[NUM_VALIDITY];
+};
+
 //同一个模块下，内部可以导出多个类/结构体，函数等等；
 BOOST_PYTHON_MODULE(atmcpy)      //定义导出的模块名atmcpy
 {
