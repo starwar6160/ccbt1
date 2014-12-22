@@ -24,7 +24,13 @@ namespace cstest702
             //建行1.1版本动态码验证流程例子
             //myV11DynaCodeTest();
             //myV11DynaCodeTestKeyBoardInput();
-            mySecBoxTest1221();
+            jclms.JcSecBox secBox = new JcSecBox();
+            secBox.CloseHid();
+            int handle = jclmsCCB2014.JcLockNew();
+            int myDyCodePass1 = jclmsCCB2014.csJclmsReqGenDyCode(handle);
+            return;
+
+            mySecBoxTest1221();                        
             tmyLmsReq2SecBoxEx20141221GenPass1DyCode();
             return;
 

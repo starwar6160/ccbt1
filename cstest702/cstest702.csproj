@@ -49,7 +49,8 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="ccbATMCSecretBoxLib">
+    <Reference Include="ccbATMCSecretBoxLib, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\2014BinOut\Debug\ccbATMCSecretBoxLib.dll</HintPath>
     </Reference>
     <Reference Include="System" />
