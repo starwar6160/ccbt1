@@ -4,6 +4,7 @@
 #include "stdafx.h"
 #include "atmcpy.h"
 #include "zwSecretBoxCCBcsWrap.h"
+#include "jclmsCCB2014.h"
 
 #ifdef _DEBUG1221
 typedef struct _zwstu20_t{
@@ -36,16 +37,6 @@ int dumpPerson(EXPERSON *p)
 	return p->age;
 }
 
-CCBELOCK_API class JcSecBox {
-public:
-	CCBELOCK_API JcSecBox();
-	CCBELOCK_API ~ JcSecBox();
-	CCBELOCK_API int SecboxAuth(void);
-	CCBELOCK_API int SecboxWriteData(const int index,
-		const char *dataB64);
-	CCBELOCK_API const char *SecboxReadData(const int index);
-private:
-};
 #endif // _DEBUG1221
 
 //同一个模块下，内部可以导出多个类/结构体，函数等等；
@@ -66,10 +57,44 @@ BOOST_PYTHON_MODULE(atmcpy)      //定义导出的模块名atmcpy
 		.def_readwrite("name", &EXPERSON::name);
 #endif // _DEBUG1221
 
+	struct test1222{
+		int code;
+		std::string name;
+	};
+
 	class_<JcSecBox>("JcSecBox", init<>())
 		//.def_readonly("name", &Var::name)
 		.def("SecboxAuth",&JcSecBox::SecboxAuth)
 		.def("SecboxWriteData",&JcSecBox::SecboxWriteData)
-		.def("SecboxReadData",&JcSecBox::SecboxReadData)
-		;
+		.def("SecboxReadData",&JcSecBox::SecboxReadData);
+
+	//2014/12/22 15:59:10 [星期一] 我刚发现，boost.python，无法在接口中的
+	//结构体/类里面使用可读可写的数组类型成员，否则就会编译错误，解决方法
+	//暂未找到；如果设定为只读，也可以。估计数字数组应该可以用get/set函数
+	//读写内部的数组来替代之；而字符数组可以用std::string替代之；
+	class_<JCINPUT>("JCINPUT", init<>())
+	.def_readonly("AtmNo", &JCINPUT::AtmNo)
+	.def_readonly("LockNo", &JCINPUT::LockNo)
+	.def_readonly("PSK", &JCINPUT::PSK)
+	.def_readwrite("CodeGenDateTime", &JCINPUT::CodeGenDateTime)
+	.def_readwrite("Validity", &JCINPUT::Validity)
+	.def_readwrite("CloseCode", &JCINPUT::CloseCode)
+	.def_readwrite("CmdType", &JCINPUT::CmdType)
+	.def_readwrite("SearchTimeStart", &JCINPUT::SearchTimeStart)
+	.def_readwrite("SearchTimeStep", &JCINPUT::SearchTimeStep)
+	.def_readwrite("SearchTimeLength", &JCINPUT::SearchTimeLength)
+	.def_readonly("ValidityArray", &JCINPUT::ValidityArray)
+	;
+
+	class_<JCMATCH>("JCMATCH", init<>())
+		//.def_readonly("name", &Var::name)
+		.def_readwrite("s_datetime", &JCMATCH::s_datetime)
+		.def_readwrite("s_validity", &JCMATCH::s_validity);
+
+	class_<test1222>("test1222", init<>())
+		//.def_readonly("name", &Var::name)
+		.def_readwrite("s_datetime", &test1222::code)
+		.def_readwrite("s_validity", &test1222::name);
+
+
 }
