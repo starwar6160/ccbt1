@@ -92,7 +92,7 @@ typedef struct jcLockReverseMatchResult {
 #define JC_PSK_LEN (256/4)	//256bit HEX+NULL,这是定长值
 #define JC_INVALID_VALUE	(-1)
 
-#pragma pack(1)
+//#pragma pack(1)
 typedef struct JcLockInput {
 	//固定因素部分
 	char AtmNo[JC_ATMNO_MAXLEN + 1];	//ATM号
@@ -132,7 +132,7 @@ typedef union JcLockResult{
 	JCMATCH verCodeMatch;		//验证码匹配日期时间和有效期结果
 }JCRESULT;
 
-#pragma pack()
+//#pragma pack()
 
 
 //分配一个内部数据结构，返回句柄，以后所有操作均以该句柄为对象

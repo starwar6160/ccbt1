@@ -27,6 +27,7 @@ namespace cstest702
             jclms.JcSecBox secBox = new JcSecBox();
             secBox.CloseHid();
             int handle = jclmsCCB2014.JcLockNew();
+            jclmsCCB2014.JcLockDebugPrint(handle);
             int myDyCodePass1 = jclmsCCB2014.csJclmsReqGenDyCode(handle);
             return;
 
@@ -438,6 +439,7 @@ namespace cstest702
             jclmsCCB2014.JcLockSetInt(handle, jclms.JCITYPE.JCI_TIMESTEP, 6);
         }
 
+        //初始闭锁码生成
         private static void myLmsReq2SecBoxEx20141212GenInitCloseCode()
         {
             int handle = jclmsCCB2014.JcLockNew();
@@ -457,6 +459,7 @@ namespace cstest702
             Console.Out.WriteLine("########################################################################");
         }
 
+        //第一开锁码生成
         private static void myLmsReq2SecBoxEx20141212GenPass1DyCode()
         {
             int handle = jclmsCCB2014.JcLockNew();
@@ -481,6 +484,7 @@ namespace cstest702
             Console.Out.WriteLine("########################################################################");
         }
 
+        //第一开锁码验证
         private static void myLmsReq2SecBoxEx20141212VerifyPass1DyCode()
         {
             int handle = jclmsCCB2014.JcLockNew();
@@ -507,6 +511,7 @@ namespace cstest702
             Console.Out.WriteLine("########################################################################");
         }
 
+        //验证码生成
         private static void myLmsReq2SecBoxEx20141218GenVerifyCode()
         {
             int handle = jclmsCCB2014.JcLockNew();
@@ -532,6 +537,7 @@ namespace cstest702
             Console.Out.WriteLine("########################################################################");
         }
 
+        //验证码验证
         private static void myLmsReq2SecBoxEx20141218VerifyVerifyCode()
         {
             int handle = jclmsCCB2014.JcLockNew();
@@ -558,6 +564,7 @@ namespace cstest702
             Console.Out.WriteLine("########################################################################");
         }
 
+        //第二开锁码生成
         private static void myLmsReq2SecBoxEx20141218GenPass2DyCode()
         {
             int handle = jclmsCCB2014.JcLockNew();
@@ -582,6 +589,7 @@ namespace cstest702
             Console.Out.WriteLine("########################################################################");
         }
 
+        //第二开锁码验证
         private static void myLmsReq2SecBoxEx20141218VerifyPass2DyCode()
         {
             int handle = jclmsCCB2014.JcLockNew();
@@ -689,6 +697,37 @@ namespace cstest702
             }
 
         }
+
+        //验证码验证.test1222
+        private static void tmyLmsReq2SecBoxEx20141222VerifyVerifyCode()
+        {
+            int handle = jclmsCCB2014.JcLockNew();
+            jclmsCCB2014.JcLockSetString(handle, jclms.JCITYPE.JCI_ATMNO, MYT_ATMNO);
+            jclmsCCB2014.JcLockSetString(handle, jclms.JCITYPE.JCI_LOCKNO, MYT_LOCKNO);
+            jclmsCCB2014.JcLockSetString(handle, jclms.JCITYPE.JCI_PSK, MYT_PSK);
+
+            //验证码的验证,应该把闭锁码作为输入要素填写在JCI_CLOSECODE里面
+            jclmsCCB2014.JcLockSetInt(handle, jclms.JCITYPE.JCI_CLOSECODE, MYT_DYPASS1);
+            //由于是预设好的距离现在有很多日子的一个时间值1416000000秒,所以需要特地设置搜索起始时间
+            //为该时间之后5分钟以内的某个时间点,此处设置2分钟多一点,应该具有一定的典型性;
+            jclmsCCB2014.JcLockSetInt(handle, jclms.JCITYPE.JCI_SEARCH_TIME_START, zwGetUTCSeconds());
+            //既然是验证验证,必须填写正确的类型,无论是生成还是验证
+            jclmsCCB2014.JcLockSetCmdType(handle, jclms.JCITYPE.JCI_CMDTYPE, jclms.JCCMD.JCCMD_CCB_LOCK_VERCODE);
+            JCMATCH match = new JCMATCH();
+            jclmsCCB2014.zwJclmsReqVerifyDyCode(handle, MYT_VERCODE, match);
+
+
+            if (0 != match.s_datetime)
+            {
+                Console.Out.WriteLine("密盒返回的验证码验证结果是正确的，时间是{0}", match.s_datetime);
+            }
+            else
+            {
+                Console.Out.WriteLine("密盒返回的验证码验证结果是错误的，时间是{0}", match.s_datetime);
+            }
+            Console.Out.WriteLine("########################################################################");
+        }
+
 
 ///////////////////////////////////////////////////////////////////////////////////////////
     }   //class Program
