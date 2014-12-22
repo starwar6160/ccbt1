@@ -5,23 +5,7 @@
 #include "atmcpy.h"
 #include "zwSecretBoxCCBcsWrap.h"
 
-//// 这是导出变量的一个示例
-//ATMCPY_API int natmcpy=0;
-//
-//// 这是导出函数的一个示例。
-//ATMCPY_API int fnatmcpy(void)
-//{
-//	return 42;
-//}
-//
-//// 这是已导出类的构造函数。
-//// 有关类定义的信息，请参阅 atmcpy.h
-//Catmcpy::Catmcpy()
-//{
-//	return;
-//}
-
-
+#ifdef _DEBUG1221
 typedef struct _zwstu20_t{
 	int age;
 	std::string name;
@@ -52,8 +36,6 @@ int dumpPerson(EXPERSON *p)
 	return p->age;
 }
 
-
-#ifdef _DEBUG1221
 CCBELOCK_API class JcSecBox {
 public:
 	CCBELOCK_API JcSecBox();
@@ -69,8 +51,9 @@ private:
 //同一个模块下，内部可以导出多个类/结构体，函数等等；
 BOOST_PYTHON_MODULE(atmcpy)      //定义导出的模块名atmcpy
 {
-	//注意此处，导出给Python用的函数名可以不同于原始函数名
 	using namespace boost::python;
+#ifdef _DEBUG1221
+	//注意此处，导出给Python用的函数名可以不同于原始函数名
 	def("greet", greet);
 	def("zwAdd",zwAdd);
 	def("zwStrAdd",zwStrAdd);
@@ -81,6 +64,7 @@ BOOST_PYTHON_MODULE(atmcpy)      //定义导出的模块名atmcpy
 		//.def_readonly("name", &Var::name)
 		.def_readwrite("age", &EXPERSON::age)
 		.def_readwrite("name", &EXPERSON::name);
+#endif // _DEBUG1221
 
 	class_<JcSecBox>("JcSecBox", init<>())
 		//.def_readonly("name", &Var::name)
