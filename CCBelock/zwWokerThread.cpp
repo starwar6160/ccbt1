@@ -155,7 +155,17 @@ CCBELOCK_API void zwPushString(const char *str)
 #endif // ZWUSE_HID_MSG_SPLIT
 	try {
 #ifdef ZWUSE_HID_MSG_SPLIT
-		jcHidSendData(&zwccbthr::hidHandle, str, strlen(str));
+		JCHID_STATUS sts=JCHID_STATUS_FAIL;
+		do 
+		{
+			sts=jcHidSendData(&zwccbthr::hidHandle, str, strlen(str));
+			if (JCHID_STATUS_OK==sts)
+			{
+				break;
+			}
+			Sleep(1000);
+		} while (sts!=JCHID_STATUS_OK);
+		
 #else
 		zwccbthr::zwComPort->SendData(str, strlen(str));
 #endif // ZWUSE_HID_MSG_SPLIT
