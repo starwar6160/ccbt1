@@ -48,7 +48,7 @@ namespace zwccbthr {
 #ifndef ZWUSE_HID_MSG_SPLIT
 				if (NULL == zwComPort) {
 					ZWNOTICE
-					    ("串口已经关闭，通信线程将退出");
+					    ("线路已经关闭，通信线程将退出");
 					return;
 				}
 #endif // ZWUSE_HID_MSG_SPLIT
@@ -60,8 +60,14 @@ namespace zwccbthr {
 #ifdef ZWUSE_HID_MSG_SPLIT
 					OutputDebugStringA
 					    ("20141017.1116.Thread.MaHaoTest3");
+					JCHID_STATUS sts=
 					jcHidRecvData(&zwccbthr::hidHandle,
-						      recvBuf, BLEN, &outLen,0);
+						      recvBuf, BLEN, &outLen,3000);
+					//要是什么也没收到，就直接进入下一个循环
+					if (JCHID_STATUS_RECV_ZEROBYTES==sts)
+					{
+						continue;
+					}
 					printf("\n");
 					OutputDebugStringA
 					    ("20141017.1116.Thread.MaHaoTest4");
@@ -78,7 +84,7 @@ namespace zwccbthr {
 					OutputDebugStringA
 					    ("20141017.1116.Thread.MaHaoTest5");
 					ZWFATAL
-					    ("RecvData接收数据时到锁具的串口连接异常断开，数据接收线程将终止");
+					    ("RecvData接收数据时到锁具的数据连接异常断开，数据接收线程将终止");
 					return;
 				}
 				ZWNOTICE(recvBuf);
@@ -126,7 +132,7 @@ namespace zwccbthr {
 		catch(...) {
 			OutputDebugStringA("20141017.1116.Thread.MaHaoTest13");
 			ZWFATAL
-			    ("金储通信数据接收线程串口连接异常断开，现在数据接收线程将结束");
+			    ("金储通信数据接收线程数据连接异常断开，现在数据接收线程将结束");
 			return;
 		}
 		OutputDebugStringA("20141017.1116.Thread.MaHaoTest14");
@@ -176,7 +182,7 @@ CCBELOCK_API void zwPushString(const char *str)
 	catch(...) {
 		ZWDBGMSG(__FUNCTION__);
 		ZWDBGMSG("\t SerialPort Send String Exeception!20140805.1626");
-		ZWFATAL("通过串口发送数据到锁具异常，可能是未连接")
+		ZWFATAL("通过线路发送数据到锁具异常，可能是未连接")
 	}
 
 }

@@ -203,7 +203,7 @@ CCBELOCK_API long JCAPISTD Notify(const char *pszMsg)
 		//然后在此，也就是上层捕获。暂时不知道捕获精确类型
 		//所以catch所有异常了
 		ZWFATAL(__FUNCTION__);
-		ZWFATAL("Notify通过串口发送数据异常，可能网络故障")
+		ZWFATAL("Notify通过线路发送数据异常，可能网络故障")
 		    return ELOCK_ERROR_CONNECTLOST;
 	}
 }
