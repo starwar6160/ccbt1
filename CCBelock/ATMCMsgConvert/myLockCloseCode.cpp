@@ -55,6 +55,7 @@ namespace jcAtmcConvertDLL {
 		    ptjc.put(jcAtmcConvertDLL::JCSTR_CMDTITLE,
 			     "Lock_Close_Code_Lock");
 			ptjc.put("State",ptccb.get < int > ("root.RevResult"));
+			ptjc.put("Lock_Serial",ptccb.get < int > ("root.LockId"));
 	}
 
 	void zwconvRecvInitCloseCodeUp(const ptree & ptjc, ptree & ptccb) {
