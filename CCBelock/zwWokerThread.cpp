@@ -38,8 +38,7 @@ namespace zwccbthr {
 	void ThreadLockComm() {
 		ZWFUNCTRACE boost::mutex::scoped_lock lock(thr_mutex);
 
-		try {
-			OutputDebugStringA("20141017.1116.Thread.MaHaoTest1");
+		try {			
 			const int BLEN = 1024;
 			char recvBuf[BLEN + 1];
 			memset(recvBuf, 0, BLEN + 1);
@@ -52,14 +51,10 @@ namespace zwccbthr {
 					return;
 				}
 #endif // ZWUSE_HID_MSG_SPLIT
-				OutputDebugStringA
-				    ("20141017.1116.Thread.MaHaoTest2");
 				ZWNOTICE("连接锁具成功");
 				ZWINFO("通信线程的新一轮等待接收数据循环开始");
 				try {
 #ifdef ZWUSE_HID_MSG_SPLIT
-					OutputDebugStringA
-					    ("20141017.1116.Thread.MaHaoTest3");
 					JCHID_STATUS sts=
 					jcHidRecvData(&zwccbthr::hidHandle,
 						      recvBuf, BLEN, &outLen,3000);
@@ -70,8 +65,6 @@ namespace zwccbthr {
 						continue;
 					}
 					printf("\n");
-					OutputDebugStringA
-					    ("20141017.1116.Thread.MaHaoTest4");
 #else
 					zwComPort->RecvData(recvBuf, BLEN,
 							    &outLen);
@@ -82,8 +75,6 @@ namespace zwccbthr {
 					ZWNOTICE("成功从锁具接收数据如下：");
 				}
 				catch(...) {
-					OutputDebugStringA
-					    ("20141017.1116.Thread.MaHaoTest5");
 					ZWFATAL
 					    ("RecvData接收数据时到锁具的数据连接异常断开，数据接收线程将终止");
 					return;
@@ -91,18 +82,12 @@ namespace zwccbthr {
 				ZWNOTICE(recvBuf);
 
 				string outXML;
-				OutputDebugStringA
-				    ("20141017.1116.Thread.MaHaoTest6");
 				jcAtmcConvertDLL::zwJCjson2CCBxml(recvBuf,
 								  outXML);
-				OutputDebugStringA
-				    ("20141017.1116.Thread.MaHaoTest7");
 				ZWINFO("分析锁具回传的Json并转换为建行XML成功");
 				//XML开头的固定内容38个字符，外加起码一个标签的两对尖括号合计4个字符
 				assert(outXML.length() > 42);
 				ZWDBGMSG(outXML.c_str());
-				OutputDebugStringA
-				    ("20141017.1116.Thread.MaHaoTest8");
 				{
 					boost::
 					    mutex::scoped_lock lock(recv_mutex);
@@ -111,34 +96,25 @@ namespace zwccbthr {
 				}
 
 				if (NULL != zwCfg::g_WarnCallback) {
-					OutputDebugStringA
-					    ("20141017.1116.Thread.MaHaoTest9");
 					//调用回调函数传回信息，然后就关闭连接，结束通信线程；
 					zwCfg::g_WarnCallback(outXML.c_str());
-					OutputDebugStringA
-					    ("20141017.1116.Thread.MaHaoTest10");
 					ZWINFO
 					    ("成功把从锁具接收到的数据传递给回调函数");
 				} else {
-					OutputDebugStringA
-					    ("20141017.1116.Thread.MaHaoTest11");
 					ZWWARN
 					    ("回调函数指针为空，无法调用回调函数")
 				}
 			}
-			OutputDebugStringA("20141017.1116.Thread.MaHaoTest12");
 			ZWINFO("金储通信数据接收线程正常退出");
 
 		}		//try
-		catch(...) {
-			OutputDebugStringA("20141017.1116.Thread.MaHaoTest13");
+		catch(...) {			
 			//异常断开就设定该标志为FALSE,以便下次Open不要再跳过启动通信线程的程序段
 			zwCfg::s_hidOpened=false;
 			ZWFATAL
 			    ("金储通信数据接收线程数据连接异常断开，现在数据接收线程将结束");
 			return;
-		}
-		OutputDebugStringA("20141017.1116.Thread.MaHaoTest14");
+		}	
 	}
 
 	void myLoadConfig(const string & cfgFileName) {
