@@ -63,6 +63,7 @@ namespace zwccbthr {
 					JCHID_STATUS sts=
 					jcHidRecvData(&zwccbthr::hidHandle,
 						      recvBuf, BLEN, &outLen,3000);
+					zwCfg::s_hidOpened=true;	//算是通信线程的一个心跳标志
 					//要是什么也没收到，就直接进入下一个循环
 					if (JCHID_STATUS_RECV_ZEROBYTES==sts)
 					{
@@ -131,6 +132,8 @@ namespace zwccbthr {
 		}		//try
 		catch(...) {
 			OutputDebugStringA("20141017.1116.Thread.MaHaoTest13");
+			//异常断开就设定该标志为FALSE,以便下次Open不要再跳过启动通信线程的程序段
+			zwCfg::s_hidOpened=false;
 			ZWFATAL
 			    ("金储通信数据接收线程数据连接异常断开，现在数据接收线程将结束");
 			return;

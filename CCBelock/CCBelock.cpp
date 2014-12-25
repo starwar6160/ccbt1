@@ -58,9 +58,10 @@ namespace zwCfg {
 	 boost::mutex ComPort_mutex;	//用于保护串口连接对象
 	//线程对象作为一个全局静态变量，则不需要显示启动就能启动一个线程
 	 boost::thread * thr = NULL;
+	 bool s_hidOpened = false;
 } //namespace zwCfg{  
 
-static bool s_hidOpened = false;
+
 
 CCBELOCK_API long JCAPISTD Open(long lTimeOut)
 {
@@ -88,16 +89,18 @@ CCBELOCK_API long JCAPISTD Open(long lTimeOut)
 	try {
 
 #ifdef ZWUSE_HID_MSG_SPLIT
-		if (true == s_hidOpened) {
+		if (true == zwCfg::s_hidOpened) {
+			ZWNOTICE("s_hidOpened already Opened,so return directly.")
 			return ELOCK_ERROR_SUCCESS;
 		}
 		memset(&zwccbthr::hidHandle, 0, sizeof(JCHID));
 		zwccbthr::hidHandle.vid = 0x0483;
 		zwccbthr::hidHandle.pid = 0x5710;
 		if (JCHID_STATUS_OK != jcHidOpen(&zwccbthr::hidHandle)) {
+			ZWERROR("HID Device Open ERROR 1225 !");
 			return ELOCK_ERROR_PARAMINVALID;
 		}
-		s_hidOpened = true;
+		zwCfg::s_hidOpened = true;
 #else
 		//打开串口
 		myLockIp = zwccbthr::zwGetLockIP();
@@ -134,7 +137,7 @@ CCBELOCK_API long JCAPISTD Close()
 	}
 #endif // ZWUSE_HID_MSG_SPLIT
       CloseHidEnd:
-	s_hidOpened = false;
+	zwCfg::s_hidOpened = false;
 	ZWNOTICE("关闭 到锁具的连接")
 	    return ELOCK_ERROR_SUCCESS;
 }
@@ -144,7 +147,7 @@ CCBELOCK_API long JCAPISTD Notify(const char *pszMsg)
 	//通过在Notify函数开始检测是否端口已经打开，没有打开就直接返回，避免
 	//2014年11月初在广州遇到的没有连接锁具时，ATMC执行0002报文查询锁具状态，
 	//反复查询，大量无用日志产生的情况。
-	if (false == s_hidOpened) {
+	if (false == zwCfg::s_hidOpened) {
 		return ELOCK_ERROR_CONNECTLOST;
 	}
 	ZWFUNCTRACE assert(pszMsg != NULL);
