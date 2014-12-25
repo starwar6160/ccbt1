@@ -76,11 +76,3 @@ void myLoadCfgs(const char *DLLPath)
 	PocoLogInit();
 }
 
-namespace zwsTest1 {
-	int zwsTestAdd(int a, int b);
-} void zw901StaticLibTest1(void)
-{
-	cout << "Result from zw Static Lib is " << zwsTest1::zwsTestAdd(11,
-									22) <<
-	    endl;
-}

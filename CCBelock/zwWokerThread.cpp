@@ -61,7 +61,7 @@ namespace zwccbthr {
 					OutputDebugStringA
 					    ("20141017.1116.Thread.MaHaoTest3");
 					jcHidRecvData(&zwccbthr::hidHandle,
-						      recvBuf, BLEN, &outLen);
+						      recvBuf, BLEN, &outLen,0);
 					printf("\n");
 					OutputDebugStringA
 					    ("20141017.1116.Thread.MaHaoTest4");
