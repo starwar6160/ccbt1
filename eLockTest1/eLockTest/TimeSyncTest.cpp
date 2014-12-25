@@ -55,6 +55,7 @@ int zwCutLineEndSpace(char *str)
 	return spaceEnd;
 }
 
+#ifdef _DEBUG_WANMIN20141111
 //20141111.1720.为万敏做的测试程序
 TEST_F(ccbElockTest, WanMinTools_20141111)
 {
@@ -83,3 +84,4 @@ TEST_F(ccbElockTest, WanMinTools_20141111)
 	Notify(sXML.c_str());
 	Sleep(3000);
 }
+#endif // _DEBUG_WANMIN20141111
