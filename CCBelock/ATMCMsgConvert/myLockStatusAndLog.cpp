@@ -84,6 +84,7 @@ namespace jcAtmcConvertDLL {
 		    ptjc.put(jcAtmcConvertDLL::JCSTR_CMDTITLE,
 			     jcAtmcConvertDLL::JCSTR_PUSH_WARNING);
 		ptjc.put("State", ptccb.get < int >("root.RevResult"));
+		ptjc.put("Atm_Serial", ptccb.get < string >(CCBSTR_DEVCODE));
 	}
 
 	void zwconvLockPushWarnUp(const ptree & ptjc, ptree & ptccb) {
