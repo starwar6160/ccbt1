@@ -58,10 +58,12 @@ namespace zwccbthr {
 					JCHID_STATUS sts=
 					jcHidRecvData(&zwccbthr::hidHandle,
 						      recvBuf, BLEN, &outLen,3000);
-					zwCfg::s_hidOpened=true;	//算是通信线程的一个心跳标志
+					zwCfg::s_hidOpened=true;	//算是通信线程的一个心跳标志					
 					//要是什么也没收到，就直接进入下一个循环
-					if (JCHID_STATUS_RECV_ZEROBYTES==sts)
+					if (JCHID_STATUS_OK!=sts)
 					{
+						printf("JCHID_STATUS 1225 %d\n",sts);
+						Sleep(1000);
 						continue;
 					}
 					printf("\n");
