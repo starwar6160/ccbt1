@@ -3,9 +3,10 @@
 //#define _ZWLMSHID_TEST1212S1
 //#define _ZWLMSHID_TEST1212S2
 //#define _ZWLMSHID_TEST1212S3
-#define _ZWLMSHID_TEST1212S4
+//#define _ZWLMSHID_TEST1212S4
 //#define _ZWLMSHID_TEST1212S5
 void myPureHidTestDataGen20141216(void);
+void myCRC16PingTest(void);
 
 namespace CcbV11Test722Ecies {
 	void myHidSecBoxLmsTestGenFixInitCloseCode20141212();
@@ -251,6 +252,7 @@ namespace CcbV11Test722Ecies {
 		EXPECT_EQ(0,zwLmsAlgStandTest20141203());
 		EXPECT_EQ(0,zwLmsAlgStandTest20141216GenPass1());	
 		EXPECT_EQ(0,zwLmsAlgStandTest20141216VerifyPass1());			
+		myCRC16PingTest();
 	}
 
 

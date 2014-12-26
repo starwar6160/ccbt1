@@ -20,6 +20,7 @@
 const int MYTESTLOOP=1;
 
 void JCLMSCCB2014_API zwJclmsRsp( void * inLmsReq,const int inLmsReqLen,char *outJson,const int outJsonLen );
+void JCLMSCCB2014_API myCRC16PingTest(void);
 
 #ifdef _DEBUG_1205
 void myJcInputHton(JCINPUT *p)
@@ -611,4 +612,21 @@ void myPureHidTestDataGen20141216(void)
 		assert(outLens>0 && outLens<=(HDRLEN+MLEN));
 	}
 	jcHidClose(&hidHandle);
+}
+
+//测试CRC16的碰撞几率，基本上和位数有关，定义域大小是值域的多少倍
+//大致就有多少个碰撞
+void myCRC16PingTest(void)
+{
+	int myvar=1524;
+	unsigned short cMyVar=crc16_ccitt((unsigned char *)&myvar,sizeof(myvar));
+	printf("%s Test 20141226.1527\n",__FUNCTION__);
+	for (int i=1024*50;i<1024*1024;i++)
+	{
+		unsigned short cPz=crc16_ccitt((unsigned char *)&i,sizeof(i));
+		if (cPz==cMyVar)
+		{
+			printf("P%d\t",i);
+		}
+	}
 }

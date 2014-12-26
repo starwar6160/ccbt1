@@ -1047,6 +1047,31 @@ SWIGEXPORT int SWIGSTDCALL CSharp_zwLmsAlgStandTest20141203() {
 }
 
 
+SWIGEXPORT int SWIGSTDCALL CSharp_zwLmsAlgStandTest20141216GenPass1() {
+  int jresult ;
+  int result;
+  
+  result = (int)zwLmsAlgStandTest20141216GenPass1();
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT int SWIGSTDCALL CSharp_zwLmsAlgStandTest20141216VerifyPass1() {
+  int jresult ;
+  int result;
+  
+  result = (int)zwLmsAlgStandTest20141216VerifyPass1();
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void SWIGSTDCALL CSharp_myPureHidTestDataGen20141216() {
+  myPureHidTestDataGen20141216();
+}
+
+
 SWIGEXPORT int SWIGSTDCALL CSharp_ZWEFS_get() {
   int jresult ;
   int result;

@@ -387,6 +387,15 @@ class jclmsCCB2014PINVOKE {
   [global::System.Runtime.InteropServices.DllImport("jclmsCCB2014", EntryPoint="CSharp_zwLmsAlgStandTest20141203")]
   public static extern int zwLmsAlgStandTest20141203();
 
+  [global::System.Runtime.InteropServices.DllImport("jclmsCCB2014", EntryPoint="CSharp_zwLmsAlgStandTest20141216GenPass1")]
+  public static extern int zwLmsAlgStandTest20141216GenPass1();
+
+  [global::System.Runtime.InteropServices.DllImport("jclmsCCB2014", EntryPoint="CSharp_zwLmsAlgStandTest20141216VerifyPass1")]
+  public static extern int zwLmsAlgStandTest20141216VerifyPass1();
+
+  [global::System.Runtime.InteropServices.DllImport("jclmsCCB2014", EntryPoint="CSharp_myPureHidTestDataGen20141216")]
+  public static extern void myPureHidTestDataGen20141216();
+
   [global::System.Runtime.InteropServices.DllImport("jclmsCCB2014", EntryPoint="CSharp_ZWEFS_get")]
   public static extern int ZWEFS_get();
 

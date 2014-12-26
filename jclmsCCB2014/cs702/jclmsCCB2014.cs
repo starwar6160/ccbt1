@@ -103,6 +103,20 @@ public class jclmsCCB2014 {
     return ret;
   }
 
+  public static int zwLmsAlgStandTest20141216GenPass1() {
+    int ret = jclmsCCB2014PINVOKE.zwLmsAlgStandTest20141216GenPass1();
+    return ret;
+  }
+
+  public static int zwLmsAlgStandTest20141216VerifyPass1() {
+    int ret = jclmsCCB2014PINVOKE.zwLmsAlgStandTest20141216VerifyPass1();
+    return ret;
+  }
+
+  public static void myPureHidTestDataGen20141216() {
+    jclmsCCB2014PINVOKE.myPureHidTestDataGen20141216();
+  }
+
   public static int ZWEFS {
     get {
       int ret = jclmsCCB2014PINVOKE.ZWEFS_get();
