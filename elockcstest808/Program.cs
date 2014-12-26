@@ -82,7 +82,7 @@ namespace elockcstest808
         private static void secTest2()
         {
             Console.Out.WriteLine("Secret Box Authentic Test");
-            for (int i = 0; i < 1024; i++)
+            for (int i = 0; i < 64*3; i++)
             {
                 jclms.JcSecBox secBox = new JcSecBox();                
                 //打开密盒                
@@ -97,6 +97,10 @@ namespace elockcstest808
                 {
                     Console.Out.WriteLine("FAKE ");
                     continue;
+                }
+                if (i>0 && i%32==0)
+                {
+                    Console.Out.Write("{0}\t", i);
                 }
                 System.Threading.Thread.Sleep(50);
             }

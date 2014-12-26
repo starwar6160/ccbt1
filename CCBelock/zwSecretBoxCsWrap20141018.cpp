@@ -88,26 +88,37 @@ CCBELOCK_API int JcSecBox::SecboxAuth(void)
 #endif // _DEBUG_USEPOCOLOG1027
 		return JC_SECBOX_FAIL;
 	}
-	//printf("*****************************SecretBox zwSendAuthReq2SecBox\n");
-#ifdef _DEBUG_USEPOCOLOG1027
-	pocoLog->information() << "zwSendAuthReq2SecBox" << g_hidHandle << endl;
-#endif // _DEBUG_USEPOCOLOG1027
-	zwSendAuthReq2SecBox(g_hidHandle);
-	//printf("*****************************SecretBox zwVerifyAuthRspFromSecBox\n");
-#ifdef _DEBUG_USEPOCOLOG1027
-	pocoLog->
-	    information() << "zwVerifyAuthRspFromSecBox g_hidHandle=" <<
-	    g_hidHandle << endl;
-#endif // _DEBUG_USEPOCOLOG1027
-	int AuthRes = zwVerifyAuthRspFromSecBox(g_hidHandle);
+	int AuthRes=0;
 
-	if (0 == AuthRes) {
+	for (int i=0;i<3;i++)
+	{
+		//printf("*****************************SecretBox zwSendAuthReq2SecBox\n");
 #ifdef _DEBUG_USEPOCOLOG1027
-		pocoLog->information() << "SecboxAuth SUCCESSJC" << endl;
+		pocoLog->information() << "zwSendAuthReq2SecBox" << g_hidHandle << endl;
 #endif // _DEBUG_USEPOCOLOG1027
-		//printf("1021.1355.****************************************** *SecretBox Auth SUCCESS\n");
-		return JC_SECBOX_SUCCESS;
-	} else {
+		zwSendAuthReq2SecBox(g_hidHandle);
+		//printf("*****************************SecretBox zwVerifyAuthRspFromSecBox\n");
+#ifdef _DEBUG_USEPOCOLOG1027
+		pocoLog->
+			information() << "zwVerifyAuthRspFromSecBox g_hidHandle=" <<
+			g_hidHandle << endl;
+#endif // _DEBUG_USEPOCOLOG1027
+		AuthRes = zwVerifyAuthRspFromSecBox(g_hidHandle);
+		if (0 == AuthRes) {
+#ifdef _DEBUG_USEPOCOLOG1027
+			pocoLog->information() << "SecboxAuth SUCCESSJC" << endl;
+#endif // _DEBUG_USEPOCOLOG1027
+			//printf("1021.1355.****************************************** *SecretBox Auth SUCCESS\n");
+			//成功的话就直接返回成功
+			return JC_SECBOX_SUCCESS;
+		} 
+		else{
+			printf("SECBOX AUTH TEMP FAIL,WAIT 1 SEC FOR RETRY\n");
+			Sleep(1000);	//等待1秒再重试认证
+		}
+	}
+
+//重试N次以后还是认证失败
 #ifdef _DEBUG_USEPOCOLOG1027
 		pocoLog->error() << "SecboxAuth FAILJC" << endl;
 #endif // _DEBUG_USEPOCOLOG1027
@@ -116,8 +127,6 @@ CCBELOCK_API int JcSecBox::SecboxAuth(void)
 		printf
 		    ("************************************************** ***SecretBox Auth FAIL\n");
 		return JC_SECBOX_FAIL;
-	}
-
 }
 
 CCBELOCK_API int JcSecBox::SecboxWriteData(const int index, const char *dataB64)
