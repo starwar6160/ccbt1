@@ -7,7 +7,8 @@
 #include <string.h>
 #include <windows.h>
 extern Poco::LogStream * pocoLog;
-#define ZWTRC	zwTrace1027 zwtrace(__FUNCTION__);
+//#define ZWTRC	zwTrace1027 zwtrace(__FUNCTION__);
+#define ZWTRC
 //printf("%s\n",__FUNCTION__);
 
 class zwTrace1027 {

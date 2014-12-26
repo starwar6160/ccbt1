@@ -12,7 +12,7 @@ void zwSecboxWDXtest20141023(void)
 	const int ZWPAUSE = 1500;
 	//声明一个密盒对象；使用该对象的3个方法来认证，读取，写入，至于Open/Close由该对象内部自动完成；            
 	int i=0;
-	for (int i = 0; i < 1; i++)
+	for (int i = 0; i < 10; i++)
 	//while(1)
 	{
 		i++;
@@ -57,6 +57,42 @@ void zwSecboxWDXtest20141023(void)
 		sprintf(zwbuf,"end of secBox test loop %d\n",i);
 		//OutputDebugStringA(zwbuf);
 		//printf(zwbuf);
+	}
+	printf("\n");
+}
+
+void zwSecboxReadonlyTest20141226(void)
+{
+	char zwbuf[256];
+	memset(zwbuf,0,256);
+	const int ZWPAUSE = 1500;
+	//声明一个密盒对象；使用该对象的3个方法来认证，读取，写入，至于Open/Close由该对象内部自动完成；            
+	int i=0;
+	for (int i = 0; i < 10; i++)
+		//while(1)
+	{
+		//i++;
+		JcSecBox secBox;
+
+		//打开密盒                
+		//printf("SecboxAuth:");
+		int status =
+			secBox.SecboxAuth();
+
+		if (0==status)
+		{
+			OutputDebugStringA("SecboxAuth_PASS");
+			printf("[.]\t");
+		}
+		else{
+			OutputDebugStringA("SecboxAuth_FAIL");
+			printf("\n[SecboxAuth_FAIL]\n");
+			Sleep(500);
+			continue;
+		}
+		
+		//std::string recvFromSecBox = secBox.SecboxReadData(2);
+		//sprintf(zwbuf,"end of secBox test loop %d\n",i);
 	}
 	printf("\n");
 }
