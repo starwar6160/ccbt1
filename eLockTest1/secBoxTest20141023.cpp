@@ -63,15 +63,16 @@ void zwSecboxWDXtest20141023(void)
 
 void zwSecboxReadonlyTest20141226(void)
 {
-	char zwbuf[256];
-	memset(zwbuf,0,256);
-	const int ZWPAUSE = 1500;
+	char zwbuf[256];	
 	//声明一个密盒对象；使用该对象的3个方法来认证，读取，写入，至于Open/Close由该对象内部自动完成；            
 	int i=0;
-	for (int i = 0; i < 10; i++)
+	for (int i = 0; i < 1024*64; i++)
 		//while(1)
 	{
-		//i++;
+		if (i>0 && i%64==0)
+		{
+			printf("%d\t",i);
+		}
 		JcSecBox secBox;
 
 		//打开密盒                
@@ -81,13 +82,15 @@ void zwSecboxReadonlyTest20141226(void)
 
 		if (0==status)
 		{
-			OutputDebugStringA("SecboxAuth_PASS");
-			printf("[.]\t");
+			//OutputDebugStringA("SecboxAuth_PASS");
+			printf(".");
 		}
 		else{
-			OutputDebugStringA("SecboxAuth_FAIL");
-			printf("\n[SecboxAuth_FAIL]\n");
-			Sleep(500);
+			memset(zwbuf,0,256);
+			sprintf(zwbuf,"SECBOX AUTH FAIL.20141226.Count %d\n",i);
+			OutputDebugStringA(zwbuf);
+			printf("\n%s\n",zwbuf);
+			Sleep(50);
 			continue;
 		}
 		
