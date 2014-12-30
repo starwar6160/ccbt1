@@ -1,10 +1,10 @@
 #include "stdafx.h"
-#include <direct.h>
-#include <WinBase.h>
+
+#include <winbase.h>
 #include "zwCcbElockHdr.h"
 
 string zwGetConfigFileName(void);
-string zwGetLogFileName(void);
+string zwGetLogFileName(HMODULE hmod,const char *head,const char *tail);
 int PocoLogInit(void);
 
 namespace zwccbthr {
@@ -17,22 +17,7 @@ string zwGetConfigFileName(void)
 	return cfgFileName;
 }
 
-string zwGetLogFileName(void)
-{
-	char myDllPath[256];
-	memset(myDllPath, 0, 256);
-	zwGetDLLPath(G_DLL_HMODULE, myDllPath, 256);
 
-	string jcLogPath = myDllPath;
-	jcLogPath = jcLogPath + "\\JinChuLog2014";
-	string logdate, logtime;
-	_mkdir(jcLogPath.c_str());
-	time_t now = time(NULL);
-	time_t tail = now % 10;
-	now = now - tail;
-	zwGetLocalDateTimeString(now, logdate, logtime);
-	return jcLogPath + "\\" + logdate + "." + logtime + "JinChuLog.txt";
-}
 
 Poco::LogStream * pocoLog = NULL;
 int PocoLogInit(void)
@@ -44,7 +29,7 @@ int PocoLogInit(void)
 		Poco::AutoPtr < Poco::Channel >
 		    fileChannel(new Poco::FileChannel());
 		fileChannel->setProperty("compress", "true");
-		fileChannel->setProperty("path", zwGetLogFileName());
+		fileChannel->setProperty("path", zwGetLogFileName(G_DLL_HMODULE, "JC", "JinChuLog"));
 		fileChannel->setProperty("archive", "number");
 		fileChannel->setProperty("purgeAge", "30 days");
 		fileChannel->setProperty("rotation", "6 hours");
