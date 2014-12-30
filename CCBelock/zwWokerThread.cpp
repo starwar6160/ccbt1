@@ -57,7 +57,7 @@ namespace zwccbthr {
 #ifdef ZWUSE_HID_MSG_SPLIT
 					JCHID_STATUS sts=
 					jcHidRecvData(&zwccbthr::hidHandle,
-						      recvBuf, BLEN, &outLen,3000);
+						      recvBuf, BLEN, &outLen,JCHID_RECV_TIMEOUT);
 					zwCfg::s_hidOpened=true;	//算是通信线程的一个心跳标志					
 					//要是什么也没收到，就直接进入下一个循环
 					if (JCHID_STATUS_OK!=sts)

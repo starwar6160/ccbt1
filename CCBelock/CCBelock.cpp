@@ -94,8 +94,8 @@ CCBELOCK_API long JCAPISTD Open(long lTimeOut)
 			return ELOCK_ERROR_SUCCESS;
 		}
 		memset(&zwccbthr::hidHandle, 0, sizeof(JCHID));
-		zwccbthr::hidHandle.vid = 0x0483;
-		zwccbthr::hidHandle.pid = 0x5710;
+		zwccbthr::hidHandle.vid = JCHID_VID_2014;
+		zwccbthr::hidHandle.pid = JCHID_PID_LOCK5151;
 		if (JCHID_STATUS_OK != jcHidOpen(&zwccbthr::hidHandle)) {
 			ZWERROR("HID Device Open ERROR 1225 !");
 			return ELOCK_ERROR_PARAMINVALID;

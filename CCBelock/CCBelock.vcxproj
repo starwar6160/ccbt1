@@ -52,7 +52,7 @@
       <WarningLevel>Level4</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;POCO_STATIC;CCBELOCK_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(ZWLIB)\boost;$(ZWLIB)\POCO\Foundation\include;$(ZWLIB)\POCO\Net\include;$(ZWLIB)\POCO\XML\include;$(ZWLIB)\POCO\Util\include;.\;$(ZWSRC)\zwBaseLib\zwBaseLib\SerialPortTestCode\;$(ZWSRC)\zwBaseLib\zwBaseLib\SecretBox;$(ZWSRC)\zwBaseLib\zwBaseLib\HidSplitMsg;$(ZWSRC)\zwBaseLib\zwBaseLib\nanopb_Code;$(ZWLIB)\Python27\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ZWLIB)\boost;$(ZWLIB)\POCO\Foundation\include;$(ZWLIB)\POCO\Net\include;$(ZWLIB)\POCO\XML\include;$(ZWLIB)\POCO\Util\include;.\;$(ZWSRC)\zwBaseLib\zwBaseLib\SerialPortTestCode\;$(ZWSRC)\zwBaseLib\zwBaseLib\SecretBox;$(ZWSRC)\zwBaseLib\zwBaseLib\HidSplitMsg;$(ZWSRC)\zwBaseLib\zwBaseLib\Header;$(ZWSRC)\zwBaseLib\zwBaseLib\nanopb_Code;$(ZWLIB)\Python27\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <ExceptionHandling>Sync</ExceptionHandling>
       <AdditionalOptions>-Zm113 %(AdditionalOptions)</AdditionalOptions>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
@@ -80,7 +80,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;POCO_STATIC;CCBELOCK_EXPORTS;_DEBUG_USEPOCOLOG1027;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(ZWLIB)\boost;$(ZWLIB)\POCO\Foundation\include;$(ZWLIB)\POCO\Net\include;$(ZWLIB)\POCO\XML\include;$(ZWLIB)\POCO\Util\include;.\;$(ZWSRC)\zwBaseLib\zwBaseLib\SerialPortTestCode\;$(ZWSRC)\zwBaseLib\zwBaseLib\SecretBox;$(ZWSRC)\zwBaseLib\zwBaseLib\HidSplitMsg;$(ZWSRC)\zwBaseLib\zwBaseLib\nanopb_Code;$(ZWLIB)\Python27\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ZWLIB)\boost;$(ZWLIB)\POCO\Foundation\include;$(ZWLIB)\POCO\Net\include;$(ZWLIB)\POCO\XML\include;$(ZWLIB)\POCO\Util\include;.\;$(ZWSRC)\zwBaseLib\zwBaseLib\SerialPortTestCode\;$(ZWSRC)\zwBaseLib\zwBaseLib\SecretBox;$(ZWSRC)\zwBaseLib\zwBaseLib\HidSplitMsg;$(ZWSRC)\zwBaseLib\zwBaseLib\Header;$(ZWSRC)\zwBaseLib\zwBaseLib\nanopb_Code;$(ZWLIB)\Python27\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalOptions>-Zm113 %(AdditionalOptions)</AdditionalOptions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
