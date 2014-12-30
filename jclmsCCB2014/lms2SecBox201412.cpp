@@ -437,8 +437,8 @@ int JCLMSCCB2014_API zwJclmsReqGenDyCode( int lmsHandle,int *dyCode )
 #else
 	JCHID hidHandle;
 	memset(&hidHandle,0,sizeof(JCHID));
-	hidHandle.vid=0x0483;
-	hidHandle.pid=0x5710;
+	hidHandle.vid=JCHID_VID_2014;
+	hidHandle.pid=JCHID_PID_SECBOX;
 
 	if (JCHID_STATUS_OK != jcHidOpen(&hidHandle)) {
 		//return -1118;
@@ -447,7 +447,7 @@ int JCLMSCCB2014_API zwJclmsReqGenDyCode( int lmsHandle,int *dyCode )
 
 
 	ZWDBG_INFO("GenWait To SecBox Return Result now..\n");
-	jcHidRecvData(&hidHandle,resJson,ZW_JSONBUF_LEN,&rspRealLen);
+	jcHidRecvData(&hidHandle,resJson,ZW_JSONBUF_LEN,&rspRealLen,JCHID_RECV_TIMEOUT);
 	ZWDBG_INFO("HidRecv Data HEX is\n");
 	//myHexDump(resJson, rspRealLen);
 	//ZWPRINTF("%s:jclms Respone Json is:\n%s\n",__FUNCTION__,resJson);	
@@ -526,15 +526,15 @@ int JCLMSCCB2014_API zwJclmsReqVerifyDyCode( int lmsHandle,int dstCode,JCMATCH *
 	zwJclmsResultFromJson(resJson,&rsp);
 #else
 	JCHID hidHandle;
-	hidHandle.vid=0x0483;
-	hidHandle.pid=0x5710;
+	hidHandle.vid=JCHID_VID_2014;
+	hidHandle.pid=JCHID_PID_SECBOX;
 	if (JCHID_STATUS_OK != jcHidOpen(&hidHandle)) {
 		return -1118;
 	}
 	jcHidSendData(&hidHandle,hidSendBuf,outLen);
 	ZWDBG_INFO("VerWait To SecBox Return Result now..\n");
 	int rspRealLen=0;
-	jcHidRecvData(&hidHandle,resJson,ZW_JSONBUF_LEN,&rspRealLen);
+	jcHidRecvData(&hidHandle,resJson,ZW_JSONBUF_LEN,&rspRealLen,JCHID_RECV_TIMEOUT);
 	ZWDBG_INFO("HidRecv Data HEX is\n");
 	myHexDump(resJson, rspRealLen);
 	jcHidClose(&hidHandle);
@@ -598,8 +598,8 @@ void myPureHidTestDataGen20141216(void)
 	memcpy(mData,&hdr,HDRLEN);
 //////////////////////////////////////////////////////////////////////////
 	JCHID hidHandle;
-	hidHandle.vid=0x0483;
-	hidHandle.pid=0x5710;
+	hidHandle.vid=JCHID_VID_2014;
+	hidHandle.pid=JCHID_PID_SECBOX;
 	if (JCHID_STATUS_OK != jcHidOpen(&hidHandle)) {
 		ZWDBG_ERROR("%s jcHidOpen FAIL\n",__FUNCTION__);
 		return;
@@ -608,7 +608,7 @@ void myPureHidTestDataGen20141216(void)
 	{
 		jcHidSendData(&hidHandle,mData,HDRLEN+MLEN);
 		int outLens=0;
-		jcHidRecvData(&hidHandle,mData,100,&outLens);
+		jcHidRecvData(&hidHandle,mData,100,&outLens,JCHID_RECV_TIMEOUT);
 		assert(outLens>0 && outLens<=(HDRLEN+MLEN));
 	}
 	jcHidClose(&hidHandle);
