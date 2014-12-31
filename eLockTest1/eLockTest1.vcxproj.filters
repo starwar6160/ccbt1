@@ -80,8 +80,5 @@
     <ClCompile Include="GenTestMsg\jcGenTimeSync.cpp">
       <Filter>源文件\GenTestMsg</Filter>
     </ClCompile>
-    <ClCompile Include="secBoxTest20141023.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
   </ItemGroup>
 </Project>
