@@ -396,6 +396,24 @@ class jclmsCCB2014PINVOKE {
   [global::System.Runtime.InteropServices.DllImport("jclmsCCB2014", EntryPoint="CSharp_myPureHidTestDataGen20141216")]
   public static extern void myPureHidTestDataGen20141216();
 
+  [global::System.Runtime.InteropServices.DllImport("jclmsCCB2014", EntryPoint="CSharp_new_JcSecBox")]
+  public static extern global::System.IntPtr new_JcSecBox();
+
+  [global::System.Runtime.InteropServices.DllImport("jclmsCCB2014", EntryPoint="CSharp_delete_JcSecBox")]
+  public static extern void delete_JcSecBox(global::System.Runtime.InteropServices.HandleRef jarg1);
+
+  [global::System.Runtime.InteropServices.DllImport("jclmsCCB2014", EntryPoint="CSharp_JcSecBox_CloseHid")]
+  public static extern void JcSecBox_CloseHid(global::System.Runtime.InteropServices.HandleRef jarg1);
+
+  [global::System.Runtime.InteropServices.DllImport("jclmsCCB2014", EntryPoint="CSharp_JcSecBox_SecboxAuth")]
+  public static extern int JcSecBox_SecboxAuth(global::System.Runtime.InteropServices.HandleRef jarg1);
+
+  [global::System.Runtime.InteropServices.DllImport("jclmsCCB2014", EntryPoint="CSharp_JcSecBox_SecboxWriteData")]
+  public static extern int JcSecBox_SecboxWriteData(global::System.Runtime.InteropServices.HandleRef jarg1, int jarg2, string jarg3);
+
+  [global::System.Runtime.InteropServices.DllImport("jclmsCCB2014", EntryPoint="CSharp_JcSecBox_SecboxReadData")]
+  public static extern string JcSecBox_SecboxReadData(global::System.Runtime.InteropServices.HandleRef jarg1, int jarg2);
+
   [global::System.Runtime.InteropServices.DllImport("jclmsCCB2014", EntryPoint="CSharp_ZWEFS_get")]
   public static extern int ZWEFS_get();
 

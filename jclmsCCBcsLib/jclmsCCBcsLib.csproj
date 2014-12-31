@@ -54,6 +54,7 @@
     <Compile Include="swigCode\JCLMSREQ.cs" />
     <Compile Include="swigCode\JCMATCH.cs" />
     <Compile Include="swigCode\JCRESULT.cs" />
+    <Compile Include="swigCode\JcSecBox.cs" />
     <Compile Include="swigCode\SWIGTYPE_p_int.cs" />
     <Compile Include="swigCode\SWIGTYPE_p_int32_t.cs" />
     <Compile Include="swigCode\SWIGTYPE_p_void.cs" />

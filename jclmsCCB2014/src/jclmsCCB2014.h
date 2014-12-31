@@ -204,4 +204,17 @@ void JCLMSCCB2014_API myPureHidTestDataGen20141216(void);
 }	//extern "C" {
 #endif
 
+
+JCLMSCCB2014_API class JcSecBox {
+public:
+	JCLMSCCB2014_API JcSecBox();
+	JCLMSCCB2014_API ~ JcSecBox();
+	JCLMSCCB2014_API void CloseHid();
+	JCLMSCCB2014_API int SecboxAuth(void);
+	JCLMSCCB2014_API int SecboxWriteData(const int index,
+		const char *dataB64);
+	JCLMSCCB2014_API const char *SecboxReadData(const int index);
+private:
+};
+
 #endif // jclmsCCB2014_h__

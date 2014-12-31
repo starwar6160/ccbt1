@@ -104,5 +104,8 @@
     <ClCompile Include="src\crc32\adler32.c">
       <Filter>源文件\hashalg</Filter>
     </ClCompile>
+    <ClCompile Include="src\zwSecretBoxCsWrap20141018.cpp">
+      <Filter>源文件\dyCode</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
