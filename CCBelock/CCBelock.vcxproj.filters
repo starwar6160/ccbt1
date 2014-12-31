@@ -98,9 +98,6 @@
     <ClCompile Include="ccbelock_csharp_wrap.cxx">
       <Filter>源文件\wrap</Filter>
     </ClCompile>
-    <ClCompile Include="zwSecretBoxCsWrap20141018.cpp">
-      <Filter>源文件\wrap</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="HidProtocol.rc">

@@ -16,16 +16,6 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "jclmsCCB2014", "..\lms\jclm
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "zwBaseLibStatic", "..\lms\zwBaseLib\zwBaseLibStatic\zwBaseLibStatic.vcxproj", "{AA8F4DC7-84A6-41CE-AFFA-1EB303F6702E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ccbATMCSecretBoxLib", "ccbATMCSecretBoxLib\ccbATMCSecretBoxLib.csproj", "{9C55E743-748D-490D-A22A-D1C2A14EF2BF}"
-	ProjectSection(ProjectDependencies) = postProject
-		{2466CA9D-28E7-4156-B35E-B1D595ED5F99} = {2466CA9D-28E7-4156-B35E-B1D595ED5F99}
-	EndProjectSection
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "cppSecretBoxTest20141215", "cppSecretBoxTest20141023\cppSecretBoxTest20141023.vcxproj", "{C28C2296-B623-49D1-94DC-6510180CDB9C}"
-	ProjectSection(ProjectDependencies) = postProject
-		{2466CA9D-28E7-4156-B35E-B1D595ED5F99} = {2466CA9D-28E7-4156-B35E-B1D595ED5F99}
-	EndProjectSection
-EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "atmcpy", "atmcpy\atmcpy.vcxproj", "{7F797590-B440-4BC3-9197-13CB43BC34BA}"
 	ProjectSection(ProjectDependencies) = postProject
 		{2466CA9D-28E7-4156-B35E-B1D595ED5F99} = {2466CA9D-28E7-4156-B35E-B1D595ED5F99}
@@ -115,30 +105,6 @@ Global
 		{AA8F4DC7-84A6-41CE-AFFA-1EB303F6702E}.Release|Win32.ActiveCfg = Release|Win32
 		{AA8F4DC7-84A6-41CE-AFFA-1EB303F6702E}.Release|Win32.Build.0 = Release|Win32
 		{AA8F4DC7-84A6-41CE-AFFA-1EB303F6702E}.Release|x86.ActiveCfg = Release|Win32
-		{9C55E743-748D-490D-A22A-D1C2A14EF2BF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{9C55E743-748D-490D-A22A-D1C2A14EF2BF}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{9C55E743-748D-490D-A22A-D1C2A14EF2BF}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{9C55E743-748D-490D-A22A-D1C2A14EF2BF}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{9C55E743-748D-490D-A22A-D1C2A14EF2BF}.Debug|Win32.ActiveCfg = Debug|Any CPU
-		{9C55E743-748D-490D-A22A-D1C2A14EF2BF}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{9C55E743-748D-490D-A22A-D1C2A14EF2BF}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{9C55E743-748D-490D-A22A-D1C2A14EF2BF}.Release|Any CPU.Build.0 = Release|Any CPU
-		{9C55E743-748D-490D-A22A-D1C2A14EF2BF}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{9C55E743-748D-490D-A22A-D1C2A14EF2BF}.Release|Mixed Platforms.Build.0 = Release|Any CPU
-		{9C55E743-748D-490D-A22A-D1C2A14EF2BF}.Release|Win32.ActiveCfg = Release|Any CPU
-		{9C55E743-748D-490D-A22A-D1C2A14EF2BF}.Release|x86.ActiveCfg = Release|Any CPU
-		{C28C2296-B623-49D1-94DC-6510180CDB9C}.Debug|Any CPU.ActiveCfg = Debug|Win32
-		{C28C2296-B623-49D1-94DC-6510180CDB9C}.Debug|Mixed Platforms.ActiveCfg = Debug|Win32
-		{C28C2296-B623-49D1-94DC-6510180CDB9C}.Debug|Mixed Platforms.Build.0 = Debug|Win32
-		{C28C2296-B623-49D1-94DC-6510180CDB9C}.Debug|Win32.ActiveCfg = Debug|Win32
-		{C28C2296-B623-49D1-94DC-6510180CDB9C}.Debug|Win32.Build.0 = Debug|Win32
-		{C28C2296-B623-49D1-94DC-6510180CDB9C}.Debug|x86.ActiveCfg = Debug|Win32
-		{C28C2296-B623-49D1-94DC-6510180CDB9C}.Release|Any CPU.ActiveCfg = Release|Win32
-		{C28C2296-B623-49D1-94DC-6510180CDB9C}.Release|Mixed Platforms.ActiveCfg = Release|Win32
-		{C28C2296-B623-49D1-94DC-6510180CDB9C}.Release|Mixed Platforms.Build.0 = Release|Win32
-		{C28C2296-B623-49D1-94DC-6510180CDB9C}.Release|Win32.ActiveCfg = Release|Win32
-		{C28C2296-B623-49D1-94DC-6510180CDB9C}.Release|Win32.Build.0 = Release|Win32
-		{C28C2296-B623-49D1-94DC-6510180CDB9C}.Release|x86.ActiveCfg = Release|Win32
 		{7F797590-B440-4BC3-9197-13CB43BC34BA}.Debug|Any CPU.ActiveCfg = Debug|Win32
 		{7F797590-B440-4BC3-9197-13CB43BC34BA}.Debug|Mixed Platforms.ActiveCfg = Debug|Win32
 		{7F797590-B440-4BC3-9197-13CB43BC34BA}.Debug|Mixed Platforms.Build.0 = Debug|Win32

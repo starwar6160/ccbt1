@@ -6,8 +6,8 @@ using namespace std;
 typedef std::string String;
 %{
 #define _ZWUSE_AS_JNI
-#include "zwSecretBoxCCBcsWrap.h"
+//#include "zwSecretBoxCCBcsWrap.h"
 %}
 
 #define _ZWUSE_AS_JNI
-%include "zwSecretBoxCCBcsWrap.h"
+//%include "zwSecretBoxCCBcsWrap.h"
