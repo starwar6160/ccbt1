@@ -214,6 +214,18 @@ namespace jcAtmcConvertDLL {
 		//printf("%s\n",upXML.c_str());
 		ZWDBGMSG
 		    ("*********************金储应答XML结束******************####\n");
+		//20150105.1623.应万敏和马浩的临时测试要求添加把0005报文返回内容写入文件的要求临时添加，以后不需要；
+		static int G_MAHAO_LOG_COUNT=1;
+		if (JCSTR_GET_LOCK_LOG == jcCmd) {	//读取闭锁码
+			FILE *fp=fopen("mahaoLog20150105.txt","a");
+			char buf[64];
+			memset(buf,0,64);
+			sprintf(buf,"\n第%d条:\n",G_MAHAO_LOG_COUNT++);
+			fwrite(buf,strlen(buf),1,fp);
+			fwrite(upXML.c_str(),upXML.length(),1,fp);
+			fclose(fp);
+		}
+
 		try {			
 			string transCode = ptCCB.get < string > (CCBSTR_CODE);			
 			if ("0000" == transCode) {
