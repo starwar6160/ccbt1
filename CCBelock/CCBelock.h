@@ -37,6 +37,7 @@ CCBELOCK_API const char * dbgGetLockReturnXML(void);
 }
 
 namespace jcLockJsonCmd_t2015a{
+	CCBELOCK_API long OpenJson(long lTimeOut);
 	CCBELOCK_API long jcSendJson2Lock(const char *pszJson);
 	CCBELOCK_API void jcRecvJsonFromLock(char *outJson,const int outMaxLen);
 }	//end of namespace jcLockJsonCmd_t2015a{

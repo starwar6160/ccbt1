@@ -29,7 +29,7 @@ namespace zwccbthr {
 } //namespace zwccbthr{  
 
 namespace zwCfg {
-	const long JC_CCBDLL_TIMEOUT = 86400;	//最长超时时间为30秒,用于测试目的尽快达到限制暴露问题
+	//const long JC_CCBDLL_TIMEOUT = 86400;	//最长超时时间为30秒,用于测试目的尽快达到限制暴露问题
 //	const int JC_MSG_MAXLEN = 4 * 1024;	//最长为128字节,用于测试目的尽快达到限制暴露问题
 	//定义一个回调函数指针
 	RecvMsgRotine g_WarnCallback = NULL;
@@ -71,17 +71,17 @@ CCBELOCK_API long JCAPISTD Open(long lTimeOut)
 	memset(buf, 0, 256);
 	sprintf(buf, "Open incoming timeout value seconds is %d", lTimeOut);
 	OutputDebugStringA(buf);
-	assert(lTimeOut >= -1 && lTimeOut <= zwCfg::JC_CCBDLL_TIMEOUT);
-	if (lTimeOut < -1 || lTimeOut > zwCfg::JC_CCBDLL_TIMEOUT) {
+	assert(lTimeOut >= -1 && lTimeOut <= JC_CCBDLL_TIMEOUT);
+	if (lTimeOut < -1 || lTimeOut > JC_CCBDLL_TIMEOUT) {
 		memset(buf, 0, 256);
 		sprintf(buf,
 			"Open Function incoming timeout Value must in -1 to %d seconds",
-			zwCfg::JC_CCBDLL_TIMEOUT);
+			JC_CCBDLL_TIMEOUT);
 		OutputDebugStringA(buf);
 		pocoLog->
 		    error() <<
 		    "Open Function incoming timeout Value must in -1 to " <<
-		    zwCfg::JC_CCBDLL_TIMEOUT << "seconds";
+		    JC_CCBDLL_TIMEOUT << "seconds";
 		return ELOCK_ERROR_PARAMINVALID;
 	}
 	ZWFUNCTRACE boost::mutex::scoped_lock lock(zwCfg::ComPort_mutex);

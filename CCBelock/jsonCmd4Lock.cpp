@@ -16,7 +16,7 @@ namespace zwccbthr{
 
 
 namespace zwCfg {
-	extern const long JC_CCBDLL_TIMEOUT;	//最长超时时间为30秒,用于测试目的尽快达到限制暴露问题
+	//extern const long JC_CCBDLL_TIMEOUT;	//最长超时时间为30秒,用于测试目的尽快达到限制暴露问题
 	//定义一个回调函数指针
 	extern RecvMsgRotine g_WarnCallback;
 	extern boost::mutex ComPort_mutex;	//用于保护串口连接对象
@@ -26,6 +26,61 @@ namespace zwCfg {
 } //namespace zwCfg{  
 
 namespace jcLockJsonCmd_t2015a{
+
+	CCBELOCK_API long OpenJson(long lTimeOut)
+	{
+		char buf[256];
+		memset(buf, 0, 256);
+		sprintf(buf, "Open incoming timeout value seconds is %d", lTimeOut);
+		OutputDebugStringA(buf);
+		assert(lTimeOut >= -1 && lTimeOut <= JC_CCBDLL_TIMEOUT);
+		if (lTimeOut < -1 || lTimeOut > JC_CCBDLL_TIMEOUT) {
+			memset(buf, 0, 256);
+			sprintf(buf,
+				"Open Function incoming timeout Value must in -1 to %d seconds",
+				JC_CCBDLL_TIMEOUT);
+			OutputDebugStringA(buf);
+			pocoLog->
+				error() <<
+				"Open Function incoming timeout Value must in -1 to " <<
+				JC_CCBDLL_TIMEOUT << "seconds";
+			return ELOCK_ERROR_PARAMINVALID;
+		}
+		ZWFUNCTRACE boost::mutex::scoped_lock lock(zwCfg::ComPort_mutex);
+		//必须大于0，小于JC_CCBDLL_TIMEOUT，限制在一个合理范围内
+		pocoLog->notice() << "Open Return " << ELOCK_ERROR_SUCCESS << endl;
+		string myLockIp;
+		try {
+
+#ifdef ZWUSE_HID_MSG_SPLIT
+			if (true == zwCfg::s_hidOpened) {
+				ZWNOTICE("s_hidOpened already Opened,so return directly.")
+					return ELOCK_ERROR_SUCCESS;
+			}
+			memset(&zwccbthr::hidHandle, 0, sizeof(JCHID));
+			zwccbthr::hidHandle.vid = JCHID_VID_2014;
+			zwccbthr::hidHandle.pid = JCHID_PID_LOCK5151;
+			if (JCHID_STATUS_OK != jcHidOpen(&zwccbthr::hidHandle)) {
+				ZWERROR("HID Device Open ERROR 1225 !");
+				return ELOCK_ERROR_PARAMINVALID;
+			}
+			zwCfg::s_hidOpened = true;
+#else
+			//打开串口
+			myLockIp = zwccbthr::zwGetLockIP();
+			zwccbthr::zwComPort = new jcSerialPort(myLockIp.c_str());
+#endif // ZWUSE_HID_MSG_SPLIT			
+		}
+		catch(...) {
+			string errMsg = "打开端口" + myLockIp + "失败";
+			ZWFATAL(errMsg.c_str())
+		}
+
+		ZWNOTICE("成功打开 到锁具的连接")
+			return ELOCK_ERROR_SUCCESS;
+	}
+
+
 	//从long Notify(const char *pszMsg)修改而来
 	CCBELOCK_API long jcSendJson2Lock(const char *pszJson)
 	{

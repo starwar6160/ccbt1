@@ -29,8 +29,9 @@ void eLockJsonTest20150106()
 	const int BUFLEN=1024;
 	//20150106.1710
 	printf("eLockJsonTest20150106\n");
-	int msts=Open(25);
-	jcLockJsonCmd_t2015a::jcSendJson2Lock("aaaaaaaaaaaa");
+	int msts=jcLockJsonCmd_t2015a::OpenJson(25);
+	//{"Command":"Set_Outside_Loop_Period","Period":"30"}
+	jcLockJsonCmd_t2015a::jcSendJson2Lock("{\"Command\":\"Set_Outside_Loop_Period\",\"Period\":\"30\"}");
 	char recvBuf[BUFLEN];
 	memset(recvBuf,0,BUFLEN);
 	jcLockJsonCmd_t2015a::jcRecvJsonFromLock(recvBuf,BUFLEN);	
