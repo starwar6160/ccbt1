@@ -27,7 +27,7 @@ namespace zwCfg {
 
 namespace jcLockJsonCmd_t2015a{
 	//从long Notify(const char *pszMsg)修改而来
-	long NotifyJson(const char *pszMsg)
+	long jcSendJson2Lock(const char *pszJson)
 	{
 		//通过在Notify函数开始检测是否端口已经打开，没有打开就直接返回，避免
 		//2014年11月初在广州遇到的没有连接锁具时，ATMC执行0002报文查询锁具状态，
@@ -35,32 +35,30 @@ namespace jcLockJsonCmd_t2015a{
 		if (false == zwCfg::s_hidOpened) {
 			return ELOCK_ERROR_CONNECTLOST;
 		}
-		ZWFUNCTRACE assert(pszMsg != NULL);
+		ZWFUNCTRACE 
 		//输入必须有内容，但是最大不得长于下位机内存大小，做合理限制
-		assert(NULL != pszMsg);
-		if (NULL == pszMsg) {
+		assert(NULL != pszJson);
+		if (NULL == pszJson) {
 			ZWERROR("Notify输入为空")
 				return ELOCK_ERROR_PARAMINVALID;
 		}
-		if (NULL != pszMsg && strlen(pszMsg) > 0) {
-			pocoLog->information() << "JinChu下发JSON=" << endl << pszMsg <<
+		if (NULL != pszJson && strlen(pszJson) > 0) {
+			pocoLog->information() << "JinChu下发JSON=" << endl << pszJson <<
 				endl;
 		}
 		boost::mutex::scoped_lock lock(zwCfg::ComPort_mutex);
 		
 		try {
-			int inlen = strlen(pszMsg);
+			int inlen = strlen(pszJson);
 			assert(inlen > 0 && inlen < JC_MSG_MAXLEN);
 			if (inlen == 0 || inlen >= JC_MSG_MAXLEN) {
 				ZWWARN("notify输入超过最大最小限制");
 				return ELOCK_ERROR_PARAMINVALID;
 			}
 			//////////////////////////////////////////////////////////////////////////
-			string strJsonSend = pszMsg;
-			assert(strJsonSend.length() > 9);	//json最基本的符号起码好像要9个字符左右
-			ZWNOTICE(strJsonSend.c_str());
+			ZWNOTICE(pszJson);
 			Sleep(50);
-			zwPushString(strJsonSend.c_str());
+			zwPushString(pszJson);
 			return ELOCK_ERROR_SUCCESS;
 		}
 		catch(...) {		//一切网络异常都直接返回错误。主要是为了捕捉未连接时
@@ -76,16 +74,16 @@ namespace jcLockJsonCmd_t2015a{
 	}
 
 	//从void ThreadLockComm() 修改而来
-	//与锁具之间的通讯线程
-	void ThreadLockCommJson() {
+	//阻塞接受锁具返回值，3秒超时返回；直接返回收到的JSON数据
+	void jcRecvJsonFromLock(char *outJson,const int outMaxLen) {
 		ZWFUNCTRACE boost::mutex::scoped_lock lock(zwccbthr::thr_mutex);
 
 		try {			
 			const int BLEN = 1024;
 			char recvBuf[BLEN + 1];
 			memset(recvBuf, 0, BLEN + 1);
-			int outLen = 0;
-			while (1) {
+			int recvLen = 0;
+			//while (1) {
 #ifndef ZWUSE_HID_MSG_SPLIT
 				if (NULL == zwComPort) {
 					ZWNOTICE
@@ -99,19 +97,18 @@ namespace jcLockJsonCmd_t2015a{
 #ifdef ZWUSE_HID_MSG_SPLIT
 					JCHID_STATUS sts=
 						jcHidRecvData(&zwccbthr::hidHandle,
-						recvBuf, BLEN, &outLen,JCHID_RECV_TIMEOUT);
+						recvBuf, BLEN, &recvLen,JCHID_RECV_TIMEOUT);
 					zwCfg::s_hidOpened=true;	//算是通信线程的一个心跳标志					
 					//要是什么也没收到，就直接进入下一个循环
 					if (JCHID_STATUS_OK!=sts)
 					{
-						printf("JCHID_STATUS 1225 %d\n",sts);
-						Sleep(1000);
-						continue;
+						printf("JCHID_STATUS No DATA RECVED %d\n",sts);
+						return;						
 					}
 					printf("\n");
 #else
 					zwComPort->RecvData(recvBuf, BLEN,
-						&outLen);
+						&recvLen);
 #endif // ZWUSE_HID_MSG_SPLIT
 
 					//////////////////////////////////////////////////////////////////////////
@@ -124,39 +121,26 @@ namespace jcLockJsonCmd_t2015a{
 					return;
 				}
 				ZWNOTICE(recvBuf);
-
-				string outXML;
-				jcAtmcConvertDLL::zwJCjson2CCBxml(recvBuf,
-					outXML);
-				ZWINFO("分析锁具回传的Json并转换为建行XML成功");
-				//XML开头的固定内容38个字符，外加起码一个标签的两对尖括号合计4个字符
-				assert(outXML.length() > 42);
-				ZWDBGMSG(outXML.c_str());
+			//返回数据
+				//收到的数据长度大于输出缓冲区大小就截断输出
+				if (recvLen>outMaxLen)
 				{
-					boost::
-						mutex::scoped_lock lock(zwccbthr::recv_mutex);
-					//收到的XML存入队列
-					zwccbthr::dqOutXML.push_back(outXML);
+					strncpy(outJson,recvBuf,outMaxLen);
 				}
-
-				if (NULL != zwCfg::g_WarnCallback) {
-					//调用回调函数传回信息，然后就关闭连接，结束通信线程；
-					zwCfg::g_WarnCallback(outXML.c_str());
-					ZWINFO
-						("成功把从锁具接收到的数据传递给回调函数");
-				} else {
-					ZWWARN
-						("回调函数指针为空，无法调用回调函数")
+				else
+				{
+					strncpy(outJson,recvBuf,recvLen);
 				}
-			}
-			ZWINFO("金储通信数据接收线程正常退出");
+				
+			//}	//while (1) {
+			ZWINFO("金储通信数据接收过程正常结束");
 
 		}		//try
 		catch(...) {			
 			//异常断开就设定该标志为FALSE,以便下次Open不要再跳过启动通信线程的程序段
 			zwCfg::s_hidOpened=false;
 			ZWFATAL
-				("金储通信数据接收线程数据连接异常断开，现在数据接收线程将结束");
+				("金储通信数据接收过程中数据连接异常断开，现在数据接收过程异常结束");
 			return;
 		}	
 	}
