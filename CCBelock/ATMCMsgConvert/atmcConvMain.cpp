@@ -2,10 +2,17 @@
 #include "zwCcbElockHdr.h"
 #include "zwPocoLog.h"
 #include "myConvIntHdr.h"
+//20150105.万敏和马浩测试用的东西
+#define TMP_MAHAO_TEST_20150105
 
 //把ATMC DLL的XML和JSON互转函数集中于此，便于单元测试；
 namespace jcAtmcConvertDLL {
+	
 
+#ifdef TMP_MAHAO_TEST_20150105
+	//20150105.万敏和马浩测试用的东西
+	int G_MAHAO_LOG_COUNT=1;
+#endif // TMP_MAHAO_TEST_20150105
 	const JC_MSG_TYPE zwCCBxml2JCjson(const string & downXML,
 					  string & downJson) {
 		ZWFUNCTRACE
@@ -63,6 +70,10 @@ namespace jcAtmcConvertDLL {
 		}
 		if ("0005" == transCode) {	//读取日志
 			msgType = JCMSG_GET_LOCK_LOG;
+#ifdef TMP_MAHAO_TEST_20150105
+			//每次新的读取日志命令，计数器重新归1
+			G_MAHAO_LOG_COUNT=1;
+#endif // TMP_MAHAO_TEST_20150105
 			zwconvGetLockLogDown(ptCCB, ptJC);
 		}
 		if ("1001" == transCode) {	//锁具主动上送告警
@@ -214,8 +225,8 @@ namespace jcAtmcConvertDLL {
 		//printf("%s\n",upXML.c_str());
 		ZWDBGMSG
 		    ("*********************金储应答XML结束******************####\n");
+#ifdef TMP_MAHAO_TEST_20150105
 		//20150105.1623.应万敏和马浩的临时测试要求添加把0005报文返回内容写入文件的要求临时添加，以后不需要；
-		static int G_MAHAO_LOG_COUNT=1;
 		if (JCSTR_GET_LOCK_LOG == jcCmd) {	//读取闭锁码
 			FILE *fp=fopen("mahaoLog20150105.txt","a");
 			char buf[64];
@@ -225,6 +236,7 @@ namespace jcAtmcConvertDLL {
 			fwrite(upXML.c_str(),upXML.length(),1,fp);
 			fclose(fp);
 		}
+#endif // TMP_MAHAO_TEST_20150105
 
 		try {			
 			string transCode = ptCCB.get < string > (CCBSTR_CODE);			
