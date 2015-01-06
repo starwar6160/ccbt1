@@ -28,6 +28,18 @@ namespace zwccbthr {
 	extern JCHID hidHandle;
 } //namespace zwccbthr{  
 
+namespace zwCfg {
+	const long JC_CCBDLL_TIMEOUT = 86400;	//最长超时时间为30秒,用于测试目的尽快达到限制暴露问题
+//	const int JC_MSG_MAXLEN = 4 * 1024;	//最长为128字节,用于测试目的尽快达到限制暴露问题
+	//定义一个回调函数指针
+	RecvMsgRotine g_WarnCallback = NULL;
+	boost::mutex ComPort_mutex;	//用于保护串口连接对象
+	//线程对象作为一个全局静态变量，则不需要显示启动就能启动一个线程
+	boost::thread * thr = NULL;
+	bool s_hidOpened = false;
+} //namespace zwCfg{  
+
+
 void ZWDBGMSG(const char *x)
 {
 	OutputDebugStringA(x);
@@ -50,16 +62,6 @@ zw_trace::~zw_trace()
 	pocoLog->trace(m_end);
 }
 
-namespace zwCfg {
-	const long JC_CCBDLL_TIMEOUT = 86400;	//最长超时时间为30秒,用于测试目的尽快达到限制暴露问题
-	const int JC_MSG_MAXLEN = 4 * 1024;	//最长为128字节,用于测试目的尽快达到限制暴露问题
-	//定义一个回调函数指针
-	RecvMsgRotine g_WarnCallback = NULL;
-	 boost::mutex ComPort_mutex;	//用于保护串口连接对象
-	//线程对象作为一个全局静态变量，则不需要显示启动就能启动一个线程
-	 boost::thread * thr = NULL;
-	 bool s_hidOpened = false;
-} //namespace zwCfg{  
 
 
 
@@ -169,8 +171,8 @@ CCBELOCK_API long JCAPISTD Notify(const char *pszMsg)
 			    return ELOCK_ERROR_PARAMINVALID;
 		}
 		int inlen = strlen(pszMsg);
-		assert(inlen > 0 && inlen < zwCfg::JC_MSG_MAXLEN);
-		if (inlen == 0 || inlen >= zwCfg::JC_MSG_MAXLEN) {
+		assert(inlen > 0 && inlen < JC_MSG_MAXLEN);
+		if (inlen == 0 || inlen >= JC_MSG_MAXLEN) {
 			ZWWARN("Notify输入超过最大最小限制");
 			return ELOCK_ERROR_PARAMINVALID;
 		}
@@ -218,8 +220,8 @@ void cdecl myATMCRecvMsgRotine(const char *pszMsg)
 	//输入必须有内容，但是最大不得长于下位机内存大小，做合理限制
 	assert(NULL != pszMsg);
 	int inlen = strlen(pszMsg);
-	assert(inlen > 0 && inlen < zwCfg::JC_MSG_MAXLEN);
-	if (NULL == pszMsg || inlen == 0 || inlen >= zwCfg::JC_MSG_MAXLEN) {
+	assert(inlen > 0 && inlen < JC_MSG_MAXLEN);
+	if (NULL == pszMsg || inlen == 0 || inlen >= JC_MSG_MAXLEN) {
 		return;
 	}
 }

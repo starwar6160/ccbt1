@@ -98,6 +98,9 @@
     <ClCompile Include="ccbelock_csharp_wrap.cxx">
       <Filter>源文件\wrap</Filter>
     </ClCompile>
+    <ClCompile Include="jsonCmd4Lock.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="HidProtocol.rc">

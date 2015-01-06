@@ -119,4 +119,8 @@ namespace zwCfg {
 #define ZWUSE_HID_MSG_SPLIT
 extern HMODULE G_DLL_HMODULE;
 
+//最长为128字节,用于测试目的尽快达到限制暴露问题
+//从原来的namespace zwCfg里面单独提出来的，因为该变量有点链接问题，先单独提出来；
+#define JC_MSG_MAXLEN	(1*1024)
+
 #endif // zwCcbElockHdr_h__
