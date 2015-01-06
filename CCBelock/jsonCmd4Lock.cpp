@@ -36,53 +36,32 @@ namespace jcLockJsonCmd_t2015a{
 			return ELOCK_ERROR_CONNECTLOST;
 		}
 		ZWFUNCTRACE assert(pszMsg != NULL);
-		assert(strlen(pszMsg) >= 42);	//XML至少42字节utf8
-		if (pszMsg == NULL || strlen(pszMsg) < 42) {
-			return ELOCK_ERROR_PARAMINVALID;
+		//输入必须有内容，但是最大不得长于下位机内存大小，做合理限制
+		assert(NULL != pszMsg);
+		if (NULL == pszMsg) {
+			ZWERROR("Notify输入为空")
+				return ELOCK_ERROR_PARAMINVALID;
 		}
 		if (NULL != pszMsg && strlen(pszMsg) > 0) {
-			pocoLog->information() << "CCB下发XML=" << endl << pszMsg <<
+			pocoLog->information() << "JinChu下发JSON=" << endl << pszMsg <<
 				endl;
 		}
 		boost::mutex::scoped_lock lock(zwCfg::ComPort_mutex);
-		string strJsonSend;
+		
 		try {
-			//输入必须有内容，但是最大不得长于下位机内存大小，做合理限制
-			assert(NULL != pszMsg);
-			if (NULL == pszMsg) {
-				ZWERROR("Notify输入为空")
-					return ELOCK_ERROR_PARAMINVALID;
-			}
 			int inlen = strlen(pszMsg);
 			assert(inlen > 0 && inlen < JC_MSG_MAXLEN);
-			//if (inlen == 0 || inlen >= zwCfg::JC_MSG_MAXLEN) {
-			//	ZWWARN("Notify输入超过最大最小限制");
-			//	return ELOCK_ERROR_PARAMINVALID;
-			//}
+			if (inlen == 0 || inlen >= JC_MSG_MAXLEN) {
+				ZWWARN("notify输入超过最大最小限制");
+				return ELOCK_ERROR_PARAMINVALID;
+			}
 			//////////////////////////////////////////////////////////////////////////
-			string strXMLSend = pszMsg;
-			assert(strXMLSend.length() > 42);	//XML开头的固定内容38个字符，外加起码一个标签的两对尖括号合计4个字符
-			jcAtmcConvertDLL::zwCCBxml2JCjson(strXMLSend, strJsonSend);
+			string strJsonSend = pszMsg;
 			assert(strJsonSend.length() > 9);	//json最基本的符号起码好像要9个字符左右
 			ZWNOTICE(strJsonSend.c_str());
 			Sleep(50);
 			zwPushString(strJsonSend.c_str());
 			return ELOCK_ERROR_SUCCESS;
-		}
-		catch(ptree_bad_path & e) {
-			ZWERROR(e.what());
-			ZWERROR("CCB下发XML有错误节点路径")
-				return ELOCK_ERROR_NOTSUPPORT;
-		}
-		catch(ptree_bad_data & e) {
-			ZWERROR(e.what());
-			ZWERROR("CCB下发XML有错误数据内容")
-				return ELOCK_ERROR_PARAMINVALID;
-		}
-		catch(ptree_error & e) {
-			ZWERROR(e.what());
-			ZWERROR("CCB下发XML有其他未知错误")
-				return ELOCK_ERROR_CONNECTLOST;
 		}
 		catch(...) {		//一切网络异常都直接返回错误。主要是为了捕捉未连接时
 			//串口对象为空造成访问NULL指针的的SEH异常  
@@ -91,7 +70,7 @@ namespace jcLockJsonCmd_t2015a{
 			//然后在此，也就是上层捕获。暂时不知道捕获精确类型
 			//所以catch所有异常了
 			ZWFATAL(__FUNCTION__);
-			ZWFATAL("Notify通过线路发送数据异常，可能网络故障")
+			ZWFATAL("NotifyJson通过线路发送数据异常，可能网络故障")
 				return ELOCK_ERROR_CONNECTLOST;
 		}
 	}
