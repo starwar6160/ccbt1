@@ -33,8 +33,13 @@ CCBELOCK_API int	JCAPISTD SetRecvMsgRotine(RecvMsgRotine pRecvMsgFun);
 //////////////////////////////////////////////////////////////////////////
 CCBELOCK_API void zwPushString(const char *str);
 CCBELOCK_API const char * dbgGetLockReturnXML(void);
-
 #ifdef __cplusplus
 }
+
+namespace jcLockJsonCmd_t2015a{
+	CCBELOCK_API long jcSendJson2Lock(const char *pszJson);
+	CCBELOCK_API void jcRecvJsonFromLock(char *outJson,const int outMaxLen);
+}	//end of namespace jcLockJsonCmd_t2015a{
+
 #endif
 #endif // CCBelock_h__

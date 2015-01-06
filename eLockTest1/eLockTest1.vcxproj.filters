@@ -50,9 +50,6 @@
     <ClCompile Include="eLockTest\ActiveLockTest.cpp">
       <Filter>源文件\eLockTest</Filter>
     </ClCompile>
-    <ClCompile Include="eLockTest\eLockTest1.cpp">
-      <Filter>源文件\eLockTest</Filter>
-    </ClCompile>
     <ClCompile Include="eLockTest\eLockTestBadInput.cpp">
       <Filter>源文件\eLockTest</Filter>
     </ClCompile>
@@ -79,6 +76,9 @@
     </ClCompile>
     <ClCompile Include="GenTestMsg\jcGenTimeSync.cpp">
       <Filter>源文件\GenTestMsg</Filter>
+    </ClCompile>
+    <ClCompile Include="eLockTest\eLockTest1.cpp">
+      <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

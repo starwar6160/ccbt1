@@ -27,7 +27,7 @@ namespace zwCfg {
 
 namespace jcLockJsonCmd_t2015a{
 	//从long Notify(const char *pszMsg)修改而来
-	long jcSendJson2Lock(const char *pszJson)
+	CCBELOCK_API long jcSendJson2Lock(const char *pszJson)
 	{
 		//通过在Notify函数开始检测是否端口已经打开，没有打开就直接返回，避免
 		//2014年11月初在广州遇到的没有连接锁具时，ATMC执行0002报文查询锁具状态，
@@ -75,7 +75,7 @@ namespace jcLockJsonCmd_t2015a{
 
 	//从void ThreadLockComm() 修改而来
 	//阻塞接受锁具返回值，3秒超时返回；直接返回收到的JSON数据
-	void jcRecvJsonFromLock(char *outJson,const int outMaxLen) {
+	CCBELOCK_API void jcRecvJsonFromLock(char *outJson,const int outMaxLen) {
 		ZWFUNCTRACE boost::mutex::scoped_lock lock(zwccbthr::thr_mutex);
 
 		try {			
