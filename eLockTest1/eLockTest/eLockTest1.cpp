@@ -30,8 +30,9 @@ void eLockJsonTest20150106()
 	//20150106.1710
 	printf("eLockJsonTest20150106\n");
 	int msts=jcLockJsonCmd_t2015a::OpenJson(25);
-	//{"Command":"Set_Outside_Loop_Period","Period":"30"}
-	jcLockJsonCmd_t2015a::jcSendJson2Lock("{\"Command\":\"Set_Outside_Loop_Period\",\"Period\":\"30\"}");
+	//试验了几个Json命令，目前只有这一个有反应
+	//{ \"command\": \"Lock_System_Journal\",\"State\": \"get\"}
+	jcLockJsonCmd_t2015a::jcSendJson2Lock("{ \"command\": \"Lock_System_Journal\",\"State\": \"get\"}");
 	char recvBuf[BUFLEN];
 	memset(recvBuf,0,BUFLEN);
 	jcLockJsonCmd_t2015a::jcRecvJsonFromLock(recvBuf,BUFLEN);	
