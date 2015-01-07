@@ -8,13 +8,14 @@
 int eLockGoogleTest2014( int argc, _TCHAR ** argv );
 
 void eLockJsonTest20150106();
-
+void eLockJsonTestLua107(void);
 
 int _tmain(int argc, _TCHAR * argv[])
 {
 	//return eLockGoogleTest2014(argc, argv);
 
-	eLockJsonTest20150106();
+	//eLockJsonTest20150106();
+	eLockJsonTestLua107();
 	return 0;
 }
 
@@ -37,4 +38,12 @@ void eLockJsonTest20150106()
 	recvBuf= jcLockJsonCmd_t2015a::RecvFromLockJson(2000);	
 	jcLockJsonCmd_t2015a::CloseJson();
 	printf("Receive form Lock Json 20150106.1713 is \n%s\n",recvBuf.c_str());
+}
+
+
+void eLockJsonTestLua107(void)
+{
+	myLuaBridgeSendJsonAPI("E:\\zwWorkSrc\\zwBaseLib\\zwTest201407\\test107.lua");	
+	myLuaBridgeTest1();
+	
 }

@@ -10,7 +10,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "eLockTest1", "eLockTest1\eL
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "emuLockSrv", "emuLockSrv\emuLockSrv.vcxproj", "{EFEC23B9-782B-43EF-8853-6444CEBCCAD8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "elockcstest808", "elockcstest808\elockcstest808.csproj", "{713409EC-494F-44DA-8665-42587438DC6D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "cselocktest808", "elockcstest808\cselocktest808.csproj", "{713409EC-494F-44DA-8665-42587438DC6D}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "jclmsCCB2014", "..\lms\jclmsCCB2014\jclmsCCB2014\jclmsCCB2014.vcxproj", "{A062E85F-C9C1-487D-836A-AED01FA97314}"
 EndProject
