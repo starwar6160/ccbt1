@@ -146,7 +146,7 @@ CloseHidEnd:
 
 	//从void ThreadLockComm() 修改而来
 	//阻塞接受锁具返回值，3秒超时返回；直接返回收到的JSON数据
-	CCBELOCK_API void RecvFromLockJson( char *outJson,const int outMaxLen,const int timeoutMs )
+	CCBELOCK_API char * RecvFromLockJson( const int timeoutMs )
 	{
 		ZWFUNCTRACE boost::mutex::scoped_lock lock(zwccbthr::thr_mutex);
 		//超时值默认值
@@ -158,7 +158,7 @@ CloseHidEnd:
 		}
 		try {			
 			const int BLEN = 1024;
-			char recvBuf[BLEN + 1];
+			static char recvBuf[BLEN + 1];
 			memset(recvBuf, 0, BLEN + 1);
 			int recvLen = 0;
 			//while (1) {
@@ -180,7 +180,7 @@ CloseHidEnd:
 					if (JCHID_STATUS_OK!=sts)
 					{
 						printf("JCHID_STATUS No DATA RECVED %d\n",sts);
-						return;						
+						return "JCHID_STATUS No DATA RECVED";						
 					}
 					printf("\n");
 #else
@@ -195,30 +195,20 @@ CloseHidEnd:
 				catch(...) {
 					ZWFATAL
 						("RecvData接收JSON数据时到锁具的数据连接异常断开，数据接收将终止");
-					return;
+					return "RecvData接收JSON数据时到锁具的数据连接异常断开，数据接收将终止";
 				}
 				ZWNOTICE(recvBuf);
-			//返回数据
-				//收到的数据长度大于输出缓冲区大小就截断输出
-				if (recvLen>outMaxLen)
-				{
-					strncpy(outJson,recvBuf,outMaxLen);
-				}
-				else
-				{
-					strncpy(outJson,recvBuf,recvLen);
-				}
-				
 			//}	//while (1) {
 			ZWINFO("金储通信数据接收JSON过程正常结束");
-
+			//返回数据
+			return recvBuf;
 		}		//try
 		catch(...) {			
 			//异常断开就设定该标志为FALSE,以便下次Open不要再跳过启动通信线程的程序段
 			zwCfg::s_hidOpened=false;
 			ZWFATAL
 				("金储通信数据接收过程中数据连接异常断开，现在数据接收JSON过程异常结束");
-			return;
+			return "金储通信数据接收过程中数据连接异常断开，现在数据接收JSON过程异常结束";
 		}	
 	}
 

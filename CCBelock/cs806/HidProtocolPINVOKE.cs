@@ -211,7 +211,7 @@ class HidProtocolPINVOKE {
   public static extern int SendToLockJson(string jarg1);
 
   [global::System.Runtime.InteropServices.DllImport("HidProtocol", EntryPoint="CSharp_RecvFromLockJson")]
-  public static extern void RecvFromLockJson(string jarg1, int jarg2, int jarg3);
+  public static extern string RecvFromLockJson(int jarg1);
 
   [global::System.Runtime.InteropServices.DllImport("HidProtocol", EntryPoint="CSharp_CloseJson")]
   public static extern int CloseJson();

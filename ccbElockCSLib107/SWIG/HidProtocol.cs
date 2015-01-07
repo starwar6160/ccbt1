@@ -48,8 +48,9 @@ public class HidProtocol {
     return ret;
   }
 
-  public static void RecvFromLockJson(string outJson, int outMaxLen, int timeoutMs) {
-    HidProtocolPINVOKE.RecvFromLockJson(outJson, outMaxLen, timeoutMs);
+  public static string RecvFromLockJson(int timeoutMs) {
+    string ret = HidProtocolPINVOKE.RecvFromLockJson(timeoutMs);
+    return ret;
   }
 
   public static int CloseJson() {

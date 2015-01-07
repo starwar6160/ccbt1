@@ -380,15 +380,15 @@ SWIGEXPORT long SWIGSTDCALL CSharp_SendToLockJson(char * jarg1) {
 }
 
 
-SWIGEXPORT void SWIGSTDCALL CSharp_RecvFromLockJson(char * jarg1, int jarg2, int jarg3) {
-  char *arg1 = (char *) 0 ;
-  int arg2 ;
-  int arg3 ;
+SWIGEXPORT char * SWIGSTDCALL CSharp_RecvFromLockJson(int jarg1) {
+  char * jresult ;
+  int arg1 ;
+  char *result = 0 ;
   
-  arg1 = (char *)jarg1; 
-  arg2 = (int)jarg2; 
-  arg3 = (int)jarg3; 
-  jcLockJsonCmd_t2015a::RecvFromLockJson(arg1,arg2,arg3);
+  arg1 = (int)jarg1; 
+  result = (char *)jcLockJsonCmd_t2015a::RecvFromLockJson(arg1);
+  jresult = SWIG_csharp_string_callback((const char *)result); 
+  return jresult;
 }
 
 

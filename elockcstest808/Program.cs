@@ -26,10 +26,8 @@ namespace elockcstest808
         public static void myJcLockJsonTest20150107()
         {
             int hidhnd=HidProtocol.OpenJson(25);
-            HidProtocol.SendToLockJson("{ \"command\": \"Lock_System_Journal\",\"State\": \"get\"}");
-            const int BUFLEN=1000;
-            string outJson=new string(' ',BUFLEN);
-            HidProtocol.RecvFromLockJson(outJson, BUFLEN, 2500);
+            HidProtocol.SendToLockJson("{ \"command\": \"Lock_System_Journal\",\"State\": \"get\"}");            
+            String outJson = HidProtocol.RecvFromLockJson(2500);
             Console.Out.WriteLine(outJson);
             HidProtocol.CloseJson();
         }
