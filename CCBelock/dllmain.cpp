@@ -19,6 +19,9 @@ string zwTest912(string now)
 BOOL APIENTRY DllMain(HMODULE hModule,
 		      DWORD ul_reason_for_call, LPVOID lpReserved)
 {
+	//设置代码页为简体中文，936是简体中文的代码页。
+	std::locale loc1 = std::locale::global(std::locale(".936"));
+
 	OutputDebugStringA("JinChu Elock DllMain Loaded.20141017.1023");
 	G_DLL_HMODULE = hModule;	//方便其他需要获取DLL绝对路径的地方使用；
 	char myDllPath[256];
@@ -48,5 +51,8 @@ BOOL APIENTRY DllMain(HMODULE hModule,
 		break;
 	}
 	OutputDebugStringA("JinChu Elock DllMain Success End.20141017.1023");
+	//恢复原来的代码页
+	std::locale::global(std::locale(loc1));
+
 	return TRUE;
 }

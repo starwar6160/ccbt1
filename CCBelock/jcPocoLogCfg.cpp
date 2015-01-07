@@ -25,8 +25,6 @@ int PocoLogInit(void)
 	OutputDebugStringA(__FUNCTION__);
 	Poco::AutoPtr < Poco::Channel > channel;
 	{
-		//设置代码页为简体中文，936是简体中文的代码页。
-		std::locale loc1 = std::locale::global(std::locale(".936"));
 		Poco::AutoPtr < Poco::Channel >
 		    fileChannel(new Poco::FileChannel());
 		fileChannel->setProperty("compress", "true");
@@ -45,8 +43,6 @@ int PocoLogInit(void)
 					      "%H:%M:%S:%i %s(%l): %t");
 		channel =
 		    new Poco::FormattingChannel(patternFormatter, fileChannel);
-		//恢复原来的代码页
-		std::locale::global(std::locale(loc1));
 	}
 
 	Poco::Logger::root().setChannel(channel.get());
