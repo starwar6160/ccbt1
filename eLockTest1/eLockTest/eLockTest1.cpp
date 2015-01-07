@@ -12,16 +12,38 @@ void eLockJsonTestLua107(void);
 
 void myLuaBridgeSendJsonAPI(const char *luaScriptFile);
 void myLuaBridgeTest1(void);
+//将TCHAR转为char   
+//*tchar是TCHAR类型指针，*_char是char类型指针   
+void TcharToChar (const TCHAR * tchar, char * _char)  
+{  
+    int iLength ;  
+//获取字节长度   
+iLength = WideCharToMultiByte(CP_ACP, 0, tchar, -1, NULL, 0, NULL, NULL);  
+//将tchar值赋给_char    
+WideCharToMultiByte(CP_ACP, 0, tchar, -1, _char, iLength, NULL, NULL);   
+}  
 
+//同上   
+void CharToTchar (const char * _char, TCHAR * tchar)  
+{  
+    int iLength ;  
+  
+    iLength = MultiByteToWideChar (CP_ACP, 0, _char, strlen (_char) + 1, NULL, 0) ;  
+    MultiByteToWideChar (CP_ACP, 0, _char, strlen (_char) + 1, tchar, iLength) ;  
+}  
 
-int _tmain(int argc, char * argv[])
+int _tmain(int argc, TCHAR * argv[])
 {
 	//return eLockGoogleTest2014(argc, argv);
 
 	//eLockJsonTest20150106();
 	if (argc>=2)
 	{
-		myLuaBridgeSendJsonAPI(argv[1]);
+		char aFn[256];
+		memset(aFn,0,256);
+		TcharToChar(argv[1],aFn);
+		printf("argv[1]=%s\n",aFn);
+		myLuaBridgeSendJsonAPI(aFn);
 	}
 	else
 	{
