@@ -52,7 +52,7 @@
       <WarningLevel>Level4</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;POCO_STATIC;CCBELOCK_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(BOOST);$(POCO)\Foundation\include;$(POCO)\Net\include;$(POCO)\XML\include;$(POCO)\Util\include;.\;$(ZWSRC)\zwBaseLib\zwBaseLib\SerialPortTestCode\;$(ZWSRC)\zwBaseLib\zwBaseLib\SecretBox;$(ZWSRC)\zwBaseLib\zwBaseLib\HidSplitMsg;$(ZWSRC)\zwBaseLib\zwBaseLib\Header;$(ZWSRC)\zwBaseLib\zwBaseLib\nanopb_Code;$(ZWLIB)\Python27\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(BOOST);$(POCO)\Foundation\include;$(POCO)\Net\include;$(POCO)\XML\include;$(POCO)\Util\include;.\;$(ZWSRC)\zwBaseLib\zwBaseLib\SerialPortTestCode\;$(ZWSRC)\zwBaseLib\zwBaseLib\SecretBox;$(ZWSRC)\zwBaseLib\zwBaseLib\HidSplitMsg;$(ZWSRC)\zwBaseLib\zwBaseLib\Header;$(ZWSRC)\zwBaseLib\zwBaseLib\nanopb_Code;$(ZWLIB)\lua\src;$(ZWLIB)\LuaBridge\Source\LuaBridge;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <ExceptionHandling>Sync</ExceptionHandling>
       <AdditionalOptions>-Zm113 %(AdditionalOptions)</AdditionalOptions>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
@@ -65,7 +65,7 @@
       <GenerateMapFile>false</GenerateMapFile>
       <MapExports>false</MapExports>
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
-      <AdditionalDependencies>zwBaseLibStatic.lib;setupapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>zwBaseLibStatic.lib;setupapi.lib;lua51LibStatic.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>
@@ -80,7 +80,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;POCO_STATIC;CCBELOCK_EXPORTS;_DEBUG_USEPOCOLOG1027;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(BOOST);$(POCO)\Foundation\include;$(POCO)\Net\include;$(POCO)\XML\include;$(POCO)\Util\include;.\;$(ZWSRC)\zwBaseLib\zwBaseLib\SerialPortTestCode\;$(ZWSRC)\zwBaseLib\zwBaseLib\SecretBox;$(ZWSRC)\zwBaseLib\zwBaseLib\HidSplitMsg;$(ZWSRC)\zwBaseLib\zwBaseLib\Header;$(ZWSRC)\zwBaseLib\zwBaseLib\nanopb_Code;$(ZWLIB)\Python27\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(BOOST);$(POCO)\Foundation\include;$(POCO)\Net\include;$(POCO)\XML\include;$(POCO)\Util\include;.\;$(ZWSRC)\zwBaseLib\zwBaseLib\SerialPortTestCode\;$(ZWSRC)\zwBaseLib\zwBaseLib\SecretBox;$(ZWSRC)\zwBaseLib\zwBaseLib\HidSplitMsg;$(ZWSRC)\zwBaseLib\zwBaseLib\Header;$(ZWSRC)\zwBaseLib\zwBaseLib\nanopb_Code;$(ZWLIB)\lua\src;$(ZWLIB)\LuaBridge\Source\LuaBridge;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalOptions>-Zm113 %(AdditionalOptions)</AdditionalOptions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
@@ -92,7 +92,7 @@
       <ModuleDefinitionFile>ccbElock.def</ModuleDefinitionFile>
       <AdditionalLibraryDirectories>$(BOOST)\lib;$(POCO)\lib;$(ZWSRC)\2014BinOut\$(Configuration)\;$(ZWLIB)\Python27\libs</AdditionalLibraryDirectories>
       <GenerateMapFile>false</GenerateMapFile>
-      <AdditionalDependencies>zwBaseLibStatic.lib;setupapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>zwBaseLibStatic.lib;setupapi.lib;lua51LibStatic.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>
@@ -121,6 +121,7 @@
     <ClCompile Include="ATMCMsgConvert\myLockStatusAndLog.cpp" />
     <ClCompile Include="ATMCMsgConvert\myLockTimeSync.cpp" />
     <ClCompile Include="CCBelock.cpp" />
+    <ClCompile Include="ccbElockLuaWrap107.cpp" />
     <ClCompile Include="ccbelock_csharp_wrap.cxx">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
