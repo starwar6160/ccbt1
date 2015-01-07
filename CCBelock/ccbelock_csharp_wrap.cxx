@@ -285,11 +285,122 @@ SWIGEXPORT void SWIGSTDCALL SWIGRegisterStringCallback_HidProtocol(SWIG_CSharpSt
 
 #define _ZWUSE_AS_JNI
 //#include "zwSecretBoxCCBcsWrap.h"
+#include "CCBelock.h"
 
 
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+SWIGEXPORT long SWIGSTDCALL CSharp_Open(long jarg1) {
+  long jresult ;
+  long arg1 ;
+  long result;
+  
+  arg1 = (long)jarg1; 
+  result = (long)Open(arg1);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT long SWIGSTDCALL CSharp_Close() {
+  long jresult ;
+  long result;
+  
+  result = (long)Close();
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT long SWIGSTDCALL CSharp_Notify(char * jarg1) {
+  long jresult ;
+  char *arg1 = (char *) 0 ;
+  long result;
+  
+  arg1 = (char *)jarg1; 
+  result = (long)Notify((char const *)arg1);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT int SWIGSTDCALL CSharp_SetRecvMsgRotine(void * jarg1) {
+  int jresult ;
+  RecvMsgRotine arg1 = (RecvMsgRotine) 0 ;
+  int result;
+  
+  arg1 = (RecvMsgRotine)jarg1; 
+  result = (int)SetRecvMsgRotine(arg1);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void SWIGSTDCALL CSharp_zwPushString(char * jarg1) {
+  char *arg1 = (char *) 0 ;
+  
+  arg1 = (char *)jarg1; 
+  zwPushString((char const *)arg1);
+}
+
+
+SWIGEXPORT char * SWIGSTDCALL CSharp_dbgGetLockReturnXML() {
+  char * jresult ;
+  char *result = 0 ;
+  
+  result = (char *)dbgGetLockReturnXML();
+  jresult = SWIG_csharp_string_callback((const char *)result); 
+  return jresult;
+}
+
+
+SWIGEXPORT long SWIGSTDCALL CSharp_OpenJson(long jarg1) {
+  long jresult ;
+  long arg1 ;
+  long result;
+  
+  arg1 = (long)jarg1; 
+  result = (long)jcLockJsonCmd_t2015a::OpenJson(arg1);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT long SWIGSTDCALL CSharp_SendToLockJson(char * jarg1) {
+  long jresult ;
+  char *arg1 = (char *) 0 ;
+  long result;
+  
+  arg1 = (char *)jarg1; 
+  result = (long)jcLockJsonCmd_t2015a::SendToLockJson((char const *)arg1);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void SWIGSTDCALL CSharp_RecvFromLockJson(char * jarg1, int jarg2, int jarg3) {
+  char *arg1 = (char *) 0 ;
+  int arg2 ;
+  int arg3 ;
+  
+  arg1 = (char *)jarg1; 
+  arg2 = (int)jarg2; 
+  arg3 = (int)jarg3; 
+  jcLockJsonCmd_t2015a::RecvFromLockJson(arg1,arg2,arg3);
+}
+
+
+SWIGEXPORT long SWIGSTDCALL CSharp_CloseJson() {
+  long jresult ;
+  long result;
+  
+  result = (long)jcLockJsonCmd_t2015a::CloseJson();
+  jresult = result; 
+  return jresult;
+}
+
 
 #ifdef __cplusplus
 }

@@ -7,7 +7,9 @@ typedef std::string String;
 %{
 #define _ZWUSE_AS_JNI
 //#include "zwSecretBoxCCBcsWrap.h"
+#include "CCBelock.h"
 %}
 
 #define _ZWUSE_AS_JNI
 //%include "zwSecretBoxCCBcsWrap.h"
+%include "CCBelock.h"
