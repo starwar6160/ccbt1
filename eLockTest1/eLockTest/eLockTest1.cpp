@@ -14,12 +14,19 @@ void myLuaBridgeSendJsonAPI(const char *luaScriptFile);
 void myLuaBridgeTest1(void);
 
 
-int _tmain(int argc, _TCHAR * argv[])
+int _tmain(int argc, char * argv[])
 {
 	//return eLockGoogleTest2014(argc, argv);
 
 	//eLockJsonTest20150106();
-	eLockJsonTestLua107();
+	if (argc>=2)
+	{
+		myLuaBridgeSendJsonAPI(argv[1]);
+	}
+	else
+	{
+		myLuaBridgeSendJsonAPI("E:\\zwWorkSrc\\zwBaseLib\\zwTest201407\\test107.lua");
+	}
 	return 0;
 }
 
@@ -45,9 +52,3 @@ void eLockJsonTest20150106()
 }
 
 
-void eLockJsonTestLua107(void)
-{
-	myLuaBridgeSendJsonAPI("E:\\zwWorkSrc\\zwBaseLib\\zwTest201407\\test107.lua");	
-	//myLuaBridgeTest1();
-	
-}
