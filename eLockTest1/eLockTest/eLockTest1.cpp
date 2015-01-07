@@ -32,10 +32,10 @@ void eLockJsonTest20150106()
 	int msts=jcLockJsonCmd_t2015a::OpenJson(25);
 	//试验了几个Json命令，目前只有这一个有反应
 	//{ \"command\": \"Lock_System_Journal\",\"State\": \"get\"}
-	jcLockJsonCmd_t2015a::jcSendJson2Lock("{ \"command\": \"Lock_System_Journal\",\"State\": \"get\"}");
+	jcLockJsonCmd_t2015a::SendToLockJson("{ \"command\": \"Lock_System_Journal\",\"State\": \"get\"}");
 	char recvBuf[BUFLEN];
 	memset(recvBuf,0,BUFLEN);
-	jcLockJsonCmd_t2015a::jcRecvJsonFromLock(recvBuf,BUFLEN);	
-	Close();
+	jcLockJsonCmd_t2015a::RecvFromLockJson(recvBuf,BUFLEN, 2000);	
+	jcLockJsonCmd_t2015a::CloseJson();
 	printf("Receive form Lock Json 20150106.1713 is \n%s\n",recvBuf);
 }

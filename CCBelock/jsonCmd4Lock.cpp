@@ -76,13 +76,29 @@ namespace jcLockJsonCmd_t2015a{
 			ZWFATAL(errMsg.c_str())
 		}
 
-		ZWNOTICE("成功打开 到锁具的连接")
+		ZWNOTICE("成功打开 到锁具的JSON连接")
+			return ELOCK_ERROR_SUCCESS;
+	}
+
+	CCBELOCK_API long JCAPISTD CloseJson()
+	{
+		ZWFUNCTRACE boost::mutex::scoped_lock lock(zwCfg::ComPort_mutex);
+		zwCfg::g_WarnCallback = NULL;
+		if (NULL != zwccbthr::hidHandle.vid && NULL != zwccbthr::hidHandle.pid) {
+			//if (true==s_hidOpened)
+			//{
+			jcHidClose(&zwccbthr::hidHandle);
+			//}             
+		}
+CloseHidEnd:
+		zwCfg::s_hidOpened = false;
+		ZWNOTICE("关闭 到锁具的JSON连接")
 			return ELOCK_ERROR_SUCCESS;
 	}
 
 
 	//从long Notify(const char *pszMsg)修改而来
-	CCBELOCK_API long jcSendJson2Lock(const char *pszJson)
+	CCBELOCK_API long SendToLockJson(const char *pszJson)
 	{
 		//通过在Notify函数开始检测是否端口已经打开，没有打开就直接返回，避免
 		//2014年11月初在广州遇到的没有连接锁具时，ATMC执行0002报文查询锁具状态，
@@ -130,9 +146,16 @@ namespace jcLockJsonCmd_t2015a{
 
 	//从void ThreadLockComm() 修改而来
 	//阻塞接受锁具返回值，3秒超时返回；直接返回收到的JSON数据
-	CCBELOCK_API void jcRecvJsonFromLock(char *outJson,const int outMaxLen) {
+	CCBELOCK_API void RecvFromLockJson( char *outJson,const int outMaxLen,const int timeoutMs )
+	{
 		ZWFUNCTRACE boost::mutex::scoped_lock lock(zwccbthr::thr_mutex);
-
+		//超时值默认值
+		int realTimeOut=JCHID_RECV_TIMEOUT;
+		//如果超时值在一个合理范围内，就采用
+		if (timeoutMs>0 && timeoutMs <(3600*1000))
+		{
+			realTimeOut=timeoutMs;
+		}
 		try {			
 			const int BLEN = 1024;
 			char recvBuf[BLEN + 1];
@@ -146,13 +169,12 @@ namespace jcLockJsonCmd_t2015a{
 					return;
 				}
 #endif // ZWUSE_HID_MSG_SPLIT
-				ZWNOTICE("连接锁具成功");
-				ZWINFO("通信线程的新一轮等待接收数据循环开始");
+				ZWNOTICE("连接锁具JSON成功");			
 				try {
 #ifdef ZWUSE_HID_MSG_SPLIT
 					JCHID_STATUS sts=
 						jcHidRecvData(&zwccbthr::hidHandle,
-						recvBuf, BLEN, &recvLen,JCHID_RECV_TIMEOUT);
+						recvBuf, BLEN, &recvLen,realTimeOut);
 					zwCfg::s_hidOpened=true;	//算是通信线程的一个心跳标志					
 					//要是什么也没收到，就直接进入下一个循环
 					if (JCHID_STATUS_OK!=sts)
@@ -168,11 +190,11 @@ namespace jcLockJsonCmd_t2015a{
 
 					//////////////////////////////////////////////////////////////////////////
 
-					ZWNOTICE("成功从锁具接收数据如下：");
+					ZWNOTICE("成功从锁具接收JSON数据如下：");
 				}
 				catch(...) {
 					ZWFATAL
-						("RecvData接收数据时到锁具的数据连接异常断开，数据接收线程将终止");
+						("RecvData接收JSON数据时到锁具的数据连接异常断开，数据接收将终止");
 					return;
 				}
 				ZWNOTICE(recvBuf);
@@ -188,14 +210,14 @@ namespace jcLockJsonCmd_t2015a{
 				}
 				
 			//}	//while (1) {
-			ZWINFO("金储通信数据接收过程正常结束");
+			ZWINFO("金储通信数据接收JSON过程正常结束");
 
 		}		//try
 		catch(...) {			
 			//异常断开就设定该标志为FALSE,以便下次Open不要再跳过启动通信线程的程序段
 			zwCfg::s_hidOpened=false;
 			ZWFATAL
-				("金储通信数据接收过程中数据连接异常断开，现在数据接收过程异常结束");
+				("金储通信数据接收过程中数据连接异常断开，现在数据接收JSON过程异常结束");
 			return;
 		}	
 	}
