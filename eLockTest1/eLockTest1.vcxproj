@@ -97,7 +97,6 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\CCBelock\ccbElockLuaWrap107.cpp" />
     <ClCompile Include="..\CCBelock\jcJsonCommandDefine.cpp" />
     <ClCompile Include="atmcMsgGen730.cpp" />
     <ClCompile Include="eLockTest\ActiveLockTest.cpp" />

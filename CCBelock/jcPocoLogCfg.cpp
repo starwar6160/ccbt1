@@ -45,7 +45,8 @@ int PocoLogInit(void)
 
 	Poco::Logger::root().setChannel(channel.get());
 	Poco::Logger & logger = Poco::Logger::get("LockDLL");
-	logger.setLevel(Poco::Message::PRIO_TRACE);
+	//logger.setLevel(Poco::Message::PRIO_TRACE);
+	logger.setLevel(Poco::Message::PRIO_FATAL);
 	pocoLog = new Poco::LogStream(logger);
 	return 0;
 }

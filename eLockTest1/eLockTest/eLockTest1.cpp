@@ -10,8 +10,6 @@ int eLockGoogleTest2014( int argc, _TCHAR ** argv );
 void eLockJsonTest20150106();
 void eLockJsonTestLua107(void);
 
-void myLuaBridgeSendJsonAPI(const char *luaScriptFile);
-void myLuaBridgeTest1(void);
 //将TCHAR转为char   
 //*tchar是TCHAR类型指针，*_char是char类型指针   
 void TcharToChar (const TCHAR * tchar, char * _char)  
