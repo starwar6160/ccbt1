@@ -43,7 +43,7 @@ void myLuaBridgeTest1(void)
 	luaL_openlibs(L);   //注意将lua默认库打开，要不会出现N多错误的，比如print函数都没有  
 	//将c++中的函数暴露给lua  
 	getGlobalNamespace (L)
-		.beginNamespace ("test1226")  
+		.beginNamespace ("jclock")  
 		.addFunction ("zwAdd", zwluat1::zwAdd)  
 		.addFunction ("zwMergeStr", zwluat1::zwMergeStr)  		
 		.addVariable ("s_count", &zwluat1::s_count)  

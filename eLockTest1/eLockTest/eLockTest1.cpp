@@ -48,6 +48,6 @@ void eLockJsonTest20150106()
 void eLockJsonTestLua107(void)
 {
 	myLuaBridgeSendJsonAPI("E:\\zwWorkSrc\\zwBaseLib\\zwTest201407\\test107.lua");	
-	myLuaBridgeTest1();
+	//myLuaBridgeTest1();
 	
 }
