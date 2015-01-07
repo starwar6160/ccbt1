@@ -9,6 +9,7 @@ extern "C"
 #include "CCBelock.h"
 
 using namespace luabridge;
+#ifdef _DEBUG_LUABRIDGE_DEMO107
 class zwNumTest1
 {
 public:
@@ -56,10 +57,11 @@ void myLuaBridgeTest1(void)
 	printf("zwluat1::s_count=%d\n",zwluat1::s_count);
 	printf("##################End#################\n");
 }
+#endif // _DEBUG_LUABRIDGE_DEMO107
 
 void myLuaBridgeSendJsonAPI(const char *luaScriptFile)
 {
-	printf("#################Start##################\n");
+	//printf("#################Start##################\n");
 	lua_State* L = luaL_newstate();  //也可以用luaL_newState()函数  
 	luaL_openlibs(L);   //注意将lua默认库打开，要不会出现N多错误的，比如print函数都没有  
 	//将c++中的函数暴露给lua  
@@ -71,6 +73,6 @@ void myLuaBridgeSendJsonAPI(const char *luaScriptFile)
 		.addFunction ("Recv", jcLockJsonCmd_t2015a::RecvFromLockJson)
 		.endNamespace ();  	
 	luaL_dofile(L, luaScriptFile);  	
-	//lua_close(L);
-	printf("#################End##################\n");
+	lua_close(L);
+	//printf("#################End##################\n");
 }

@@ -146,7 +146,7 @@ CloseHidEnd:
 
 	//从void ThreadLockComm() 修改而来
 	//阻塞接受锁具返回值，3秒超时返回；直接返回收到的JSON数据
-	CCBELOCK_API char * RecvFromLockJson( const int timeoutMs )
+	CCBELOCK_API const char * RecvFromLockJson( const int timeoutMs )
 	{
 		ZWFUNCTRACE boost::mutex::scoped_lock lock(zwccbthr::thr_mutex);
 		//超时值默认值
@@ -158,7 +158,7 @@ CloseHidEnd:
 		}
 		try {			
 			const int BLEN = 1024;
-			static char recvBuf[BLEN + 1];
+			char recvBuf[BLEN + 1];
 			memset(recvBuf, 0, BLEN + 1);
 			int recvLen = 0;
 			//while (1) {
@@ -201,7 +201,8 @@ CloseHidEnd:
 			//}	//while (1) {
 			ZWINFO("金储通信数据接收JSON过程正常结束");
 			//返回数据
-			return recvBuf;
+			static std::string retStr=recvBuf;
+			return retStr.c_str();
 		}		//try
 		catch(...) {			
 			//异常断开就设定该标志为FALSE,以便下次Open不要再跳过启动通信线程的程序段
