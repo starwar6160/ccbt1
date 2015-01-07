@@ -49,7 +49,8 @@ void myLuaBridgeTest1(void)
 		.addVariable ("s_count", &zwluat1::s_count)  
 		.endNamespace ();  
 	printf("zwluat1::s_count=%d\n",zwluat1::s_count);
-	luaL_dofile(L, "E:\\zwWorkSrc\\zwBaseLib\\zwTest201407\\test1226.lua");  	
+	int res=luaL_dofile(L, "E:\\zwWorkSrc\\zwBaseLib\\zwTest201407\\test1226.lua");  	
+	printf("luaL_dofile return %d\n",res);
 	//luaL_dofile(L, "E:\\zwWorkSrc\\zwBaseLib\\zwTest201407\\test107.lua");
 
 	printf("zwluat1::s_count=%d\n",zwluat1::s_count);

@@ -10,6 +10,10 @@ int eLockGoogleTest2014( int argc, _TCHAR ** argv );
 void eLockJsonTest20150106();
 void eLockJsonTestLua107(void);
 
+void myLuaBridgeSendJsonAPI(const char *luaScriptFile);
+void myLuaBridgeTest1(void);
+
+
 int _tmain(int argc, _TCHAR * argv[])
 {
 	//return eLockGoogleTest2014(argc, argv);
