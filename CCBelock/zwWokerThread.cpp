@@ -1,9 +1,7 @@
 #include "stdafx.h"
 #include "CCBelock.h"
 #include "zwCcbElockHdr.h"
-//#include "zwwsClient.h"
 #include "zwPocoLog.h"
-#include "jcSerialPort.h"
 #include "zwHidSplitMsg.h"
 #include "zwHidComm.h"
 #include <stdio.h>
@@ -14,7 +12,6 @@ using Poco::Util::IniFileConfiguration;
 namespace zwccbthr {
 	boost::mutex thr_mutex;
 	//建行给的接口，没有设置连接参数的地方，也就是说，完全可以端口，抑或是从配置文件读取
-	jcSerialPort *zwComPort = NULL;
 	boost::mutex recv_mutex;
 	std::string s_ComPort;
 	std::deque < string > dqOutXML;
@@ -178,28 +175,3 @@ CCBELOCK_API void zwPushString(const char *str)
 
 }
 
-int sptest905a17(void)
-{
-	//      以下是十六进制的串口调试助手发送数据，开头8个字节是大端结尾的数字50(0x32)的HEX表示，后面是5组"0123456789"的HEX表示
-	//      000000323031323334353637383930313233343536373839303132333435363738393031323334353637383930313233343536373839
-
-	jcSerialPort jcsp("COM2");
-	string msg1 = "ZhouWei20140909.0858\n";
-	jcsp.SendData(msg1.c_str(), msg1.size());
-	const int BLEN = 500;
-	char recvBuf[BLEN + 1];
-	memset(recvBuf, 0, BLEN + 1);
-	int outLen = 0;
-	Sleep(5000);
-	for (int i = 0; i < 20; i++) {
-		memset(recvBuf, 0, BLEN);
-		jcsp.RecvData(recvBuf, BLEN, &outLen);
-		//cout<<"R "<<recvBuf<<endl;
-		Sleep(500);
-	}
-
-	//Sleep(6000);
-	//jcsp.RecvData(recvBuf,&outLen);
-
-	return 0;
-}

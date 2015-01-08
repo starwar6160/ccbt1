@@ -11,7 +11,6 @@
 #include "stdafx.h"
 #include "CCBelock.h"
 #include "zwCcbElockHdr.h"
-#include "jcSerialPort.h"
 #include "zwHidComm.h"
 #include "zwPocoLog.h"
 using namespace std;
@@ -21,7 +20,6 @@ using boost::property_tree::ptree_bad_path;
 
 namespace zwccbthr {
 	void ThreadLockComm();	//与锁具之间的通讯线程
-	extern jcSerialPort *zwComPort;
 	string zwGetLockIP(void);
 	extern std::deque < string > dqOutXML;;
 	extern boost::mutex recv_mutex;
@@ -103,10 +101,6 @@ CCBELOCK_API long JCAPISTD Open(long lTimeOut)
 			return ELOCK_ERROR_PARAMINVALID;
 		}
 		zwCfg::s_hidOpened = true;
-#else
-		//打开串口
-		myLockIp = zwccbthr::zwGetLockIP();
-		zwccbthr::zwComPort = new jcSerialPort(myLockIp.c_str());
 #endif // ZWUSE_HID_MSG_SPLIT
 		//启动通信线程
 		boost::thread thr(zwccbthr::ThreadLockComm);

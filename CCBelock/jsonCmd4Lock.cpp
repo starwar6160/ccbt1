@@ -68,10 +68,6 @@ namespace jcLockJsonCmd_t2015a{
 				return ELOCK_ERROR_PARAMINVALID;
 			}
 			zwCfg::s_hidOpened = true;
-#else
-			//´ò¿ª´®¿Ú
-			myLockIp = zwccbthr::zwGetLockIP();
-			zwccbthr::zwComPort = new jcSerialPort(myLockIp.c_str());
 #endif // ZWUSE_HID_MSG_SPLIT			
 		}
 		catch(...) {
