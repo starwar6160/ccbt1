@@ -4,8 +4,6 @@
 #include "zwHidComm.h"
 #include "CCBelock.h"
 using namespace boost::property_tree;
-using Poco::AutoPtr;
-using Poco::Util::IniFileConfiguration;
 using boost::mutex;
 namespace zwccbthr{
 	extern boost::mutex thr_mutex;
@@ -43,15 +41,14 @@ namespace jcLockJsonCmd_t2015a{
 				"Open Function incoming timeout Value must in -1 to %d seconds",
 				JC_CCBDLL_TIMEOUT);
 			OutputDebugStringA(buf);
-			pocoLog->
-				error() <<
+			LOG(ERROR)<< 
 				"Open Function incoming timeout Value must in -1 to " <<
 				JC_CCBDLL_TIMEOUT << "seconds";
 			return ELOCK_ERROR_PARAMINVALID;
 		}
 		ZWFUNCTRACE boost::mutex::scoped_lock lock(zwCfg::ComPort_mutex);
 		//必须大于0，小于JC_CCBDLL_TIMEOUT，限制在一个合理范围内
-		pocoLog->notice() << "Open Return " << ELOCK_ERROR_SUCCESS << endl;
+		LOG(WARNING)<< "Open Return " << ELOCK_ERROR_SUCCESS << endl;
 		string myLockIp;
 		try {
 
@@ -113,7 +110,7 @@ CloseHidEnd:
 				return ELOCK_ERROR_PARAMINVALID;
 		}
 		if (NULL != pszJson && strlen(pszJson) > 0) {
-			pocoLog->information() << "JinChu下发JSON=" << endl << pszJson <<
+			LOG(INFO)<< "JinChu下发JSON=" << endl << pszJson <<
 				endl;
 		}
 		boost::mutex::scoped_lock lock(zwCfg::ComPort_mutex);

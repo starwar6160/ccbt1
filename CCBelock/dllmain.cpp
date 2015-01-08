@@ -1,8 +1,8 @@
 // dllmain.cpp : 定义 DLL 应用程序的入口点。
 #include "stdafx.h"
 #include "zwCcbElockHdr.h"
-void myLoadCfgs(const char *DLLPath);
-extern Poco::LogStream * pocoLog;
+//void myLoadCfgs(const char *DLLPath);
+//extern Poco::LogStream * pocoLog;
 
 HMODULE G_DLL_HMODULE = NULL;
 
@@ -39,7 +39,7 @@ void zwGlogInit()
 	FLAGS_minloglevel=google::GLOG_INFO;
 
 	//用这一条，使得调试可以看到日志，但是不产生日志
-	//FLAGS_logtostderr=true;	//输出到stderr代替输出到文件
+	FLAGS_logtostderr=true;	//输出到stderr代替输出到文件
 	//////////////////////////////////////////////////////////////////////////
 	const char *zwLogDir=".\\JCLOG15";
 	_mkdir(zwLogDir);
@@ -51,12 +51,13 @@ void zwGlogInit()
 	FLAGS_v=3;	//只有VLOG值小于等于该数字，才会被输出，尤其适合于调试日志
 	//
 	//google::SetLogDestination(google::GLOG_INFO,"./zw1231");  
+#ifdef _DEBUG
 	LOG(WARNING)<<"Zhou Wei 20141231.1353 test1";
 	VLOG(4)<<"VLOG 4";
 	VLOG(3)<<"VLOG 3";
 	VLOG(2)<<"VLOG 2";
 	VLOG(1)<<"VLOG 1";
-	for (int i=0;i<1000;i++)
+	for (int i=0;i<10;i++)
 	{
 		LOG(INFO)<<"zhouwei use google glog 20150108.1635.info "<<i<<" line";
 	}
@@ -64,6 +65,7 @@ void zwGlogInit()
 	LOG(FATAL)<<"zhouwei use google glog 20141231.1354.FATAL";
 	LOG(WARNING)<<"zhouwei use google glog 20141231.1354.warn";
 	LOG(ERROR)<<"zhouwei use google glog 20141231.1354.ERROR";
+#endif // _DEBUG
 	//使用FATAL级别会直接导致程序退出。。看来这就是FATAL的含义了
 
 }
@@ -85,26 +87,26 @@ BOOL APIENTRY DllMain(HMODULE hModule,
 		memset(myDllPath, 0, 256);
 		zwGetDLLPath(hModule, myDllPath, 256);
 		OutputDebugStringA(myDllPath);
-		myLoadCfgs(myDllPath);
+		//myLoadCfgs(myDllPath);
 #ifdef _DEBUG
 		//cout<<"TEST912 LEXICAST.1557.\t"<<zwTest912("1409023024")<<endl;
 #endif // _DEBUG
 		switch (ul_reason_for_call) {
 		case DLL_PROCESS_ATTACH:
 			OutputDebugStringA("JINCHU ELOCK DLL_PROCESS_ATTACH");
-			pocoLog->warning("JINCHU ELOCK DLL_PROCESS_ATTACH");
+			LOG(WARNING)<<"JINCHU ELOCK DLL_PROCESS_ATTACH";
 			break;
 		case DLL_THREAD_ATTACH:
 			OutputDebugStringA("JINCHU ELOCK DLL_THREAD_ATTACH");
-			pocoLog->notice("JINCHU ELOCK DLL_THREAD_ATTACH");
+			LOG(WARNING)<<"JINCHU ELOCK DLL_THREAD_ATTACH";
 			break;
 		case DLL_THREAD_DETACH:
 			OutputDebugStringA("JINCHU ELOCK DLL_THREAD_DETACH");
-			pocoLog->notice("JINCHU ELOCK DLL_THREAD_DETACH");
+			LOG(WARNING)<<"JINCHU ELOCK DLL_THREAD_DETACH";
 			break;
 		case DLL_PROCESS_DETACH:
 			OutputDebugStringA("JINCHU ELOCK DLL_PROCESS_DETACH");
-			pocoLog->warning("JINCHU ELOCK DLL_PROCESS_DETACH");
+			LOG(WARNING)<<"JINCHU ELOCK DLL_PROCESS_DETACH";
 			break;
 		}
 		OutputDebugStringA("JinChu Elock DllMain Success End.20141017.1023");

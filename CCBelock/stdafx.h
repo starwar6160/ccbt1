@@ -14,21 +14,21 @@
 
 // TODO: 在此处引用程序需要的其他头文件
 
-#include "Poco/Format.h"
-#include "Poco/AutoPtr.h"  
-#include "Poco/Logger.h"  
-#include "Poco/ConsoleChannel.h"  
-#include "Poco/LogStream.h"  
-#include "Poco/PatternFormatter.h"  
-#include "Poco/FileChannel.h"  
-#include "Poco/FormattingChannel.h"  
-#include "Poco/Util/ServerApplication.h"
-#include "Poco/Util/Option.h"
-#include "Poco/Util/OptionSet.h"
-#include "Poco/Util/HelpFormatter.h"
-#include "Poco/Util/IniFileConfiguration.h"
+//#include "Poco/Format.h"
+//#include "Poco/AutoPtr.h"  
+//#include "Poco/Logger.h"  
+//#include "Poco/ConsoleChannel.h"  
+//#include "Poco/LogStream.h"  
+//#include "Poco/PatternFormatter.h"  
+//#include "Poco/FileChannel.h"  
+//#include "Poco/FormattingChannel.h"  
+//#include "Poco/Util/ServerApplication.h"
+//#include "Poco/Util/Option.h"
+//#include "Poco/Util/OptionSet.h"
+//#include "Poco/Util/HelpFormatter.h"
+//#include "Poco/Util/IniFileConfiguration.h"
 
-using Poco::Timestamp;
+//using Poco::Timestamp;
 
 #include <stdio.h>
 #include <iostream>

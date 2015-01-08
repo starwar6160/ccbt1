@@ -41,7 +41,7 @@ namespace zwCfg {
 void ZWDBGMSG(const char *x)
 {
 	OutputDebugStringA(x);
-	pocoLog->trace(x);
+	LOG(INFO)<<x;
 }
 
 zw_trace::zw_trace(const char *funcName)
@@ -50,14 +50,14 @@ zw_trace::zw_trace(const char *funcName)
 	m_start = m_str + "\tSTART";
 	m_end = m_str + "\tEND";
 	OutputDebugStringA(m_start.c_str());
-	pocoLog->trace(m_start);
+	LOG(INFO)<<m_start;
 }
 
 zw_trace::~zw_trace()
 {
 
-	OutputDebugStringA(m_end.c_str());
-	pocoLog->trace(m_end);
+	OutputDebugStringA(m_end.c_str());	
+	LOG(INFO)<<m_end;
 }
 
 
@@ -76,15 +76,14 @@ CCBELOCK_API long JCAPISTD Open(long lTimeOut)
 			"Open Function incoming timeout Value must in -1 to %d seconds",
 			JC_CCBDLL_TIMEOUT);
 		OutputDebugStringA(buf);
-		pocoLog->
-		    error() <<
+		LOG(ERROR)<<
 		    "Open Function incoming timeout Value must in -1 to " <<
 		    JC_CCBDLL_TIMEOUT << "seconds";
 		return ELOCK_ERROR_PARAMINVALID;
 	}
 	ZWFUNCTRACE boost::mutex::scoped_lock lock(zwCfg::ComPort_mutex);
 	//必须大于0，小于JC_CCBDLL_TIMEOUT，限制在一个合理范围内
-	pocoLog->notice() << "Open Return " << ELOCK_ERROR_SUCCESS << endl;
+	LOG(WARNING) << "Open Return " << ELOCK_ERROR_SUCCESS << endl;
 	string myLockIp;
 	try {
 
@@ -152,7 +151,7 @@ CCBELOCK_API long JCAPISTD Notify(const char *pszMsg)
 		return ELOCK_ERROR_PARAMINVALID;
 	}
 	if (NULL != pszMsg && strlen(pszMsg) > 0) {
-		pocoLog->information() << "CCB下发XML=" << endl << pszMsg <<
+		LOG(INFO) << "CCB下发XML=" << endl << pszMsg <<
 		    endl;
 	}
 	boost::mutex::scoped_lock lock(zwCfg::ComPort_mutex);

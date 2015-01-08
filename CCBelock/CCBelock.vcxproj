@@ -52,7 +52,7 @@
       <WarningLevel>Level4</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;GOOGLE_GLOG_DLL_DECL=;_DEBUG;_WINDOWS;POCO_STATIC;CCBELOCK_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(ZWLIB)\glog\src\windows;$(BOOST);$(POCO)\Foundation\include;$(POCO)\Net\include;$(POCO)\XML\include;$(POCO)\Util\include;.\;$(ZWSRC)\zwBaseLib\zwBaseLib\SerialPortTestCode\;$(ZWSRC)\zwBaseLib\zwBaseLib\SecretBox;$(ZWSRC)\zwBaseLib\zwBaseLib\HidSplitMsg;$(ZWSRC)\zwBaseLib\zwBaseLib\Header;$(ZWSRC)\zwBaseLib\zwBaseLib\nanopb_Code;$(ZWLIB)\lua\src;$(ZWLIB)\LuaBridge\Source\LuaBridge;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ZWLIB)\glog\src\windows;$(BOOST);.\;$(ZWSRC)\zwBaseLib\zwBaseLib\SerialPortTestCode\;$(ZWSRC)\zwBaseLib\zwBaseLib\SecretBox;$(ZWSRC)\zwBaseLib\zwBaseLib\HidSplitMsg;$(ZWSRC)\zwBaseLib\zwBaseLib\Header;$(ZWSRC)\zwBaseLib\zwBaseLib\nanopb_Code;$(ZWLIB)\lua\src;$(ZWLIB)\LuaBridge\Source\LuaBridge;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <ExceptionHandling>Sync</ExceptionHandling>
       <AdditionalOptions>-Zm113 %(AdditionalOptions)</AdditionalOptions>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
@@ -61,7 +61,7 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ModuleDefinitionFile>ccbElock.def</ModuleDefinitionFile>
-      <AdditionalLibraryDirectories>$(BOOST)\lib;$(POCO)\lib;$(ZWSRC)\2014BinOut\$(Configuration)\</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(BOOST)\lib;$(ZWSRC)\2014BinOut\$(Configuration)\</AdditionalLibraryDirectories>
       <GenerateMapFile>false</GenerateMapFile>
       <MapExports>false</MapExports>
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
@@ -80,7 +80,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;GOOGLE_GLOG_DLL_DECL=;NDEBUG;_WINDOWS;POCO_STATIC;CCBELOCK_EXPORTS;_DEBUG_USEPOCOLOG1027;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(ZWLIB)\glog\src\windows;$(BOOST);$(POCO)\Foundation\include;$(POCO)\Net\include;$(POCO)\XML\include;$(POCO)\Util\include;.\;$(ZWSRC)\zwBaseLib\zwBaseLib\SerialPortTestCode\;$(ZWSRC)\zwBaseLib\zwBaseLib\SecretBox;$(ZWSRC)\zwBaseLib\zwBaseLib\HidSplitMsg;$(ZWSRC)\zwBaseLib\zwBaseLib\Header;$(ZWSRC)\zwBaseLib\zwBaseLib\nanopb_Code;$(ZWLIB)\lua\src;$(ZWLIB)\LuaBridge\Source\LuaBridge;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ZWLIB)\glog\src\windows;$(BOOST);.\;$(ZWSRC)\zwBaseLib\zwBaseLib\SerialPortTestCode\;$(ZWSRC)\zwBaseLib\zwBaseLib\SecretBox;$(ZWSRC)\zwBaseLib\zwBaseLib\HidSplitMsg;$(ZWSRC)\zwBaseLib\zwBaseLib\Header;$(ZWSRC)\zwBaseLib\zwBaseLib\nanopb_Code;$(ZWLIB)\lua\src;$(ZWLIB)\LuaBridge\Source\LuaBridge;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalOptions>-Zm113 %(AdditionalOptions)</AdditionalOptions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <CallingConvention>Cdecl</CallingConvention>
@@ -91,7 +91,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <ModuleDefinitionFile>ccbElock.def</ModuleDefinitionFile>
-      <AdditionalLibraryDirectories>$(BOOST)\lib;$(POCO)\lib;$(ZWSRC)\2014BinOut\$(Configuration)\</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(BOOST)\lib;$(ZWSRC)\2014BinOut\$(Configuration)\</AdditionalLibraryDirectories>
       <GenerateMapFile>false</GenerateMapFile>
       <AdditionalDependencies>setupapi.lib;zwBaseLibStatic.lib;libglog_static.lib;lua51LibStatic.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <IgnoreSpecificDefaultLibraries>
@@ -139,7 +139,6 @@
       </PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="jcJsonCommandDefine.cpp" />
-    <ClCompile Include="jcPocoLogCfg.cpp" />
     <ClCompile Include="jsonCmd4Lock.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

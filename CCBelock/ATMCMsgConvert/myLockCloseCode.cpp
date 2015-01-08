@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "zwCcbElockHdr.h"
 #include "myConvIntHdr.h"
-extern Poco::LogStream * pocoLog;
+//extern Poco::LogStream * pocoLog;
 namespace jcAtmcConvertDLL {
 	//读取闭锁码
 	void zwconvReadCloseCodeDown(const ptree & ptccb, ptree & ptjc) {
@@ -105,7 +105,7 @@ namespace jcAtmcConvertDLL {
 			string errmsg =
 			    "zwconvRecvVerifyCodeUp发生了异常，多半原因是JcEloc返回的Json中缺少某些关键字段比如Atm_Serial，Lock_Serial，Lock_Ident_Info";
 			OutputDebugStringA(errmsg.c_str());
-			pocoLog->error() << errmsg << endl;
+			LOG(ERROR)<< errmsg << endl;
 		}
 	}
 
