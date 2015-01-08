@@ -26,6 +26,9 @@ namespace zwCfg {
 } //namespace zwCfg{  
 
 namespace jcLockJsonCmd_t2015a{
+	//为了保护接收json时返回的静态缓冲区在多线程状况下的使用
+	boost::mutex recvstr_mutex;
+
 
 	CCBELOCK_API long OpenJson(long lTimeOut)
 	{
@@ -148,7 +151,8 @@ CloseHidEnd:
 	//阻塞接受锁具返回值，3秒超时返回；直接返回收到的JSON数据
 	CCBELOCK_API const char * RecvFromLockJson( const int timeoutMs )
 	{
-		ZWFUNCTRACE boost::mutex::scoped_lock lock(zwccbthr::thr_mutex);
+		ZWFUNCTRACE 
+		boost::mutex::scoped_lock lock(zwccbthr::thr_mutex);		
 		//超时值默认值
 		int realTimeOut=JCHID_RECV_TIMEOUT;
 		//如果超时值在一个合理范围内，就采用
@@ -200,9 +204,13 @@ CloseHidEnd:
 				ZWNOTICE(recvBuf);
 			//}	//while (1) {
 			ZWINFO("金储通信数据接收JSON过程正常结束");
-			//返回数据
-			static std::string retStr=recvBuf;
-			return retStr.c_str();
+			{
+				//返回数据
+				//为了保护返回数据用的static std::string retStr,而加锁
+				boost::mutex::scoped_lock lockRetStr(recvstr_mutex);
+				static std::string retStr=recvBuf;
+				return retStr.c_str();
+			}
 		}		//try
 		catch(...) {			
 			//异常断开就设定该标志为FALSE,以便下次Open不要再跳过启动通信线程的程序段
