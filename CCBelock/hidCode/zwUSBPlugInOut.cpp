@@ -197,11 +197,22 @@ DWORD WINAPI zwHidDevPlugDetectThrdFunc( LPVOID lpParam )
 
 int zwStartHidDevPlugThread(void)
 {
-	DWORD iThread;
+	//防止重复启动多个USB设备拔插检测线程
+	static bool G_JCHID_DEVPLUG_THR_RUNNING=false;
+	if (true==G_JCHID_DEVPLUG_THR_RUNNING)
+	{
+		return 0;
+	}
+	DWORD iThread=0;
 	HANDLE hThread = CreateThread( NULL, 0, zwHidDevPlugDetectThrdFunc, NULL, 0, &iThread);
 	if (hThread == NULL) {
-		cout << "error" << endl;
+		cout << "start thread zwHidDevPlugDetectThrdFunc error" << endl;
 		return -1;
+	}
+	else
+	{
+		G_JCHID_DEVPLUG_THR_RUNNING=true;
+		return 0;
 	}
 }
 

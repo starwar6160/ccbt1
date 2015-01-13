@@ -36,6 +36,7 @@ int ListDrives(char * DrivesType)
 		return G_NO_CALLBACK;
 	}
 	zwStartHidDevPlugThread();
+	
 	string jcDevListJson;
 	if (0==strcmp(DrivesType,G_DEV_LOCK))
 	{
