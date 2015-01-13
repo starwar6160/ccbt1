@@ -12,6 +12,10 @@ using namespace std;
 #define THRD_MESSAGE_EXIT WM_USER + 1
 const _TCHAR CLASS_NAME[]  = _T("Sample Window Class");
 HWND hWnd;
+#include "CCBelock.h"
+#include "zwHidComm.h"
+
+
 static const GUID GUID_DEVINTERFACE_LIST[] =
 {
 	// GUID_DEVINTERFACE_USB_DEVICE
@@ -35,9 +39,9 @@ static const GUID GUID_DEVINTERFACE_LIST[] =
 void myUSBHidStringExtract113( char * dbcc_name )
 {
 	char *usbDevId=dbcc_name+4;
-	char *idxTok1=strchr(usbDevId,'#');
-	char *idxTok2=strchr(idxTok1+1,'#');
-	char *idxTok3=strchr(idxTok2+1,'#');
+	char *idxTokVidPid=strchr(usbDevId,'#');
+	char *idxTokSerial=strchr(idxTokVidPid+1,'#');
+	char *idxTokRemain=strchr(idxTokSerial+1,'#');
 	const int BLEN=20;
 	char jcDevType[BLEN];
 	char jcVid[BLEN],jcPid[BLEN],jcSerial[BLEN];
@@ -45,15 +49,22 @@ void myUSBHidStringExtract113( char * dbcc_name )
 	memset(jcVid,0,BLEN);
 	memset(jcPid,0,BLEN);
 	memset(jcSerial,0,BLEN);
-	strncpy(jcDevType,usbDevId,idxTok1-usbDevId);
-	char *idxPid=strchr(idxTok1+1,'&');
-	strncpy(jcVid,idxTok1+1,idxPid-idxTok1-1);		
-	strncpy(jcPid,idxPid+1,idxTok2-idxPid-1);
-	strncpy(jcSerial,idxTok2+1,idxTok3-idxTok2-1);
-	printf("jcDevType=%s\t",jcDevType);
-	printf("jcVid=%s\t",jcVid);
-	printf("jcPid=%s\t",jcPid);
-	printf("jcSerial=%s\n",jcSerial);
+	strncpy(jcDevType,usbDevId,idxTokVidPid-usbDevId);
+	char *idxPid=strchr(idxTokVidPid+1,'&');
+	strncpy(jcVid,idxTokVidPid+1,idxPid-idxTokVidPid-1);		
+	strncpy(jcPid,idxPid+1,idxTokSerial-idxPid-1);
+	strncpy(jcSerial,idxTokSerial+1,idxTokRemain-idxTokSerial-1);
+	VLOG_IF(2,strcmp(jcVid,"VID_0483")==0 
+		&& strcmp(jcDevType,"USB")==0)
+		<<"jcDev:"<<jcDevType<<"\tjcVid:"<<jcVid<<"\tjcPid:"<<jcPid<<"\tjcSerial:"<<jcSerial;
+	if (NULL!=G_JCHID_ENUM_DEV2015A 
+		&& strcmp(jcVid,"VID_0483")==0	//限制VID为金储产品
+		&& strcmp(jcDevType,"USB")==0)	//因为设备消息类型为HID的是一些看不明白的字符串，USB类型的才是序列号
+	{
+		string jcDevListJson;
+		jcLockJsonCmd_t2015a::jcMulHidEnum(JCHID_PID_LOCK5151,jcDevListJson);
+		G_JCHID_ENUM_DEV2015A(jcDevType,jcDevListJson.c_str());
+	}	
 }
 
 static void TcharToChar (const TCHAR * tchar, char * _char)  

@@ -48,7 +48,7 @@ namespace jcLockJsonCmd_t2015a{
 
 ////////////////////////调试用Json命令接口//////////////////////////////////////////////////
 //一、设备列表接口 1、回调函数类型
-typedef void (*ReturnDrives)(char* DrivesType,char * DrivesIDList);
+typedef void (*ReturnDrives)(char* DrivesType,const char * DrivesIDList);
 CCBELOCK_API void SetReturnDrives(ReturnDrives _DrivesListFun);
 //3、获取设备列表的指令
 //说明：
@@ -58,7 +58,7 @@ CCBELOCK_API void SetReturnDrives(ReturnDrives _DrivesListFun);
 //	（4）当调用ListDrives时，接口函数应返回当前所有此类设备的列表
 //	（5）当有新设备插入或拔出时，接口函数应该返回插入设备所属类型的最新列表（重复内容由上位机过滤去重）
 CCBELOCK_API int ListDrives(char * DrivesType);
-
+extern ReturnDrives G_JCHID_ENUM_DEV2015A;
 
 #endif
 #endif // CCBelock_h__

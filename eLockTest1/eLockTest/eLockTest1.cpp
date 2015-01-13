@@ -33,10 +33,10 @@ void CharToTchar (const char * _char, TCHAR * tchar)
 
 void luaSendJsonTest1( int argc, TCHAR ** argv );
 
-void myHidListTest113(char* DrivesType,char * DrivesIDList)
+void myHidListTest113(char* DrivesType,const char * DrivesIDList)
 {
-	printf("jcHidDevType=%s\n",DrivesType);
-	printf("List of enum jcHidDev Serial is:\n%s\n",DrivesIDList);
+	//printf("jcHidDevType=%s\n",DrivesType);
+	printf("Json List of enum jcHidDev Serial is:\n%s\n",DrivesIDList);
 }
 
 int _tmain(int argc, TCHAR * argv[])
