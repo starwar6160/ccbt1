@@ -22,6 +22,9 @@
     <Filter Include="源文件\wrap">
       <UniqueIdentifier>{04e2fd66-c204-4823-880d-5d7dd6190c42}</UniqueIdentifier>
     </Filter>
+    <Filter Include="源文件\HidCode">
+      <UniqueIdentifier>{135929a5-b165-414a-afc9-213d3a441b30}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="ReadMe.txt" />
@@ -100,6 +103,9 @@
     </ClCompile>
     <ClCompile Include="ccbElockLuaWrap107.cpp">
       <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="hidCode\jchidMulDev20150109.cpp">
+      <Filter>源文件\HidCode</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -1,6 +1,7 @@
 #ifndef CCBelock_h__
 #define CCBelock_h__
-
+#include <string>
+using std::string;
 // 下列 ifdef 块是创建使从 DLL 导出更简单的
 // 宏的标准方法。此 DLL 中的所有文件都是用命令行上定义的 CCBELOCK_EXPORTS
 // 符号编译的。在使用此 DLL 的
@@ -34,7 +35,6 @@ CCBELOCK_API int	JCAPISTD SetRecvMsgRotine(RecvMsgRotine pRecvMsgFun);
 CCBELOCK_API void zwPushString(const char *str);
 CCBELOCK_API const char * dbgGetLockReturnXML(void);
 CCBELOCK_API void myLuaBridgeSendJsonAPI(const char *luaScriptFile);
-
 #ifdef __cplusplus
 }
 
@@ -42,8 +42,10 @@ namespace jcLockJsonCmd_t2015a{
 	CCBELOCK_API long OpenJson(long lTimeOut);
 	CCBELOCK_API long SendToLockJson(const char *pszJson);
 	CCBELOCK_API const char * RecvFromLockJson(const int timeoutMs);
-	CCBELOCK_API long CloseJson();
+	CCBELOCK_API long CloseJson();	
 }	//end of namespace jcLockJsonCmd_t2015a{
+
+CCBELOCK_API void jcMulHidEnum( const int hidPid ,string &jcDevListJson);
 
 #endif
 #endif // CCBelock_h__
