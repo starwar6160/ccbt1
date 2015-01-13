@@ -43,9 +43,22 @@ namespace jcLockJsonCmd_t2015a{
 	CCBELOCK_API long SendToLockJson(const char *pszJson);
 	CCBELOCK_API const char * RecvFromLockJson(const int timeoutMs);
 	CCBELOCK_API long CloseJson();	
+	CCBELOCK_API void jcMulHidEnum( const int hidPid ,string &jcDevListJson);
 }	//end of namespace jcLockJsonCmd_t2015a{
 
-CCBELOCK_API void jcMulHidEnum( const int hidPid ,string &jcDevListJson);
+////////////////////////调试用Json命令接口//////////////////////////////////////////////////
+//一、设备列表接口 1、回调函数类型
+typedef void (*ReturnDrives)(char* DrivesType,char * DrivesIDList);
+CCBELOCK_API void SetReturnDrives(ReturnDrives _DrivesListFun);
+//3、获取设备列表的指令
+//说明：
+//	（1）DrivesType表示设备类型，具体内容是：锁具=Lock，密盒=Encryption
+//	（2）所有int类型函数的返回值中0表示成功，非零表示错误（下同）
+//	（3）DrivesIDList为json格式字符，其中列出了所有符合要求设备的DrivesID（HID设备序列号）
+//	（4）当调用ListDrives时，接口函数应返回当前所有此类设备的列表
+//	（5）当有新设备插入或拔出时，接口函数应该返回插入设备所属类型的最新列表（重复内容由上位机过滤去重）
+CCBELOCK_API int ListDrives(char * DrivesType);
+
 
 #endif
 #endif // CCBelock_h__

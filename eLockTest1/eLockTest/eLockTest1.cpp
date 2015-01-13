@@ -30,23 +30,24 @@ void CharToTchar (const char * _char, TCHAR * tchar)
     MultiByteToWideChar (CP_ACP, 0, _char, strlen (_char) + 1, tchar, iLength) ;  
 }  
 
+void luaSendJsonTest1( int argc, TCHAR ** argv );
+
+void myHidListTest113(char* DrivesType,char * DrivesIDList)
+{
+	printf("jcHidDevType=%s\n",DrivesType);
+	printf("List of enum jcHidDev Serial is:\n%s\n",DrivesIDList);
+}
+
 int _tmain(int argc, TCHAR * argv[])
 {
 	//return eLockGoogleTest2014(argc, argv);
 
 	//eLockJsonTest20150106();
-	if (argc>=2)
-	{
-		char aFn[256];
-		memset(aFn,0,256);
-		TcharToChar(argv[1],aFn);
-		printf("argv[1]=%s\n",aFn);
-		myLuaBridgeSendJsonAPI(aFn);
-	}
-	else
-	{
-		myLuaBridgeSendJsonAPI("E:\\zwWorkSrc\\zwBaseLib\\zwTest201407\\test107.lua");
-	}
+	//luaSendJsonTest1(argc, argv);
+	jcLockJsonCmd_t2015a::OpenJson(25);
+	SetReturnDrives(myHidListTest113);
+	ListDrives("Lock");
+	jcLockJsonCmd_t2015a::CloseJson();
 	return 0;
 }
 
@@ -69,6 +70,22 @@ void eLockJsonTest20150106()
 	recvBuf= jcLockJsonCmd_t2015a::RecvFromLockJson(2000);	
 	jcLockJsonCmd_t2015a::CloseJson();
 	printf("Receive form Lock Json 20150106.1713 is \n%s\n",recvBuf.c_str());
+}
+
+void luaSendJsonTest1( int argc, TCHAR ** argv )
+{
+	if (argc>=2)
+	{
+		char aFn[256];
+		memset(aFn,0,256);
+		TcharToChar(argv[1],aFn);
+		printf("argv[1]=%s\n",aFn);
+		myLuaBridgeSendJsonAPI(aFn);
+	}
+	else
+	{
+		myLuaBridgeSendJsonAPI("E:\\zwWorkSrc\\zwBaseLib\\zwTest201407\\test107.lua");
+	}
 }
 
 
