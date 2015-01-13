@@ -114,13 +114,14 @@ namespace jcLockJsonCmd_t2015a{
 			memset(serial,0,32);
 			TcharToChar(jclock_List->serial_number,serial);
 			printf("%s\n",serial);
+			//注意，此处put的话，每次都替代，add的话，才能新增项目
 			if (JCHID_PID_LOCK5151==hidPid)
 			{
-				pt.put("jcElockSerial",serial);
+				pt.add("jcElockSerial",serial);
 			}
 			if (JCHID_PID_SECBOX==hidPid)
 			{
-				pt.put("jcSecretBoxSerial",serial);
+				pt.add("jcSecretBoxSerial",serial);
 			}
 			
 			jclock_List=jclock_List->next;
