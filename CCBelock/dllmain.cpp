@@ -51,7 +51,7 @@ void zwGlogInit()
 	FLAGS_v=3;	//只有VLOG值小于等于该数字，才会被输出，尤其适合于调试日志
 	//
 	//google::SetLogDestination(google::GLOG_INFO,"./zw1231");  
-#ifdef _DEBUG
+#ifdef _DEBUG113
 	LOG(WARNING)<<"Zhou Wei 20141231.1353 test1";
 	VLOG(4)<<"VLOG 4";
 	VLOG(3)<<"VLOG 3";

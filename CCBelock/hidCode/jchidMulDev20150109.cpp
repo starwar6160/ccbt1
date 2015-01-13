@@ -9,6 +9,8 @@
 using namespace boost::property_tree;
 using jcLockJsonCmd_t2015a::jcMulHidEnum;
 
+int zwStartHidDevPlugThread(void);
+
 static const int G_SUSSESS=0;
 static const int G_FAIL=1;
 static const int G_NO_CALLBACK=2;
@@ -33,6 +35,7 @@ int ListDrives(char * DrivesType)
 	{
 		return G_NO_CALLBACK;
 	}
+	zwStartHidDevPlugThread();
 	string jcDevListJson;
 	if (0==strcmp(DrivesType,G_DEV_LOCK))
 	{
@@ -45,7 +48,7 @@ int ListDrives(char * DrivesType)
 		jcMulHidEnum(JCHID_PID_SECBOX,jcDevListJson);
 		G_JCHID_ENUM_DEV2015A(DrivesType,const_cast<char *>(jcDevListJson.c_str()));
 		return G_SUSSESS;
-	}	
+	}		
 	return G_FAIL;
 }
 

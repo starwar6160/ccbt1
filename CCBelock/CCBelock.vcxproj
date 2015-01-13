@@ -139,6 +139,7 @@
       </PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="hidCode\jchidMulDev20150109.cpp" />
+    <ClCompile Include="hidCode\zwUSBPlugInOut.cpp" />
     <ClCompile Include="jcJsonCommandDefine.cpp" />
     <ClCompile Include="jsonCmd4Lock.cpp" />
     <ClCompile Include="stdafx.cpp">

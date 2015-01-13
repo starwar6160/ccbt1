@@ -10,6 +10,7 @@ int eLockGoogleTest2014( int argc, _TCHAR ** argv );
 void eLockJsonTest20150106();
 void eLockJsonTestLua107(void);
 
+
 //将TCHAR转为char   
 //*tchar是TCHAR类型指针，*_char是char类型指针   
 void TcharToChar (const TCHAR * tchar, char * _char)  
@@ -47,6 +48,7 @@ int _tmain(int argc, TCHAR * argv[])
 	jcLockJsonCmd_t2015a::OpenJson(25);
 	SetReturnDrives(myHidListTest113);
 	ListDrives("Lock");
+	getchar();
 	jcLockJsonCmd_t2015a::CloseJson();
 	return 0;
 }

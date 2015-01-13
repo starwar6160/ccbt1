@@ -107,6 +107,9 @@
     <ClCompile Include="hidCode\jchidMulDev20150109.cpp">
       <Filter>源文件\HidCode</Filter>
     </ClCompile>
+    <ClCompile Include="hidCode\zwUSBPlugInOut.cpp">
+      <Filter>源文件\HidCode</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="HidProtocol.rc">
