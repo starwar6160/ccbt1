@@ -114,7 +114,15 @@ namespace jcLockJsonCmd_t2015a{
 			memset(serial,0,32);
 			TcharToChar(jclock_List->serial_number,serial);
 			printf("%s\n",serial);
-			pt.put("jcDevSerial",serial);
+			if (JCHID_PID_LOCK5151==hidPid)
+			{
+				pt.put("jcElockSerial",serial);
+			}
+			if (JCHID_PID_SECBOX==hidPid)
+			{
+				pt.put("jcSecretBoxSerial",serial);
+			}
+			
 			jclock_List=jclock_List->next;
 		}
 		std::ostringstream ss;

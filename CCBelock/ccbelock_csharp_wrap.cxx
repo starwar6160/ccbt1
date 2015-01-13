@@ -346,13 +346,11 @@ SWIGEXPORT void SWIGSTDCALL CSharp_zwPushString(char * jarg1) {
 }
 
 
-SWIGEXPORT char * SWIGSTDCALL CSharp_dbgGetLockReturnXML() {
-  char * jresult ;
-  char *result = 0 ;
+SWIGEXPORT void SWIGSTDCALL CSharp_myLuaBridgeSendJsonAPI(char * jarg1) {
+  char *arg1 = (char *) 0 ;
   
-  result = (char *)dbgGetLockReturnXML();
-  jresult = SWIG_csharp_string_callback((const char *)result); 
-  return jresult;
+  arg1 = (char *)jarg1; 
+  myLuaBridgeSendJsonAPI((char const *)arg1);
 }
 
 
@@ -398,6 +396,58 @@ SWIGEXPORT long SWIGSTDCALL CSharp_CloseJson() {
   
   result = (long)jcLockJsonCmd_t2015a::CloseJson();
   jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void SWIGSTDCALL CSharp_jcMulHidEnum(int jarg1, void * jarg2) {
+  int arg1 ;
+  string *arg2 = 0 ;
+  
+  arg1 = (int)jarg1; 
+  arg2 = (string *)jarg2;
+  if (!arg2) {
+    SWIG_CSharpSetPendingExceptionArgument(SWIG_CSharpArgumentNullException, "string & type is null", 0);
+    return ;
+  } 
+  jcLockJsonCmd_t2015a::jcMulHidEnum(arg1,*arg2);
+}
+
+
+SWIGEXPORT void SWIGSTDCALL CSharp_SetReturnDrives(void * jarg1) {
+  ReturnDrives arg1 = (ReturnDrives) 0 ;
+  
+  arg1 = (ReturnDrives)jarg1; 
+  SetReturnDrives(arg1);
+}
+
+
+SWIGEXPORT int SWIGSTDCALL CSharp_ListDrives(char * jarg1) {
+  int jresult ;
+  char *arg1 = (char *) 0 ;
+  int result;
+  
+  arg1 = (char *)jarg1; 
+  result = (int)ListDrives(arg1);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void SWIGSTDCALL CSharp_G_JCHID_ENUM_DEV2015A_set(void * jarg1) {
+  ReturnDrives arg1 = (ReturnDrives) 0 ;
+  
+  arg1 = (ReturnDrives)jarg1; 
+  G_JCHID_ENUM_DEV2015A = arg1;
+}
+
+
+SWIGEXPORT void * SWIGSTDCALL CSharp_G_JCHID_ENUM_DEV2015A_get() {
+  void * jresult ;
+  ReturnDrives result;
+  
+  result = (ReturnDrives)G_JCHID_ENUM_DEV2015A;
+  jresult = (void *)result; 
   return jresult;
 }
 

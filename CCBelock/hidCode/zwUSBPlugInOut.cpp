@@ -62,6 +62,7 @@ void myUSBHidStringExtract113( char * dbcc_name )
 		&& strcmp(jcDevType,"USB")==0)	//因为设备消息类型为HID的是一些看不明白的字符串，USB类型的才是序列号
 	{
 		string jcDevListJson;
+
 		jcLockJsonCmd_t2015a::jcMulHidEnum(JCHID_PID_LOCK5151,jcDevListJson);
 		G_JCHID_ENUM_DEV2015A(jcDevType,jcDevListJson.c_str());
 	}	

@@ -201,8 +201,8 @@ class HidProtocolPINVOKE {
   [global::System.Runtime.InteropServices.DllImport("HidProtocol", EntryPoint="CSharp_zwPushString")]
   public static extern void zwPushString(string jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("HidProtocol", EntryPoint="CSharp_dbgGetLockReturnXML")]
-  public static extern string dbgGetLockReturnXML();
+  [global::System.Runtime.InteropServices.DllImport("HidProtocol", EntryPoint="CSharp_myLuaBridgeSendJsonAPI")]
+  public static extern void myLuaBridgeSendJsonAPI(string jarg1);
 
   [global::System.Runtime.InteropServices.DllImport("HidProtocol", EntryPoint="CSharp_OpenJson")]
   public static extern int OpenJson(int jarg1);
@@ -215,6 +215,21 @@ class HidProtocolPINVOKE {
 
   [global::System.Runtime.InteropServices.DllImport("HidProtocol", EntryPoint="CSharp_CloseJson")]
   public static extern int CloseJson();
+
+  [global::System.Runtime.InteropServices.DllImport("HidProtocol", EntryPoint="CSharp_jcMulHidEnum")]
+  public static extern void jcMulHidEnum(int jarg1, global::System.Runtime.InteropServices.HandleRef jarg2);
+
+  [global::System.Runtime.InteropServices.DllImport("HidProtocol", EntryPoint="CSharp_SetReturnDrives")]
+  public static extern void SetReturnDrives(global::System.Runtime.InteropServices.HandleRef jarg1);
+
+  [global::System.Runtime.InteropServices.DllImport("HidProtocol", EntryPoint="CSharp_ListDrives")]
+  public static extern int ListDrives(string jarg1);
+
+  [global::System.Runtime.InteropServices.DllImport("HidProtocol", EntryPoint="CSharp_G_JCHID_ENUM_DEV2015A_set")]
+  public static extern void G_JCHID_ENUM_DEV2015A_set(global::System.Runtime.InteropServices.HandleRef jarg1);
+
+  [global::System.Runtime.InteropServices.DllImport("HidProtocol", EntryPoint="CSharp_G_JCHID_ENUM_DEV2015A_get")]
+  public static extern global::System.IntPtr G_JCHID_ENUM_DEV2015A_get();
 }
 
 }
