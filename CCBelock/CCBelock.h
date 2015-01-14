@@ -55,6 +55,13 @@ CCBELOCK_API int OpenDrives(const char* DrivesType,const char * DrivesID);
 CCBELOCK_API int CloseDrives(const char* DrivesType,const char * DrivesID);
 //extern ReturnDrives G_JCHID_ENUM_DEV2015A;
 
+//三、设备消息接口 说明：（1）DrivesMessage和AnyMessage均为json格式字符
+//1、回调函数类型
+	typedef void (*ReturnMessage)(char* DrivesID,char* DrivesMessage);
+//2、设置设备消息返回的回调函数
+	void SetReturnMessage(ReturnMessage _MessageHandleFun);
+//3、向设备发送指令的函数
+	int inputMessage(char * DrivesID,char * AnyMessage);
 #ifdef __cplusplus
 }
 #endif

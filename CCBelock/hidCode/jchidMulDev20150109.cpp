@@ -42,6 +42,7 @@ namespace jcLockJsonCmd_t2015a{
 	const char * G_DEV_LOCK="Lock";
 	const char * G_DEV_SECBOX="Encryption";
 	ReturnDrives G_JCHID_ENUM_DEV2015A=NULL;
+	ReturnMessage G_JCHID_RECVMSG_CB=NULL;
 	std::map<uint32_t,JCHID> G_JCDEV_MAP;
 
 	void jcMulHidEnum( const int hidPid,string &jcDevListJson )
@@ -71,33 +72,6 @@ namespace jcLockJsonCmd_t2015a{
 		write_json(ss, pt);
 		jcDevListJson=ss.str();
 	}
-
-
-	//int jcMulHidOpen(const int vid,const int pid,const char *serial_number,JCHID *hnd)
-	//{
-	//	hnd->vid=vid;
-	//	hnd->pid=pid;
-	//	strncpy(hnd->HidSerial,serial_number,16);	//16是序列号最大长度
-	//	JCHID_STATUS sts= jcHidOpen(hnd);
-	//	if (JCHID_STATUS_OK==sts)
-	//	{
-	//		return 0;
-	//	}
-	//	else
-	//	{
-	//		return 1;
-	//	}
-	//}
-
-	//void jcMulHidClose(const JCHID *hnd)
-	//{
-	//	if (NULL!=hnd && NULL!=hnd->hid_device)
-	//	{
-	//		jcHidClose(hnd);
-	//	}	
-	//}
-
-
 }	//end of namespace jcLockJsonCmd_t2015a{
 
 
@@ -160,7 +134,11 @@ int OpenDrives(const char* DrivesType,const char * DrivesID)
 	memset(hnd, 0, sizeof(JCHID));
 	hnd->vid = JCHID_VID_2014;
 	int serialLen=strlen(DrivesID);
-	strncpy(hnd->HidSerial,DrivesID,JCHID_SERIAL_LENGTH);
+	if (serialLen>0)
+	{
+		//复制serialLen和JCHID_SERIAL_LENGTH中较小的一个字节数到序列号里面
+		strncpy(hnd->HidSerial,DrivesID,serialLen<JCHID_SERIAL_LENGTH?serialLen:JCHID_SERIAL_LENGTH);
+	}	
 	if (0==strcmp(jcLockJsonCmd_t2015a::G_DEV_LOCK,DrivesType))
 	{
 		VLOG(4)<<"will Open G_DEV_LOCK\n";
@@ -194,7 +172,19 @@ int CloseDrives(const char* DrivesType,const char * DrivesID)
 	assert(strcmp(DrivesType,jcLockJsonCmd_t2015a::G_DEV_LOCK)==0 || strcmp(DrivesType,jcLockJsonCmd_t2015a::G_DEV_SECBOX)==0);
 	uint32_t inDevId=myJcHidHndFromStrSerial(DrivesType, DrivesID);
 	VLOG(4)<<"jcHidHandleFromStrSerial="<<inDevId<<endl;
-	JCHID *hnd=&jcLockJsonCmd_t2015a::G_JCDEV_MAP[inDevId];
+	
+	std::map<uint32_t,JCHID>::iterator it=jcLockJsonCmd_t2015a::G_JCDEV_MAP.find(inDevId);
+	if (it==jcLockJsonCmd_t2015a::G_JCDEV_MAP.end())
+	{
+		LOG(ERROR)<<"jcLockJsonCmd_t2015a::G_JCDEV_MAP find item "<<inDevId<<" not found!\n";
+		return jcLockJsonCmd_t2015a::G_FAIL;
+	}
+	else
+	{
+		VLOG(4)<<"jcLockJsonCmd_t2015a::G_JCDEV_MAP find item "<<inDevId<<" SUCCESS!\n";
+	}
+	JCHID *hnd=&it->second;
+	//&jcLockJsonCmd_t2015a::G_JCDEV_MAP[inDevId];
 	if (NULL!=hnd->hid_device)
 	{
 		jcHidClose(hnd);
@@ -205,6 +195,10 @@ int CloseDrives(const char* DrivesType,const char * DrivesID)
 
 uint32_t myJcHidHndFromStrSerial( const char* DrivesType, const char * DrivesID)
 {
+	assert(NULL!=DrivesType && NULL!=DrivesID);
+	assert(strlen(DrivesType)>0 && strlen(DrivesID)>0);
+	assert(strcmp(DrivesType,jcLockJsonCmd_t2015a::G_DEV_LOCK)==0 
+		|| strcmp(DrivesType,jcLockJsonCmd_t2015a::G_DEV_SECBOX)==0);
 	uint32_t inDevId;
 	string hidPidAndSerial=DrivesType;
 	hidPidAndSerial+=".";
@@ -212,5 +206,26 @@ uint32_t myJcHidHndFromStrSerial( const char* DrivesType, const char * DrivesID)
 	inDevId=crc32Short(hidPidAndSerial.c_str(),hidPidAndSerial.length());
 	return inDevId;
 }
+
+//2、设置设备消息返回的回调函数
+void SetReturnMessage(ReturnMessage _MessageHandleFun)
+{
+	if (NULL!=_MessageHandleFun)
+	{
+		jcLockJsonCmd_t2015a::G_JCHID_RECVMSG_CB=_MessageHandleFun;
+		VLOG(3)<<"SetReturnMessage set Callback Success\n";
+	}	
+	else
+	{
+		LOG(WARNING)<<"SetReturnMessage using NULL CallBack Function Pointer !\n";
+	}
+}
+//3、向设备发送指令的函数
+int inputMessage(char * DrivesID,char * AnyMessage)
+{
+
+	return jcLockJsonCmd_t2015a::G_SUSSESS;
+}
+
 
 //////////////////////////////////////////////////////////////////////////
