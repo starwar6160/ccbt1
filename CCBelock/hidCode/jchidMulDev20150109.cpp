@@ -96,13 +96,14 @@ namespace jcLockJsonCmd_t2015a{
 		std::map<uint32_t,JCHID>::iterator it=G_JCDEV_MAP.find(inDevId);
 		if (it==jcLockJsonCmd_t2015a::G_JCDEV_MAP.end())
 		{
-			LOG(ERROR)<<"jcLockJsonCmd_t2015a::G_JCDEV_MAP find item "<<inDevId<<" not found!\n";
+			LOG(WARNING)<<"jcLockJsonCmd_t2015a::G_JCDEV_MAP find item hashId="
+				<<inDevId<<" "<<DrivesTypePID<<":"<<DrivesIdSN<<" not Open now!\n";
 			*jcHidDev=NULL;
 			return;
 		}
 		else
 		{
-			VLOG(4)<<"jcLockJsonCmd_t2015a::G_JCDEV_MAP find item "<<inDevId<<" SUCCESS!\n";
+			VLOG(4)<<"jcLockJsonCmd_t2015a::G_JCDEV_MAP find item "<<inDevId<<" "<<DrivesTypePID<<":"<<DrivesIdSN<<" SUCCESS!\n";
 			*jcHidDev=&it->second;
 		}
 
@@ -161,11 +162,25 @@ CCBELOCK_API int OpenDrives( const char* DrivesTypePID,const char * DrivesIdSN )
 	assert(strlen(DrivesTypePID)>0 && strlen(DrivesIdSN)>0);
 	assert(strcmp(DrivesTypePID,jcLockJsonCmd_t2015a::G_DEV_LOCK)==0 
 		|| strcmp(DrivesTypePID,jcLockJsonCmd_t2015a::G_DEV_SECBOX)==0);
+	//////////////////////////////////////////////////////////////////////////
+	//探测该设备是否已经打开了
+	JCHID *hndTc=NULL;
+	uint32_t inDevidTc=0;
+	jcLockJsonCmd_t2015a::isJcHidDevOpend(DrivesTypePID,DrivesIdSN,&inDevidTc,&hndTc);
+	if (NULL!=hndTc)
+	{
+		//该设备已经被打开，直接返回
+		LOG(WARNING)<<"JcHid Device "<<DrivesTypePID<<":"<<DrivesIdSN<<" already Opened!\n";
+		return jcLockJsonCmd_t2015a::G_SUSSESS;
+	}
+	//////////////////////////////////////////////////////////////////////////
+
 	uint32_t inDevId=jcLockJsonCmd_t2015a::myJcHidHndFromStrSerial(DrivesTypePID, DrivesIdSN);
 	VLOG(4)<<"jcHidHandleFromStrSerial="<<inDevId<<endl;
 	JCHID jcHandle;
 	JCHID *hnd=&jcHandle;
 	memset(hnd, 0, sizeof(JCHID));
+
 	hnd->vid = JCHID_VID_2014;
 	int serialLen=strlen(DrivesIdSN);
 	if (serialLen>0)
@@ -185,8 +200,8 @@ CCBELOCK_API int OpenDrives( const char* DrivesTypePID,const char * DrivesIdSN )
 	}
 	
 	if (JCHID_STATUS_OK != jcHidOpen(hnd)) {
-		LOG(ERROR)<<"HID Device Open ERROR 1225 !";
-		return ELOCK_ERROR_PARAMINVALID;
+		LOG(ERROR)<<"jcHid Device "<<DrivesTypePID<<" "<<DrivesIdSN<<" Open ERROR"<<endl;
+		return jcLockJsonCmd_t2015a::G_FAIL;
 	}
 	else
 	{
@@ -213,12 +228,18 @@ CCBELOCK_API int CloseDrives( const char* DrivesTypePID,const char * DrivesIdSN 
 	uint32_t inDevid=0;
 	jcLockJsonCmd_t2015a::isJcHidDevOpend(DrivesTypePID,DrivesIdSN,&inDevid,&hnd);
 	//&jcLockJsonCmd_t2015a::G_JCDEV_MAP[inDevId];
-	if (NULL!=hnd->hid_device)
+	if (NULL!=hnd)
 	{
 		jcHidClose(hnd);
 		VLOG(3)<<"jcHid Device "<<DrivesTypePID<<" "<<DrivesIdSN<<" Close Success"<<endl;
+		return jcLockJsonCmd_t2015a::G_SUSSESS;
 	}
-	return jcLockJsonCmd_t2015a::G_SUSSESS;
+	else
+	{
+		VLOG(3)<<"jcHid Device "<<DrivesTypePID<<" "<<DrivesIdSN<<" Not Open,So can't Close"<<endl;
+		return jcLockJsonCmd_t2015a::G_FAIL;
+	}
+	
 }
 
 //2、设置设备消息返回的回调函数

@@ -50,6 +50,7 @@ int _tmain(int argc, TCHAR * argv[])
 	ListDrives("Lock");
 
 	OpenDrives("Lock",	"00000000022C");
+	OpenDrives("Lock",	"00000000022C");
 	CloseDrives("Lock",	"00000000022C");
 	OpenDrives("Lock",	"00000000011C");
 	CloseDrives("Lock",	"00000000011C");
