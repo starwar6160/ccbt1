@@ -216,6 +216,12 @@ class HidProtocolPINVOKE {
   [global::System.Runtime.InteropServices.DllImport("HidProtocol", EntryPoint="CSharp_CloseDrives")]
   public static extern int CloseDrives(string jarg1, string jarg2);
 
+  [global::System.Runtime.InteropServices.DllImport("HidProtocol", EntryPoint="CSharp_SetReturnMessage")]
+  public static extern void SetReturnMessage(global::System.Runtime.InteropServices.HandleRef jarg1);
+
+  [global::System.Runtime.InteropServices.DllImport("HidProtocol", EntryPoint="CSharp_inputMessage")]
+  public static extern int inputMessage(string jarg1, string jarg2, string jarg3);
+
   [global::System.Runtime.InteropServices.DllImport("HidProtocol", EntryPoint="CSharp_OpenJson")]
   public static extern int OpenJson(int jarg1);
 

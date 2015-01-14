@@ -73,26 +73,26 @@ namespace jcLockJsonCmd_t2015a{
 		jcDevListJson=ss.str();
 	}
 
-	uint32_t myJcHidHndFromStrSerial( const char* DrivesType, const char * DrivesID)
+	uint32_t myJcHidHndFromStrSerial( const char* DrivesTypePID, const char * DrivesIdSN)
 	{
-		assert(NULL!=DrivesType && NULL!=DrivesID);
-		assert(strlen(DrivesType)>0 && strlen(DrivesID)>0);
-		assert(strcmp(DrivesType,jcLockJsonCmd_t2015a::G_DEV_LOCK)==0 
-			|| strcmp(DrivesType,jcLockJsonCmd_t2015a::G_DEV_SECBOX)==0);
+		assert(NULL!=DrivesTypePID && NULL!=DrivesIdSN);
+		assert(strlen(DrivesTypePID)>0 && strlen(DrivesIdSN)>0);
+		assert(strcmp(DrivesTypePID,jcLockJsonCmd_t2015a::G_DEV_LOCK)==0 
+			|| strcmp(DrivesTypePID,jcLockJsonCmd_t2015a::G_DEV_SECBOX)==0);
 		uint32_t inDevId;
-		string hidPidAndSerial=DrivesType;
+		string hidPidAndSerial=DrivesTypePID;
 		hidPidAndSerial+=".";
-		hidPidAndSerial+=DrivesID;
+		hidPidAndSerial+=DrivesIdSN;
 		inDevId=crc32Short(hidPidAndSerial.c_str(),hidPidAndSerial.length());
 		return inDevId;
 	}
 
 
-	void isJcHidDevOpend(const char* DrivesType,const char * DrivesID,uint32_t *inDevIdNum,JCHID **jcHidDev)
+	void isJcHidDevOpend(const char* DrivesTypePID,const char * DrivesIdSN,uint32_t *inDevHashId,JCHID **jcHidDev)
 	{
-		uint32_t inDevId=myJcHidHndFromStrSerial(DrivesType, DrivesID);
+		uint32_t inDevId=myJcHidHndFromStrSerial(DrivesTypePID, DrivesIdSN);
 		VLOG(4)<<"jcHidHandleFromStrSerial="<<inDevId<<endl;	
-		*inDevIdNum=inDevId;
+		*inDevHashId=inDevId;
 		std::map<uint32_t,JCHID>::iterator it=G_JCDEV_MAP.find(inDevId);
 		if (it==jcLockJsonCmd_t2015a::G_JCDEV_MAP.end())
 		{
@@ -129,7 +129,7 @@ void SetReturnDrives(ReturnDrives _DrivesListFun)
 	jcLockJsonCmd_t2015a::G_JCHID_ENUM_DEV2015A=_DrivesListFun;
 }
 
-int ListDrives(char * DrivesType)
+CCBELOCK_API int ListDrives(const char * DrivesTypePID )
 {
 	if (NULL==jcLockJsonCmd_t2015a::G_JCHID_ENUM_DEV2015A)
 	{
@@ -138,47 +138,47 @@ int ListDrives(char * DrivesType)
 	zwStartHidDevPlugThread();
 
 	string jcDevListJson;
-	if (0==strcmp(DrivesType,jcLockJsonCmd_t2015a::G_DEV_LOCK))
+	if (0==strcmp(DrivesTypePID,jcLockJsonCmd_t2015a::G_DEV_LOCK))
 	{
 		jcMulHidEnum(JCHID_PID_LOCK5151,jcDevListJson);
-		jcLockJsonCmd_t2015a::G_JCHID_ENUM_DEV2015A(DrivesType,const_cast<char *>(jcDevListJson.c_str()));
+		jcLockJsonCmd_t2015a::G_JCHID_ENUM_DEV2015A(DrivesTypePID,const_cast<char *>(jcDevListJson.c_str()));
 		return jcLockJsonCmd_t2015a::G_SUSSESS;
 	}
-	if (0==strcmp(DrivesType,jcLockJsonCmd_t2015a::G_DEV_SECBOX))
+	if (0==strcmp(DrivesTypePID,jcLockJsonCmd_t2015a::G_DEV_SECBOX))
 	{
 		jcMulHidEnum(JCHID_PID_SECBOX,jcDevListJson);
-		jcLockJsonCmd_t2015a::G_JCHID_ENUM_DEV2015A(DrivesType,const_cast<char *>(jcDevListJson.c_str()));
+		jcLockJsonCmd_t2015a::G_JCHID_ENUM_DEV2015A(DrivesTypePID,const_cast<char *>(jcDevListJson.c_str()));
 		return jcLockJsonCmd_t2015a::G_SUSSESS;
 	}		
 	return jcLockJsonCmd_t2015a::G_FAIL;
 }
 
 //1、打开设备
-int OpenDrives(const char* DrivesType,const char * DrivesID)
+CCBELOCK_API int OpenDrives( const char* DrivesTypePID,const char * DrivesIdSN )
 {
 	MY114FUNCTRACK
-	assert(NULL!=DrivesType && NULL!=DrivesID);
-	assert(strlen(DrivesType)>0 && strlen(DrivesID)>0);
-	assert(strcmp(DrivesType,jcLockJsonCmd_t2015a::G_DEV_LOCK)==0 
-		|| strcmp(DrivesType,jcLockJsonCmd_t2015a::G_DEV_SECBOX)==0);
-	uint32_t inDevId=jcLockJsonCmd_t2015a::myJcHidHndFromStrSerial(DrivesType, DrivesID);
+	assert(NULL!=DrivesTypePID && NULL!=DrivesIdSN);
+	assert(strlen(DrivesTypePID)>0 && strlen(DrivesIdSN)>0);
+	assert(strcmp(DrivesTypePID,jcLockJsonCmd_t2015a::G_DEV_LOCK)==0 
+		|| strcmp(DrivesTypePID,jcLockJsonCmd_t2015a::G_DEV_SECBOX)==0);
+	uint32_t inDevId=jcLockJsonCmd_t2015a::myJcHidHndFromStrSerial(DrivesTypePID, DrivesIdSN);
 	VLOG(4)<<"jcHidHandleFromStrSerial="<<inDevId<<endl;
 	JCHID jcHandle;
 	JCHID *hnd=&jcHandle;
 	memset(hnd, 0, sizeof(JCHID));
 	hnd->vid = JCHID_VID_2014;
-	int serialLen=strlen(DrivesID);
+	int serialLen=strlen(DrivesIdSN);
 	if (serialLen>0)
 	{
 		//复制serialLen和JCHID_SERIAL_LENGTH中较小的一个字节数到序列号里面
-		strncpy(hnd->HidSerial,DrivesID,serialLen<JCHID_SERIAL_LENGTH?serialLen:JCHID_SERIAL_LENGTH);
+		strncpy(hnd->HidSerial,DrivesIdSN,serialLen<JCHID_SERIAL_LENGTH?serialLen:JCHID_SERIAL_LENGTH);
 	}	
-	if (0==strcmp(jcLockJsonCmd_t2015a::G_DEV_LOCK,DrivesType))
+	if (0==strcmp(jcLockJsonCmd_t2015a::G_DEV_LOCK,DrivesTypePID))
 	{
 		VLOG(4)<<"will Open G_DEV_LOCK\n";
 		hnd->pid = JCHID_PID_LOCK5151;
 	}
-	if (0==strcmp(jcLockJsonCmd_t2015a::G_DEV_SECBOX,DrivesType))
+	if (0==strcmp(jcLockJsonCmd_t2015a::G_DEV_SECBOX,DrivesTypePID))
 	{
 		VLOG(4)<<"will Open G_DEV_SECBOX\n";
 		hnd->pid = JCHID_PID_SECBOX;
@@ -190,7 +190,7 @@ int OpenDrives(const char* DrivesType,const char * DrivesID)
 	}
 	else
 	{
-		VLOG(3)<<"jcHid Device "<<DrivesType<<" "<<DrivesID<<" Open Success"<<endl;
+		VLOG(3)<<"jcHid Device "<<DrivesTypePID<<" "<<DrivesIdSN<<" Open Success"<<endl;
 	}
 
 	jcLockJsonCmd_t2015a::G_JCDEV_MAP.insert(std::map<uint32_t,JCHID>::value_type(inDevId,*hnd));
@@ -201,22 +201,22 @@ int OpenDrives(const char* DrivesType,const char * DrivesID)
 
 
 //	2、关闭设备
-int CloseDrives(const char* DrivesType,const char * DrivesID)
+CCBELOCK_API int CloseDrives( const char* DrivesTypePID,const char * DrivesIdSN )
 {
 	MY114FUNCTRACK
-	assert(NULL!=DrivesType && NULL!=DrivesID);
-	assert(strlen(DrivesType)>0 && strlen(DrivesID)>0);
-	assert(strcmp(DrivesType,jcLockJsonCmd_t2015a::G_DEV_LOCK)==0 
-		|| strcmp(DrivesType,jcLockJsonCmd_t2015a::G_DEV_SECBOX)==0);
+	assert(NULL!=DrivesTypePID && NULL!=DrivesIdSN);
+	assert(strlen(DrivesTypePID)>0 && strlen(DrivesIdSN)>0);
+	assert(strcmp(DrivesTypePID,jcLockJsonCmd_t2015a::G_DEV_LOCK)==0 
+		|| strcmp(DrivesTypePID,jcLockJsonCmd_t2015a::G_DEV_SECBOX)==0);
 
 	JCHID *hnd=NULL;
 	uint32_t inDevid=0;
-	jcLockJsonCmd_t2015a::isJcHidDevOpend(DrivesType,DrivesID,&inDevid,&hnd);
+	jcLockJsonCmd_t2015a::isJcHidDevOpend(DrivesTypePID,DrivesIdSN,&inDevid,&hnd);
 	//&jcLockJsonCmd_t2015a::G_JCDEV_MAP[inDevId];
 	if (NULL!=hnd->hid_device)
 	{
 		jcHidClose(hnd);
-		VLOG(3)<<"jcHid Device "<<DrivesType<<" "<<DrivesID<<" Close Success"<<endl;
+		VLOG(3)<<"jcHid Device "<<DrivesTypePID<<" "<<DrivesIdSN<<" Close Success"<<endl;
 	}
 	return jcLockJsonCmd_t2015a::G_SUSSESS;
 }
@@ -235,7 +235,7 @@ void SetReturnMessage(ReturnMessage _MessageHandleFun)
 	}
 }
 //3、向设备发送指令的函数
-int inputMessage(char * DrivesID,char * AnyMessage)
+int inputMessage( const char * DrivesTypePID,const char * DrivesIdSN,const char * AnyMessageJson )
 {
 
 	return jcLockJsonCmd_t2015a::G_SUSSESS;

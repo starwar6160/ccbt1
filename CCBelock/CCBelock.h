@@ -38,7 +38,7 @@ CCBELOCK_API void myLuaBridgeSendJsonAPI(const char *luaScriptFile);
 
 ////////////////////////调试用Json命令接口//////////////////////////////////////////////////
 //一、设备列表接口 1、回调函数类型
-typedef void (*ReturnDrives)(char* DrivesType,const char * DrivesIDList);
+typedef void (*ReturnDrives)(const char* DrivesTypePID,const char * DrivesIDListJson);
 
 CCBELOCK_API void SetReturnDrives(ReturnDrives _DrivesListFun);
 //3、获取设备列表的指令
@@ -48,20 +48,20 @@ CCBELOCK_API void SetReturnDrives(ReturnDrives _DrivesListFun);
 //	（3）DrivesIDList为json格式字符，其中列出了所有符合要求设备的DrivesID（HID设备序列号）
 //	（4）当调用ListDrives时，接口函数应返回当前所有此类设备的列表
 //	（5）当有新设备插入或拔出时，接口函数应该返回插入设备所属类型的最新列表（重复内容由上位机过滤去重）
-CCBELOCK_API int ListDrives(char * DrivesType);
+CCBELOCK_API int ListDrives(const char * DrivesTypePID);
 //1、打开设备
-CCBELOCK_API int OpenDrives(const char* DrivesType,const char * DrivesID);
+CCBELOCK_API int OpenDrives(const char* DrivesTypePID,const char * DrivesIdSN);
 //	2、关闭设备
-CCBELOCK_API int CloseDrives(const char* DrivesType,const char * DrivesID);
+CCBELOCK_API int CloseDrives(const char* DrivesTypePID,const char * DrivesIdSN);
 //extern ReturnDrives G_JCHID_ENUM_DEV2015A;
 
 //三、设备消息接口 说明：（1）DrivesMessage和AnyMessage均为json格式字符
 //1、回调函数类型
-	typedef void (*ReturnMessage)(char* DrivesID,char* DrivesMessage);
+	typedef void (*ReturnMessage)(const char* DrivesIdSN,char* DrivesMessageJson);
 //2、设置设备消息返回的回调函数
 	void SetReturnMessage(ReturnMessage _MessageHandleFun);
 //3、向设备发送指令的函数
-	int inputMessage(char * DrivesID,char * AnyMessage);
+	int inputMessage(const char * DrivesTypePID,const char * DrivesIdSN,const char * AnyMessageJson);
 #ifdef __cplusplus
 }
 #endif

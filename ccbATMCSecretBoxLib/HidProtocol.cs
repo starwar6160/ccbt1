@@ -37,22 +37,31 @@ public class HidProtocol {
     HidProtocolPINVOKE.myLuaBridgeSendJsonAPI(luaScriptFile);
   }
 
-  public static void SetReturnDrives(SWIGTYPE_p_f_p_char_p_q_const__char__void _DrivesListFun) {
-    HidProtocolPINVOKE.SetReturnDrives(SWIGTYPE_p_f_p_char_p_q_const__char__void.getCPtr(_DrivesListFun));
+  public static void SetReturnDrives(SWIGTYPE_p_f_p_q_const__char_p_q_const__char__void _DrivesListFun) {
+    HidProtocolPINVOKE.SetReturnDrives(SWIGTYPE_p_f_p_q_const__char_p_q_const__char__void.getCPtr(_DrivesListFun));
   }
 
-  public static int ListDrives(string DrivesType) {
-    int ret = HidProtocolPINVOKE.ListDrives(DrivesType);
+  public static int ListDrives(string DrivesTypePID) {
+    int ret = HidProtocolPINVOKE.ListDrives(DrivesTypePID);
     return ret;
   }
 
-  public static int OpenDrives(string DrivesType, string DrivesID) {
-    int ret = HidProtocolPINVOKE.OpenDrives(DrivesType, DrivesID);
+  public static int OpenDrives(string DrivesTypePID, string DrivesIdSN) {
+    int ret = HidProtocolPINVOKE.OpenDrives(DrivesTypePID, DrivesIdSN);
     return ret;
   }
 
-  public static int CloseDrives(string DrivesType, string DrivesID) {
-    int ret = HidProtocolPINVOKE.CloseDrives(DrivesType, DrivesID);
+  public static int CloseDrives(string DrivesTypePID, string DrivesIdSN) {
+    int ret = HidProtocolPINVOKE.CloseDrives(DrivesTypePID, DrivesIdSN);
+    return ret;
+  }
+
+  public static void SetReturnMessage(SWIGTYPE_p_f_p_q_const__char_p_char__void _MessageHandleFun) {
+    HidProtocolPINVOKE.SetReturnMessage(SWIGTYPE_p_f_p_q_const__char_p_char__void.getCPtr(_MessageHandleFun));
+  }
+
+  public static int inputMessage(string DrivesTypePID, string DrivesIdSN, string AnyMessageJson) {
+    int ret = HidProtocolPINVOKE.inputMessage(DrivesTypePID, DrivesIdSN, AnyMessageJson);
     return ret;
   }
 
@@ -81,13 +90,13 @@ public class HidProtocol {
     if (HidProtocolPINVOKE.SWIGPendingException.Pending) throw HidProtocolPINVOKE.SWIGPendingException.Retrieve();
   }
 
-  public static SWIGTYPE_p_f_p_char_p_q_const__char__void G_JCHID_ENUM_DEV2015A {
+  public static SWIGTYPE_p_f_p_q_const__char_p_q_const__char__void G_JCHID_ENUM_DEV2015A {
     set {
-      HidProtocolPINVOKE.G_JCHID_ENUM_DEV2015A_set(SWIGTYPE_p_f_p_char_p_q_const__char__void.getCPtr(value));
+      HidProtocolPINVOKE.G_JCHID_ENUM_DEV2015A_set(SWIGTYPE_p_f_p_q_const__char_p_q_const__char__void.getCPtr(value));
     } 
     get {
       global::System.IntPtr cPtr = HidProtocolPINVOKE.G_JCHID_ENUM_DEV2015A_get();
-      SWIGTYPE_p_f_p_char_p_q_const__char__void ret = (cPtr == global::System.IntPtr.Zero) ? null : new SWIGTYPE_p_f_p_char_p_q_const__char__void(cPtr, false);
+      SWIGTYPE_p_f_p_q_const__char_p_q_const__char__void ret = (cPtr == global::System.IntPtr.Zero) ? null : new SWIGTYPE_p_f_p_q_const__char_p_q_const__char__void(cPtr, false);
       return ret;
     } 
   }

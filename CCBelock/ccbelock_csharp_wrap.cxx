@@ -368,7 +368,7 @@ SWIGEXPORT int SWIGSTDCALL CSharp_ListDrives(char * jarg1) {
   int result;
   
   arg1 = (char *)jarg1; 
-  result = (int)ListDrives(arg1);
+  result = (int)ListDrives((char const *)arg1);
   jresult = result; 
   return jresult;
 }
@@ -397,6 +397,30 @@ SWIGEXPORT int SWIGSTDCALL CSharp_CloseDrives(char * jarg1, char * jarg2) {
   arg1 = (char *)jarg1; 
   arg2 = (char *)jarg2; 
   result = (int)CloseDrives((char const *)arg1,(char const *)arg2);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void SWIGSTDCALL CSharp_SetReturnMessage(void * jarg1) {
+  ReturnMessage arg1 = (ReturnMessage) 0 ;
+  
+  arg1 = (ReturnMessage)jarg1; 
+  SetReturnMessage(arg1);
+}
+
+
+SWIGEXPORT int SWIGSTDCALL CSharp_inputMessage(char * jarg1, char * jarg2, char * jarg3) {
+  int jresult ;
+  char *arg1 = (char *) 0 ;
+  char *arg2 = (char *) 0 ;
+  char *arg3 = (char *) 0 ;
+  int result;
+  
+  arg1 = (char *)jarg1; 
+  arg2 = (char *)jarg2; 
+  arg3 = (char *)jarg3; 
+  result = (int)inputMessage((char const *)arg1,(char const *)arg2,(char const *)arg3);
   jresult = result; 
   return jresult;
 }
