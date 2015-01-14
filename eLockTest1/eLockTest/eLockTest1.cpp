@@ -6,10 +6,10 @@
 #include "CCBelock.h"
 
 int eLockGoogleTest2014( int argc, _TCHAR ** argv );
-
 void eLockJsonTest20150106();
 void eLockJsonTestLua107(void);
 
+const char *jcHidJsonMsg0005="{ \"command\": \"Lock_System_Journal\",\"State\": \"get\"}";
 
 //将TCHAR转为char   
 //*tchar是TCHAR类型指针，*_char是char类型指针   
@@ -45,17 +45,20 @@ int _tmain(int argc, TCHAR * argv[])
 
 	//eLockJsonTest20150106();
 	//luaSendJsonTest1(argc, argv);
-
+	const char *hidType="Lock";
+	const char *devSN2="00000000022C";
 	SetReturnDrives(myHidListTest113);
 	ListDrives("Lock");
 
-	CloseDrives("Lock",	"00000000022C");
-	OpenDrives("Lock",	"00000000022C");
-	OpenDrives("Lock",	"00000000022C");
-	CloseDrives("Lock",	"00000000022C");
+	//CloseDrives(hidType,	devSN2);
+	//OpenDrives(hidType,	devSN2);
+	OpenDrives(hidType,	devSN2);
+	inputMessage(hidType,devSN2,jcHidJsonMsg0005);
 
-	OpenDrives("Lock",	"00000000011C");
-	CloseDrives("Lock",	"00000000011C");
+	CloseDrives(hidType,	devSN2);
+
+	//OpenDrives(hidType,	devSN2);
+	//CloseDrives(hidType,	devSN2);
 
 	getchar();
 	jcLockJsonCmd_t2015a::CloseJson();
@@ -76,7 +79,7 @@ void eLockJsonTest20150106()
 	int msts=jcLockJsonCmd_t2015a::OpenJson(25);
 	//试验了几个Json命令，目前只有这一个有反应
 	//{ \"command\": \"Lock_System_Journal\",\"State\": \"get\"}
-	jcLockJsonCmd_t2015a::SendToLockJson("{ \"command\": \"Lock_System_Journal\",\"State\": \"get\"}");
+	jcLockJsonCmd_t2015a::SendToLockJson(jcHidJsonMsg0005);
 	std::string recvBuf;
 	recvBuf= jcLockJsonCmd_t2015a::RecvFromLockJson(2000);	
 	jcLockJsonCmd_t2015a::CloseJson();

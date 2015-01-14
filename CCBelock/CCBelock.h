@@ -59,9 +59,9 @@ CCBELOCK_API int CloseDrives(const char* DrivesTypePID,const char * DrivesIdSN);
 //1、回调函数类型
 	typedef void (*ReturnMessage)(const char* DrivesIdSN,char* DrivesMessageJson);
 //2、设置设备消息返回的回调函数
-	void SetReturnMessage(ReturnMessage _MessageHandleFun);
+	CCBELOCK_API void SetReturnMessage(ReturnMessage _MessageHandleFun);
 //3、向设备发送指令的函数
-	int inputMessage(const char * DrivesTypePID,const char * DrivesIdSN,const char * AnyMessageJson);
+	CCBELOCK_API int inputMessage(const char * DrivesTypePID,const char * DrivesIdSN,const char * AnyMessageJson);
 #ifdef __cplusplus
 }
 #endif
