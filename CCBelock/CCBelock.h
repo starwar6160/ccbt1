@@ -50,9 +50,9 @@ CCBELOCK_API void SetReturnDrives(ReturnDrives _DrivesListFun);
 //	（5）当有新设备插入或拔出时，接口函数应该返回插入设备所属类型的最新列表（重复内容由上位机过滤去重）
 CCBELOCK_API int ListDrives(char * DrivesType);
 //1、打开设备
-int OpenDrives(const char* DrivesType,const char * DrivesID);
+CCBELOCK_API int OpenDrives(const char* DrivesType,const char * DrivesID);
 //	2、关闭设备
-int CloseDrives(const char* DrivesType,const char * DrivesID);
+CCBELOCK_API int CloseDrives(const char* DrivesType,const char * DrivesID);
 //extern ReturnDrives G_JCHID_ENUM_DEV2015A;
 
 #ifdef __cplusplus

@@ -42,8 +42,6 @@ namespace jcLockJsonCmd_t2015a{
 	const char * G_DEV_LOCK="Lock";
 	const char * G_DEV_SECBOX="Encryption";
 	ReturnDrives G_JCHID_ENUM_DEV2015A=NULL;
-
-
 	std::map<uint32_t,JCHID> G_JCDEV_MAP;
 
 	void jcMulHidEnum( const int hidPid,string &jcDevListJson )
@@ -152,25 +150,28 @@ int OpenDrives(const char* DrivesType,const char * DrivesID)
 {
 	assert(NULL!=DrivesType && NULL!=DrivesID);
 	assert(strlen(DrivesType)>0 && strlen(DrivesID)>0);
-	assert(strcmp(DrivesType,jcLockJsonCmd_t2015a::G_DEV_LOCK)==0 || strcmp(DrivesType,jcLockJsonCmd_t2015a::G_DEV_SECBOX)==0);
-	uint32_t inDevId=0;
-	inDevId = myJcHidHndFromStrSerial(DrivesType, DrivesID);
-	JCHID hnd;
-	memset(&hnd, 0, sizeof(JCHID));
-	hnd.vid = JCHID_VID_2014;
+	assert(strcmp(DrivesType,jcLockJsonCmd_t2015a::G_DEV_LOCK)==0 
+		|| strcmp(DrivesType,jcLockJsonCmd_t2015a::G_DEV_SECBOX)==0);
+	uint32_t inDevId=myJcHidHndFromStrSerial(DrivesType, DrivesID);
+	JCHID jcHandle;
+	JCHID *hnd=&jcHandle;
+	memset(hnd, 0, sizeof(JCHID));
+	hnd->vid = JCHID_VID_2014;
 	if (0==strcmp(jcLockJsonCmd_t2015a::G_DEV_LOCK,DrivesType))
 	{
-		hnd.pid = JCHID_PID_LOCK5151;
+		hnd->pid = JCHID_PID_LOCK5151;
 	}
 	if (0==strcmp(jcLockJsonCmd_t2015a::G_DEV_SECBOX,DrivesType))
 	{
-		hnd.pid = JCHID_PID_SECBOX;
+		hnd->pid = JCHID_PID_SECBOX;
 	}
 	
-	if (JCHID_STATUS_OK != jcHidOpen(&hnd)) {
+	if (JCHID_STATUS_OK != jcHidOpen(hnd)) {
 		LOG(ERROR)<<"HID Device Open ERROR 1225 !";
 		return ELOCK_ERROR_PARAMINVALID;
 	}
+
+	jcLockJsonCmd_t2015a::G_JCDEV_MAP.insert(std::map<uint32_t,JCHID>::value_type(inDevId,*hnd));
 
 	return jcLockJsonCmd_t2015a::G_SUSSESS;
 }
