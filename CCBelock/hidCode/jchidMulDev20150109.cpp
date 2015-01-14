@@ -9,7 +9,7 @@
 #include <boost/property_tree/json_parser.hpp>
 #include <map>
 
-
+#define MY114FUNCTRACK	VLOG(4)<<__FUNCTION__<<endl;
 
 //将TCHAR转为char   
 //*tchar是TCHAR类型指针，*_char是char类型指针   
@@ -148,27 +148,35 @@ uint32_t myJcHidHndFromStrSerial( const char* DrivesType, const char * DrivesID)
 //1、打开设备
 int OpenDrives(const char* DrivesType,const char * DrivesID)
 {
+	MY114FUNCTRACK
 	assert(NULL!=DrivesType && NULL!=DrivesID);
 	assert(strlen(DrivesType)>0 && strlen(DrivesID)>0);
 	assert(strcmp(DrivesType,jcLockJsonCmd_t2015a::G_DEV_LOCK)==0 
 		|| strcmp(DrivesType,jcLockJsonCmd_t2015a::G_DEV_SECBOX)==0);
 	uint32_t inDevId=myJcHidHndFromStrSerial(DrivesType, DrivesID);
+	VLOG(4)<<"jcHidHandleFromStrSerial="<<inDevId<<endl;
 	JCHID jcHandle;
 	JCHID *hnd=&jcHandle;
 	memset(hnd, 0, sizeof(JCHID));
 	hnd->vid = JCHID_VID_2014;
 	if (0==strcmp(jcLockJsonCmd_t2015a::G_DEV_LOCK,DrivesType))
 	{
+		VLOG(4)<<"will Open G_DEV_LOCK\n";
 		hnd->pid = JCHID_PID_LOCK5151;
 	}
 	if (0==strcmp(jcLockJsonCmd_t2015a::G_DEV_SECBOX,DrivesType))
 	{
+		VLOG(4)<<"will Open G_DEV_SECBOX\n";
 		hnd->pid = JCHID_PID_SECBOX;
 	}
 	
 	if (JCHID_STATUS_OK != jcHidOpen(hnd)) {
 		LOG(ERROR)<<"HID Device Open ERROR 1225 !";
 		return ELOCK_ERROR_PARAMINVALID;
+	}
+	else
+	{
+		VLOG(3)<<"jcHid Device "<<DrivesType<<" "<<DrivesID<<" Open Success"<<endl;
 	}
 
 	jcLockJsonCmd_t2015a::G_JCDEV_MAP.insert(std::map<uint32_t,JCHID>::value_type(inDevId,*hnd));
@@ -178,10 +186,18 @@ int OpenDrives(const char* DrivesType,const char * DrivesID)
 //	2、关闭设备
 int CloseDrives(const char* DrivesType,const char * DrivesID)
 {
+	MY114FUNCTRACK
 	assert(NULL!=DrivesType && NULL!=DrivesID);
 	assert(strlen(DrivesType)>0 && strlen(DrivesID)>0);
 	assert(strcmp(DrivesType,jcLockJsonCmd_t2015a::G_DEV_LOCK)==0 || strcmp(DrivesType,jcLockJsonCmd_t2015a::G_DEV_SECBOX)==0);
-
+	uint32_t inDevId=myJcHidHndFromStrSerial(DrivesType, DrivesID);
+	VLOG(4)<<"jcHidHandleFromStrSerial="<<inDevId<<endl;
+	JCHID *hnd=&jcLockJsonCmd_t2015a::G_JCDEV_MAP[inDevId];
+	if (NULL!=hnd->hid_device)
+	{
+		jcHidClose(hnd);
+		VLOG(3)<<"jcHid Device "<<DrivesType<<" "<<DrivesID<<" Close Success"<<endl;
+	}
 	return jcLockJsonCmd_t2015a::G_SUSSESS;
 }
 

@@ -45,9 +45,15 @@ int _tmain(int argc, TCHAR * argv[])
 
 	//eLockJsonTest20150106();
 	//luaSendJsonTest1(argc, argv);
-	OpenDrives("Lock","00000000011C");
+
 	SetReturnDrives(myHidListTest113);
 	ListDrives("Lock");
+
+	OpenDrives("Lock","00000000011C");
+	CloseDrives("Lock","00000000011C");
+	OpenDrives("Lock","00000000011C");
+	CloseDrives("Lock","00000000011C");
+
 	getchar();
 	jcLockJsonCmd_t2015a::CloseJson();
 	return 0;
