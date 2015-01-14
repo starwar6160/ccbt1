@@ -37,6 +37,25 @@ public class HidProtocol {
     HidProtocolPINVOKE.myLuaBridgeSendJsonAPI(luaScriptFile);
   }
 
+  public static void SetReturnDrives(SWIGTYPE_p_f_p_char_p_q_const__char__void _DrivesListFun) {
+    HidProtocolPINVOKE.SetReturnDrives(SWIGTYPE_p_f_p_char_p_q_const__char__void.getCPtr(_DrivesListFun));
+  }
+
+  public static int ListDrives(string DrivesType) {
+    int ret = HidProtocolPINVOKE.ListDrives(DrivesType);
+    return ret;
+  }
+
+  public static int OpenDrives(string DrivesType, string DrivesID) {
+    int ret = HidProtocolPINVOKE.OpenDrives(DrivesType, DrivesID);
+    return ret;
+  }
+
+  public static int CloseDrives(string DrivesType, string DrivesID) {
+    int ret = HidProtocolPINVOKE.CloseDrives(DrivesType, DrivesID);
+    return ret;
+  }
+
   public static int OpenJson(int lTimeOut) {
     int ret = HidProtocolPINVOKE.OpenJson(lTimeOut);
     return ret;
@@ -60,15 +79,6 @@ public class HidProtocol {
   public static void jcMulHidEnum(int hidPid, SWIGTYPE_p_std__string jcDevListJson) {
     HidProtocolPINVOKE.jcMulHidEnum(hidPid, SWIGTYPE_p_std__string.getCPtr(jcDevListJson));
     if (HidProtocolPINVOKE.SWIGPendingException.Pending) throw HidProtocolPINVOKE.SWIGPendingException.Retrieve();
-  }
-
-  public static void SetReturnDrives(SWIGTYPE_p_f_p_char_p_q_const__char__void _DrivesListFun) {
-    HidProtocolPINVOKE.SetReturnDrives(SWIGTYPE_p_f_p_char_p_q_const__char__void.getCPtr(_DrivesListFun));
-  }
-
-  public static int ListDrives(string DrivesType) {
-    int ret = HidProtocolPINVOKE.ListDrives(DrivesType);
-    return ret;
   }
 
   public static SWIGTYPE_p_f_p_char_p_q_const__char__void G_JCHID_ENUM_DEV2015A {

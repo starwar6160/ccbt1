@@ -57,14 +57,14 @@ void myUSBHidStringExtract113( char * dbcc_name )
 	VLOG_IF(2,strcmp(jcVid,"VID_0483")==0 
 		&& strcmp(jcDevType,"USB")==0)
 		<<"jcDev:"<<jcDevType<<"\tjcVid:"<<jcVid<<"\tjcPid:"<<jcPid<<"\tjcSerial:"<<jcSerial;
-	if (NULL!=G_JCHID_ENUM_DEV2015A 
+	if (NULL!=jcLockJsonCmd_t2015a::G_JCHID_ENUM_DEV2015A 
 		&& strcmp(jcVid,"VID_0483")==0	//限制VID为金储产品
 		&& strcmp(jcDevType,"USB")==0)	//因为设备消息类型为HID的是一些看不明白的字符串，USB类型的才是序列号
 	{
 		string jcDevListJson;
 
 		jcLockJsonCmd_t2015a::jcMulHidEnum(JCHID_PID_LOCK5151,jcDevListJson);
-		G_JCHID_ENUM_DEV2015A(jcDevType,jcDevListJson.c_str());
+		jcLockJsonCmd_t2015a::G_JCHID_ENUM_DEV2015A(jcDevType,jcDevListJson.c_str());
 	}	
 }
 

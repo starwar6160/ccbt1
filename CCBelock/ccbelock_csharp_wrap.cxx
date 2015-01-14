@@ -354,6 +354,54 @@ SWIGEXPORT void SWIGSTDCALL CSharp_myLuaBridgeSendJsonAPI(char * jarg1) {
 }
 
 
+SWIGEXPORT void SWIGSTDCALL CSharp_SetReturnDrives(void * jarg1) {
+  ReturnDrives arg1 = (ReturnDrives) 0 ;
+  
+  arg1 = (ReturnDrives)jarg1; 
+  SetReturnDrives(arg1);
+}
+
+
+SWIGEXPORT int SWIGSTDCALL CSharp_ListDrives(char * jarg1) {
+  int jresult ;
+  char *arg1 = (char *) 0 ;
+  int result;
+  
+  arg1 = (char *)jarg1; 
+  result = (int)ListDrives(arg1);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT int SWIGSTDCALL CSharp_OpenDrives(char * jarg1, char * jarg2) {
+  int jresult ;
+  char *arg1 = (char *) 0 ;
+  char *arg2 = (char *) 0 ;
+  int result;
+  
+  arg1 = (char *)jarg1; 
+  arg2 = (char *)jarg2; 
+  result = (int)OpenDrives((char const *)arg1,(char const *)arg2);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT int SWIGSTDCALL CSharp_CloseDrives(char * jarg1, char * jarg2) {
+  int jresult ;
+  char *arg1 = (char *) 0 ;
+  char *arg2 = (char *) 0 ;
+  int result;
+  
+  arg1 = (char *)jarg1; 
+  arg2 = (char *)jarg2; 
+  result = (int)CloseDrives((char const *)arg1,(char const *)arg2);
+  jresult = result; 
+  return jresult;
+}
+
+
 SWIGEXPORT long SWIGSTDCALL CSharp_OpenJson(long jarg1) {
   long jresult ;
   long arg1 ;
@@ -414,31 +462,11 @@ SWIGEXPORT void SWIGSTDCALL CSharp_jcMulHidEnum(int jarg1, void * jarg2) {
 }
 
 
-SWIGEXPORT void SWIGSTDCALL CSharp_SetReturnDrives(void * jarg1) {
-  ReturnDrives arg1 = (ReturnDrives) 0 ;
-  
-  arg1 = (ReturnDrives)jarg1; 
-  SetReturnDrives(arg1);
-}
-
-
-SWIGEXPORT int SWIGSTDCALL CSharp_ListDrives(char * jarg1) {
-  int jresult ;
-  char *arg1 = (char *) 0 ;
-  int result;
-  
-  arg1 = (char *)jarg1; 
-  result = (int)ListDrives(arg1);
-  jresult = result; 
-  return jresult;
-}
-
-
 SWIGEXPORT void SWIGSTDCALL CSharp_G_JCHID_ENUM_DEV2015A_set(void * jarg1) {
   ReturnDrives arg1 = (ReturnDrives) 0 ;
   
   arg1 = (ReturnDrives)jarg1; 
-  G_JCHID_ENUM_DEV2015A = arg1;
+  jcLockJsonCmd_t2015a::G_JCHID_ENUM_DEV2015A = arg1;
 }
 
 
@@ -446,7 +474,7 @@ SWIGEXPORT void * SWIGSTDCALL CSharp_G_JCHID_ENUM_DEV2015A_get() {
   void * jresult ;
   ReturnDrives result;
   
-  result = (ReturnDrives)G_JCHID_ENUM_DEV2015A;
+  result = (ReturnDrives)jcLockJsonCmd_t2015a::G_JCHID_ENUM_DEV2015A;
   jresult = (void *)result; 
   return jresult;
 }

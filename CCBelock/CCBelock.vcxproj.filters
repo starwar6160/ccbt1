@@ -25,6 +25,9 @@
     <Filter Include="源文件\HidCode">
       <UniqueIdentifier>{135929a5-b165-414a-afc9-213d3a441b30}</UniqueIdentifier>
     </Filter>
+    <Filter Include="源文件\algSrc">
+      <UniqueIdentifier>{a249618a-9b9c-4824-8cf3-ccceec157162}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="ReadMe.txt" />
@@ -112,6 +115,9 @@
     </ClCompile>
     <ClCompile Include="hidCode\zwUSBPlugInOut.cpp">
       <Filter>源文件\HidCode</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\jclmsCCB2014\jclmsCCB2014\src\crc32\zwcrc32.c">
+      <Filter>源文件\algSrc</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

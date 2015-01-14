@@ -124,4 +124,14 @@ extern HMODULE G_DLL_HMODULE;
 #define JC_MSG_MAXLEN	(1*1024)
 #define JC_CCBDLL_TIMEOUT	(30)
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+unsigned int crc32Short(const void *inputData,const int inputLen);
+
+#ifdef __cplusplus
+}
+#endif
+
 #endif // zwCcbElockHdr_h__

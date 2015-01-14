@@ -21,7 +21,7 @@ typedef void (cdecl *RecvMsgRotine)(const char *pszMsg);
 #endif
 
 #define JCAPISTD
-
+//////////////////////////////////////////////////////////////////////////
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -35,20 +35,11 @@ CCBELOCK_API int	JCAPISTD SetRecvMsgRotine(RecvMsgRotine pRecvMsgFun);
 CCBELOCK_API void zwPushString(const char *str);
 //CCBELOCK_API const char * dbgGetLockReturnXML(void);
 CCBELOCK_API void myLuaBridgeSendJsonAPI(const char *luaScriptFile);
-#ifdef __cplusplus
-}
-
-namespace jcLockJsonCmd_t2015a{
-	CCBELOCK_API long OpenJson(long lTimeOut);
-	CCBELOCK_API long SendToLockJson(const char *pszJson);
-	CCBELOCK_API const char * RecvFromLockJson(const int timeoutMs);
-	CCBELOCK_API long CloseJson();	
-	CCBELOCK_API void jcMulHidEnum( const int hidPid ,string &jcDevListJson);
-}	//end of namespace jcLockJsonCmd_t2015a{
 
 ////////////////////////调试用Json命令接口//////////////////////////////////////////////////
 //一、设备列表接口 1、回调函数类型
 typedef void (*ReturnDrives)(char* DrivesType,const char * DrivesIDList);
+
 CCBELOCK_API void SetReturnDrives(ReturnDrives _DrivesListFun);
 //3、获取设备列表的指令
 //说明：
@@ -58,7 +49,25 @@ CCBELOCK_API void SetReturnDrives(ReturnDrives _DrivesListFun);
 //	（4）当调用ListDrives时，接口函数应返回当前所有此类设备的列表
 //	（5）当有新设备插入或拔出时，接口函数应该返回插入设备所属类型的最新列表（重复内容由上位机过滤去重）
 CCBELOCK_API int ListDrives(char * DrivesType);
-extern ReturnDrives G_JCHID_ENUM_DEV2015A;
+//1、打开设备
+int OpenDrives(const char* DrivesType,const char * DrivesID);
+//	2、关闭设备
+int CloseDrives(const char* DrivesType,const char * DrivesID);
+//extern ReturnDrives G_JCHID_ENUM_DEV2015A;
 
+#ifdef __cplusplus
+}
 #endif
+
+namespace jcLockJsonCmd_t2015a{
+
+	CCBELOCK_API long OpenJson(long lTimeOut);
+	CCBELOCK_API long SendToLockJson(const char *pszJson);
+	CCBELOCK_API const char * RecvFromLockJson(const int timeoutMs);
+	CCBELOCK_API long CloseJson();	
+	CCBELOCK_API void jcMulHidEnum( const int hidPid ,string &jcDevListJson);
+	extern ReturnDrives G_JCHID_ENUM_DEV2015A;
+}	//end of namespace jcLockJsonCmd_t2015a{
+
+
 #endif // CCBelock_h__
