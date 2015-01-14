@@ -49,9 +49,11 @@ int _tmain(int argc, TCHAR * argv[])
 	SetReturnDrives(myHidListTest113);
 	ListDrives("Lock");
 
+	CloseDrives("Lock",	"00000000022C");
 	OpenDrives("Lock",	"00000000022C");
 	OpenDrives("Lock",	"00000000022C");
 	CloseDrives("Lock",	"00000000022C");
+
 	OpenDrives("Lock",	"00000000011C");
 	CloseDrives("Lock",	"00000000011C");
 

@@ -116,6 +116,8 @@ namespace jcLockJsonCmd_t2015a{
 //////////////////////////////////////////////////////////////////////////
 using namespace boost::property_tree;
 using jcLockJsonCmd_t2015a::jcMulHidEnum;
+using jcLockJsonCmd_t2015a::G_FAIL;
+using jcLockJsonCmd_t2015a::G_SUSSESS;
 
 int zwStartHidDevPlugThread(void);
 
@@ -143,15 +145,15 @@ CCBELOCK_API int ListDrives(const char * DrivesTypePID )
 	{
 		jcMulHidEnum(JCHID_PID_LOCK5151,jcDevListJson);
 		jcLockJsonCmd_t2015a::G_JCHID_ENUM_DEV2015A(DrivesTypePID,const_cast<char *>(jcDevListJson.c_str()));
-		return jcLockJsonCmd_t2015a::G_SUSSESS;
+		return G_SUSSESS;
 	}
 	if (0==strcmp(DrivesTypePID,jcLockJsonCmd_t2015a::G_DEV_SECBOX))
 	{
 		jcMulHidEnum(JCHID_PID_SECBOX,jcDevListJson);
 		jcLockJsonCmd_t2015a::G_JCHID_ENUM_DEV2015A(DrivesTypePID,const_cast<char *>(jcDevListJson.c_str()));
-		return jcLockJsonCmd_t2015a::G_SUSSESS;
+		return G_SUSSESS;
 	}		
-	return jcLockJsonCmd_t2015a::G_FAIL;
+	return G_FAIL;
 }
 
 //1、打开设备
@@ -171,7 +173,7 @@ CCBELOCK_API int OpenDrives( const char* DrivesTypePID,const char * DrivesIdSN )
 	{
 		//该设备已经被打开，直接返回
 		LOG(WARNING)<<"JcHid Device "<<DrivesTypePID<<":"<<DrivesIdSN<<" already Opened!\n";
-		return jcLockJsonCmd_t2015a::G_SUSSESS;
+		return G_SUSSESS;
 	}
 	//////////////////////////////////////////////////////////////////////////
 
@@ -201,7 +203,7 @@ CCBELOCK_API int OpenDrives( const char* DrivesTypePID,const char * DrivesIdSN )
 	
 	if (JCHID_STATUS_OK != jcHidOpen(hnd)) {
 		LOG(ERROR)<<"jcHid Device "<<DrivesTypePID<<" "<<DrivesIdSN<<" Open ERROR"<<endl;
-		return jcLockJsonCmd_t2015a::G_FAIL;
+		return G_FAIL;
 	}
 	else
 	{
@@ -210,7 +212,7 @@ CCBELOCK_API int OpenDrives( const char* DrivesTypePID,const char * DrivesIdSN )
 
 	jcLockJsonCmd_t2015a::G_JCDEV_MAP.insert(std::map<uint32_t,JCHID>::value_type(inDevId,*hnd));
 
-	return jcLockJsonCmd_t2015a::G_SUSSESS;
+	return G_SUSSESS;
 }
 
 
@@ -232,12 +234,12 @@ CCBELOCK_API int CloseDrives( const char* DrivesTypePID,const char * DrivesIdSN 
 	{
 		jcHidClose(hnd);
 		VLOG(3)<<"jcHid Device "<<DrivesTypePID<<" "<<DrivesIdSN<<" Close Success"<<endl;
-		return jcLockJsonCmd_t2015a::G_SUSSESS;
+		return G_SUSSESS;
 	}
 	else
 	{
 		VLOG(3)<<"jcHid Device "<<DrivesTypePID<<" "<<DrivesIdSN<<" Not Open,So can't Close"<<endl;
-		return jcLockJsonCmd_t2015a::G_FAIL;
+		return G_FAIL;
 	}
 	
 }
@@ -258,6 +260,53 @@ void SetReturnMessage(ReturnMessage _MessageHandleFun)
 //3、向设备发送指令的函数
 int inputMessage( const char * DrivesTypePID,const char * DrivesIdSN,const char * AnyMessageJson )
 {
+	//通过在Notify函数开始检测是否端口已经打开，没有打开就直接返回，避免
+	//2014年11月初在广州遇到的没有连接锁具时，ATMC执行0002报文查询锁具状态，
+	//反复查询，大量无用日志产生的情况。
+	//现在换用更可靠的方式，可以处理多个同样VID和PID的设备，不同序列号的情况
+	JCHID *hnd=NULL;
+	uint32_t inDevid=0;
+	jcLockJsonCmd_t2015a::isJcHidDevOpend(DrivesTypePID,DrivesIdSN,&inDevid,&hnd);
+	if (NULL==hnd)
+	{
+		return G_FAIL;
+	}
+
+	ZWFUNCTRACE 
+		//输入必须有内容，但是最大不得长于下位机内存大小，做合理限制
+		assert(NULL != AnyMessageJson);
+	if (NULL == AnyMessageJson) {
+		LOG(WARNING)<<("inputMessage输入为空");
+			return G_FAIL;
+	}
+	if (NULL != AnyMessageJson && strlen(AnyMessageJson) > 0) {
+		LOG(INFO)<< "JinChu下发JSON=" << endl << AnyMessageJson <<
+			endl;
+	}
+	//boost::mutex::scoped_lock lock(zwCfg::ComPort_mutex);
+
+	try {
+		int inlen = strlen(AnyMessageJson);
+		assert(inlen > 0 && inlen < JC_MSG_MAXLEN);
+		if (inlen == 0 || inlen >= JC_MSG_MAXLEN) {
+			LOG(WARNING)<<("notify输入超过最大最小限制");
+			return G_FAIL;
+		}
+		//////////////////////////////////////////////////////////////////////////
+		LOG(INFO)<<AnyMessageJson<<endl;
+		Sleep(50);
+		zwPushString(AnyMessageJson);
+		return G_SUSSESS;
+	}
+	catch(...) {		//一切网络异常都直接返回错误。主要是为了捕捉未连接时
+		//串口对象为空造成访问NULL指针的的SEH异常  
+		//为了使得底层Poco库与cceblock类解耦，从我的WS类
+		//发现WS对象因为未连接而是NULL时直接throw一个枚举
+		//然后在此，也就是上层捕获。暂时不知道捕获精确类型
+		//所以catch所有异常了
+		LOG(FATAL)<<__FUNCTION__<<" NotifyJson通过线路发送数据异常，可能网络故障"<<endl;
+			return G_FAIL;
+	}
 
 	return jcLockJsonCmd_t2015a::G_SUSSESS;
 }
