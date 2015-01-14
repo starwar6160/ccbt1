@@ -49,10 +49,10 @@ int _tmain(int argc, TCHAR * argv[])
 	SetReturnDrives(myHidListTest113);
 	ListDrives("Lock");
 
-	OpenDrives("Lock","00000000011C");
-	CloseDrives("Lock","00000000011C");
-	OpenDrives("Lock","00000000011C");
-	CloseDrives("Lock","00000000011C");
+	OpenDrives("Lock",	"00000000022C");
+	CloseDrives("Lock",	"00000000022C");
+	OpenDrives("Lock",	"00000000011C");
+	CloseDrives("Lock",	"00000000011C");
 
 	getchar();
 	jcLockJsonCmd_t2015a::CloseJson();

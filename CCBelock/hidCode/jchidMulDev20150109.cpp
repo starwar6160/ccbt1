@@ -159,6 +159,8 @@ int OpenDrives(const char* DrivesType,const char * DrivesID)
 	JCHID *hnd=&jcHandle;
 	memset(hnd, 0, sizeof(JCHID));
 	hnd->vid = JCHID_VID_2014;
+	int serialLen=strlen(DrivesID);
+	strncpy(hnd->HidSerial,DrivesID,JCHID_SERIAL_LENGTH);
 	if (0==strcmp(jcLockJsonCmd_t2015a::G_DEV_LOCK,DrivesType))
 	{
 		VLOG(4)<<"will Open G_DEV_LOCK\n";
