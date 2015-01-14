@@ -72,6 +72,42 @@ namespace jcLockJsonCmd_t2015a{
 		write_json(ss, pt);
 		jcDevListJson=ss.str();
 	}
+
+	uint32_t myJcHidHndFromStrSerial( const char* DrivesType, const char * DrivesID)
+	{
+		assert(NULL!=DrivesType && NULL!=DrivesID);
+		assert(strlen(DrivesType)>0 && strlen(DrivesID)>0);
+		assert(strcmp(DrivesType,jcLockJsonCmd_t2015a::G_DEV_LOCK)==0 
+			|| strcmp(DrivesType,jcLockJsonCmd_t2015a::G_DEV_SECBOX)==0);
+		uint32_t inDevId;
+		string hidPidAndSerial=DrivesType;
+		hidPidAndSerial+=".";
+		hidPidAndSerial+=DrivesID;
+		inDevId=crc32Short(hidPidAndSerial.c_str(),hidPidAndSerial.length());
+		return inDevId;
+	}
+
+
+	void isJcHidDevOpend(const char* DrivesType,const char * DrivesID,uint32_t *inDevIdNum,JCHID **jcHidDev)
+	{
+		uint32_t inDevId=myJcHidHndFromStrSerial(DrivesType, DrivesID);
+		VLOG(4)<<"jcHidHandleFromStrSerial="<<inDevId<<endl;	
+		*inDevIdNum=inDevId;
+		std::map<uint32_t,JCHID>::iterator it=G_JCDEV_MAP.find(inDevId);
+		if (it==jcLockJsonCmd_t2015a::G_JCDEV_MAP.end())
+		{
+			LOG(ERROR)<<"jcLockJsonCmd_t2015a::G_JCDEV_MAP find item "<<inDevId<<" not found!\n";
+			*jcHidDev=NULL;
+			return;
+		}
+		else
+		{
+			VLOG(4)<<"jcLockJsonCmd_t2015a::G_JCDEV_MAP find item "<<inDevId<<" SUCCESS!\n";
+			*jcHidDev=&it->second;
+		}
+
+	}
+
 }	//end of namespace jcLockJsonCmd_t2015a{
 
 
@@ -117,8 +153,6 @@ int ListDrives(char * DrivesType)
 	return jcLockJsonCmd_t2015a::G_FAIL;
 }
 
-uint32_t myJcHidHndFromStrSerial( const char* DrivesType, const char * DrivesID);
-
 //1、打开设备
 int OpenDrives(const char* DrivesType,const char * DrivesID)
 {
@@ -127,7 +161,7 @@ int OpenDrives(const char* DrivesType,const char * DrivesID)
 	assert(strlen(DrivesType)>0 && strlen(DrivesID)>0);
 	assert(strcmp(DrivesType,jcLockJsonCmd_t2015a::G_DEV_LOCK)==0 
 		|| strcmp(DrivesType,jcLockJsonCmd_t2015a::G_DEV_SECBOX)==0);
-	uint32_t inDevId=myJcHidHndFromStrSerial(DrivesType, DrivesID);
+	uint32_t inDevId=jcLockJsonCmd_t2015a::myJcHidHndFromStrSerial(DrivesType, DrivesID);
 	VLOG(4)<<"jcHidHandleFromStrSerial="<<inDevId<<endl;
 	JCHID jcHandle;
 	JCHID *hnd=&jcHandle;
@@ -163,27 +197,21 @@ int OpenDrives(const char* DrivesType,const char * DrivesID)
 
 	return jcLockJsonCmd_t2015a::G_SUSSESS;
 }
+
+
+
 //	2、关闭设备
 int CloseDrives(const char* DrivesType,const char * DrivesID)
 {
 	MY114FUNCTRACK
 	assert(NULL!=DrivesType && NULL!=DrivesID);
 	assert(strlen(DrivesType)>0 && strlen(DrivesID)>0);
-	assert(strcmp(DrivesType,jcLockJsonCmd_t2015a::G_DEV_LOCK)==0 || strcmp(DrivesType,jcLockJsonCmd_t2015a::G_DEV_SECBOX)==0);
-	uint32_t inDevId=myJcHidHndFromStrSerial(DrivesType, DrivesID);
-	VLOG(4)<<"jcHidHandleFromStrSerial="<<inDevId<<endl;
-	
-	std::map<uint32_t,JCHID>::iterator it=jcLockJsonCmd_t2015a::G_JCDEV_MAP.find(inDevId);
-	if (it==jcLockJsonCmd_t2015a::G_JCDEV_MAP.end())
-	{
-		LOG(ERROR)<<"jcLockJsonCmd_t2015a::G_JCDEV_MAP find item "<<inDevId<<" not found!\n";
-		return jcLockJsonCmd_t2015a::G_FAIL;
-	}
-	else
-	{
-		VLOG(4)<<"jcLockJsonCmd_t2015a::G_JCDEV_MAP find item "<<inDevId<<" SUCCESS!\n";
-	}
-	JCHID *hnd=&it->second;
+	assert(strcmp(DrivesType,jcLockJsonCmd_t2015a::G_DEV_LOCK)==0 
+		|| strcmp(DrivesType,jcLockJsonCmd_t2015a::G_DEV_SECBOX)==0);
+
+	JCHID *hnd=NULL;
+	uint32_t inDevid=0;
+	jcLockJsonCmd_t2015a::isJcHidDevOpend(DrivesType,DrivesID,&inDevid,&hnd);
 	//&jcLockJsonCmd_t2015a::G_JCDEV_MAP[inDevId];
 	if (NULL!=hnd->hid_device)
 	{
@@ -191,20 +219,6 @@ int CloseDrives(const char* DrivesType,const char * DrivesID)
 		VLOG(3)<<"jcHid Device "<<DrivesType<<" "<<DrivesID<<" Close Success"<<endl;
 	}
 	return jcLockJsonCmd_t2015a::G_SUSSESS;
-}
-
-uint32_t myJcHidHndFromStrSerial( const char* DrivesType, const char * DrivesID)
-{
-	assert(NULL!=DrivesType && NULL!=DrivesID);
-	assert(strlen(DrivesType)>0 && strlen(DrivesID)>0);
-	assert(strcmp(DrivesType,jcLockJsonCmd_t2015a::G_DEV_LOCK)==0 
-		|| strcmp(DrivesType,jcLockJsonCmd_t2015a::G_DEV_SECBOX)==0);
-	uint32_t inDevId;
-	string hidPidAndSerial=DrivesType;
-	hidPidAndSerial+=".";
-	hidPidAndSerial+=DrivesID;
-	inDevId=crc32Short(hidPidAndSerial.c_str(),hidPidAndSerial.length());
-	return inDevId;
 }
 
 //2、设置设备消息返回的回调函数
