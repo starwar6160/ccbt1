@@ -109,6 +109,42 @@ namespace jcLockJsonCmd_t2015a{
 
 	}
 
+	void zwPushString1501(const JCHID *hidHandle,const char *str)
+	{
+		assert(NULL!=hidHandle && NULL!=hidHandle->hid_device);
+		assert(NULL != str && strlen(str) > 0);
+		if (NULL == str || strlen(str) == 0
+			|| NULL==hidHandle || NULL==hidHandle->hid_device
+			) {
+				LOG(ERROR)<<__FUNCTION__<<"input Data error!\n";
+			return;
+		}
+		try {
+			JCHID_STATUS sts=JCHID_STATUS_FAIL;
+			int count=0;
+			do 
+			{
+				sts=jcHidSendData(hidHandle, str, strlen(str));
+				if (JCHID_STATUS_OK==sts)
+				{
+					VLOG(4)<<__FUNCTION__<<" Send Data Success\n";
+					break;
+				}
+				Sleep(1000);
+				count++;
+				if (count>10)
+				{
+					break;
+				}
+			} while (sts!=JCHID_STATUS_OK);
+		}			//try
+		catch(...) {
+			LOG(ERROR)<<__FUNCTION__<<" 通过线路发送数据到锁具异常，可能是未连接\n";
+		}
+
+	}
+
+
 }	//end of namespace jcLockJsonCmd_t2015a{
 
 
@@ -295,7 +331,7 @@ int inputMessage( const char * DrivesTypePID,const char * DrivesIdSN,const char 
 		//////////////////////////////////////////////////////////////////////////
 		LOG(INFO)<<AnyMessageJson<<endl;
 		Sleep(50);
-		zwPushString(AnyMessageJson);
+		jcLockJsonCmd_t2015a::zwPushString1501(hnd,AnyMessageJson);
 		return G_SUSSESS;
 	}
 	catch(...) {		//一切网络异常都直接返回错误。主要是为了捕捉未连接时
