@@ -44,6 +44,7 @@ namespace jcLockJsonCmd_t2015a{
 	ReturnDrives G_JCHID_ENUM_DEV2015A=NULL;
 	ReturnMessage G_JCHID_RECVMSG_CB=NULL;
 	std::map<uint32_t,JCHID> G_JCDEV_MAP;
+	bool s_hidJsonRecvThrRunning=false;
 
 	void jcMulHidEnum( const int hidPid,string &jcDevListJson )
 	{
@@ -143,6 +144,63 @@ namespace jcLockJsonCmd_t2015a{
 		}
 
 	}
+
+//#ifdef _DEBUG_114A
+	//从void ThreadLockComm() 修改而来
+	//无限循环接收锁具返回值，通过回调函数返回收到的JSON数据
+	const char * RecvFromLockJsonThr(void)
+	{				 
+		try {			
+			const int BLEN = 1024;
+			char recvBuf[BLEN + 1];
+			memset(recvBuf, 0, BLEN + 1);
+			int recvLen = 0;
+			while (1) {
+			LOG(INFO)<<"连接锁具JSON成功"<<endl;
+			try {
+				std::map<uint32_t,JCHID>::iterator iter;
+				if (G_JCDEV_MAP.size()>0)
+				{
+					//随便选取第一个元素作为通道来接收信息，因为似乎HID其实没有
+					//连接的概念，多个设备共用同一个通道的
+					iter=G_JCDEV_MAP.begin();
+				}
+				JCHID_STATUS sts=
+					jcHidRecvData(&iter->second,
+					recvBuf, BLEN, &recvLen,3000);
+				s_hidJsonRecvThrRunning=true;	//算是通信线程的一个心跳标志					
+				//要是什么也没收到，就直接进入下一个循环
+				if (JCHID_STATUS_OK!=sts)
+				{
+					printf("JCHID_STATUS No DATA RECVED %d\n",sts);
+					return "JCHID_STATUS No DATA RECVED";						
+				}
+				printf("\n");
+				LOG(INFO)<<"成功从锁具接收JSON数据如下："<<endl;
+			}
+			catch(...) {
+				LOG(ERROR)<<
+					"RecvData接收JSON数据时到锁具的数据连接异常断开，数据接收将终止";
+				return "RecvData接收JSON数据时到锁具的数据连接异常断开，数据接收将终止";
+			}
+			LOG(WARNING)<<(recvBuf);
+			}	//while (1) {
+			LOG(INFO)<<"金储通信数据接收JSON过程正常结束";
+			{
+				//返回数据
+				static std::string retStr=recvBuf;
+				return retStr.c_str();
+			}
+		}		//try
+		catch(...) {			
+			//异常断开就设定该标志为FALSE,以便下次Open不要再跳过启动通信线程的程序段
+			s_hidJsonRecvThrRunning=false;
+			LOG(ERROR)<<
+				"金储通信数据接收过程中数据连接异常断开，现在数据接收JSON过程异常结束";
+			return "金储通信数据接收过程中数据连接异常断开，现在数据接收JSON过程异常结束";
+		}	
+	}
+//#endif // _DEBUG_114A
 
 
 }	//end of namespace jcLockJsonCmd_t2015a{
