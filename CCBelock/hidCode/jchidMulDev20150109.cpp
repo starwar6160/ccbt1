@@ -217,7 +217,7 @@ int zwStartHidDevPlugThread(void);
 
 
 //2、设置设备列表返回的回调函数
-void SetReturnDrives(ReturnDrives _DrivesListFun)
+CCBELOCK_API void ZJY1501STD SetReturnDrives( ReturnDrives _DrivesListFun )
 {
 	if (NULL==_DrivesListFun)
 	{
@@ -226,7 +226,7 @@ void SetReturnDrives(ReturnDrives _DrivesListFun)
 	jcLockJsonCmd_t2015a::G_JCHID_ENUM_DEV2015A=_DrivesListFun;
 }
 
-CCBELOCK_API int ListDrives(const char * DrivesTypePID )
+CCBELOCK_API int ZJY1501STD ListDrives( const char * DrivesTypePID )
 {
 	if (NULL==jcLockJsonCmd_t2015a::G_JCHID_ENUM_DEV2015A)
 	{
@@ -251,7 +251,7 @@ CCBELOCK_API int ListDrives(const char * DrivesTypePID )
 }
 
 //1、打开设备
-CCBELOCK_API int OpenDrives( const char* DrivesTypePID,const char * DrivesIdSN )
+CCBELOCK_API int ZJY1501STD OpenDrives( const char* DrivesTypePID,const char * DrivesIdSN )
 {
 	MY114FUNCTRACK
 	assert(NULL!=DrivesTypePID && NULL!=DrivesIdSN);
@@ -312,7 +312,7 @@ CCBELOCK_API int OpenDrives( const char* DrivesTypePID,const char * DrivesIdSN )
 
 
 //	2、关闭设备
-CCBELOCK_API int CloseDrives( const char* DrivesTypePID,const char * DrivesIdSN )
+CCBELOCK_API int ZJY1501STD CloseDrives( const char* DrivesTypePID,const char * DrivesIdSN )
 {
 	MY114FUNCTRACK
 	assert(NULL!=DrivesTypePID && NULL!=DrivesIdSN);
@@ -339,7 +339,7 @@ CCBELOCK_API int CloseDrives( const char* DrivesTypePID,const char * DrivesIdSN 
 }
 
 //2、设置设备消息返回的回调函数
-void SetReturnMessage(ReturnMessage _MessageHandleFun)
+CCBELOCK_API void ZJY1501STD SetReturnMessage( ReturnMessage _MessageHandleFun )
 {
 	if (NULL!=_MessageHandleFun)
 	{
@@ -352,7 +352,7 @@ void SetReturnMessage(ReturnMessage _MessageHandleFun)
 	}
 }
 //3、向设备发送指令的函数
-int inputMessage( const char * DrivesTypePID,const char * DrivesIdSN,const char * AnyMessageJson )
+CCBELOCK_API int ZJY1501STD InputMessage( const char * DrivesTypePID,const char * DrivesIdSN,const char * AnyMessageJson )
 {
 	//通过在Notify函数开始检测是否端口已经打开，没有打开就直接返回，避免
 	//2014年11月初在广州遇到的没有连接锁具时，ATMC执行0002报文查询锁具状态，

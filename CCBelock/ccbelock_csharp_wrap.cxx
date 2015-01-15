@@ -410,7 +410,7 @@ SWIGEXPORT void SWIGSTDCALL CSharp_SetReturnMessage(void * jarg1) {
 }
 
 
-SWIGEXPORT int SWIGSTDCALL CSharp_inputMessage(char * jarg1, char * jarg2, char * jarg3) {
+SWIGEXPORT int SWIGSTDCALL CSharp_InputMessage(char * jarg1, char * jarg2, char * jarg3) {
   int jresult ;
   char *arg1 = (char *) 0 ;
   char *arg2 = (char *) 0 ;
@@ -420,7 +420,7 @@ SWIGEXPORT int SWIGSTDCALL CSharp_inputMessage(char * jarg1, char * jarg2, char 
   arg1 = (char *)jarg1; 
   arg2 = (char *)jarg2; 
   arg3 = (char *)jarg3; 
-  result = (int)inputMessage((char const *)arg1,(char const *)arg2,(char const *)arg3);
+  result = (int)InputMessage((char const *)arg1,(char const *)arg2,(char const *)arg3);
   jresult = result; 
   return jresult;
 }

@@ -101,9 +101,6 @@
     <ClCompile Include="zwLockStatusParse.cpp">
       <Filter>源文件\convert</Filter>
     </ClCompile>
-    <ClCompile Include="ccbelock_csharp_wrap.cxx">
-      <Filter>源文件\wrap</Filter>
-    </ClCompile>
     <ClCompile Include="jsonCmd4Lock.cpp">
       <Filter>源文件</Filter>
     </ClCompile>

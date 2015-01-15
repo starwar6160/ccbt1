@@ -60,8 +60,8 @@ public class HidProtocol {
     HidProtocolPINVOKE.SetReturnMessage(SWIGTYPE_p_f_p_q_const__char_p_char__void.getCPtr(_MessageHandleFun));
   }
 
-  public static int inputMessage(string DrivesTypePID, string DrivesIdSN, string AnyMessageJson) {
-    int ret = HidProtocolPINVOKE.inputMessage(DrivesTypePID, DrivesIdSN, AnyMessageJson);
+  public static int InputMessage(string DrivesTypePID, string DrivesIdSN, string AnyMessageJson) {
+    int ret = HidProtocolPINVOKE.InputMessage(DrivesTypePID, DrivesIdSN, AnyMessageJson);
     return ret;
   }
 

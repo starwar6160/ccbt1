@@ -17,10 +17,12 @@ typedef void (*RecvMsgRotine)(const char *pszMsg);
 #else
 #define CCBELOCK_API __declspec(dllimport)
 #endif
+
 typedef void (cdecl *RecvMsgRotine)(const char *pszMsg);
 #endif
 
 #define JCAPISTD
+#define ZJY1501STD	__stdcall
 //////////////////////////////////////////////////////////////////////////
 #ifdef __cplusplus
 extern "C" {
@@ -38,9 +40,9 @@ CCBELOCK_API void myLuaBridgeSendJsonAPI(const char *luaScriptFile);
 
 ////////////////////////调试用Json命令接口//////////////////////////////////////////////////
 //一、设备列表接口 1、回调函数类型
-typedef void (*ReturnDrives)(const char* DrivesTypePID,const char * DrivesIDListJson);
+typedef void (ZJY1501STD *ReturnDrives)(const char* DrivesTypePID,const char * DrivesIDListJson);
 
-CCBELOCK_API void SetReturnDrives(ReturnDrives _DrivesListFun);
+CCBELOCK_API void ZJY1501STD SetReturnDrives(ReturnDrives _DrivesListFun);
 //3、获取设备列表的指令
 //说明：
 //	（1）DrivesType表示设备类型，具体内容是：锁具=Lock，密盒=Encryption
@@ -48,20 +50,20 @@ CCBELOCK_API void SetReturnDrives(ReturnDrives _DrivesListFun);
 //	（3）DrivesIDList为json格式字符，其中列出了所有符合要求设备的DrivesID（HID设备序列号）
 //	（4）当调用ListDrives时，接口函数应返回当前所有此类设备的列表
 //	（5）当有新设备插入或拔出时，接口函数应该返回插入设备所属类型的最新列表（重复内容由上位机过滤去重）
-CCBELOCK_API int ListDrives(const char * DrivesTypePID);
+CCBELOCK_API int ZJY1501STD ListDrives(const char * DrivesTypePID);
 //1、打开设备
-CCBELOCK_API int OpenDrives(const char* DrivesTypePID,const char * DrivesIdSN);
+CCBELOCK_API int ZJY1501STD OpenDrives(const char* DrivesTypePID,const char * DrivesIdSN);
 //	2、关闭设备
-CCBELOCK_API int CloseDrives(const char* DrivesTypePID,const char * DrivesIdSN);
+CCBELOCK_API int ZJY1501STD CloseDrives(const char* DrivesTypePID,const char * DrivesIdSN);
 //extern ReturnDrives G_JCHID_ENUM_DEV2015A;
 
 //三、设备消息接口 说明：（1）DrivesMessage和AnyMessage均为json格式字符
 //1、回调函数类型
-	typedef void (*ReturnMessage)(const char* DrivesIdSN,char* DrivesMessageJson);
+	typedef void (ZJY1501STD *ReturnMessage)(const char* DrivesIdSN,char* DrivesMessageJson);
 //2、设置设备消息返回的回调函数
-	CCBELOCK_API void SetReturnMessage(ReturnMessage _MessageHandleFun);
+	CCBELOCK_API void ZJY1501STD SetReturnMessage(ReturnMessage _MessageHandleFun);
 //3、向设备发送指令的函数
-	CCBELOCK_API int inputMessage(const char * DrivesTypePID,const char * DrivesIdSN,const char * AnyMessageJson);
+	CCBELOCK_API int ZJY1501STD InputMessage(const char * DrivesTypePID,const char * DrivesIdSN,const char * AnyMessageJson);
 #ifdef __cplusplus
 }
 #endif
