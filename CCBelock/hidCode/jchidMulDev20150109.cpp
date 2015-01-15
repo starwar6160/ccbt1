@@ -238,13 +238,15 @@ CCBELOCK_API int ZJY1501STD ListDrives( const char * DrivesTypePID )
 	if (0==strcmp(DrivesTypePID,jcLockJsonCmd_t2015a::G_DEV_LOCK))
 	{
 		jcMulHidEnum(JCHID_PID_LOCK5151,jcDevListJson);
-		jcLockJsonCmd_t2015a::G_JCHID_ENUM_DEV2015A(DrivesTypePID,const_cast<char *>(jcDevListJson.c_str()));
+		jcLockJsonCmd_t2015a::G_JCHID_ENUM_DEV2015A(jcLockJsonCmd_t2015a::G_DEV_LOCK,
+			const_cast<char *>(jcDevListJson.c_str()));
 		return G_SUSSESS;
 	}
 	if (0==strcmp(DrivesTypePID,jcLockJsonCmd_t2015a::G_DEV_SECBOX))
 	{
 		jcMulHidEnum(JCHID_PID_SECBOX,jcDevListJson);
-		jcLockJsonCmd_t2015a::G_JCHID_ENUM_DEV2015A(DrivesTypePID,const_cast<char *>(jcDevListJson.c_str()));
+		jcLockJsonCmd_t2015a::G_JCHID_ENUM_DEV2015A(jcLockJsonCmd_t2015a::G_DEV_SECBOX,
+			const_cast<char *>(jcDevListJson.c_str()));
 		return G_SUSSESS;
 	}		
 	return G_FAIL;

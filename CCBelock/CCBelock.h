@@ -76,6 +76,8 @@ namespace jcLockJsonCmd_t2015a{
 	CCBELOCK_API long CloseJson();	
 	CCBELOCK_API void jcMulHidEnum( const int hidPid ,string &jcDevListJson);
 	extern ReturnDrives G_JCHID_ENUM_DEV2015A;
+	extern const char * G_DEV_LOCK;
+	extern const char * G_DEV_SECBOX;
 }	//end of namespace jcLockJsonCmd_t2015a{
 
 

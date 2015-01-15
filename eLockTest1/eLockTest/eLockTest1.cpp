@@ -46,9 +46,13 @@ int _tmain(int argc, TCHAR * argv[])
 	//eLockJsonTest20150106();
 	//luaSendJsonTest1(argc, argv);
 	const char *hidType="Lock";
+	const char *devSN1="00000000011C";
 	const char *devSN2="00000000022C";
 	SetReturnDrives(myHidListTest113);
 	ListDrives("Lock");
+
+	OpenDrives(hidType,		devSN1);
+	CloseDrives(hidType,	devSN1);
 
 	//CloseDrives(hidType,	devSN2);
 	//OpenDrives(hidType,	devSN2);
@@ -57,8 +61,6 @@ int _tmain(int argc, TCHAR * argv[])
 
 	CloseDrives(hidType,	devSN2);
 
-	//OpenDrives(hidType,	devSN2);
-	//CloseDrives(hidType,	devSN2);
 
 	getchar();
 	jcLockJsonCmd_t2015a::CloseJson();
