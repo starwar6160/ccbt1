@@ -48,6 +48,8 @@ namespace jcLockJsonCmd_t2015a{
 	ReturnMessage G_JCHID_RECVMSG_CB=NULL;
 	std::map<uint32_t,JCHID> G_JCDEV_MAP;
 	bool s_hidJsonRecvThrRunning=false;
+	//为了防止HID可以重复读取问题，在发送和接收的时候区别一下，只读取一次之用；
+	bool s_curCmdRecved=false;	
 
 	void jcMulHidEnum( const int hidPid,string &jcDevListJson )
 	{
@@ -209,10 +211,14 @@ namespace jcLockJsonCmd_t2015a{
 						LOG(WARNING)<<"NoData from "<<jcDevVec[i].devCtx.HidSerial<<endl;
 						jcDevVec[i].isGood=false;
 						continue;
+					}					
+					if (recvLen>0 && false==s_curCmdRecved)
+					{
+						printf("\n");
+						LOG(INFO)<<"成功从锁具"<<jcDevVec[i].devCtx.HidSerial<<"接收JSON数据如下："<<endl;
+						LOG(INFO)<<recvBuf<<endl;
+						s_curCmdRecved=true;
 					}
-					printf("\n");
-					LOG(INFO)<<"成功从锁具"<<jcDevVec[i].devCtx.HidSerial<<"接收JSON数据如下："<<endl;
-					LOG(INFO)<<recvBuf<<endl;
 				}				
 			}	//try {
 			catch(...) {
@@ -344,7 +350,7 @@ CCBELOCK_API int ZJY1501STD OpenDrives( const char* DrivesTypePID,const char * D
 	{
 		boost::thread thr(jcLockJsonCmd_t2015a::RecvFromLockJsonThr);
 	}
-	
+	jcLockJsonCmd_t2015a::s_curCmdRecved=false;	//清理“已经接收”的标志；
 	return G_SUSSESS;
 }
 

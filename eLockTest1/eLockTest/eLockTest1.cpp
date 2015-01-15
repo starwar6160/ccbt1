@@ -64,7 +64,7 @@ int _tmain(int argc, TCHAR * argv[])
 	SetReturnMessage(myReturnMessageTest115);
 	
 	InputMessage(hidType,devSN2,jcHidJsonMsg0005);
-	Sleep(5000);
+	Sleep(3000);
 	InputMessage(hidType,devSN1,jcHidJsonMsg0005);
 	
 	
