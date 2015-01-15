@@ -155,8 +155,8 @@ namespace jcLockJsonCmd_t2015a{
 			char recvBuf[BLEN + 1];
 			memset(recvBuf, 0, BLEN + 1);
 			int recvLen = 0;
-			while (1) {
 			LOG(INFO)<<"连接锁具JSON成功"<<endl;
+			while (1) {			
 			try {
 				std::map<uint32_t,JCHID>::iterator iter;
 				assert(G_JCDEV_MAP.size()>0);				
@@ -168,14 +168,16 @@ namespace jcLockJsonCmd_t2015a{
 				}
 				s_hidJsonRecvThrRunning=true;	//算是通信线程的一个心跳标志					
 				assert(NULL!=iter->second.hid_device);				
+				//根据目前的经验，锁具需要300-400毫秒才能返回数据，所以超时设置为500
 				JCHID_STATUS sts=
 					jcHidRecvData(&iter->second,
 					recvBuf, BLEN, &recvLen,500);				
 				//要是什么也没收到，就直接进入下一个循环
 				if (JCHID_STATUS_OK!=sts)
 				{					
-					LOG(WARNING)<<"JCHID_STATUS No DATA RECVED Status Code "<<sts;
-					return "JCHID_STATUS No DATA RECVED";						
+					//LOG(WARNING)<<"JCHID_STATUS No DATA RECVED Status Code "<<sts;
+					//return "JCHID_STATUS No DATA RECVED";						
+					continue;
 				}
 				printf("\n");
 				LOG(INFO)<<"成功从锁具接收JSON数据如下："<<endl;

@@ -57,11 +57,19 @@ int _tmain(int argc, TCHAR * argv[])
 	SetReturnDrives(myHidListTest113);
 	ListDrives("Lock");
 
+	
+	
+	OpenDrives(hidType,	devSN2);
 	OpenDrives(hidType,	devSN1);
 	SetReturnMessage(myReturnMessageTest115);
+	
+	InputMessage(hidType,devSN2,jcHidJsonMsg0005);
 	InputMessage(hidType,devSN1,jcHidJsonMsg0005);
+	
+	
 
 	getchar();
+	CloseDrives(hidType,	devSN1);
 	CloseDrives(hidType,	devSN2);
 	return 0;
 }
