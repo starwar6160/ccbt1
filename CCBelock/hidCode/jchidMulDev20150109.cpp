@@ -158,43 +158,40 @@ namespace jcLockJsonCmd_t2015a{
 			LOG(INFO)<<"连接锁具JSON成功"<<endl;
 			while (1) {			
 			try {
+				s_hidJsonRecvThrRunning=true;	//算是通信线程的一个心跳标志					
 				std::map<uint32_t,JCHID>::iterator iter;
-				assert(G_JCDEV_MAP.size()>0);				
+				assert(G_JCDEV_MAP.size()>0);			
 				if (G_JCDEV_MAP.size()>0)
 				{					
-					//随便选取第一个元素作为通道来接收信息，因为似乎HID其实没有
-					//连接的概念，多个设备共用同一个通道的
-					iter=G_JCDEV_MAP.begin();				
+				for (iter=G_JCDEV_MAP.begin();iter!=G_JCDEV_MAP.end();iter++)
+				{
+					assert(NULL!=iter->second.hid_device);				
+					//根据目前的经验，锁具需要300-400毫秒才能返回数据，所以超时设置为500
+					JCHID_STATUS sts=
+						jcHidRecvData(&iter->second,
+						recvBuf, BLEN, &recvLen,500);				
+					//要是某个设备什么数据也没收到，就直接进入下一个设备
+					if (JCHID_STATUS_OK!=sts)
+					{					
+						//LOG(WARNING)<<"JCHID_STATUS No DATA RECVED Status Code "<<sts;
+						//return "JCHID_STATUS No DATA RECVED";						
+						continue;
+					}
+					printf("\n");
+					LOG(INFO)<<"成功从锁具接收JSON数据如下："<<endl;
+					LOG(INFO)<<recvBuf<<endl;
 				}
-				s_hidJsonRecvThrRunning=true;	//算是通信线程的一个心跳标志					
-				assert(NULL!=iter->second.hid_device);				
-				//根据目前的经验，锁具需要300-400毫秒才能返回数据，所以超时设置为500
-				JCHID_STATUS sts=
-					jcHidRecvData(&iter->second,
-					recvBuf, BLEN, &recvLen,500);				
-				//要是什么也没收到，就直接进入下一个循环
-				if (JCHID_STATUS_OK!=sts)
-				{					
-					//LOG(WARNING)<<"JCHID_STATUS No DATA RECVED Status Code "<<sts;
-					//return "JCHID_STATUS No DATA RECVED";						
-					continue;
-				}
-				printf("\n");
-				LOG(INFO)<<"成功从锁具接收JSON数据如下："<<endl;
+				}	
+				
 			}	//try {
 			catch(...) {
 				LOG(ERROR)<<
 					"RecvData接收JSON数据时到锁具的数据连接异常断开，数据接收将终止";
 				return "RecvData接收JSON数据时到锁具的数据连接异常断开，数据接收将终止";
 			}	//catch(...) {
-			LOG(INFO)<<recvBuf<<endl;
+			
 			}	//while (1) {
 			LOG(INFO)<<"金储通信数据接收JSON过程正常结束";
-			//{
-			//	//返回数据
-			//	static std::string retStr=recvBuf;
-			//	return retStr.c_str();
-			//}
 		}		//try
 		catch(...) {			
 			//异常断开就设定该标志为FALSE,以便下次Open不要再跳过启动通信线程的程序段
