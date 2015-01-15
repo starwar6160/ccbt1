@@ -8,6 +8,9 @@
 #include <boost/property_tree/xml_parser.hpp>
 #include <boost/property_tree/json_parser.hpp>
 #include <map>
+#include <vector>
+using std::map;
+using std::vector;
 
 #define MY114FUNCTRACK	VLOG(4)<<__FUNCTION__<<endl;
 
@@ -145,6 +148,13 @@ namespace jcLockJsonCmd_t2015a{
 
 	}
 
+
+	typedef struct my_zjy_dbg_20150115_t{
+		uint32_t devHash;
+		JCHID devCtx;
+		bool isGood;
+	}ZJYDBG;
+
 //#ifdef _DEBUG_114A
 	//从void ThreadLockComm() 修改而来
 	//无限循环接收锁具返回值，通过回调函数返回收到的JSON数据
@@ -159,6 +169,18 @@ namespace jcLockJsonCmd_t2015a{
 			std::map<uint32_t,JCHID>::iterator iter;
 			assert(G_JCDEV_MAP.size()>0);		
 			VLOG(4)<<"G_JCDEV_MAP.size()="<<G_JCDEV_MAP.size()<<endl;
+
+			std::vector<ZJYDBG> jcDevVec;
+			for(iter=G_JCDEV_MAP.begin();iter!=G_JCDEV_MAP.end();iter++)
+			{
+				ZJYDBG t1;
+				t1.isGood=true;
+				t1.devHash=iter->first;
+				memcpy(&t1.devCtx,&iter->second,sizeof(JCHID));
+				jcDevVec.push_back(t1);
+			}
+			//LOG(ERROR)<<"jcDecVec[0] is "<<jcDevVec[0].devHash<<endl;
+
 			while (1) {			
 			try {
 				s_hidJsonRecvThrRunning=true;	//算是通信线程的一个心跳标志					
@@ -166,23 +188,30 @@ namespace jcLockJsonCmd_t2015a{
 				{
 					return "NoOpend HidDevice";
 				}
-				for (iter=G_JCDEV_MAP.begin();iter!=G_JCDEV_MAP.end();iter++)
+				//for (iter=G_JCDEV_MAP.begin();iter!=G_JCDEV_MAP.end();iter++)
+				for(int i=0;i<jcDevVec.size();i++)
 				{
-					assert(NULL!=iter->second.hid_device);				
+					assert(NULL!=jcDevVec[i].devCtx.hid_device);						
+					if (jcDevVec[i].isGood==false)
+					{
+						continue;
+					}
 					//VLOG(4)<<"hid_device="<<iter->second.hid_device<<endl;
 					//根据目前的经验，锁具需要300-400毫秒才能返回数据，所以超时设置为500
 					JCHID_STATUS sts=
-						jcHidRecvData(&iter->second,
+						jcHidRecvData(&jcDevVec[i].devCtx,
 						recvBuf, BLEN, &recvLen,500);				
 					//要是某个设备什么数据也没收到，就直接进入下一个设备
-					if (JCHID_STATUS_OK!=sts)
+					if (JCHID_STATUS_OK!=sts &&JCHID_STATUS_RECV_ZEROBYTES!=sts)
 					{					
 						//LOG(WARNING)<<"JCHID_STATUS No DATA RECVED Status Code "<<sts;
-						//return "JCHID_STATUS No DATA RECVED";						
+						//return "JCHID_STATUS No DATA RECVED";	
+						LOG(WARNING)<<"NoData from "<<jcDevVec[i].devCtx.HidSerial<<endl;
+						jcDevVec[i].isGood=false;
 						continue;
 					}
 					printf("\n");
-					LOG(INFO)<<"成功从锁具"<<iter->second.HidSerial<<"接收JSON数据如下："<<endl;
+					LOG(INFO)<<"成功从锁具"<<jcDevVec[i].devCtx.HidSerial<<"接收JSON数据如下："<<endl;
 					LOG(INFO)<<recvBuf<<endl;
 				}				
 			}	//try {
@@ -227,6 +256,7 @@ CCBELOCK_API void ZJY1501STD SetReturnDrives( ReturnDrives _DrivesListFun )
 		return;
 	}
 	jcLockJsonCmd_t2015a::G_JCHID_ENUM_DEV2015A=_DrivesListFun;
+	zwStartHidDevPlugThread();
 }
 
 CCBELOCK_API int ZJY1501STD ListDrives( const char * DrivesTypePID )
