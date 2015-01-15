@@ -36,7 +36,13 @@ void luaSendJsonTest1( int argc, TCHAR ** argv );
 void ZJY1501STD myHidListTest113(const char* DrivesType,const char * DrivesIDList)
 {
 	//printf("jcHidDevType=%s\n",DrivesType);
-	printf("Json List of enum jcHidDev Serial is:\n%s\n",DrivesIDList);
+	printf("Json List of enum jcHidDev Type %s Serial is:\n%s\n",DrivesType,DrivesIDList);
+}
+
+void ZJY1501STD myReturnMessageTest115(const char* DrivesIdSN,char* DrivesMessageJson)
+{
+	printf("Callback Function %s:\n",__FUNCTION__);
+	printf("devSerial=%s\n devReturnJson is:\n%s\n",DrivesIdSN,DrivesMessageJson);
 }
 
 int _tmain(int argc, TCHAR * argv[])
@@ -51,19 +57,12 @@ int _tmain(int argc, TCHAR * argv[])
 	SetReturnDrives(myHidListTest113);
 	ListDrives("Lock");
 
-	OpenDrives(hidType,		devSN1);
-	CloseDrives(hidType,	devSN1);
-
-	//CloseDrives(hidType,	devSN2);
-	//OpenDrives(hidType,	devSN2);
-	OpenDrives(hidType,	devSN2);
-	InputMessage(hidType,devSN2,jcHidJsonMsg0005);
-
-	CloseDrives(hidType,	devSN2);
-
+	OpenDrives(hidType,	devSN1);
+	SetReturnMessage(myReturnMessageTest115);
+	InputMessage(hidType,devSN1,jcHidJsonMsg0005);
 
 	getchar();
-	jcLockJsonCmd_t2015a::CloseJson();
+	CloseDrives(hidType,	devSN2);
 	return 0;
 }
 
