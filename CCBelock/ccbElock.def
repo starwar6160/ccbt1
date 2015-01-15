@@ -6,4 +6,11 @@ Close
 Notify
 SetRecvMsgRotine
 
+SetReturnDrives
+ListDrives
+OpenDrives
+CloseDrives
+SetReturnMessage
+InputMessage
+
 zwPushString
