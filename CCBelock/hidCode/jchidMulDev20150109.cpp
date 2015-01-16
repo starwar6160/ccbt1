@@ -238,7 +238,10 @@ namespace jcLockJsonCmd_t2015a{
 						printf("\n");
 						LOG(INFO)<<"成功从锁具"<<jcDevVec[i].devCtx.HidSerial<<"接收JSON数据如下："<<endl;
 						LOG(WARNING)<<recvBuf<<endl;
-						G_JCHID_RECVMSG_CB(jcDevVec[i].devCtx.HidSerial,recvBuf);
+						if (NULL!=G_JCHID_RECVMSG_CB)
+						{
+							G_JCHID_RECVMSG_CB(jcDevVec[i].devCtx.HidSerial,recvBuf);
+						}						
 						s_curCmdRecved=true;
 					}
 				}				

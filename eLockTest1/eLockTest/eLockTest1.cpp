@@ -58,8 +58,8 @@ int _tmain(int argc, TCHAR * argv[])
 
 	//eLockJsonTest20150106();
 	//luaSendJsonTest1(argc, argv);
-	myMulHidDevJsonTest20150116A();
-	//myMulHidDevJsonTest20150116B();
+	//myMulHidDevJsonTest20150116A();
+	myMulHidDevJsonTest20150116B();
 	return 0;
 }
 
@@ -133,16 +133,16 @@ void myMulHidDevJsonTest20150116B()
 	const char *jcHidJsonMsg116t1="{\"command\": \"Test_Motor_Open\",\"cmd_id\": \"1234567890\",\"State\": \"test\"}";
 
 	const char *hidType="Lock";
-	SetReturnDrives(myHidListTest113);
+	//SetReturnDrives(myHidListTest113);
 	ListDrives("Lock");
 	//Sleep(9000);
 	//exit(1);
 
 	OpenDrives(hidType,	devSN3);
-	SetReturnMessage(myReturnMessageTest115);
+	//SetReturnMessage(myReturnMessageTest115);
 
 	InputMessage(hidType,devSN3,jcHidJsonMsg116t1);
-	Sleep(3000);
+	Sleep(750);
 	
 	CloseDrives(hidType,devSN3);
 	getchar();
