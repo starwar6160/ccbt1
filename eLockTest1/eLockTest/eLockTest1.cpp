@@ -36,6 +36,7 @@ void luaSendJsonTest1( int argc, TCHAR ** argv );
 void ZJY1501STD myHidListTest113(const char* DrivesType,const char * DrivesIDList)
 {
 	//printf("jcHidDevType=%s\n",DrivesType);
+	printf("USB PlugInOut Callback 20150116.0952\n");
 	printf("Json List of enum jcHidDev Type %s Serial is:\n%s\n",DrivesType,DrivesIDList);
 }
 
@@ -56,8 +57,8 @@ int _tmain(int argc, TCHAR * argv[])
 	const char *devSN2="00000000022C";
 	SetReturnDrives(myHidListTest113);
 	ListDrives("Lock");
-
-	
+	//Sleep(9000);
+	//exit(1);
 	
 	OpenDrives(hidType,	devSN2);
 	OpenDrives(hidType,	devSN1);

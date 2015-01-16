@@ -110,7 +110,15 @@ namespace jcLockJsonCmd_t2015a{
 		else
 		{
 			VLOG(4)<<"jcLockJsonCmd_t2015a::G_JCDEV_MAP find item "<<inDevId<<" "<<DrivesTypePID<<":"<<DrivesIdSN<<" SUCCESS!\n";
-			*jcHidDev=&it->second;
+			if (NULL==it->second.hid_device)
+			{
+				*jcHidDev=NULL;
+			}
+			else
+			{
+				*jcHidDev=&it->second;
+			}
+			
 		}
 
 	}
@@ -193,7 +201,11 @@ namespace jcLockJsonCmd_t2015a{
 				//for (iter=G_JCDEV_MAP.begin();iter!=G_JCDEV_MAP.end();iter++)
 				for(int i=0;i<jcDevVec.size();i++)
 				{
-					assert(NULL!=jcDevVec[i].devCtx.hid_device);						
+					if (NULL==jcDevVec[i].devCtx.hid_device)
+					{
+						jcDevVec[i].isGood==false;
+						continue;
+					}
 					if (jcDevVec[i].isGood==false)
 					{
 						continue;
@@ -305,7 +317,7 @@ CCBELOCK_API int ZJY1501STD OpenDrives( const char* DrivesTypePID,const char * D
 	JCHID *hndTc=NULL;
 	uint32_t inDevidTc=0;
 	jcLockJsonCmd_t2015a::isJcHidDevOpend(DrivesTypePID,DrivesIdSN,&inDevidTc,&hndTc);
-	if (NULL!=hndTc)
+	if (NULL!=hndTc && NULL!=hndTc->hid_device)
 	{
 		//该设备已经被打开，直接返回
 		LOG(WARNING)<<"JcHid Device "<<DrivesTypePID<<":"<<DrivesIdSN<<" already Opened!\n";
@@ -370,7 +382,7 @@ CCBELOCK_API int ZJY1501STD CloseDrives( const char* DrivesTypePID,const char * 
 	uint32_t inDevid=0;
 	jcLockJsonCmd_t2015a::isJcHidDevOpend(DrivesTypePID,DrivesIdSN,&inDevid,&hnd);
 	//&jcLockJsonCmd_t2015a::G_JCDEV_MAP[inDevId];
-	if (NULL!=hnd)
+	if (NULL!=hnd && NULL!=hnd->hid_device)
 	{
 		jcHidClose(hnd);
 		VLOG(3)<<"jcHid Device "<<DrivesTypePID<<" "<<DrivesIdSN<<" Close Success"<<endl;
@@ -381,7 +393,6 @@ CCBELOCK_API int ZJY1501STD CloseDrives( const char* DrivesTypePID,const char * 
 		VLOG(3)<<"jcHid Device "<<DrivesTypePID<<" "<<DrivesIdSN<<" Not Open,So can't Close"<<endl;
 		return G_FAIL;
 	}
-	
 }
 
 //2、设置设备消息返回的回调函数
@@ -407,7 +418,7 @@ CCBELOCK_API int ZJY1501STD InputMessage( const char * DrivesTypePID,const char 
 	JCHID *hnd=NULL;
 	uint32_t inDevid=0;
 	jcLockJsonCmd_t2015a::isJcHidDevOpend(DrivesTypePID,DrivesIdSN,&inDevid,&hnd);
-	if (NULL==hnd)
+	if (NULL==hnd || NULL==hnd->hid_device)
 	{
 		return G_FAIL;
 	}

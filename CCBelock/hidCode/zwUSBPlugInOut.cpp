@@ -64,11 +64,11 @@ void myUSBHidStringExtract113( char * dbcc_name )
 		string jcDevListJson;
 
 		jcLockJsonCmd_t2015a::jcMulHidEnum(JCHID_PID_LOCK5151,jcDevListJson);
-		if (0==strcmp("PID_5710",jcDevType))
+		if (0==strcmp("PID_5710",jcPid))
 		{
 			jcLockJsonCmd_t2015a::G_JCHID_ENUM_DEV2015A(jcLockJsonCmd_t2015a::G_DEV_LOCK,jcDevListJson.c_str());
 		}
-		if (0==strcmp("PID_5712",jcDevType))
+		if (0==strcmp("PID_5712",jcPid))
 		{
 			jcLockJsonCmd_t2015a::G_JCHID_ENUM_DEV2015A(jcLockJsonCmd_t2015a::G_DEV_SECBOX,jcDevListJson.c_str());
 		}		
