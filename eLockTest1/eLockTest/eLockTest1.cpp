@@ -46,33 +46,20 @@ void ZJY1501STD myReturnMessageTest115(const char* DrivesIdSN,char* DrivesMessag
 	printf("devSerial=%s\n devReturnJson is:\n%s\n",DrivesIdSN,DrivesMessageJson);
 }
 
+void myMulHidDevJsonTest20150116A();
+void myMulHidDevJsonTest20150116B();
+
 int _tmain(int argc, TCHAR * argv[])
 {
+	const char *devSN3="PAAbAAAAAAAAgAKE";
+	const char *jcHidJsonMsg116t1="{\"command\": \"Test_Motor_Open\",\"cmd_id\": \"1234567890\",\"State\": \"test\"}";
+
 	//return eLockGoogleTest2014(argc, argv);
 
 	//eLockJsonTest20150106();
 	//luaSendJsonTest1(argc, argv);
-	const char *hidType="Lock";
-	const char *devSN1="00000000011C";
-	const char *devSN2="00000000022C";
-	SetReturnDrives(myHidListTest113);
-	ListDrives("Lock");
-	//Sleep(9000);
-	//exit(1);
-	
-	OpenDrives(hidType,	devSN2);
-	OpenDrives(hidType,	devSN1);
-	SetReturnMessage(myReturnMessageTest115);
-	
-	InputMessage(hidType,devSN2,jcHidJsonMsg0005);
-	Sleep(3000);
-	InputMessage(hidType,devSN1,jcHidJsonMsg0005);
-	
-	
-
-	getchar();
-	CloseDrives(hidType,	devSN1);
-	CloseDrives(hidType,	devSN2);
+	//myMulHidDevJsonTest20150116A();
+	myMulHidDevJsonTest20150116B();
 	return 0;
 }
 
@@ -113,4 +100,50 @@ void luaSendJsonTest1( int argc, TCHAR ** argv )
 	}
 }
 
+void myMulHidDevJsonTest20150116A()
+{
+	const char *hidType="Lock";
+	const char *devSN1="00000000011C";
+	const char *devSN2="00000000022C";
+	SetReturnDrives(myHidListTest113);
+	ListDrives("Lock");
+	//Sleep(9000);
+	//exit(1);
 
+	OpenDrives(hidType,	devSN2);
+	OpenDrives(hidType,	devSN1);
+	SetReturnMessage(myReturnMessageTest115);
+
+	InputMessage(hidType,devSN2,jcHidJsonMsg0005);
+	Sleep(3000);
+	InputMessage(hidType,devSN1,jcHidJsonMsg0005);
+
+	getchar();
+	CloseDrives(hidType,	devSN1);
+	CloseDrives(hidType,	devSN2);
+}
+
+
+
+void myMulHidDevJsonTest20150116B()
+{
+	const char *devSN3="PAAbAAAAAAAAgAKE";
+	//"jcElockSerial": "PAAbAOgSACDAnwEg"
+	//const char *devSN3="PAAbAOgSACDAnwEg";	
+	const char *jcHidJsonMsg116t1="{\"command\": \"Test_Motor_Open\",\"cmd_id\": \"1234567890\",\"State\": \"test\"}";
+
+	const char *hidType="Lock";
+	SetReturnDrives(myHidListTest113);
+	ListDrives("Lock");
+	//Sleep(9000);
+	//exit(1);
+
+	OpenDrives(hidType,	devSN3);
+	SetReturnMessage(myReturnMessageTest115);
+
+	InputMessage(hidType,devSN3,jcHidJsonMsg116t1);
+	Sleep(3000);
+	
+	CloseDrives(hidType,devSN3);
+	getchar();
+}
