@@ -493,5 +493,29 @@ CCBELOCK_API int ZJY1501STD InputMessage( const char * DrivesTypePID,const char 
 	return jcLockJsonCmd_t2015a::G_SUSSESS;
 }
 
+//copy from void myMulHidDevJsonTest20150116B()
+void ZJY1501STD zjyTest116()
+{
+	const char *devSN3="PAAbAAAAAAAAgAKE";
+	//"jcElockSerial": "PAAbAOgSACDAnwEg"
+	//const char *devSN3="PAAbAOgSACDAnwEg";	
+	const char *jcHidJsonMsg116t1="{\"command\": \"Test_Motor_Open\",\"cmd_id\": \"1234567890\",\"State\": \"test\"}";
+
+	const char *hidType="Lock";
+	//SetReturnDrives(myHidListTest113);
+	ListDrives("Lock");
+	//Sleep(9000);
+	//exit(1);
+
+	OpenDrives(hidType,	devSN3);
+	//SetReturnMessage(myReturnMessageTest115);
+
+	InputMessage(hidType,devSN3,jcHidJsonMsg116t1);
+	Sleep(750);
+
+	CloseDrives(hidType,devSN3);
+	getchar();
+}
+
 
 //////////////////////////////////////////////////////////////////////////

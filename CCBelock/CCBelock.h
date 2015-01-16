@@ -55,6 +55,7 @@ CCBELOCK_API int ZJY1501STD ListDrives(const char * DrivesTypePID);
 CCBELOCK_API int ZJY1501STD OpenDrives(const char* DrivesTypePID,const char * DrivesIdSN);
 //	2、关闭设备
 CCBELOCK_API int ZJY1501STD CloseDrives(const char* DrivesTypePID,const char * DrivesIdSN);
+CCBELOCK_API void ZJY1501STD zjyTest116();
 //extern ReturnDrives G_JCHID_ENUM_DEV2015A;
 
 //三、设备消息接口 说明：（1）DrivesMessage和AnyMessage均为json格式字符
