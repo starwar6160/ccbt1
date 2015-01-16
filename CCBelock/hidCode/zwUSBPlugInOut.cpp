@@ -222,6 +222,7 @@ int zwStartHidDevPlugThread(void)
 	{
 		return 0;
 	}
+	LOG(INFO)<<__FUNCTION__<<" Started"<<endl;
 	DWORD iThread=0;
 	HANDLE hThread = CreateThread( NULL, 0, zwHidDevPlugDetectThrdFunc, NULL, 0, &iThread);
 	if (hThread == NULL) {

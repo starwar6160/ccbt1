@@ -96,7 +96,7 @@
       <AdditionalDependencies>setupapi.lib;zwBaseLibStatic.lib;libglog_staticS.lib;lua51LibStatic.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <IgnoreSpecificDefaultLibraries>
       </IgnoreSpecificDefaultLibraries>
-      <ShowProgress>LinkVerboseLib</ShowProgress>
+      <ShowProgress>NotSet</ShowProgress>
     </Link>
     <PostBuildEvent>
       <Command>
