@@ -54,10 +54,11 @@ namespace jcLockJsonCmd_t2015a{
 
 	void jcMulHidEnum( const int hidPid,string &jcDevListJson )
 	{
-		LOG(INFO)<<__FUNCTION__<<"hidPid="<<hidPid<<endl;
+		LOG(INFO)<<__FUNCTION__<<"hidPid="<<hidPid<<endl;		
 		ptree pt;
 		hid_device_info *jclock_List= hid_enumerate(JCHID_VID_2014,hidPid);
 		VLOG_IF(2,NULL!=jclock_List)<<"Header of jclock_List="<<jclock_List->serial_number<<endl;
+		
 		while (NULL!=jclock_List)
 		{
 			char serial[32];
@@ -86,14 +87,22 @@ namespace jcLockJsonCmd_t2015a{
 
 	uint32_t myJcHidHndFromStrSerial( const char* DrivesTypePID, const char * DrivesIdSN)
 	{
-		assert(NULL!=DrivesTypePID && NULL!=DrivesIdSN);
-		assert(strlen(DrivesTypePID)>0 && strlen(DrivesIdSN)>0);
+		assert(NULL!=DrivesTypePID );
+		assert(strlen(DrivesTypePID)>0 );
 		assert(strcmp(DrivesTypePID,jcLockJsonCmd_t2015a::G_DEV_LOCK)==0 
 			|| strcmp(DrivesTypePID,jcLockJsonCmd_t2015a::G_DEV_SECBOX)==0);
 		uint32_t inDevId;
 		string hidPidAndSerial=DrivesTypePID;
 		hidPidAndSerial+=".";
-		hidPidAndSerial+=DrivesIdSN;
+		if (NULL!=DrivesIdSN)
+		{
+			hidPidAndSerial+=DrivesIdSN;
+		}
+		else
+		{
+			hidPidAndSerial+="NULLSN";
+		}
+		
 		VLOG_IF(4,hidPidAndSerial.length()>0)<<"ZW0120 hidPidAndSerial=["<<hidPidAndSerial.c_str()<<"] Length="<<hidPidAndSerial.length()<<endl;
 		//inDevId=crc8Short(hidPidAndSerial.c_str(),hidPidAndSerial.length());
 		inDevId=Crc32_ComputeBuf(0,hidPidAndSerial.c_str(),hidPidAndSerial.length());
@@ -110,14 +119,14 @@ namespace jcLockJsonCmd_t2015a{
 		std::map<uint32_t,JCHID>::iterator it=G_JCDEV_MAP.find(inDevId);
 		if (it==jcLockJsonCmd_t2015a::G_JCDEV_MAP.end())
 		{
-			LOG(INFO)<<"jcLockJsonCmd_t2015a::G_JCDEV_MAP find status of item hashId="
-				<<inDevId<<" "<<DrivesTypePID<<":"<<DrivesIdSN<<" current not Open\n";
+			VLOG(2)<<"jcLockJsonCmd_t2015a::G_JCDEV_MAP find status of item hashId="
+				<<inDevId<<" "<<DrivesTypePID<<" current not Open\n";			
 			*jcHidDev=NULL;
 			return;
 		}
 		else
 		{
-			VLOG(4)<<"jcLockJsonCmd_t2015a::G_JCDEV_MAP find item "<<inDevId<<" "<<DrivesTypePID<<":"<<DrivesIdSN<<" SUCCESS!\n";
+			VLOG(4)<<"jcLockJsonCmd_t2015a::G_JCDEV_MAP find item "<<inDevId<<" "<<DrivesTypePID<<" SUCCESS!\n";
 			if (NULL==it->second.hid_device)
 			{
 				*jcHidDev=NULL;
@@ -125,9 +134,9 @@ namespace jcLockJsonCmd_t2015a{
 			else
 			{
 				*jcHidDev=&it->second;
-			}
-			
+			}			
 		}
+		VLOG_IF(2,NULL!=DrivesIdSN)<<"SN="<<DrivesIdSN<<endl;
 
 	}
 
@@ -330,10 +339,10 @@ CCBELOCK_API int ZJY1501STD ListDrives( const char * DrivesTypePID )
 CCBELOCK_API int ZJY1501STD OpenDrives( const char* DrivesTypePID,const char * DrivesIdSN )
 {
 	MY114FUNCTRACK
-	VLOG(4)<<__FUNCTION__<<" DrivesTypePID="<<DrivesTypePID<<" DrivesIdSN="<<DrivesIdSN<<endl;
-	LOG_IF(WARNING,NULL!=DrivesTypePID && NULL!=DrivesIdSN);
-	assert(NULL!=DrivesTypePID && NULL!=DrivesIdSN);
-	assert(strlen(DrivesTypePID)>0 && strlen(DrivesIdSN)>0);
+	VLOG(4)<<__FUNCTION__<<" DrivesTypePID="<<DrivesTypePID<<endl;
+	VLOG_IF(4,NULL!=DrivesIdSN)<<" DrivesIdSN="<<DrivesIdSN<<endl;
+	assert(NULL!=DrivesTypePID );
+	assert(strlen(DrivesTypePID)>0);
 	assert(strcmp(DrivesTypePID,jcLockJsonCmd_t2015a::G_DEV_LOCK)==0 
 		|| strcmp(DrivesTypePID,jcLockJsonCmd_t2015a::G_DEV_SECBOX)==0);
 	//////////////////////////////////////////////////////////////////////////
@@ -358,13 +367,16 @@ CCBELOCK_API int ZJY1501STD OpenDrives( const char* DrivesTypePID,const char * D
 	memset(hnd, 0, sizeof(JCHID));
 
 	hnd->vid = JCHID_VID_2014;
-	int serialLen=strlen(DrivesIdSN);
-	VLOG(4)<<"DrivesIdSN length="<<serialLen<<endl;
-	if (serialLen>0)
+	if (NULL!=DrivesIdSN)
 	{
-		//复制serialLen和JCHID_SERIAL_LENGTH中较小的一个字节数到序列号里面
-		strncpy(hnd->HidSerial,DrivesIdSN,serialLen<JCHID_SERIAL_LENGTH?serialLen:JCHID_SERIAL_LENGTH);
-	}	
+		int serialLen=strlen(DrivesIdSN);
+		VLOG(4)<<"DrivesIdSN length="<<serialLen<<endl;
+		if (serialLen>0)
+		{
+			//复制serialLen和JCHID_SERIAL_LENGTH中较小的一个字节数到序列号里面
+			strncpy(hnd->HidSerial,DrivesIdSN,serialLen<JCHID_SERIAL_LENGTH?serialLen:JCHID_SERIAL_LENGTH);
+		}	
+	}
 	if (0==strcmp(jcLockJsonCmd_t2015a::G_DEV_LOCK,DrivesTypePID))
 	{
 		VLOG(4)<<"will Open G_DEV_LOCK\n";
@@ -377,12 +389,14 @@ CCBELOCK_API int ZJY1501STD OpenDrives( const char* DrivesTypePID,const char * D
 	}
 	
 	if (JCHID_STATUS_OK != jcHidOpen(hnd)) {
-		LOG(ERROR)<<"jcHid Device "<<DrivesTypePID<<" "<<DrivesIdSN<<" Open ERROR"<<endl;
+		LOG(ERROR)<<"jcHid Device "<<DrivesTypePID<<" Open ERROR"<<endl;
+		LOG_IF(ERROR,NULL!=DrivesIdSN)<<"SN:"<<DrivesIdSN<<endl;
 		return G_FAIL;
 	}
 	else
 	{
-		LOG(WARNING)<<"jcHid Device "<<DrivesTypePID<<" "<<DrivesIdSN<<" Open Success"<<endl;
+		LOG(WARNING)<<"jcHid Device "<<DrivesTypePID<<" Open Success"<<endl;
+		LOG_IF(WARNING,NULL!=DrivesIdSN)<<"SN:"<<DrivesIdSN<<endl;
 	}
 
 	jcLockJsonCmd_t2015a::G_JCDEV_MAP.insert(std::map<uint32_t,JCHID>::value_type(inDevId,*hnd));
@@ -443,7 +457,8 @@ CCBELOCK_API void ZJY1501STD SetReturnMessage( ReturnMessage _MessageHandleFun )
 //3、向设备发送指令的函数
 CCBELOCK_API int ZJY1501STD InputMessage( const char * DrivesTypePID,const char * DrivesIdSN,const char * AnyMessageJson )
 {
-	LOG(INFO)<<"DrivesTypePID"<<DrivesTypePID<<"DrivesIdSN"<<DrivesIdSN<<"AnyMessageJson"<<AnyMessageJson<<endl;
+	LOG(INFO)<<"DrivesTypePID"<<DrivesTypePID<<"AnyMessageJson"<<AnyMessageJson<<endl;
+	LOG_IF(INFO,NULL!=DrivesIdSN)<<"DrivesIdSN"<<DrivesIdSN<<endl;
 	//通过在Notify函数开始检测是否端口已经打开，没有打开就直接返回，避免
 	//2014年11月初在广州遇到的没有连接锁具时，ATMC执行0002报文查询锁具状态，
 	//反复查询，大量无用日志产生的情况。
