@@ -92,7 +92,9 @@ namespace jcLockJsonCmd_t2015a{
 		string hidPidAndSerial=DrivesTypePID;
 		hidPidAndSerial+=".";
 		hidPidAndSerial+=DrivesIdSN;
-		inDevId=crc32Short(hidPidAndSerial.c_str(),hidPidAndSerial.length());
+		VLOG_IF(4,hidPidAndSerial.length()>0)<<"ZW0120 hidPidAndSerial=["<<hidPidAndSerial.c_str()<<"] Length="<<hidPidAndSerial.length()<<endl;
+		inDevId=crc8Short(hidPidAndSerial.c_str(),hidPidAndSerial.length());
+		VLOG(4)<<__FUNCTION__<<"serial="<<inDevId<<endl;
 		return inDevId;
 	}
 

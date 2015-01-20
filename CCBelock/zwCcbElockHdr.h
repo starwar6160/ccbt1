@@ -129,6 +129,7 @@ extern "C" {
 #endif
 
 unsigned int crc32Short(const void *inputData,const int inputLen);
+unsigned char crc8Short( const void *inputData,const int inputLen );
 
 #ifdef __cplusplus
 }
