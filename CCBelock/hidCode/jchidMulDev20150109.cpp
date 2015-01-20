@@ -13,6 +13,7 @@ using std::map;
 using std::vector;
 
 #define MY114FUNCTRACK	VLOG(4)<<__FUNCTION__<<endl;
+unsigned long Crc32_ComputeBuf(unsigned long inCrc32, const void *buf, size_t bufLen);
 
 //将TCHAR转为char   
 //*tchar是TCHAR类型指针，*_char是char类型指针   
@@ -82,6 +83,7 @@ namespace jcLockJsonCmd_t2015a{
 		LOG(INFO)<<"jcDevListJson=\n"<<jcDevListJson<<endl;
 	}
 
+
 	uint32_t myJcHidHndFromStrSerial( const char* DrivesTypePID, const char * DrivesIdSN)
 	{
 		assert(NULL!=DrivesTypePID && NULL!=DrivesIdSN);
@@ -93,7 +95,8 @@ namespace jcLockJsonCmd_t2015a{
 		hidPidAndSerial+=".";
 		hidPidAndSerial+=DrivesIdSN;
 		VLOG_IF(4,hidPidAndSerial.length()>0)<<"ZW0120 hidPidAndSerial=["<<hidPidAndSerial.c_str()<<"] Length="<<hidPidAndSerial.length()<<endl;
-		inDevId=crc8Short(hidPidAndSerial.c_str(),hidPidAndSerial.length());
+		//inDevId=crc8Short(hidPidAndSerial.c_str(),hidPidAndSerial.length());
+		inDevId=Crc32_ComputeBuf(0,hidPidAndSerial.c_str(),hidPidAndSerial.length());
 		VLOG(4)<<__FUNCTION__<<"serial="<<inDevId<<endl;
 		return inDevId;
 	}

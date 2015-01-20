@@ -116,6 +116,9 @@
     <ClCompile Include="..\..\jclmsCCB2014\jclmsCCB2014\src\crc32\zwcrc32.c">
       <Filter>源文件\algSrc</Filter>
     </ClCompile>
+    <ClCompile Include="zwCRC32_2015.cpp">
+      <Filter>源文件\algSrc</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="HidProtocol.rc">
