@@ -60,6 +60,7 @@ int _tmain(int argc, TCHAR * argv[])
 	//luaSendJsonTest1(argc, argv);
 	//myMulHidDevJsonTest20150116A();
 	myMulHidDevJsonTest20150116B();
+	//zjyTest116();
 	return 0;
 }
 
@@ -127,7 +128,8 @@ void myMulHidDevJsonTest20150116A()
 
 void myMulHidDevJsonTest20150116B()
 {
-	const char *devSN3="PAAbAAAAAAAAgAKE";
+	const char *devSN3="";
+		//"PAAbAAAAAAAAgAKE";
 	//"jcElockSerial": "PAAbAOgSACDAnwEg"
 	//const char *devSN3="PAAbAOgSACDAnwEg";	
 	const char *jcHidJsonMsg116t1="{\"command\": \"Test_Motor_Open\",\"cmd_id\": \"1234567890\",\"State\": \"test\"}";
@@ -138,12 +140,12 @@ void myMulHidDevJsonTest20150116B()
 	//Sleep(9000);
 	//exit(1);
 
-	OpenDrives(hidType,	NULL);
+	OpenDrives(hidType,	devSN3);
 	SetReturnMessage(myReturnMessageTest115);
 
-	InputMessage(hidType,NULL,jcHidJsonMsg116t1);
+	InputMessage(hidType,devSN3,jcHidJsonMsg116t1);
 	Sleep(1750);
 	
 	CloseDrives(hidType,devSN3);
-	//getchar();
+	getchar();
 }

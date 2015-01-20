@@ -94,7 +94,7 @@ namespace jcLockJsonCmd_t2015a{
 		uint32_t inDevId;
 		string hidPidAndSerial=DrivesTypePID;
 		hidPidAndSerial+=".";
-		if (NULL!=DrivesIdSN)
+		if (NULL!=DrivesIdSN &&strlen(DrivesIdSN)>0)
 		{
 			hidPidAndSerial+=DrivesIdSN;
 		}
@@ -136,7 +136,7 @@ namespace jcLockJsonCmd_t2015a{
 				*jcHidDev=&it->second;
 			}			
 		}
-		VLOG_IF(2,NULL!=DrivesIdSN)<<"SN="<<DrivesIdSN<<endl;
+		VLOG_IF(2,NULL!=DrivesIdSN &&strlen(DrivesIdSN)>0)<<"SN="<<DrivesIdSN<<endl;
 
 	}
 
@@ -340,7 +340,7 @@ CCBELOCK_API int ZJY1501STD OpenDrives( const char* DrivesTypePID,const char * D
 {
 	MY114FUNCTRACK
 	VLOG(4)<<__FUNCTION__<<" DrivesTypePID="<<DrivesTypePID<<endl;
-	VLOG_IF(4,NULL!=DrivesIdSN)<<" DrivesIdSN="<<DrivesIdSN<<endl;
+	VLOG_IF(4,NULL!=DrivesIdSN && strlen(DrivesIdSN)>0)<<" DrivesIdSN="<<DrivesIdSN<<endl;
 	assert(NULL!=DrivesTypePID );
 	assert(strlen(DrivesTypePID)>0);
 	assert(strcmp(DrivesTypePID,jcLockJsonCmd_t2015a::G_DEV_LOCK)==0 
@@ -354,7 +354,8 @@ CCBELOCK_API int ZJY1501STD OpenDrives( const char* DrivesTypePID,const char * D
 	if (NULL!=hndTc && NULL!=hndTc->hid_device)
 	{
 		//该设备已经被打开，直接返回
-		LOG(WARNING)<<"JcHid Device "<<DrivesTypePID<<":"<<DrivesIdSN<<" devPointer="<<hndTc<<" already Opened!\n";
+		LOG(WARNING)<<"JcHid Device "<<DrivesTypePID<<" devPointer="<<hndTc<<" already Opened!\n";
+		VLOG_IF(4,NULL!=DrivesIdSN && strlen(DrivesIdSN)>0)<<":"<<DrivesIdSN<<endl;
 		return G_SUSSESS;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -367,15 +368,12 @@ CCBELOCK_API int ZJY1501STD OpenDrives( const char* DrivesTypePID,const char * D
 	memset(hnd, 0, sizeof(JCHID));
 
 	hnd->vid = JCHID_VID_2014;
-	if (NULL!=DrivesIdSN)
+	if (NULL!=DrivesIdSN &&strlen(DrivesIdSN)>0)
 	{
 		int serialLen=strlen(DrivesIdSN);
 		VLOG(4)<<"DrivesIdSN length="<<serialLen<<endl;
-		if (serialLen>0)
-		{
-			//复制serialLen和JCHID_SERIAL_LENGTH中较小的一个字节数到序列号里面
-			strncpy(hnd->HidSerial,DrivesIdSN,serialLen<JCHID_SERIAL_LENGTH?serialLen:JCHID_SERIAL_LENGTH);
-		}	
+		//复制serialLen和JCHID_SERIAL_LENGTH中较小的一个字节数到序列号里面
+		strncpy(hnd->HidSerial,DrivesIdSN,serialLen<JCHID_SERIAL_LENGTH?serialLen:JCHID_SERIAL_LENGTH);
 	}
 	if (0==strcmp(jcLockJsonCmd_t2015a::G_DEV_LOCK,DrivesTypePID))
 	{
@@ -390,13 +388,13 @@ CCBELOCK_API int ZJY1501STD OpenDrives( const char* DrivesTypePID,const char * D
 	
 	if (JCHID_STATUS_OK != jcHidOpen(hnd)) {
 		LOG(ERROR)<<"jcHid Device "<<DrivesTypePID<<" Open ERROR"<<endl;
-		LOG_IF(ERROR,NULL!=DrivesIdSN)<<"SN:"<<DrivesIdSN<<endl;
+		LOG_IF(ERROR,NULL!=DrivesIdSN && strlen(DrivesIdSN)>0)<<"SN:"<<DrivesIdSN<<endl;
 		return G_FAIL;
 	}
 	else
 	{
 		LOG(WARNING)<<"jcHid Device "<<DrivesTypePID<<" Open Success"<<endl;
-		LOG_IF(WARNING,NULL!=DrivesIdSN)<<"SN:"<<DrivesIdSN<<endl;
+		LOG_IF(WARNING,NULL!=DrivesIdSN &&strlen(DrivesIdSN)>0)<<"SN:"<<DrivesIdSN<<endl;
 	}
 
 	jcLockJsonCmd_t2015a::G_JCDEV_MAP.insert(std::map<uint32_t,JCHID>::value_type(inDevId,*hnd));
@@ -414,10 +412,11 @@ CCBELOCK_API int ZJY1501STD OpenDrives( const char* DrivesTypePID,const char * D
 CCBELOCK_API int ZJY1501STD CloseDrives( const char* DrivesTypePID,const char * DrivesIdSN )
 {
 	MY114FUNCTRACK
-	VLOG(4)<<__FUNCTION__<<" DrivesTypePID="<<DrivesTypePID<<" DrivesIdSN="<<DrivesIdSN<<endl;
-	LOG_IF(WARNING,NULL!=DrivesTypePID && NULL!=DrivesIdSN);
-	assert(NULL!=DrivesTypePID && NULL!=DrivesIdSN);
-	assert(strlen(DrivesTypePID)>0 && strlen(DrivesIdSN)>0);
+	VLOG(4)<<__FUNCTION__<<" DrivesTypePID="<<DrivesTypePID<<endl;
+	VLOG_IF(4,NULL!=DrivesIdSN &&strlen(DrivesIdSN)>0)<<" DrivesIdSN="<<DrivesIdSN<<endl;
+	LOG_IF(WARNING,NULL!=DrivesTypePID);
+	assert(NULL!=DrivesTypePID );
+	assert(strlen(DrivesTypePID)>0);
 	assert(strcmp(DrivesTypePID,jcLockJsonCmd_t2015a::G_DEV_LOCK)==0 
 		|| strcmp(DrivesTypePID,jcLockJsonCmd_t2015a::G_DEV_SECBOX)==0);
 
@@ -430,13 +429,15 @@ CCBELOCK_API int ZJY1501STD CloseDrives( const char* DrivesTypePID,const char * 
 	{
 		 if(JCHID_STATUS_OK==jcHidClose(hnd))
 		 {
-			 VLOG(3)<<"jcHid Device "<<DrivesTypePID<<" "<<DrivesIdSN<<" Close Success"<<endl;
+			 VLOG(3)<<"jcHid Device "<<DrivesTypePID<<" Close Success"<<endl;
+			 VLOG_IF(3,NULL!=DrivesIdSN &&strlen(DrivesIdSN)>0)<<"SN:"<<DrivesIdSN<<endl;
 			 return G_SUSSESS;
 		 }				
 	}
 	else
 	{
-		LOG(WARNING)<<"jcHid Device "<<DrivesTypePID<<" "<<DrivesIdSN<<" Not Open,So can't Close"<<endl;
+		LOG(WARNING)<<"jcHid Device "<<DrivesTypePID<<" Not Open,So can't Close"<<endl;
+		LOG_IF(WARNING,NULL!=DrivesIdSN &&strlen(DrivesIdSN)>0)<<"SN:"<<DrivesIdSN<<endl;
 		return G_FAIL;
 	}
 }
@@ -458,7 +459,7 @@ CCBELOCK_API void ZJY1501STD SetReturnMessage( ReturnMessage _MessageHandleFun )
 CCBELOCK_API int ZJY1501STD InputMessage( const char * DrivesTypePID,const char * DrivesIdSN,const char * AnyMessageJson )
 {
 	LOG(INFO)<<"DrivesTypePID"<<DrivesTypePID<<"AnyMessageJson"<<AnyMessageJson<<endl;
-	LOG_IF(INFO,NULL!=DrivesIdSN)<<"DrivesIdSN"<<DrivesIdSN<<endl;
+	LOG_IF(INFO,NULL!=DrivesIdSN &&strlen(DrivesIdSN)>0)<<"DrivesIdSN"<<DrivesIdSN<<endl;
 	//通过在Notify函数开始检测是否端口已经打开，没有打开就直接返回，避免
 	//2014年11月初在广州遇到的没有连接锁具时，ATMC执行0002报文查询锁具状态，
 	//反复查询，大量无用日志产生的情况。
@@ -516,7 +517,8 @@ CCBELOCK_API int ZJY1501STD InputMessage( const char * DrivesTypePID,const char 
 //copy from void myMulHidDevJsonTest20150116B()
 void ZJY1501STD zjyTest116()
 {
-	const char *devSN3="PAAbAAAAAAAAgAKE";
+	const char *devSN3=NULL;
+		//"PAAbAAAAAAAAgAKE";
 	//"jcElockSerial": "PAAbAOgSACDAnwEg"
 	//const char *devSN3="PAAbAOgSACDAnwEg";	
 	const char *jcHidJsonMsg116t1="{\"command\": \"Test_Motor_Open\",\"cmd_id\": \"1234567890\",\"State\": \"test\"}";
