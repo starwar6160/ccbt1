@@ -48,6 +48,7 @@ void ZJY1501STD myReturnMessageTest115(const char* DrivesIdSN,char* DrivesMessag
 
 void myMulHidDevJsonTest20150116A();
 void myMulHidDevJsonTest20150116B();
+void myMulHidDevJsonTest20150120A();
 
 int _tmain(int argc, TCHAR * argv[])
 {
@@ -59,7 +60,8 @@ int _tmain(int argc, TCHAR * argv[])
 	//eLockJsonTest20150106();
 	//luaSendJsonTest1(argc, argv);
 	//myMulHidDevJsonTest20150116A();
-	myMulHidDevJsonTest20150116B();
+	//myMulHidDevJsonTest20150116B();
+	myMulHidDevJsonTest20150120A();
 	//zjyTest116();
 	return 0;
 }
@@ -128,12 +130,45 @@ void myMulHidDevJsonTest20150116A()
 
 void myMulHidDevJsonTest20150116B()
 {
-	const char *devSN3="";
-		//"PAAbAAAAAAAAgAKE";
+	const char *devSN3=
+		//"OQAiAACAAoTb1gAI";
+		//"OQAiAAAAAAAAgAKE";
+		//"";
+		"PAAbAAAAAAAAgAKE";
 	//"jcElockSerial": "PAAbAOgSACDAnwEg"
 	//const char *devSN3="PAAbAOgSACDAnwEg";	
 	const char *jcHidJsonMsg116t1="{\"command\": \"Test_Motor_Open\",\"cmd_id\": \"1234567890\",\"State\": \"test\"}";
+	const char *jcHidJsonMsg116t2="{\"Command\": \"Lock_System_Journal\",\"Begin_No\": \"0\",\"End_No\": \"3\"}";
+	const char *jcHidJsonMsg116t3="{\"Command\": \"Lock_Now_Info\"}";
+	const char *hidType="Lock";
+	SetReturnDrives(myHidListTest113);
+	ListDrives("Lock");
+	//Sleep(9000);
+	//exit(1);
 
+	OpenDrives(hidType,	devSN3);
+	SetReturnMessage(myReturnMessageTest115);
+
+	InputMessage(hidType,devSN3,jcHidJsonMsg116t3);
+	Sleep(5000);
+	
+	CloseDrives(hidType,devSN3);
+	//getchar();
+}
+
+void myMulHidDevJsonTest20150120A()
+{
+	const char *devSN3=
+		//"OQAiAACAAoTb1gAI";
+		//"OQAiAAAAAAAAgAKE";
+		//"";
+		"PAAbAAAAAAAAgAKE";
+	//"jcElockSerial": "PAAbAOgSACDAnwEg"
+	//const char *devSN3="PAAbAOgSACDAnwEg";	
+	const char *jcHidJsonMsg116t1="{\"command\": \"Test_Motor_Open\",\"cmd_id\": \"1234567890\",\"State\": \"test\"}";
+	const char *jcHidJsonMsg116t2="{\"command\": \"Test_Motor_Close\",\"cmd_id\": \"1234567890\",\"State\": \"test\"}";
+	const char *jcHidJsonMsg116t3="{\"Command\": \"Lock_System_Journal\",\"Begin_No\": \"0\",\"End_No\": \"3\"}";
+	const char *jcHidJsonMsg116t4="{\"Command\": \"Lock_Now_Info\"}";
 	const char *hidType="Lock";
 	SetReturnDrives(myHidListTest113);
 	ListDrives("Lock");
@@ -144,8 +179,15 @@ void myMulHidDevJsonTest20150116B()
 	SetReturnMessage(myReturnMessageTest115);
 
 	InputMessage(hidType,devSN3,jcHidJsonMsg116t1);
-	Sleep(1750);
-	
+	Sleep(3000);
+	InputMessage(hidType,devSN3,jcHidJsonMsg116t2);
+	Sleep(3000);
+
+	//InputMessage(hidType,devSN3,jcHidJsonMsg116t1);
+	//Sleep(3000);
+	//InputMessage(hidType,devSN3,jcHidJsonMsg116t2);
+	//Sleep(3000);
+
 	CloseDrives(hidType,devSN3);
-	getchar();
+	//getchar();
 }

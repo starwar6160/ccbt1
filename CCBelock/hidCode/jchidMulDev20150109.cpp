@@ -119,8 +119,8 @@ namespace jcLockJsonCmd_t2015a{
 		std::map<uint32_t,JCHID>::iterator it=G_JCDEV_MAP.find(inDevId);
 		if (it==jcLockJsonCmd_t2015a::G_JCDEV_MAP.end())
 		{
-			VLOG(2)<<"jcLockJsonCmd_t2015a::G_JCDEV_MAP find status of item hashId="
-				<<inDevId<<" "<<DrivesTypePID<<" current not Open\n";			
+/*			VLOG(2)<<"jcLockJsonCmd_t2015a::G_JCDEV_MAP find status of item hashId="
+				<<inDevId<<" "<<DrivesTypePID<<" current not Open\n";	*/		
 			*jcHidDev=NULL;
 			return;
 		}
@@ -214,6 +214,7 @@ namespace jcLockJsonCmd_t2015a{
 
 			while (1) {			
 			try {
+				//LOG(WARNING)<<__FUNCTION__<<endl;
 				s_hidJsonRecvThrRunning=true;	//算是通信线程的一个心跳标志					
 				if (G_JCDEV_MAP.size()==0)
 				{
@@ -237,7 +238,7 @@ namespace jcLockJsonCmd_t2015a{
 					//根据目前的经验，锁具需要300-400毫秒才能返回数据，所以超时设置为500
 					JCHID_STATUS sts=
 						jcHidRecvData(&jcDevVec[i].devCtx,
-						recvBuf, BLEN, &recvLen,500);				
+						recvBuf, BLEN, &recvLen,1500);				
 					//要是某个设备什么数据也没收到，就直接进入下一个设备
 					if (JCHID_STATUS_OK!=sts &&JCHID_STATUS_RECV_ZEROBYTES!=sts)
 					{					
@@ -247,11 +248,14 @@ namespace jcLockJsonCmd_t2015a{
 						jcDevVec[i].isGood=false;
 						continue;
 					}					
-					if (recvLen>0 && false==s_curCmdRecved)
+					if (recvLen>0 
+						//&& false==s_curCmdRecved 这个条件导致除了第一次回调，以后的回调都不会进行，所以去掉这个条件
+						)
 					{
 						printf("\n");
 						LOG(INFO)<<"成功从锁具"<<jcDevVec[i].devCtx.HidSerial<<"接收JSON数据如下："<<endl;
 						LOG(WARNING)<<recvBuf<<endl;
+						LOG_IF(ERROR,NULL==G_JCHID_RECVMSG_CB)<<"G_JCHID_RECVMSG_CB==NULL"<<endl;
 						if (NULL!=G_JCHID_RECVMSG_CB)
 						{
 							G_JCHID_RECVMSG_CB(jcDevVec[i].devCtx.HidSerial,recvBuf);
@@ -350,7 +354,7 @@ CCBELOCK_API int ZJY1501STD OpenDrives( const char* DrivesTypePID,const char * D
 	JCHID *hndTc=NULL;
 	uint32_t inDevidTc=0;
 	jcLockJsonCmd_t2015a::isJcHidDevOpend(DrivesTypePID,DrivesIdSN,&inDevidTc,&hndTc);
-	VLOG(4)<<"jcHidDevHash="<<inDevidTc<<" JCHID="<<hndTc<<endl;
+	VLOG(4)<<"jcHidDevHash="<<inDevidTc<<" JCHID1="<<hndTc<<endl;
 	if (NULL!=hndTc && NULL!=hndTc->hid_device)
 	{
 		//该设备已经被打开，直接返回
@@ -423,7 +427,7 @@ CCBELOCK_API int ZJY1501STD CloseDrives( const char* DrivesTypePID,const char * 
 	JCHID *hnd=NULL;
 	uint32_t inDevid=0;
 	jcLockJsonCmd_t2015a::isJcHidDevOpend(DrivesTypePID,DrivesIdSN,&inDevid,&hnd);
-	VLOG(4)<<"jcHidDevHash="<<inDevid<<" JCHID="<<hnd<<endl;
+	VLOG(4)<<"jcHidDevHash="<<inDevid<<" JCHID2="<<hnd<<endl;
 	//&jcLockJsonCmd_t2015a::G_JCDEV_MAP[inDevId];
 	if (NULL!=hnd && NULL!=hnd->hid_device)
 	{
@@ -447,6 +451,7 @@ CCBELOCK_API void ZJY1501STD SetReturnMessage( ReturnMessage _MessageHandleFun )
 {
 	if (NULL!=_MessageHandleFun)
 	{
+		LOG_IF(ERROR,NULL==_MessageHandleFun)<<"G_JCHID_RECVMSG_CB==NULL"<<endl;
 		jcLockJsonCmd_t2015a::G_JCHID_RECVMSG_CB=_MessageHandleFun;
 		VLOG(3)<<"SetReturnMessage set Callback Success\n";
 	}	
@@ -467,7 +472,7 @@ CCBELOCK_API int ZJY1501STD InputMessage( const char * DrivesTypePID,const char 
 	JCHID *hnd=NULL;
 	uint32_t inDevid=0;
 	jcLockJsonCmd_t2015a::isJcHidDevOpend(DrivesTypePID,DrivesIdSN,&inDevid,&hnd);
-	VLOG(4)<<"jcHidDevHash="<<inDevid<<" JCHID="<<hnd<<endl;
+	VLOG(4)<<"jcHidDevHash="<<inDevid<<" JCHID3="<<hnd<<endl;
 	if (NULL==hnd || NULL==hnd->hid_device)
 	{
 		return G_FAIL;
