@@ -128,10 +128,13 @@ extern HMODULE G_DLL_HMODULE;
 extern "C" {
 #endif
 
-unsigned char crc8Short( const void *inputData,const int inputLen );
 
 #ifdef __cplusplus
 }
 #endif
+
+
+unsigned char crc8Short( const void *inputData,const int inputLen );
+unsigned long Crc32_ComputeBuf(unsigned long inCrc32, const void *buf, size_t bufLen);
 
 #endif // zwCcbElockHdr_h__

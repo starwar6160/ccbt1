@@ -13,7 +13,7 @@ using std::map;
 using std::vector;
 
 #define MY114FUNCTRACK	VLOG(4)<<__FUNCTION__<<endl;
-unsigned long Crc32_ComputeBuf(unsigned long inCrc32, const void *buf, size_t bufLen);
+
 
 //将TCHAR转为char   
 //*tchar是TCHAR类型指针，*_char是char类型指针   
@@ -251,16 +251,23 @@ namespace jcLockJsonCmd_t2015a{
 					if (recvLen>0 
 						//&& false==s_curCmdRecved 这个条件导致除了第一次回调，以后的回调都不会进行，所以去掉这个条件
 						)
-					{
-						printf("\n");
-						LOG(INFO)<<"成功从锁具"<<jcDevVec[i].devCtx.HidSerial<<"接收JSON数据如下："<<endl;
-						LOG(WARNING)<<recvBuf<<endl;
-						LOG_IF(ERROR,NULL==G_JCHID_RECVMSG_CB)<<"G_JCHID_RECVMSG_CB==NULL"<<endl;
-						if (NULL!=G_JCHID_RECVMSG_CB)
+					{												
+						static uint32_t recvDataSum=0;
+						uint32_t recvDataNowSum= recvDataSum=Crc32_ComputeBuf(0,recvBuf,recvLen);
+						if (recvDataNowSum!=recvDataSum)
 						{
-							G_JCHID_RECVMSG_CB(jcDevVec[i].devCtx.HidSerial,recvBuf);
-						}						
-						s_curCmdRecved=true;
+							printf("\n");
+							LOG(INFO)<<"成功从锁具"<<jcDevVec[i].devCtx.HidSerial<<"接收JSON数据如下："<<endl;
+							LOG(WARNING)<<recvBuf<<endl;
+							LOG_IF(ERROR,NULL==G_JCHID_RECVMSG_CB)<<"G_JCHID_RECVMSG_CB==NULL"<<endl;
+							if (NULL!=G_JCHID_RECVMSG_CB)
+							{
+								G_JCHID_RECVMSG_CB(jcDevVec[i].devCtx.HidSerial,recvBuf);
+							}						
+							s_curCmdRecved=true;
+							recvDataSum=recvDataNowSum;
+						}
+
 					}
 				}				
 			}	//try {
@@ -444,6 +451,7 @@ CCBELOCK_API int ZJY1501STD CloseDrives( const char* DrivesTypePID,const char * 
 		LOG_IF(WARNING,NULL!=DrivesIdSN &&strlen(DrivesIdSN)>0)<<"SN:"<<DrivesIdSN<<endl;
 		return G_FAIL;
 	}
+	return G_SUSSESS;
 }
 
 //2、设置设备消息返回的回调函数
