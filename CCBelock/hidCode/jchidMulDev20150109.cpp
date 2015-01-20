@@ -211,7 +211,7 @@ namespace jcLockJsonCmd_t2015a{
 				jcDevVec.push_back(t1);
 			}
 			//LOG(ERROR)<<"jcDecVec[0] is "<<jcDevVec[0].devHash<<endl;
-
+			static uint32_t recvDataSum=0;
 			while (1) {			
 			try {
 				//LOG(WARNING)<<__FUNCTION__<<endl;
@@ -251,11 +251,12 @@ namespace jcLockJsonCmd_t2015a{
 					if (recvLen>0 
 						//&& false==s_curCmdRecved 这个条件导致除了第一次回调，以后的回调都不会进行，所以去掉这个条件
 						)
-					{												
-						static uint32_t recvDataSum=0;
-						uint32_t recvDataNowSum= recvDataSum=Crc32_ComputeBuf(0,recvBuf,recvLen);
+					{																		
+						//uint32_t recvDataNowSum= recvDataSum=Crc32_ComputeBuf(0,recvBuf,recvLen);
+						uint32_t recvDataNowSum=Crc32_ComputeBuf(0,recvBuf,recvLen);
 						if (recvDataNowSum!=recvDataSum)
 						{
+							VLOG(4)<<"recvDataSum="<<recvDataSum<<" recvDataNowSum"<<recvDataNowSum<<endl;
 							printf("\n");
 							LOG(INFO)<<"成功从锁具"<<jcDevVec[i].devCtx.HidSerial<<"接收JSON数据如下："<<endl;
 							LOG(WARNING)<<recvBuf<<endl;
