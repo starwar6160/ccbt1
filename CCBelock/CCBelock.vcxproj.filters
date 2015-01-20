@@ -63,6 +63,12 @@
     <ClInclude Include="hidCode\usbHidHdr.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="hidCode\hidapi.h">
+      <Filter>源文件\HidCode</Filter>
+    </ClInclude>
+    <ClInclude Include="hidCode\zwHidSplitMsg.h">
+      <Filter>源文件\HidCode</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -118,6 +124,15 @@
     </ClCompile>
     <ClCompile Include="zwCRC32_2015.cpp">
       <Filter>源文件\algSrc</Filter>
+    </ClCompile>
+    <ClCompile Include="hidCode\hid.c">
+      <Filter>源文件\HidCode</Filter>
+    </ClCompile>
+    <ClCompile Include="hidCode\zwHidComm.cpp">
+      <Filter>源文件\HidCode</Filter>
+    </ClCompile>
+    <ClCompile Include="hidCode\zwHidSplitMsg.c">
+      <Filter>源文件\HidCode</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
