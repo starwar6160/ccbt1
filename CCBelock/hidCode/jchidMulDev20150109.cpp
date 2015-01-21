@@ -474,7 +474,7 @@ CCBELOCK_API int ZJY1501STD CloseDrives( const char* DrivesTypePID,const char * 
 	}
 	return G_SUSSESS;
 }
-#endif // _DEBUG0121
+
 
 //2、设置设备消息返回的回调函数
 CCBELOCK_API void ZJY1501STD SetReturnMessage( ReturnMessage _MessageHandleFun )
@@ -548,6 +548,7 @@ CCBELOCK_API int ZJY1501STD InputMessage( const char * DrivesTypePID,const char 
 
 	return jcLockJsonCmd_t2015a::G_SUSSESS;
 }
+#endif // _DEBUG0121
 
 //copy from void myMulHidDevJsonTest20150116B()
 void ZJY1501STD zjyTest116()
