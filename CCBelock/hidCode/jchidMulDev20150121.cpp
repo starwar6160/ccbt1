@@ -5,6 +5,7 @@
 #include "CCBelock.h"
 
 namespace jcLockJsonCmd_t2015a21{
+	const int G_RECV_TIMEOUT=2500;
 	const int G_SUSSESS=0;
 	const int G_FAIL=1;
 	const int G_NO_CALLBACK=2;
@@ -22,6 +23,7 @@ public:
 	~zwJcHidDbg15A();
 	uint32_t getDevPtr();
 	uint32_t Push2jcHidDev(const char *strJsonCmd);
+	uint32_t RecvJson(string &recvJson);
 private:
 	JCHID m_dev;
 };
@@ -111,6 +113,27 @@ uint32_t zwJcHidDbg15A::Push2jcHidDev(const char *strJsonCmd)
 	return sts;
 }
 
+uint32_t zwJcHidDbg15A::RecvJson(string &recvJson)
+{
+	const int BLEN = 1024;
+	char recvBuf[BLEN + 1];
+	memset(recvBuf, 0, BLEN + 1);
+	int recvLen = 0;
+	Sleep(500);
+	JCHID_STATUS sts=
+		jcHidRecvData(&m_dev,
+		recvBuf, BLEN, &recvLen,G_RECV_TIMEOUT);				
+	if (JCHID_STATUS_OK==sts)
+	{
+		recvJson=recvBuf;
+	}
+	else
+	{
+		recvJson="NoData Recv 20150121";
+	}
+	return G_SUSSESS;
+}
+
 
 }	//end of namespace jcLockJsonCmd_t2015a21{
 
@@ -187,4 +210,11 @@ CCBELOCK_API int ZJY1501STD InputMessage( const char * DrivesTypePID,const char 
 	}
 
 	return G_SUSSESS;
+}
+
+CCBELOCK_API void ZJY1501STD zwtRecvJson121(void)
+{
+	string recvJson;
+	jch::s_jcHidDev->RecvJson(recvJson);
+	LOG_IF(WARNING,recvJson.length()>0)<<__FUNCTION__<<endl<<recvJson<<endl;
 }

@@ -227,12 +227,20 @@ void myMulHidDevJsonTest20150120A1()
 	const char *jcHidJsonMsg116t3="{\"Command\": \"Lock_System_Journal\",\"Begin_No\": \"0\",\"End_No\": \"3\"}";
 	const char *jcHidJsonMsg116t4="{\"Command\": \"Lock_Now_Info\"}";
 	const char *hidType="Lock";
-	SetReturnDrives(myHidListTest113);
-	ListDrives("Lock");
+	//SetReturnDrives(myHidListTest113);
+	//ListDrives("Lock");
 	//////////////////////////////////////////////////////////////////////////
-	for (int i=0;i<20;i++)
+	for (int i=0;i<2;i++)
 	{
 		OpenDrives(hidType,	devSN3);
+			InputMessage(hidType,devSN3,jcHidJsonMsg116t1);			
+			zwtRecvJson121();
+			Sleep(1000);
+			InputMessage(hidType,devSN3,jcHidJsonMsg116t2);			
+			zwtRecvJson121();
+			Sleep(1000);
 		CloseDrives(hidType,devSN3);	
+		cout<<"WAIT TO PLUG LINE"<<endl;
+		Sleep(5000);
 	}
 }
