@@ -441,6 +441,9 @@ CCBELOCK_API int ZJY1501STD CloseDrives( const char* DrivesTypePID,const char * 
 	{
 		 if(JCHID_STATUS_OK==jcHidClose(hnd))
 		 {
+			 std::map<uint32_t,JCHID>::iterator it=
+			  jcLockJsonCmd_t2015a::G_JCDEV_MAP.find(inDevid);
+			 jcLockJsonCmd_t2015a::G_JCDEV_MAP.erase(it);
 			 VLOG(3)<<"jcHid Device "<<DrivesTypePID<<" Close Success"<<endl;
 			 VLOG_IF(3,NULL!=DrivesIdSN &&strlen(DrivesIdSN)>0)<<"SN:"<<DrivesIdSN<<endl;
 			 return G_SUSSESS;

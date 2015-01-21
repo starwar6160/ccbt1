@@ -175,19 +175,28 @@ void myMulHidDevJsonTest20150120A()
 	//Sleep(9000);
 	//exit(1);
 
+	//////////////////////////////////////////////////////////////////////////
 	OpenDrives(hidType,	devSN3);
 	SetReturnMessage(myReturnMessageTest115);
 
 	InputMessage(hidType,devSN3,jcHidJsonMsg116t1);
 	Sleep(3000);
-	InputMessage(hidType,devSN3,jcHidJsonMsg116t2);
-	Sleep(3000);
-
-	//InputMessage(hidType,devSN3,jcHidJsonMsg116t1);
-	//Sleep(3000);
 	//InputMessage(hidType,devSN3,jcHidJsonMsg116t2);
 	//Sleep(3000);
 
 	CloseDrives(hidType,devSN3);
+
+	//////////////////////////////////////////////////////////////////////////
+	Sleep(1500);
+	OpenDrives(hidType,	devSN3);
+	SetReturnMessage(myReturnMessageTest115);
+
+	//InputMessage(hidType,devSN3,jcHidJsonMsg116t1);
+	//Sleep(3000);
+	InputMessage(hidType,devSN3,jcHidJsonMsg116t2);
+	Sleep(3000);
+
+	CloseDrives(hidType,devSN3);
+
 	//getchar();
 }
