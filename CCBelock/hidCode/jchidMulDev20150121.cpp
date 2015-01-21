@@ -152,7 +152,7 @@ const char * zwJcHidDbg15A::RecvFromLockJsonThr(void)
 		uint32_t recvDataSum=0;
 		int t_thr_runCount=1;
 		while (1) {	
-			LOG(WARNING)<<"RECV THR "<<t_thr_runCount++<<endl;
+			//LOG(WARNING)<<"RECV THR "<<t_thr_runCount++<<endl;
 			/** 手动在线程中加入中断点，中断点不影响其他语句执行 */  
 			boost::this_thread::interruption_point();  
 					if (NULL==m_dev.hid_device)
