@@ -21,10 +21,8 @@ class zwJcHidDbg15A
 public:
 	zwJcHidDbg15A();
 	~zwJcHidDbg15A();
-	uint32_t getDevPtr();
 	uint32_t Push2jcHidDev(const char *strJsonCmd);
-	uint32_t RecvJson(string &recvJson);
-	const char * RecvFromLockJsonThr(void);
+	int RecvFromLockJsonThr(JCHID *hidHandle);
 private:
 	JCHID m_dev;
 	boost::thread *thr;
@@ -45,14 +43,16 @@ zwJcHidDbg15A::zwJcHidDbg15A()
 	{
 		LOG(ERROR)<<" Open jcHid Device Error"<<endl;
 	}
-
-	boost::function<const char * (void)> memberFunctionWrapper(boost::bind(&zwJcHidDbg15A::RecvFromLockJsonThr, this));  	
-
-	thr=new boost::thread(memberFunctionWrapper);	
+	//声明一个函数对象，尖括号内部，前面是函数返回值，括号内部是函数的一个或者多个参数(形参)，估计是逗号分隔，
+	//后面用boost::bind按照以下格式把函数指针和后面_1形式的一个或者多个参数(形参)绑定成为一个函数对象
+	boost::function<int (JCHID *)> memberFunctionWrapper(boost::bind(&zwJcHidDbg15A::RecvFromLockJsonThr, this,_1));  	
+	//再次使用boost::bind把函数对象与实参绑定到一起，就可以传递给boost::thread作为线程体函数了
+	thr=new boost::thread(boost::bind(memberFunctionWrapper,&m_dev));	
 }
 
 zwJcHidDbg15A::~zwJcHidDbg15A()
 {
+	assert(NULL!=m_dev.hid_device);
 	VLOG(4)<<__FUNCTION__<<endl;
 	if (NULL!=m_dev.hid_device)
 	{
@@ -68,10 +68,6 @@ zwJcHidDbg15A::~zwJcHidDbg15A()
 	}
 };
 
-uint32_t zwJcHidDbg15A::getDevPtr()
-{
-	return reinterpret_cast<uint32_t>(m_dev.hid_device);
-}
 
 //////////////////////////////////////////////////////////////////////////
 
@@ -84,14 +80,13 @@ uint32_t zwJcHidDbg15A::Push2jcHidDev(const char *strJsonCmd)
 	if (NULL == strJsonCmd || strlen(strJsonCmd) == 0
 		|| NULL==m_dev.hid_device
 		) {
-			LOG(ERROR)<<__FUNCTION__<<"input Data error!\n";
+			LOG(ERROR)<<__FUNCTION__<<"input Data strJsonCmd or m_dev.hid_device error!\n";
 			return G_FAIL;
 	}
 	LOG(INFO)<<__FUNCTION__<<"jcHidDev "<<
-		m_dev.HidSerial<<" Push "<<strJsonCmd<<endl;
+		m_dev.hid_device <<" Push "<<strJsonCmd<<endl;
 		JCHID_STATUS sts=JCHID_STATUS_FAIL;
-	try {
-	
+	try {	
 		int count=0;
 		do 
 		{
@@ -103,11 +98,11 @@ uint32_t zwJcHidDbg15A::Push2jcHidDev(const char *strJsonCmd)
 			}
 			else
 			{
-				LOG(WARNING)<<__FUNCTION__<<" Push Data 2 jcHid Device Fail"<<endl;
+				LOG(WARNING)<<__FUNCTION__<<" Push Data to jcHid Device "<<m_dev.hid_device<<" Fail"<<endl;
 				Sleep(1000);
 				count++;
 			}
-			if (count>10)
+			if (count>3)
 			{
 				break;
 			}
@@ -119,30 +114,15 @@ uint32_t zwJcHidDbg15A::Push2jcHidDev(const char *strJsonCmd)
 	return sts;
 }
 
-uint32_t zwJcHidDbg15A::RecvJson(string &recvJson)
-{
-	const int BLEN = 1024;
-	char recvBuf[BLEN + 1];
-	memset(recvBuf, 0, BLEN + 1);
-	int recvLen = 0;
-	Sleep(500);
-	JCHID_STATUS sts=
-		jcHidRecvData(&m_dev,
-		recvBuf, BLEN, &recvLen,G_RECV_TIMEOUT);				
-	if (JCHID_STATUS_OK==sts)
-	{
-		recvJson=recvBuf;
-	}
-	else
-	{
-		recvJson="NoData Recv 20150121";
-	}
-	return G_SUSSESS;
-}
 
-
-const char * zwJcHidDbg15A::RecvFromLockJsonThr(void)
+int zwJcHidDbg15A::RecvFromLockJsonThr(JCHID *hidHandle)
 {				 
+	assert(NULL!=hidHandle);
+	if (NULL==hidHandle)
+	{
+		LOG(WARNING)<<__FUNCTION__<<"\tInput JCHID * is NULL!"<<endl;
+		return G_FAIL;
+	}
 	LOG(WARNING)<<__FUNCTION__<<" Started"<<endl;	
 		const int BLEN = 1024;
 		char recvBuf[BLEN + 1];
@@ -150,24 +130,24 @@ const char * zwJcHidDbg15A::RecvFromLockJsonThr(void)
 		int recvLen = 0;
 
 		uint32_t recvDataSum=0;
-		int t_thr_runCount=1;
+		//int t_thr_runCount=1;
 		while (1) {	
 			//LOG(WARNING)<<"RECV THR "<<t_thr_runCount++<<endl;
 			/** 手动在线程中加入中断点，中断点不影响其他语句执行 */  
 			boost::this_thread::interruption_point();  
-					if (NULL==m_dev.hid_device)
+					if (NULL==hidHandle->hid_device)
 					{
 						continue;
 					}
 					//LOG(WARNING)<<"RECVTHR.P3.1,Before RecvHidData"<<endl;
 					JCHID_STATUS sts=
-						jcHidRecvData(&m_dev,
+						jcHidRecvData(hidHandle,
 						recvBuf, BLEN, &recvLen,G_RECV_TIMEOUT);				
 					//LOG(WARNING)<<"RECVTHR.P3.2,After RecvHidData"<<endl;
 					//要是某个设备什么数据也没收到，就直接进入下一个设备
 					if (JCHID_STATUS_OK!=sts &&JCHID_STATUS_RECV_ZEROBYTES!=sts)
 					{					
-						LOG(WARNING)<<"NoData from "<<m_dev.HidSerial<<endl;
+						LOG(INFO)<<"NoData from "<<hidHandle->HidSerial<<endl;
 						continue;
 					}					
 					if (recvLen>0 )
@@ -178,12 +158,12 @@ const char * zwJcHidDbg15A::RecvFromLockJsonThr(void)
 						{
 							VLOG(4)<<"recvDataSum="<<recvDataSum<<" recvDataNowSum="<<recvDataNowSum<<endl;
 							int tRecvLen=strlen(recvBuf);
-							LOG_IF(INFO,tRecvLen>9)<<"成功从锁具"<<m_dev.HidSerial<<"接收JSON数据如下："<<endl;
+							LOG_IF(INFO,tRecvLen>9)<<"成功从锁具"<<hidHandle->HidSerial<<"接收JSON数据如下："<<endl;
 							LOG_IF(WARNING,tRecvLen>9)<<endl<<recvBuf<<endl;
 							LOG_IF(ERROR,NULL==G_JCHID_RECVMSG_CB)<<"G_JCHID_RECVMSG_CB==NULL"<<endl;
 							if (NULL!=G_JCHID_RECVMSG_CB)
 							{
-								G_JCHID_RECVMSG_CB(m_dev.HidSerial,recvBuf);
+								G_JCHID_RECVMSG_CB(hidHandle->HidSerial,recvBuf);
 							}						
 							recvDataSum=recvDataNowSum;
 						}
@@ -207,12 +187,14 @@ using jch::G_SUSSESS;
 
 CCBELOCK_API int ZJY1501STD OpenDrives( const char* DrivesTypePID,const char * DrivesIdSN )
 {
+	assert(NULL!=DrivesTypePID);
 	s_jcHidDev=new zwJcHidDbg15A();
 	return G_SUSSESS;
 }
 
 CCBELOCK_API int ZJY1501STD CloseDrives( const char* DrivesTypePID,const char * DrivesIdSN )
 {
+	assert(NULL!=DrivesTypePID);
 	if (NULL!=s_jcHidDev)
 	{
 		//memset(s_jcHidDev,0,sizeof(s_jcHidDev));
@@ -224,6 +206,7 @@ CCBELOCK_API int ZJY1501STD CloseDrives( const char* DrivesTypePID,const char * 
 //2、设置设备消息返回的回调函数
 CCBELOCK_API void ZJY1501STD SetReturnMessage( ReturnMessage _MessageHandleFun )
 {
+	assert(NULL!=_MessageHandleFun);
 	if (NULL!=_MessageHandleFun)
 	{
 		LOG_IF(ERROR,NULL==_MessageHandleFun)<<"G_JCHID_RECVMSG_CB==NULL"<<endl;
@@ -238,27 +221,21 @@ CCBELOCK_API void ZJY1501STD SetReturnMessage( ReturnMessage _MessageHandleFun )
 //3、向设备发送指令的函数
 CCBELOCK_API int ZJY1501STD InputMessage( const char * DrivesTypePID,const char * DrivesIdSN,const char * AnyMessageJson )
 {
+	assert(NULL!=DrivesTypePID);
+	assert(NULL!=AnyMessageJson && strlen(AnyMessageJson)>0);
 	LOG(INFO)<<"DrivesTypePID"<<DrivesTypePID<<"AnyMessageJson"<<AnyMessageJson<<endl;
 	LOG_IF(INFO,NULL!=DrivesIdSN &&strlen(DrivesIdSN)>0)<<"DrivesIdSN"<<DrivesIdSN<<endl;
 	if (NULL != AnyMessageJson && strlen(AnyMessageJson) > 0) {
-		LOG(WARNING)<< "JinChu下发JSON=" << endl << AnyMessageJson <<
-			endl;
+		LOG(WARNING)<< "JinChu下发JSON=" << endl << AnyMessageJson <<endl;
 	}
 
 	try {
 		s_jcHidDev->Push2jcHidDev(AnyMessageJson);
 		return G_SUSSESS;
 	}
-	catch(...) {		//一切网络异常都直接返回错误。主要是为了捕捉未连接时
-		//串口对象为空造成访问NULL指针的的SEH异常  
-		//为了使得底层Poco库与cceblock类解耦，从我的WS类
-		//发现WS对象因为未连接而是NULL时直接throw一个枚举
-		//然后在此，也就是上层捕获。暂时不知道捕获精确类型
-		//所以catch所有异常了
-		LOG(FATAL)<<__FUNCTION__<<" NotifyJson通过线路发送数据异常，可能网络故障"<<endl;
+	catch(...) {
+		LOG(ERROR)<<__FUNCTION__<<" NotifyJson通过线路发送数据异常，可能网络故障"<<endl;
 		return G_FAIL;
 	}
-
-	return G_SUSSESS;
 }
 
