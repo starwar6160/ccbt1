@@ -13,7 +13,7 @@ using std::map;
 using std::vector;
 
 #define MY114FUNCTRACK	VLOG(4)<<__FUNCTION__<<endl;
-
+const int G_RECV_TIMEOUT=2500;
 
 //将TCHAR转为char   
 //*tchar是TCHAR类型指针，*_char是char类型指针   
@@ -78,6 +78,7 @@ namespace jcLockJsonCmd_t2015a{
 			
 			jclock_List=jclock_List->next;
 		}
+		hid_free_enumeration(jclock_List);
 		std::ostringstream ss;
 		write_json(ss, pt);
 		jcDevListJson=ss.str();
@@ -212,17 +213,28 @@ namespace jcLockJsonCmd_t2015a{
 			}
 			//LOG(ERROR)<<"jcDecVec[0] is "<<jcDevVec[0].devHash<<endl;
 			static uint32_t recvDataSum=0;
+			int t_thr_runCount=1;
 			while (1) {			
 			try {
-				//LOG(WARNING)<<__FUNCTION__<<endl;
-				s_hidJsonRecvThrRunning=true;	//算是通信线程的一个心跳标志					
+				VLOG(4)<<"RECVTHR.P1"<<endl;
+				LOG(WARNING)<<__FUNCTION__<<(t_thr_runCount++)<<endl;
+				if (false==s_hidJsonRecvThrRunning)
+				{
+					//收到退出信号，结束接收数据线程
+					LOG(WARNING)<<"JcHid20150121 RecvData Thread Exit by other Func\n";
+					return "RecvThr Exit by CloseJcHidDevice";
+				}
+				//s_hidJsonRecvThrRunning=true;	//算是通信线程的一个心跳标志					
 				if (G_JCDEV_MAP.size()==0)
 				{
 					return "NoOpend HidDevice";
 				}
 				//for (iter=G_JCDEV_MAP.begin();iter!=G_JCDEV_MAP.end();iter++)
+				VLOG(4)<<"RECVTHR.P2"<<endl;
+				
 				for(int i=0;i<jcDevVec.size();i++)
 				{
+					VLOG(4)<<"jcDevVec.size()="<<jcDevVec.size()<<endl;
 					VLOG_IF(4,NULL==jcDevVec[i].devCtx.hid_device && true==jcDevVec[i].isGood)
 						<<"jcHidDev "<<jcDevVec[i].devCtx.HidSerial<<" Not Open"<<endl;
 					if (NULL==jcDevVec[i].devCtx.hid_device)
@@ -233,12 +245,14 @@ namespace jcLockJsonCmd_t2015a{
 					if (jcDevVec[i].isGood==false)
 					{
 						continue;
-					}
+					}					
 					//VLOG(4)<<"hid_device="<<iter->second.hid_device<<endl;
 					//根据目前的经验，锁具需要300-400毫秒才能返回数据，所以超时设置为500
+					LOG(WARNING)<<"RECVTHR.P3.1,Before RecvHidData"<<endl;
 					JCHID_STATUS sts=
 						jcHidRecvData(&jcDevVec[i].devCtx,
-						recvBuf, BLEN, &recvLen,1500);				
+						recvBuf, BLEN, &recvLen,G_RECV_TIMEOUT);				
+					LOG(WARNING)<<"RECVTHR.P3.2,After RecvHidData"<<endl;
 					//要是某个设备什么数据也没收到，就直接进入下一个设备
 					if (JCHID_STATUS_OK!=sts &&JCHID_STATUS_RECV_ZEROBYTES!=sts)
 					{					
@@ -256,10 +270,10 @@ namespace jcLockJsonCmd_t2015a{
 						uint32_t recvDataNowSum=Crc32_ComputeBuf(0,recvBuf,recvLen);
 						if (recvDataNowSum!=recvDataSum)
 						{
-							VLOG(4)<<"recvDataSum="<<recvDataSum<<" recvDataNowSum"<<recvDataNowSum<<endl;
-							printf("\n");
-							LOG(INFO)<<"成功从锁具"<<jcDevVec[i].devCtx.HidSerial<<"接收JSON数据如下："<<endl;
-							LOG(WARNING)<<recvBuf<<endl;
+							VLOG(4)<<"recvDataSum="<<recvDataSum<<" recvDataNowSum="<<recvDataNowSum<<endl;
+							int tRecvLen=strlen(recvBuf);
+							LOG_IF(INFO,tRecvLen>9)<<"成功从锁具"<<jcDevVec[i].devCtx.HidSerial<<"接收JSON数据如下："<<endl;
+							LOG_IF(WARNING,tRecvLen>9)<<recvBuf<<endl;
 							LOG_IF(ERROR,NULL==G_JCHID_RECVMSG_CB)<<"G_JCHID_RECVMSG_CB==NULL"<<endl;
 							if (NULL!=G_JCHID_RECVMSG_CB)
 							{
@@ -269,7 +283,7 @@ namespace jcLockJsonCmd_t2015a{
 							recvDataSum=recvDataNowSum;
 						}
 
-					}
+					}					
 				}				
 			}	//try {
 			catch(...) {
@@ -290,7 +304,6 @@ namespace jcLockJsonCmd_t2015a{
 		}	
 	}
 //#endif // _DEBUG_114A
-
 
 }	//end of namespace jcLockJsonCmd_t2015a{
 
@@ -412,6 +425,7 @@ CCBELOCK_API int ZJY1501STD OpenDrives( const char* DrivesTypePID,const char * D
 	jcLockJsonCmd_t2015a::G_JCDEV_MAP.insert(std::map<uint32_t,JCHID>::value_type(inDevId,*hnd));
 	if (false==jcLockJsonCmd_t2015a::s_hidJsonRecvThrRunning)
 	{		
+		jcLockJsonCmd_t2015a::s_hidJsonRecvThrRunning=true;
 		boost::thread thr(jcLockJsonCmd_t2015a::RecvFromLockJsonThr);
 	}
 	jcLockJsonCmd_t2015a::s_curCmdRecved=false;	//清理“已经接收”的标志；
@@ -444,8 +458,10 @@ CCBELOCK_API int ZJY1501STD CloseDrives( const char* DrivesTypePID,const char * 
 			 std::map<uint32_t,JCHID>::iterator it=
 			  jcLockJsonCmd_t2015a::G_JCDEV_MAP.find(inDevid);
 			 jcLockJsonCmd_t2015a::G_JCDEV_MAP.erase(it);
+			 jcLockJsonCmd_t2015a::s_hidJsonRecvThrRunning=false;	//通知通信接收线程退出
 			 VLOG(3)<<"jcHid Device "<<DrivesTypePID<<" Close Success"<<endl;
 			 VLOG_IF(3,NULL!=DrivesIdSN &&strlen(DrivesIdSN)>0)<<"SN:"<<DrivesIdSN<<endl;
+			 Sleep(500);
 			 return G_SUSSESS;
 		 }				
 	}

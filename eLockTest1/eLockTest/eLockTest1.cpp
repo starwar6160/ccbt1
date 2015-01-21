@@ -61,8 +61,9 @@ int _tmain(int argc, TCHAR * argv[])
 	//luaSendJsonTest1(argc, argv);
 	//myMulHidDevJsonTest20150116A();
 	//myMulHidDevJsonTest20150116B();
-	myMulHidDevJsonTest20150120A();
+	//myMulHidDevJsonTest20150120A();
 	//zjyTest116();
+	zwTest121a1();
 	return 0;
 }
 
@@ -179,23 +180,37 @@ void myMulHidDevJsonTest20150120A()
 	OpenDrives(hidType,	devSN3);
 	SetReturnMessage(myReturnMessageTest115);
 
-	InputMessage(hidType,devSN3,jcHidJsonMsg116t1);
-	Sleep(3000);
+	//InputMessage(hidType,devSN3,jcHidJsonMsg116t1);
+	//printf("CLOSE GATE BLOCK LOCKHEAD TEST 20150121 wait 5 sec\n");
+	//Sleep(5000);
 	//InputMessage(hidType,devSN3,jcHidJsonMsg116t2);
 	//Sleep(3000);
-
-	CloseDrives(hidType,devSN3);
-
+	//for (int i=0;i<1;i++)
+	//{
+	//	InputMessage(hidType,devSN3,jcHidJsonMsg116t1);
+	//	Sleep(1000);
+	//	InputMessage(hidType,devSN3,jcHidJsonMsg116t2);
+	//	Sleep(1000);
+	//}
+	//printf("Press any key to continue########################################\n");	
+	Sleep(2000);
+	CloseDrives(hidType,devSN3);	
 	//////////////////////////////////////////////////////////////////////////
-	Sleep(1500);
+	printf("Press any key to continue########################################\n");	
+	//Sleep(1000);
+	//getchar();
+
+	Sleep(2000);
 	OpenDrives(hidType,	devSN3);
 	SetReturnMessage(myReturnMessageTest115);
-
-	//InputMessage(hidType,devSN3,jcHidJsonMsg116t1);
-	//Sleep(3000);
-	InputMessage(hidType,devSN3,jcHidJsonMsg116t2);
-	Sleep(3000);
-
+	//for (int i=0;i<1;i++)
+	//{
+	//	InputMessage(hidType,devSN3,jcHidJsonMsg116t1);
+	//	Sleep(1000);
+	//	InputMessage(hidType,devSN3,jcHidJsonMsg116t2);
+	//	Sleep(1000);
+	//}
+	Sleep(2000);
 	CloseDrives(hidType,devSN3);
 
 	//getchar();
