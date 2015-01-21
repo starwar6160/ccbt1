@@ -36,6 +36,8 @@ using std::vector;
 #include <boost/algorithm/string.hpp>
 #include <boost/typeof/typeof.hpp>
 #include <boost/lexical_cast.hpp>  
+#include <boost/bind.hpp>  
+#include <boost/function.hpp>  
 using boost::property_tree::ptree;
 
 #define GLOG_NO_ABBREVIATED_SEVERITIES

@@ -234,13 +234,14 @@ void myMulHidDevJsonTest20150120A1()
 	{
 		OpenDrives(hidType,	devSN3);
 			InputMessage(hidType,devSN3,jcHidJsonMsg116t1);			
-			zwtRecvJson121();
+			//zwtRecvJson121();
 			Sleep(1000);
 			InputMessage(hidType,devSN3,jcHidJsonMsg116t2);			
-			zwtRecvJson121();
+			//zwtRecvJson121();
 			Sleep(1000);
 		CloseDrives(hidType,devSN3);	
-		cout<<"WAIT TO PLUG LINE"<<endl;
-		Sleep(5000);
+		
+		Sleep(2000);
+		cout<<"Count "<<i<<"Complete"<<endl;
 	}
 }
