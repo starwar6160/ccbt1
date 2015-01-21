@@ -360,6 +360,7 @@ CCBELOCK_API int ZJY1501STD ListDrives( const char * DrivesTypePID )
 	return G_FAIL;
 }
 
+#ifdef _DEBUG0121
 //1、打开设备
 CCBELOCK_API int ZJY1501STD OpenDrives( const char* DrivesTypePID,const char * DrivesIdSN )
 {
@@ -473,6 +474,7 @@ CCBELOCK_API int ZJY1501STD CloseDrives( const char* DrivesTypePID,const char * 
 	}
 	return G_SUSSESS;
 }
+#endif // _DEBUG0121
 
 //2、设置设备消息返回的回调函数
 CCBELOCK_API void ZJY1501STD SetReturnMessage( ReturnMessage _MessageHandleFun )
