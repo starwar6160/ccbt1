@@ -55,9 +55,6 @@ CCBELOCK_API int ZJY1501STD ListDrives(const char * DrivesTypePID);
 CCBELOCK_API int ZJY1501STD OpenDrives(const char* DrivesTypePID,const char * DrivesIdSN);
 //	2°¢πÿ±’…Ë±∏
 CCBELOCK_API int ZJY1501STD CloseDrives(const char* DrivesTypePID,const char * DrivesIdSN);
-CCBELOCK_API void ZJY1501STD zjyTest116();
-CCBELOCK_API void ZJY1501STD zwTest121a1(void);
-CCBELOCK_API void ZJY1501STD zwtRecvJson121(void);
 
 //extern ReturnDrives G_JCHID_ENUM_DEV2015A;
 

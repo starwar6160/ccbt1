@@ -205,17 +205,6 @@ using jch::G_JCHID_RECVMSG_CB;
 using jch::G_FAIL;
 using jch::G_SUSSESS;
 
-CCBELOCK_API void ZJY1501STD zwTest121a1(void)
-{
-	
-	for (int i=0;i<3;i++)
-	{
-		zwJcHidDbg15A lock1;
-		cout<<"DevPtr="<<lock1.getDevPtr()<<endl;
-		//Sleep(5000);
-	}
-}
-
 CCBELOCK_API int ZJY1501STD OpenDrives( const char* DrivesTypePID,const char * DrivesIdSN )
 {
 	s_jcHidDev=new zwJcHidDbg15A();
@@ -273,9 +262,3 @@ CCBELOCK_API int ZJY1501STD InputMessage( const char * DrivesTypePID,const char 
 	return G_SUSSESS;
 }
 
-CCBELOCK_API void ZJY1501STD zwtRecvJson121(void)
-{
-	string recvJson;
-	jch::s_jcHidDev->RecvJson(recvJson);
-	LOG_IF(WARNING,recvJson.length()>0)<<__FUNCTION__<<endl<<recvJson<<endl;
-}
