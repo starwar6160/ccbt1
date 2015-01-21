@@ -233,12 +233,15 @@ void myMulHidDevJsonTest20150120A1()
 	for (int i=0;i<2;i++)
 	{
 		OpenDrives(hidType,	devSN3);
+		for (int j=0;j<1;j++)
+		{
 			InputMessage(hidType,devSN3,jcHidJsonMsg116t1);			
 			//zwtRecvJson121();
-			Sleep(1000);
+			Sleep(2000);
 			InputMessage(hidType,devSN3,jcHidJsonMsg116t2);			
 			//zwtRecvJson121();
-			Sleep(1000);
+			Sleep(2000);
+		}
 		CloseDrives(hidType,devSN3);	
 		
 		Sleep(2000);
