@@ -238,7 +238,7 @@ CCBELOCK_API void ZJY1501STD SetReturnMessage( ReturnMessage _MessageHandleFun )
 	if (NULL!=_MessageHandleFun)
 	{
 		LOG_IF(ERROR,NULL==_MessageHandleFun)<<"G_JCHID_RECVMSG_CB==NULL"<<endl;
-		G_JCHID_RECVMSG_CB=_MessageHandleFun;
+		jch::G_JCHID_RECVMSG_CB=_MessageHandleFun;
 		VLOG(3)<<"SetReturnMessage set Callback Success\n";
 	}	
 	else

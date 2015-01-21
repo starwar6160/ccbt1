@@ -227,8 +227,9 @@ void myMulHidDevJsonTest20150120A1()
 	const char *jcHidJsonMsg116t3="{\"Command\": \"Lock_System_Journal\",\"Begin_No\": \"0\",\"End_No\": \"3\"}";
 	const char *jcHidJsonMsg116t4="{\"Command\": \"Lock_Now_Info\"}";
 	const char *hidType="Lock";
-	//SetReturnDrives(myHidListTest113);
-	//ListDrives("Lock");
+	SetReturnDrives(myHidListTest113);
+	ListDrives("Lock");
+	SetReturnMessage(myReturnMessageTest115);
 	//////////////////////////////////////////////////////////////////////////
 	for (int i=0;i<2;i++)
 	{
