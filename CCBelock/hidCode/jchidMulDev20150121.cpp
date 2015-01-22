@@ -96,7 +96,7 @@ uint32_t zwJcHidDbg15A::Push2jcHidDev(const char *strJsonCmd)
 			sts=jcHidSendData(&m_dev, strJsonCmd, strlen(strJsonCmd));
 			if (JCHID_STATUS_OK==sts)
 			{
-				VLOG(4)<<__FUNCTION__<<" Send Data Success\n";
+				//VLOG(4)<<__FUNCTION__<<" Send Data Success\n";
 				break;
 			}
 			else
@@ -224,7 +224,7 @@ CCBELOCK_API void ZJY1501STD SetReturnMessage( ReturnMessage _MessageHandleFun )
 	{
 		LOG_IF(ERROR,NULL==_MessageHandleFun)<<"G_JCHID_RECVMSG_CB==NULL"<<endl;
 		jch::G_JCHID_RECVMSG_CB=_MessageHandleFun;
-		VLOG(4)<<"SetReturnMessage set Callback Success\n";
+		VLOG(3)<<"SetReturnMessage set Callback Success\n";
 	}	
 	else
 	{
