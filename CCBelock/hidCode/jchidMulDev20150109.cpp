@@ -82,7 +82,8 @@ namespace jcLockJsonCmd_t2015a{
 		std::ostringstream ss;
 		write_json(ss, pt);
 		jcDevListJson=ss.str();
-		LOG(INFO)<<"jcDevListJson=\n"<<jcDevListJson;
+		VLOG(4)<<"jcDevListJson Length="<<jcDevListJson.size()<<endl;
+		LOG_IF(WARNING,jcDevListJson.size()>4)<<"jcDevListJson=\n"<<jcDevListJson;
 	}
 
 
@@ -115,7 +116,7 @@ namespace jcLockJsonCmd_t2015a{
 	void isJcHidDevOpend(const char* DrivesTypePID,const char * DrivesIdSN,uint32_t *inDevHashId,JCHID **jcHidDev)
 	{
 		uint32_t inDevId=myJcHidHndFromStrSerial(DrivesTypePID, DrivesIdSN);
-		VLOG(4)<<"jcHidHandleFromStrSerial="<<inDevId<<endl;	
+		VLOG(3)<<"jcHidHandleFromStrSerial="<<inDevId<<endl;	
 		*inDevHashId=inDevId;
 		std::map<uint32_t,JCHID>::iterator it=G_JCDEV_MAP.find(inDevId);
 		if (it==jcLockJsonCmd_t2015a::G_JCDEV_MAP.end())
@@ -137,7 +138,7 @@ namespace jcLockJsonCmd_t2015a{
 				*jcHidDev=&it->second;
 			}			
 		}
-		VLOG_IF(2,NULL!=DrivesIdSN &&strlen(DrivesIdSN)>0)<<"SN="<<DrivesIdSN<<endl;
+		VLOG_IF(3,NULL!=DrivesIdSN &&strlen(DrivesIdSN)>0)<<"SN="<<DrivesIdSN<<endl;
 
 	}
 

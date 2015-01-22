@@ -37,7 +37,15 @@ void ZJY1501STD myHidListTest113(const char* DrivesType,const char * DrivesIDLis
 {
 	//printf("jcHidDevType=%s\n",DrivesType);
 	printf("USB PlugInOut Callback 20150116.0952\n");
-	printf("Json List of enum jcHidDev Type %s Serial is:\n%s\n",DrivesType,DrivesIDList);
+	if (strlen(DrivesIDList)>4)
+	{
+		printf("Json List of enum jcHidDev Type %s Serial is:\n%s\n",DrivesType,DrivesIDList);
+	}
+	else
+	{
+		printf("DriversIDList no Items\n");
+	}
+	
 }
 
 void ZJY1501STD myReturnMessageTest115(const char* DrivesIdSN,char* DrivesMessageJson)
@@ -221,8 +229,8 @@ void myMulHidDevJsonTest20150120A1()
 {
 	const char *devSN3=
 		"PAAbAAAAAAAAgAKE";
-	const char *jcHidJsonMsg116t1="{\"command\": \"Test_Motor_Open\",\"cmd_id\": \"1234567890\",\"State\": \"test\"}";
-	const char *jcHidJsonMsg116t2="{\"command\": \"Test_Motor_Close\",\"cmd_id\": \"1234567890\",\"State\": \"test\"}";
+	const char *jcHidJsonMsg116t1="{\"command\": \"Test_Motor_Open\", \"cmd_id\": \"1234567890\",\"State\": \"test\"}";
+	const char *jcHidJsonMsg116t2="{\"command\": \"Test_Motor_Close\",\"cmd_id\": \"1234567891\",\"State\": \"test\"}";
 	const char *jcHidJsonMsg116t3="{\"Command\": \"Lock_System_Journal\",\"Begin_No\": \"0\",\"End_No\": \"3\"}";
 	const char *jcHidJsonMsg116t4="{\"Command\": \"Lock_Now_Info\"}";
 	const char *hidType="Lock";

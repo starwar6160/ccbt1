@@ -54,7 +54,7 @@ void myUSBHidStringExtract113( char * dbcc_name )
 	strncpy(jcVid,idxTokVidPid+1,idxPid-idxTokVidPid-1);		
 	strncpy(jcPid,idxPid+1,idxTokSerial-idxPid-1);
 	strncpy(jcSerial,idxTokSerial+1,idxTokRemain-idxTokSerial-1);
-	VLOG_IF(2,strcmp(jcVid,"VID_0483")==0 
+	VLOG_IF(3,strcmp(jcVid,"VID_0483")==0 
 		&& strcmp(jcDevType,"USB")==0)
 		<<"jcDev:"<<jcDevType<<"\tjcVid:"<<jcVid<<"\tjcPid:"<<jcPid<<"\tjcSerial:"<<jcSerial;
 	if (NULL!=jcLockJsonCmd_t2015a::G_JCHID_ENUM_DEV2015A 
