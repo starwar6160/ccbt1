@@ -3,6 +3,7 @@
 #include "zwHidComm.h"
 #include "zwCcbElockHdr.h"
 #include "CCBelock.h"
+#include <boost/thread/condition_variable.hpp>
 using boost::posix_time::milliseconds;
 
 namespace jcLockJsonCmd_t2015a21{
@@ -14,6 +15,7 @@ namespace jcLockJsonCmd_t2015a21{
 	const char * G_DEV_SECBOX="Encryption";
 	ReturnDrives G_JCHID_ENUM_DEV2015A=NULL;
 	ReturnMessage G_JCHID_RECVMSG_CB=NULL;
+	boost::condition_variable_any conVar1;
 
 
 
@@ -22,15 +24,17 @@ class zwJcHidDbg15A
 public:
 	zwJcHidDbg15A();
 	~zwJcHidDbg15A();
-	uint32_t Push2jcHidDev(const char *strJsonCmd);
-	int RecvFromLockJsonThr(JCHID *hidHandle);
+	uint32_t Send(const char *strJsonCmd);
+	int RecvThread(JCHID *hidHandle);
 private:
 	JCHID m_dev;
 	boost::thread *thr;
+	boost::mutex hid_mutex;	//为了保证HID设备打开以后才能发送消息的互斥量
 };
 
 zwJcHidDbg15A::zwJcHidDbg15A()
 {
+	//boost::mutex::scoped_lock lock(thr_mutex);
 	memset(&m_dev,0,sizeof(m_dev));
 	m_dev.vid=0x0483;
 	m_dev.pid=0x5710;
@@ -73,7 +77,7 @@ zwJcHidDbg15A::~zwJcHidDbg15A()
 
 zwJcHidDbg15A *s_jcHidDev=NULL;
 
-uint32_t zwJcHidDbg15A::Push2jcHidDev(const char *strJsonCmd)
+uint32_t zwJcHidDbg15A::Send(const char *strJsonCmd)
 {
 	if (NULL==m_dev.hid_device)
 	{
@@ -92,7 +96,7 @@ uint32_t zwJcHidDbg15A::Push2jcHidDev(const char *strJsonCmd)
 	{
 		//声明一个函数对象，尖括号内部，前面是函数返回值，括号内部是函数的一个或者多个参数(形参)，估计是逗号分隔，
 		//后面用boost::bind按照以下格式把函数指针和后面_1形式的一个或者多个参数(形参)绑定成为一个函数对象
-		boost::function<int (JCHID *)> memberFunctionWrapper(boost::bind(&zwJcHidDbg15A::RecvFromLockJsonThr, this,_1));  	
+		boost::function<int (JCHID *)> memberFunctionWrapper(boost::bind(&zwJcHidDbg15A::RecvThread, this,_1));  	
 		//再次使用boost::bind把函数对象与实参绑定到一起，就可以传递给boost::thread作为线程体函数了
 		thr=new boost::thread(boost::bind(memberFunctionWrapper,&m_dev));	
 		Sleep(5);	//等待线程启动完毕，其实也就2毫秒一般就启动了；
@@ -129,7 +133,7 @@ uint32_t zwJcHidDbg15A::Push2jcHidDev(const char *strJsonCmd)
 }
 
 
-int zwJcHidDbg15A::RecvFromLockJsonThr(JCHID *hidHandle)
+int zwJcHidDbg15A::RecvThread(JCHID *hidHandle)
 {				 
 	assert(NULL!=hidHandle);
 	if (NULL==hidHandle)
@@ -254,7 +258,7 @@ CCBELOCK_API int ZJY1501STD InputMessage( const char * DrivesTypePID,const char 
 	//}
 
 	try {
-		s_jcHidDev->Push2jcHidDev(AnyMessageJson);
+		s_jcHidDev->Send(AnyMessageJson);
 		return G_SUSSESS;
 	}
 	catch(...) {
