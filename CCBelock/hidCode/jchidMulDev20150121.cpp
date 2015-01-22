@@ -43,11 +43,7 @@ zwJcHidDbg15A::zwJcHidDbg15A()
 	{
 		LOG(ERROR)<<" Open jcHid Device Error"<<endl;
 	}
-	//声明一个函数对象，尖括号内部，前面是函数返回值，括号内部是函数的一个或者多个参数(形参)，估计是逗号分隔，
-	//后面用boost::bind按照以下格式把函数指针和后面_1形式的一个或者多个参数(形参)绑定成为一个函数对象
-	boost::function<int (JCHID *)> memberFunctionWrapper(boost::bind(&zwJcHidDbg15A::RecvFromLockJsonThr, this,_1));  	
-	//再次使用boost::bind把函数对象与实参绑定到一起，就可以传递给boost::thread作为线程体函数了
-	thr=new boost::thread(boost::bind(memberFunctionWrapper,&m_dev));	
+	thr=NULL;
 }
 
 zwJcHidDbg15A::~zwJcHidDbg15A()
@@ -83,8 +79,17 @@ uint32_t zwJcHidDbg15A::Push2jcHidDev(const char *strJsonCmd)
 			LOG(ERROR)<<__FUNCTION__<<"input Data strJsonCmd or m_dev.hid_device error!\n";
 			return G_FAIL;
 	}
-	LOG(INFO)<<__FUNCTION__<<"jcHidDev "<<
-		m_dev.hid_device <<" Push "<<strJsonCmd<<endl;
+	if (NULL==thr)
+	{
+		//声明一个函数对象，尖括号内部，前面是函数返回值，括号内部是函数的一个或者多个参数(形参)，估计是逗号分隔，
+		//后面用boost::bind按照以下格式把函数指针和后面_1形式的一个或者多个参数(形参)绑定成为一个函数对象
+		boost::function<int (JCHID *)> memberFunctionWrapper(boost::bind(&zwJcHidDbg15A::RecvFromLockJsonThr, this,_1));  	
+		//再次使用boost::bind把函数对象与实参绑定到一起，就可以传递给boost::thread作为线程体函数了
+		thr=new boost::thread(boost::bind(memberFunctionWrapper,&m_dev));	
+		Sleep(10);	//等待线程启动完毕，其实也就2毫秒一般就启动了；
+	}
+	LOG(WARNING)<<"金储下发Json On jcHidDev "<<
+		m_dev.hid_device <<" Push\n"<<strJsonCmd<<endl;
 		JCHID_STATUS sts=JCHID_STATUS_FAIL;
 	try {	
 		int count=0;
@@ -130,9 +135,13 @@ int zwJcHidDbg15A::RecvFromLockJsonThr(JCHID *hidHandle)
 		int recvLen = 0;
 
 		uint32_t recvDataSum=0;
-		//int t_thr_runCount=1;
+#ifdef _DEBUG
+		int t_thr_runCount=1;
+#endif // _DEBUG
 		while (1) {	
-			//LOG(WARNING)<<"RECV THR "<<t_thr_runCount++<<endl;
+#ifdef _DEBUG
+			LOG(WARNING)<<"RECV THR 20150122 "<<t_thr_runCount++<<endl;
+#endif // _DEBUG
 			/** 手动在线程中加入中断点，中断点不影响其他语句执行 */  
 			boost::this_thread::interruption_point();  
 					if (NULL==hidHandle->hid_device)
@@ -158,8 +167,8 @@ int zwJcHidDbg15A::RecvFromLockJsonThr(JCHID *hidHandle)
 						{
 							VLOG(4)<<"recvDataSum="<<recvDataSum<<" recvDataNowSum="<<recvDataNowSum<<endl;
 							int tRecvLen=strlen(recvBuf);
-							LOG_IF(INFO,tRecvLen>9)<<"成功从锁具"<<hidHandle->HidSerial<<"接收JSON数据如下："<<endl;
-							LOG_IF(WARNING,tRecvLen>9)<<endl<<recvBuf<<endl;
+							LOG_IF(WARNING,tRecvLen>9)<<"成功从锁具"<<hidHandle->HidSerial<<
+								"接收JSON数据如下："<<endl<<recvBuf<<endl;
 							LOG_IF(ERROR,NULL==G_JCHID_RECVMSG_CB)<<"G_JCHID_RECVMSG_CB==NULL"<<endl;
 							if (NULL!=G_JCHID_RECVMSG_CB)
 							{
@@ -225,9 +234,9 @@ CCBELOCK_API int ZJY1501STD InputMessage( const char * DrivesTypePID,const char 
 	assert(NULL!=AnyMessageJson && strlen(AnyMessageJson)>0);
 	LOG(INFO)<<"DrivesTypePID"<<DrivesTypePID<<"AnyMessageJson"<<AnyMessageJson<<endl;
 	LOG_IF(INFO,NULL!=DrivesIdSN &&strlen(DrivesIdSN)>0)<<"DrivesIdSN"<<DrivesIdSN<<endl;
-	if (NULL != AnyMessageJson && strlen(AnyMessageJson) > 0) {
-		LOG(WARNING)<< "JinChu下发JSON=" << endl << AnyMessageJson <<endl;
-	}
+	//if (NULL != AnyMessageJson && strlen(AnyMessageJson) > 0) {
+	//	LOG(WARNING)<<__FUNCTION__<< " JinChu下发JSON=" << endl << AnyMessageJson <<endl;
+	//}
 
 	try {
 		s_jcHidDev->Push2jcHidDev(AnyMessageJson);

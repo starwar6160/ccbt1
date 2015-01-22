@@ -166,7 +166,7 @@ CloseHidEnd:
 					return;
 				}
 #endif // ZWUSE_HID_MSG_SPLIT
-				ZWNOTICE("连接锁具JSON成功");			
+				ZWNOTICE("连接锁具JSON成功 jsonCmd4Lock.cpp");			
 				try {
 #ifdef ZWUSE_HID_MSG_SPLIT
 					JCHID_STATUS sts=
@@ -187,7 +187,7 @@ CloseHidEnd:
 
 					//////////////////////////////////////////////////////////////////////////
 
-					ZWNOTICE("成功从锁具接收JSON数据如下：");
+					ZWNOTICE("jsonCmd4Lock.cpp 成功从锁具接收JSON数据如下：");
 				}
 				catch(...) {
 					ZWFATAL

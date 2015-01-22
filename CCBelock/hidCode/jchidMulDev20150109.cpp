@@ -82,7 +82,7 @@ namespace jcLockJsonCmd_t2015a{
 		std::ostringstream ss;
 		write_json(ss, pt);
 		jcDevListJson=ss.str();
-		LOG(INFO)<<"jcDevListJson=\n"<<jcDevListJson<<endl;
+		LOG(INFO)<<"jcDevListJson=\n"<<jcDevListJson;
 	}
 
 
