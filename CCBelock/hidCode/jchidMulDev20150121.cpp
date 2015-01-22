@@ -3,6 +3,7 @@
 #include "zwHidComm.h"
 #include "zwCcbElockHdr.h"
 #include "CCBelock.h"
+using boost::posix_time::milliseconds;
 
 namespace jcLockJsonCmd_t2015a21{
 	const int G_RECV_TIMEOUT=700;
@@ -47,12 +48,17 @@ zwJcHidDbg15A::zwJcHidDbg15A()
 
 zwJcHidDbg15A::~zwJcHidDbg15A()
 {
+	if (NULL==m_dev.hid_device)
+	{
+		LOG(ERROR)<<"JcHid Device Not Open when CloseDevice"<<endl;
+		return;
+	}
 	assert(NULL!=m_dev.hid_device);	
 	if (NULL!=m_dev.hid_device)
 	{
 		thr->interrupt();
-		thr->join();
-
+		//等待50毫秒线程结束
+		thr->timed_join(boost::posix_time::milliseconds(50));
 		jcHidClose(&m_dev);
 		LOG(WARNING)<<"Close jcHid Device "<<m_dev.hid_device<<" SUCCESS"<<endl;
 	}
@@ -69,6 +75,11 @@ zwJcHidDbg15A *s_jcHidDev=NULL;
 
 uint32_t zwJcHidDbg15A::Push2jcHidDev(const char *strJsonCmd)
 {
+	if (NULL==m_dev.hid_device)
+	{
+		LOG(ERROR)<<"JcHid Device Not Open"<<endl;
+		return G_FAIL;
+	}
 	assert(NULL!=m_dev.hid_device);
 	assert(NULL != strJsonCmd && strlen(strJsonCmd) > 0);
 	if (NULL == strJsonCmd || strlen(strJsonCmd) == 0
