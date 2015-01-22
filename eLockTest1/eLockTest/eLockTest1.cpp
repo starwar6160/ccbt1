@@ -230,10 +230,10 @@ void myMulHidDevJsonTest20150120A1()
 	ListDrives("Lock");
 	SetReturnMessage(myReturnMessageTest115);
 	//////////////////////////////////////////////////////////////////////////
-	for (int i=0;i<2;i++)
+	for (int i=0;i<1;i++)
 	{
 		OpenDrives(hidType,	devSN3);
-		for (int j=0;j<2;j++)
+		for (int j=0;j<1;j++)
 		{
 			InputMessage(hidType,devSN3,jcHidJsonMsg116t1);						
 			Sleep(7500);
@@ -243,6 +243,6 @@ void myMulHidDevJsonTest20150120A1()
 		CloseDrives(hidType,devSN3);	
 		
 		Sleep(500);
-		cout<<"Count "<<i<<"Complete"<<endl;
+		cout<<"Count "<<i<<" Complete"<<endl;
 	}
 }

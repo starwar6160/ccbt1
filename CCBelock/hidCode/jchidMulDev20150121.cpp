@@ -26,10 +26,13 @@ public:
 private:
 	JCHID m_dev;
 	boost::thread *thr;
+	boost::mutex jcDevInit_mutex;	//用来限定先要打开设备，启动数据接收线程，然后才能发送数据
 };
 
 zwJcHidDbg15A::zwJcHidDbg15A()
 {
+	jcDevInit_mutex.lock();
+	VLOG(4)<<__FUNCTION__<<"\njcDevInit_mutex.lock();"<<endl;
 	memset(&m_dev,0,sizeof(m_dev));
 	m_dev.vid=0x0483;
 	m_dev.pid=0x5710;
@@ -42,7 +45,13 @@ zwJcHidDbg15A::zwJcHidDbg15A()
 	{
 		LOG(ERROR)<<" Open jcHid Device Error"<<endl;
 	}
-	thr=NULL;
+	//声明一个函数对象，尖括号内部，前面是函数返回值，括号内部是函数的一个或者多个参数(形参)，估计是逗号分隔，
+	//后面用boost::bind按照以下格式把函数指针和后面_1形式的一个或者多个参数(形参)绑定成为一个函数对象
+	boost::function<int (JCHID *)> memberFunctionWrapper(boost::bind(&zwJcHidDbg15A::RecvFromLockJsonThr, this,_1));  	
+	//再次使用boost::bind把函数对象与实参绑定到一起，就可以传递给boost::thread作为线程体函数了
+	thr=new boost::thread(boost::bind(memberFunctionWrapper,&m_dev));	
+	Sleep(5);	//等待线程启动完毕，其实也就2毫秒一般就启动了；
+
 }
 
 zwJcHidDbg15A::~zwJcHidDbg15A()
@@ -77,15 +86,6 @@ uint32_t zwJcHidDbg15A::Push2jcHidDev(const char *strJsonCmd)
 			LOG(ERROR)<<__FUNCTION__<<"input Data strJsonCmd or m_dev.hid_device error!\n";
 			return G_FAIL;
 	}
-	if (NULL==thr)
-	{
-		//声明一个函数对象，尖括号内部，前面是函数返回值，括号内部是函数的一个或者多个参数(形参)，估计是逗号分隔，
-		//后面用boost::bind按照以下格式把函数指针和后面_1形式的一个或者多个参数(形参)绑定成为一个函数对象
-		boost::function<int (JCHID *)> memberFunctionWrapper(boost::bind(&zwJcHidDbg15A::RecvFromLockJsonThr, this,_1));  	
-		//再次使用boost::bind把函数对象与实参绑定到一起，就可以传递给boost::thread作为线程体函数了
-		thr=new boost::thread(boost::bind(memberFunctionWrapper,&m_dev));	
-		Sleep(5);	//等待线程启动完毕，其实也就2毫秒一般就启动了；
-	}
 	LOG(WARNING)<<"金储下发Json On jcHidDev "<<
 		m_dev.hid_device <<" Push\n"<<strJsonCmd<<endl;
 		JCHID_STATUS sts=JCHID_STATUS_FAIL;
@@ -93,7 +93,12 @@ uint32_t zwJcHidDbg15A::Push2jcHidDev(const char *strJsonCmd)
 		int count=0;
 		do 
 		{
-			sts=jcHidSendData(&m_dev, strJsonCmd, strlen(strJsonCmd));
+			{
+				boost::mutex::scoped_lock lock(jcDevInit_mutex);
+				VLOG(4)<<__FUNCTION__<<"\nSendData"<<endl;
+				sts=jcHidSendData(&m_dev, strJsonCmd, strlen(strJsonCmd));
+			}
+			
 			if (JCHID_STATUS_OK==sts)
 			{
 				//VLOG(4)<<__FUNCTION__<<" Send Data Success\n";
@@ -136,6 +141,8 @@ int zwJcHidDbg15A::RecvFromLockJsonThr(JCHID *hidHandle)
 #ifdef _DEBUG1
 		int t_thr_runCount=1;
 #endif // _DEBUG
+		jcDevInit_mutex.unlock();//这里之后可以开始发送数据了
+		VLOG(4)<<__FUNCTION__<<"\njcDevInit_mutex.unlock();"<<endl;
 		while (1) {	
 #ifdef _DEBUG1
 			LOG(WARNING)<<"RECV THR 20150122 "<<t_thr_runCount++<<endl;
