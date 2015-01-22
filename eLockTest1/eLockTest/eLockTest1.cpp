@@ -236,13 +236,13 @@ void myMulHidDevJsonTest20150120A1()
 		for (int j=0;j<2;j++)
 		{
 			InputMessage(hidType,devSN3,jcHidJsonMsg116t1);						
-			Sleep(7000);
+			Sleep(7500);
 			InputMessage(hidType,devSN3,jcHidJsonMsg116t2);			
-			Sleep(7000);
+			Sleep(6000);
 		}
 		CloseDrives(hidType,devSN3);	
 		
-		Sleep(2000);
+		Sleep(500);
 		cout<<"Count "<<i<<"Complete"<<endl;
 	}
 }

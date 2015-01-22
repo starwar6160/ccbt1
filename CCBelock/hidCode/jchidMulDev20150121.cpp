@@ -30,7 +30,6 @@ private:
 
 zwJcHidDbg15A::zwJcHidDbg15A()
 {
-	VLOG(4)<<__FUNCTION__<<endl;
 	memset(&m_dev,0,sizeof(m_dev));
 	m_dev.vid=0x0483;
 	m_dev.pid=0x5710;
@@ -48,8 +47,7 @@ zwJcHidDbg15A::zwJcHidDbg15A()
 
 zwJcHidDbg15A::~zwJcHidDbg15A()
 {
-	assert(NULL!=m_dev.hid_device);
-	VLOG(4)<<__FUNCTION__<<endl;
+	assert(NULL!=m_dev.hid_device);	
 	if (NULL!=m_dev.hid_device)
 	{
 		thr->interrupt();
@@ -86,7 +84,7 @@ uint32_t zwJcHidDbg15A::Push2jcHidDev(const char *strJsonCmd)
 		boost::function<int (JCHID *)> memberFunctionWrapper(boost::bind(&zwJcHidDbg15A::RecvFromLockJsonThr, this,_1));  	
 		//再次使用boost::bind把函数对象与实参绑定到一起，就可以传递给boost::thread作为线程体函数了
 		thr=new boost::thread(boost::bind(memberFunctionWrapper,&m_dev));	
-		Sleep(10);	//等待线程启动完毕，其实也就2毫秒一般就启动了；
+		Sleep(5);	//等待线程启动完毕，其实也就2毫秒一般就启动了；
 	}
 	LOG(WARNING)<<"金储下发Json On jcHidDev "<<
 		m_dev.hid_device <<" Push\n"<<strJsonCmd<<endl;
@@ -98,7 +96,7 @@ uint32_t zwJcHidDbg15A::Push2jcHidDev(const char *strJsonCmd)
 			sts=jcHidSendData(&m_dev, strJsonCmd, strlen(strJsonCmd));
 			if (JCHID_STATUS_OK==sts)
 			{
-				VLOG(4)<<__FUNCTION__<<" Send Data Success\n";
+				//VLOG(4)<<__FUNCTION__<<" Send Data Success\n";
 				break;
 			}
 			else
@@ -135,13 +133,14 @@ int zwJcHidDbg15A::RecvFromLockJsonThr(JCHID *hidHandle)
 		int recvLen = 0;
 
 		uint32_t recvDataSum=0;
-#ifdef _DEBUG
+#ifdef _DEBUG1
 		int t_thr_runCount=1;
 #endif // _DEBUG
 		while (1) {	
-#ifdef _DEBUG
+#ifdef _DEBUG1
 			LOG(WARNING)<<"RECV THR 20150122 "<<t_thr_runCount++<<endl;
 #endif // _DEBUG
+try{
 			/** 手动在线程中加入中断点，中断点不影响其他语句执行 */  
 			boost::this_thread::interruption_point();  
 					if (NULL==hidHandle->hid_device)
@@ -178,9 +177,14 @@ int zwJcHidDbg15A::RecvFromLockJsonThr(JCHID *hidHandle)
 						}
 
 					}						
-
+}
+catch(boost::thread_interrupted)
+{
+	LOG(WARNING)<<"金储HID数据接收线程被主程序正常终止"<<endl;
+	return G_SUSSESS;
+}
+//////////////////////TRY-CATCH完毕////////////////////////////////////////////////////
 		}	//while (1) {
-		LOG(INFO)<<"金储通信数据接收JSON过程正常结束";
 }
 
 
@@ -232,8 +236,8 @@ CCBELOCK_API int ZJY1501STD InputMessage( const char * DrivesTypePID,const char 
 {
 	assert(NULL!=DrivesTypePID);
 	assert(NULL!=AnyMessageJson && strlen(AnyMessageJson)>0);
-	LOG(INFO)<<"DrivesTypePID"<<DrivesTypePID<<"AnyMessageJson"<<AnyMessageJson<<endl;
-	LOG_IF(INFO,NULL!=DrivesIdSN &&strlen(DrivesIdSN)>0)<<"DrivesIdSN"<<DrivesIdSN<<endl;
+	//LOG(INFO)<<"DrivesTypePID:"<<DrivesTypePID<<" AnyMessageJson:"<<endl<<AnyMessageJson<<endl;
+	LOG_IF(INFO,NULL!=DrivesIdSN &&strlen(DrivesIdSN)>0)<<"DrivesIdSN:"<<DrivesIdSN<<endl;
 	//if (NULL != AnyMessageJson && strlen(AnyMessageJson) > 0) {
 	//	LOG(WARNING)<<__FUNCTION__<< " JinChu下发JSON=" << endl << AnyMessageJson <<endl;
 	//}
