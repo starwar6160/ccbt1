@@ -42,7 +42,7 @@ void ZJY1501STD myHidListTest113(const char* DrivesType,const char * DrivesIDLis
 
 void ZJY1501STD myReturnMessageTest115(const char* DrivesIdSN,char* DrivesMessageJson)
 {
-	printf("Callback Function %s:\n",__FUNCTION__);
+	printf("Callback Function %s:\t",__FUNCTION__);
 	printf("devSerial=%s\t devReturnJson is:\n%s\n",DrivesIdSN,DrivesMessageJson);
 }
 
@@ -230,7 +230,7 @@ void myMulHidDevJsonTest20150120A1()
 	ListDrives("Lock");
 	SetReturnMessage(myReturnMessageTest115);
 	//////////////////////////////////////////////////////////////////////////
-	for (int i=0;i<1;i++)
+	for (int i=0;i<2;i++)
 	{
 		OpenDrives(hidType,	devSN3);
 		for (int j=0;j<1;j++)

@@ -26,12 +26,13 @@ public:
 private:
 	JCHID m_dev;
 	boost::thread *thr;
-	boost::mutex jcDevInit_mutex;	//用来限定先要打开设备，启动数据接收线程，然后才能发送数据
+	boost::mutex jcSend_mutex;	//用来限定先要打开设备，启动数据接收线程，然后才能发送数据
+	boost::mutex jcRecv_mutex;	//接收数据的互斥体
 };
 
 zwJcHidDbg15A::zwJcHidDbg15A()
 {
-	jcDevInit_mutex.lock();
+	jcSend_mutex.lock();
 	VLOG(4)<<__FUNCTION__<<"\njcDevInit_mutex.lock();"<<endl;
 	memset(&m_dev,0,sizeof(m_dev));
 	m_dev.vid=0x0483;
@@ -56,6 +57,9 @@ zwJcHidDbg15A::zwJcHidDbg15A()
 
 zwJcHidDbg15A::~zwJcHidDbg15A()
 {
+	//没有在发送或者接收，才能去释放资源
+	boost::mutex::scoped_lock lock(jcSend_mutex);
+	boost::mutex::scoped_lock lock2(jcRecv_mutex);
 	assert(NULL!=m_dev.hid_device);	
 	if (NULL!=m_dev.hid_device)
 	{
@@ -93,12 +97,9 @@ uint32_t zwJcHidDbg15A::Push2jcHidDev(const char *strJsonCmd)
 		int count=0;
 		do 
 		{
-			{
-				boost::mutex::scoped_lock lock(jcDevInit_mutex);
+				boost::mutex::scoped_lock lock(jcSend_mutex);
 				VLOG(4)<<__FUNCTION__<<"\nSendData"<<endl;
 				sts=jcHidSendData(&m_dev, strJsonCmd, strlen(strJsonCmd));
-			}
-			
 			if (JCHID_STATUS_OK==sts)
 			{
 				//VLOG(4)<<__FUNCTION__<<" Send Data Success\n";
@@ -131,7 +132,7 @@ int zwJcHidDbg15A::RecvFromLockJsonThr(JCHID *hidHandle)
 		LOG(WARNING)<<__FUNCTION__<<"\tInput JCHID * is NULL!"<<endl;
 		return G_FAIL;
 	}
-	LOG(WARNING)<<__FUNCTION__<<" Started"<<endl;	
+	LOG(WARNING)<<__FUNCTION__<<"\n JcHidZJYDbg Thread Started"<<endl;	
 		const int BLEN = 1024;
 		char recvBuf[BLEN + 1];
 		memset(recvBuf, 0, BLEN + 1);
@@ -141,7 +142,7 @@ int zwJcHidDbg15A::RecvFromLockJsonThr(JCHID *hidHandle)
 #ifdef _DEBUG1
 		int t_thr_runCount=1;
 #endif // _DEBUG
-		jcDevInit_mutex.unlock();//这里之后可以开始发送数据了
+		jcSend_mutex.unlock();//这里之后可以开始发送数据了
 		VLOG(4)<<__FUNCTION__<<"\njcDevInit_mutex.unlock();"<<endl;
 		while (1) {	
 #ifdef _DEBUG1
@@ -155,9 +156,13 @@ try{
 						continue;
 					}
 					//LOG(WARNING)<<"RECVTHR.P3.1,Before RecvHidData"<<endl;
-					JCHID_STATUS sts=
-						jcHidRecvData(hidHandle,
-						recvBuf, BLEN, &recvLen,G_RECV_TIMEOUT);				
+					JCHID_STATUS sts=JCHID_STATUS_FAIL;
+					{
+						boost::mutex::scoped_lock lock(jcRecv_mutex);
+						sts=jcHidRecvData(hidHandle,
+							recvBuf, BLEN, &recvLen,G_RECV_TIMEOUT);				
+					}
+
 					//LOG(WARNING)<<"RECVTHR.P3.2,After RecvHidData"<<endl;
 					//要是某个设备什么数据也没收到，就直接进入下一个设备
 					if (JCHID_STATUS_OK!=sts &&JCHID_STATUS_RECV_ZEROBYTES!=sts)
