@@ -27,7 +27,6 @@ private:
 	JCHID m_dev;
 	boost::thread *thr;
 	boost::mutex jcSend_mutex;	//用来限定先要打开设备，启动数据接收线程，然后才能发送数据
-	boost::mutex jcRecv_mutex;	//接收数据的互斥体
 };
 
 zwJcHidDbg15A::zwJcHidDbg15A()
@@ -57,9 +56,6 @@ zwJcHidDbg15A::zwJcHidDbg15A()
 
 zwJcHidDbg15A::~zwJcHidDbg15A()
 {
-	//没有在发送或者接收，才能去释放资源
-	boost::mutex::scoped_lock lock(jcSend_mutex);
-	boost::mutex::scoped_lock lock2(jcRecv_mutex);
 	assert(NULL!=m_dev.hid_device);	
 	if (NULL!=m_dev.hid_device)
 	{
@@ -157,12 +153,9 @@ try{
 					}
 					//LOG(WARNING)<<"RECVTHR.P3.1,Before RecvHidData"<<endl;
 					JCHID_STATUS sts=JCHID_STATUS_FAIL;
-					{
-						boost::mutex::scoped_lock lock(jcRecv_mutex);
+
 						sts=jcHidRecvData(hidHandle,
 							recvBuf, BLEN, &recvLen,G_RECV_TIMEOUT);				
-					}
-
 					//LOG(WARNING)<<"RECVTHR.P3.2,After RecvHidData"<<endl;
 					//要是某个设备什么数据也没收到，就直接进入下一个设备
 					if (JCHID_STATUS_OK!=sts &&JCHID_STATUS_RECV_ZEROBYTES!=sts)
