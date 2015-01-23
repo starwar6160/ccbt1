@@ -24,17 +24,6 @@
     <None Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="stdafx.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="targetver.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="stdafx.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="zwECIES\ecdh.c">
       <Filter>源文件\zwECIESCopy</Filter>
     </ClCompile>
@@ -99,9 +88,6 @@
       <Filter>源文件\zwMiraclMini</Filter>
     </ClCompile>
     <ClCompile Include="zwMiracl\mrbits.c">
-      <Filter>源文件\zwMiraclMini</Filter>
-    </ClCompile>
-    <ClCompile Include="zwMiracl\mrmuldv.c">
       <Filter>源文件\zwMiraclMini</Filter>
     </ClCompile>
     <ClCompile Include="zwMiracl\mrjack.c">
