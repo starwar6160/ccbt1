@@ -86,8 +86,9 @@ uint32_t zwJcHidDbg15A::Push2jcHidDev(const char *strJsonCmd)
 			LOG(ERROR)<<__FUNCTION__<<"input Data strJsonCmd or m_dev.hid_device error!\n";
 			return G_FAIL;
 	}
-	LOG(WARNING)<<"金储下发Json On jcHidDev "<<
-		m_dev.hid_device <<" Push\n"<<strJsonCmd<<endl;
+	static int jcPushCountTmp123=0;
+	LOG(WARNING)<<"金储下发 "<<" Json On jcHidDev "<<
+		m_dev.hid_device <<" Push Count "<<jcPushCountTmp123++<<endl<<strJsonCmd<<endl;
 		JCHID_STATUS sts=JCHID_STATUS_FAIL;
 	try {	
 		int count=0;
@@ -171,8 +172,9 @@ try{
 						{
 							VLOG(4)<<"recvDataSum="<<recvDataSum<<" recvDataNowSum="<<recvDataNowSum<<endl;
 							int tRecvLen=strlen(recvBuf);
-							LOG_IF(WARNING,tRecvLen>9)<<"成功从锁具"<<hidHandle->HidSerial<<
-								"接收JSON数据如下："<<endl<<recvBuf<<endl;
+							static int tmpRecvCount=0;
+							LOG_IF(WARNING,tRecvLen>9)<<"MulHid成功从锁具 "<<hidHandle->HidSerial<<
+								" 接收JSON数据如下：Count "<<tmpRecvCount++<<endl<<recvBuf<<endl;
 							LOG_IF(ERROR,NULL==G_JCHID_RECVMSG_CB)<<"G_JCHID_RECVMSG_CB==NULL"<<endl;
 							if (NULL!=G_JCHID_RECVMSG_CB)
 							{

@@ -225,6 +225,7 @@ void myMulHidDevJsonTest20150120A1()
 	const char *jcHidJsonMsg116t2="{\"command\": \"Test_Motor_Close\",\"cmd_id\": \"1234567890\",\"State\": \"test\"}";
 	const char *jcHidJsonMsg116t3="{\"Command\": \"Lock_System_Journal\",\"Begin_No\": \"0\",\"End_No\": \"3\"}";
 	const char *jcHidJsonMsg116t4="{\"Command\": \"Lock_Now_Info\"}";
+	const char *msgT5="{\"command\":\"Test_USB_HID\",\"cmd_id\":\"1234567890\",\"input\":\"TestAnyString\",\"output\":\"\"}";
 	const char *hidType="Lock";
 	SetReturnDrives(myHidListTest113);
 	ListDrives("Lock");
@@ -233,12 +234,12 @@ void myMulHidDevJsonTest20150120A1()
 	for (int i=0;i<2;i++)
 	{
 		OpenDrives(hidType,	devSN3);
-		for (int j=0;j<1;j++)
+		for (int j=0;j<25;j++)
 		{
-			InputMessage(hidType,devSN3,jcHidJsonMsg116t1);						
-			Sleep(7500);
-			InputMessage(hidType,devSN3,jcHidJsonMsg116t2);			
-			Sleep(6000);
+			InputMessage(hidType,devSN3,msgT5);						
+			Sleep(1500);
+			//InputMessage(hidType,devSN3,jcHidJsonMsg116t2);			
+			//Sleep(8000);
 		}
 		CloseDrives(hidType,devSN3);	
 		

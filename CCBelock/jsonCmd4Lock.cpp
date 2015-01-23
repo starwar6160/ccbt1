@@ -187,7 +187,7 @@ CloseHidEnd:
 
 					//////////////////////////////////////////////////////////////////////////
 
-					ZWNOTICE("jsonCmd4Lock.cpp 成功从锁具接收JSON数据如下：");
+					ZWNOTICE("jsonCmd4Lock.cpp cmd4Lock成功从锁具接收JSON数据如下：");
 				}
 				catch(...) {
 					ZWFATAL
