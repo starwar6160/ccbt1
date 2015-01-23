@@ -1,14 +1,11 @@
 // stm32Test2.cpp : 定义控制台应用程序的入口点。
 //
 
-#include <iostream>
-#include <string>
-using std::cout;
-using std::endl;
-using std::string;
-
-
 #include "zwEcies529.h"
+#include <stdio.h>
+#include <memory.h>
+#include <string.h>
+
 
 void myECIES_KeyGenTest123(void)
 {
@@ -28,27 +25,18 @@ void myECIES_KeyGenTest123(void)
 	char prikey[ZW_ECIES_PRIKEY_LEN];
 	memset(pubkey, 0, sizeof(pubkey));
 	memset(prikey, 0, sizeof(prikey));
-	//strcpy(pubkey, EciesGetPubKey(hd));
-	//strcpy(prikey, EciesGetPriKey(hd));
 	strcpy(pubkey,"BFlfjkxoiRZFdjQKa/W1JWBwFx+FPyzcFGqXjnlVzMcvIAQyK3C1Ha+G2uGUM4nX5khPQP5AiPFiCyuH2WxZefg=");
 	strcpy(prikey,"y+tgryY83ibv2RaQeb93a97+JX0/9cpWf4MrmUUtrzs=");
-	//EXPECT_GT(strlen(pubkey), 0);
-	//EXPECT_GT(strlen(prikey), 0);
-	cout << "pubkey=\t" << pubkey << endl;
-	cout << "prikey=\t" << prikey << endl;
+	printf("pubkey=%s\nprikey=%s\n",pubkey,prikey);
 	//////////////////////////////////////////////////////////////////////////
 	const char *csPlainText =
 		"C# Port Test plain text 20140722.1625";
 	char crypt[ZW_ECIES_CRYPT_TOTALLEN];
 	memset(crypt, 0, sizeof(crypt));
 	strcpy(crypt, EciesEncrypt(pubkey, csPlainText));
-	cout<<"ECIES ENC Text= "<<crypt<<endl;
-	//strcpy(crypt2, EciesEncrypt(pubkey, csPlainText));
-	//EXPECT_GT(strlen(crypt), 0);
-	//EXPECT_NE(0, memcmp(crypt, crypt2, ZW_ECIES_CRYPT_TOTALLEN));
-	string crStr = EciesDecrypt(prikey, crypt);
-	cout<<"ECIES DEC Text= "<<crStr<<endl;
-	//EXPECT_GT(strlen(outPlain), 0);
+	printf("ECIES ENC Text= %s\n",crypt);
+	strcpy(crypt,EciesDecrypt(prikey, crypt));	
+	printf("ECIES DEC Text= %s\n",crypt);
 	//如果生成了密钥对，那么别忘了删除，释放内存
 	//EciesDelete(hd);
 }

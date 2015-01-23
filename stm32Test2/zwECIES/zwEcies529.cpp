@@ -1,7 +1,10 @@
-//#include "..\stdafx.h"
 #include <string>
 #include <vector>
+#ifdef WIN32
 #include <assert.h>
+#else
+#define assert	//ARM Keil²»Ö§³Öassert
+#endif // WIN32
 using std::string;
 using std::vector;
 #ifdef  __cplusplus
