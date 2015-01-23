@@ -95,7 +95,7 @@ uint32_t zwJcHidDbg15A::Push2jcHidDev(const char *strJsonCmd)
 		do 
 		{
 				boost::mutex::scoped_lock lock(jcSend_mutex);
-				VLOG(4)<<__FUNCTION__<<"\nSendData"<<endl;
+				//VLOG(4)<<__FUNCTION__<<"\nSendData"<<endl;
 				sts=jcHidSendData(&m_dev, strJsonCmd, strlen(strJsonCmd));
 			if (JCHID_STATUS_OK==sts)
 			{
@@ -158,6 +158,8 @@ try{
 					int recvLen = 0;	
 						sts=jcHidRecvData(hidHandle,
 							recvBuf, BLEN, &recvLen,G_RECV_TIMEOUT);				
+					assert(recvLen>0);
+					assert(strlen(recvBuf)>0);
 					//LOG(WARNING)<<"RECVTHR.P3.2,After RecvHidData"<<endl;
 					//要是某个设备什么数据也没收到，就直接进入下一个设备
 					if (JCHID_STATUS_OK!=sts &&JCHID_STATUS_RECV_ZEROBYTES!=sts)
@@ -245,7 +247,7 @@ CCBELOCK_API int ZJY1501STD InputMessage( const char * DrivesTypePID,const char 
 	assert(NULL!=DrivesTypePID);
 	assert(NULL!=AnyMessageJson && strlen(AnyMessageJson)>0);
 	//LOG(INFO)<<"DrivesTypePID:"<<DrivesTypePID<<" AnyMessageJson:"<<endl<<AnyMessageJson<<endl;
-	LOG_IF(INFO,NULL!=DrivesIdSN &&strlen(DrivesIdSN)>0)<<"DrivesIdSN:"<<DrivesIdSN<<endl;
+	//LOG_IF(INFO,NULL!=DrivesIdSN &&strlen(DrivesIdSN)>0)<<"DrivesIdSN:"<<DrivesIdSN<<endl;
 	//if (NULL != AnyMessageJson && strlen(AnyMessageJson) > 0) {
 	//	LOG(WARNING)<<__FUNCTION__<< " JinChu下发JSON=" << endl << AnyMessageJson <<endl;
 	//}
