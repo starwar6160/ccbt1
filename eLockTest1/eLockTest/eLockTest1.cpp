@@ -231,13 +231,13 @@ void myMulHidDevJsonTest20150120A1()
 	ListDrives("Lock");
 	SetReturnMessage(myReturnMessageTest115);
 	//////////////////////////////////////////////////////////////////////////
-	for (int i=0;i<2;i++)
+	for (int i=0;i<3;i++)
 	{
 		OpenDrives(hidType,	devSN3);
-		for (int j=0;j<25;j++)
+		for (int j=0;j<50;j++)
 		{
 			InputMessage(hidType,devSN3,msgT5);						
-			Sleep(1500);
+			Sleep(1200);
 			//InputMessage(hidType,devSN3,jcHidJsonMsg116t2);			
 			//Sleep(8000);
 		}

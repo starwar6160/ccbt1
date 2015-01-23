@@ -13,7 +13,7 @@ namespace elockcstest808
     {
 
 
-        static void Main(string[] args)
+        static void MainOld1(string[] args)
         {
             const int ZWPAUSE = 1500;
             //声明一个密盒对象；使用该对象的3个方法来认证，读取，写入，至于Open/Close由该对象内部自动完成；            

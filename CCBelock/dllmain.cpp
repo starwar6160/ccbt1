@@ -39,13 +39,13 @@ void zwGlogInit()
 	FLAGS_minloglevel=google::GLOG_INFO;
 
 	//用这一条，使得调试可以看到日志，但是不产生日志
-	FLAGS_logtostderr=true;	//输出到stderr代替输出到文件
+	//FLAGS_logtostderr=true;	//输出到stderr代替输出到文件
 	//////////////////////////////////////////////////////////////////////////
-	const char *zwLogDir=".\\JCLOG15";
+	const char *zwLogDir=".\\JCLOG123";
 	_mkdir(zwLogDir);
 	FLAGS_log_dir=zwLogDir;	//设定在指定目录下记录日志
 	//FLAGS_alsologtostderr=true;	//同时输出到stderr和文件;
-	FLAGS_max_log_size=5;	//最大日志文件大小多少M字节，之后就会自动生成新的日志文件，以便前面的日志被查看或者备份
+	FLAGS_max_log_size=1;	//最大日志文件大小多少M字节，之后就会自动生成新的日志文件，以便前面的日志被查看或者备份
 	FLAGS_colorlogtostderr=true;	//如果终端支持，采用彩色输出
 	FLAGS_logbufsecs=1;	//日志缓冲1秒输出，有利于大量日志输出时的性能，我认为
 	FLAGS_v=4;	//只有VLOG值小于等于该数字，才会被输出，尤其适合于调试日志

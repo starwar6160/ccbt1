@@ -132,8 +132,7 @@ int zwJcHidDbg15A::RecvFromLockJsonThr(JCHID *hidHandle)
 	LOG(WARNING)<<__FUNCTION__<<"\n JcHidZJYDbg Thread Started"<<endl;	
 		const int BLEN = 1024;
 		char recvBuf[BLEN + 1];
-		memset(recvBuf, 0, BLEN + 1);
-		int recvLen = 0;
+		memset(recvBuf, 0, BLEN + 1);		
 
 		uint32_t recvDataSum=0;
 #ifdef _DEBUG1
@@ -154,7 +153,9 @@ try{
 					}
 					//LOG(WARNING)<<"RECVTHR.P3.1,Before RecvHidData"<<endl;
 					JCHID_STATUS sts=JCHID_STATUS_FAIL;
-
+					//注意此处如果不每次循环清零，则会导致长度值超过大约4K字节时，计算CRC或者其他读取
+					//收到的内容数组时，尽管数据可能只有几十字节，但是读取操作越界，程序崩溃；
+					int recvLen = 0;	
 						sts=jcHidRecvData(hidHandle,
 							recvBuf, BLEN, &recvLen,G_RECV_TIMEOUT);				
 					//LOG(WARNING)<<"RECVTHR.P3.2,After RecvHidData"<<endl;
