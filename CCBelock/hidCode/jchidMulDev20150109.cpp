@@ -52,6 +52,34 @@ namespace jcLockJsonCmd_t2015a{
 	//为了防止HID可以重复读取问题，在发送和接收的时候区别一下，只读取一次之用；
 	bool s_curCmdRecved=false;	
 
+
+	void zwDumpHidDeviceInfo(const hid_device_info *info)
+	{
+		if (NULL==info)
+		{
+			return;
+		}
+		printf("******************START**************************\n");
+		printf("path:%s\n",info->path);
+		printf("vid:%04X\tpid:%04X\t",info->vendor_id,info->product_id);
+		const int BLEN=32;
+		char sn[BLEN];
+		memset(sn,0,BLEN);
+		TcharToChar(info->serial_number,sn);
+		printf("serial:%s\t",sn);
+		printf("release_number:%u\n",info->release_number);
+		memset(sn,0,BLEN);
+		TcharToChar(info->manufacturer_string,sn);
+		printf("manufacturer_string:%s\t",sn);
+		memset(sn,0,BLEN);
+		TcharToChar(info->product_string,sn);
+		printf("product_string:%s\n",sn);
+		printf("usage_page:%u\tusage:%u\n",info->usage_page,info->usage);
+		printf("interface_number:%d\tnext:%p\n",info->interface_number,info->next);
+		printf("******************END**************************\n");
+	}
+
+
 	void jcMulHidEnum( const int hidPid,string &jcDevListJson )
 	{
 		LOG(INFO)<<__FUNCTION__<<"hidPid="<<hidPid<<endl;		
@@ -65,7 +93,9 @@ namespace jcLockJsonCmd_t2015a{
 			char serial[32];
 			memset(serial,0,32);
 			TcharToChar(jclock_cur->serial_number,serial);
-			VLOG(2)<<"vid="<<jclock_cur->vendor_id<<" pid="<<jclock_cur->product_id<<" serial="<<serial<<endl;
+			//VLOG(2)<<"vid="<<jclock_cur->vendor_id<<" pid="<<jclock_cur->product_id<<" serial="<<serial<<endl;
+			zwDumpHidDeviceInfo(jclock_cur);
+
 
 			//注意，此处put的话，每次都替代，add的话，才能新增项目
 			if (JCHID_PID_LOCK5151==hidPid)

@@ -282,7 +282,7 @@ CCBELOCK_API void myHidSerialTest126(void)
 //////////////////////////////////////////////////////////////////////////
 	printf(lockSerialList.c_str());
 	//Sleep(1000);
-	zwGetHidDevSerialTest126();
+	//zwGetHidDevSerialTest126();
 
 	JCHID_STATUS sts=jcHidOpen(&hnd);
 	if (JCHID_STATUS_OK==sts)
