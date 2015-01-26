@@ -60,9 +60,74 @@ void myECIES_KeyGenTest123(void)
 	printf("ccbPSK=\t%s\n",dePSK);
 }
 
+//生成公钥私钥对,输入缓冲区必须有头文件里面宏定义值所指定的足够大小
+void zwGenKeyPair(char *pubKey,char *priKey)
+{
+	if (NULL==pubKey || NULL==priKey)
+	{
+		return;
+	}
+	int hd=EciesGenKeyPair();
+	strcpy(pubKey,EciesGetPubKey(hd));
+	strcpy(priKey,EciesGetPriKey(hd));
+	EciesDelete(hd);
+}
+
+//从公钥，建行的2个输入因子字符串，输出激活信息字符串，输出缓冲区必须有头文件里面指定的足够大小
+void zwGenActiveInfo(const char *pubkey,const char *ccbFact1,const char *ccbFact2,char *ccbActiveInfo)
+{
+	if (NULL==ccbFact1 ||NULL==ccbFact2 || NULL==ccbActiveInfo
+		||0==strlen(ccbFact1) || 0==strlen(ccbFact2))
+	{
+		return;
+	}
+	char ccbIn[ZW_ECIES_HASH_LEN];
+	memset(ccbIn,0,ZW_ECIES_HASH_LEN);
+	strcpy(ccbIn,ccbFact1);
+	strcat(ccbIn,ccbFact2);
+	//从ccbInStr生成PSK
+	const char *ccbPSK=zwMergePsk(ccbIn);
+	//从PSK和公钥生成激活信息ccbActiveInfo，然后激活信息就可以通过网络传输出去了
+	strcpy(ccbActiveInfo, EciesEncrypt(pubkey, ccbPSK));
+}
+
+//从私钥，激活信息，获取PSK，输出缓冲区必须有头文件里面指定的足够大小
+void zwGetPSK(const char *priKey,const char *ccbActiveInfo,char *PSK)
+{
+	if (NULL==priKey || NULL==ccbActiveInfo || NULL==PSK
+		||0==strlen(priKey) || 0==strlen(ccbActiveInfo))
+	{
+		return;
+	}
+	strcpy(PSK,EciesDecrypt(priKey,ccbActiveInfo));
+}
+
 int main(int argc, char * argv[])
 {
-	myECIES_KeyGenTest123();
+	//myECIES_KeyGenTest123();
+//////////////////////////////////////////////////////////////////////////
+	//生成公钥私钥对操作
+	char pubKey[ZW_ECIES_PUBKEY_LEN];
+	char priKey[ZW_ECIES_PRIKEY_LEN];
+	memset(pubKey,0,ZW_ECIES_PUBKEY_LEN);
+	memset(priKey,0,ZW_ECIES_PRIKEY_LEN);
+	//生成操作只用一次，由于前面已经生成过了，所以此处改行注释掉，后面用生成的结果直接复制进来
+	//正式使用时应该是先生成公钥私钥对之后保存到FLASH，用到时取出来使用
+	//zwGenKeyPair(pubKey,priKey);
+	strcpy(pubKey,"BFlfjkxoiRZFdjQKa/W1JWBwFx+FPyzcFGqXjnlVzMcvIAQyK3C1Ha+G2uGUM4nX5khPQP5AiPFiCyuH2WxZefg=");
+	strcpy(priKey,"y+tgryY83ibv2RaQeb93a97+JX0/9cpWf4MrmUUtrzs=");
+	printf("pubkey=%s\nprikey=%s\n",pubKey,priKey);
+/////////////////////////////生成激活信息/////////////////////////////////////////////
+	char ccbActiveInfo[ZW_ECIES_CRYPT_TOTALLEN];
+	const char *ccbInput1="0123456789ABCDEF";
+	const char *ccbInput2="01234ABCDEF56789";
+	memset(ccbActiveInfo,0,ZW_ECIES_CRYPT_TOTALLEN);
+	zwGenActiveInfo(pubKey,ccbInput1,ccbInput2,ccbActiveInfo);
+/////////////////////////////解密激活信息/////////////////////////////////////////////
+	char PSK[ZW_ECIES_HASH_LEN];
+	memset(PSK,0,ZW_ECIES_HASH_LEN);
+	zwGetPSK(priKey,ccbActiveInfo,PSK);
+
 	return 0;
 }
 
