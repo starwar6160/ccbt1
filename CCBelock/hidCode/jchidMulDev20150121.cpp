@@ -252,3 +252,35 @@ CCBELOCK_API int ZJY1501STD InputMessage( const char * DrivesTypePID,const char 
 	}
 }
 
+//将TCHAR转为char   
+//*tchar是TCHAR类型指针，*_char是char类型指针   
+static void TcharToChar (const TCHAR * tchar, char * _char)  
+{  
+    int iLength ;  
+//获取字节长度   
+iLength = WideCharToMultiByte(CP_ACP, 0, tchar, -1, NULL, 0, NULL, NULL);  
+//将tchar值赋给_char    
+WideCharToMultiByte(CP_ACP, 0, tchar, -1, _char, iLength, NULL, NULL);   
+}  
+
+
+CCBELOCK_API void myHidSerialTest126(void)
+{
+	VLOG(4)<<__FUNCTION__<<endl;
+	JCHID hnd;
+	memset(&hnd,0,sizeof(hnd));
+	hnd.vid=0x0483;
+	hnd.pid=0x5710;
+	//strcpy(hnd.HidSerial,"OQAiAAAAAAAAgAKE");
+	//strcpy(hnd.HidSerial,"OQAiAACAAoQL1wAI");
+	JCHID_STATUS sts=jcHidOpen(&hnd);
+	wchar_t sn[24];
+	memset(sn,0,sizeof(wchar_t)*24);
+	hid_get_serial_number_string(static_cast<hid_device*>(hnd.hid_device),sn,24);
+	char snc[24];
+	memset(snc,0,24);
+	TcharToChar(sn,snc);
+	printf("%s\n",snc);
+	jcHidClose(&hnd);
+}
+

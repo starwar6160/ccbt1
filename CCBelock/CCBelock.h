@@ -65,6 +65,7 @@ CCBELOCK_API int ZJY1501STD CloseDrives(const char* DrivesTypePID,const char * D
 	CCBELOCK_API void ZJY1501STD SetReturnMessage(ReturnMessage _MessageHandleFun);
 //3、向设备发送指令的函数
 	CCBELOCK_API int ZJY1501STD InputMessage(const char * DrivesTypePID,const char * DrivesIdSN,const char * AnyMessageJson);
+	CCBELOCK_API void myHidSerialTest126(void);
 #ifdef __cplusplus
 }
 #endif

@@ -63,8 +63,9 @@ int _tmain(int argc, TCHAR * argv[])
 	//myMulHidDevJsonTest20150116A();
 	//myMulHidDevJsonTest20150116B();
 	//myMulHidDevJsonTest20150120A();
-	myMulHidDevJsonTest20150120A1();
+	//myMulHidDevJsonTest20150120A1();
 	//zwTest121a1();
+	myHidSerialTest126();
 	return 0;
 }
 
