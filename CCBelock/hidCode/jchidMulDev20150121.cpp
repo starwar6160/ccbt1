@@ -263,6 +263,8 @@ iLength = WideCharToMultiByte(CP_ACP, 0, tchar, -1, NULL, 0, NULL, NULL);
 WideCharToMultiByte(CP_ACP, 0, tchar, -1, _char, iLength, NULL, NULL);   
 }  
 
+void zwGetHidDevSerial();
+void zwGetHidDevSerialTest126();
 
 CCBELOCK_API void myHidSerialTest126(void)
 {
@@ -272,15 +274,59 @@ CCBELOCK_API void myHidSerialTest126(void)
 	hnd.vid=0x0483;
 	hnd.pid=0x5710;
 	//strcpy(hnd.HidSerial,"OQAiAAAAAAAAgAKE");
-	//strcpy(hnd.HidSerial,"OQAiAACAAoQL1wAI");
+	strcpy(hnd.HidSerial,"OQAiAACAAoQL1wAI");
+	std::string lockSerialList;
+//////////////////////////////////////////////////////////////////////////
+	//zwGetHidDevSerial();
+	jcLockJsonCmd_t2015a::jcMulHidEnum(0x5710,lockSerialList);	
+//////////////////////////////////////////////////////////////////////////
+	printf(lockSerialList.c_str());
+	//Sleep(1000);
+	zwGetHidDevSerialTest126();
+
 	JCHID_STATUS sts=jcHidOpen(&hnd);
-	wchar_t sn[24];
-	memset(sn,0,sizeof(wchar_t)*24);
-	hid_get_serial_number_string(static_cast<hid_device*>(hnd.hid_device),sn,24);
-	char snc[24];
-	memset(snc,0,24);
-	TcharToChar(sn,snc);
-	printf("%s\n",snc);
+	if (JCHID_STATUS_OK==sts)
+	{
+		printf("Open HID OK\n");
+	}
+	if (JCHID_STATUS_FAIL==sts)
+	{
+		printf("Open HID FAIL\n");
+	}
 	jcHidClose(&hnd);
+}
+
+void zwGetHidDevSerial(char *jcHidSerial)
+{
+	struct hid_device_info *devs, *cur_dev;
+	hid_device *handle = NULL;
+	devs = hid_enumerate(0x0483, 0x5710);
+	cur_dev = devs;
+	while (cur_dev) {
+		if (cur_dev->vendor_id == 0x0483 &&
+			cur_dev->product_id == 0x5710) {
+				TcharToChar(cur_dev->serial_number,jcHidSerial);
+		}
+		cur_dev = cur_dev->next;
+	}
+}
+
+void zwGetHidDevSerialTest126()
+{
+	struct hid_device_info *devs, *cur_dev;
+	hid_device *handle = NULL;
+	devs = hid_enumerate(0x0483, 0x5710);
+	cur_dev = devs;
+	while (cur_dev) {
+		if (cur_dev->vendor_id == 0x0483 &&
+			cur_dev->product_id == 0x5710) {
+				char snc[24];
+				memset(snc,0,24);
+				TcharToChar(cur_dev->serial_number,snc);
+				printf("%s\n",snc);
+		}
+		cur_dev = cur_dev->next;
+	}
+	Sleep(1000);
 }
 

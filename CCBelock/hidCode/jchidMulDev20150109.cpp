@@ -56,15 +56,16 @@ namespace jcLockJsonCmd_t2015a{
 	{
 		LOG(INFO)<<__FUNCTION__<<"hidPid="<<hidPid<<endl;		
 		ptree pt;
-		hid_device_info *jclock_List= hid_enumerate(JCHID_VID_2014,hidPid);
-		VLOG_IF(2,NULL!=jclock_List)<<"Header of jclock_List="<<jclock_List->serial_number<<endl;
+		hid_device_info *jclock_cur= hid_enumerate(JCHID_VID_2014,hidPid);
+		hid_device_info *jclock_head=jclock_cur;
+		VLOG_IF(2,NULL!=jclock_cur)<<"Header of jclock_List="<<jclock_cur<<endl;
 		
-		while (NULL!=jclock_List)
+		while (NULL!=jclock_cur)
 		{
 			char serial[32];
 			memset(serial,0,32);
-			TcharToChar(jclock_List->serial_number,serial);
-			VLOG(2)<<"vid="<<jclock_List->vendor_id<<" pid="<<jclock_List->product_id<<" serial="<<serial<<endl;
+			TcharToChar(jclock_cur->serial_number,serial);
+			VLOG(2)<<"vid="<<jclock_cur->vendor_id<<" pid="<<jclock_cur->product_id<<" serial="<<serial<<endl;
 
 			//注意，此处put的话，每次都替代，add的话，才能新增项目
 			if (JCHID_PID_LOCK5151==hidPid)
@@ -76,13 +77,14 @@ namespace jcLockJsonCmd_t2015a{
 				pt.add("jcSecretBoxSerial",serial);
 			}
 			
-			jclock_List=jclock_List->next;
+			jclock_cur=jclock_cur->next;
 		}
-		hid_free_enumeration(jclock_List);
+		hid_free_enumeration(jclock_head);
 		std::ostringstream ss;
 		write_json(ss, pt);
 		jcDevListJson=ss.str();
 		LOG(INFO)<<"jcDevListJson=\n"<<jcDevListJson;
+		Sleep(1000);
 	}
 
 
