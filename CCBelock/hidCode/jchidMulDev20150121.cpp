@@ -133,8 +133,6 @@ int zwJcHidDbg15A::RecvFromLockJsonThr(JCHID *hidHandle)
 		const int BLEN = 1024;
 		char recvBuf[BLEN + 1];
 		memset(recvBuf, 0, BLEN + 1);		
-
-		uint32_t recvDataSum=0;
 #ifdef _DEBUG1
 		int t_thr_runCount=1;
 #endif // _DEBUG
@@ -156,36 +154,28 @@ try{
 					//注意此处如果不每次循环清零，则会导致长度值超过大约4K字节时，计算CRC或者其他读取
 					//收到的内容数组时，尽管数据可能只有几十字节，但是读取操作越界，程序崩溃；
 					int recvLen = 0;	
-						sts=jcHidRecvData(hidHandle,
-							recvBuf, BLEN, &recvLen,G_RECV_TIMEOUT);				
-					assert(recvLen>0);
-					assert(strlen(recvBuf)>0);
-					//LOG(WARNING)<<"RECVTHR.P3.2,After RecvHidData"<<endl;
+					sts=jcHidRecvData(hidHandle,recvBuf, BLEN, &recvLen,G_RECV_TIMEOUT);				
 					//要是某个设备什么数据也没收到，就直接进入下一个设备
 					if (JCHID_STATUS_OK!=sts &&JCHID_STATUS_RECV_ZEROBYTES!=sts)
 					{					
 						LOG(INFO)<<"NoData from "<<hidHandle->HidSerial<<endl;
 						continue;
 					}					
-					if (recvLen>0 )
-					{																		
-						//uint32_t recvDataNowSum= recvDataSum=Crc32_ComputeBuf(0,recvBuf,recvLen);
+					if (JCHID_STATUS_OK==sts && recvLen>0 )
+					{																								
+						//计算接收到的数据的CRC
 						uint32_t recvDataNowSum=Crc32_ComputeBuf(0,recvBuf,recvLen);
-						if (recvDataNowSum!=recvDataSum)
-						{
-							VLOG(4)<<"recvDataSum="<<recvDataSum<<" recvDataNowSum="<<recvDataNowSum<<endl;
+							VLOG_IF(4,recvDataNowSum>0)<<" recvDataNowSum="<<recvDataNowSum<<endl;
 							int tRecvLen=strlen(recvBuf);
 							static int tmpRecvCount=0;
-							LOG_IF(WARNING,tRecvLen>9)<<"MulHid成功从锁具 "<<hidHandle->HidSerial<<
+							LOG_IF(WARNING,tRecvLen>1)<<"MulHid成功从锁具 "<<hidHandle->HidSerial<<
 								" 接收JSON数据如下：Count "<<tmpRecvCount++<<endl<<recvBuf<<endl;
 							LOG_IF(ERROR,NULL==G_JCHID_RECVMSG_CB)<<"G_JCHID_RECVMSG_CB==NULL"<<endl;
 							if (NULL!=G_JCHID_RECVMSG_CB)
-							{
+							{								
 								G_JCHID_RECVMSG_CB(hidHandle->HidSerial,recvBuf);
+								VLOG(2)<<"JinChu RecvMsg Callback Function be Call Success"<<endl;
 							}						
-							recvDataSum=recvDataNowSum;
-						}
-
 					}						
 }
 catch(boost::thread_interrupted)
