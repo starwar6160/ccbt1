@@ -23,7 +23,7 @@ namespace zwCfg {
 	extern bool s_hidOpened;
 } //namespace zwCfg{  
 
-namespace jcLockJsonCmd_t2015a{
+namespace jcLockJsonCmd_t2015a21{
 	//为了保护接收json时返回的静态缓冲区在多线程状况下的使用
 	boost::mutex recvstr_mutex;
 
@@ -214,4 +214,4 @@ CloseHidEnd:
 		}	
 	}
 
-}	//end of namespace jcLockJsonCmd_t2015a{
+}	//end of namespace jcLockJsonCmd_t2015a21{

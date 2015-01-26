@@ -3,6 +3,17 @@
 #include "zwHidComm.h"
 #include "zwCcbElockHdr.h"
 #include "CCBelock.h"
+#include <boost/property_tree/ptree.hpp>
+#include <boost/property_tree/xml_parser.hpp>
+#include <boost/property_tree/json_parser.hpp>
+#include <map>
+#include <vector>
+using std::map;
+using std::vector;
+
+#define MY114FUNCTRACK	VLOG(4)<<__FUNCTION__<<endl;
+const int G_RECV_TIMEOUT=2500;
+
 
 namespace jcLockJsonCmd_t2015a21{
 	const int G_RECV_TIMEOUT=700;
@@ -14,7 +25,12 @@ namespace jcLockJsonCmd_t2015a21{
 	ReturnDrives G_JCHID_ENUM_DEV2015A=NULL;
 	ReturnMessage G_JCHID_RECVMSG_CB=NULL;
 
-
+	std::map<uint32_t,JCHID> G_JCDEV_MAP;
+	bool s_hidJsonRecvThrRunning=false;
+	//为了防止HID可以重复读取问题，在发送和接收的时候区别一下，只读取一次之用；
+	bool s_curCmdRecved=false;	
+	void TcharToChar (const TCHAR * tchar, char * _char) ;
+	void CharToTchar (const char * _char, TCHAR * tchar) ;
 
 class zwJcHidDbg15A
 {
@@ -73,6 +89,26 @@ zwJcHidDbg15A::~zwJcHidDbg15A()
 
 
 //////////////////////////////////////////////////////////////////////////
+
+//将TCHAR转为char   
+//*tchar是TCHAR类型指针，*_char是char类型指针   
+void TcharToChar (const TCHAR * tchar, char * _char)  
+{  
+    int iLength ;  
+//获取字节长度   
+iLength = WideCharToMultiByte(CP_ACP, 0, tchar, -1, NULL, 0, NULL, NULL);  
+//将tchar值赋给_char    
+WideCharToMultiByte(CP_ACP, 0, tchar, -1, _char, iLength, NULL, NULL);   
+}  
+
+//同上   
+void CharToTchar (const char * _char, TCHAR * tchar)  
+{  
+    int iLength ;  
+  
+    iLength = MultiByteToWideChar (CP_ACP, 0, _char, strlen (_char) + 1, NULL, 0) ;  
+    MultiByteToWideChar (CP_ACP, 0, _char, strlen (_char) + 1, tchar, iLength) ;  
+}  
 
 zwJcHidDbg15A *s_jcHidDev=NULL;
 
@@ -188,6 +224,126 @@ catch(boost::thread_interrupted)
 }
 
 
+	void zwDumpHidDeviceInfo(const hid_device_info *info)
+	{
+		if (NULL==info)
+		{
+			return;
+		}
+		printf("******************START**************************\n");
+		printf("path:%s\n",info->path);
+		printf("vid:%04X\tpid:%04X\t",info->vendor_id,info->product_id);
+		const int BLEN=32;
+		char sn[BLEN];
+		memset(sn,0,BLEN);
+		TcharToChar(info->serial_number,sn);
+		printf("serial:%s\t",sn);
+		printf("release_number:%u\n",info->release_number);
+		memset(sn,0,BLEN);
+		TcharToChar(info->manufacturer_string,sn);
+		printf("manufacturer_string:%s\t",sn);
+		memset(sn,0,BLEN);
+		TcharToChar(info->product_string,sn);
+		printf("product_string:%s\n",sn);
+		printf("usage_page:%u\tusage:%u\n",info->usage_page,info->usage);
+		printf("interface_number:%d\tnext:%p\n",info->interface_number,info->next);
+		printf("******************END**************************\n");
+	}
+
+
+	void jcMulHidEnum( const int hidPid,string &jcDevListJson )
+	{
+		LOG(INFO)<<__FUNCTION__<<"hidPid="<<hidPid<<endl;		
+		ptree pt;
+		hid_device_info *jclock_cur= hid_enumerate(JCHID_VID_2014,hidPid);
+		hid_device_info *jclock_head=jclock_cur;
+		VLOG_IF(2,NULL!=jclock_cur)<<"Header of jclock_List="<<jclock_cur<<endl;
+		
+		while (NULL!=jclock_cur)
+		{
+			char serial[32];
+			memset(serial,0,32);
+			TcharToChar(jclock_cur->serial_number,serial);
+			//VLOG(2)<<"vid="<<jclock_cur->vendor_id<<" pid="<<jclock_cur->product_id<<" serial="<<serial<<endl;
+			zwDumpHidDeviceInfo(jclock_cur);
+
+
+			//注意，此处put的话，每次都替代，add的话，才能新增项目
+			if (JCHID_PID_LOCK5151==hidPid)
+			{
+				pt.add("jcElockSerial",serial);
+			}
+			if (JCHID_PID_SECBOX==hidPid)
+			{
+				pt.add("jcSecretBoxSerial",serial);
+			}
+			
+			jclock_cur=jclock_cur->next;
+		}
+		hid_free_enumeration(jclock_head);
+		std::ostringstream ss;
+		write_json(ss, pt);
+		jcDevListJson=ss.str();
+		LOG(INFO)<<"jcDevListJson=\n"<<jcDevListJson;
+		Sleep(1000);
+	}
+
+
+	uint32_t myJcHidHndFromStrSerial( const char* DrivesTypePID, const char * DrivesIdSN)
+	{
+		assert(NULL!=DrivesTypePID );
+		assert(strlen(DrivesTypePID)>0 );
+		assert(strcmp(DrivesTypePID,jcLockJsonCmd_t2015a21::G_DEV_LOCK)==0 
+			|| strcmp(DrivesTypePID,jcLockJsonCmd_t2015a21::G_DEV_SECBOX)==0);
+		uint32_t inDevId;
+		string hidPidAndSerial=DrivesTypePID;
+		hidPidAndSerial+=".";
+		if (NULL!=DrivesIdSN &&strlen(DrivesIdSN)>0)
+		{
+			hidPidAndSerial+=DrivesIdSN;
+		}
+		else
+		{
+			hidPidAndSerial+="NULLSN";
+		}
+		
+		VLOG_IF(4,hidPidAndSerial.length()>0)<<"ZW0120 hidPidAndSerial=["<<hidPidAndSerial.c_str()<<"] Length="<<hidPidAndSerial.length()<<endl;
+		//inDevId=crc8Short(hidPidAndSerial.c_str(),hidPidAndSerial.length());
+		inDevId=Crc32_ComputeBuf(0,hidPidAndSerial.c_str(),hidPidAndSerial.length());
+		VLOG(4)<<__FUNCTION__<<"serial="<<inDevId<<endl;
+		return inDevId;
+	}
+
+
+	void isJcHidDevOpend(const char* DrivesTypePID,const char * DrivesIdSN,uint32_t *inDevHashId,JCHID **jcHidDev)
+	{
+		uint32_t inDevId=myJcHidHndFromStrSerial(DrivesTypePID, DrivesIdSN);
+		VLOG(4)<<"jcHidHandleFromStrSerial="<<inDevId<<endl;	
+		*inDevHashId=inDevId;
+		std::map<uint32_t,JCHID>::iterator it=G_JCDEV_MAP.find(inDevId);
+		if (it==jcLockJsonCmd_t2015a21::G_JCDEV_MAP.end())
+		{
+/*			VLOG(2)<<"jcLockJsonCmd_t2015a21::G_JCDEV_MAP find status of item hashId="
+				<<inDevId<<" "<<DrivesTypePID<<" current not Open\n";	*/		
+			*jcHidDev=NULL;
+			return;
+		}
+		else
+		{
+			VLOG(4)<<"jcLockJsonCmd_t2015a21::G_JCDEV_MAP find item "<<inDevId<<" "<<DrivesTypePID<<" SUCCESS!\n";
+			if (NULL==it->second.hid_device)
+			{
+				*jcHidDev=NULL;
+			}
+			else
+			{
+				*jcHidDev=&it->second;
+			}			
+		}
+		VLOG_IF(2,NULL!=DrivesIdSN &&strlen(DrivesIdSN)>0)<<"SN="<<DrivesIdSN<<endl;
+
+	}
+
 }	//end of namespace jcLockJsonCmd_t2015a21{
 
 namespace jch=jcLockJsonCmd_t2015a21;
@@ -252,6 +408,56 @@ CCBELOCK_API int ZJY1501STD InputMessage( const char * DrivesTypePID,const char 
 	}
 }
 
+using namespace boost::property_tree;
+
+int zwStartHidDevPlugThread(void);
+
+
+//2、设置设备列表返回的回调函数
+CCBELOCK_API void ZJY1501STD SetReturnDrives( ReturnDrives _DrivesListFun )
+{
+	VLOG(4)<<__FUNCTION__<<endl;
+	if (NULL==_DrivesListFun)
+	{
+		return;
+	}
+	jcLockJsonCmd_t2015a21::G_JCHID_ENUM_DEV2015A=_DrivesListFun;
+	zwStartHidDevPlugThread();
+}
+
+CCBELOCK_API int ZJY1501STD ListDrives( const char * DrivesTypePID )
+{
+	VLOG(4)<<__FUNCTION__<<" DrivesTypePID="<<DrivesTypePID<<endl;
+	if (NULL==jcLockJsonCmd_t2015a21::G_JCHID_ENUM_DEV2015A)
+	{
+		return jcLockJsonCmd_t2015a21::G_NO_CALLBACK;
+	}
+	zwStartHidDevPlugThread();
+
+	string jcDevListJson;
+	if (0==strcmp(DrivesTypePID,jcLockJsonCmd_t2015a21::G_DEV_LOCK))
+	{
+		VLOG(4)<<__FUNCTION__<<" for G_DEV_LOCK Callback"<<endl;
+		jcLockJsonCmd_t2015a21::jcMulHidEnum(JCHID_PID_LOCK5151,jcDevListJson);
+		jcLockJsonCmd_t2015a21::G_JCHID_ENUM_DEV2015A(jcLockJsonCmd_t2015a21::G_DEV_LOCK,
+			const_cast<char *>(jcDevListJson.c_str()));
+		return G_SUSSESS;
+	}
+	if (0==strcmp(DrivesTypePID,jcLockJsonCmd_t2015a21::G_DEV_SECBOX))
+	{
+		VLOG(4)<<__FUNCTION__<<" for G_DEV_SECBOX Callback"<<endl;
+		jcLockJsonCmd_t2015a21::jcMulHidEnum(JCHID_PID_SECBOX,jcDevListJson);
+		jcLockJsonCmd_t2015a21::G_JCHID_ENUM_DEV2015A(jcLockJsonCmd_t2015a21::G_DEV_SECBOX,
+			const_cast<char *>(jcDevListJson.c_str()));
+		return G_SUSSESS;
+	}		
+	LOG(WARNING)<<__FUNCTION__<<" FAIL"<<endl;
+	return G_FAIL;
+}
+
+
+
+
 //将TCHAR转为char   
 //*tchar是TCHAR类型指针，*_char是char类型指针   
 static void TcharToChar (const TCHAR * tchar, char * _char)  
@@ -278,7 +484,7 @@ CCBELOCK_API void myHidSerialTest126(void)
 	std::string lockSerialList;
 //////////////////////////////////////////////////////////////////////////
 	//zwGetHidDevSerial();
-	jcLockJsonCmd_t2015a::jcMulHidEnum(0x5710,lockSerialList);	
+	jcLockJsonCmd_t2015a21::jcMulHidEnum(0x5710,lockSerialList);	
 //////////////////////////////////////////////////////////////////////////
 	printf(lockSerialList.c_str());
 	//Sleep(1000);

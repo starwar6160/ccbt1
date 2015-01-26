@@ -61,11 +61,11 @@ int _tmain(int argc, TCHAR * argv[])
 	//eLockJsonTest20150106();
 	//luaSendJsonTest1(argc, argv);
 	//myMulHidDevJsonTest20150116A();
-	//myMulHidDevJsonTest20150116B();
+	myMulHidDevJsonTest20150116B();
 	//myMulHidDevJsonTest20150120A();
 	//myMulHidDevJsonTest20150120A1();
 	//zwTest121a1();
-	myHidSerialTest126();
+	//myHidSerialTest126();
 	return 0;
 }
 
@@ -80,13 +80,13 @@ void eLockJsonTest20150106()
 	const int BUFLEN=1024;
 	//20150106.1710
 	printf("eLockJsonTest20150106\n");
-	int msts=jcLockJsonCmd_t2015a::OpenJson(25);
+	int msts=jcLockJsonCmd_t2015a21::OpenJson(25);
 	//试验了几个Json命令，目前只有这一个有反应
 	//{ \"command\": \"Lock_System_Journal\",\"State\": \"get\"}
-	jcLockJsonCmd_t2015a::SendToLockJson(jcHidJsonMsg0005);
+	jcLockJsonCmd_t2015a21::SendToLockJson(jcHidJsonMsg0005);
 	std::string recvBuf;
-	recvBuf= jcLockJsonCmd_t2015a::RecvFromLockJson(2000);	
-	jcLockJsonCmd_t2015a::CloseJson();
+	recvBuf= jcLockJsonCmd_t2015a21::RecvFromLockJson(2000);	
+	jcLockJsonCmd_t2015a21::CloseJson();
 	printf("Receive form Lock Json 20150106.1713 is \n%s\n",recvBuf.c_str());
 }
 
@@ -144,6 +144,9 @@ void myMulHidDevJsonTest20150116B()
 	const char *jcHidJsonMsg116t2="{\"Command\": \"Lock_System_Journal\",\"Begin_No\": \"0\",\"End_No\": \"3\"}";
 	const char *jcHidJsonMsg116t3="{\"Command\": \"Lock_Now_Info\"}";
 	const char *hidType="Lock";
+	const char *msgT5a="{\"command\":\"Test_USB_HID\",\"cmd_id\":\"1234567890\",\"input\":\"TestAnyString";
+	const char *msgT5b="\",\"output\":\"\"}";
+
 	SetReturnDrives(myHidListTest113);
 	ListDrives("Lock");
 	//Sleep(9000);
@@ -152,7 +155,11 @@ void myMulHidDevJsonTest20150116B()
 	OpenDrives(hidType,	devSN3);
 	SetReturnMessage(myReturnMessageTest115);
 
-	InputMessage(hidType,devSN3,jcHidJsonMsg116t3);
+	char buf[128];
+	memset(buf,0,128);
+	sprintf(buf,"%s%d%s",msgT5a,7,msgT5b);
+
+	InputMessage(hidType,devSN3,buf);
 	Sleep(5000);
 	
 	CloseDrives(hidType,devSN3);

@@ -70,7 +70,7 @@ CCBELOCK_API int ZJY1501STD CloseDrives(const char* DrivesTypePID,const char * D
 }
 #endif
 
-namespace jcLockJsonCmd_t2015a{
+namespace jcLockJsonCmd_t2015a21{
 
 	CCBELOCK_API long OpenJson(long lTimeOut);
 	CCBELOCK_API long SendToLockJson(const char *pszJson);
@@ -80,7 +80,7 @@ namespace jcLockJsonCmd_t2015a{
 	extern ReturnDrives G_JCHID_ENUM_DEV2015A;
 	extern const char * G_DEV_LOCK;
 	extern const char * G_DEV_SECBOX;
-}	//end of namespace jcLockJsonCmd_t2015a{
+}	//end of namespace jcLockJsonCmd_t2015a21{
 
 
 #endif // CCBelock_h__
