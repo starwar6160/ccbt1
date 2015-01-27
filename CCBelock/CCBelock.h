@@ -81,6 +81,13 @@ namespace jcLockJsonCmd_t2015a21{
 	extern const char * G_DEV_LOCK;
 	extern const char * G_DEV_SECBOX;
 }	//end of namespace jcLockJsonCmd_t2015a21{
+namespace jch=jcLockJsonCmd_t2015a21;
 
-
+namespace jcLockJsonCmd_t2015a27{
+	CCBELOCK_API long OpenJson(long lTimeOut);
+	CCBELOCK_API long JCAPISTD CloseJson();
+	CCBELOCK_API long SendToLockJson(const char *pszJson);
+	CCBELOCK_API const char * RecvFromLockJson( const int timeoutMs );
+}	//namespace jcLockJsonCmd_t2015a27{
+namespace jlua=jcLockJsonCmd_t2015a27;
 #endif // CCBelock_h__

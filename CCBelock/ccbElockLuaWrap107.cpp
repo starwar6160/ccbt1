@@ -67,10 +67,10 @@ void myLuaBridgeSendJsonAPI(const char *luaScriptFile)
 	//将c++中的函数暴露给lua  
 	getGlobalNamespace (L)
 		.beginNamespace ("jclock")  
-		.addFunction ("Open", jcLockJsonCmd_t2015a21::OpenJson)
-		.addFunction ("Close", jcLockJsonCmd_t2015a21::CloseJson)
-		.addFunction ("Send", jcLockJsonCmd_t2015a21::SendToLockJson)
-		.addFunction ("Recv", jcLockJsonCmd_t2015a21::RecvFromLockJson)
+		.addFunction ("Open", jlua::OpenJson)
+		.addFunction ("Close", jlua::CloseJson)
+		.addFunction ("Send", jlua::SendToLockJson)
+		.addFunction ("Recv", jlua::RecvFromLockJson)
 		.endNamespace ();  	
 	luaL_dofile(L, luaScriptFile);  	
 	lua_close(L);

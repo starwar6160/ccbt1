@@ -293,8 +293,8 @@ catch(boost::thread_interrupted)
 	{
 		assert(NULL!=DrivesTypePID );
 		assert(strlen(DrivesTypePID)>0 );
-		assert(strcmp(DrivesTypePID,jcLockJsonCmd_t2015a21::G_DEV_LOCK)==0 
-			|| strcmp(DrivesTypePID,jcLockJsonCmd_t2015a21::G_DEV_SECBOX)==0);
+		assert(strcmp(DrivesTypePID,jch::G_DEV_LOCK)==0 
+			|| strcmp(DrivesTypePID,jch::G_DEV_SECBOX)==0);
 		uint32_t inDevId;
 		string hidPidAndSerial=DrivesTypePID;
 		hidPidAndSerial+=".";
@@ -321,7 +321,7 @@ catch(boost::thread_interrupted)
 		VLOG(4)<<"jcHidHandleFromStrSerial="<<inDevId<<endl;	
 		*inDevHashId=inDevId;
 		std::map<uint32_t,JCHID>::iterator it=G_JCDEV_MAP.find(inDevId);
-		if (it==jcLockJsonCmd_t2015a21::G_JCDEV_MAP.end())
+		if (it==jch::G_JCDEV_MAP.end())
 		{
 /*			VLOG(2)<<"jcLockJsonCmd_t2015a21::G_JCDEV_MAP find status of item hashId="
 				<<inDevId<<" "<<DrivesTypePID<<" current not Open\n";	*/		
@@ -346,7 +346,7 @@ catch(boost::thread_interrupted)
 
 }	//end of namespace jcLockJsonCmd_t2015a21{
 
-namespace jch=jcLockJsonCmd_t2015a21;
+namespace jch=jch;
 
 using jch::zwJcHidDbg15A;
 using jch::s_jcHidDev;
@@ -421,33 +421,33 @@ CCBELOCK_API void ZJY1501STD SetReturnDrives( ReturnDrives _DrivesListFun )
 	{
 		return;
 	}
-	jcLockJsonCmd_t2015a21::G_JCHID_ENUM_DEV2015A=_DrivesListFun;
+	jch::G_JCHID_ENUM_DEV2015A=_DrivesListFun;
 	zwStartHidDevPlugThread();
 }
 
 CCBELOCK_API int ZJY1501STD ListDrives( const char * DrivesTypePID )
 {
 	VLOG(4)<<__FUNCTION__<<" DrivesTypePID="<<DrivesTypePID<<endl;
-	if (NULL==jcLockJsonCmd_t2015a21::G_JCHID_ENUM_DEV2015A)
+	if (NULL==jch::G_JCHID_ENUM_DEV2015A)
 	{
-		return jcLockJsonCmd_t2015a21::G_NO_CALLBACK;
+		return jch::G_NO_CALLBACK;
 	}
 	zwStartHidDevPlugThread();
 
 	string jcDevListJson;
-	if (0==strcmp(DrivesTypePID,jcLockJsonCmd_t2015a21::G_DEV_LOCK))
+	if (0==strcmp(DrivesTypePID,jch::G_DEV_LOCK))
 	{
 		VLOG(4)<<__FUNCTION__<<" for G_DEV_LOCK Callback"<<endl;
-		jcLockJsonCmd_t2015a21::jcMulHidEnum(JCHID_PID_LOCK5151,jcDevListJson);
-		jcLockJsonCmd_t2015a21::G_JCHID_ENUM_DEV2015A(jcLockJsonCmd_t2015a21::G_DEV_LOCK,
+		jch::jcMulHidEnum(JCHID_PID_LOCK5151,jcDevListJson);
+		jch::G_JCHID_ENUM_DEV2015A(jch::G_DEV_LOCK,
 			const_cast<char *>(jcDevListJson.c_str()));
 		return G_SUSSESS;
 	}
-	if (0==strcmp(DrivesTypePID,jcLockJsonCmd_t2015a21::G_DEV_SECBOX))
+	if (0==strcmp(DrivesTypePID,jch::G_DEV_SECBOX))
 	{
 		VLOG(4)<<__FUNCTION__<<" for G_DEV_SECBOX Callback"<<endl;
-		jcLockJsonCmd_t2015a21::jcMulHidEnum(JCHID_PID_SECBOX,jcDevListJson);
-		jcLockJsonCmd_t2015a21::G_JCHID_ENUM_DEV2015A(jcLockJsonCmd_t2015a21::G_DEV_SECBOX,
+		jch::jcMulHidEnum(JCHID_PID_SECBOX,jcDevListJson);
+		jch::G_JCHID_ENUM_DEV2015A(jch::G_DEV_SECBOX,
 			const_cast<char *>(jcDevListJson.c_str()));
 		return G_SUSSESS;
 	}		
@@ -484,7 +484,7 @@ CCBELOCK_API void myHidSerialTest126(void)
 	std::string lockSerialList;
 //////////////////////////////////////////////////////////////////////////
 	//zwGetHidDevSerial();
-	jcLockJsonCmd_t2015a21::jcMulHidEnum(0x5710,lockSerialList);	
+	jch::jcMulHidEnum(0x5710,lockSerialList);	
 //////////////////////////////////////////////////////////////////////////
 	printf(lockSerialList.c_str());
 	//Sleep(1000);

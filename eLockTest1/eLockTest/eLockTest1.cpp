@@ -80,13 +80,13 @@ void eLockJsonTest20150106()
 	const int BUFLEN=1024;
 	//20150106.1710
 	printf("eLockJsonTest20150106\n");
-	int msts=jcLockJsonCmd_t2015a21::OpenJson(25);
+	int msts=jlua::OpenJson(25);
 	//试验了几个Json命令，目前只有这一个有反应
 	//{ \"command\": \"Lock_System_Journal\",\"State\": \"get\"}
-	jcLockJsonCmd_t2015a21::SendToLockJson(jcHidJsonMsg0005);
+	jlua::SendToLockJson(jcHidJsonMsg0005);
 	std::string recvBuf;
-	recvBuf= jcLockJsonCmd_t2015a21::RecvFromLockJson(2000);	
-	jcLockJsonCmd_t2015a21::CloseJson();
+	recvBuf= jlua::RecvFromLockJson(2000);	
+	jlua::CloseJson();
 	printf("Receive form Lock Json 20150106.1713 is \n%s\n",recvBuf.c_str());
 }
 
