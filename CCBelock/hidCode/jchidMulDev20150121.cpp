@@ -10,12 +10,35 @@
 #include <vector>
 using std::map;
 using std::vector;
+using namespace boost::property_tree;
+using jch::zwJcHidDbg15A;
+using jch::G_JCHID_RECVMSG_CB;
+using jch::G_FAIL;
+using jch::G_SUSSESS;
 
 #define MY114FUNCTRACK	VLOG(4)<<__FUNCTION__<<endl;
 const int G_RECV_TIMEOUT=2500;
+int zwStartHidDevPlugThread(void);
+void zwGetHidDevSerial();
+void zwGetHidDevSerialTest126();
+
 
 
 namespace jcLockJsonCmd_t2015a21{
+	class zwJcHidDbg15A
+	{
+	public:
+		zwJcHidDbg15A();
+		~zwJcHidDbg15A();
+		uint32_t Push2jcHidDev(const char *strJsonCmd);
+		int RecvFromLockJsonThr(JCHID *hidHandle);
+	private:
+		JCHID m_dev;
+		boost::thread *thr;
+		boost::mutex jcSend_mutex;	//用来限定先要打开设备，启动数据接收线程，然后才能发送数据
+	};
+//////////////////////////////////变量定义区域////////////////////////////////////////
+	zwJcHidDbg15A *s_jcHidDev;
 	const int G_RECV_TIMEOUT=700;
 	const int G_SUSSESS=0;
 	const int G_FAIL=1;
@@ -24,26 +47,74 @@ namespace jcLockJsonCmd_t2015a21{
 	const char * G_DEV_SECBOX="Encryption";
 	ReturnDrives G_JCHID_ENUM_DEV2015A=NULL;
 	ReturnMessage G_JCHID_RECVMSG_CB=NULL;
-
 	std::map<uint32_t,JCHID> G_JCDEV_MAP;
-	bool s_hidJsonRecvThrRunning=false;
+	bool s_hidJsonRecvThrRunning=false;	
 	//为了防止HID可以重复读取问题，在发送和接收的时候区别一下，只读取一次之用；
 	bool s_curCmdRecved=false;	
-	void TcharToChar (const TCHAR * tchar, char * _char) ;
-	void CharToTchar (const char * _char, TCHAR * tchar) ;
 
-class zwJcHidDbg15A
+////////////////////////////////工具函数区域//////////////////////////////////////////
+	//将TCHAR转为char   
+//*tchar是TCHAR类型指针，*_char是char类型指针   
+void TcharToChar (const TCHAR * tchar, char * _char)  
+{  
+    int iLength ;  
+//获取字节长度   
+iLength = WideCharToMultiByte(CP_ACP, 0, tchar, -1, NULL, 0, NULL, NULL);  
+//将tchar值赋给_char    
+WideCharToMultiByte(CP_ACP, 0, tchar, -1, _char, iLength, NULL, NULL);   
+}  
+
+//同上   
+void CharToTchar (const char * _char, TCHAR * tchar)  
+{  
+    int iLength ;  
+  
+    iLength = MultiByteToWideChar (CP_ACP, 0, _char, strlen (_char) + 1, NULL, 0) ;  
+    MultiByteToWideChar (CP_ACP, 0, _char, strlen (_char) + 1, tchar, iLength) ;  
+}  
+
+void zwDumpHidDeviceInfo(const hid_device_info *info)
 {
-public:
-	zwJcHidDbg15A();
-	~zwJcHidDbg15A();
-	uint32_t Push2jcHidDev(const char *strJsonCmd);
-	int RecvFromLockJsonThr(JCHID *hidHandle);
-private:
-	JCHID m_dev;
-	boost::thread *thr;
-	boost::mutex jcSend_mutex;	//用来限定先要打开设备，启动数据接收线程，然后才能发送数据
-};
+	if (NULL==info)
+	{
+		return;
+	}
+	printf("******************START**************************\n");
+	printf("path:%s\n",info->path);
+	printf("vid:%04X\tpid:%04X\t",info->vendor_id,info->product_id);
+	const int BLEN=32;
+	char sn[BLEN];
+	memset(sn,0,BLEN);
+	TcharToChar(info->serial_number,sn);
+	printf("serial:%s\t",sn);
+	printf("release_number:%u\n",info->release_number);
+	memset(sn,0,BLEN);
+	TcharToChar(info->manufacturer_string,sn);
+	printf("manufacturer_string:%s\t",sn);
+	memset(sn,0,BLEN);
+	TcharToChar(info->product_string,sn);
+	printf("product_string:%s\n",sn);
+	printf("usage_page:%u\tusage:%u\n",info->usage_page,info->usage);
+	printf("interface_number:%d\tnext:%p\n",info->interface_number,info->next);
+	printf("******************END**************************\n");
+}
+
+void zwGetHidDevSerial(char *jcHidSerial)
+{
+	struct hid_device_info *devs, *cur_dev;
+	hid_device *handle = NULL;
+	devs = hid_enumerate(0x0483, 0x5710);
+	cur_dev = devs;
+	while (cur_dev) {
+		if (cur_dev->vendor_id == 0x0483 &&
+			cur_dev->product_id == 0x5710) {
+				TcharToChar(cur_dev->serial_number,jcHidSerial);
+		}
+		cur_dev = cur_dev->next;
+	}
+}
+//////////////////////////////////////////////////////////////////////////
+
 
 zwJcHidDbg15A::zwJcHidDbg15A()
 {
@@ -86,31 +157,6 @@ zwJcHidDbg15A::~zwJcHidDbg15A()
 		LOG(WARNING)<<"try to Close NULL jchid Device Handle"<<endl;
 	}
 };
-
-
-//////////////////////////////////////////////////////////////////////////
-
-//将TCHAR转为char   
-//*tchar是TCHAR类型指针，*_char是char类型指针   
-void TcharToChar (const TCHAR * tchar, char * _char)  
-{  
-    int iLength ;  
-//获取字节长度   
-iLength = WideCharToMultiByte(CP_ACP, 0, tchar, -1, NULL, 0, NULL, NULL);  
-//将tchar值赋给_char    
-WideCharToMultiByte(CP_ACP, 0, tchar, -1, _char, iLength, NULL, NULL);   
-}  
-
-//同上   
-void CharToTchar (const char * _char, TCHAR * tchar)  
-{  
-    int iLength ;  
-  
-    iLength = MultiByteToWideChar (CP_ACP, 0, _char, strlen (_char) + 1, NULL, 0) ;  
-    MultiByteToWideChar (CP_ACP, 0, _char, strlen (_char) + 1, tchar, iLength) ;  
-}  
-
-zwJcHidDbg15A *s_jcHidDev=NULL;
 
 uint32_t zwJcHidDbg15A::Push2jcHidDev(const char *strJsonCmd)
 {
@@ -155,7 +201,6 @@ uint32_t zwJcHidDbg15A::Push2jcHidDev(const char *strJsonCmd)
 	}
 	return sts;
 }
-
 
 int zwJcHidDbg15A::RecvFromLockJsonThr(JCHID *hidHandle)
 {				 
@@ -223,97 +268,68 @@ catch(boost::thread_interrupted)
 		}	//while (1) {
 }
 
+//////////////////////////////////////////////////////////////////////////
+void jcMulHidEnum( const int hidPid,string &jcDevListJson )
+{
+	LOG(INFO)<<__FUNCTION__<<"hidPid="<<hidPid<<endl;		
+	ptree pt;
+	hid_device_info *jclock_cur= hid_enumerate(JCHID_VID_2014,hidPid);
+	hid_device_info *jclock_head=jclock_cur;
+	VLOG_IF(2,NULL!=jclock_cur)<<"Header of jclock_List="<<jclock_cur<<endl;
 
-	void zwDumpHidDeviceInfo(const hid_device_info *info)
+	while (NULL!=jclock_cur)
 	{
-		if (NULL==info)
+		char serial[32];
+		memset(serial,0,32);
+		TcharToChar(jclock_cur->serial_number,serial);
+		//VLOG(2)<<"vid="<<jclock_cur->vendor_id<<" pid="<<jclock_cur->product_id<<" serial="<<serial<<endl;
+		zwDumpHidDeviceInfo(jclock_cur);
+
+
+		//注意，此处put的话，每次都替代，add的话，才能新增项目
+		if (JCHID_PID_LOCK5151==hidPid)
 		{
-			return;
+			pt.add("jcElockSerial",serial);
 		}
-		printf("******************START**************************\n");
-		printf("path:%s\n",info->path);
-		printf("vid:%04X\tpid:%04X\t",info->vendor_id,info->product_id);
-		const int BLEN=32;
-		char sn[BLEN];
-		memset(sn,0,BLEN);
-		TcharToChar(info->serial_number,sn);
-		printf("serial:%s\t",sn);
-		printf("release_number:%u\n",info->release_number);
-		memset(sn,0,BLEN);
-		TcharToChar(info->manufacturer_string,sn);
-		printf("manufacturer_string:%s\t",sn);
-		memset(sn,0,BLEN);
-		TcharToChar(info->product_string,sn);
-		printf("product_string:%s\n",sn);
-		printf("usage_page:%u\tusage:%u\n",info->usage_page,info->usage);
-		printf("interface_number:%d\tnext:%p\n",info->interface_number,info->next);
-		printf("******************END**************************\n");
+		if (JCHID_PID_SECBOX==hidPid)
+		{
+			pt.add("jcSecretBoxSerial",serial);
+		}
+
+		jclock_cur=jclock_cur->next;
+	}
+	hid_free_enumeration(jclock_head);
+	std::ostringstream ss;
+	write_json(ss, pt);
+	jcDevListJson=ss.str();
+	LOG(INFO)<<"jcDevListJson=\n"<<jcDevListJson;
+	Sleep(1000);
+}
+
+uint32_t myJcHidHndFromStrSerial( const char* DrivesTypePID, const char * DrivesIdSN)
+{
+	assert(NULL!=DrivesTypePID );
+	assert(strlen(DrivesTypePID)>0 );
+	assert(strcmp(DrivesTypePID,jch::G_DEV_LOCK)==0 
+		|| strcmp(DrivesTypePID,jch::G_DEV_SECBOX)==0);
+	uint32_t inDevId;
+	string hidPidAndSerial=DrivesTypePID;
+	hidPidAndSerial+=".";
+	if (NULL!=DrivesIdSN &&strlen(DrivesIdSN)>0)
+	{
+		hidPidAndSerial+=DrivesIdSN;
+	}
+	else
+	{
+		hidPidAndSerial+="NULLSN";
 	}
 
-
-	void jcMulHidEnum( const int hidPid,string &jcDevListJson )
-	{
-		LOG(INFO)<<__FUNCTION__<<"hidPid="<<hidPid<<endl;		
-		ptree pt;
-		hid_device_info *jclock_cur= hid_enumerate(JCHID_VID_2014,hidPid);
-		hid_device_info *jclock_head=jclock_cur;
-		VLOG_IF(2,NULL!=jclock_cur)<<"Header of jclock_List="<<jclock_cur<<endl;
-		
-		while (NULL!=jclock_cur)
-		{
-			char serial[32];
-			memset(serial,0,32);
-			TcharToChar(jclock_cur->serial_number,serial);
-			//VLOG(2)<<"vid="<<jclock_cur->vendor_id<<" pid="<<jclock_cur->product_id<<" serial="<<serial<<endl;
-			zwDumpHidDeviceInfo(jclock_cur);
-
-
-			//注意，此处put的话，每次都替代，add的话，才能新增项目
-			if (JCHID_PID_LOCK5151==hidPid)
-			{
-				pt.add("jcElockSerial",serial);
-			}
-			if (JCHID_PID_SECBOX==hidPid)
-			{
-				pt.add("jcSecretBoxSerial",serial);
-			}
-			
-			jclock_cur=jclock_cur->next;
-		}
-		hid_free_enumeration(jclock_head);
-		std::ostringstream ss;
-		write_json(ss, pt);
-		jcDevListJson=ss.str();
-		LOG(INFO)<<"jcDevListJson=\n"<<jcDevListJson;
-		Sleep(1000);
-	}
-
-
-	uint32_t myJcHidHndFromStrSerial( const char* DrivesTypePID, const char * DrivesIdSN)
-	{
-		assert(NULL!=DrivesTypePID );
-		assert(strlen(DrivesTypePID)>0 );
-		assert(strcmp(DrivesTypePID,jch::G_DEV_LOCK)==0 
-			|| strcmp(DrivesTypePID,jch::G_DEV_SECBOX)==0);
-		uint32_t inDevId;
-		string hidPidAndSerial=DrivesTypePID;
-		hidPidAndSerial+=".";
-		if (NULL!=DrivesIdSN &&strlen(DrivesIdSN)>0)
-		{
-			hidPidAndSerial+=DrivesIdSN;
-		}
-		else
-		{
-			hidPidAndSerial+="NULLSN";
-		}
-		
-		VLOG_IF(4,hidPidAndSerial.length()>0)<<"ZW0120 hidPidAndSerial=["<<hidPidAndSerial.c_str()<<"] Length="<<hidPidAndSerial.length()<<endl;
-		//inDevId=crc8Short(hidPidAndSerial.c_str(),hidPidAndSerial.length());
-		inDevId=Crc32_ComputeBuf(0,hidPidAndSerial.c_str(),hidPidAndSerial.length());
-		VLOG(4)<<__FUNCTION__<<"serial="<<inDevId<<endl;
-		return inDevId;
-	}
-
+	VLOG_IF(4,hidPidAndSerial.length()>0)<<"ZW0120 hidPidAndSerial=["<<hidPidAndSerial.c_str()<<"] Length="<<hidPidAndSerial.length()<<endl;
+	//inDevId=crc8Short(hidPidAndSerial.c_str(),hidPidAndSerial.length());
+	inDevId=Crc32_ComputeBuf(0,hidPidAndSerial.c_str(),hidPidAndSerial.length());
+	VLOG(4)<<__FUNCTION__<<"serial="<<inDevId<<endl;
+	return inDevId;
+}
 
 	void isJcHidDevOpend(const char* DrivesTypePID,const char * DrivesIdSN,uint32_t *inDevHashId,JCHID **jcHidDev)
 	{
@@ -346,28 +362,21 @@ catch(boost::thread_interrupted)
 
 }	//end of namespace jcLockJsonCmd_t2015a21{
 
-namespace jch=jch;
-
-using jch::zwJcHidDbg15A;
-using jch::s_jcHidDev;
-using jch::G_JCHID_RECVMSG_CB;
-using jch::G_FAIL;
-using jch::G_SUSSESS;
 
 CCBELOCK_API int ZJY1501STD OpenDrives( const char* DrivesTypePID,const char * DrivesIdSN )
 {
 	assert(NULL!=DrivesTypePID);
-	s_jcHidDev=new zwJcHidDbg15A();
+	jch::s_jcHidDev=new zwJcHidDbg15A();
 	return G_SUSSESS;
 }
 
 CCBELOCK_API int ZJY1501STD CloseDrives( const char* DrivesTypePID,const char * DrivesIdSN )
 {
 	assert(NULL!=DrivesTypePID);
-	if (NULL!=s_jcHidDev)
+	if (NULL!=jch::s_jcHidDev)
 	{
 		//memset(s_jcHidDev,0,sizeof(s_jcHidDev));
-		delete s_jcHidDev;
+		delete jch::s_jcHidDev;
 	}
 	return G_SUSSESS;
 }
@@ -399,7 +408,7 @@ CCBELOCK_API int ZJY1501STD InputMessage( const char * DrivesTypePID,const char 
 	//}
 
 	try {
-		s_jcHidDev->Push2jcHidDev(AnyMessageJson);
+		jch::s_jcHidDev->Push2jcHidDev(AnyMessageJson);
 		return G_SUSSESS;
 	}
 	catch(...) {
@@ -407,11 +416,6 @@ CCBELOCK_API int ZJY1501STD InputMessage( const char * DrivesTypePID,const char 
 		return G_FAIL;
 	}
 }
-
-using namespace boost::property_tree;
-
-int zwStartHidDevPlugThread(void);
-
 
 //2、设置设备列表返回的回调函数
 CCBELOCK_API void ZJY1501STD SetReturnDrives( ReturnDrives _DrivesListFun )
@@ -455,23 +459,6 @@ CCBELOCK_API int ZJY1501STD ListDrives( const char * DrivesTypePID )
 	return G_FAIL;
 }
 
-
-
-
-//将TCHAR转为char   
-//*tchar是TCHAR类型指针，*_char是char类型指针   
-static void TcharToChar (const TCHAR * tchar, char * _char)  
-{  
-    int iLength ;  
-//获取字节长度   
-iLength = WideCharToMultiByte(CP_ACP, 0, tchar, -1, NULL, 0, NULL, NULL);  
-//将tchar值赋给_char    
-WideCharToMultiByte(CP_ACP, 0, tchar, -1, _char, iLength, NULL, NULL);   
-}  
-
-void zwGetHidDevSerial();
-void zwGetHidDevSerialTest126();
-
 CCBELOCK_API void myHidSerialTest126(void)
 {
 	VLOG(4)<<__FUNCTION__<<endl;
@@ -502,21 +489,6 @@ CCBELOCK_API void myHidSerialTest126(void)
 	jcHidClose(&hnd);
 }
 
-void zwGetHidDevSerial(char *jcHidSerial)
-{
-	struct hid_device_info *devs, *cur_dev;
-	hid_device *handle = NULL;
-	devs = hid_enumerate(0x0483, 0x5710);
-	cur_dev = devs;
-	while (cur_dev) {
-		if (cur_dev->vendor_id == 0x0483 &&
-			cur_dev->product_id == 0x5710) {
-				TcharToChar(cur_dev->serial_number,jcHidSerial);
-		}
-		cur_dev = cur_dev->next;
-	}
-}
-
 void zwGetHidDevSerialTest126()
 {
 	struct hid_device_info *devs, *cur_dev;
@@ -528,7 +500,7 @@ void zwGetHidDevSerialTest126()
 			cur_dev->product_id == 0x5710) {
 				char snc[24];
 				memset(snc,0,24);
-				TcharToChar(cur_dev->serial_number,snc);
+				jch::TcharToChar(cur_dev->serial_number,snc);
 				printf("%s\n",snc);
 		}
 		cur_dev = cur_dev->next;
