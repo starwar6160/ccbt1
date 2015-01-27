@@ -36,9 +36,12 @@ namespace jcLockJsonCmd_t2015a21{
 		JCHID m_dev;
 		boost::thread *thr;
 		boost::mutex jcSend_mutex;	//用来限定先要打开设备，启动数据接收线程，然后才能发送数据
+		void StartRecvThread();
+		void StopRecvThread();
 	};
-//////////////////////////////////变量定义区域////////////////////////////////////////
 	zwJcHidDbg15A *s_jcHidDev;
+//////////////////////////////////变量定义区域////////////////////////////////////////
+	
 	const int G_RECV_TIMEOUT=700;
 	const int G_SUSSESS=0;
 	const int G_FAIL=1;
@@ -48,9 +51,6 @@ namespace jcLockJsonCmd_t2015a21{
 	ReturnDrives G_JCHID_ENUM_DEV2015A=NULL;
 	ReturnMessage G_JCHID_RECVMSG_CB=NULL;
 	std::map<uint32_t,JCHID> G_JCDEV_MAP;
-	bool s_hidJsonRecvThrRunning=false;	
-	//为了防止HID可以重复读取问题，在发送和接收的时候区别一下，只读取一次之用；
-	bool s_curCmdRecved=false;	
 
 ////////////////////////////////工具函数区域//////////////////////////////////////////
 	//将TCHAR转为char   
@@ -127,28 +127,21 @@ zwJcHidDbg15A::zwJcHidDbg15A()
 	if (JCHID_STATUS_OK==sts)
 	{
 		LOG(WARNING)<<" Open jcHid Device "<<m_dev.hid_device<<" SUCCESS"<<endl;
+		StartRecvThread();
 	}
 	else
 	{
 		LOG(ERROR)<<" Open jcHid Device Error"<<endl;
 	}
-	//声明一个函数对象，尖括号内部，前面是函数返回值，括号内部是函数的一个或者多个参数(形参)，估计是逗号分隔，
-	//后面用boost::bind按照以下格式把函数指针和后面_1形式的一个或者多个参数(形参)绑定成为一个函数对象
-	boost::function<int (JCHID *)> memberFunctionWrapper(boost::bind(&zwJcHidDbg15A::RecvFromLockJsonThr, this,_1));  	
-	//再次使用boost::bind把函数对象与实参绑定到一起，就可以传递给boost::thread作为线程体函数了
-	thr=new boost::thread(boost::bind(memberFunctionWrapper,&m_dev));	
-	Sleep(5);	//等待线程启动完毕，其实也就2毫秒一般就启动了；
-
 }
 
 zwJcHidDbg15A::~zwJcHidDbg15A()
 {
 	assert(NULL!=m_dev.hid_device);	
+	StopRecvThread();
+
 	if (NULL!=m_dev.hid_device)
 	{
-		thr->interrupt();
-		thr->join();
-
 		jcHidClose(&m_dev);
 		LOG(WARNING)<<"Close jcHid Device "<<m_dev.hid_device<<" SUCCESS"<<endl;
 	}
@@ -268,6 +261,29 @@ catch(boost::thread_interrupted)
 		}	//while (1) {
 }
 
+void zwJcHidDbg15A::StartRecvThread()
+{
+	if (NULL==m_dev.hid_device)
+	{
+		LOG(ERROR)<<"jcHidDevice Not Open,cant't Start RecvThread"<<endl;
+	}
+	//声明一个函数对象，尖括号内部，前面是函数返回值，括号内部是函数的一个或者多个参数(形参)，估计是逗号分隔，
+	//后面用boost::bind按照以下格式把函数指针和后面_1形式的一个或者多个参数(形参)绑定成为一个函数对象
+	boost::function<int (JCHID *)> memberFunctionWrapper(boost::bind(&zwJcHidDbg15A::RecvFromLockJsonThr, this,_1));  	
+	//再次使用boost::bind把函数对象与实参绑定到一起，就可以传递给boost::thread作为线程体函数了
+	thr=new boost::thread(boost::bind(memberFunctionWrapper,&m_dev));	
+	Sleep(5);	//等待线程启动完毕，其实也就2毫秒一般就启动了；
+}
+
+void zwJcHidDbg15A::StopRecvThread()
+{
+	if (NULL!=m_dev.hid_device)
+	{
+		thr->interrupt();
+		thr->join();
+	}
+}
+
 //////////////////////////////////////////////////////////////////////////
 void jcMulHidEnum( const int hidPid,string &jcDevListJson )
 {
@@ -336,7 +352,7 @@ uint32_t myJcHidHndFromStrSerial( const char* DrivesTypePID, const char * Drives
 		uint32_t inDevId=myJcHidHndFromStrSerial(DrivesTypePID, DrivesIdSN);
 		VLOG(4)<<"jcHidHandleFromStrSerial="<<inDevId<<endl;	
 		*inDevHashId=inDevId;
-		std::map<uint32_t,JCHID>::iterator it=G_JCDEV_MAP.find(inDevId);
+		auto it=G_JCDEV_MAP.find(inDevId);
 		if (it==jch::G_JCDEV_MAP.end())
 		{
 /*			VLOG(2)<<"jcLockJsonCmd_t2015a21::G_JCDEV_MAP find status of item hashId="
@@ -434,6 +450,7 @@ CCBELOCK_API int ZJY1501STD ListDrives( const char * DrivesTypePID )
 	VLOG(4)<<__FUNCTION__<<" DrivesTypePID="<<DrivesTypePID<<endl;
 	if (NULL==jch::G_JCHID_ENUM_DEV2015A)
 	{
+		LOG(WARNING)<<"NULL==jch::G_JCHID_ENUM_DEV2015A"<<endl;
 		return jch::G_NO_CALLBACK;
 	}
 	zwStartHidDevPlugThread();
