@@ -66,6 +66,8 @@ CCBELOCK_API int ZJY1501STD CloseDrives(const char* DrivesTypePID,const char * D
 //3、向设备发送指令的函数
 	CCBELOCK_API int ZJY1501STD InputMessage(const char * DrivesTypePID,const char * DrivesIdSN,const char * AnyMessageJson);
 	CCBELOCK_API void myHidSerialTest126(void);
+//////////////////////////////////////////////////////////////////////////
+	
 #ifdef __cplusplus
 }
 #endif
@@ -93,4 +95,8 @@ namespace jcLockJsonCmd_t2015a27{
 	CCBELOCK_API const char * RecvFromLockJson( const int timeoutMs );
 }	//namespace jcLockJsonCmd_t2015a27{
 namespace jlua=jcLockJsonCmd_t2015a27;
+
+/////////////////////////////Google Test In DLL/////////////////////////////////////////////
+CCBELOCK_API int zwStartGtestInDLL(void);
+
 #endif // CCBelock_h__

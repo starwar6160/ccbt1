@@ -61,11 +61,13 @@ int _tmain(int argc, TCHAR * argv[])
 	//eLockJsonTest20150106();
 	//luaSendJsonTest1(argc, argv);
 	//myMulHidDevJsonTest20150116A();
-	myMulHidDevJsonTest20150116B();
+	
 	//myMulHidDevJsonTest20150120A();
 	//myMulHidDevJsonTest20150120A1();
 	//zwTest121a1();
 	//myHidSerialTest126();
+	//myMulHidDevJsonTest20150116B();
+	zwStartGtestInDLL();
 	return 0;
 }
 

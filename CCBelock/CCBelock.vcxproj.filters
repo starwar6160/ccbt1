@@ -134,6 +134,9 @@
     <ClCompile Include="hidCode\jchidMulDev20150121.cpp">
       <Filter>源文件\HidCode</Filter>
     </ClCompile>
+    <ClCompile Include="hidCode\zwHidMulTest20150128.cpp">
+      <Filter>源文件\HidCode</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="HidProtocol.rc">
