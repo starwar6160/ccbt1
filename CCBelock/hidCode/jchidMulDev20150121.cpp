@@ -248,7 +248,7 @@ int zwJcHidDbg15A::RecvThread(JCHID *hidHandle)
 		LOG(ERROR)<<__FUNCTION__<<"\tInput JCHID * is NULL!"<<endl;
 		return G_FAIL;
 	}
-	LOG(WARNING)<<__FUNCTION__<<"\n JcHidZJYDbg Thread Started"<<endl;	
+	LOG(WARNING)<<"\n JcHidZJYDbg Thread Started"<<endl;	
 		const int BLEN = 1024;
 		char recvBuf[BLEN];
 		memset(recvBuf, 0, BLEN);		
@@ -256,7 +256,7 @@ int zwJcHidDbg15A::RecvThread(JCHID *hidHandle)
 		int t_thr_runCount=1;
 #endif // _DEBUG
 		jcSend_mutex.unlock();//这里之后可以开始发送数据了
-		VLOG(4)<<__FUNCTION__<<"\njcDevInit_mutex.unlock();"<<endl;
+		VLOG(4)<<"\njcDevInit_mutex.unlock();"<<endl;
 		while (1) {	
 #ifdef _DEBUG1
 			LOG(WARNING)<<"RECV THR 20150122 "<<t_thr_runCount++<<endl;
@@ -286,8 +286,10 @@ try{
 							VLOG_IF(4,recvDataNowSum>0)<<" recvDataNowSum="<<recvDataNowSum<<endl;
 							int tRecvLen=strlen(recvBuf);
 							static int tmpRecvCount=0;
-							LOG_IF(WARNING,tRecvLen>1)<<"MulHid成功从锁具 with Serial="<<hidHandle->HidSerial<<
-								" 接收JSON数据如下：Count "<<tmpRecvCount++<<endl<<recvBuf<<endl;
+							LOG_IF(WARNING,tRecvLen>1)
+								<<"\nMulHid成功从锁具 with Serial=["<<hidHandle->HidSerial
+								<<"]接收JSON数据如下：Count "<<tmpRecvCount++<<endl
+								<<recvBuf<<endl;
 							LOG_IF(ERROR,NULL==G_JCHID_RECVMSG_CB)<<"G_JCHID_RECVMSG_CB==NULL"<<endl;
 							if (NULL!=G_JCHID_RECVMSG_CB)
 							{								
@@ -335,7 +337,7 @@ void zwJcHidDbg15A::OpenHidDevice()
 {
 	thr=NULL;
 	jcSend_mutex.lock();
-	VLOG(4)<<__FUNCTION__<<"\njcDevInit_mutex.lock();"<<endl;
+	VLOG(4)<<"OpenHidDevice jcDevInit_mutex.lock();"<<endl;
 	JCHID_STATUS sts= jcHidOpen(&m_dev);
 	if (JCHID_STATUS_OK==sts)
 	{
@@ -352,7 +354,7 @@ void zwJcHidDbg15A::OpenHidDevice()
 void jcMulHidEnum( const int hidPid,string &jcDevListJson )
 {
 	assert(hidPid>0);
-	LOG(INFO)<<__FUNCTION__<<"hidPid="<<hidPid<<endl;		
+	LOG(INFO)<<"jcMulHidEnum hidPid="<<hidPid<<endl;		
 	ptree pt;
 	hid_device_info *jclock_cur= hid_enumerate(JCHID_VID_2014,hidPid);
 	hid_device_info *jclock_head=jclock_cur;
@@ -420,11 +422,10 @@ uint32_t myJcHidHndFromStrSerial( const char* DrivesTypePID, const char * Drives
 		hidPidAndSerial+="NULLSN";
 	}
 
-	VLOG_IF(4,hidPidAndSerial.length()>0)<<"ZW0120 hidPidAndSerial=["<<hidPidAndSerial.c_str()
-		<<"] Length="<<hidPidAndSerial.length()<<endl;
 	//inDevId=crc8Short(hidPidAndSerial.c_str(),hidPidAndSerial.length());
 	inDevId=Crc32_ComputeBuf(0,hidPidAndSerial.c_str(),hidPidAndSerial.length());
-	VLOG(4)<<__FUNCTION__<<"serial="<<inDevId<<endl;
+	VLOG_IF(4,hidPidAndSerial.length()>0)<<"ZW0120 hidPidAndSerial=["<<hidPidAndSerial.c_str()
+		<<"]\nLength="<<hidPidAndSerial.length()<<"\tserial="<<inDevId<<endl;
 	return inDevId;
 }
 
