@@ -3,6 +3,7 @@
 #include "zwHidComm.h"
 #include "zwCcbElockHdr.h"
 #include "CCBelock.h"
+#include "zwHidMulHeader.h"
 using namespace boost::property_tree;
 using jch::zwJcHidDbg15A;
 using jch::G_JCHID_RECVMSG_CB;

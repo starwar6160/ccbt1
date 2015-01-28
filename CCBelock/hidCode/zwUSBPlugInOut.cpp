@@ -13,7 +13,9 @@ using namespace std;
 const _TCHAR CLASS_NAME[]  = _T("Sample Window Class");
 HWND hWnd;
 #include "CCBelock.h"
+#include "zwHidMulHeader.h"
 #include "zwHidComm.h"
+#include "zwHidMulHeader.h"
 
 
 static const GUID GUID_DEVINTERFACE_LIST[] =

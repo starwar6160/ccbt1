@@ -7,6 +7,7 @@ extern "C"
 }
 #include "LuaBridge.h"
 #include "CCBelock.h"
+#include "zwHidMulHeader.h"
 
 using namespace luabridge;
 #ifdef _DEBUG_LUABRIDGE_DEMO107

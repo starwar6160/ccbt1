@@ -4,6 +4,7 @@
 #include "stdafx.h"
 #include "jcElockTestHdr.h"
 #include "CCBelock.h"
+#include "zwHidMulHeader.h"
 
 int eLockGoogleTest2014( int argc, _TCHAR ** argv );
 void eLockJsonTest20150106();
