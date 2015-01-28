@@ -83,7 +83,6 @@ namespace jcLockJsonCmd_t2015a21{
 	extern const int G_SUSSESS;
 	extern const int G_FAIL;
 	class zwJcHidDbg15A;
-	extern zwJcHidDbg15A *s_jcHidDev;
 }	//end of namespace jcLockJsonCmd_t2015a21{
 namespace jch=jcLockJsonCmd_t2015a21;
 

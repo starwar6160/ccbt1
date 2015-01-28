@@ -39,6 +39,11 @@ using std::vector;
 #include <boost/bind.hpp>  
 #include <boost/function.hpp>  
 using boost::property_tree::ptree;
+#include <map>
+#include <vector>
+using std::map;
+using std::vector;
+
 
 #define GLOG_NO_ABBREVIATED_SEVERITIES
 #include <glog/logging.h>   // glog м╥нд╪Ч

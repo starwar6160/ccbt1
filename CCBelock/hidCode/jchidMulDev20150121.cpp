@@ -3,13 +3,6 @@
 #include "zwHidComm.h"
 #include "zwCcbElockHdr.h"
 #include "CCBelock.h"
-#include <boost/property_tree/ptree.hpp>
-#include <boost/property_tree/xml_parser.hpp>
-#include <boost/property_tree/json_parser.hpp>
-#include <map>
-#include <vector>
-using std::map;
-using std::vector;
 using namespace boost::property_tree;
 using jch::zwJcHidDbg15A;
 using jch::G_JCHID_RECVMSG_CB;
@@ -31,6 +24,7 @@ namespace jcLockJsonCmd_t2015a21{
 	const int G_SUSSESS=0;
 	const int G_FAIL=1;
 	const int G_NO_CALLBACK=2;
+	const int G_VECINDEX_NOTFOUND=-1;
 	const char * G_DEV_LOCK="Lock";
 	const char * G_DEV_SECBOX="Encryption";
 	ReturnDrives G_JCHID_ENUM_DEV2015A=NULL;
@@ -41,17 +35,19 @@ namespace jcLockJsonCmd_t2015a21{
 	class zwJcHidDbg15A
 	{
 	public:
-		zwJcHidDbg15A();	//默认不使用序列号打开一个设备
+		zwJcHidDbg15A();	
 		~zwJcHidDbg15A();
+		//序列号如果为NULL则不使用序列号打开设备
 		int OpenElock(const char *ElockSerial);
 		int OpenSecBox(const char *SecBoxSerial);
-		uint32_t Push2jcHidDev(const char *strJsonCmd);
-		int RecvThread(JCHID *hidHandle);
+		uint32_t PushJson(const char *strJsonCmd);		
+		uint32_t GetHash(void);
 	private:
 		JCHID m_dev;
 		uint32_t m_hashId;	//由设备PID字符串("Lock"等)和序列号HASH出来的ID
 		boost::thread *thr;
 		boost::mutex jcSend_mutex;	//用来限定先要打开设备，启动数据接收线程，然后才能发送数据
+		int RecvThread(JCHID *hidHandle);
 		void StartRecvThread();
 		void StopRecvThread();
 		void OpenHidDevice();
@@ -59,14 +55,36 @@ namespace jcLockJsonCmd_t2015a21{
 
 	uint32_t myJcHidHndFromStrSerial( const char* DrivesTypePID, const char * DrivesIdSN);
 
-	zwJcHidDbg15A *s_jcHidDev;
+	vector<zwJcHidDbg15A *> vecJcHid;
+
+	//从HID设备对象指针的向量里面按照类型名字和序列号发现哪一个对象是对应的对象，返回索引
+	//找不到的话返回G_VECINDEX_NOTFOUND
+	int FindHidDevIndex(const char* DrivesTypePID, const char * DrivesIdSN)
+	{
+		uint32_t realHash=myJcHidHndFromStrSerial(DrivesTypePID,DrivesIdSN);
+		for (int i=0;i<vecJcHid.size();i++)
+		{
+			if (realHash==vecJcHid[i]->GetHash())
+			{
+				return i;
+			}
+		}
+		return G_VECINDEX_NOTFOUND;
+	}
 
 	zwJcHidDbg15A::zwJcHidDbg15A()
 	{
+		assert(sizeof(char *)==sizeof(int));
 		memset(&m_dev,0,sizeof(m_dev));
 		m_dev.vid=JCHID_VID_2014;
 		m_hashId=0;
 		thr=NULL;
+	}
+
+	uint32_t zwJcHidDbg15A::GetHash()
+	{
+		assert(m_hashId>0);
+		return m_hashId;
 	}
 
 	int zwJcHidDbg15A::OpenElock(const char *ElockSerial)
@@ -194,7 +212,7 @@ void zwGetHidDevSerialTest(char *jcHidSerial)
 //////////////////////////////////////////////////////////////////////////
 
 
-uint32_t zwJcHidDbg15A::Push2jcHidDev(const char *strJsonCmd)
+uint32_t zwJcHidDbg15A::PushJson(const char *strJsonCmd)
 {
 	assert(NULL!=m_dev.hid_device);
 	assert(NULL != strJsonCmd && strlen(strJsonCmd) > 0);
@@ -485,8 +503,9 @@ CCBELOCK_API int ZJY1501STD OpenDrives( const char* DrivesTypePID,const char * D
 	{
 		return G_FAIL;
 	}
-	jch::s_jcHidDev=new zwJcHidDbg15A();
-	jch::s_jcHidDev->OpenElock(DrivesIdSN);
+	zwJcHidDbg15A *tDev=new zwJcHidDbg15A();	
+	tDev->OpenElock(DrivesIdSN);
+	jch::vecJcHid.push_back(tDev);
 	return G_SUSSESS;
 }
 
@@ -497,11 +516,11 @@ CCBELOCK_API int ZJY1501STD CloseDrives( const char* DrivesTypePID,const char * 
 	{
 		return G_FAIL;
 	}
-
-	if (NULL!=jch::s_jcHidDev)
+	int devIndex=jch::FindHidDevIndex(DrivesTypePID,DrivesIdSN);
+	if (jch::G_VECINDEX_NOTFOUND!=devIndex)
 	{
 		//memset(s_jcHidDev,0,sizeof(s_jcHidDev));
-		delete jch::s_jcHidDev;
+		delete jch::vecJcHid[devIndex];
 	}
 	return G_SUSSESS;
 }
@@ -543,7 +562,15 @@ CCBELOCK_API int ZJY1501STD InputMessage( const char * DrivesTypePID,const char 
 	//}
 
 	try {
-		jch::s_jcHidDev->Push2jcHidDev(AnyMessageJson);
+		int devIndex=jch::FindHidDevIndex(DrivesTypePID,DrivesIdSN);
+		if (jch::G_VECINDEX_NOTFOUND!=devIndex)
+		{
+			jch::vecJcHid[devIndex]->PushJson(AnyMessageJson);
+		}		
+		else
+		{
+			LOG(ERROR)<<"jcHid Device ["<<DrivesTypePID<<":"<<DrivesIdSN<<"] not found"<<endl;
+		}
 		return G_SUSSESS;
 	}
 	catch(...) {
