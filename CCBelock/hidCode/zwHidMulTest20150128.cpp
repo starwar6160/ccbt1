@@ -1,6 +1,9 @@
 #include "stdafx.h"
 #include <gtest/gtest.h>
+#define ZWUSEGTEST
+#include "CCBelock.h"
 
+#ifdef ZWUSEGTEST
 //测试套件初始化和结束事件
 class ATMCDLLSelfTest : public testing::Test
 {
@@ -23,7 +26,7 @@ void ATMCDLLSelfTest::TearDown()
 
 }
 
-int zwStartGtestInDLL(void)
+CCBELOCK_API int zwStartGtestInDLL(void)
 {
 	int argc=1;
 	char *argv[1];
@@ -37,3 +40,4 @@ TEST_F(ATMCDLLSelfTest, LockActiveTest0000)
 	int age=1;
 	EXPECT_EQ(1,age);
 }
+#endif // ZWUSEGTEST
