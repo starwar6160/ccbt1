@@ -6,8 +6,6 @@
 #include "zwHidComm.h"
 #include <stdio.h>
 using namespace boost::property_tree;
-//using Poco::AutoPtr;
-//using Poco::Util::IniFileConfiguration;
 
 namespace zwccbthr {
 	boost::mutex thr_mutex;
