@@ -31,7 +31,7 @@ namespace jcLockJsonCmd_t2015a21{
 		zwJcHidDbg15A();
 		~zwJcHidDbg15A();
 		uint32_t Push2jcHidDev(const char *strJsonCmd);
-		int RecvFromLockJsonThr(JCHID *hidHandle);
+		int RecvThread(JCHID *hidHandle);
 	private:
 		JCHID m_dev;
 		boost::thread *thr;
@@ -189,6 +189,7 @@ uint32_t zwJcHidDbg15A::Push2jcHidDev(const char *strJsonCmd)
 		int count=0;
 		do 
 		{
+			//此处加锁，确保接收线程起来以后才能下发消息，以免丢失下位机返回的消息
 				boost::mutex::scoped_lock lock(jcSend_mutex);
 				//VLOG(4)<<__FUNCTION__<<"\nSendData"<<endl;
 				sts=jcHidSendData(&m_dev, strJsonCmd, strlen(strJsonCmd));
@@ -203,6 +204,7 @@ uint32_t zwJcHidDbg15A::Push2jcHidDev(const char *strJsonCmd)
 				Sleep(1000);
 				count++;
 			}
+			//最多重试3次发送
 			if (count>3)
 			{
 				break;
@@ -215,18 +217,18 @@ uint32_t zwJcHidDbg15A::Push2jcHidDev(const char *strJsonCmd)
 	return sts;
 }
 
-int zwJcHidDbg15A::RecvFromLockJsonThr(JCHID *hidHandle)
+int zwJcHidDbg15A::RecvThread(JCHID *hidHandle)
 {				 
 	assert(NULL!=hidHandle && NULL!=hidHandle->hid_device);
 	if (NULL==hidHandle || NULL==hidHandle->hid_device)
 	{
-		LOG(WARNING)<<__FUNCTION__<<"\tInput JCHID * is NULL!"<<endl;
+		LOG(ERROR)<<__FUNCTION__<<"\tInput JCHID * is NULL!"<<endl;
 		return G_FAIL;
 	}
 	LOG(WARNING)<<__FUNCTION__<<"\n JcHidZJYDbg Thread Started"<<endl;	
 		const int BLEN = 1024;
-		char recvBuf[BLEN + 1];
-		memset(recvBuf, 0, BLEN + 1);		
+		char recvBuf[BLEN];
+		memset(recvBuf, 0, BLEN);		
 #ifdef _DEBUG1
 		int t_thr_runCount=1;
 #endif // _DEBUG
@@ -241,19 +243,17 @@ try{
 			boost::this_thread::interruption_point();  
 					if (NULL==hidHandle->hid_device)
 					{
-						VLOG(4)<<"NULL==hidHandle->hid_device"<<endl;
+						LOG(ERROR)<<"NULL==hidHandle->hid_device"<<endl;
 						continue;
 					}
-					//LOG(WARNING)<<"RECVTHR.P3.1,Before RecvHidData"<<endl;
 					JCHID_STATUS sts=JCHID_STATUS_FAIL;
 					//注意此处如果不每次循环清零，则会导致长度值超过大约4K字节时，计算CRC或者其他读取
 					//收到的内容数组时，尽管数据可能只有几十字节，但是读取操作越界，程序崩溃；
 					int recvLen = 0;	
 					sts=jcHidRecvData(hidHandle,recvBuf, BLEN, &recvLen,G_RECV_TIMEOUT);				
-					//要是某个设备什么数据也没收到，就直接进入下一个设备
 					if (JCHID_STATUS_OK!=sts &&JCHID_STATUS_RECV_ZEROBYTES!=sts)
 					{					
-						LOG(INFO)<<"NoData from "<<hidHandle->HidSerial<<endl;
+						LOG(INFO)<<"NoData from HID device with serial="<<hidHandle->HidSerial<<endl;
 						continue;
 					}					
 					if (JCHID_STATUS_OK==sts && recvLen>0 )
@@ -263,7 +263,7 @@ try{
 							VLOG_IF(4,recvDataNowSum>0)<<" recvDataNowSum="<<recvDataNowSum<<endl;
 							int tRecvLen=strlen(recvBuf);
 							static int tmpRecvCount=0;
-							LOG_IF(WARNING,tRecvLen>1)<<"MulHid成功从锁具 "<<hidHandle->HidSerial<<
+							LOG_IF(WARNING,tRecvLen>1)<<"MulHid成功从锁具 with Serial="<<hidHandle->HidSerial<<
 								" 接收JSON数据如下：Count "<<tmpRecvCount++<<endl<<recvBuf<<endl;
 							LOG_IF(ERROR,NULL==G_JCHID_RECVMSG_CB)<<"G_JCHID_RECVMSG_CB==NULL"<<endl;
 							if (NULL!=G_JCHID_RECVMSG_CB)
@@ -275,7 +275,7 @@ try{
 }
 catch(boost::thread_interrupted)
 {
-	LOG(WARNING)<<"金储HID数据接收线程被主程序正常终止"<<endl;
+	LOG(WARNING)<<"金储HID数据接收线程由于收到主程序通知正常结束"<<endl;
 	return G_SUSSESS;
 }
 //////////////////////TRY-CATCH完毕////////////////////////////////////////////////////
@@ -291,7 +291,7 @@ void zwJcHidDbg15A::StartRecvThread()
 	}
 	//声明一个函数对象，尖括号内部，前面是函数返回值，括号内部是函数的一个或者多个参数(形参)，估计是逗号分隔，
 	//后面用boost::bind按照以下格式把函数指针和后面_1形式的一个或者多个参数(形参)绑定成为一个函数对象
-	boost::function<int (JCHID *)> memberFunctionWrapper(boost::bind(&zwJcHidDbg15A::RecvFromLockJsonThr, this,_1));  	
+	boost::function<int (JCHID *)> memberFunctionWrapper(boost::bind(&zwJcHidDbg15A::RecvThread, this,_1));  	
 	//再次使用boost::bind把函数对象与实参绑定到一起，就可以传递给boost::thread作为线程体函数了
 	thr=new boost::thread(boost::bind(memberFunctionWrapper,&m_dev));	
 	Sleep(5);	//等待线程启动完毕，其实也就2毫秒一般就启动了；
@@ -324,16 +324,20 @@ void jcMulHidEnum( const int hidPid,string &jcDevListJson )
 		memset(serial,0,32);
 		TcharToChar(jclock_cur->serial_number,serial);
 		//VLOG(2)<<"vid="<<jclock_cur->vendor_id<<" pid="<<jclock_cur->product_id<<" serial="<<serial<<endl;
+#ifdef _DEBUG
 		zwDumpHidDeviceInfo(jclock_cur);
+#endif // _DEBUG
 
 
 		//注意，此处put的话，每次都替代，add的话，才能新增项目
 		if (JCHID_PID_LOCK5151==hidPid)
 		{
+			VLOG(4)<<"jcElockSerial="<<serial<<endl;
 			pt.add("jcElockSerial",serial);
 		}
 		if (JCHID_PID_SECBOX==hidPid)
 		{
+			VLOG(4)<<"jcSecretBoxSerial="<<serial<<endl;
 			pt.add("jcSecretBoxSerial",serial);
 		}
 
@@ -344,6 +348,7 @@ void jcMulHidEnum( const int hidPid,string &jcDevListJson )
 	write_json(ss, pt);
 	jcDevListJson=ss.str();
 	LOG(INFO)<<"jcDevListJson=\n"<<jcDevListJson;
+	//经过实验，美剧完毕设备至少要等待900毫秒以后，才能再次打开设备，所以直接在此等待1000毫秒以便外部使用
 	Sleep(1000);
 }
 
