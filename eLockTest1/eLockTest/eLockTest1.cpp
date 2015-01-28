@@ -137,7 +137,8 @@ void myMulHidDevJsonTest20150116B()
 		//"OQAiAACAAoTb1gAI";
 		//"OQAiAAAAAAAAgAKE";
 		//"";
-		"PAAbAAAAAAAAgAKE";
+		//"PAAbAAAAAAAAgAKE";
+		"OQAiAACAAoQL1wAI";
 	//"jcElockSerial": "PAAbAOgSACDAnwEg"
 	//const char *devSN3="PAAbAOgSACDAnwEg";	
 	const char *jcHidJsonMsg116t1="{\"command\": \"Test_Motor_Open\",\"cmd_id\": \"1234567890\",\"State\": \"test\"}";
