@@ -4,6 +4,7 @@
 #include "zwCcbElockHdr.h"
 #include "CCBelock.h"
 #include "zwHidMulHeader.h"
+#include "zwHidGtest130.h"
 using namespace boost::property_tree;
 using jch::zwJcHidDbg15A;
 using jch::G_JCHID_RECVMSG_CB;
@@ -31,28 +32,6 @@ namespace jcLockJsonCmd_t2015a21{
 	ReturnDrives G_JCHID_ENUM_DEV2015A=NULL;
 	ReturnMessage G_JCHID_RECVMSG_CB=NULL;
 	std::map<uint32_t,JCHID> G_JCDEV_MAP;
-
-
-	class zwJcHidDbg15A
-	{
-	public:
-		zwJcHidDbg15A();	
-		~zwJcHidDbg15A();
-		//序列号如果为NULL则不使用序列号打开设备
-		int OpenElock(const char *ElockSerial);
-		int OpenSecBox(const char *SecBoxSerial);
-		uint32_t PushJson(const char *strJsonCmd);		
-		uint32_t GetHash(void);
-	private:
-		JCHID m_dev;
-		uint32_t m_hashId;	//由设备PID字符串("Lock"等)和序列号HASH出来的ID
-		boost::thread *thr;
-		boost::mutex jcSend_mutex;	//用来限定先要打开设备，启动数据接收线程，然后才能发送数据
-		int RecvThread(JCHID *hidHandle);
-		void StartRecvThread();
-		void StopRecvThread();
-		void OpenHidDevice();
-	};
 
 	uint32_t myJcHidHndFromStrSerial( const char* DrivesTypePID, const char * DrivesIdSN);
 
@@ -88,7 +67,7 @@ namespace jcLockJsonCmd_t2015a21{
 		return m_hashId;
 	}
 
-	int zwJcHidDbg15A::OpenElock(const char *ElockSerial)
+	int zwJcHidDbg15A::SetElock(const char *ElockSerial)
 	{
 		m_dev.pid=JCHID_PID_LOCK5151;
 		m_hashId=myJcHidHndFromStrSerial(G_DEV_LOCK,ElockSerial);
@@ -96,11 +75,11 @@ namespace jcLockJsonCmd_t2015a21{
 		{
 			strncpy(m_dev.HidSerial,ElockSerial,JCHID_SERIAL_LENGTH);
 		}		
-		OpenHidDevice();
+		//OpenHidDevice();
 		return G_SUSSESS;
 	}
 
-	int zwJcHidDbg15A::OpenSecBox(const char *SecBoxSerial)
+	int zwJcHidDbg15A::SetSecBox(const char *SecBoxSerial)
 	{
 		m_dev.pid=JCHID_PID_SECBOX;
 		m_hashId=myJcHidHndFromStrSerial(G_DEV_SECBOX,SecBoxSerial);
@@ -108,23 +87,17 @@ namespace jcLockJsonCmd_t2015a21{
 		{
 			strncpy(m_dev.HidSerial,SecBoxSerial,JCHID_SERIAL_LENGTH);
 		}
-		OpenHidDevice();
+		//OpenHidDevice();
 		return G_SUSSESS;
 	}
 
 	zwJcHidDbg15A::~zwJcHidDbg15A()
 	{
-		assert(NULL!=m_dev.hid_device);	
-		StopRecvThread();
-
 		if (NULL!=m_dev.hid_device)
 		{
+			StopRecvThread();
 			jcHidClose(&m_dev);
 			LOG(WARNING)<<"Close jcHid Device "<<m_dev.hid_device<<" SUCCESS"<<endl;
-		}
-		else
-		{
-			LOG(ERROR)<<"try to Close NULL jchid Device Handle"<<endl;
 		}
 	};
 
@@ -505,7 +478,7 @@ CCBELOCK_API int ZJY1501STD OpenDrives( const char* DrivesTypePID,const char * D
 		return G_FAIL;
 	}
 	zwJcHidDbg15A *tDev=new zwJcHidDbg15A();	
-	tDev->OpenElock(DrivesIdSN);
+	tDev->SetElock(DrivesIdSN);
 	jch::vecJcHid.push_back(tDev);
 	return G_SUSSESS;
 }
