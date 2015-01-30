@@ -67,6 +67,72 @@ void ATMCDLLSelfTest::TearDown()
 
 }
 
+
+TEST_F(ATMCDLLSelfTest, LockNormalUse)
+{
+	//测试从外部字符串ID计算来的设备HASH是否正确
+	jch::zwJcHidDbg15A hid1;
+	//此处计算的是标准锁具的HASH
+	hid1.SetElock(NULL);
+	uint32_t hidHash=hid1.GetHash();
+	cout<<"hidHash="<<hidHash<<endl;
+	EXPECT_GT(hidHash,0);
+	EXPECT_EQ(hidHash,2378562802);
+	hid1.OpenHidDevice();
+	//清理s_recvMsg，期待收到的长度大于0
+	memset(s_recvMsg,0,G_BUFSIZE);
+	hid1.PushJson(cmdBuf);
+	Sleep(2000);
+	EXPECT_GT(strlen(s_recvMsg),0);
+}
+
+TEST_F(ATMCDLLSelfTest, LockMultiOpen)
+{
+	//测试2个类对象打开同一个设备的情况
+	jch::zwJcHidDbg15A hid1,hid2;
+	//此处计算的是标准锁具的HASH
+	hid1.SetElock(NULL);
+	hid2.SetElock(NULL);
+	cout<<"will SUCCESS Open HID Device 1"<<endl;
+	EXPECT_EQ(jch::G_SUSSESS,hid1.OpenHidDevice());
+	cout<<"will FAIL Open same HID Device 1"<<endl;
+	EXPECT_EQ(jch::G_FAIL,hid2.OpenHidDevice());
+
+}
+
+TEST_F(ATMCDLLSelfTest, LockNotOpen)
+{
+	//测试没有执行OpenHidDevice的动作
+	jch::zwJcHidDbg15A hdv;
+	hdv.SetElock(NULL);
+	EXPECT_EQ(jch::G_FAIL,hdv.PushJson(cmdBuf));
+	Sleep(700);
+}
+
+TEST_F(ATMCDLLSelfTest, LockPushNULL)
+{
+	//测试发送空的命令字符串的操作
+	jch::zwJcHidDbg15A hdv;
+	hdv.SetElock(NULL);
+	hdv.OpenHidDevice();
+	//清理s_recvMsg，期待收到的长度等于0，因为发送空命令字符串
+	memset(s_recvMsg,0,G_BUFSIZE);
+	EXPECT_EQ(jch::G_FAIL,hdv.PushJson(NULL));
+	EXPECT_EQ(jch::G_FAIL,hdv.PushJson(""));
+	Sleep(700);
+	EXPECT_EQ(strlen(s_recvMsg),0);
+}
+
+TEST_F(ATMCDLLSelfTest, LockNotSetPara)
+{
+	//测试没有设置参数就执行OpenHidDevice的动作
+	jch::zwJcHidDbg15A hdv;
+	hdv.OpenHidDevice();
+	EXPECT_EQ(jch::G_FAIL,hdv.PushJson(cmdBuf));
+	Sleep(700);
+}
+
+//////////////////////////////////////////////////////////////////////////
 TEST_F(ATMCDLLSelfTest, jcHidDevEnumNormal)
 {
 	//枚举设备，正常情况测试
@@ -106,55 +172,17 @@ TEST_F(ATMCDLLSelfTest, jcHidDevEnumBad3)
 	//"{"jcElockSerial": "a"}"这样的最低限度json是22字节长度
 	EXPECT_EQ(strlen(s_devList),0);	
 }
+//////////////////////////////////////////////////////////////////////////
 
-TEST_F(ATMCDLLSelfTest, LockNormalUse)
+TEST_F(ATMCDLLSelfTest, zjydbgNormal)
 {
-	//测试从外部字符串ID计算来的设备HASH是否正确
-	jch::zwJcHidDbg15A hid1;
-	//此处计算的是标准锁具的HASH
-	hid1.SetElock(NULL);
-	uint32_t hidHash=hid1.GetHash();
-	cout<<"hidHash="<<hidHash<<endl;
-	EXPECT_GT(hidHash,0);
-	EXPECT_EQ(hidHash,2378562802);
-	hid1.OpenHidDevice();
-	//清理s_recvMsg，期待收到的长度大于0
-	memset(s_recvMsg,0,G_BUFSIZE);
-	hid1.PushJson(cmdBuf);
-	Sleep(2000);
-	EXPECT_GT(strlen(s_recvMsg),0);
-}
-
-TEST_F(ATMCDLLSelfTest, LockNotOpen)
-{
-	//测试没有执行OpenHidDevice的动作
-	jch::zwJcHidDbg15A hdv;
-	hdv.SetElock(NULL);
-	EXPECT_EQ(jch::G_FAIL,hdv.PushJson(cmdBuf));
-	Sleep(700);
-}
-
-TEST_F(ATMCDLLSelfTest, LockPushNULL)
-{
-	//测试发送空的命令字符串的操作
-	jch::zwJcHidDbg15A hdv;
-	hdv.SetElock(NULL);
-	hdv.OpenHidDevice();
-	//清理s_recvMsg，期待收到的长度等于0，因为发送空命令字符串
-	memset(s_recvMsg,0,G_BUFSIZE);
-	EXPECT_EQ(jch::G_FAIL,hdv.PushJson(NULL));
-	EXPECT_EQ(jch::G_FAIL,hdv.PushJson(""));
-	Sleep(700);
-	EXPECT_EQ(strlen(s_recvMsg),0);
-}
-
-TEST_F(ATMCDLLSelfTest, LockNotSetPara)
-{
-	//测试没有设置参数就执行OpenHidDevice的动作
-	jch::zwJcHidDbg15A hdv;
-	hdv.OpenHidDevice();
-	EXPECT_EQ(jch::G_FAIL,hdv.PushJson(cmdBuf));
-	Sleep(700);
+	const char *devSN3="OQAiAACAAoQL1wAI";
+	const char *hidType="Lock";
+	OpenDrives(hidType,	devSN3);
+	SetReturnMessage(myReturnMessageTest130);
+	InputMessage(hidType,devSN3,cmdBuf);
+	Sleep(5000);
+	CloseDrives(hidType,devSN3);
 }
 
 }	//namespace zwHidGTest20150130{
