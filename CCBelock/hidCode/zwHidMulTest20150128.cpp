@@ -3,14 +3,31 @@
 #include "zwHidGtest130.h"
 #define ZWUSEGTEST
 
-void ZJY1501STD myReturnMessageTest130(const char* DrivesIdSN,char* DrivesMessageJson)
+#ifdef ZWUSEGTEST
+
+CCBELOCK_API int zwStartGtestInDLL(void)
 {
-	printf("Callback Function %s:\trecvDataLen=%d\t",__FUNCTION__,strlen(DrivesMessageJson));
-	printf("devSerial=%s\t devReturnJson is:\n%s\n",DrivesIdSN,DrivesMessageJson);
+	int argc=1;
+	char *argv[1];
+	argv[0]=NULL;
+	testing::InitGoogleTest(&argc, argv);
+	return RUN_ALL_TESTS();
 }
 
+namespace zwHidGTest20150130{
+	const int G_BUFSIZE=1024;
+	char s_recvMsg[G_BUFSIZE];
 
-#ifdef ZWUSEGTEST
+void ZJY1501STD myReturnMessageTest130(const char* DrivesIdSN,char* DrivesMessageJson)
+{
+	int inJsonLen=strlen(DrivesMessageJson);
+	assert(inJsonLen<G_BUFSIZE);
+	memset(s_recvMsg,0,G_BUFSIZE);
+	printf("Callback Function %s:\trecvDataLen=%d\t",__FUNCTION__,inJsonLen);
+	printf("devSerial=%s\t devReturnJson is:\n%s\n",DrivesIdSN,DrivesMessageJson);
+	strcpy(s_recvMsg,DrivesMessageJson);
+}
+
 //测试套件初始化和结束事件
 class ATMCDLLSelfTest : public testing::Test
 {
@@ -37,16 +54,6 @@ void ATMCDLLSelfTest::TearDown()
 
 }
 
-CCBELOCK_API int zwStartGtestInDLL(void)
-{
-	int argc=1;
-	char *argv[1];
-	argv[0]=NULL;
-	testing::InitGoogleTest(&argc, argv);
-	return RUN_ALL_TESTS();
-}
-
-
 TEST_F(ATMCDLLSelfTest, LockNormalUse)
 {
 	//测试从外部字符串ID计算来的设备HASH是否正确
@@ -58,8 +65,11 @@ TEST_F(ATMCDLLSelfTest, LockNormalUse)
 	EXPECT_GT(hidHash,0);
 	EXPECT_EQ(hidHash,2378562802);
 	hid1.OpenHidDevice();
+	//清理s_recvMsg，期待收到的长度大于0
+	memset(s_recvMsg,0,G_BUFSIZE);
 	hid1.PushJson(cmdBuf);
 	Sleep(2000);
+	EXPECT_GT(strlen(s_recvMsg),0);
 }
 
 TEST_F(ATMCDLLSelfTest, LockNotOpen)
@@ -77,9 +87,12 @@ TEST_F(ATMCDLLSelfTest, LockPushNULL)
 	jch::zwJcHidDbg15A hdv;
 	hdv.SetElock(NULL);
 	hdv.OpenHidDevice();
+	//清理s_recvMsg，期待收到的长度等于0，因为发送空命令字符串
+	memset(s_recvMsg,0,G_BUFSIZE);
 	EXPECT_EQ(jch::G_FAIL,hdv.PushJson(NULL));
 	EXPECT_EQ(jch::G_FAIL,hdv.PushJson(""));
 	Sleep(700);
+	EXPECT_EQ(strlen(s_recvMsg),0);
 }
 
 TEST_F(ATMCDLLSelfTest, LockNotSetPara)
@@ -91,4 +104,5 @@ TEST_F(ATMCDLLSelfTest, LockNotSetPara)
 	Sleep(700);
 }
 
+}	//namespace zwHidGTest20150130{
 #endif // ZWUSEGTEST

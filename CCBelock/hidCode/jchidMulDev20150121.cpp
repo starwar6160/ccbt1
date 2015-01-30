@@ -331,9 +331,10 @@ int zwJcHidDbg15A::OpenHidDevice()
 	thr=NULL;
 	jcSend_mutex.lock();
 	VLOG(4)<<"OpenHidDevice jcDevInit_mutex.lock();"<<endl;
-	if (NULL==m_dev.hid_device)
+	//注意此处，如果pid,vid没有填写，为0
+	if (NULL==m_dev.pid)
 	{
-		LOG(WARNING)<<"JCHID Device Not Open!"<<endl;
+		LOG(WARNING)<<"JCHID Device Para Not Set!"<<endl;
 		return G_FAIL;
 	}
 
@@ -342,10 +343,12 @@ int zwJcHidDbg15A::OpenHidDevice()
 	{
 		LOG(WARNING)<<" Open jcHid Device "<<m_dev.hid_device<<" SUCCESS"<<endl;
 		StartRecvThread();
+		return G_SUSSESS;
 	}
 	else
 	{
 		LOG(ERROR)<<" Open jcHid Device Error"<<endl;
+		return G_FAIL;
 	}
 }
 
