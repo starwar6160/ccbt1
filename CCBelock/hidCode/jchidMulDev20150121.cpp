@@ -188,8 +188,6 @@ void zwGetHidDevSerialTest(char *jcHidSerial)
 
 uint32_t zwJcHidDbg15A::PushJson(const char *strJsonCmd)
 {
-	assert(NULL!=m_dev.hid_device);
-	assert(NULL != strJsonCmd && strlen(strJsonCmd) > 0);
 	if (NULL == strJsonCmd || strlen(strJsonCmd) == 0
 		|| NULL==m_dev.hid_device
 		) {

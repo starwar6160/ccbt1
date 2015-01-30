@@ -15,17 +15,21 @@ void ZJY1501STD myReturnMessageTest130(const char* DrivesIdSN,char* DrivesMessag
 class ATMCDLLSelfTest : public testing::Test
 {
 public:
-	
+char cmdBuf[128];	
 
 protected:
 	virtual void SetUp();
 	virtual void TearDown();
+	
 };
 
 void ATMCDLLSelfTest::SetUp()
 {
-
-
+	SetReturnMessage(myReturnMessageTest130);
+	const char *msgT5a="{\"command\":\"Test_USB_HID\",\"cmd_id\":\"1234567890\",\"input\":\"TestAnyString";
+	const char *msgT5b="\",\"output\":\"\"}";	
+	memset(cmdBuf,0,128);
+	sprintf(cmdBuf,"%s%d%s",msgT5a,7,msgT5b);
 }
 
 void ATMCDLLSelfTest::TearDown()
@@ -45,8 +49,6 @@ CCBELOCK_API int zwStartGtestInDLL(void)
 TEST_F(ATMCDLLSelfTest, LockNormalUse)
 {
 	//测试从外部字符串ID计算来的设备HASH是否正确
-	int age=1;
-	EXPECT_EQ(1,age);
 	jch::zwJcHidDbg15A hid1;
 	//此处计算的是标准锁具的HASH
 	hid1.SetElock(NULL);
@@ -55,13 +57,16 @@ TEST_F(ATMCDLLSelfTest, LockNormalUse)
 	EXPECT_GT(hidHash,0);
 	EXPECT_EQ(hidHash,2378562802);
 	hid1.OpenHidDevice();
-	const char *msgT5a="{\"command\":\"Test_USB_HID\",\"cmd_id\":\"1234567890\",\"input\":\"TestAnyString";
-	const char *msgT5b="\",\"output\":\"\"}";
-	char buf[128];
-	memset(buf,0,128);
-	sprintf(buf,"%s%d%s",msgT5a,7,msgT5b);
-	SetReturnMessage(myReturnMessageTest130);
-	hid1.PushJson(buf);
+	hid1.PushJson(cmdBuf);
 	Sleep(2000);
+}
+
+TEST_F(ATMCDLLSelfTest, LockNotOpen)
+{
+	//测试没有执行OpenHidDevice的动作
+	jch::zwJcHidDbg15A hdv;
+	hdv.SetElock(NULL);
+	EXPECT_EQ(jch::G_FAIL,hdv.PushJson(cmdBuf));
+	Sleep(700);
 }
 #endif // ZWUSEGTEST
