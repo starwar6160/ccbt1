@@ -489,7 +489,11 @@ CCBELOCK_API int ZJY1501STD OpenDrives( const char* DrivesTypePID,const char * D
 	}
 	zwJcHidDbg15A *tDev=new zwJcHidDbg15A();	
 	tDev->SetElock(DrivesIdSN);
-	tDev->OpenHidDevice();
+	int sts=tDev->OpenHidDevice();
+	if (G_FAIL==sts)
+	{
+		return G_FAIL;
+	}
 	jch::vecJcHid.push_back(tDev);
 	return G_SUSSESS;
 }
@@ -506,9 +510,10 @@ CCBELOCK_API int ZJY1501STD CloseDrives( const char* DrivesTypePID,const char * 
 	{
 		//memset(s_jcHidDev,0,sizeof(s_jcHidDev));
 		delete jch::vecJcHid[devIndex];
-	}
-	Sleep(1000);
-	return G_SUSSESS;
+		Sleep(1000);
+		return G_SUSSESS;
+	}	
+	return G_FAIL;
 }
 
 //2、设置设备消息返回的回调函数
