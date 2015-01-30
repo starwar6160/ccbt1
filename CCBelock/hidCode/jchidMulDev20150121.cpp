@@ -479,6 +479,7 @@ CCBELOCK_API int ZJY1501STD OpenDrives( const char* DrivesTypePID,const char * D
 	}
 	zwJcHidDbg15A *tDev=new zwJcHidDbg15A();	
 	tDev->SetElock(DrivesIdSN);
+	tDev->OpenHidDevice();
 	jch::vecJcHid.push_back(tDev);
 	return G_SUSSESS;
 }

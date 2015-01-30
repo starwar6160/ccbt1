@@ -6,14 +6,18 @@ namespace jcLockJsonCmd_t2015a21{
 	class zwJcHidDbg15A
 	{
 	public:
-		zwJcHidDbg15A();	
-		~zwJcHidDbg15A();
+		zwJcHidDbg15A();			
 		//序列号如果为NULL则不使用序列号打开设备
 		int SetElock(const char *ElockSerial);
 		int SetSecBox(const char *SecBoxSerial);
-		uint32_t PushJson(const char *strJsonCmd);		
+		//先设置参数，然后可以获得HASH值
 		uint32_t GetHash(void);
+		//然后打开设备
 		void OpenHidDevice();
+		//然后发送命令
+		uint32_t PushJson(const char *strJsonCmd);				
+		//设备由构造函数自动关闭
+		~zwJcHidDbg15A();
 	private:
 		JCHID m_dev;
 		uint32_t m_hashId;	//由设备PID字符串("Lock"等)和序列号HASH出来的ID
