@@ -188,11 +188,14 @@ void zwGetHidDevSerialTest(char *jcHidSerial)
 
 uint32_t zwJcHidDbg15A::PushJson(const char *strJsonCmd)
 {
-	if (NULL == strJsonCmd || strlen(strJsonCmd) == 0
-		|| NULL==m_dev.hid_device
-		) {
-			LOG(ERROR)<<__FUNCTION__<<"input Data strJsonCmd or m_dev.hid_device error!\n";
+	if (NULL == strJsonCmd || strlen(strJsonCmd) == 0) {
+			LOG(WARNING)<<"PushJson input Data strJsonCmd  NULL!\n";
 			return G_FAIL;
+	}
+	if (NULL==m_dev.hid_device)
+	{
+		LOG(WARNING)<<"PushJson input Data m_dev.hid_device Not Open!\n";
+		return G_FAIL;
 	}
 	static int jcPushCountTmp123=0;
 	LOG(WARNING)<<"½ð´¢ÏÂ·¢ "<<" Json On jcHidDev "<<

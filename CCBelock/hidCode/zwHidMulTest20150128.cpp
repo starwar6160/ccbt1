@@ -69,4 +69,15 @@ TEST_F(ATMCDLLSelfTest, LockNotOpen)
 	EXPECT_EQ(jch::G_FAIL,hdv.PushJson(cmdBuf));
 	Sleep(700);
 }
+
+TEST_F(ATMCDLLSelfTest, LockPushNULL)
+{
+	//²âÊÔ·¢ËÍ¿ÕµÄÃüÁî×Ö·û´®µÄ²Ù×÷
+	jch::zwJcHidDbg15A hdv;
+	hdv.SetElock(NULL);
+	hdv.OpenHidDevice();
+	EXPECT_EQ(jch::G_FAIL,hdv.PushJson(NULL));
+	EXPECT_EQ(jch::G_FAIL,hdv.PushJson(""));
+	Sleep(700);
+}
 #endif // ZWUSEGTEST
