@@ -1,5 +1,7 @@
 #include "stdafx.h"
 #include <gtest/gtest.h>
+#include "CCBelock.h"
+#include "zwHidMulHeader.h"
 #include "zwHidGtest130.h"
 #define ZWUSEGTEST
 
@@ -17,6 +19,7 @@ CCBELOCK_API int zwStartGtestInDLL(void)
 namespace zwHidGTest20150130{
 	const int G_BUFSIZE=1024;
 	char s_recvMsg[G_BUFSIZE];
+	char s_devList[G_BUFSIZE];
 
 void ZJY1501STD myReturnMessageTest130(const char* DrivesIdSN,char* DrivesMessageJson)
 {
@@ -27,6 +30,16 @@ void ZJY1501STD myReturnMessageTest130(const char* DrivesIdSN,char* DrivesMessag
 	printf("devSerial=%s\t devReturnJson is:\n%s\n",DrivesIdSN,DrivesMessageJson);
 	strcpy(s_recvMsg,DrivesMessageJson);
 }
+
+void ZJY1501STD myHidListTest130(const char* DrivesType,const char * DrivesIDList)
+{
+	//printf("jcHidDevType=%s\n",DrivesType);
+	printf("USB PlugInOut Callback 20150130.1445\n");
+	printf("Json List of enum jcHidDev Type %s Serial is:\n%s\n",DrivesType,DrivesIDList);
+	memset(s_devList,0,G_BUFSIZE);
+	strcpy(s_devList,DrivesIDList);
+}
+
 
 //测试套件初始化和结束事件
 class ATMCDLLSelfTest : public testing::Test
@@ -52,6 +65,46 @@ void ATMCDLLSelfTest::SetUp()
 void ATMCDLLSelfTest::TearDown()
 {
 
+}
+
+TEST_F(ATMCDLLSelfTest, jcHidDevEnumNormal)
+{
+	//枚举设备，正常情况测试
+	memset(s_devList,0,G_BUFSIZE);
+	SetReturnDrives(myHidListTest130);
+	ListDrives("Lock");
+	//"{"jcElockSerial": "a"}"这样的最低限度json是22字节长度
+	EXPECT_GT(strlen(s_devList),22);	
+}
+
+TEST_F(ATMCDLLSelfTest, jcHidDevEnumBad1)
+{
+	//枚举设备，输入错误情况测试
+	memset(s_devList,0,G_BUFSIZE);
+	SetReturnDrives(myHidListTest130);
+	ListDrives("Lock1");
+	//"{"jcElockSerial": "a"}"这样的最低限度json是22字节长度
+	EXPECT_EQ(strlen(s_devList),0);	
+}
+
+TEST_F(ATMCDLLSelfTest, jcHidDevEnumBad2)
+{
+	//枚举设备，无回调函数情况测试
+	memset(s_devList,0,G_BUFSIZE);
+	SetReturnDrives(NULL);
+	ListDrives("Lock");
+	//"{"jcElockSerial": "a"}"这样的最低限度json是22字节长度
+	EXPECT_EQ(strlen(s_devList),0);	
+}
+
+TEST_F(ATMCDLLSelfTest, jcHidDevEnumBad3)
+{
+	//枚举设备，输入错误并且无回调函数情况测试
+	memset(s_devList,0,G_BUFSIZE);
+	SetReturnDrives(NULL);
+	ListDrives("Lock1");
+	//"{"jcElockSerial": "a"}"这样的最低限度json是22字节长度
+	EXPECT_EQ(strlen(s_devList),0);	
 }
 
 TEST_F(ATMCDLLSelfTest, LockNormalUse)

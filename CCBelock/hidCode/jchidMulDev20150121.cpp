@@ -331,7 +331,7 @@ int zwJcHidDbg15A::OpenHidDevice()
 	thr=NULL;
 	jcSend_mutex.lock();
 	VLOG(4)<<"OpenHidDevice jcDevInit_mutex.lock();"<<endl;
-	//注意此处，如果pid,vid没有填写，为0
+	//注意此处，如果pid,vid没有填写，为0，才是没有初始化，应该返回
 	if (NULL==m_dev.pid)
 	{
 		LOG(WARNING)<<"JCHID Device Para Not Set!"<<endl;
@@ -567,14 +567,13 @@ CCBELOCK_API int ZJY1501STD InputMessage( const char * DrivesTypePID,const char 
 //2、设置设备列表返回的回调函数
 CCBELOCK_API void ZJY1501STD SetReturnDrives( ReturnDrives _DrivesListFun )
 {
-	assert(NULL!=_DrivesListFun);
+	//assert(NULL!=_DrivesListFun);
 	VLOG(4)<<__FUNCTION__<<endl;
+	jch::G_JCHID_ENUM_DEV2015A=_DrivesListFun;
 	if (NULL==_DrivesListFun)
 	{
-		LOG(ERROR)<<"Callback Function Pointer _DrivesListFun is NULL"<<endl;
-		return;
-	}
-	jch::G_JCHID_ENUM_DEV2015A=_DrivesListFun;
+		LOG(WARNING)<<"Callback Function Pointer _DrivesListFun is NULL"<<endl;
+	}	
 	zwStartHidDevPlugThread();
 }
 
