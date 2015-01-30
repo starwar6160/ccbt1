@@ -71,11 +71,11 @@ TEST_F(ATMCDLLSelfTest, zjydbgNormal)
 {
 	const char *devSN3="OQAiAACAAoQL1wAI";
 	const char *hidType="Lock";
-	OpenDrives(hidType,	devSN3);
+	EXPECT_EQ(jch::G_SUSSESS,OpenDrives(hidType,	devSN3));
 	SetReturnMessage(myReturnMessageTest130);
-	InputMessage(hidType,devSN3,cmdBuf);
+	EXPECT_EQ(jch::G_SUSSESS,InputMessage(hidType,devSN3,cmdBuf));
 	Sleep(3000);
-	CloseDrives(hidType,devSN3);
+	EXPECT_EQ(jch::G_SUSSESS,CloseDrives(hidType,devSN3));
 }
 
 TEST_F(ATMCDLLSelfTest, zjydbgBad1)
@@ -83,14 +83,25 @@ TEST_F(ATMCDLLSelfTest, zjydbgBad1)
 	//测试没有回调函数的时候
 	const char *devSN3="OQAiAACAAoQL1wAI";
 	const char *hidType="Lock";
-	OpenDrives(hidType,	devSN3);
+	EXPECT_EQ(jch::G_SUSSESS,OpenDrives(hidType,	devSN3));
 	SetReturnMessage(NULL);
-	InputMessage(hidType,devSN3,cmdBuf);
+	EXPECT_EQ(jch::G_SUSSESS,InputMessage(hidType,devSN3,cmdBuf));
 	Sleep(3000);
-	CloseDrives(hidType,devSN3);
+	EXPECT_EQ(jch::G_SUSSESS,CloseDrives(hidType,devSN3));
 }
 
-
+//TEST_F(ATMCDLLSelfTest, zjydbgBad2)
+//{
+//	//测试没有设备类型错误的时候
+//	const char *devSN3="OQAiAACAAoQL1wAI";
+//	const char *hidType="Lock1";
+//	OpenDrives(hidType,	devSN3);
+//	SetReturnMessage(myReturnMessageTest130);
+//	EXPECT_EQ(jch::G_FAIL,InputMessage(hidType,devSN3,cmdBuf));
+//	Sleep(3000);
+//	CloseDrives(hidType,devSN3);
+//	Sleep(2000);
+//}
 
 
 //////////////////////////////////////////////////////////////////////////

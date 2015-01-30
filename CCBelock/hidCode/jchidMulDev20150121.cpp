@@ -400,8 +400,8 @@ uint32_t myJcHidHndFromStrSerial( const char* DrivesTypePID, const char * Drives
 {
 	assert(NULL!=DrivesTypePID );
 	assert(strlen(DrivesTypePID)>0 );
-	assert(strcmp(DrivesTypePID,jch::G_DEV_LOCK)==0 
-		|| strcmp(DrivesTypePID,jch::G_DEV_SECBOX)==0);
+	//assert(strcmp(DrivesTypePID,jch::G_DEV_LOCK)==0 
+	//	|| strcmp(DrivesTypePID,jch::G_DEV_SECBOX)==0);
 	if (NULL==DrivesTypePID || strlen(DrivesTypePID)==0)
 	{
 		LOG(ERROR)<<"DrivesTypePID is NULL"<<endl;
@@ -551,12 +551,13 @@ CCBELOCK_API int ZJY1501STD InputMessage( const char * DrivesTypePID,const char 
 		if (jch::G_VECINDEX_NOTFOUND!=devIndex)
 		{
 			jch::vecJcHid[devIndex]->PushJson(AnyMessageJson);
+			return G_SUSSESS;
 		}		
 		else
 		{
 			LOG(ERROR)<<"jcHid Device ["<<DrivesTypePID<<":"<<DrivesIdSN<<"] not found"<<endl;
-		}
-		return G_SUSSESS;
+			return G_FAIL;
+		}		
 	}
 	catch(...) {
 		LOG(ERROR)<<__FUNCTION__<<" NotifyJson通过线路发送数据异常，可能网络故障"<<endl;
