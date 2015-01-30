@@ -13,7 +13,7 @@ namespace jcLockJsonCmd_t2015a21{
 		//先设置参数，然后可以获得HASH值
 		uint32_t GetHash(void);
 		//然后打开设备
-		void OpenHidDevice();
+		int OpenHidDevice();
 		//然后发送命令
 		uint32_t PushJson(const char *strJsonCmd);				
 		//设备由构造函数自动关闭

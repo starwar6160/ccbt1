@@ -326,11 +326,17 @@ void zwJcHidDbg15A::StopRecvThread()
 	}
 }
 
-void zwJcHidDbg15A::OpenHidDevice()
+int zwJcHidDbg15A::OpenHidDevice()
 {
 	thr=NULL;
 	jcSend_mutex.lock();
 	VLOG(4)<<"OpenHidDevice jcDevInit_mutex.lock();"<<endl;
+	if (NULL==m_dev.hid_device)
+	{
+		LOG(WARNING)<<"JCHID Device Not Open!"<<endl;
+		return G_FAIL;
+	}
+
 	JCHID_STATUS sts= jcHidOpen(&m_dev);
 	if (JCHID_STATUS_OK==sts)
 	{

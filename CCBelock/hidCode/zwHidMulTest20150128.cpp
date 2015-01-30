@@ -46,6 +46,7 @@ CCBELOCK_API int zwStartGtestInDLL(void)
 	return RUN_ALL_TESTS();
 }
 
+
 TEST_F(ATMCDLLSelfTest, LockNormalUse)
 {
 	//测试从外部字符串ID计算来的设备HASH是否正确
@@ -80,4 +81,14 @@ TEST_F(ATMCDLLSelfTest, LockPushNULL)
 	EXPECT_EQ(jch::G_FAIL,hdv.PushJson(""));
 	Sleep(700);
 }
+
+TEST_F(ATMCDLLSelfTest, LockNotSetPara)
+{
+	//测试没有设置参数就执行OpenHidDevice的动作
+	jch::zwJcHidDbg15A hdv;
+	hdv.OpenHidDevice();
+	EXPECT_EQ(jch::G_FAIL,hdv.PushJson(cmdBuf));
+	Sleep(700);
+}
+
 #endif // ZWUSEGTEST
