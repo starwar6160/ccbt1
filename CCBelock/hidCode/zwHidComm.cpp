@@ -93,7 +93,7 @@ JCHID_STATUS jcHidOpen(JCHID *hid)
 #ifdef _DEBUG
 		if (openCount>1)
 #else
-		if (openCount>5)
+		if (openCount>2)
 #endif // _DEBUG
 		{
 			break;

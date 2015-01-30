@@ -283,7 +283,7 @@ try{
 								<<"\nMulHid成功从锁具 with Serial=["<<hidHandle->HidSerial
 								<<"]接收JSON数据如下：Count "<<tmpRecvCount++<<endl
 								<<recvBuf<<endl;
-							LOG_IF(ERROR,NULL==G_JCHID_RECVMSG_CB)<<"G_JCHID_RECVMSG_CB==NULL"<<endl;
+							LOG_IF(WARNING,NULL==G_JCHID_RECVMSG_CB)<<"G_JCHID_RECVMSG_CB==NULL"<<endl;
 							if (NULL!=G_JCHID_RECVMSG_CB)
 							{								
 								G_JCHID_RECVMSG_CB(hidHandle->HidSerial,recvBuf);
@@ -507,17 +507,17 @@ CCBELOCK_API int ZJY1501STD CloseDrives( const char* DrivesTypePID,const char * 
 		//memset(s_jcHidDev,0,sizeof(s_jcHidDev));
 		delete jch::vecJcHid[devIndex];
 	}
+	Sleep(1000);
 	return G_SUSSESS;
 }
 
 //2、设置设备消息返回的回调函数
 CCBELOCK_API void ZJY1501STD SetReturnMessage( ReturnMessage _MessageHandleFun )
 {
-	assert(NULL!=_MessageHandleFun);
+	//assert(NULL!=_MessageHandleFun);
+	jch::G_JCHID_RECVMSG_CB=_MessageHandleFun;
 	if (NULL!=_MessageHandleFun)
-	{
-		LOG_IF(ERROR,NULL==_MessageHandleFun)<<"G_JCHID_RECVMSG_CB==NULL"<<endl;
-		jch::G_JCHID_RECVMSG_CB=_MessageHandleFun;
+	{		
 		VLOG(3)<<"SetReturnMessage set Callback Success\n";
 	}	
 	else

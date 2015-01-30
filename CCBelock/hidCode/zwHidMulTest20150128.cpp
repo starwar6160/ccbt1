@@ -66,7 +66,34 @@ void ATMCDLLSelfTest::TearDown()
 {
 
 }
+//////////////////////////////////////////////////////////////////////////
+TEST_F(ATMCDLLSelfTest, zjydbgNormal)
+{
+	const char *devSN3="OQAiAACAAoQL1wAI";
+	const char *hidType="Lock";
+	OpenDrives(hidType,	devSN3);
+	SetReturnMessage(myReturnMessageTest130);
+	InputMessage(hidType,devSN3,cmdBuf);
+	Sleep(3000);
+	CloseDrives(hidType,devSN3);
+}
 
+TEST_F(ATMCDLLSelfTest, zjydbgBad1)
+{
+	//测试没有回调函数的时候
+	const char *devSN3="OQAiAACAAoQL1wAI";
+	const char *hidType="Lock";
+	OpenDrives(hidType,	devSN3);
+	SetReturnMessage(NULL);
+	InputMessage(hidType,devSN3,cmdBuf);
+	Sleep(3000);
+	CloseDrives(hidType,devSN3);
+}
+
+
+
+
+//////////////////////////////////////////////////////////////////////////
 
 TEST_F(ATMCDLLSelfTest, LockNormalUse)
 {
@@ -174,16 +201,6 @@ TEST_F(ATMCDLLSelfTest, jcHidDevEnumBad3)
 }
 //////////////////////////////////////////////////////////////////////////
 
-TEST_F(ATMCDLLSelfTest, zjydbgNormal)
-{
-	const char *devSN3="OQAiAACAAoQL1wAI";
-	const char *hidType="Lock";
-	OpenDrives(hidType,	devSN3);
-	SetReturnMessage(myReturnMessageTest130);
-	InputMessage(hidType,devSN3,cmdBuf);
-	Sleep(5000);
-	CloseDrives(hidType,devSN3);
-}
 
 }	//namespace zwHidGTest20150130{
 #endif // ZWUSEGTEST
