@@ -67,6 +67,21 @@ void ATMCDLLSelfTest::TearDown()
 
 }
 //////////////////////////////////////////////////////////////////////////
+//TEST_F(ATMCDLLSelfTest, zjydbgBad2)
+//{
+//	//测试没有设备类型错误的时候
+//	const char *devSN3="5QAiAACAAoQL1wAI";
+//	const char *hidType="Lock";
+//	EXPECT_EQ(jch::G_FAIL,OpenDrives(hidType,	devSN3));
+//	SetReturnMessage(myReturnMessageTest130);
+//	//EXPECT_EQ(jch::G_FAIL,InputMessage(hidType,devSN3,cmdBuf));
+//	//Sleep(3000);
+//	EXPECT_EQ(jch::G_FAIL,CloseDrives(hidType,devSN3));
+//	Sleep(2000);
+//}
+
+
+
 TEST_F(ATMCDLLSelfTest, zjydbgNormal)
 {
 	const char *devSN3="OQAiAACAAoQL1wAI";
@@ -76,6 +91,7 @@ TEST_F(ATMCDLLSelfTest, zjydbgNormal)
 	EXPECT_EQ(jch::G_SUSSESS,InputMessage(hidType,devSN3,cmdBuf));
 	Sleep(3000);
 	EXPECT_EQ(jch::G_SUSSESS,CloseDrives(hidType,devSN3));
+	Sleep(2000);
 }
 
 TEST_F(ATMCDLLSelfTest, zjydbgBad1)
@@ -88,20 +104,9 @@ TEST_F(ATMCDLLSelfTest, zjydbgBad1)
 	EXPECT_EQ(jch::G_SUSSESS,InputMessage(hidType,devSN3,cmdBuf));
 	Sleep(3000);
 	EXPECT_EQ(jch::G_SUSSESS,CloseDrives(hidType,devSN3));
+	Sleep(2000);
 }
 
-//TEST_F(ATMCDLLSelfTest, zjydbgBad2)
-//{
-//	//测试没有设备类型错误的时候
-//	const char *devSN3="OQAiAACAAoQL1wAI";
-//	const char *hidType="Lock1";
-//	OpenDrives(hidType,	devSN3);
-//	SetReturnMessage(myReturnMessageTest130);
-//	EXPECT_EQ(jch::G_FAIL,InputMessage(hidType,devSN3,cmdBuf));
-//	Sleep(3000);
-//	CloseDrives(hidType,devSN3);
-//	Sleep(2000);
-//}
 
 
 //////////////////////////////////////////////////////////////////////////
@@ -122,6 +127,16 @@ TEST_F(ATMCDLLSelfTest, LockNormalUse)
 	hid1.PushJson(cmdBuf);
 	Sleep(2000);
 	EXPECT_GT(strlen(s_recvMsg),0);
+}
+
+TEST_F(ATMCDLLSelfTest, LockErrorSerial)
+{
+	const char *devSN3="OQAiAACAAoQL1wAI";
+	//测试从外部字符串ID计算来的设备HASH是否正确
+	jch::zwJcHidDbg15A hid1;
+	//此处计算的是标准锁具的HASH
+	hid1.SetElock(devSN3);
+	EXPECT_EQ(jch::G_FAIL,hid1.OpenHidDevice());
 }
 
 TEST_F(ATMCDLLSelfTest, LockMultiOpen)
