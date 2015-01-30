@@ -42,13 +42,18 @@ namespace jcLockJsonCmd_t2015a21{
 	int FindHidDevIndex(const char* DrivesTypePID, const char * DrivesIdSN)
 	{
 		uint32_t realHash=myJcHidHndFromStrSerial(DrivesTypePID,DrivesIdSN);
+		VLOG(4)<<__FUNCTION__<<endl;
+		VLOG(4)<<"realHash="<<realHash<<"\tDrivesTypePID="<<DrivesTypePID<<"\tDrivesIdSN="<<DrivesIdSN<<endl;
+		VLOG(4)<<"vecJcHid.size()="<<vecJcHid.size()<<endl;
 		for (int i=0;i<vecJcHid.size();i++)
 		{
 			if (realHash==vecJcHid[i]->GetHash())
 			{
+				VLOG(4)<<"Found index="<<i<<endl;
 				return i;
 			}
 		}
+		VLOG(4)<<"Not Found index"<<endl;
 		return G_VECINDEX_NOTFOUND;
 	}
 
@@ -485,6 +490,7 @@ CCBELOCK_API int ZJY1501STD OpenDrives( const char* DrivesTypePID,const char * D
 	assert(NULL!=DrivesTypePID && strlen(DrivesTypePID)>0);
 	if (NULL==DrivesTypePID || strlen(DrivesTypePID)==0)
 	{
+		LOG(ERROR)<<"DrivesTypePID is NULL"<<endl;
 		return G_FAIL;
 	}
 	zwJcHidDbg15A *tDev=new zwJcHidDbg15A();	
@@ -492,10 +498,15 @@ CCBELOCK_API int ZJY1501STD OpenDrives( const char* DrivesTypePID,const char * D
 	int sts=tDev->OpenHidDevice();
 	if (G_FAIL==sts)
 	{
+		LOG(ERROR)<<"OpenHidDevice FAIL"<<endl;
 		return G_FAIL;
 	}
-	jch::vecJcHid.push_back(tDev);
-	return G_SUSSESS;
+	else
+	{
+		VLOG(4)<<"OpenHidDevice SUCCESS,push_back to devVector"<<endl;
+		jch::vecJcHid.push_back(tDev);
+		return G_SUSSESS;
+	}
 }
 
 CCBELOCK_API int ZJY1501STD CloseDrives( const char* DrivesTypePID,const char * DrivesIdSN )
@@ -503,17 +514,24 @@ CCBELOCK_API int ZJY1501STD CloseDrives( const char* DrivesTypePID,const char * 
 	assert(NULL!=DrivesTypePID && strlen(DrivesTypePID)>0);
 	if (NULL==DrivesTypePID || strlen(DrivesTypePID)==0)
 	{
+		LOG(ERROR)<<"DrivesTypePID is NULL"<<endl;
 		return G_FAIL;
 	}
 	int devIndex=jch::FindHidDevIndex(DrivesTypePID,DrivesIdSN);
 	if (jch::G_VECINDEX_NOTFOUND!=devIndex)
 	{
+		VLOG(4)<<"Find toBe Close hidDev in devVector,now Delete it"<<endl;
 		//memset(s_jcHidDev,0,sizeof(s_jcHidDev));
 		delete jch::vecJcHid[devIndex];
 		Sleep(1000);
 		return G_SUSSESS;
 	}	
-	return G_FAIL;
+	else
+	{
+		LOG(ERROR)<<"Can't find this hidDev in devVector"<<endl;
+		return G_FAIL;
+	}
+	
 }
 
 //2、设置设备消息返回的回调函数

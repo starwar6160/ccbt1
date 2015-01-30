@@ -28,5 +28,6 @@ namespace jcLockJsonCmd_t2015a21{
 		void StopRecvThread();		
 	};
 
+	extern vector<zwJcHidDbg15A *> vecJcHid;
 }	//namespace jcLockJsonCmd_t2015a21{
 

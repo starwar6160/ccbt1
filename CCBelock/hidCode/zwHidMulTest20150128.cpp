@@ -67,23 +67,10 @@ void ATMCDLLSelfTest::TearDown()
 
 }
 //////////////////////////////////////////////////////////////////////////
-//TEST_F(ATMCDLLSelfTest, zjydbgBad2)
-//{
-//	//测试没有设备类型错误的时候
-//	const char *devSN3="5QAiAACAAoQL1wAI";
-//	const char *hidType="Lock";
-//	EXPECT_EQ(jch::G_FAIL,OpenDrives(hidType,	devSN3));
-//	SetReturnMessage(myReturnMessageTest130);
-//	//EXPECT_EQ(jch::G_FAIL,InputMessage(hidType,devSN3,cmdBuf));
-//	//Sleep(3000);
-//	EXPECT_EQ(jch::G_FAIL,CloseDrives(hidType,devSN3));
-//	Sleep(2000);
-//}
-
-
 
 TEST_F(ATMCDLLSelfTest, zjydbgNormal)
 {
+	//正常使用流程
 	const char *devSN3="OQAiAACAAoQL1wAI";
 	const char *hidType="Lock";
 	EXPECT_EQ(jch::G_SUSSESS,OpenDrives(hidType,	devSN3));
@@ -92,6 +79,8 @@ TEST_F(ATMCDLLSelfTest, zjydbgNormal)
 	Sleep(3000);
 	EXPECT_EQ(jch::G_SUSSESS,CloseDrives(hidType,devSN3));
 	Sleep(2000);
+	//清空向量
+	jch::vecJcHid.clear();
 }
 
 TEST_F(ATMCDLLSelfTest, zjydbgBad1)
@@ -105,8 +94,22 @@ TEST_F(ATMCDLLSelfTest, zjydbgBad1)
 	Sleep(3000);
 	EXPECT_EQ(jch::G_SUSSESS,CloseDrives(hidType,devSN3));
 	Sleep(2000);
+	//清空向量
+	jch::vecJcHid.clear();
 }
 
+TEST_F(ATMCDLLSelfTest, zjydbgBad2)
+{
+	//测试没有序列号错误的时候无法打开HID设备
+	const char *devSN3="5QAiAACAAoQL1wAI";
+	const char *hidType="Lock";
+	EXPECT_EQ(jch::G_FAIL,OpenDrives(hidType,	devSN3));
+	SetReturnMessage(myReturnMessageTest130);
+	EXPECT_EQ(jch::G_FAIL,CloseDrives(hidType,devSN3));
+	Sleep(2000);
+	//清空向量
+	jch::vecJcHid.clear();
+}
 
 
 //////////////////////////////////////////////////////////////////////////
