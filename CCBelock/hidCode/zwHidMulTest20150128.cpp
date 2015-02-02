@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include <gtest/gtest.h>
 #include "hidapi.h"
+#include "base64arduino.h"
 #include "CCBelock.h"
 #include "zwHidMulHeader.h"
 #include "zwHidGtest130.h"
@@ -54,6 +55,24 @@ namespace zwHidGTest20150130{
 
 	};
 
+	int myHidSerialToInt(char *hidSerial)
+	{
+		const int BLEN=13;
+		char se1[BLEN];
+		memset(se1,0,BLEN);
+		base64_decode(se1,hidSerial,strlen(hidSerial));
+		for (int i=0;i<BLEN-1;i++)
+		{			
+			if (i==1 || i==8 ||i==10)
+			{
+				printf(" ");
+			}
+			printf("%02X",se1[i]& 0xFF);
+		}
+		printf("\n");
+		return 0;
+	}
+
 	void ATMCDLLSelfTest::SetUp()
 	{
 		//"jcElockSerial": "OQAiAACAAoQL1wAI",
@@ -62,7 +81,12 @@ namespace zwHidGTest20150130{
 		devSN2="QAAiAACAAoTXuwAI";
 		//devSN2="OQAiAACAAoQL1wAI";
 		//devSN1="QAAiAACAAoTXuwAI";
+//////////////////////////////////////////////////////////////////////////
+		myHidSerialToInt(devSN1);
+		myHidSerialToInt(devSN2);
+		
 
+//////////////////////////////////////////////////////////////////////////
 		SetReturnMessage(myReturnMessageTest130);
 		const char *msgT5a="{\"command\":\"Test_USB_HID\",\"cmd_id\":\"1234567890\",\"input\":\"TestAnyString";
 		const char *msgT5b="\",\"output\":\"\"}";	
