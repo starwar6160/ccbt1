@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include <gtest/gtest.h>
+#include "hidapi.h"
 #include "CCBelock.h"
 #include "zwHidMulHeader.h"
 #include "zwHidGtest130.h"
@@ -108,6 +109,47 @@ namespace zwHidGTest20150130{
 		Sleep(2000);
 		//清空向量
 		jch::vecJcHid.clear();
+	}
+
+	TEST_F(ATMCDLLSelfTest, zjydbgNormaMulDirectOpen2)
+	{
+		wchar_t sn1[17],sn2[17];
+		memset(sn1,0,sizeof(wchar_t)*17);
+		memset(sn2,0,sizeof(wchar_t)*17);
+		jch::CharToTchar(devSN1,sn1);
+		jch::CharToTchar(devSN2,sn2);
+		hid_device *dv1= hid_open(0x0483,0x5710,sn1);
+		hid_device *dv2=hid_open(0x0483,0x5710,sn2);
+		EXPECT_NE(NULL,(int)dv1);
+		EXPECT_NE(NULL,(int)dv2);
+		//EXPECT_NE(NULL,static_cast<void *>(dv2));
+		if (NULL!=dv1)
+		{
+			hid_close(dv1);
+		}
+
+		if (NULL!=dv2)
+		{
+			hid_close(dv2);
+		}
+		Sleep(1000);
+	}
+
+	TEST_F(ATMCDLLSelfTest, zjydbgNormaMulOpen2)
+	{
+		const char *hidType="Lock";
+		EXPECT_EQ(jch::G_SUSSESS,OpenDrives(hidType,	devSN1));
+		EXPECT_EQ(jch::G_SUSSESS,OpenDrives(hidType,	devSN2));
+		SetReturnMessage(myReturnMessageTest130);
+		EXPECT_EQ(jch::G_SUSSESS,InputMessage(hidType,devSN1,cmdBuf));
+		EXPECT_EQ(jch::G_SUSSESS,InputMessage(hidType,devSN2,cmdBuf));
+		Sleep(3000);
+		EXPECT_EQ(jch::G_SUSSESS,CloseDrives(hidType,devSN1));
+		EXPECT_EQ(jch::G_SUSSESS,CloseDrives(hidType,devSN2));
+		Sleep(2000);
+		//清空向量
+		jch::vecJcHid.clear();
+		Sleep(1000);
 	}
 
 

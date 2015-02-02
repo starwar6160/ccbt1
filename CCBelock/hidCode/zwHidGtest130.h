@@ -29,5 +29,6 @@ namespace jcLockJsonCmd_t2015a21{
 	};
 
 	extern vector<zwJcHidDbg15A *> vecJcHid;
+	void CharToTchar (const char * _char, TCHAR * tchar);
 }	//namespace jcLockJsonCmd_t2015a21{
 
