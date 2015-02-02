@@ -71,17 +71,36 @@ void ATMCDLLSelfTest::TearDown()
 TEST_F(ATMCDLLSelfTest, zjydbgNormal)
 {
 	//正常使用流程
-	const char *devSN3="OQAiAACAAoQL1wAI";
+	const char *devSN1="OQAiAACAAoQL1wAI";
 	const char *hidType="Lock";
-	EXPECT_EQ(jch::G_SUSSESS,OpenDrives(hidType,	devSN3));
+	EXPECT_EQ(jch::G_SUSSESS,OpenDrives(hidType,	devSN1));
 	SetReturnMessage(myReturnMessageTest130);
-	EXPECT_EQ(jch::G_SUSSESS,InputMessage(hidType,devSN3,cmdBuf));
+	EXPECT_EQ(jch::G_SUSSESS,InputMessage(hidType,devSN1,cmdBuf));
 	Sleep(3000);
-	EXPECT_EQ(jch::G_SUSSESS,CloseDrives(hidType,devSN3));
+	EXPECT_EQ(jch::G_SUSSESS,CloseDrives(hidType,devSN1));
 	Sleep(2000);
 	//清空向量
 	jch::vecJcHid.clear();
 }
+
+TEST_F(ATMCDLLSelfTest, zjydbgNorma2)
+{
+	//"jcElockSerial": "OQAiAAAAAAAAgAKE",
+	//"jcElockSerial": "QAAiAACAAoTXuwAI"
+	//正常使用流程
+	//const char *devSN1="OQAiAAAAAAAAgAKE";
+	const char *devSN1="QAAiAACAAoTXuwAI";
+	const char *hidType="Lock";
+	EXPECT_EQ(jch::G_SUSSESS,OpenDrives(hidType,	devSN1));
+	SetReturnMessage(myReturnMessageTest130);
+	EXPECT_EQ(jch::G_SUSSESS,InputMessage(hidType,devSN1,cmdBuf));
+	Sleep(3000);
+	EXPECT_EQ(jch::G_SUSSESS,CloseDrives(hidType,devSN1));
+	Sleep(2000);
+	//清空向量
+	jch::vecJcHid.clear();
+}
+
 
 TEST_F(ATMCDLLSelfTest, zjydbgBad1)
 {

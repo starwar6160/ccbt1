@@ -102,7 +102,7 @@ namespace jcLockJsonCmd_t2015a21{
 		{
 			StopRecvThread();
 			jcHidClose(&m_dev);
-			LOG(WARNING)<<"Close jcHid Device "<<m_dev.hid_device<<" SUCCESS"<<endl;
+			LOG(WARNING)<<"Close jcHid Device "<<m_dev.HidSerial<<" SUCCESS"<<endl;
 		}
 	};
 
@@ -246,7 +246,7 @@ int zwJcHidDbg15A::RecvThread(JCHID *hidHandle)
 		LOG(ERROR)<<__FUNCTION__<<"\tInput JCHID * is NULL!"<<endl;
 		return G_FAIL;
 	}
-	LOG(WARNING)<<"\n JcHidZJYDbg Thread Started"<<endl;	
+	LOG(WARNING)<<"JcHidZJYDbg Thread Started"<<endl;	
 		const int BLEN = 1024;
 		char recvBuf[BLEN];
 		memset(recvBuf, 0, BLEN);		
@@ -254,7 +254,7 @@ int zwJcHidDbg15A::RecvThread(JCHID *hidHandle)
 		int t_thr_runCount=1;
 #endif // _DEBUG
 		jcSend_mutex.unlock();//这里之后可以开始发送数据了
-		VLOG(4)<<"\njcDevInit_mutex.unlock();"<<endl;
+		VLOG(4)<<"jcDevInit_mutex.unlock();"<<endl;
 		while (1) {	
 #ifdef _DEBUG1
 			LOG(WARNING)<<"RECV THR 20150122 "<<t_thr_runCount++<<endl;
@@ -346,7 +346,7 @@ int zwJcHidDbg15A::OpenHidDevice()
 	JCHID_STATUS sts= jcHidOpen(&m_dev);
 	if (JCHID_STATUS_OK==sts)
 	{
-		LOG(WARNING)<<" Open jcHid Device "<<m_dev.hid_device<<" SUCCESS"<<endl;
+		LOG(WARNING)<<" Open jcHid Device "<<m_dev.HidSerial<<" SUCCESS"<<endl;
 		StartRecvThread();
 		return G_SUSSESS;
 	}
