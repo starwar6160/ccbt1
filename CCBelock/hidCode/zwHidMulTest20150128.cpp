@@ -33,7 +33,6 @@ namespace zwHidGTest20150130{
 
 	void ZJY1501STD myHidListTest130(const char* DrivesType,const char * DrivesIDList)
 	{
-		//printf("jcHidDevType=%s\n",DrivesType);
 		printf("USB PlugInOut Callback 20150130.1445\n");
 		printf("Json List of enum jcHidDev Type %s Serial is:\n%s\n",DrivesType,DrivesIDList);
 		memset(s_devList,0,G_BUFSIZE);
@@ -47,6 +46,7 @@ namespace zwHidGTest20150130{
 	public:
 		char cmdBuf[128];	
 		char *devSN1;
+		char *devSN2;
 	protected:
 		virtual void SetUp();
 		virtual void TearDown();
@@ -55,7 +55,12 @@ namespace zwHidGTest20150130{
 
 	void ATMCDLLSelfTest::SetUp()
 	{
-		devSN1="QAAiAACAAoTXuwAI";
+		//"jcElockSerial": "OQAiAACAAoQL1wAI",
+		//"jcElockSerial": "QAAiAACAAoTXuwAI"	
+		devSN1="OQAiAACAAoQL1wAI";
+		devSN2="QAAiAACAAoTXuwAI";
+		
+
 		SetReturnMessage(myReturnMessageTest130);
 		const char *msgT5a="{\"command\":\"Test_USB_HID\",\"cmd_id\":\"1234567890\",\"input\":\"TestAnyString";
 		const char *msgT5b="\",\"output\":\"\"}";	
@@ -68,6 +73,15 @@ namespace zwHidGTest20150130{
 
 	}
 	//////////////////////////////////////////////////////////////////////////
+	TEST_F(ATMCDLLSelfTest, jcHidDevEnumNormal)
+	{
+		//枚举设备，正常情况测试
+		memset(s_devList,0,G_BUFSIZE);
+		SetReturnDrives(myHidListTest130);
+		ListDrives("Lock");
+		//"{"jcElockSerial": "a"}"这样的最低限度json是22字节长度
+		EXPECT_GT(strlen(s_devList),22);	
+	}
 
 	TEST_F(ATMCDLLSelfTest, zjydbgNormal)
 	{
@@ -85,17 +99,12 @@ namespace zwHidGTest20150130{
 
 	TEST_F(ATMCDLLSelfTest, zjydbgNorma2)
 	{
-		//"jcElockSerial": "OQAiAAAAAAAAgAKE",
-		//"jcElockSerial": "QAAiAACAAoTXuwAI"
-		//正常使用流程
-		//const char *devSN1="OQAiAAAAAAAAgAKE";
-		//const char *devSN1="QAAiAACAAoTXuwAI";
 		const char *hidType="Lock";
-		EXPECT_EQ(jch::G_SUSSESS,OpenDrives(hidType,	devSN1));
+		EXPECT_EQ(jch::G_SUSSESS,OpenDrives(hidType,	devSN2));
 		SetReturnMessage(myReturnMessageTest130);
-		EXPECT_EQ(jch::G_SUSSESS,InputMessage(hidType,devSN1,cmdBuf));
+		EXPECT_EQ(jch::G_SUSSESS,InputMessage(hidType,devSN2,cmdBuf));
 		Sleep(3000);
-		EXPECT_EQ(jch::G_SUSSESS,CloseDrives(hidType,devSN1));
+		EXPECT_EQ(jch::G_SUSSESS,CloseDrives(hidType,devSN2));
 		Sleep(2000);
 		//清空向量
 		jch::vecJcHid.clear();
@@ -105,7 +114,6 @@ namespace zwHidGTest20150130{
 	TEST_F(ATMCDLLSelfTest, zjydbgBad1)
 	{
 		//测试没有回调函数的时候
-		//const char *devSN1="OQAiAACAAoQL1wAI";
 		const char *hidType="Lock";
 		EXPECT_EQ(jch::G_SUSSESS,OpenDrives(hidType,	devSN1));
 		SetReturnMessage(NULL);
@@ -157,11 +165,8 @@ namespace zwHidGTest20150130{
 
 	TEST_F(ATMCDLLSelfTest, LockErrorSerial)
 	{
-		//const char *devSN1="OQAiAACAAoQL1wAI";
-		//测试从外部字符串ID计算来的设备HASH是否正确
 		jch::zwJcHidDbg15A hid1;
-		//此处计算的是标准锁具的HASH
-		hid1.SetElock(devSN1);
+		hid1.SetElock("errorserial");
 		EXPECT_EQ(jch::G_FAIL,hid1.OpenHidDevice());
 	}
 
@@ -169,7 +174,6 @@ namespace zwHidGTest20150130{
 	{
 		//测试2个类对象打开同一个设备的情况
 		jch::zwJcHidDbg15A hid1,hid2;
-		//此处计算的是标准锁具的HASH
 		hid1.SetElock(NULL);
 		hid2.SetElock(NULL);
 		cout<<"will SUCCESS Open HID Device 1"<<endl;
@@ -212,15 +216,7 @@ namespace zwHidGTest20150130{
 	}
 
 	//////////////////////////////////////////////////////////////////////////
-	TEST_F(ATMCDLLSelfTest, jcHidDevEnumNormal)
-	{
-		//枚举设备，正常情况测试
-		memset(s_devList,0,G_BUFSIZE);
-		SetReturnDrives(myHidListTest130);
-		ListDrives("Lock");
-		//"{"jcElockSerial": "a"}"这样的最低限度json是22字节长度
-		EXPECT_GT(strlen(s_devList),22);	
-	}
+
 
 	TEST_F(ATMCDLLSelfTest, jcHidDevEnumBad1)
 	{
