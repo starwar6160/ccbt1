@@ -528,7 +528,7 @@ CCBELOCK_API int ZJY1501STD CloseDrives( const char* DrivesTypePID,const char * 
 	}	
 	else
 	{
-		LOG(ERROR)<<"Can't find this hidDev in devVector"<<endl;
+		LOG(WARNING)<<"Can't find this hidDev in devVector"<<endl;
 		return G_FAIL;
 	}
 	

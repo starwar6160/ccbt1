@@ -60,7 +60,8 @@ namespace zwHidGTest20150130{
 		//"jcElockSerial": "QAAiAACAAoTXuwAI"	
 		devSN1="OQAiAACAAoQL1wAI";
 		devSN2="QAAiAACAAoTXuwAI";
-		
+		//devSN2="OQAiAACAAoQL1wAI";
+		//devSN1="QAAiAACAAoTXuwAI";
 
 		SetReturnMessage(myReturnMessageTest130);
 		const char *msgT5a="{\"command\":\"Test_USB_HID\",\"cmd_id\":\"1234567890\",\"input\":\"TestAnyString";
@@ -98,6 +99,7 @@ namespace zwHidGTest20150130{
 		jch::vecJcHid.clear();
 	}
 
+#ifdef _DEBUG_DEV2
 	TEST_F(ATMCDLLSelfTest, zjydbgNorma2)
 	{
 		const char *hidType="Lock";
@@ -113,24 +115,30 @@ namespace zwHidGTest20150130{
 
 	TEST_F(ATMCDLLSelfTest, zjydbgNormaMulDirectOpen2)
 	{
-		wchar_t sn1[17],sn2[17];
-		memset(sn1,0,sizeof(wchar_t)*17);
-		memset(sn2,0,sizeof(wchar_t)*17);
-		jch::CharToTchar(devSN1,sn1);
-		jch::CharToTchar(devSN2,sn2);
-		hid_device *dv1= hid_open(0x0483,0x5710,sn1);
-		hid_device *dv2=hid_open(0x0483,0x5710,sn2);
-		EXPECT_NE(NULL,(int)dv1);
-		EXPECT_NE(NULL,(int)dv2);
-		//EXPECT_NE(NULL,static_cast<void *>(dv2));
-		if (NULL!=dv1)
-		{
-			hid_close(dv1);
+		hid_device *dv1=NULL,*dv2=NULL;
+		try{
+			wchar_t sn1[17],sn2[17];
+			memset(sn1,0,sizeof(wchar_t)*17);
+			memset(sn2,0,sizeof(wchar_t)*17);
+			jch::CharToTchar(devSN1,sn1);
+			jch::CharToTchar(devSN2,sn2);
+			dv1=	hid_open(0x0483,0x5710,sn1);
+			dv2=	hid_open(0x0483,0x5710,sn2);
+			EXPECT_NE(NULL,(int)dv1);
+			EXPECT_NE(NULL,(int)dv2);
 		}
-
-		if (NULL!=dv2)
+		catch(...)
 		{
-			hid_close(dv2);
+			//EXPECT_NE(NULL,static_cast<void *>(dv2));
+			if (NULL!=dv1)
+			{
+				hid_close(dv1);
+			}
+
+			if (NULL!=dv2)
+			{
+				hid_close(dv2);
+			}
 		}
 		Sleep(1000);
 	}
@@ -151,6 +159,7 @@ namespace zwHidGTest20150130{
 		jch::vecJcHid.clear();
 		Sleep(1000);
 	}
+#endif // _DEBUG_DEV2
 
 
 	TEST_F(ATMCDLLSelfTest, zjydbgBad1)
