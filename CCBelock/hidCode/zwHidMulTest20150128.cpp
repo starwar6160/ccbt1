@@ -58,19 +58,28 @@ namespace zwHidGTest20150130{
 	int myHidSerialToInt(char *hidSerial)
 	{
 		const int BLEN=13;
-		char se1[BLEN];
-		memset(se1,0,BLEN);
-		base64_decode(se1,hidSerial,strlen(hidSerial));
+		unsigned char serialBin[BLEN];
+		memset(serialBin,0,BLEN);
+		base64_decode((char *)serialBin,hidSerial,strlen(hidSerial));
 		for (int i=0;i<BLEN-1;i++)
 		{			
 			if (i==1 || i==8 ||i==10)
 			{
 				printf(" ");
 			}
-			printf("%02X",se1[i]& 0xFF);
+			printf("%02X",serialBin[i]& 0xFF);
 		}
+		printf("\t");
+		printf("%02X %02X %02X",serialBin[0],serialBin[8],serialBin[9]);
 		printf("\n");
-		return 0;
+		//把二进制形式的字节0，9，10这3个有效字节组合为一个32bit数字的低24位，作为该序列号的实际有效成分返回
+		
+		uint32_t serialPayLoad=serialBin[0];
+		serialPayLoad=serialPayLoad<<8;
+		serialPayLoad+=serialBin[8];
+		serialPayLoad=serialPayLoad<<8;
+		serialPayLoad+=serialBin[9];
+		return serialPayLoad;
 	}
 
 	void ATMCDLLSelfTest::SetUp()
@@ -82,8 +91,8 @@ namespace zwHidGTest20150130{
 		//devSN2="OQAiAACAAoQL1wAI";
 		//devSN1="QAAiAACAAoTXuwAI";
 //////////////////////////////////////////////////////////////////////////
-		myHidSerialToInt(devSN1);
-		myHidSerialToInt(devSN2);
+		printf("%02u\n",myHidSerialToInt(devSN1));
+		printf("%02u\n",myHidSerialToInt(devSN2));
 		
 
 //////////////////////////////////////////////////////////////////////////
