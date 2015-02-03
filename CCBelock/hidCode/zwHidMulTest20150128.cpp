@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include <gtest/gtest.h>
 #include "hidapi.h"
-#include "base64arduino.h"
 #include "CCBelock.h"
 #include "zwHidMulHeader.h"
 #include "zwHidGtest130.h"
@@ -55,32 +54,7 @@ namespace zwHidGTest20150130{
 
 	};
 
-	int myHidSerialToInt(char *hidSerial)
-	{
-		const int BLEN=13;
-		unsigned char serialBin[BLEN];
-		memset(serialBin,0,BLEN);
-		base64_decode((char *)serialBin,hidSerial,strlen(hidSerial));
-		for (int i=0;i<BLEN-1;i++)
-		{			
-			if (i==1 || i==8 ||i==10)
-			{
-				printf(" ");
-			}
-			printf("%02X",serialBin[i]& 0xFF);
-		}
-		printf("\t");
-		printf("%02X %02X %02X",serialBin[0],serialBin[8],serialBin[9]);
-		printf("\n");
-		//把二进制形式的字节0，9，10这3个有效字节组合为一个32bit数字的低24位，作为该序列号的实际有效成分返回
-		
-		uint32_t serialPayLoad=serialBin[0];
-		serialPayLoad=serialPayLoad<<8;
-		serialPayLoad+=serialBin[8];
-		serialPayLoad=serialPayLoad<<8;
-		serialPayLoad+=serialBin[9];
-		return serialPayLoad;
-	}
+
 
 	void ATMCDLLSelfTest::SetUp()
 	{
@@ -91,8 +65,8 @@ namespace zwHidGTest20150130{
 		//devSN2="OQAiAACAAoQL1wAI";
 		//devSN1="QAAiAACAAoTXuwAI";
 //////////////////////////////////////////////////////////////////////////
-		printf("%02u\n",myHidSerialToInt(devSN1));
-		printf("%02u\n",myHidSerialToInt(devSN2));
+		//printf("%02u\n",myHidSerialToInt(devSN1));
+		//printf("%02u\n",myHidSerialToInt(devSN2));
 		
 
 //////////////////////////////////////////////////////////////////////////
@@ -108,6 +82,83 @@ namespace zwHidGTest20150130{
 
 	}
 	//////////////////////////////////////////////////////////////////////////
+
+
+	TEST_F(ATMCDLLSelfTest, zjydbgNormaMulDirectOpen2)
+	{
+		hid_device *dv1=NULL,*dv2=NULL;
+		try{
+			wchar_t sn1[17],sn2[17];
+			memset(sn1,0,sizeof(wchar_t)*17);
+			memset(sn2,0,sizeof(wchar_t)*17);
+			jch::CharToTchar(devSN1,sn1);
+			jch::CharToTchar(devSN2,sn2);
+			VLOG(4)<<"SN1:"<<devSN1<<"\tSN2:"<<devSN2<<endl;
+			dv1=	hid_open(0x0483,0x5710,sn1);
+			EXPECT_NE(NULL,(int)dv1);
+			Sleep(1000);	//此处起码要1秒
+			dv2=	hid_open(0x0483,0x5710,sn2);
+			EXPECT_NE(NULL,(int)dv2);
+			VLOG(4)<<"TWO HID DEVICE OPEN END"<<endl;
+		}
+		catch(...)
+		{
+			//EXPECT_NE(NULL,static_cast<void *>(dv2));
+			LOG(ERROR)<<"zjydbgNormaMulDirectOpen2 FAIL"<<endl;
+		}
+		if (NULL!=dv1)
+		{
+			VLOG(4)<<"Closed hid Device 1"<<endl;
+			hid_close(dv1);
+		}
+
+		if (NULL!=dv2)
+		{
+			VLOG(4)<<"Closed hid Device 2"<<endl;
+			hid_close(dv2);
+		}
+		Sleep(1000);
+		VLOG(4)<<"End Test of zjydbgNormaMulDirectOpen2"<<endl;
+	}
+
+	TEST_F(ATMCDLLSelfTest, zjydbgNormaMulOpen2)
+	{
+		const char *hidType="Lock";
+		EXPECT_EQ(jch::G_SUSSESS,OpenDrives(hidType,	devSN1));
+		Sleep(2000);	//此处至少要等待2秒
+		EXPECT_EQ(jch::G_SUSSESS,OpenDrives(hidType,	devSN2));
+		SetReturnMessage(myReturnMessageTest130);
+		EXPECT_EQ(jch::G_SUSSESS,InputMessage(hidType,devSN1,cmdBuf));
+		EXPECT_EQ(jch::G_SUSSESS,InputMessage(hidType,devSN2,cmdBuf));
+		Sleep(3000);
+		EXPECT_EQ(jch::G_SUSSESS,CloseDrives(hidType,devSN1));
+		EXPECT_EQ(jch::G_SUSSESS,CloseDrives(hidType,devSN2));
+		Sleep(2000);
+		//清空向量
+		jch::vecJcHid.clear();
+		Sleep(1000);
+	}
+
+
+#ifdef _DEBUG_DEV2
+
+	TEST_F(ATMCDLLSelfTest, zjydbgNorma2)
+	{
+		const char *hidType="Lock";
+		EXPECT_EQ(jch::G_SUSSESS,OpenDrives(hidType,	devSN2));
+		SetReturnMessage(myReturnMessageTest130);
+		EXPECT_EQ(jch::G_SUSSESS,InputMessage(hidType,devSN2,cmdBuf));
+		Sleep(3000);
+		EXPECT_EQ(jch::G_SUSSESS,CloseDrives(hidType,devSN2));
+		Sleep(2000);
+		//清空向量
+		jch::vecJcHid.clear();
+	}
+
+
+
+
+//////////////////////////////////////////////////////////////////////////
 	TEST_F(ATMCDLLSelfTest, jcHidDevEnumNormal)
 	{
 		//枚举设备，正常情况测试
@@ -132,67 +183,7 @@ namespace zwHidGTest20150130{
 		jch::vecJcHid.clear();
 	}
 
-#ifdef _DEBUG_DEV2
-	TEST_F(ATMCDLLSelfTest, zjydbgNorma2)
-	{
-		const char *hidType="Lock";
-		EXPECT_EQ(jch::G_SUSSESS,OpenDrives(hidType,	devSN2));
-		SetReturnMessage(myReturnMessageTest130);
-		EXPECT_EQ(jch::G_SUSSESS,InputMessage(hidType,devSN2,cmdBuf));
-		Sleep(3000);
-		EXPECT_EQ(jch::G_SUSSESS,CloseDrives(hidType,devSN2));
-		Sleep(2000);
-		//清空向量
-		jch::vecJcHid.clear();
-	}
 
-	TEST_F(ATMCDLLSelfTest, zjydbgNormaMulDirectOpen2)
-	{
-		hid_device *dv1=NULL,*dv2=NULL;
-		try{
-			wchar_t sn1[17],sn2[17];
-			memset(sn1,0,sizeof(wchar_t)*17);
-			memset(sn2,0,sizeof(wchar_t)*17);
-			jch::CharToTchar(devSN1,sn1);
-			jch::CharToTchar(devSN2,sn2);
-			dv1=	hid_open(0x0483,0x5710,sn1);
-			dv2=	hid_open(0x0483,0x5710,sn2);
-			EXPECT_NE(NULL,(int)dv1);
-			EXPECT_NE(NULL,(int)dv2);
-		}
-		catch(...)
-		{
-			//EXPECT_NE(NULL,static_cast<void *>(dv2));
-			if (NULL!=dv1)
-			{
-				hid_close(dv1);
-			}
-
-			if (NULL!=dv2)
-			{
-				hid_close(dv2);
-			}
-		}
-		Sleep(1000);
-	}
-
-	TEST_F(ATMCDLLSelfTest, zjydbgNormaMulOpen2)
-	{
-		const char *hidType="Lock";
-		EXPECT_EQ(jch::G_SUSSESS,OpenDrives(hidType,	devSN1));
-		EXPECT_EQ(jch::G_SUSSESS,OpenDrives(hidType,	devSN2));
-		SetReturnMessage(myReturnMessageTest130);
-		EXPECT_EQ(jch::G_SUSSESS,InputMessage(hidType,devSN1,cmdBuf));
-		EXPECT_EQ(jch::G_SUSSESS,InputMessage(hidType,devSN2,cmdBuf));
-		Sleep(3000);
-		EXPECT_EQ(jch::G_SUSSESS,CloseDrives(hidType,devSN1));
-		EXPECT_EQ(jch::G_SUSSESS,CloseDrives(hidType,devSN2));
-		Sleep(2000);
-		//清空向量
-		jch::vecJcHid.clear();
-		Sleep(1000);
-	}
-#endif // _DEBUG_DEV2
 
 
 	TEST_F(ATMCDLLSelfTest, zjydbgBad1)
@@ -332,7 +323,7 @@ namespace zwHidGTest20150130{
 		EXPECT_EQ(strlen(s_devList),0);	
 	}
 	//////////////////////////////////////////////////////////////////////////
-
+#endif // _DEBUG_DEV2
 
 }	//namespace zwHidGTest20150130{
 #endif // ZWUSEGTEST

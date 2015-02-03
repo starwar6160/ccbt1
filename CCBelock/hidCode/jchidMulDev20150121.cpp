@@ -5,6 +5,7 @@
 #include "CCBelock.h"
 #include "zwHidMulHeader.h"
 #include "zwHidGtest130.h"
+#include "base64arduino.h"
 using namespace boost::property_tree;
 using jch::zwJcHidDbg15A;
 using jch::G_JCHID_RECVMSG_CB;
@@ -78,7 +79,7 @@ namespace jcLockJsonCmd_t2015a21{
 		m_hashId=myJcHidHndFromStrSerial(G_DEV_LOCK,ElockSerial);
 		if (NULL!=ElockSerial && strlen(ElockSerial)>0)
 		{
-			strncpy(m_dev.HidSerial,ElockSerial,JCHID_SERIAL_LENGTH);
+			strncpy(m_dev.HidSerial,ElockSerial,JCHID_SERIAL_LENGTH);			
 		}		
 		//OpenHidDevice();
 		return G_SUSSESS;
@@ -153,7 +154,7 @@ void zwDumpHidDeviceInfo(const hid_device_info *info)
 	char sn[BLEN];
 	memset(sn,0,BLEN);
 	TcharToChar(info->serial_number,sn);
-	printf("serial:%s\t",sn);
+	printf("serial:%s\t%d\t",sn,myHidSerialToInt(sn));
 	printf("release_number:%u\n",info->release_number);
 	memset(sn,0,BLEN);
 	TcharToChar(info->manufacturer_string,sn);
@@ -303,6 +304,33 @@ catch(boost::thread_interrupted)
 }
 //////////////////////TRY-CATCH完毕////////////////////////////////////////////////////
 		}	//while (1) {
+}
+
+uint32_t myHidSerialToInt(char *hidSerial)
+{
+	const int BLEN=13;
+	unsigned char serialBin[BLEN];
+	memset(serialBin,0,BLEN);
+	base64_decode((char *)serialBin,hidSerial,strlen(hidSerial));
+	for (int i=0;i<BLEN-1;i++)
+	{			
+		if (i==1 || i==8 ||i==10)
+		{
+			printf(" ");
+		}
+		printf("%02X",serialBin[i]& 0xFF);
+	}
+	printf("\t");
+	printf("%02X %02X %02X",serialBin[0],serialBin[8],serialBin[9]);
+	printf("\n");
+	//把二进制形式的字节0，9，10这3个有效字节组合为一个32bit数字的低24位，作为该序列号的实际有效成分返回
+
+	uint32_t serialPayLoad=serialBin[0];
+	serialPayLoad=serialPayLoad<<8;
+	serialPayLoad+=serialBin[8];
+	serialPayLoad=serialPayLoad<<8;
+	serialPayLoad+=serialBin[9];
+	return serialPayLoad;
 }
 
 void zwJcHidDbg15A::StartRecvThread()

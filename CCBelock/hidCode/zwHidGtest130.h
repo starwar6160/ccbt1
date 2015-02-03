@@ -17,7 +17,7 @@ namespace jcLockJsonCmd_t2015a21{
 		//然后发送命令
 		uint32_t PushJson(const char *strJsonCmd);				
 		//设备由构造函数自动关闭
-		~zwJcHidDbg15A();
+		~zwJcHidDbg15A();		
 	private:
 		JCHID m_dev;
 		uint32_t m_hashId;	//由设备PID字符串("Lock"等)和序列号HASH出来的ID
@@ -30,5 +30,6 @@ namespace jcLockJsonCmd_t2015a21{
 
 	extern vector<zwJcHidDbg15A *> vecJcHid;
 	void CharToTchar (const char * _char, TCHAR * tchar);
+	uint32_t myHidSerialToInt(char *hidSerial);
 }	//namespace jcLockJsonCmd_t2015a21{
 

@@ -53,6 +53,7 @@ namespace jcLockJsonCmd_t2015a21{
 	extern const int G_SUSSESS;
 	extern const int G_FAIL;
 	class zwJcHidDbg15A;
+	uint32_t myHidSerialToInt(char *hidSerial);
 }	//end of namespace jcLockJsonCmd_t2015a21{
 namespace jch=jcLockJsonCmd_t2015a21;
 
