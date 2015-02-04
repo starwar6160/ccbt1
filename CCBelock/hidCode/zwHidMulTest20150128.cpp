@@ -103,6 +103,39 @@ namespace zwHidGTest20150130{
 		//清空向量
 		jch::vecJcHid.clear();
 	}
+
+	TEST_F(ATMCDLLSelfTest, zjydbgBad1)
+	{
+		//测试没有回调函数的时候
+		const char *hidType="Lock";
+		EXPECT_EQ(jch::G_SUSSESS,OpenDrives(hidType,	devSN1));
+		SetReturnMessage(NULL);
+		EXPECT_EQ(jch::G_SUSSESS,InputMessage(hidType,devSN1,cmdBuf));
+		Sleep(3000);
+		EXPECT_EQ(jch::G_SUSSESS,CloseDrives(hidType,devSN1));
+		Sleep(2000);
+		//清空向量
+		jch::vecJcHid.clear();
+	}
+
+	TEST_F(ATMCDLLSelfTest, zjydbgBad2)
+	{
+		//测试没有序列号错误的时候无法打开HID设备
+		char devSN1p[48];
+		memset(devSN1p,0,48);
+		strcpy(devSN1p,devSN1);
+		devSN1p[0]='Z';
+		const char *hidType="Lock";
+
+		EXPECT_EQ(jch::G_FAIL,OpenDrives(hidType,	devSN1p));
+		SetReturnMessage(myReturnMessageTest130);
+		//关闭不存在的设备可以成功
+		EXPECT_EQ(jch::G_SUSSESS,CloseDrives(hidType,devSN1p));
+		Sleep(2000);
+		//清空向量
+		jch::vecJcHid.clear();
+	}
+
 #ifdef _DEBUG_DEV2
 	TEST_F(ATMCDLLSelfTest, jcHidDevEnumNormal)
 	{
@@ -206,37 +239,6 @@ namespace zwHidGTest20150130{
 
 
 //////////////////////////////////////////////////////////////////////////
-
-	TEST_F(ATMCDLLSelfTest, zjydbgBad1)
-	{
-		//测试没有回调函数的时候
-		const char *hidType="Lock";
-		EXPECT_EQ(jch::G_SUSSESS,OpenDrives(hidType,	devSN1));
-		SetReturnMessage(NULL);
-		EXPECT_EQ(jch::G_SUSSESS,InputMessage(hidType,devSN1,cmdBuf));
-		Sleep(3000);
-		EXPECT_EQ(jch::G_SUSSESS,CloseDrives(hidType,devSN1));
-		Sleep(2000);
-		//清空向量
-		jch::vecJcHid.clear();
-	}
-
-	TEST_F(ATMCDLLSelfTest, zjydbgBad2)
-	{
-		//测试没有序列号错误的时候无法打开HID设备
-		char devSN1p[48];
-		memset(devSN1p,0,48);
-		strcpy(devSN1p,devSN1);
-		devSN1p[0]='Z';
-		const char *hidType="Lock";
-
-		EXPECT_EQ(jch::G_FAIL,OpenDrives(hidType,	devSN1p));
-		SetReturnMessage(myReturnMessageTest130);
-		EXPECT_EQ(jch::G_FAIL,CloseDrives(hidType,devSN1p));
-		Sleep(2000);
-		//清空向量
-		jch::vecJcHid.clear();
-	}
 
 
 	//////////////////////////////////////////////////////////////////////////
