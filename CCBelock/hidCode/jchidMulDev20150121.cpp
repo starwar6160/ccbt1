@@ -44,6 +44,7 @@ namespace jcLockJsonCmd_t2015a21{
 	{
 		uint32_t realHash=myJcHidHndFromStrSerial(DrivesTypePID,DrivesIdSN);
 		VLOG(4)<<__FUNCTION__<<endl;
+
 		VLOG(4)<<"realHash="<<realHash<<"\tDrivesTypePID="<<DrivesTypePID<<"\tDrivesIdSN="<<DrivesIdSN<<endl;
 		VLOG(4)<<"vecJcHid.size()="<<vecJcHid.size()<<endl;
 		for (int i=0;i<vecJcHid.size();i++)

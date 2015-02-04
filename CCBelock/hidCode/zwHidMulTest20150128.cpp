@@ -5,6 +5,8 @@
 #include "zwHidMulHeader.h"
 #include "zwHidGtest130.h"
 #define ZWUSEGTEST
+#define _DEBUG_LOCK2TEST
+
 
 #ifdef ZWUSEGTEST
 
@@ -61,7 +63,8 @@ namespace zwHidGTest20150130{
 		//"jcElockSerial": "OQAiAACAAoQL1wAI",
 		//"jcElockSerial": "QAAiAACAAoTXuwAI"	
 		devSN1="OQAiAACAAoQL1wAI";
-		devSN2="QAAiAACAAoTXuwAI";
+		//devSN2="QAAiAACAAoTXuwAI";
+		devSN2="QAAiAACAAoS3uQAI";	//20150204，重刷程序以后新的序列号		
 		//devSN2="OQAiAACAAoQL1wAI";
 		//devSN1="QAAiAACAAoTXuwAI";
 //////////////////////////////////////////////////////////////////////////
