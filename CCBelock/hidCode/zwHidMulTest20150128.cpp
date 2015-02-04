@@ -82,6 +82,44 @@ namespace zwHidGTest20150130{
 
 	}
 	//////////////////////////////////////////////////////////////////////////
+	TEST_F(ATMCDLLSelfTest, jcHidDevEnumNormal)
+	{
+		//枚举设备，正常情况测试
+		memset(s_devList,0,G_BUFSIZE);
+		SetReturnDrives(myHidListTest130);
+		ListDrives("Lock");
+		//"{"jcElockSerial": "a"}"这样的最低限度json是22字节长度
+		EXPECT_GT(strlen(s_devList),22);	
+	}
+
+
+	TEST_F(ATMCDLLSelfTest, zjydbgNormal)
+	{
+		//正常使用流程		
+		const char *hidType="Lock";
+		EXPECT_EQ(jch::G_SUSSESS,OpenDrives(hidType,	devSN1));
+		SetReturnMessage(myReturnMessageTest130);
+		EXPECT_EQ(jch::G_SUSSESS,InputMessage(hidType,devSN1,cmdBuf));
+		Sleep(3000);
+		EXPECT_EQ(jch::G_SUSSESS,CloseDrives(hidType,devSN1));
+		Sleep(2000);
+		//清空向量
+		jch::vecJcHid.clear();
+	}
+
+#ifdef _DEBUG_LOCK2TEST
+	TEST_F(ATMCDLLSelfTest, zjydbgNorma2)
+	{
+		const char *hidType="Lock";
+		EXPECT_EQ(jch::G_SUSSESS,OpenDrives(hidType,	devSN2));
+		SetReturnMessage(myReturnMessageTest130);
+		EXPECT_EQ(jch::G_SUSSESS,InputMessage(hidType,devSN2,cmdBuf));
+		Sleep(3000);
+		EXPECT_EQ(jch::G_SUSSESS,CloseDrives(hidType,devSN2));
+		Sleep(2000);
+		//清空向量
+		jch::vecJcHid.clear();
+	}
 
 
 	TEST_F(ATMCDLLSelfTest, zjydbgNormaMulDirectOpen2)
@@ -138,53 +176,14 @@ namespace zwHidGTest20150130{
 		jch::vecJcHid.clear();
 		Sleep(1000);
 	}
+#endif // _DEBUG_LOCK2TEST
 
 
-#ifdef _DEBUG_DEV2
-
-	TEST_F(ATMCDLLSelfTest, zjydbgNorma2)
-	{
-		const char *hidType="Lock";
-		EXPECT_EQ(jch::G_SUSSESS,OpenDrives(hidType,	devSN2));
-		SetReturnMessage(myReturnMessageTest130);
-		EXPECT_EQ(jch::G_SUSSESS,InputMessage(hidType,devSN2,cmdBuf));
-		Sleep(3000);
-		EXPECT_EQ(jch::G_SUSSESS,CloseDrives(hidType,devSN2));
-		Sleep(2000);
-		//清空向量
-		jch::vecJcHid.clear();
-	}
 
 
 
 
 //////////////////////////////////////////////////////////////////////////
-	TEST_F(ATMCDLLSelfTest, jcHidDevEnumNormal)
-	{
-		//枚举设备，正常情况测试
-		memset(s_devList,0,G_BUFSIZE);
-		SetReturnDrives(myHidListTest130);
-		ListDrives("Lock");
-		//"{"jcElockSerial": "a"}"这样的最低限度json是22字节长度
-		EXPECT_GT(strlen(s_devList),22);	
-	}
-
-	TEST_F(ATMCDLLSelfTest, zjydbgNormal)
-	{
-		//正常使用流程		
-		const char *hidType="Lock";
-		EXPECT_EQ(jch::G_SUSSESS,OpenDrives(hidType,	devSN1));
-		SetReturnMessage(myReturnMessageTest130);
-		EXPECT_EQ(jch::G_SUSSESS,InputMessage(hidType,devSN1,cmdBuf));
-		Sleep(3000);
-		EXPECT_EQ(jch::G_SUSSESS,CloseDrives(hidType,devSN1));
-		Sleep(2000);
-		//清空向量
-		jch::vecJcHid.clear();
-	}
-
-
-
 
 	TEST_F(ATMCDLLSelfTest, zjydbgBad1)
 	{
@@ -237,6 +236,7 @@ namespace zwHidGTest20150130{
 		Sleep(2000);
 		EXPECT_GT(strlen(s_recvMsg),0);
 	}
+
 
 	TEST_F(ATMCDLLSelfTest, LockErrorSerial)
 	{
@@ -323,6 +323,7 @@ namespace zwHidGTest20150130{
 		EXPECT_EQ(strlen(s_devList),0);	
 	}
 	//////////////////////////////////////////////////////////////////////////
+#ifdef _DEBUG_DEV2
 #endif // _DEBUG_DEV2
 
 }	//namespace zwHidGTest20150130{
