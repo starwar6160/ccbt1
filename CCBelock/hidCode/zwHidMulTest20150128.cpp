@@ -6,7 +6,7 @@
 #include "zwHidGtest130.h"
 #define ZWUSEGTEST
 #define _DEBUG_LOCK2TEST
-
+#define _DEBUG_DEV2
 
 #ifdef ZWUSEGTEST
 
@@ -85,6 +85,25 @@ namespace zwHidGTest20150130{
 
 	}
 	//////////////////////////////////////////////////////////////////////////
+
+	TEST_F(ATMCDLLSelfTest, zjydbgBad3)
+	{
+		//测试多次Open和Close设备
+		char devSN1p[48];
+		memset(devSN1p,0,48);
+		strcpy(devSN1p,devSN1);
+		const char *hidType="Lock";
+
+		EXPECT_EQ(jch::G_SUSSESS,OpenDrives(hidType,	devSN1p));
+		EXPECT_EQ(jch::G_SUSSESS,OpenDrives(hidType,	devSN1p));
+		SetReturnMessage(myReturnMessageTest130);
+		EXPECT_EQ(jch::G_SUSSESS,CloseDrives(hidType,devSN1p));
+		EXPECT_EQ(jch::G_SUSSESS,CloseDrives(hidType,devSN1p));
+		Sleep(2000);
+		//清空向量
+		jch::vecJcHid.clear();
+	}
+#ifdef _DEBUG_DEV2
 	TEST_F(ATMCDLLSelfTest, jcHidDevEnumNormal)
 	{
 		//枚举设备，正常情况测试
@@ -326,7 +345,7 @@ namespace zwHidGTest20150130{
 		EXPECT_EQ(strlen(s_devList),0);	
 	}
 	//////////////////////////////////////////////////////////////////////////
-#ifdef _DEBUG_DEV2
+
 #endif // _DEBUG_DEV2
 
 }	//namespace zwHidGTest20150130{

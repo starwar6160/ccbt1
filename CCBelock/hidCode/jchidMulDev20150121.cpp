@@ -34,7 +34,7 @@ namespace jcLockJsonCmd_t2015a21{
 	ReturnMessage G_JCHID_RECVMSG_CB=NULL;
 	std::map<uint32_t,JCHID> G_JCDEV_MAP;
 
-	uint32_t myJcHidHndFromStrSerial( const char* DrivesTypePID, const char * DrivesIdSN);
+	uint32_t zwSnToHashID( const char* DrivesTypePID, const char * DrivesIdSN);
 
 	vector<zwJcHidDbg15A *> vecJcHid;
 
@@ -42,7 +42,7 @@ namespace jcLockJsonCmd_t2015a21{
 	//找不到的话返回G_VECINDEX_NOTFOUND
 	int FindHidDevIndex(const char* DrivesTypePID, const char * DrivesIdSN)
 	{
-		uint32_t realHash=myJcHidHndFromStrSerial(DrivesTypePID,DrivesIdSN);
+		uint32_t realHash=zwSnToHashID(DrivesTypePID,DrivesIdSN);
 		VLOG(4)<<__FUNCTION__<<endl;
 
 		VLOG(4)<<"realHash="<<realHash<<"\tDrivesTypePID="<<DrivesTypePID<<"\tDrivesIdSN="<<DrivesIdSN<<endl;
@@ -77,7 +77,7 @@ namespace jcLockJsonCmd_t2015a21{
 	int zwJcHidDbg15A::SetElock(const char *ElockSerial)
 	{
 		m_dev.pid=JCHID_PID_LOCK5151;
-		m_hashId=myJcHidHndFromStrSerial(G_DEV_LOCK,ElockSerial);
+		m_hashId=zwSnToHashID(G_DEV_LOCK,ElockSerial);
 		if (NULL!=ElockSerial && strlen(ElockSerial)>0)
 		{
 			strncpy(m_dev.HidSerial,ElockSerial,JCHID_SERIAL_LENGTH);			
@@ -89,7 +89,7 @@ namespace jcLockJsonCmd_t2015a21{
 	int zwJcHidDbg15A::SetSecBox(const char *SecBoxSerial)
 	{
 		m_dev.pid=JCHID_PID_SECBOX;
-		m_hashId=myJcHidHndFromStrSerial(G_DEV_SECBOX,SecBoxSerial);
+		m_hashId=zwSnToHashID(G_DEV_SECBOX,SecBoxSerial);
 		if (NULL!=SecBoxSerial && strlen(SecBoxSerial)>0)
 		{
 			strncpy(m_dev.HidSerial,SecBoxSerial,JCHID_SERIAL_LENGTH);
@@ -381,7 +381,12 @@ int zwJcHidDbg15A::OpenHidDevice()
 	}
 	else
 	{
-		LOG(ERROR)<<" Open jcHid Device Error"<<endl;
+#ifdef _DEBUG
+LOG(WARNING)<<" Open jcHid Device Error"<<endl;
+#else 
+LOG(ERROR)<<" Open jcHid Device Error"<<endl;
+#endif // _DEBUG
+		
 		return G_FAIL;
 	}
 }
@@ -430,7 +435,7 @@ void jcMulHidEnum( const int hidPid,string &jcDevListJson )
 	Sleep(1000);
 }
 
-uint32_t myJcHidHndFromStrSerial( const char* DrivesTypePID, const char * DrivesIdSN)
+uint32_t zwSnToHashID( const char* DrivesTypePID, const char * DrivesIdSN)
 {
 	assert(NULL!=DrivesTypePID );
 	assert(strlen(DrivesTypePID)>0 );
@@ -485,7 +490,7 @@ uint32_t myJcHidHndFromStrSerial( const char* DrivesTypePID, const char * Drives
 			LOG(ERROR)<<"jcHidDev is NULL"<<endl;
 		}
 
-		uint32_t inDevId=myJcHidHndFromStrSerial(DrivesTypePID, DrivesIdSN);
+		uint32_t inDevId=zwSnToHashID(DrivesTypePID, DrivesIdSN);
 		VLOG(4)<<"jcHidHandleFromStrSerial="<<inDevId<<endl;	
 		*inDevHashId=inDevId;
 		auto it=G_JCDEV_MAP.find(inDevId);
@@ -522,20 +527,38 @@ CCBELOCK_API int ZJY1501STD OpenDrives( const char* DrivesTypePID,const char * D
 		LOG(ERROR)<<"DrivesTypePID is NULL"<<endl;
 		return G_FAIL;
 	}
-	zwJcHidDbg15A *tDev=new zwJcHidDbg15A();	
-	tDev->SetElock(DrivesIdSN);
-	int sts=tDev->OpenHidDevice();
-	if (G_FAIL==sts)
+//////////////////////////////////////////////////////////////////////////
+	int devIndex=jch::FindHidDevIndex(DrivesTypePID,DrivesIdSN);
+	if (jch::G_VECINDEX_NOTFOUND!=devIndex)
 	{
-		LOG(ERROR)<<"OpenHidDevice FAIL"<<endl;
-		return G_FAIL;
-	}
+		VLOG(4)<<"This HidDevice already Opend,Now return"<<endl;
+		return G_SUSSESS;
+	}	
 	else
 	{
-		VLOG(4)<<"OpenHidDevice SUCCESS,push_back to devVector"<<endl;
-		jch::vecJcHid.push_back(tDev);
-		return G_SUSSESS;
-	}
+		zwJcHidDbg15A *tDev=new zwJcHidDbg15A();	
+		tDev->SetElock(DrivesIdSN);
+		int sts=tDev->OpenHidDevice();
+		if (G_FAIL==sts)
+		{
+#ifdef _DEBUG
+			LOG(WARNING)<<"OpenHidDevice FAIL"<<endl;
+#else
+			LOG(ERROR)<<"OpenHidDevice FAIL"<<endl;
+#endif // _DEBUG
+
+			return G_FAIL;
+		}
+		else
+		{
+			VLOG(4)<<"OpenHidDevice SUCCESS,push_back to devVector"<<endl;
+			jch::vecJcHid.push_back(tDev);
+			return G_SUSSESS;
+		}
+		
+	}	//if (jch::G_VECINDEX_NOTFOUND!=devIndex)
+//////////////////////////////////////////////////////////////////////////
+
 }
 
 CCBELOCK_API int ZJY1501STD CloseDrives( const char* DrivesTypePID,const char * DrivesIdSN )
@@ -557,8 +580,9 @@ CCBELOCK_API int ZJY1501STD CloseDrives( const char* DrivesTypePID,const char * 
 	}	
 	else
 	{
-		LOG(WARNING)<<"Can't find this hidDev in devVector"<<endl;
-		return G_FAIL;
+		//LOG(WARNING)<<"Can't find this hidDev in devVector"<<endl;
+		VLOG(4)<<"Can't Close a hidDevice already no exist"<<endl;
+		return G_SUSSESS;
 	}
 	
 }
