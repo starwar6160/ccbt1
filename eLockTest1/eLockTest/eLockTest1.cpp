@@ -119,8 +119,8 @@ void myMulHidDevJsonTest20150116A()
 	//Sleep(9000);
 	//exit(1);
 
-	OpenDrives(hidType,	devSN2);
-	OpenDrives(hidType,	devSN1);
+	//OpenDrives(hidType,	devSN2);
+	//OpenDrives(hidType,	devSN1);
 	SetReturnMessage(myReturnMessageTest115);
 
 	InputMessage(hidType,devSN2,jcHidJsonMsg0005);
@@ -156,7 +156,7 @@ void myMulHidDevJsonTest20150116B()
 	//Sleep(9000);
 	//exit(1);
 
-	OpenDrives(hidType,	devSN3);
+	//OpenDrives(hidType,	devSN3);
 	SetReturnMessage(myReturnMessageTest115);
 
 	char buf[128];
@@ -190,7 +190,7 @@ void myMulHidDevJsonTest20150120A()
 	//exit(1);
 
 	//////////////////////////////////////////////////////////////////////////
-	OpenDrives(hidType,	devSN3);
+	//OpenDrives(hidType,	devSN3);
 	SetReturnMessage(myReturnMessageTest115);
 
 	//InputMessage(hidType,devSN3,jcHidJsonMsg116t1);
@@ -214,7 +214,7 @@ void myMulHidDevJsonTest20150120A()
 	//getchar();
 
 	Sleep(2000);
-	OpenDrives(hidType,	devSN3);
+	//OpenDrives(hidType,	devSN3);
 	SetReturnMessage(myReturnMessageTest115);
 	//for (int i=0;i<1;i++)
 	//{
@@ -247,7 +247,7 @@ void myMulHidDevJsonTest20150120A1()
 	//////////////////////////////////////////////////////////////////////////
 	for (int i=0;i<3;i++)
 	{
-		OpenDrives(hidType,	devSN3);
+		//OpenDrives(hidType,	devSN3);
 		for (int j=0;j<50;j++)
 		{
 			char buf[128];

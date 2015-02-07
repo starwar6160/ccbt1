@@ -527,7 +527,7 @@ uint32_t zwSnToHashID( const char* DrivesTypePID, const char * DrivesIdSN)
 #endif // _DEBUG128
 }	//end of namespace jcLockJsonCmd_t2015a21{
 
-CCBELOCK_API int ZJY1501STD OpenDrives( const char* DrivesTypePID,const char * DrivesIdSN )
+int ZJY1501STD OpenDrives( const char* DrivesTypePID,const char * DrivesIdSN )
 {
 	assert(NULL!=DrivesTypePID && strlen(DrivesTypePID)>0);
 	if (NULL==DrivesTypePID || strlen(DrivesTypePID)==0)

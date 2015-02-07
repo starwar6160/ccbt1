@@ -109,7 +109,7 @@ namespace zwHidGTest20150130{
 	{
 		//测试没有回调函数的时候
 		const char *hidType="Lock";
-		EXPECT_EQ(jch::G_SUSSESS,OpenDrives(hidType,	devSN1));
+		//EXPECT_EQ(jch::G_SUSSESS,OpenDrives(hidType,	devSN1));
 		SetReturnMessage(NULL);
 		EXPECT_EQ(jch::G_SUSSESS,InputMessage(hidType,devSN1,cmdBuf));
 		Sleep(3000);
@@ -153,7 +153,7 @@ namespace zwHidGTest20150130{
 	{
 		//正常使用流程		
 		const char *hidType="Lock";
-		EXPECT_EQ(jch::G_SUSSESS,OpenDrives(hidType,	devSN1));
+		//EXPECT_EQ(jch::G_SUSSESS,OpenDrives(hidType,	devSN1));
 		SetReturnMessage(myReturnMessageTest130);
 		EXPECT_EQ(jch::G_SUSSESS,InputMessage(hidType,devSN1,cmdBuf));
 		Sleep(3000);
@@ -167,7 +167,7 @@ namespace zwHidGTest20150130{
 	TEST_F(ATMCDLLSelfTest, zjydbgNorma2)
 	{
 		const char *hidType="Lock";
-		EXPECT_EQ(jch::G_SUSSESS,OpenDrives(hidType,	devSN2));
+		//EXPECT_EQ(jch::G_SUSSESS,OpenDrives(hidType,	devSN2));
 		SetReturnMessage(myReturnMessageTest130);
 		EXPECT_EQ(jch::G_SUSSESS,InputMessage(hidType,devSN2,cmdBuf));
 		Sleep(3000);
@@ -218,9 +218,9 @@ namespace zwHidGTest20150130{
 	TEST_F(ATMCDLLSelfTest, zjydbgNormaMulOpen2)
 	{
 		const char *hidType="Lock";
-		EXPECT_EQ(jch::G_SUSSESS,OpenDrives(hidType,	devSN1));
+		//EXPECT_EQ(jch::G_SUSSESS,OpenDrives(hidType,	devSN1));
 		Sleep(2000);	//此处至少要等待2秒
-		EXPECT_EQ(jch::G_SUSSESS,OpenDrives(hidType,	devSN2));
+		//EXPECT_EQ(jch::G_SUSSESS,OpenDrives(hidType,	devSN2));
 		SetReturnMessage(myReturnMessageTest130);
 		EXPECT_EQ(jch::G_SUSSESS,InputMessage(hidType,devSN1,cmdBuf));
 		EXPECT_EQ(jch::G_SUSSESS,InputMessage(hidType,devSN2,cmdBuf));

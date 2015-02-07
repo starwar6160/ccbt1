@@ -19,7 +19,7 @@ extern "C" {
 	//	（5）当有新设备插入或拔出时，接口函数应该返回插入设备所属类型的最新列表（重复内容由上位机过滤去重）
 	CCBELOCK_API int ZJY1501STD ListDrives(const char * DrivesTypePID);
 	//1、打开设备
-	CCBELOCK_API int ZJY1501STD OpenDrives(const char* DrivesTypePID,const char * DrivesIdSN);
+	//CCBELOCK_API int ZJY1501STD OpenDrives(const char* DrivesTypePID,const char * DrivesIdSN);
 	//	2、关闭设备
 	CCBELOCK_API int ZJY1501STD CloseDrives(const char* DrivesTypePID,const char * DrivesIdSN);
 	
