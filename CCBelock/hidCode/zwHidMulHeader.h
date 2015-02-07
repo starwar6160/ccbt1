@@ -22,7 +22,7 @@ extern "C" {
 	CCBELOCK_API int ZJY1501STD OpenDrives(const char* DrivesTypePID,const char * DrivesIdSN);
 	//	2、关闭设备
 	CCBELOCK_API int ZJY1501STD CloseDrives(const char* DrivesTypePID,const char * DrivesIdSN);
-
+	
 	//extern ReturnDrives G_JCHID_ENUM_DEV2015A;
 
 	//三、设备消息接口 说明：（1）DrivesMessage和AnyMessage均为json格式字符
@@ -54,6 +54,7 @@ namespace jcLockJsonCmd_t2015a21{
 	extern const int G_FAIL;
 	class zwJcHidDbg15A;
 	uint32_t myHidSerialToInt(char *hidSerial);
+	void zwCleanJchidVec(void);
 }	//end of namespace jcLockJsonCmd_t2015a21{
 namespace jch=jcLockJsonCmd_t2015a21;
 

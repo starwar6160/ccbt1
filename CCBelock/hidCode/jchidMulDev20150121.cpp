@@ -38,6 +38,14 @@ namespace jcLockJsonCmd_t2015a21{
 
 	vector<zwJcHidDbg15A *> vecJcHid;
 
+	void zwCleanJchidVec(void)
+	{
+		for (auto it=vecJcHid.begin();it!=vecJcHid.end();it++)
+		{
+			delete *it;
+		}
+	}
+
 	//从HID设备对象指针的向量里面按照类型名字和序列号发现哪一个对象是对应的对象，返回索引
 	//找不到的话返回G_VECINDEX_NOTFOUND
 	int FindHidDevIndex(const char* DrivesTypePID, const char * DrivesIdSN)
@@ -631,8 +639,12 @@ CCBELOCK_API int ZJY1501STD InputMessage( const char * DrivesTypePID,const char 
 		}		
 		else
 		{
-			LOG(ERROR)<<"jcHid Device ["<<DrivesTypePID<<":"<<DrivesIdSN<<"] not found"<<endl;
-			return G_FAIL;
+			int sts=OpenDrives(DrivesTypePID,DrivesIdSN);
+			if (G_FAIL==sts)
+			{
+				LOG(ERROR)<<"jcHid Device ["<<DrivesTypePID<<":"<<DrivesIdSN<<"] not found"<<endl;
+			}			
+			return G_SUSSESS;
 		}		
 	}
 	catch(...) {
