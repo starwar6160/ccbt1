@@ -128,8 +128,8 @@ void myMulHidDevJsonTest20150116A()
 	InputMessage(hidType,devSN1,jcHidJsonMsg0005);
 
 	getchar();
-	CloseDrives(hidType,	devSN1);
-	CloseDrives(hidType,	devSN2);
+	//CloseDrives(hidType,	devSN1);
+	//CloseDrives(hidType,	devSN2);
 }
 
 
@@ -166,7 +166,7 @@ void myMulHidDevJsonTest20150116B()
 	InputMessage(hidType,devSN3,buf);
 	Sleep(5000);
 	
-	CloseDrives(hidType,devSN3);
+	//CloseDrives(hidType,devSN3);
 	//getchar();
 }
 
@@ -207,7 +207,7 @@ void myMulHidDevJsonTest20150120A()
 	//}
 	//printf("Press any key to continue########################################\n");	
 	Sleep(2000);
-	CloseDrives(hidType,devSN3);	
+	//CloseDrives(hidType,devSN3);	
 	//////////////////////////////////////////////////////////////////////////
 	printf("Press any key to continue########################################\n");	
 	//Sleep(1000);
@@ -224,7 +224,7 @@ void myMulHidDevJsonTest20150120A()
 	//	Sleep(1000);
 	//}
 	Sleep(2000);
-	CloseDrives(hidType,devSN3);
+	//CloseDrives(hidType,devSN3);
 
 	//getchar();
 }
@@ -258,7 +258,7 @@ void myMulHidDevJsonTest20150120A1()
 			//InputMessage(hidType,devSN3,jcHidJsonMsg116t2);			
 			//Sleep(8000);
 		}
-		CloseDrives(hidType,devSN3);	
+		//CloseDrives(hidType,devSN3);	
 		
 		Sleep(500);
 		cout<<"Count "<<i<<" Complete"<<endl;

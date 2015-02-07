@@ -113,7 +113,7 @@ namespace zwHidGTest20150130{
 		SetReturnMessage(NULL);
 		EXPECT_EQ(jch::G_SUSSESS,InputMessage(hidType,devSN1,cmdBuf));
 		Sleep(3000);
-		EXPECT_EQ(jch::G_SUSSESS,CloseDrives(hidType,devSN1));
+		//EXPECT_EQ(jch::G_SUSSESS,CloseDrives(hidType,devSN1));
 		Sleep(2000);
 		//清空向量
 		jch::vecJcHid.clear();
@@ -157,7 +157,7 @@ namespace zwHidGTest20150130{
 		SetReturnMessage(myReturnMessageTest130);
 		EXPECT_EQ(jch::G_SUSSESS,InputMessage(hidType,devSN1,cmdBuf));
 		Sleep(3000);
-		EXPECT_EQ(jch::G_SUSSESS,CloseDrives(hidType,devSN1));
+		//EXPECT_EQ(jch::G_SUSSESS,CloseDrives(hidType,devSN1));
 		Sleep(2000);
 		//清空向量
 		jch::vecJcHid.clear();
@@ -171,7 +171,7 @@ namespace zwHidGTest20150130{
 		SetReturnMessage(myReturnMessageTest130);
 		EXPECT_EQ(jch::G_SUSSESS,InputMessage(hidType,devSN2,cmdBuf));
 		Sleep(3000);
-		EXPECT_EQ(jch::G_SUSSESS,CloseDrives(hidType,devSN2));
+		//EXPECT_EQ(jch::G_SUSSESS,CloseDrives(hidType,devSN2));
 		Sleep(2000);
 		//清空向量
 		jch::vecJcHid.clear();
@@ -225,8 +225,8 @@ namespace zwHidGTest20150130{
 		EXPECT_EQ(jch::G_SUSSESS,InputMessage(hidType,devSN1,cmdBuf));
 		EXPECT_EQ(jch::G_SUSSESS,InputMessage(hidType,devSN2,cmdBuf));
 		Sleep(3000);
-		EXPECT_EQ(jch::G_SUSSESS,CloseDrives(hidType,devSN1));
-		EXPECT_EQ(jch::G_SUSSESS,CloseDrives(hidType,devSN2));
+		//EXPECT_EQ(jch::G_SUSSESS,CloseDrives(hidType,devSN1));
+		//EXPECT_EQ(jch::G_SUSSESS,CloseDrives(hidType,devSN2));
 		Sleep(2000);
 		//清空向量
 		jch::vecJcHid.clear();

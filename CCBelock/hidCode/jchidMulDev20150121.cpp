@@ -527,73 +527,6 @@ uint32_t zwSnToHashID( const char* DrivesTypePID, const char * DrivesIdSN)
 #endif // _DEBUG128
 }	//end of namespace jcLockJsonCmd_t2015a21{
 
-int ZJY1501STD OpenDrives( const char* DrivesTypePID,const char * DrivesIdSN )
-{
-	assert(NULL!=DrivesTypePID && strlen(DrivesTypePID)>0);
-	if (NULL==DrivesTypePID || strlen(DrivesTypePID)==0)
-	{
-		LOG(ERROR)<<"DrivesTypePID is NULL"<<endl;
-		return G_FAIL;
-	}
-//////////////////////////////////////////////////////////////////////////
-	int devIndex=jch::FindHidDevIndex(DrivesTypePID,DrivesIdSN);
-	if (jch::G_VECINDEX_NOTFOUND!=devIndex)
-	{
-		VLOG(4)<<"This HidDevice already Opend,Now return"<<endl;
-		return G_SUSSESS;
-	}	
-	else
-	{
-		zwJcHidDbg15A *tDev=new zwJcHidDbg15A();	
-		tDev->SetElock(DrivesIdSN);
-		int sts=tDev->OpenHidDevice();
-		if (G_FAIL==sts)
-		{
-#ifdef _DEBUG
-			LOG(WARNING)<<"OpenHidDevice FAIL"<<endl;
-#else
-			LOG(ERROR)<<"OpenHidDevice FAIL"<<endl;
-#endif // _DEBUG
-
-			return G_FAIL;
-		}
-		else
-		{
-			VLOG(4)<<"OpenHidDevice SUCCESS,push_back to devVector"<<endl;
-			jch::vecJcHid.push_back(tDev);
-			return G_SUSSESS;
-		}
-		
-	}	//if (jch::G_VECINDEX_NOTFOUND!=devIndex)
-//////////////////////////////////////////////////////////////////////////
-
-}
-
-CCBELOCK_API int ZJY1501STD CloseDrives( const char* DrivesTypePID,const char * DrivesIdSN )
-{
-	assert(NULL!=DrivesTypePID && strlen(DrivesTypePID)>0);
-	if (NULL==DrivesTypePID || strlen(DrivesTypePID)==0)
-	{
-		LOG(ERROR)<<"DrivesTypePID is NULL"<<endl;
-		return G_FAIL;
-	}
-	int devIndex=jch::FindHidDevIndex(DrivesTypePID,DrivesIdSN);
-	if (jch::G_VECINDEX_NOTFOUND!=devIndex)
-	{
-		VLOG(4)<<"Find toBe Close hidDev in devVector,now Delete it"<<endl;
-		//memset(s_jcHidDev,0,sizeof(s_jcHidDev));
-		delete jch::vecJcHid[devIndex];
-		Sleep(1000);
-		return G_SUSSESS;
-	}	
-	else
-	{
-		//LOG(WARNING)<<"Can't find this hidDev in devVector"<<endl;
-		VLOG(4)<<"Can't Close a hidDevice already no exist"<<endl;
-		return G_SUSSESS;
-	}
-	
-}
 
 //2、设置设备消息返回的回调函数
 CCBELOCK_API void ZJY1501STD SetReturnMessage( ReturnMessage _MessageHandleFun )
@@ -631,21 +564,20 @@ CCBELOCK_API int ZJY1501STD InputMessage( const char * DrivesTypePID,const char 
 	//}
 
 	try {
-		int devIndex=jch::FindHidDevIndex(DrivesTypePID,DrivesIdSN);
-		if (jch::G_VECINDEX_NOTFOUND!=devIndex)
+		zwJcHidDbg15A tDev;	
+		tDev.SetElock(DrivesIdSN);
+		int sts=tDev.OpenHidDevice();
+		if (G_FAIL==sts)
 		{
-			jch::vecJcHid[devIndex]->PushJson(AnyMessageJson);
-			return G_SUSSESS;
-		}		
-		else
-		{
-			int sts=OpenDrives(DrivesTypePID,DrivesIdSN);
-			if (G_FAIL==sts)
-			{
-				LOG(ERROR)<<"jcHid Device ["<<DrivesTypePID<<":"<<DrivesIdSN<<"] not found"<<endl;
-			}			
-			return G_SUSSESS;
-		}		
+#ifdef _DEBUG
+			LOG(WARNING)<<"OpenHidDevice FAIL"<<endl;
+#else
+			LOG(ERROR)<<"OpenHidDevice FAIL"<<endl;
+#endif // _DEBUG
+			return G_FAIL;
+		}
+			tDev.PushJson(AnyMessageJson);
+			return G_SUSSESS;		
 	}
 	catch(...) {
 		LOG(ERROR)<<__FUNCTION__<<" NotifyJson通过线路发送数据异常，可能网络故障"<<endl;

@@ -18,12 +18,6 @@ extern "C" {
 	//	（4）当调用ListDrives时，接口函数应返回当前所有此类设备的列表
 	//	（5）当有新设备插入或拔出时，接口函数应该返回插入设备所属类型的最新列表（重复内容由上位机过滤去重）
 	CCBELOCK_API int ZJY1501STD ListDrives(const char * DrivesTypePID);
-	//1、打开设备
-	//CCBELOCK_API int ZJY1501STD OpenDrives(const char* DrivesTypePID,const char * DrivesIdSN);
-	//	2、关闭设备
-	CCBELOCK_API int ZJY1501STD CloseDrives(const char* DrivesTypePID,const char * DrivesIdSN);
-	
-	//extern ReturnDrives G_JCHID_ENUM_DEV2015A;
 
 	//三、设备消息接口 说明：（1）DrivesMessage和AnyMessage均为json格式字符
 	//1、回调函数类型
