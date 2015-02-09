@@ -5,7 +5,7 @@
 #include "zwHidMulHeader.h"
 #include "zwHidGtest130.h"
 #define ZWUSEGTEST
-//#define _DEBUG_LOCK2TEST
+#define _DEBUG_LOCK2TEST
 #define _DEBUG_DEV2
 
 #ifdef ZWUSEGTEST
@@ -36,8 +36,10 @@ namespace zwHidGTest20150130{
 
 	void ZJY1501STD myHidListTest130(const char* DrivesType,const char * DrivesIDList)
 	{
+#ifndef _DEBUG
 		printf("USB PlugInOut Callback 20150130.1445\n");
 		printf("Json List of enum jcHidDev Type %s Serial is:\n%s\n",DrivesType,DrivesIDList);
+#endif // _DEBUG
 		memset(s_devList,0,G_BUFSIZE);
 		strcpy(s_devList,DrivesIDList);
 	}
@@ -85,6 +87,16 @@ namespace zwHidGTest20150130{
 
 	}
 	//////////////////////////////////////////////////////////////////////////
+
+	TEST_F(ATMCDLLSelfTest, jcHidDevEnumNormal)
+	{
+		//枚举设备，正常情况测试
+		memset(s_devList,0,G_BUFSIZE);
+		SetReturnDrives(myHidListTest130);
+		ListDrives("Lock");
+		//"{"jcElockSerial": "a"}"这样的最低限度json是22字节长度
+		EXPECT_GT(strlen(s_devList),22);	
+	}
 
 	TEST_F(ATMCDLLSelfTest, zjydbgBad3)
 	{
@@ -138,16 +150,6 @@ namespace zwHidGTest20150130{
 	}
 
 #ifdef _DEBUG_DEV2
-	TEST_F(ATMCDLLSelfTest, jcHidDevEnumNormal)
-	{
-		//枚举设备，正常情况测试
-		memset(s_devList,0,G_BUFSIZE);
-		SetReturnDrives(myHidListTest130);
-		ListDrives("Lock");
-		//"{"jcElockSerial": "a"}"这样的最低限度json是22字节长度
-		EXPECT_GT(strlen(s_devList),22);	
-	}
-
 
 	TEST_F(ATMCDLLSelfTest, zjydbgNormal)
 	{
