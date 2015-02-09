@@ -8,6 +8,7 @@
 #define _DEBUG_LOCK2TEST
 #define _DEBUG_DEV2
 
+
 #ifdef ZWUSEGTEST
 
 CCBELOCK_API int zwStartGtestInDLL(void)
@@ -66,7 +67,7 @@ namespace zwHidGTest20150130{
 		//"jcElockSerial": "QAAiAACAAoTXuwAI"	
 		devSN1="OQAiAACAAoQL1wAI";
 		//devSN2="QAAiAACAAoTXuwAI";
-		devSN2="QAAiAACAAoS3uQAI";	//20150204，重刷程序以后新的序列号		
+		devSN2="JQA7AACAAoRXuwAI";	//20150209,万敏重刷程序以后的序列号
 		//devSN2="OQAiAACAAoQL1wAI";
 		//devSN1="QAAiAACAAoTXuwAI";
 //////////////////////////////////////////////////////////////////////////
