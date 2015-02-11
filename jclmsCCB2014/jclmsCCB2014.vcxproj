@@ -52,7 +52,7 @@
       <WarningLevel>Level1</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_CRT_SECURE_NO_WARNINGS;ZWECIES_EXPORTS;_DEBUG;_WINDOWS;_USRDLL;JCLMSCCB2014_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(ZWSRC)\zwBaseLib\zwBaseLib\Header;$(ZWSRC)\CCBelock\CCBelock\hidCode;$(ZWLIB)\MIRACL2014\MIRACL2014\miraclSrc\include\;.\src\crc32;.\src;.\zwECIES;$(ZWLIB)\python27\include;$(ZWSRC)\zwBaseLib\zwBaseLib\HidSplitMsg;$(ZWSRC)\zwBaseLib\zwBaseLib\SecretBox;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ZWSRC)\zwBaseLib\zwBaseLib\Header;$(ZWSRC)\CCBelock\CCBelock\hidCode;$(ZWLIB)\MIRACL2014\MIRACL2014\miraclSrc\include\;.\src\crc32;.\src;.\zwECIES;$(ZWLIB)\python27\include;$(ZWSRC)\zwBaseLib\zwBaseLib\HidSplitMsg;$(ZWSRC)\zwBaseLib\zwBaseLib\SecretBox;$(ZWSRC)\jclmsCCB2014\jclmsCCB2014\src\secBox;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DisableLanguageExtensions>false</DisableLanguageExtensions>
       <DisableSpecificWarnings>4731;4819</DisableSpecificWarnings>
       <InlineFunctionExpansion>Disabled</InlineFunctionExpansion>
@@ -79,7 +79,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;_CRT_SECURE_NO_WARNINGS;ZWECIES_EXPORTS;NDEBUG;_WINDOWS;_USRDLL;JCLMSCCB2014_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(ZWSRC)\zwBaseLib\zwBaseLib\Header;$(ZWSRC)\CCBelock\CCBelock\hidCode;$(ZWLIB)\MIRACL2014\MIRACL2014\miraclSrc\include\;.\src\crc32;.\src;.\zwECIES;$(ZWLIB)\python27\include;$(ZWSRC)\zwBaseLib\zwBaseLib\HidSplitMsg;$(ZWSRC)\zwBaseLib\zwBaseLib\SecretBox;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ZWSRC)\zwBaseLib\zwBaseLib\Header;$(ZWSRC)\CCBelock\CCBelock\hidCode;$(ZWLIB)\MIRACL2014\MIRACL2014\miraclSrc\include\;.\src\crc32;.\src;.\zwECIES;$(ZWLIB)\python27\include;$(ZWSRC)\zwBaseLib\zwBaseLib\HidSplitMsg;$(ZWSRC)\zwBaseLib\zwBaseLib\SecretBox;$(ZWSRC)\jclmsCCB2014\jclmsCCB2014\src\secBox;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DisableLanguageExtensions>false</DisableLanguageExtensions>
       <DisableSpecificWarnings>4731;4819</DisableSpecificWarnings>
     </ClCompile>
@@ -138,6 +138,14 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="src\jclmsCCB2014.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="src\secBox\sha1.c">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="src\secBox\zwSecretBoxAuth.c">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
     </ClCompile>
