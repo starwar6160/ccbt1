@@ -116,3 +116,40 @@ int zwSM3StandardTestVector(void) {
 	printf("\n");
 	return sm3TestVecResult1[0]-NtoHl(oTmp[0]);
 }
+
+
+//20150211.使用谷兵的复旦微电子芯片驱动来计算SM3，这个空壳函数是该函数的原型复制品，用来通过链接
+#ifdef WIN32
+int   FM15160_SM3HashAlgorithm(const uint8_t *pPreSM3HashData, const uint16_t lenPreSM3HashData, 
+							uint8_t *pPostSM3HashData, uint8_t *PlenPostSM3HashData)
+{
+	return 0;
+}
+#endif // WIN32
+
+
+
+int zwSM3StandardTestVector4FuDan20150211(void) {
+	const char *msg = "abc";
+	const uint32_t sm3TestVecResult1[]={0X66c7f0f4,0X62eeedd9,0Xd1f2d46b,0Xdc10e4e2,
+		0X4167c487,0X5cf2f7a2,0X297da02b,0X8f4ba8e0};
+	uint8_t buf[ZWSM3_BLOCK_LEN];
+	uint8_t outHmac[ZWSM3_DGST_LEN];
+
+	memset(buf, 0, ZWSM3_BLOCK_LEN);
+	memset(outHmac, 0, ZWSM3_DGST_LEN);
+
+	int srcLen=strlen(msg);
+	memcpy(buf, msg, srcLen);
+
+	uint8_t outLen=0;
+	FM15160_SM3HashAlgorithm(buf,srcLen,outHmac,&outLen);
+
+	int *oTmp=(int *)outHmac;
+	for (int i=0;i<8;i++)
+	{
+		printf("%08X\t",NtoHl(oTmp[i]));
+	}
+	printf("\n");
+	return sm3TestVecResult1[0]-NtoHl(oTmp[0]);
+}

@@ -26,6 +26,7 @@ using std::map;
 
 //////////////////////替换windows.h中用到的部分定义开始///////////////////////////////
 //如果有新的部分定义，从windows.h中复制过来
+#ifndef _WINBASE_
 typedef int                 BOOL;
 #define WINAPI      __stdcall
 #define APIENTRY    WINAPI
@@ -41,6 +42,8 @@ typedef void *            *LPVOID;	//此处和windef.h不太一样，去掉了过时的far关键
 
 #define FALSE 0
 #define TRUE 1
+
+#endif	#ifndef _WINBASE_
 
 /* Define NULL pointer value */
 #ifndef NULL

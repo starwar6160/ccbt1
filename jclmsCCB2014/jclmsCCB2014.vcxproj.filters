@@ -25,6 +25,9 @@
     <Filter Include="源文件\dyCode">
       <UniqueIdentifier>{af4acb87-fe62-4287-a98d-65ed9b6e869d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="源文件\InATMC">
+      <UniqueIdentifier>{4dc8405c-bfcf-4525-bbe9-f36c6db9c1cb}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="ReadMe.txt" />
@@ -54,9 +57,6 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="dllmain.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="jclmsccb_csharp_wrap.cxx">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="zwECIES\sm3_1407.c">
@@ -95,17 +95,17 @@
     <ClCompile Include="src\crc32\cJSON.c">
       <Filter>源文件\hashalg</Filter>
     </ClCompile>
-    <ClCompile Include="lms2SecBox201412.cpp">
-      <Filter>源文件\dyCode</Filter>
-    </ClCompile>
     <ClCompile Include="src\crc32\zwCCITTcrc16.c">
       <Filter>源文件\hashalg</Filter>
     </ClCompile>
     <ClCompile Include="src\crc32\adler32.c">
       <Filter>源文件\hashalg</Filter>
     </ClCompile>
-    <ClCompile Include="src\zwSecretBoxCsWrap20141018.cpp">
-      <Filter>源文件\dyCode</Filter>
+    <ClCompile Include="src\zwHtons.c">
+      <Filter>源文件\InATMC</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zwTimerS1.cpp">
+      <Filter>源文件\InATMC</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

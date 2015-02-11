@@ -124,8 +124,8 @@ int main(int argc, char * argv[])
 	memset(ccbActiveInfo,0,ZW_ECIES_CRYPT_TOTALLEN);
 	zwGenActiveInfo(pubKey,ccbInput1,ccbInput2,ccbActiveInfo);
 /////////////////////////////解密激活信息/////////////////////////////////////////////
-	char PSK[ZW_ECIES_HASH_LEN];
-	memset(PSK,0,ZW_ECIES_HASH_LEN);
+	char PSK[ZW_ECIES_HASH_LEN*2];
+	memset(PSK,0,ZW_ECIES_HASH_LEN*2);
 	zwGetPSK(priKey,ccbActiveInfo,PSK);
 
 	return 0;
