@@ -112,7 +112,7 @@ namespace jcLockJsonCmd_t2015a21{
 		{
 			StopRecvThread();
 			jcHidClose(&m_dev);
-			LOG(WARNING)<<"Close jcHid Device "<<m_dev.HidSerial<<" SUCCESS"<<endl;
+			LOG(INFO)<<"Close jcHid Device "<<m_dev.HidSerial<<" SUCCESS"<<endl;
 		}
 	};
 
@@ -264,7 +264,7 @@ int zwJcHidDbg15A::RecvThread(JCHID *hidHandle)
 		int t_thr_runCount=1;
 #endif // _DEBUG
 		jcSend_mutex.unlock();//这里之后可以开始发送数据了
-		VLOG(4)<<"jcDevInit_mutex.unlock();"<<endl;
+		//VLOG(4)<<"jcDevInit_mutex.unlock();"<<endl;
 		while (1) {	
 #ifdef _DEBUG1
 			LOG(WARNING)<<"RECV THR 20150122 "<<t_thr_runCount++<<endl;
@@ -302,7 +302,7 @@ try{
 							if (NULL!=G_JCHID_RECVMSG_CB)
 							{								
 								G_JCHID_RECVMSG_CB(hidHandle->HidSerial,recvBuf);
-								VLOG(2)<<"JinChu RecvMsg Callback Function be Call Success"<<endl;
+								//VLOG(2)<<"JinChu RecvMsg Callback Function be Call Success"<<endl;
 							}						
 					}						
 }
@@ -372,7 +372,7 @@ int zwJcHidDbg15A::OpenHidDevice()
 {
 	thr=NULL;
 	jcSend_mutex.lock();
-	VLOG(4)<<"OpenHidDevice jcDevInit_mutex.lock();"<<endl;
+	//VLOG(4)<<"OpenHidDevice jcDevInit_mutex.lock();"<<endl;
 	//注意此处，如果pid,vid没有填写，为0，才是没有初始化，应该返回
 	if (NULL==m_dev.pid)
 	{
@@ -535,7 +535,7 @@ CCBELOCK_API void ZJY1501STD SetReturnMessage( ReturnMessage _MessageHandleFun )
 	jch::G_JCHID_RECVMSG_CB=_MessageHandleFun;
 	if (NULL!=_MessageHandleFun)
 	{		
-		VLOG(3)<<"SetReturnMessage set Callback Success\n";
+		//VLOG(3)<<"SetReturnMessage set Callback Success\n";
 	}	
 	else
 	{
@@ -589,7 +589,7 @@ CCBELOCK_API int ZJY1501STD InputMessage( const char * DrivesTypePID,const char 
 CCBELOCK_API void ZJY1501STD SetReturnDrives( ReturnDrives _DrivesListFun )
 {
 	//assert(NULL!=_DrivesListFun);
-	VLOG(4)<<__FUNCTION__<<endl;
+	//VLOG(4)<<__FUNCTION__<<endl;
 	jch::G_JCHID_ENUM_DEV2015A=_DrivesListFun;
 	if (NULL==_DrivesListFun)
 	{

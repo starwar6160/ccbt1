@@ -65,10 +65,11 @@ namespace zwHidGTest20150130{
 	{
 		//"jcElockSerial": "OQAiAACAAoQL1wAI",
 		//"jcElockSerial": "QAAiAACAAoTXuwAI"	
-		devSN1="OQAiAACAAoQL1wAI";
+		//devSN1="OQAiAACAAoQL1wAI";
+		devSN1="IQAkAACAAoRXuwAI";
 		//devSN2="QAAiAACAAoTXuwAI";
-		devSN2="JQA7AACAAoRXuwAI";	//20150209,万敏重刷程序以后的序列号
-		//devSN2="OQAiAACAAoQL1wAI";
+		//devSN2="JQA7AACAAoRXuwAI";	//20150209,万敏重刷程序以后的序列号
+		devSN2="OQAiAACAAoQL1wAI";
 		//devSN1="QAAiAACAAoTXuwAI";
 //////////////////////////////////////////////////////////////////////////
 		//printf("%02u\n",myHidSerialToInt(devSN1));
@@ -193,7 +194,7 @@ namespace zwHidGTest20150130{
 			VLOG(4)<<"SN1:"<<devSN1<<"\tSN2:"<<devSN2<<endl;
 			dv1=	hid_open(0x0483,0x5710,sn1);
 			EXPECT_NE(NULL,(int)dv1);
-			Sleep(1000);	//此处起码要1秒
+			Sleep(2000);	//此处起码要1秒-2秒之间的一个数字，曾经秒够了，后来变成2秒才够
 			dv2=	hid_open(0x0483,0x5710,sn2);
 			EXPECT_NE(NULL,(int)dv2);
 			VLOG(4)<<"TWO HID DEVICE OPEN END"<<endl;
@@ -258,11 +259,6 @@ namespace zwHidGTest20150130{
 		EXPECT_GT(hidHash,0);
 		EXPECT_EQ(hidHash,2378562802);
 		hid1.OpenHidDevice();
-		//清理s_recvMsg，期待收到的长度大于0
-		memset(s_recvMsg,0,G_BUFSIZE);
-		hid1.PushJson(cmdBuf);
-		Sleep(2000);
-		EXPECT_GT(strlen(s_recvMsg),0);
 	}
 
 
