@@ -87,6 +87,9 @@ void zwGenActiveInfo(const char *pubkey,const char *ccbFact1,const char *ccbFact
 	strcat(ccbIn,ccbFact2);
 	//从ccbInStr生成PSK
 	const char *ccbPSK=zwMergePsk(ccbIn);
+#ifdef _DEBUG
+	printf("ccbPSK=\t%s\n",ccbPSK);
+#endif // _DEBUG
 	//从PSK和公钥生成激活信息ccbActiveInfo，然后激活信息就可以通过网络传输出去了
 	strcpy(ccbActiveInfo, EciesEncrypt(pubkey, ccbPSK));
 }
@@ -123,11 +126,12 @@ int main(int argc, char * argv[])
 	const char *ccbInput2="01234ABCDEF56789";
 	memset(ccbActiveInfo,0,ZW_ECIES_CRYPT_TOTALLEN);
 	zwGenActiveInfo(pubKey,ccbInput1,ccbInput2,ccbActiveInfo);
+	printf("ccbActiveInfo=%s\n",ccbActiveInfo);
 /////////////////////////////解密激活信息/////////////////////////////////////////////
 	char PSK[ZW_ECIES_HASH_LEN*2];
 	memset(PSK,0,ZW_ECIES_HASH_LEN*2);
 	zwGetPSK(priKey,ccbActiveInfo,PSK);
-
+	printf("PSK=\t%s\n",PSK);
 	return 0;
 }
 
