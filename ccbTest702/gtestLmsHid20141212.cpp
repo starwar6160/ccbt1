@@ -5,8 +5,8 @@
 //#define _ZWLMSHID_TEST1212S3
 //#define _ZWLMSHID_TEST1212S4
 //#define _ZWLMSHID_TEST1212S5
-void myPureHidTestDataGen20141216(void);
-void myCRC16PingTest(void);
+//void myPureHidTestDataGen20141216(void);
+//void myCRC16PingTest(void);
 
 namespace CcbV11Test722Ecies {
 	void myHidSecBoxLmsTestGenFixInitCloseCode20141212();
@@ -248,6 +248,8 @@ namespace CcbV11Test722Ecies {
 	}
 #endif // _DEBUG_JCLMS_GTEST1117
 
+
+#ifdef _ZWLMSHID_TEST1212S1
 	TEST_F(jclmsCCBV11_Test, zwHidSecboxLMSTest20141203StandTestVector) {
 		EXPECT_EQ(0,zwLmsAlgStandTest20141203());
 		EXPECT_EQ(0,zwLmsAlgStandTest20141216GenPass1());	
@@ -255,8 +257,6 @@ namespace CcbV11Test722Ecies {
 		myCRC16PingTest();
 	}
 
-
-#ifdef _ZWLMSHID_TEST1212S1
 	//用于测试模拟两个机器之间通信的最基础测试
 	TEST_F(jclmsCCBV11_Test, zwHidSecboxLMSTest20141211S1) {
 		myHidSecBoxLmsTestGenFixInitCloseCode20141212();
@@ -328,8 +328,6 @@ namespace CcbV11Test722Ecies {
 		//#endif // _DEBUG
 	}
 
-#endif _ZWLMSHID_TEST1212S3
-
 	void jclmsCCBV11_Test::myHidSecBoxLmsTestGenFixInitCloseCode20141212()
 	{
 		int initCloseCode=0;
@@ -355,6 +353,7 @@ namespace CcbV11Test722Ecies {
 		zwJclmsReqVerifyDyCode(handle,57174184,&pass1Match);						
 		EXPECT_EQ(pass1Match.s_datetime,ZWFIX_STARTTIME);
 	}
+#endif _ZWLMSHID_TEST1212S3
 
 #ifdef _ZWLMSHID_TEST1212S4
 	TEST_F(jclmsCCBV11_Test, zwHidSecboxLMSTest20141211S4) {

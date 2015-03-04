@@ -122,8 +122,11 @@ int main(int argc, char * argv[])
 	printf("pubkey=%s\nprikey=%s\n",pubKey,priKey);
 /////////////////////////////生成激活信息/////////////////////////////////////////////
 	char ccbActiveInfo[ZW_ECIES_CRYPT_TOTALLEN];
-	const char *ccbInput1="0123456789ABCDEF";
-	const char *ccbInput2="01234ABCDEF56789";
+	//const char *ccbInput1="0123456789ABCDEF";
+	//const char *ccbInput2="01234ABCDEF56789";
+	const char *ccbInput1="1234567890abcdef";
+	const char *ccbInput2="1234567890abcdef";
+
 	memset(ccbActiveInfo,0,ZW_ECIES_CRYPT_TOTALLEN);
 	zwGenActiveInfo(pubKey,ccbInput1,ccbInput2,ccbActiveInfo);
 	printf("ccbActiveInfo=%s\n",ccbActiveInfo);
