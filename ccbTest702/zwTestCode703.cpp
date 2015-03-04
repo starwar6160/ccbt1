@@ -13,6 +13,9 @@ using std::endl;
 using std::set;
 using std::vector;
 using std::sort;
+#define _DEBUG_DUPTEST724
+
+
 
 #ifdef _DEBUG_DUPTEST724
 //基本的填写JcLockInput结构体并输出的测试

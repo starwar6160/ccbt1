@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "jclmsCCB2014.h"
+//#define _DEBUG_JCLMS_GTEST1117
 //#define _ZWLMSHID_TEST1212S1
 //#define _ZWLMSHID_TEST1212S2
 //#define _ZWLMSHID_TEST1212S3
@@ -8,8 +9,14 @@
 //void myPureHidTestDataGen20141216(void);
 //void myCRC16PingTest(void);
 
+
+
+
 namespace CcbV11Test722Ecies {
 	void myHidSecBoxLmsTestGenFixInitCloseCode20141212();
+	const int ZW_MATCHTIME_DIFF_START = 60 * 15;	//判断匹配结果时间往早允许的误差
+	const int ZW_MATCHTIME_DIFF_END = 60 * 5;	//判断匹配结果时间往晚允许的误差
+
 
 	class jclmsCCBV11_Test:public testing::Test {
 		// Some expensive resource shared by all tests.
