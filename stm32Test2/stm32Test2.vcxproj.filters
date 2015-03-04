@@ -19,6 +19,9 @@
     <Filter Include="源文件\zwMiraclMini">
       <UniqueIdentifier>{7734eee7-6a62-4ffd-b8eb-ea7c2be900bd}</UniqueIdentifier>
     </Filter>
+    <Filter Include="源文件\zwDycodeRef">
+      <UniqueIdentifier>{baaa7f2e-dc74-44d6-8f26-5fbe4ee4b6ed}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="ReadMe.txt" />
@@ -96,5 +99,13 @@
     <ClCompile Include="zwMiracl\mrarth3.c">
       <Filter>源文件\zwMiraclMini</Filter>
     </ClCompile>
+    <ClCompile Include="..\jclmsCCB2014\src\jclmsCCB2014AlgCore.cpp">
+      <Filter>源文件\zwDycodeRef</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\jclmsCCB2014\src\jclmsCCB2014AlgCore.h">
+      <Filter>源文件\zwDycodeRef</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

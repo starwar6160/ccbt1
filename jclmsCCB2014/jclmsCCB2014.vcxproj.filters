@@ -51,6 +51,9 @@
     <ClInclude Include="src\crc32\cJSON.h">
       <Filter>源文件\hashalg</Filter>
     </ClInclude>
+    <ClInclude Include="src\jclmsCCB2014AlgCore.h">
+      <Filter>源文件\dyCode</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -112,6 +115,9 @@
     </ClCompile>
     <ClCompile Include="src\secBox\sha1.c">
       <Filter>源文件\secBox</Filter>
+    </ClCompile>
+    <ClCompile Include="src\jclmsCCB2014AlgCore.cpp">
+      <Filter>源文件\dyCode</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

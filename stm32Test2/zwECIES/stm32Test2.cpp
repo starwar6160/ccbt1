@@ -1,11 +1,13 @@
 // stm32Test2.cpp : 定义控制台应用程序的入口点。
 //
-
+#define _ZWUSE_AS_JNI
+#include "jclmsCCB2014AlgCore.h"
 #include "zwEcies529.h"
 #include <stdio.h>
 #include <memory.h>
 #include <string.h>
 
+JCINPUT g_jcInputTest304;
 
 void myECIES_KeyGenTest123(void)
 {
