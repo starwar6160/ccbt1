@@ -590,7 +590,9 @@ ZWECIES_API const char *EciesEncrypt(const char *pubKey, const char *plainText)
 	assert(*(int *)pubKey != 0xCCCCCCCC);	
 	assert(strlen(plainText) > 0);
 	assert(*(int *)plainText != 0xCCCCCCCC);
-	static string g_retStr;
+	static string retStr;
+	retStr.clear();
+	//memset(g_retStr,0,ZW_ECIES_CRYPT_TOTALLEN*2);
 	sprintf(dbgBuf,"1701.pubKey=%s plainText=%s",pubKey,plainText);
 	//OutputDebugStringA(dbgBuf);
 #define SKELEN	(ZW_ECIES_ENCSYNCKEY_LEN*2)
@@ -609,8 +611,8 @@ ZWECIES_API const char *EciesEncrypt(const char *pubKey, const char *plainText)
 	int res = zwEciesEncrypt(pubKey, plainText,
 				 encSyncKey, SKELEN, msgHashBuf, HASHLEN,
 				 cryptText, CRLEN);
-	string dot = ".";
-	g_retStr = encSyncKey + dot + msgHashBuf + dot + cryptText;
+	const string dot = ".";
+	retStr = encSyncKey + dot + msgHashBuf + dot + cryptText;
 	memset(dbgBuf,0,BUFLEN);
 	sprintf(dbgBuf,"R1 zwEciesEncrypt result=%d encSyncKey=%s msgHashBuf=%s cryptText=%s",res,encSyncKey,msgHashBuf,cryptText);
 	//OutputDebugStringA(dbgBuf);
@@ -619,7 +621,10 @@ ZWECIES_API const char *EciesEncrypt(const char *pubKey, const char *plainText)
 		return NULL;
 	}
 	//OutputDebugStringA((char *)g_retStr.c_str());
-	return g_retStr.c_str();
+	static char g_retBuf[ZW_ECIES_CRYPT_TOTALLEN];
+	memset(g_retBuf,0,ZW_ECIES_CRYPT_TOTALLEN);
+	strcpy(g_retBuf,retStr.c_str());
+	return g_retBuf;
 }
 
 //要求eciesHandle已经被设置了私钥才能成功，输入密文是3个元素的组合，不必理解其意义
