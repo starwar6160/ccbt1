@@ -590,9 +590,7 @@ ZWECIES_API const char *EciesEncrypt(const char *pubKey, const char *plainText)
 	assert(*(int *)pubKey != 0xCCCCCCCC);	
 	assert(strlen(plainText) > 0);
 	assert(*(int *)plainText != 0xCCCCCCCC);
-	static string retStr;
-	retStr.clear();
-	//memset(g_retStr,0,ZW_ECIES_CRYPT_TOTALLEN*2);
+	string retStr;
 	sprintf(dbgBuf,"1701.pubKey=%s plainText=%s",pubKey,plainText);
 	//OutputDebugStringA(dbgBuf);
 #define SKELEN	(ZW_ECIES_ENCSYNCKEY_LEN*2)

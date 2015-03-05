@@ -129,7 +129,23 @@ extern "C" {
 int JCLMSCCB2014_API zwSM3StandardTestVector(void);
 
 
+#ifdef _DEBUG
+//#define ZWDEBUG(format,...) printf(" "__FILE__","__FUNCTION__",LINE:%d:"format"", __LINE__,##__VA_ARGS__)
+//注意这里的format外面的双重引号一定要
+#define ZWDBG_INFO(format,...) printf(""format"", ##__VA_ARGS__)
+#define ZWDBG_NOTICE(format,...) printf(""format"", ##__VA_ARGS__)
+#define ZWDBG_WARN(format,...) printf(""format"", ##__VA_ARGS__)
+#define ZWDBG_ERROR(format,...) printf(""format"", ##__VA_ARGS__)
+#else
+#define ZWDBG_INFO(format,...) 
+//#define ZWDBG_NOTICE(format,...) 
+//#define ZWDBG_WARN(format,...) 
+//#define ZWDBG_ERROR(format,...) 
+#define ZWDBG_NOTICE(format,...) printf(""format"", ##__VA_ARGS__)
+#define ZWDBG_WARN(format,...) printf(""format"", ##__VA_ARGS__)
+#define ZWDBG_ERROR(format,...) printf(""format"", ##__VA_ARGS__)
 
+#endif // _DEBUG
 
 
 #ifdef  __cplusplus

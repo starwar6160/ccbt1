@@ -4,14 +4,15 @@
 #include "cJSON.h"
 //#include "jclmsCCB2014.h"
 
+//获得规格化的时间，也就是按照某个值取整的时间
+int myGetNormalTime(int gmtTime, const int TIMEMOD);
+//生成各种类型的动态码
+int zwJcLockGetDynaCode(const int handle);
+
 #ifdef  __cplusplus
 extern "C" {
 #endif
 
-
-
-//获得规格化的时间，也就是按照某个值取整的时间
-int myGetNormalTime(int gmtTime, const int TIMEMOD);
 //获取初始闭锁码的3个可变条件的“固定值”
 void myGetInitCloseCodeVarItem(int *mdatetime, int *mvalidity, int *mclosecode);
 //void zwJclmsReq2Json(const JCINPUT *p,char *outJson,const int outBufLen);
@@ -36,8 +37,6 @@ unsigned char crc8Short( const void *inputData,const int inputLen );
 unsigned char crc8(const unsigned char crc8Input,const void *inputData, const int inputLen );
 unsigned short crc16_ccitt(unsigned char *ptr, unsigned char len);
 unsigned long  adler32(unsigned long adler, const char *buf, unsigned int len);
-//生成各种类型的动态码
-int zwJcLockGetDynaCode(const int handle);
 
 #ifdef  __cplusplus
 }	//extern "C" {

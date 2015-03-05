@@ -6,8 +6,29 @@
 #include <stdio.h>
 #include <memory.h>
 #include <string.h>
+#include <time.h>
 
 JCINPUT g_jcInputTest304;
+
+void myJclmsTest20150305()
+{
+	int handle = JcLockNew();
+	JcLockSetString(handle, JCI_ATMNO, "atm10455761");
+	JcLockSetString(handle, JCI_LOCKNO, "lock14771509");
+	JcLockSetString(handle, JCI_PSK, "PSKDEMO728");
+	JcLockSetInt(handle,JCI_SEARCH_TIME_START,static_cast<int>(time(NULL)));
+	JcLockSetCmdType(handle, JCI_CMDTYPE, JCCMD_INIT_CLOSECODE);
+	JcLockDebugPrint(handle);
+	int initCloseCode = JcLockGetDynaCode(handle);
+	//检查初始闭锁码是否在正常范围内
+	printf("initCloseCode=\t%d Expect 38149728\n", initCloseCode);
+	//此处期待值已经改为固定依赖1400M秒的时间值，应该不会再变了。
+	//20141113.1751根据前两天开会决定做的修改。周伟
+	//这里是一个自检测试，如果失败，就说明有比较大的问题了，比如类似发生过的
+	//ARM编译器优化级别问题导致的生成错误的二进制代码等等
+
+	JcLockDelete(handle);
+}
 
 void myECIES_KeyGenTest123(void)
 {

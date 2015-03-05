@@ -70,4 +70,6 @@ unsigned char crc8(const unsigned char crc8Input,const void *inputData, const in
 void myCrc8Test1128(void)
 {
 }
+
 /////////////////////////////////CRC8 END/////////////////////////////////////////
+

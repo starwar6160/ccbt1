@@ -51,7 +51,7 @@ typedef union JcLockResult{
 //#pragma pack()
 
 
-const int ZWMEGA = 1000000;	//一百万
+extern const int ZWMEGA ;	//一百万
 //20141125新增，密盒通信函数,上位机部分
 //两个zwJclmsReq函数是上位机专用
 //填写完毕handle里面的数据结构以后，调用该函数生成动态码，该函数在底层将请求
@@ -72,23 +72,7 @@ int JCLMSCCB2014_API zwLmsAlgStandTest20141216VerifyPass1(void);
 //输出：JSON格式的返回值，输出缓冲区最大长度由outJsonLen指定
 //void JCLMSCCB2014_API zwJclmsRsp( void * inLmsReq,const int inLmsReqLen,char *outJson,const int outJsonLen );
 void JCLMSCCB2014_API myPureHidTestDataGen20141216(void);
-#ifdef _DEBUG
-//#define ZWDEBUG(format,...) printf(" "__FILE__","__FUNCTION__",LINE:%d:"format"", __LINE__,##__VA_ARGS__)
-//注意这里的format外面的双重引号一定要
-#define ZWDBG_INFO(format,...) printf(""format"", ##__VA_ARGS__)
-#define ZWDBG_NOTICE(format,...) printf(""format"", ##__VA_ARGS__)
-#define ZWDBG_WARN(format,...) printf(""format"", ##__VA_ARGS__)
-#define ZWDBG_ERROR(format,...) printf(""format"", ##__VA_ARGS__)
-#else
-#define ZWDBG_INFO(format,...) 
-//#define ZWDBG_NOTICE(format,...) 
-//#define ZWDBG_WARN(format,...) 
-//#define ZWDBG_ERROR(format,...) 
-#define ZWDBG_NOTICE(format,...) printf(""format"", ##__VA_ARGS__)
-#define ZWDBG_WARN(format,...) printf(""format"", ##__VA_ARGS__)
-#define ZWDBG_ERROR(format,...) printf(""format"", ##__VA_ARGS__)
 
-#endif // _DEBUG
 
 #ifdef  __cplusplus
 }	//extern "C" {

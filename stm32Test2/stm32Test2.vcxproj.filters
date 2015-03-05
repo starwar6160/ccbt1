@@ -102,6 +102,9 @@
     <ClCompile Include="..\jclmsCCB2014\src\jclmsCCB2014AlgCore.cpp">
       <Filter>源文件\zwDycodeRef</Filter>
     </ClCompile>
+    <ClCompile Include="..\jclmsCCB2014\src\crc32\zwcrc32.c">
+      <Filter>源文件\zwDycodeRef</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\jclmsCCB2014\src\jclmsCCB2014AlgCore.h">
