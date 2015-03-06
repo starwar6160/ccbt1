@@ -10,27 +10,36 @@
 
 JCINPUT g_jcInputTest304;
 
+time_t myNormalTime(const time_t inTime)
+{
+	const time_t tmFact=600;
+	time_t tail=inTime % tmFact;
+	return inTime-tail;
+}
+
 void myJclmsTest20150305()
 {
 	int handle = JcLockNew();
 	JcLockSetString(handle, JCI_ATMNO, "atm10455761");
 	JcLockSetString(handle, JCI_LOCKNO, "lock14771509");
 	JcLockSetString(handle, JCI_PSK, "PSKDEMO728");
-	JcLockSetInt(handle,JCI_SEARCH_TIME_START,static_cast<int>(time(NULL)));
+	//JcLockSetInt(handle,JCI_SEARCH_TIME_START,static_cast<int>(time(NULL)));
+	int initCloseCode =38149728;
+#ifdef _DEBUG_INITCOLSECODE306
 	JcLockSetCmdType(handle, JCI_CMDTYPE, JCCMD_INIT_CLOSECODE);
 	JcLockDebugPrint(handle);
-	int initCloseCode = JcLockGetDynaCode(handle);
+	initCloseCode = JcLockGetDynaCode(handle);
 	//检查初始闭锁码是否在正常范围内
 	printf("initCloseCode=\t%d Expect 38149728\n", initCloseCode);
+#endif // _DEBUG_INITCOLSECODE306
 	//此处期待值已经改为固定依赖1400M秒的时间值，应该不会再变了。
 	//20141113.1751根据前两天开会决定做的修改。周伟
 	//这里是一个自检测试，如果失败，就说明有比较大的问题了，比如类似发生过的
 	//ARM编译器优化级别问题导致的生成错误的二进制代码等等
 	//dynaPass1
 	//注意现在合法的时间值应该是1.4G以上了，注意位数。20140721.1709 
-	JcLockSetInt(handle, JCI_DATETIME,
-		static_cast < int >(time(NULL)));
 
+	JcLockSetInt(handle, JCI_DATETIME,static_cast < int >(myNormalTime(time(NULL))));
 	JcLockSetCmdType(handle, JCI_CMDTYPE, JCCMD_CCB_DYPASS1);
 	JcLockSetInt(handle, JCI_CLOSECODE, initCloseCode);
 	JcLockDebugPrint(handle);
@@ -43,6 +52,33 @@ void myJclmsTest20150305()
 		pass1Match.s_datetime, pass1Match.s_validity);
 
 	JcLockDelete(handle);
+}
+
+//生成第一开锁码
+int embSrvGenDyCodePass1(const char *AtmNo,const char *LockNo,const char *PSK,
+	const time_t CurUTCTime,const int CloseCode)
+{
+	int handle = JcLockNew();
+	JcLockSetString(handle, JCI_ATMNO, AtmNo);
+	JcLockSetString(handle, JCI_LOCKNO, LockNo);
+	JcLockSetString(handle, JCI_PSK, PSK);
+	//生成动态码时不必设置搜索起始时间参数，反推时才需要
+	//JcLockSetInt(handle,JCI_SEARCH_TIME_START,static_cast<int>(SearchStartUTCTime));
+	JcLockSetInt(handle, JCI_DATETIME,static_cast < int >(CurUTCTime));
+	JcLockSetCmdType(handle, JCI_CMDTYPE, JCCMD_CCB_DYPASS1);
+	JcLockSetInt(handle, JCI_CLOSECODE, CloseCode);
+	//JcLockDebugPrint(handle);
+	int pass1DyCode = JcLockGetDynaCode(handle);	
+	JcLockDelete(handle);
+	return pass1DyCode;
+}
+
+void myJclmsTest20150306()
+{
+
+	int pass1DyCode=embSrvGenDyCodePass1("atm10455761","lock14771509","PSKDEMO728",
+		myNormalTime(time(NULL)),33334444);
+	printf("dynaPass1=\t%d\n", pass1DyCode);
 }
 
 void myECIES_KeyGenTest123(void)
@@ -152,7 +188,8 @@ int main(int argc, char * argv[])
 	//myECIESTest305();
 
 	//////////////////////////////////////////////////////////////////////////
-	myJclmsTest20150305();
+	//myJclmsTest20150305();
+	myJclmsTest20150306();
 	return 0;
 }
 
