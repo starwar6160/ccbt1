@@ -107,8 +107,8 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\jclmsCCB2014\src\jclmsCCB2014AlgCore.h">
-      <Filter>源文件\zwDycodeRef</Filter>
+    <ClInclude Include="jclmsCCB2014AlgCoreT2.h">
+      <Filter>源文件</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

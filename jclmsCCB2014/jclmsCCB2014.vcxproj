@@ -66,6 +66,7 @@
       <AdditionalDependencies>setupapi.lib;comsuppw.lib;miracl2014.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ShowProgress>NotSet</ShowProgress>
       <Profile>true</Profile>
+      <ModuleDefinitionFile>jclmsCCB2014.def</ModuleDefinitionFile>
     </Link>
     <PostBuildEvent>
       <Command>COPY /y $(TargetPath) $(TargetDir)\_$(ProjectName).pyd</Command>
@@ -92,12 +93,14 @@
       <AdditionalLibraryDirectories>$(ZWSRC)\2014BinOut\$(Configuration);$(ZWLIB)\MIRACL2014\$(Configuration);$(ZWLIB)\python27\libs</AdditionalLibraryDirectories>
       <AdditionalDependencies>setupapi.lib;comsuppw.lib;miracl2014.lib;zwBaseLibStatic.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <Profile>true</Profile>
+      <ModuleDefinitionFile>jclmsCCB2014.def</ModuleDefinitionFile>
     </Link>
     <PostBuildEvent>
       <Command>COPY /y $(TargetPath) $(TargetDir)\_$(ProjectName).pyd</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <None Include="jclmsCCB2014.def" />
     <None Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>

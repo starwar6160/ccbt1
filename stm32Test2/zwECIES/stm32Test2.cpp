@@ -26,6 +26,21 @@ void myJclmsTest20150305()
 	//20141113.1751根据前两天开会决定做的修改。周伟
 	//这里是一个自检测试，如果失败，就说明有比较大的问题了，比如类似发生过的
 	//ARM编译器优化级别问题导致的生成错误的二进制代码等等
+	//dynaPass1
+	//注意现在合法的时间值应该是1.4G以上了，注意位数。20140721.1709 
+	JcLockSetInt(handle, JCI_DATETIME,
+		static_cast < int >(time(NULL)));
+
+	JcLockSetCmdType(handle, JCI_CMDTYPE, JCCMD_CCB_DYPASS1);
+	JcLockSetInt(handle, JCI_CLOSECODE, initCloseCode);
+	JcLockDebugPrint(handle);
+	int pass1DyCode = JcLockGetDynaCode(handle);
+	printf("dynaPass1=\t%d\n", pass1DyCode);
+	JCMATCH pass1Match =
+		JcLockReverseVerifyDynaCode(handle, pass1DyCode);
+	printf("current time=\t\t%d\n", time(NULL));
+	printf("pass1Match Time =\t%d\tValidity=%d\n",
+		pass1Match.s_datetime, pass1Match.s_validity);
 
 	JcLockDelete(handle);
 }
@@ -128,10 +143,21 @@ void zwGetPSK(const char *priKey,const char *ccbActiveInfo,char *PSK)
 	strcpy(PSK,EciesDecrypt(priKey,ccbActiveInfo));
 }
 
+void myECIESTest305();
+
 int main(int argc, char * argv[])
 {
 	//myECIES_KeyGenTest123();
 //////////////////////////////////////////////////////////////////////////
+	//myECIESTest305();
+
+	//////////////////////////////////////////////////////////////////////////
+	myJclmsTest20150305();
+	return 0;
+}
+
+void myECIESTest305()
+{
 	//生成公钥私钥对操作
 	char pubKey[ZW_ECIES_PUBKEY_LEN];
 	char priKey[ZW_ECIES_PRIKEY_LEN];
@@ -143,7 +169,7 @@ int main(int argc, char * argv[])
 	strcpy(pubKey,"BFlfjkxoiRZFdjQKa/W1JWBwFx+FPyzcFGqXjnlVzMcvIAQyK3C1Ha+G2uGUM4nX5khPQP5AiPFiCyuH2WxZefg=");
 	strcpy(priKey,"y+tgryY83ibv2RaQeb93a97+JX0/9cpWf4MrmUUtrzs=");
 	printf("pubkey=%s\nprikey=%s\n",pubKey,priKey);
-/////////////////////////////生成激活信息/////////////////////////////////////////////
+	/////////////////////////////生成激活信息/////////////////////////////////////////////
 	char ccbActiveInfo[ZW_ECIES_CRYPT_TOTALLEN];
 	//const char *ccbInput1="0123456789ABCDEF";
 	//const char *ccbInput2="01234ABCDEF56789";
@@ -153,11 +179,10 @@ int main(int argc, char * argv[])
 	memset(ccbActiveInfo,0,ZW_ECIES_CRYPT_TOTALLEN);
 	zwGenActiveInfo(pubKey,ccbInput1,ccbInput2,ccbActiveInfo);
 	printf("ccbActiveInfo=%s\n",ccbActiveInfo);
-/////////////////////////////解密激活信息/////////////////////////////////////////////
+	/////////////////////////////解密激活信息/////////////////////////////////////////////
 	char PSK[ZW_ECIES_HASH_LEN*2];
 	memset(PSK,0,ZW_ECIES_HASH_LEN*2);
 	zwGetPSK(priKey,ccbActiveInfo,PSK);
 	printf("PSK=\t%s\n",PSK);
-	return 0;
 }
 

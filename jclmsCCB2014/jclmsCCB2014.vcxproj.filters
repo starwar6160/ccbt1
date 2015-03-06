@@ -31,6 +31,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="ReadMe.txt" />
+    <None Include="jclmsCCB2014.def">
+      <Filter>源文件</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">

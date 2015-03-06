@@ -1,0 +1,15 @@
+LIBRARY jclmsCCB2014
+
+EXPORTS
+JcLockNew
+JcLockDelete
+JcLockSetInt
+JcLockSetString
+JcLockSetCmdType
+JcLockCheckInput
+JcLockGetDynaCode
+JcLockReverseVerifyDynaCode
+JcLockGetVersion
+JcLockDebugPrint
+zwJcLockDumpJCINPUT
+zwSM3StandardTestVector
