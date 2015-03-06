@@ -54,9 +54,13 @@ void myJclmsTest20150305()
 	JcLockDelete(handle);
 }
 
-//生成第一开锁码
-int embSrvGenDyCodePass1(const char *AtmNo,const char *LockNo,const char *PSK,
-	const time_t CurUTCTime,const int CloseCode)
+//生成第一，第二开锁码的共同函数，差异只在于CloseCode那个位置，在生成第一开锁码时
+//填写的是闭锁码，生成第二开锁码时填写的是验证码
+//atm编号，锁编号都是不超过一定长度限度的随意的字符串，PSK是定长64字节HEX字符串相关长度限制请见头文件
+//DyCodeUTCTime为指定动态码的时间UTC秒数，一般都是当前时间，但也可以为将来提前生成动态码而指定将来的时间
+//CloseCode，闭锁码或者验证码
+int embSrvGenDyCode(const int Pass,const char *AtmNo,const char *LockNo,const char *PSK,
+	const time_t DyCodeUTCTime,const int CloseCode)
 {
 	int handle = JcLockNew();
 	JcLockSetString(handle, JCI_ATMNO, AtmNo);
@@ -64,14 +68,40 @@ int embSrvGenDyCodePass1(const char *AtmNo,const char *LockNo,const char *PSK,
 	JcLockSetString(handle, JCI_PSK, PSK);
 	//生成动态码时不必设置搜索起始时间参数，反推时才需要
 	//JcLockSetInt(handle,JCI_SEARCH_TIME_START,static_cast<int>(SearchStartUTCTime));
-	JcLockSetInt(handle, JCI_DATETIME,static_cast < int >(CurUTCTime));
-	JcLockSetCmdType(handle, JCI_CMDTYPE, JCCMD_CCB_DYPASS1);
+	JcLockSetInt(handle, JCI_DATETIME,static_cast < int >(DyCodeUTCTime));
+	if (1==Pass)
+	{
+		JcLockSetCmdType(handle, JCI_CMDTYPE, JCCMD_CCB_DYPASS1);
+	}
+	if (2==Pass)
+	{
+		JcLockSetCmdType(handle, JCI_CMDTYPE, JCCMD_CCB_DYPASS2);
+	}
+	
 	JcLockSetInt(handle, JCI_CLOSECODE, CloseCode);
-	//JcLockDebugPrint(handle);
 	int pass1DyCode = JcLockGetDynaCode(handle);	
 	JcLockDelete(handle);
 	return pass1DyCode;
 }
+
+//生成第一开锁码
+//atm编号，锁编号都是不超过一定长度限度的随意的字符串，PSK是定长64字节HEX字符串
+//相关长度限制请见头文件
+//DyCodeUTCTime为指定动态码的时间UTC秒数，一般都是当前时间，但也可以为将来提前生成动态码而指定将来的时间
+//CloseCode，闭锁码
+int embSrvGenDyCodePass1(const char *AtmNo,const char *LockNo,const char *PSK,
+	const time_t DyCodeUTCTime,const int CloseCode)
+{
+	return embSrvGenDyCode(1,AtmNo,LockNo,PSK,DyCodeUTCTime,CloseCode);
+}
+
+//生成第二开锁码	VerifyCode，验证码
+int embSrvGenDyCodePass2(const char *AtmNo,const char *LockNo,const char *PSK,
+	const time_t DyCodeUTCTime,const int VerifyCode)
+{
+	return embSrvGenDyCode(2,AtmNo,LockNo,PSK,DyCodeUTCTime,VerifyCode);
+}
+
 
 void myJclmsTest20150306()
 {
@@ -79,6 +109,10 @@ void myJclmsTest20150306()
 	int pass1DyCode=embSrvGenDyCodePass1("atm10455761","lock14771509","PSKDEMO728",
 		myNormalTime(time(NULL)),33334444);
 	printf("dynaPass1=\t%d\n", pass1DyCode);
+	int pass2DyCode=embSrvGenDyCodePass1("atm10455761","lock14771509","PSKDEMO728",
+		myNormalTime(time(NULL)),44445555);
+	printf("dynaPass2=\t%d\n", pass2DyCode);
+
 }
 
 void myECIES_KeyGenTest123(void)
