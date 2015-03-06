@@ -605,7 +605,7 @@ int JCLMSCCB2014_API JcLockGetDynaCode(const int handle)
 }
 
 //生成第一，第二开锁码的共同函数，差异只在于CloseCode那个位置，在生成第一开锁码时
-//填写的是闭锁码，生成第二开锁码时填写的是验证码
+//填写的是前一次的闭锁码，生成验证码时填写的是第一开锁码，生成第二开锁码时填写的是验证码
 //atm编号，锁编号都是不超过一定长度限度的随意的字符串，PSK是定长64字节HEX字符串相关长度限制请见头文件
 //DyCodeUTCTime为指定动态码的时间UTC秒数，一般都是当前时间，但也可以为将来提前生成动态码而指定将来的时间
 //CloseCode，闭锁码或者验证码
@@ -649,31 +649,5 @@ int embSrvReverseDyCode(const int dyCode, const char *AtmNo,const char *LockNo,c
 		pass1Match.s_datetime, pass1Match.s_validity);
 	JcLockDelete(handle);
 	return pass1Match.s_datetime;
-}
-
-//生成第一开锁码
-//atm编号，锁编号都是不超过一定长度限度的随意的字符串，PSK是定长64字节HEX字符串
-//相关长度限制请见头文件
-//DyCodeUTCTime为指定动态码的时间UTC秒数，一般都是当前时间，但也可以为将来提前生成动态码而指定将来的时间
-//CloseCode，闭锁码
-int embSrvGenDyCodePass1(const char *AtmNo,const char *LockNo,const char *PSK,
-	const time_t DyCodeUTCTime,const int CloseCode)
-{
-	return embSrvGenDyCode(JCCMD_CCB_DYPASS1,AtmNo,LockNo,PSK,DyCodeUTCTime,CloseCode);
-}
-
-//生成验证码	dyCodePass1,第一开锁码作为要素参与生成验证码
-int embSrvGenDyCodeVerify(const char *AtmNo,const char *LockNo,const char *PSK,
-	const time_t DyCodeUTCTime,const int dyCodePass1)
-{
-	return embSrvGenDyCode(JCCMD_CCB_LOCK_VERCODE,AtmNo,LockNo,PSK,DyCodeUTCTime,dyCodePass1);
-}
-
-
-//生成第二开锁码	VerifyCode，验证码作为要素参与生成第二开锁码
-int embSrvGenDyCodePass2(const char *AtmNo,const char *LockNo,const char *PSK,
-	const time_t DyCodeUTCTime,const int VerifyCode)
-{
-	return embSrvGenDyCode(JCCMD_CCB_DYPASS2,AtmNo,LockNo,PSK,DyCodeUTCTime,VerifyCode);
 }
 

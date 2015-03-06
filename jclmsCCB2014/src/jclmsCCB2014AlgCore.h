@@ -129,21 +129,14 @@ extern "C" {
 int JCLMSCCB2014_API zwSM3StandardTestVector(void);
 
 //////////////////////////////////////////////////////////////////////////
+//生成第一，第二开锁码,验证码，闭锁码，初始闭锁码的共同函数，差异只在于CloseCode那个位置，
+//在生成第一开锁码时填写的是前一次的闭锁码，生成验证码时填写的是第一开锁码，生成第二开锁码时填写的是验证码
+//atm编号，锁编号都是不超过一定长度限度的随意的字符串，PSK是定长64字节HEX字符串相关长度限制请见头文件
+//DyCodeUTCTime为指定动态码的时间UTC秒数，一般都是当前时间，但也可以为将来提前生成动态码而指定将来的时间
+//CloseCode，闭锁码或者验证码
 int embSrvGenDyCode(const JCCMD Pass,const char *AtmNo,const char *LockNo,const char *PSK,
 	const time_t DyCodeUTCTime,const int CloseCode);
-//生成第一开锁码
-//atm编号，锁编号都是不超过一定长度限度的随意的字符串，PSK是定长64字节HEX字符串
-//相关长度限制请见头文件
-//DyCodeUTCTime为指定动态码的时间UTC秒数，一般都是当前时间，但也可以为将来提前生成动态码而指定将来的时间
-//CloseCode，闭锁码
-int embSrvGenDyCodePass1(const char *AtmNo,const char *LockNo,const char *PSK,
-	const time_t DyCodeUTCTime,const int CloseCode);
-//生成验证码	dyCodePass1,第一开锁码作为要素参与生成验证码
-int embSrvGenDyCodeVerify(const char *AtmNo,const char *LockNo,const char *PSK,
-	const time_t DyCodeUTCTime,const int dyCodePass1);
-//生成第二开锁码	VerifyCode，验证码作为要素参与生成第二开锁码
-int embSrvGenDyCodePass2(const char *AtmNo,const char *LockNo,const char *PSK,
-	const time_t DyCodeUTCTime,const int VerifyCode);
+
 //校验动态码，返回匹配的UTC时间秒数,需要的输入有：
 //JCI_ATMNO,JCI_LOCKNO,JCI_PSK,JCI_SEARCH_TIME_START,JCI_CLOSECODE,JCI_CMDTYPE
 //注意搜索起始时间基本上需要在现在之前10分钟以内，具体原因大约是前几次建行测试
