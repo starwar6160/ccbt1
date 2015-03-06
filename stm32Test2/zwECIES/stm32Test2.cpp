@@ -17,71 +17,51 @@ time_t myNormalTime(const time_t inTime)
 	return inTime-tail;
 }
 
-void myJclmsTest20150305()
-{
-	int handle = JcLockNew();
-	JcLockSetString(handle, JCI_ATMNO, "atm10455761");
-	JcLockSetString(handle, JCI_LOCKNO, "lock14771509");
-	JcLockSetString(handle, JCI_PSK, "PSKDEMO728");
-	//JcLockSetInt(handle,JCI_SEARCH_TIME_START,static_cast<int>(time(NULL)));
-	int initCloseCode =38149728;
-#ifdef _DEBUG_INITCOLSECODE306
-	JcLockSetCmdType(handle, JCI_CMDTYPE, JCCMD_INIT_CLOSECODE);
-	JcLockDebugPrint(handle);
-	initCloseCode = JcLockGetDynaCode(handle);
-	//检查初始闭锁码是否在正常范围内
-	printf("initCloseCode=\t%d Expect 38149728\n", initCloseCode);
-#endif // _DEBUG_INITCOLSECODE306
-	//此处期待值已经改为固定依赖1400M秒的时间值，应该不会再变了。
-	//20141113.1751根据前两天开会决定做的修改。周伟
-	//这里是一个自检测试，如果失败，就说明有比较大的问题了，比如类似发生过的
-	//ARM编译器优化级别问题导致的生成错误的二进制代码等等
-	//dynaPass1
-	//注意现在合法的时间值应该是1.4G以上了，注意位数。20140721.1709 
-
-	JcLockSetInt(handle, JCI_DATETIME,static_cast < int >(myNormalTime(time(NULL))));
-	JcLockSetCmdType(handle, JCI_CMDTYPE, JCCMD_CCB_DYPASS1);
-	JcLockSetInt(handle, JCI_CLOSECODE, initCloseCode);
-	JcLockDebugPrint(handle);
-	int pass1DyCode = JcLockGetDynaCode(handle);
-	printf("dynaPass1=\t%d\n", pass1DyCode);
-	JCMATCH pass1Match =
-		JcLockReverseVerifyDynaCode(handle, pass1DyCode);
-	printf("current time=\t\t%d\n", time(NULL));
-	printf("pass1Match Time =\t%d\tValidity=%d\n",
-		pass1Match.s_datetime, pass1Match.s_validity);
-
-	JcLockDelete(handle);
-}
 
 //生成第一，第二开锁码的共同函数，差异只在于CloseCode那个位置，在生成第一开锁码时
 //填写的是闭锁码，生成第二开锁码时填写的是验证码
 //atm编号，锁编号都是不超过一定长度限度的随意的字符串，PSK是定长64字节HEX字符串相关长度限制请见头文件
 //DyCodeUTCTime为指定动态码的时间UTC秒数，一般都是当前时间，但也可以为将来提前生成动态码而指定将来的时间
 //CloseCode，闭锁码或者验证码
-int embSrvGenDyCode(const int Pass,const char *AtmNo,const char *LockNo,const char *PSK,
+int embSrvGenDyCode(const JCCMD Pass,const char *AtmNo,const char *LockNo,const char *PSK,
 	const time_t DyCodeUTCTime,const int CloseCode)
 {
 	int handle = JcLockNew();
 	JcLockSetString(handle, JCI_ATMNO, AtmNo);
 	JcLockSetString(handle, JCI_LOCKNO, LockNo);
 	JcLockSetString(handle, JCI_PSK, PSK);
-	//生成动态码时不必设置搜索起始时间参数，反推时才需要
-	//JcLockSetInt(handle,JCI_SEARCH_TIME_START,static_cast<int>(SearchStartUTCTime));
 	JcLockSetInt(handle, JCI_DATETIME,static_cast < int >(DyCodeUTCTime));
-	if (1==Pass)
-	{
-		JcLockSetCmdType(handle, JCI_CMDTYPE, JCCMD_CCB_DYPASS1);
-	}
-	if (2==Pass)
-	{
-		JcLockSetCmdType(handle, JCI_CMDTYPE, JCCMD_CCB_DYPASS2);
-	}
-	
+	JcLockSetCmdType(handle, JCI_CMDTYPE, Pass);
 	JcLockSetInt(handle, JCI_CLOSECODE, CloseCode);
 	int pass1DyCode = JcLockGetDynaCode(handle);	
 	JcLockDelete(handle);
 	return pass1DyCode;
+}
+
+//校验动态码，返回匹配的UTC时间秒数,需要的输入有：
+//JCI_ATMNO,JCI_LOCKNO,JCI_PSK,JCI_SEARCH_TIME_START,JCI_CLOSECODE,JCI_CMDTYPE
+//注意搜索起始时间基本上需要在现在之前10分钟以内，具体原因大约是前几次建行测试
+//期间商量的
+int embSrvReverseDyCode(const int dyCode,
+	const char *AtmNo,const char *LockNo,const char *PSK,
+	time_t SearchTimeStart,const int CloseCode,const JCCMD Pass)
+{
+	int handle = JcLockNew();
+	JcLockSetString(handle, JCI_ATMNO, AtmNo);
+	JcLockSetString(handle, JCI_LOCKNO, LockNo);
+	JcLockSetString(handle, JCI_PSK, PSK);
+	//生成动态码时不必设置搜索起始时间参数，反推时才需要
+	JcLockSetInt(handle,JCI_SEARCH_TIME_START,static_cast<int>(SearchTimeStart));
+	JcLockSetInt(handle, JCI_CLOSECODE, CloseCode);
+	JcLockSetCmdType(handle, JCI_CMDTYPE, Pass);	
+	//////////////////////////////////////////////////////////////////////////
+	JCMATCH pass1Match =
+		JcLockReverseVerifyDynaCode(handle, dyCode);
+	printf("current time=\t\t%d\n", time(NULL));
+	printf("pass1Match Time =\t%d\tValidity=%d\n",
+		pass1Match.s_datetime, pass1Match.s_validity);
+	JcLockDelete(handle);
+	return pass1Match.s_datetime;
 }
 
 //生成第一开锁码
@@ -92,28 +72,25 @@ int embSrvGenDyCode(const int Pass,const char *AtmNo,const char *LockNo,const ch
 int embSrvGenDyCodePass1(const char *AtmNo,const char *LockNo,const char *PSK,
 	const time_t DyCodeUTCTime,const int CloseCode)
 {
-	return embSrvGenDyCode(1,AtmNo,LockNo,PSK,DyCodeUTCTime,CloseCode);
+	return embSrvGenDyCode(JCCMD_CCB_DYPASS1,AtmNo,LockNo,PSK,DyCodeUTCTime,CloseCode);
 }
 
-//生成第二开锁码	VerifyCode，验证码
+//生成验证码	dyCodePass1,第一开锁码作为要素参与生成验证码
+int embSrvGenDyCodeVerify(const char *AtmNo,const char *LockNo,const char *PSK,
+	const time_t DyCodeUTCTime,const int dyCodePass1)
+{
+	return embSrvGenDyCode(JCCMD_CCB_LOCK_VERCODE,AtmNo,LockNo,PSK,DyCodeUTCTime,dyCodePass1);
+}
+
+
+//生成第二开锁码	VerifyCode，验证码作为要素参与生成第二开锁码
 int embSrvGenDyCodePass2(const char *AtmNo,const char *LockNo,const char *PSK,
 	const time_t DyCodeUTCTime,const int VerifyCode)
 {
-	return embSrvGenDyCode(2,AtmNo,LockNo,PSK,DyCodeUTCTime,VerifyCode);
+	return embSrvGenDyCode(JCCMD_CCB_DYPASS1,AtmNo,LockNo,PSK,DyCodeUTCTime,VerifyCode);
 }
 
 
-void myJclmsTest20150306()
-{
-
-	int pass1DyCode=embSrvGenDyCodePass1("atm10455761","lock14771509","PSKDEMO728",
-		myNormalTime(time(NULL)),33334444);
-	printf("dynaPass1=\t%d\n", pass1DyCode);
-	int pass2DyCode=embSrvGenDyCodePass1("atm10455761","lock14771509","PSKDEMO728",
-		myNormalTime(time(NULL)),44445555);
-	printf("dynaPass2=\t%d\n", pass2DyCode);
-
-}
 
 void myECIES_KeyGenTest123(void)
 {
@@ -213,19 +190,7 @@ void zwGetPSK(const char *priKey,const char *ccbActiveInfo,char *PSK)
 	strcpy(PSK,EciesDecrypt(priKey,ccbActiveInfo));
 }
 
-void myECIESTest305();
 
-int main(int argc, char * argv[])
-{
-	//myECIES_KeyGenTest123();
-//////////////////////////////////////////////////////////////////////////
-	//myECIESTest305();
-
-	//////////////////////////////////////////////////////////////////////////
-	//myJclmsTest20150305();
-	myJclmsTest20150306();
-	return 0;
-}
 
 void myECIESTest305()
 {
@@ -257,3 +222,80 @@ void myECIESTest305()
 	printf("PSK=\t%s\n",PSK);
 }
 
+void myECIESTest305();
+
+void myJclmsTest20150305()
+{
+	int handle = JcLockNew();
+	JcLockSetString(handle, JCI_ATMNO, "atm10455761");
+	JcLockSetString(handle, JCI_LOCKNO, "lock14771509");
+	JcLockSetString(handle, JCI_PSK, "PSKDEMO728");
+	//JcLockSetInt(handle,JCI_SEARCH_TIME_START,static_cast<int>(time(NULL)));
+	int initCloseCode =38149728;
+#ifdef _DEBUG_INITCOLSECODE306
+	JcLockSetCmdType(handle, JCI_CMDTYPE, JCCMD_INIT_CLOSECODE);
+	JcLockDebugPrint(handle);
+	initCloseCode = JcLockGetDynaCode(handle);
+	//检查初始闭锁码是否在正常范围内
+	printf("initCloseCode=\t%d Expect 38149728\n", initCloseCode);
+#endif // _DEBUG_INITCOLSECODE306
+	//此处期待值已经改为固定依赖1400M秒的时间值，应该不会再变了。
+	//20141113.1751根据前两天开会决定做的修改。周伟
+	//这里是一个自检测试，如果失败，就说明有比较大的问题了，比如类似发生过的
+	//ARM编译器优化级别问题导致的生成错误的二进制代码等等
+	//dynaPass1
+	//注意现在合法的时间值应该是1.4G以上了，注意位数。20140721.1709 
+
+	JcLockSetInt(handle, JCI_DATETIME,static_cast < int >(myNormalTime(time(NULL))));
+	JcLockSetCmdType(handle, JCI_CMDTYPE, JCCMD_CCB_DYPASS1);
+	JcLockSetInt(handle, JCI_CLOSECODE, initCloseCode);
+	JcLockDebugPrint(handle);
+	int pass1DyCode = JcLockGetDynaCode(handle);
+	printf("dynaPass1=\t%d\n", pass1DyCode);
+	JcLockDelete(handle);
+	//////////////////////////////////////////////////////////////////////////
+
+	handle = JcLockNew();
+	JcLockSetString(handle, JCI_ATMNO, "atm10455761");
+	JcLockSetString(handle, JCI_LOCKNO, "lock14771509");
+	JcLockSetString(handle, JCI_PSK, "PSKDEMO728");
+	JcLockSetInt(handle,JCI_SEARCH_TIME_START,static_cast<int>(time(NULL)));
+	JcLockSetInt(handle, JCI_CLOSECODE, initCloseCode);
+	JcLockSetCmdType(handle, JCI_CMDTYPE, JCCMD_CCB_DYPASS1);
+	JCMATCH pass1Match =
+		JcLockReverseVerifyDynaCode(handle, pass1DyCode);
+	printf("current time=\t\t%d\n", time(NULL));
+	printf("pass1Match Time =\t%d\tValidity=%d\n",
+		pass1Match.s_datetime, pass1Match.s_validity);
+
+	JcLockDelete(handle);
+}
+
+void myJclmsTest20150306()
+{
+	const char *atmno="atm10455761";
+	const char *lockno="lock14771509";
+	const char *psk="PSKDEMO728";
+	const int closecode=38149728;
+	int pass1DyCode=embSrvGenDyCodePass1(atmno,lockno,psk,
+		myNormalTime(time(NULL)),closecode);
+	printf("dynaPass1=\t%d\n", pass1DyCode);
+	embSrvReverseDyCode(pass1DyCode,atmno,lockno,psk,myNormalTime(time(NULL))+67,closecode,JCCMD_CCB_DYPASS1);
+	int pass2DyCode=embSrvGenDyCodePass2("atm10455761","lock14771509","PSKDEMO728",
+		myNormalTime(time(NULL)),44445555);
+	printf("dynaPass2=\t%d\n", pass2DyCode);
+
+}
+
+
+int main(int argc, char * argv[])
+{
+	//myECIES_KeyGenTest123();
+	//////////////////////////////////////////////////////////////////////////
+	//myECIESTest305();
+
+	//////////////////////////////////////////////////////////////////////////
+	//myJclmsTest20150305();
+	myJclmsTest20150306();
+	return 0;
+}
