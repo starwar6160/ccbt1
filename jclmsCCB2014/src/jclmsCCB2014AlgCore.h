@@ -148,9 +148,8 @@ int embSrvGenDyCodePass2(const char *AtmNo,const char *LockNo,const char *PSK,
 //JCI_ATMNO,JCI_LOCKNO,JCI_PSK,JCI_SEARCH_TIME_START,JCI_CLOSECODE,JCI_CMDTYPE
 //注意搜索起始时间基本上需要在现在之前10分钟以内，具体原因大约是前几次建行测试
 //期间商量的
-int embSrvReverseDyCode(const int dyCode,
-	const char *AtmNo,const char *LockNo,const char *PSK,
-	time_t SearchTimeStart,const int CloseCode,const JCCMD Pass);
+int embSrvReverseDyCode(const int dyCode, const char *AtmNo,const char *LockNo,const char *PSK, 
+	const int CloseCode,const JCCMD Pass);
 
 
 

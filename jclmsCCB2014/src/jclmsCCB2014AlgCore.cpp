@@ -616,7 +616,8 @@ int embSrvGenDyCode(const JCCMD Pass,const char *AtmNo,const char *LockNo,const 
 	JcLockSetString(handle, JCI_ATMNO, AtmNo);
 	JcLockSetString(handle, JCI_LOCKNO, LockNo);
 	JcLockSetString(handle, JCI_PSK, PSK);
-	int tail=DyCodeUTCTime % 6;	//做6秒的时间规格化，使得时间协调一致
+	const int JCMOD=6;
+	int tail=DyCodeUTCTime % JCMOD;	//做6秒的时间规格化，使得时间协调一致
 	JcLockSetInt(handle, JCI_DATETIME,static_cast < int >(DyCodeUTCTime-tail));
 	JcLockSetCmdType(handle, JCI_CMDTYPE, Pass);
 	JcLockSetInt(handle, JCI_CLOSECODE, CloseCode);
@@ -629,9 +630,7 @@ int embSrvGenDyCode(const JCCMD Pass,const char *AtmNo,const char *LockNo,const 
 //JCI_ATMNO,JCI_LOCKNO,JCI_PSK,JCI_SEARCH_TIME_START,JCI_CLOSECODE,JCI_CMDTYPE
 //注意搜索起始时间基本上需要在现在之前10分钟以内，具体原因大约是前几次建行测试
 //期间商量的
-int embSrvReverseDyCode(const int dyCode,
-	const char *AtmNo,const char *LockNo,const char *PSK,
-	time_t SearchTimeStart,const int CloseCode,const JCCMD Pass)
+int embSrvReverseDyCode(const int dyCode, const char *AtmNo,const char *LockNo,const char *PSK, const int CloseCode,const JCCMD Pass)
 {
 	int handle = JcLockNew();
 	JcLockSetString(handle, JCI_ATMNO, AtmNo);
@@ -639,7 +638,7 @@ int embSrvReverseDyCode(const int dyCode,
 	JcLockSetString(handle, JCI_PSK, PSK);
 	//生成动态码时不必设置搜索起始时间参数，反推时才需要
 	//从将来3分钟开始往前搜索
-	JcLockSetInt(handle,JCI_SEARCH_TIME_START,static_cast<int>(time(NULL)+3*6));
+	JcLockSetInt(handle,JCI_SEARCH_TIME_START,static_cast<int>(time(NULL)+3*60));
 	JcLockSetInt(handle, JCI_CLOSECODE, CloseCode);
 	JcLockSetCmdType(handle, JCI_CMDTYPE, Pass);	
 	//////////////////////////////////////////////////////////////////////////
