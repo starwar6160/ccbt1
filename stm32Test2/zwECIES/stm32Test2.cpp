@@ -30,7 +30,8 @@ int embSrvGenDyCode(const JCCMD Pass,const char *AtmNo,const char *LockNo,const 
 	JcLockSetString(handle, JCI_ATMNO, AtmNo);
 	JcLockSetString(handle, JCI_LOCKNO, LockNo);
 	JcLockSetString(handle, JCI_PSK, PSK);
-	JcLockSetInt(handle, JCI_DATETIME,static_cast < int >(DyCodeUTCTime));
+	int tail=DyCodeUTCTime % 6;	//做6秒的时间规格化，使得时间协调一致
+	JcLockSetInt(handle, JCI_DATETIME,static_cast < int >(DyCodeUTCTime-tail));
 	JcLockSetCmdType(handle, JCI_CMDTYPE, Pass);
 	JcLockSetInt(handle, JCI_CLOSECODE, CloseCode);
 	int pass1DyCode = JcLockGetDynaCode(handle);	
@@ -51,7 +52,8 @@ int embSrvReverseDyCode(const int dyCode,
 	JcLockSetString(handle, JCI_LOCKNO, LockNo);
 	JcLockSetString(handle, JCI_PSK, PSK);
 	//生成动态码时不必设置搜索起始时间参数，反推时才需要
-	JcLockSetInt(handle,JCI_SEARCH_TIME_START,static_cast<int>(SearchTimeStart));
+	//从将来3分钟开始往前搜索
+	JcLockSetInt(handle,JCI_SEARCH_TIME_START,static_cast<int>(time(NULL)+3*60));
 	JcLockSetInt(handle, JCI_CLOSECODE, CloseCode);
 	JcLockSetCmdType(handle, JCI_CMDTYPE, Pass);	
 	//////////////////////////////////////////////////////////////////////////
@@ -273,16 +275,22 @@ void myJclmsTest20150305()
 
 void myJclmsTest20150306()
 {
+	//基本条件
 	const char *atmno="atm10455761";
 	const char *lockno="lock14771509";
 	const char *psk="PSKDEMO728";
-	const int closecode=38149728;
+	const int closecode=38149728;	//此处是初始闭锁码
+	//3个基本条件和时间，初始闭锁码，生成第一开锁码
+	int curTime=time(NULL);
+	int tail=curTime % 6;
 	int pass1DyCode=embSrvGenDyCodePass1(atmno,lockno,psk,
-		myNormalTime(time(NULL)),closecode);
+		//myNormalTime(time(NULL))
+		time(NULL)
+		,closecode);
 	printf("dynaPass1=\t%d\n", pass1DyCode);
 	embSrvReverseDyCode(pass1DyCode,atmno,lockno,psk,myNormalTime(time(NULL))+67,closecode,JCCMD_CCB_DYPASS1);
 	int pass2DyCode=embSrvGenDyCodePass2("atm10455761","lock14771509","PSKDEMO728",
-		myNormalTime(time(NULL)),44445555);
+		myNormalTime(time(NULL)),pass1DyCode);
 	printf("dynaPass2=\t%d\n", pass2DyCode);
 
 }
