@@ -608,7 +608,6 @@ int JCLMSCCB2014_API JcLockGetDynaCode(const int handle)
 //填写的是前一次的闭锁码，生成验证码时填写的是第一开锁码，生成第二开锁码时填写的是验证码
 //atm编号，锁编号都是不超过一定长度限度的随意的字符串，PSK是定长64字节HEX字符串相关长度限制请见头文件
 //DyCodeUTCTime为指定动态码的时间UTC秒数，一般都是当前时间，但也可以为将来提前生成动态码而指定将来的时间
-//CloseCode，闭锁码或者验证码
 int embSrvGenDyCode(const JCCMD Pass,const char *AtmNo,const char *LockNo,const char *PSK,
 	const time_t DyCodeUTCTime,const int CloseCode)
 {
@@ -627,10 +626,11 @@ int embSrvGenDyCode(const JCCMD Pass,const char *AtmNo,const char *LockNo,const 
 }
 
 //校验动态码，返回匹配的UTC时间秒数,需要的输入有：
-//JCI_ATMNO,JCI_LOCKNO,JCI_PSK,JCI_SEARCH_TIME_START,JCI_CLOSECODE,JCI_CMDTYPE
-//注意搜索起始时间基本上需要在现在之前10分钟以内，具体原因大约是前几次建行测试
-//期间商量的
-int embSrvReverseDyCode(const int dyCode, const char *AtmNo,const char *LockNo,const char *PSK, const int CloseCode,const JCCMD Pass)
+//JCI_ATMNO,JCI_LOCKNO,JCI_PSK等3个基本条件
+//以及CloseCode(此处指的是生成该动态码时填写的那个前一环节的输入条件)
+//JCCMD指示校验的是哪一类的动态码
+int embSrvReverseDyCode(const int dyCode, const char *AtmNo,const char *LockNo,const char *PSK,
+	const int CloseCode,const JCCMD Pass)
 {
 	int handle = JcLockNew();
 	JcLockSetString(handle, JCI_ATMNO, AtmNo);
