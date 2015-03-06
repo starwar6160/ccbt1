@@ -53,7 +53,7 @@ int embSrvReverseDyCode(const int dyCode,
 	JcLockSetString(handle, JCI_PSK, PSK);
 	//生成动态码时不必设置搜索起始时间参数，反推时才需要
 	//从将来3分钟开始往前搜索
-	JcLockSetInt(handle,JCI_SEARCH_TIME_START,static_cast<int>(time(NULL)+3*60));
+	JcLockSetInt(handle,JCI_SEARCH_TIME_START,static_cast<int>(time(NULL)+3*6));
 	JcLockSetInt(handle, JCI_CLOSECODE, CloseCode);
 	JcLockSetCmdType(handle, JCI_CMDTYPE, Pass);	
 	//////////////////////////////////////////////////////////////////////////
@@ -89,7 +89,7 @@ int embSrvGenDyCodeVerify(const char *AtmNo,const char *LockNo,const char *PSK,
 int embSrvGenDyCodePass2(const char *AtmNo,const char *LockNo,const char *PSK,
 	const time_t DyCodeUTCTime,const int VerifyCode)
 {
-	return embSrvGenDyCode(JCCMD_CCB_DYPASS1,AtmNo,LockNo,PSK,DyCodeUTCTime,VerifyCode);
+	return embSrvGenDyCode(JCCMD_CCB_DYPASS2,AtmNo,LockNo,PSK,DyCodeUTCTime,VerifyCode);
 }
 
 
@@ -280,18 +280,37 @@ void myJclmsTest20150306()
 	const char *lockno="lock14771509";
 	const char *psk="PSKDEMO728";
 	const int closecode=38149728;	//此处是初始闭锁码
-	//3个基本条件和时间，初始闭锁码，生成第一开锁码
-	int curTime=time(NULL);
-	int tail=curTime % 6;
+	//////////////////////////////////////////////////////////////////////////
+	//3个基本条件和时间，初始闭锁码，密码服务器生成第一开锁码
+	time_t curTime=time(NULL);
+	time_t rTail=curTime % 6;
 	int pass1DyCode=embSrvGenDyCodePass1(atmno,lockno,psk,
-		//myNormalTime(time(NULL))
-		time(NULL)
-		,closecode);
-	printf("dynaPass1=\t%d\n", pass1DyCode);
-	embSrvReverseDyCode(pass1DyCode,atmno,lockno,psk,myNormalTime(time(NULL))+67,closecode,JCCMD_CCB_DYPASS1);
+		curTime,closecode);
+	printf("第一开锁码=\t%d\n", pass1DyCode);
+	//锁具验证第一开锁码
+	printf("验证第一开锁码开始\n");
+	embSrvReverseDyCode(pass1DyCode,atmno,lockno,psk,time(NULL),closecode,JCCMD_CCB_DYPASS1);
+	printf("验证第一开锁码完毕\n");
+
+	//////////////////////////////////////////////////////////////////////////
+	//锁具生成验证码,第一开锁码作为生成要素,此外模拟延迟时间6秒
+	int VerifyDyCode=embSrvGenDyCodeVerify(atmno,lockno,psk,
+		curTime+6-rTail,pass1DyCode);
+	printf("验证码=\t%d\n", VerifyDyCode);
+	//密码服务器验证验证码
+	printf("验证验证码开始\n");
+	embSrvReverseDyCode(VerifyDyCode,atmno,lockno,psk,time(NULL),pass1DyCode,JCCMD_CCB_LOCK_VERCODE);
+	printf("验证验证码结束\n");
+
+	//////////////////////////////////////////////////////////////////////////
+	//密码服务器生成第二开锁码，验证码作为生成要素
 	int pass2DyCode=embSrvGenDyCodePass2("atm10455761","lock14771509","PSKDEMO728",
-		myNormalTime(time(NULL)),pass1DyCode);
-	printf("dynaPass2=\t%d\n", pass2DyCode);
+		curTime+12-rTail,VerifyDyCode);
+	printf("第二开锁码=\t%d\n", pass2DyCode);
+	//锁具验证第二开锁码
+	printf("验证第二开锁码开始\n");
+	embSrvReverseDyCode(pass2DyCode,atmno,lockno,psk,time(NULL),VerifyDyCode,JCCMD_CCB_DYPASS2);
+	printf("验证第二开锁码结束\n");
 
 }
 
