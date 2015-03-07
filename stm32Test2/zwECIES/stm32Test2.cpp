@@ -8,20 +8,6 @@
 #include <string.h>
 #include <time.h>
 
-JCINPUT g_jcInputTest304;
-
-time_t myNormalTime(const time_t inTime)
-{
-	const time_t tmFact=600;
-	time_t tail=inTime % tmFact;
-	return inTime-tail;
-}
-
-
-
-
-
-
 void myECIES_KeyGenTest123(void)
 {
 	//预先设置好的生成的一对非对称密钥，是Base64编码的二进制内容
@@ -74,52 +60,6 @@ void myECIES_KeyGenTest123(void)
 	strcpy(dePSK,EciesDecrypt(prikey, ccbActiveInfo));	
 	printf("ccbPSK=\t%s\n",dePSK);
 }
-
-////////////////////////////////ECIES//////////////////////////////////////////
-//从公钥，建行的2个输入因子字符串，输出激活信息字符串，输出缓冲区必须有头文件里面指定的足够大小
-void zwGenActiveInfo(const char *pubkey,const char *ccbFact1,const char *ccbFact2,char *ccbActiveInfo)
-{
-	if (NULL==ccbFact1 ||NULL==ccbFact2 || NULL==ccbActiveInfo
-		||0==strlen(ccbFact1) || 0==strlen(ccbFact2))
-	{
-		return;
-	}
-	const char * ccbPSK=zwGenPSKFromCCB(ccbFact1, ccbFact2);
-
-#ifdef _DEBUG
-	printf("ccbPSK=\t%s\n",ccbPSK);
-#endif // _DEBUG
-	//从PSK和公钥生成激活信息ccbActiveInfo，然后激活信息就可以通过网络传输出去了
-	strcpy(ccbActiveInfo, EciesEncrypt(pubkey, ccbPSK));
-}
-
-
-//生成公钥私钥对,输入缓冲区必须有头文件里面宏定义值所指定的足够大小
-void zwGenKeyPair(char *pubKey,char *priKey)
-{
-	if (NULL==pubKey || NULL==priKey)
-	{
-		return;
-	}
-	int hd=EciesGenKeyPair();
-	strcpy(pubKey,EciesGetPubKey(hd));
-	strcpy(priKey,EciesGetPriKey(hd));
-	EciesDelete(hd);
-}
-
-
-//从私钥，激活信息，获取PSK，输出缓冲区必须有头文件里面指定的足够大小
-void zwGetPSK(const char *priKey,const char *ccbActiveInfo,char *PSK)
-{
-	if (NULL==priKey || NULL==ccbActiveInfo || NULL==PSK
-		||0==strlen(priKey) || 0==strlen(ccbActiveInfo))
-	{
-		return;
-	}
-	strcpy(PSK,EciesDecrypt(priKey,ccbActiveInfo));
-}
-
-
 
 void myECIESTest305()
 {
@@ -175,7 +115,7 @@ void myJclmsTest20150305()
 	//dynaPass1
 	//注意现在合法的时间值应该是1.4G以上了，注意位数。20140721.1709 
 
-	JcLockSetInt(handle, JCI_DATETIME,static_cast < int >(myNormalTime(time(NULL))));
+	JcLockSetInt(handle, JCI_DATETIME,static_cast < int >(time(NULL)));
 	JcLockSetCmdType(handle, JCI_CMDTYPE, JCCMD_CCB_DYPASS1);
 	JcLockSetInt(handle, JCI_CLOSECODE, initCloseCode);
 	JcLockDebugPrint(handle);
