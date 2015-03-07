@@ -125,8 +125,7 @@ extern "C" {
 	//输出调试字符串
 	void JCLMSCCB2014_API JcLockDebugPrint(const int handle);
 	void JCLMSCCB2014_API zwJcLockDumpJCINPUT(const int handle);
-
-int JCLMSCCB2014_API zwSM3StandardTestVector(void);
+	int JCLMSCCB2014_API zwSM3StandardTestVector(void);
 
 //////////////////////////////////////////////////////////////////////////
 //生成第一，第二开锁码,验证码，闭锁码，初始闭锁码的共同函数，差异只在于CloseCode那个位置，
@@ -143,7 +142,8 @@ int embSrvGenDyCode(const JCCMD Pass,const char *AtmNo,const char *LockNo,const 
 
 int embSrvReverseDyCode(const int dyCode, const char *AtmNo,const char *LockNo,const char *PSK, 
 	const int CloseCode,const JCCMD Pass);
-
+//从建行的2个输入因素生成PSK，结果是64字节HEX字符串；
+const char * zwGenPSKFromCCB(const char * ccbFact1, const char * ccbFact2);
 
 
 #ifdef _DEBUG

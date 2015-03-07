@@ -84,12 +84,8 @@ void zwGenActiveInfo(const char *pubkey,const char *ccbFact1,const char *ccbFact
 	{
 		return;
 	}
-	char ccbIn[ZW_ECIES_HASH_LEN];
-	memset(ccbIn,0,ZW_ECIES_HASH_LEN);
-	strcpy(ccbIn,ccbFact1);
-	strcat(ccbIn,ccbFact2);
-	//´ÓccbInStrÉú³ÉPSK
-	const char *ccbPSK=zwMergePsk(ccbIn);
+	const char * ccbPSK=zwGenPSKFromCCB(ccbFact1, ccbFact2);
+
 #ifdef _DEBUG
 	printf("ccbPSK=\t%s\n",ccbPSK);
 #endif // _DEBUG
@@ -261,3 +257,5 @@ int main(int argc, char * argv[])
 	myJclmsTest20150306STM32Demo();
 	return 0;
 }
+
+

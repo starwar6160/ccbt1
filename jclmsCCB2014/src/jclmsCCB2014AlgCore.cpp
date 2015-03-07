@@ -5,6 +5,7 @@
 #include <memory.h>
 #include <time.h>
 #include "jclmsCCB2014AlgCore.h"
+#include "zwEcies529.h"
 #include "sm3.h"
 
 void mySM3Update(SM3 * ctx, const char *data, const int len);
@@ -651,3 +652,14 @@ int embSrvReverseDyCode(const int dyCode, const char *AtmNo,const char *LockNo,c
 	return pass1Match.s_datetime;
 }
 
+//从建行的2个输入因素生成PSK，结果是64字节HEX字符串；
+const char * zwGenPSKFromCCB(const char * ccbFact1, const char * ccbFact2)
+{
+	char ccbIn[ZW_ECIES_HASH_LEN];
+	memset(ccbIn,0,ZW_ECIES_HASH_LEN);
+	strcpy(ccbIn,ccbFact1);
+	strcat(ccbIn,ccbFact2);
+	//从ccbInStr生成PSK
+	const char *ccbPSK=zwMergePsk(ccbIn);
+	return ccbPSK;
+}
