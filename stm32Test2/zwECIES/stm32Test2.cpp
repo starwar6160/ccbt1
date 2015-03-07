@@ -157,7 +157,7 @@ void myJclmsTest20150306STM32Demo()
 	printf("第一开锁码=\t%d\n", pass1DyCode);
 	//锁具验证第一开锁码
 	printf("验证第一开锁码开始\n");
-	time_t pass1MatchTime=embSrvReverseDyCode(JCCMD_CCB_DYPASS1,pass1DyCode,initCloseCode,atmno,lockno,psk);
+	time_t pass1MatchTime=embSrvReverseDyCode(JCCMD_CCB_DYPASS1,pass1DyCode,initCloseCode, time(NULL),atmno,lockno,psk);
 	printf("验证第一开锁码完毕,时间是%u\n",pass1MatchTime);
 
 	//////////////////////////////////////////////////////////////////////////
@@ -167,7 +167,7 @@ void myJclmsTest20150306STM32Demo()
 	printf("验证码=\t%d\n", VerifyDyCode);
 	//密码服务器验证验证码
 	printf("验证验证码开始\n");
-	time_t vercodeMatchTime=embSrvReverseDyCode(JCCMD_CCB_LOCK_VERCODE,VerifyDyCode,pass1DyCode,atmno,lockno,psk);
+	time_t vercodeMatchTime=embSrvReverseDyCode(JCCMD_CCB_LOCK_VERCODE,VerifyDyCode,pass1DyCode, time(NULL),atmno,lockno,psk);
 	printf("验证验证码结束,时间是%u\n",vercodeMatchTime);
 
 	//////////////////////////////////////////////////////////////////////////
@@ -177,7 +177,7 @@ void myJclmsTest20150306STM32Demo()
 	printf("第二开锁码=\t%d\n", pass2DyCode);
 	//锁具验证第二开锁码
 	printf("验证第二开锁码开始\n");
-	time_t pass2MatchTime=embSrvReverseDyCode(JCCMD_CCB_DYPASS2,pass2DyCode,VerifyDyCode,atmno,lockno,psk);
+	time_t pass2MatchTime=embSrvReverseDyCode(JCCMD_CCB_DYPASS2,pass2DyCode,VerifyDyCode, time(NULL),atmno,lockno,psk);
 	printf("验证第二开锁码结束,时间是%u\n",pass2MatchTime);
 
 	//闭锁码，由3个基本条件和当前时间以及第二开锁码作为条件生成

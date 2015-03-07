@@ -629,8 +629,9 @@ int embSrvGenDyCode(const JCCMD Pass,const time_t DyCodeUTCTime,const int CloseC
 //校验动态码，返回匹配的UTC时间秒数,需要的输入有：
 //JCI_ATMNO,JCI_LOCKNO,JCI_PSK等3个基本条件
 //以及CloseCode(此处指的是生成该动态码时填写的那个前一环节的输入条件)
-//JCCMD指示校验的是哪一类的动态码
-int embSrvReverseDyCode(const JCCMD Pass,const int dyCode, const int CloseCode,
+//JCCMD指示校验的是哪一类的动态码 
+//SearchStartTime指定搜索起始时间，一般情况下就是当前时间的UTC秒数
+int embSrvReverseDyCode(const JCCMD Pass,const int dyCode, const int CloseCode,const time_t SearchStartTime,
 	const char *AtmNo,const char *LockNo,const char *PSK)
 {
 	int handle = JcLockNew();
@@ -639,7 +640,7 @@ int embSrvReverseDyCode(const JCCMD Pass,const int dyCode, const int CloseCode,
 	JcLockSetString(handle, JCI_PSK, PSK);
 	//生成动态码时不必设置搜索起始时间参数，反推时才需要
 	//从将来3分钟开始往前搜索
-	JcLockSetInt(handle,JCI_SEARCH_TIME_START,static_cast<int>(time(NULL)+3*60));
+	JcLockSetInt(handle,JCI_SEARCH_TIME_START,static_cast<int>(SearchStartTime+3*60));
 		
 	JcLockSetInt(handle, JCI_CLOSECODE, CloseCode);
 	JcLockSetCmdType(handle, JCI_CMDTYPE, Pass);	
