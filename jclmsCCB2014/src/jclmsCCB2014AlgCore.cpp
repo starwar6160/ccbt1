@@ -609,8 +609,8 @@ int JCLMSCCB2014_API JcLockGetDynaCode(const int handle)
 //填写的是前一次的闭锁码，生成验证码时填写的是第一开锁码，生成第二开锁码时填写的是验证码
 //atm编号，锁编号都是不超过一定长度限度的随意的字符串，PSK是定长64字节HEX字符串相关长度限制请见头文件
 //DyCodeUTCTime为指定动态码的时间UTC秒数，一般都是当前时间，但也可以为将来提前生成动态码而指定将来的时间
-int embSrvGenDyCode(const JCCMD Pass,const char *AtmNo,const char *LockNo,const char *PSK,
-	const time_t DyCodeUTCTime,const int CloseCode)
+int embSrvGenDyCode(const JCCMD Pass,const time_t DyCodeUTCTime,const int CloseCode,
+	const char *AtmNo,const char *LockNo,const char *PSK)
 {
 	int handle = JcLockNew();
 	JcLockSetString(handle, JCI_ATMNO, AtmNo);
@@ -630,8 +630,8 @@ int embSrvGenDyCode(const JCCMD Pass,const char *AtmNo,const char *LockNo,const 
 //JCI_ATMNO,JCI_LOCKNO,JCI_PSK等3个基本条件
 //以及CloseCode(此处指的是生成该动态码时填写的那个前一环节的输入条件)
 //JCCMD指示校验的是哪一类的动态码
-int embSrvReverseDyCode(const int dyCode, const char *AtmNo,const char *LockNo,const char *PSK,
-	const int CloseCode,const JCCMD Pass)
+int embSrvReverseDyCode(const JCCMD Pass,const int dyCode, const int CloseCode,
+	const char *AtmNo,const char *LockNo,const char *PSK)
 {
 	int handle = JcLockNew();
 	JcLockSetString(handle, JCI_ATMNO, AtmNo);
@@ -640,12 +640,15 @@ int embSrvReverseDyCode(const int dyCode, const char *AtmNo,const char *LockNo,c
 	//生成动态码时不必设置搜索起始时间参数，反推时才需要
 	//从将来3分钟开始往前搜索
 	JcLockSetInt(handle,JCI_SEARCH_TIME_START,static_cast<int>(time(NULL)+3*60));
+		
 	JcLockSetInt(handle, JCI_CLOSECODE, CloseCode);
 	JcLockSetCmdType(handle, JCI_CMDTYPE, Pass);	
 	//////////////////////////////////////////////////////////////////////////
 	JCMATCH pass1Match =
 		JcLockReverseVerifyDynaCode(handle, dyCode);
+#ifdef WIN32	//避开ARM没有time函数的问题(板子没有RTC时钟无法提供时间)
 	printf("current time=\t\t%d\n", time(NULL));
+#endif // WIN32
 	printf("pass1Match Time =\t%d\tValidity=%d\n",
 		pass1Match.s_datetime, pass1Match.s_validity);
 	JcLockDelete(handle);
