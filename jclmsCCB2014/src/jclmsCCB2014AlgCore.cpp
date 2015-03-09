@@ -7,6 +7,11 @@
 #include "jclmsCCB2014AlgCore.h"
 #include "zwEcies529.h"
 #include "sm3.h"
+//ARM编译去掉assert，避免链接找不到符号
+#ifndef _WIN32
+#define assert
+#endif // _WIN32
+
 
 void mySM3Update(SM3 * ctx, const char *data, const int len);
 void mySM3Update(SM3 * ctx, const int data);
@@ -233,10 +238,15 @@ void mySM3Update(SM3 * ctx, const char *data, const int len)
 	for (int i = 0; i < len; i++) {
 		SM3_Update(ctx, *(data + i));
 		int ch=*(data + i);
+#ifdef _DEBUG_20150309
+		//我和孙玉龙，又是遇到ARM编译器优化级别0导致SM3算法结果错误的问题.20150309.1546
+		//调试过程中用的代码
 		if (1==G_SM3DATA_TRACK)
 		{
 			printf("%02X ",ch);
-		}		
+		}	
+#endif // _DEBUG_20150309
+	
 	}
 }
 
@@ -518,6 +528,16 @@ int zwJcLockGetDynaCode(const int handle)
 	//////////////////////////////HASH运算结束////////////////////////////////////////////
 	memset(outHmac, 0, ZWSM3_DGST_LEN);
 	SM3_Final(&sm3, (char *)(outHmac));
+
+#ifdef _DEBUG_20150309
+	//我和孙玉龙，又是遇到ARM编译器优化级别0导致SM3算法结果错误的问题.20150309.1546
+	printf("outHmac=\n");
+	for (int i=0;i<ZWSM3_DGST_LEN;i++)
+	{
+		printf("%02X ",outHmac[i] & 0xFF);
+	}
+	printf("\n");
+#endif // _DEBUG_20150309
 	//把HASH结果转化为8位数字输出
 	unsigned int res = zwBinString2Int32(outHmac, ZWSM3_DGST_LEN);
 	ZWDBG_WARN("%s:dyCode=%d\n",__FUNCTION__,res);
