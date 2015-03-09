@@ -18,6 +18,7 @@ const int ZWMEGA = 1000000;	//一百万
 const int ZW_LOWEST_DATE = 1400 * ZWMEGA - 24 * 3600;	//考虑到取整运算可能使得时间值低于1400M，所以把最低点时间提前一整天该足够了
 const int ZW_MAXDATA32 = 2048 * ZWMEGA - 3;	//32位有符号整数可能表示的最大时间值
 extern const int ZW_ONE_DAY = 24 * 60 * 60;
+int G_SM3DATA_TRACK=1;	//是否输出送到SM3算法的
 //多段CRC8,第一次使用时,crc8Input参数输入必须为0
 unsigned char crc8(const unsigned char crc8Input,const void *inputData, const int inputLen );
 #ifdef  __cplusplus
@@ -231,6 +232,11 @@ void mySM3Update(SM3 * ctx, const char *data, const int len)
 	assert(len > 0);
 	for (int i = 0; i < len; i++) {
 		SM3_Update(ctx, *(data + i));
+		int ch=*(data + i);
+		if (1==G_SM3DATA_TRACK)
+		{
+			printf("%02X ",ch);
+		}		
 	}
 }
 
@@ -494,6 +500,7 @@ int zwJcLockGetDynaCode(const int handle)
 		return err;
 	}
 
+	G_SM3DATA_TRACK=1;
 	SM3_Init(&sm3);
 
 	//限度是小于14开头的时间(1.4G秒)或者快要超出2048M秒的话就是非法了
@@ -514,6 +521,7 @@ int zwJcLockGetDynaCode(const int handle)
 	//把HASH结果转化为8位数字输出
 	unsigned int res = zwBinString2Int32(outHmac, ZWSM3_DGST_LEN);
 	ZWDBG_WARN("%s:dyCode=%d\n",__FUNCTION__,res);
+	G_SM3DATA_TRACK=0;
 	return res;
 }
 
