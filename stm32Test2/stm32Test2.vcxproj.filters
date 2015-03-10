@@ -108,25 +108,22 @@
     <ClCompile Include="..\jclmsCCB2014\src\crc32\zwcrc32.c">
       <Filter>源文件\zwDycodeRef</Filter>
     </ClCompile>
-    <ClCompile Include="..\jclmsCCB2014\src\3des\d3d\d3des.c">
+    <ClCompile Include="..\jclmsCCB2014\src\cpp3DES\des.cpp">
       <Filter>源文件\3DESref</Filter>
     </ClCompile>
-    <ClCompile Include="..\jclmsCCB2014\src\3des\d3d\d3des_start.c">
+    <ClCompile Include="..\jclmsCCB2014\src\cpp3DES\des3.cpp">
       <Filter>源文件\3DESref</Filter>
     </ClCompile>
-    <ClCompile Include="..\jclmsCCB2014\src\3des\3d\des.c">
+    <ClCompile Include="..\jclmsCCB2014\src\cpp3DES\descbc.cpp">
+      <Filter>源文件\3DESref</Filter>
+    </ClCompile>
+    <ClCompile Include="..\jclmsCCB2014\src\cpp3DES\fileencryption.cpp">
       <Filter>源文件\3DESref</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="jclmsCCB2014AlgCoreT2.h">
       <Filter>源文件</Filter>
-    </ClInclude>
-    <ClInclude Include="..\jclmsCCB2014\src\3des\d3d\d3des.h">
-      <Filter>源文件\3DESref</Filter>
-    </ClInclude>
-    <ClInclude Include="..\jclmsCCB2014\src\3des\3d\des.h">
-      <Filter>源文件\3DESref</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

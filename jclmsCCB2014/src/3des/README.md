@@ -1,4 +1,0 @@
-3des
-====
-
-TripleDES
