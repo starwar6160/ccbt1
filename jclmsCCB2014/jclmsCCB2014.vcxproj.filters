@@ -131,8 +131,5 @@
     <ClCompile Include="src\cpp3DES\des.cpp">
       <Filter>源文件\3DES</Filter>
     </ClCompile>
-    <ClCompile Include="src\cpp3DES\testsDES.cpp">
-      <Filter>源文件\3DES</Filter>
-    </ClCompile>
   </ItemGroup>
 </Project>
