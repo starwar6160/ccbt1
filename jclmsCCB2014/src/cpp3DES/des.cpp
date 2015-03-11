@@ -2,6 +2,7 @@
 #include "des.h"
 #include <stdio.h>
 #include <memory.h>
+#include <string.h>
 
 #ifdef WIN32
 #include <assert.h>
@@ -391,6 +392,14 @@ void myui64sprintf(ui64 n64,char *outHex)
 	sprintf(outHex,"%08X%08X",n1,n2);
 }
 
+//把进来的64比特信息转换为64比特无符号整型
+ui64 myChar2Ui64(const char *inStr)
+{
+	ui64 res=0;
+	memcpy(&res,inStr,sizeof(ui64));
+	return res;
+}
+
 void test4CCB3DES_ECB_EDE2()
 {
 	//2014/8/16 21:26:47 建行的3DES的JAVA例子代码运行结果：
@@ -418,4 +427,63 @@ void test4CCB3DES_ECB_EDE2()
 	myui64sprintf(result,hexBuf);
 	printf("CCB Decrypt Result:\t%s (shuld same as PlainText)\n", hexBuf);   
 }
+
+//使用建行的通讯加密密钥ccbComm3DESKeyHex把8位动态码dyCode加密，返回在出参outEncDyCodeHex中
+//其中通讯加密密钥，以及加密结果都是HEX字符串，动态码是整数
+void zwCCB3DESEncryptDyCode(const char *ccbComm3DESKeyHex,const int dyCode,char *outEncDyCodeHex)
+{
+	//8位动态码转换为字符串，然后字符串8字节转换为HEX，以便满足3DES的
+	//64bit输入要求，估计这样就满足建行的要求可以被正确解密了；	
+	//检查输入参数
+	const int DESLEN=sizeof(ui64);	//一个3DES算法基本的64bit块大小的字节数
+	assert(NULL!=ccbComm3DESKeyHex);
+	assert(dyCode>=10000000 && dyCode<=99999999);
+	int ccbKeyLen=strlen(ccbComm3DESKeyHex);
+	assert(16==ccbKeyLen);	
+	if (16!=ccbKeyLen)
+	{
+		printf("invalid ccbComm3DESKeyHex\n");
+		return;
+	}
+	if (dyCode<10000000 && dyCode>99999999)
+	{
+		printf("invalid dyCode\n");
+		return;
+	}
+	if (NULL==outEncDyCodeHex)
+	{
+		printf("NULL outEncDyCodeHex\n");
+		return;
+	}
+	/////////////////////////////////动态码转换为字符串/////////////////////////////////////////
+	char dyCodeStr[DESLEN*2];
+	memset(dyCodeStr,0,DESLEN*2);
+	sprintf(dyCodeStr,"%d",dyCode);
+	memset(outEncDyCodeHex,0,DESLEN*2+1);
+#ifdef _DEBUG
+	printf("ccbComm3DESKeyHex:%s\n",ccbComm3DESKeyHex);
+	printf("dyCode=%d\tdyCodeStr=%s\n",dyCode,dyCodeStr);
+#endif // _DEBUG
+	assert(strlen(dyCodeStr)<=8);
+	ui64 dyCodePlain=myChar2Ui64(dyCodeStr);
+	////////////////////////////////3DES加密//////////////////////////////////////////
+	char ccbKeyTmp[DESLEN*2+1];
+	memset(ccbKeyTmp,0,DESLEN*2+1);
+	memcpy(ccbKeyTmp,ccbComm3DESKeyHex,DESLEN*2);
+	//分别把A,B,A当作3DES EDE2的3个Key
+	ui64 key1=myChar2Ui64(ccbKeyTmp);
+	ui64 key2=myChar2Ui64(ccbKeyTmp+DESLEN);
+	DES3 des3(key1,key2,key1);	
+
+	ui64 encDyCode=des3.encrypt(dyCodePlain);
+	myui64sprintf(encDyCode,outEncDyCodeHex);
+#ifdef _DEBUG
+	printf("encKey:%016I64X\n",encDyCode);
+	printf("dyCodePlain:%016I64X\n",dyCodePlain);
+	printf("K1:%016I64X K2:%016I64X K3:%016I64X \n",key1,key2,key1);
+	printf("3DES Encrypted dyCode is %s\n",outEncDyCodeHex);
+#endif // _DEBUG
+
+}
+
 

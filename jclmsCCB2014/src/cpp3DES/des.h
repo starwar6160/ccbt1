@@ -65,5 +65,12 @@ private:
 	ui64 last_block;
 };
 
+//把进来的64比特信息转换为64比特无符号整型
+ui64 myChar2Ui64(const char *inStr);
+void myui64sprintf(ui64 n64,char *outHex);
+//使用建行的通讯加密密钥ccbComm3DESKeyHex把8位动态码dyCode加密，返回在出参outEncDyCodeHex中
+//其中通讯加密密钥，以及加密结果都是HEX字符串，动态码是整数
+void zwCCB3DESEncryptDyCode(const char *ccbComm3DESKeyHex,const int dyCode,char *outEncDyCodeHex);
+
 #endif // DESCBC_H
 
