@@ -28,6 +28,9 @@
     <Filter Include="源文件\secBox">
       <UniqueIdentifier>{4dc8405c-bfcf-4525-bbe9-f36c6db9c1cb}</UniqueIdentifier>
     </Filter>
+    <Filter Include="源文件\3DES">
+      <UniqueIdentifier>{0df26ded-b032-49db-963c-dd8ca0404c72}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="ReadMe.txt" />
@@ -56,6 +59,9 @@
     </ClInclude>
     <ClInclude Include="src\jclmsCCB2014AlgCore.h">
       <Filter>源文件\dyCode</Filter>
+    </ClInclude>
+    <ClInclude Include="src\cpp3DES\des.h">
+      <Filter>源文件\3DES</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -121,6 +127,12 @@
     </ClCompile>
     <ClCompile Include="src\jclmsCCB2014AlgCore.cpp">
       <Filter>源文件\dyCode</Filter>
+    </ClCompile>
+    <ClCompile Include="src\cpp3DES\des.cpp">
+      <Filter>源文件\3DES</Filter>
+    </ClCompile>
+    <ClCompile Include="src\cpp3DES\testsDES.cpp">
+      <Filter>源文件\3DES</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
