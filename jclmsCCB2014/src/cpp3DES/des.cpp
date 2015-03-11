@@ -1,4 +1,15 @@
 #include "des.h"
+#include "des.h"
+#include <stdio.h>
+#include <memory.h>
+
+#ifdef WIN32
+#include <assert.h>
+#else
+#define assert
+#endif // WIN32
+
+
 
 //#pragma GCC push_options
 //#pragma GCC optimize ("unroll-loops")
@@ -371,8 +382,15 @@ void DESCBC::reset()
 
 //////////////////////////////Test for 3DES EDE2 ECB////////////////////////////////////////////
 
-#include "des.h"
-#include <stdio.h>
+//输出缓冲区起码要17字节
+void myui64sprintf(ui64 n64,char *outHex)
+{
+	ui32 n1=n64>>32;
+	ui32 n2=n64 & 0xFFFFFFFF;
+	memset(outHex,0,17);
+	sprintf(outHex,"%08X%08X",n1,n2);
+}
+
 void test4CCB3DES_ECB_EDE2()
 {
 	//2014/8/16 21:26:47 建行的3DES的JAVA例子代码运行结果：
@@ -388,11 +406,16 @@ void test4CCB3DES_ECB_EDE2()
 	ui64 input = 0xF856272510DC7307;
 	ui64 ccbExpectEncResult=0xCF8ACCB9945FE89D;
 	ui64 result = des.encrypt(input);
+	char hexBuf[16+1];
 	printf("CCB 3DES Test 20150311\n");
-	printf("CCB PlainText:\t\t%0I64X\n", input);    
-	printf("CCB Encrypt REAL Result:\t%0I64X\n", result);
-	printf("CCB Encrypt EXPECT Result:\t%0I64X\n", ccbExpectEncResult);
+	myui64sprintf(input,hexBuf);
+	printf("CCB PlainText:\t\t%s\n", hexBuf);    
+	myui64sprintf(result,hexBuf);
+	printf("CCB Encrypt REAL Result:\t%s\n", hexBuf);
+	myui64sprintf(ccbExpectEncResult,hexBuf);
+	printf("CCB Encrypt EXPECT Result:\t%s\n", hexBuf);
 	result = des.decrypt(result);
-	printf("CCB Decrypt Result:\t%0I64X (shuld same as PlainText)\n", result);   
+	myui64sprintf(result,hexBuf);
+	printf("CCB Decrypt Result:\t%s (shuld same as PlainText)\n", hexBuf);   
 }
 

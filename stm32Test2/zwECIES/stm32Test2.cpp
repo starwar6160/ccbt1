@@ -9,6 +9,9 @@
 #include <time.h>
 #include <string>
 #include <assert.h>
+#include <string>
+using std::string;
+
 
 void myECIES_KeyGenTest123(void)
 {
@@ -198,25 +201,29 @@ void myJclmsTest20150306STM32Demo()
 	printf("闭锁码=\t%d\n", curCloseCode);
 }
 
-using std::string;
-string zw3desTest311(const char *ccbKey)
+string zwCode8ToHex(int Code8);
+void zw3desTest311(const char *ccbKey,const int dyCode)
 {
 	//8位动态码转换为字符串，然后字符串8字节转换为HEX，以便满足3DES的
-	//64bit输入要求，估计这样就满足建行的要求可以被正确解密了；
+	//64bit输入要求，估计这样就满足建行的要求可以被正确解密了；	
+	assert(NULL!=ccbKey);
+	assert(dyCode>=10000000 && dyCode<=99999999);
 	int ccbKeyLen=strlen(ccbKey);
-	assert(16==ccbKeyLen);
+	assert(16==ccbKeyLen);	
+	string strDyCode=zwCode8ToHex(dyCode);
+	printf("strDyCode=%s\n",strDyCode.c_str());
 
-	const int BUFLEN = 48;
-	char buf[BUFLEN];
-	memset(buf, 0, BUFLEN);
+	const int BUFLEN = 33;	//ccbKeyLen*2+1
 	char hexbuf[BUFLEN];
 	memset(hexbuf, 0, BUFLEN);
+
 	for (int i = 0; i < ccbKeyLen; i++) {
 		unsigned char ch = ccbKey[i];
 		sprintf(hexbuf + i * 2, "%02X", ch);
 	}
-	string retHexStr = hexbuf;
-	return retHexStr;
+	printf("%s\t%s\n",__FUNCDNAME__,hexbuf);
+	//string retHexStr = hexbuf;
+	//return retHexStr;
 }
 
 
@@ -231,6 +238,7 @@ int main(int argc, char * argv[])
 	//myJclmsTest20150305();
 	//myJclmsTest20150306STM32Demo();
 	//printf("%s\n",zw3desTest311("0123456789ABCDEF").c_str());
+	zw3desTest311("0123456789ABCDEF",44556677);
 	test4CCB3DES_ECB_EDE2();
 	return 0;
 }

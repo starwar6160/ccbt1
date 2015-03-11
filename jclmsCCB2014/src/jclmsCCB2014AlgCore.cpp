@@ -12,6 +12,9 @@
 #define assert
 #endif // _WIN32
 
+#include <string>
+using std::string;
+
 
 void mySM3Update(SM3 * ctx, const char *data, const int len);
 void mySM3Update(SM3 * ctx, const int data);
@@ -741,8 +744,6 @@ void zwGetPSK(const char *priKey,const char *ccbActiveInfo,char *PSK)
 }
 
 ////////////////////////////////3DES//////////////////////////////////////////
-#include <string>
-using std::string;
 string zwCode8ToHex(int Code8)
 {
 	//8位动态码转换为字符串，然后字符串8字节转换为HEX，以便满足3DES的
