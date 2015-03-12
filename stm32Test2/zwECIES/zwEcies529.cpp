@@ -75,8 +75,7 @@ class jcOctex {
 //此处的初始化值控制着同样的明文，出来不同的对称密钥
 void myPrngInit( csprng * RNG,bool bRandom )
 {
-	assert(RNG != NULL);
-	int i;
+	assert(RNG != NULL);	
 	/* Crypto Strong RNG */
 	jcOctex RAW(EFS * 3);
 	RAW.Value().len = EFS * 3;	/* fake random seed source */

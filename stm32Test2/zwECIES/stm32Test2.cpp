@@ -138,7 +138,7 @@ void myJclmsTest20150305()
 	JcLockSetCmdType(handle, JCI_CMDTYPE, JCCMD_CCB_DYPASS1);
 	JCMATCH pass1Match =
 		JcLockReverseVerifyDynaCode(handle, pass1DyCode);
-	printf("current time=\t\t%d\n", time(NULL));
+	printf("current time=\t\t%d\n", static_cast<uint32_t>(time(NULL)));
 	printf("pass1Match Time =\t%d\tValidity=%d\n",
 		pass1Match.s_datetime, pass1Match.s_validity);
 
@@ -167,7 +167,7 @@ void myJclmsTest20150306STM32Demo()
 		//time(NULL),
 		curTime,
 		atmno,lockno,psk);
-	printf("验证第一开锁码完毕,时间是%u\n",pass1MatchTime);
+	printf("验证第一开锁码完毕,时间是%u\n",static_cast<uint32_t>(pass1MatchTime));
 
 	//////////////////////////////////////////////////////////////////////////
 	//锁具生成验证码,第一开锁码作为生成要素,
@@ -180,7 +180,7 @@ void myJclmsTest20150306STM32Demo()
 		//time(NULL),
 		curTime,
 		atmno,lockno,psk);
-	printf("验证验证码结束,时间是%u\n",vercodeMatchTime);
+	printf("验证验证码结束,时间是%u\n",static_cast<uint32_t>(vercodeMatchTime));
 
 	//////////////////////////////////////////////////////////////////////////
 	//密码服务器生成第二开锁码，验证码作为生成要素
@@ -194,7 +194,7 @@ void myJclmsTest20150306STM32Demo()
 		curTime,
 		atmno,lockno,psk);
 
-	printf("验证第二开锁码结束,时间是%u\n",pass2MatchTime);
+	printf("验证第二开锁码结束,时间是%u\n",static_cast<uint32_t>(pass2MatchTime));
 
 	//闭锁码，由3个基本条件和当前时间以及第二开锁码作为条件生成
 	int curCloseCode=embSrvGenDyCode(JCCMD_CCB_CLOSECODE,curTime,pass2DyCode,atmno,lockno,psk);
@@ -216,9 +216,9 @@ int main(int argc, char * argv[])
 	//myJclmsTest20150306STM32Demo();
 	//printf("%s\n",zw3desTest311("0123456789ABCDEF").c_str());
 	printf("%016I64X\n",myChar2Ui64("44556677"));
-	char outEncDyCode[32];
-	memset(outEncDyCode,0,32);
-	zwCCB3DESEncryptDyCode("0123456789ABCDEF",44556677,outEncDyCode);
+	char outEncDyCode[17];
+	memset(outEncDyCode,0,17);
+	zwCCB3DESEncryptDyCode("1234567890abcdef",56380517,outEncDyCode);
 	printf("zwCCB3DESEncryptDyCode test result is %s\n",outEncDyCode);
 	//test4CCB3DES_ECB_EDE2();
 	return 0;

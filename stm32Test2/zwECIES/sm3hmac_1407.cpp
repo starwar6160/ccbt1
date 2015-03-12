@@ -1,4 +1,4 @@
-#include <stdio.h>
+﻿#include <stdio.h>
 #include <cassert>
 #include <cstring>
 #include "sm3.h"

@@ -211,7 +211,7 @@ unsigned int zwBinString2Int32(const char *data, const int len)
 	//这两个数字结合使用，产生肯定是8位数的动态码
 	sum %= dyMod;
 	sum += dyLow;
-	return sum;
+	return static_cast<unsigned int>(sum);
 }
 
 
@@ -679,7 +679,7 @@ int embSrvReverseDyCode(const JCCMD Pass,const int dyCode, const int CloseCode,c
 	JCMATCH pass1Match =
 		JcLockReverseVerifyDynaCode(handle, dyCode);
 #ifdef WIN32	//避开ARM没有time函数的问题(板子没有RTC时钟无法提供时间)
-	printf("current time=\t\t%d\n", time(NULL));
+	printf("current time=\t\t%u\n", static_cast<uint32_t>(time(NULL)));
 #endif // WIN32
 	printf("pass1Match Time =\t%d\tValidity=%d\n",
 		pass1Match.s_datetime, pass1Match.s_validity);
@@ -690,6 +690,13 @@ int embSrvReverseDyCode(const JCCMD Pass,const int dyCode, const int CloseCode,c
 //从建行的2个输入因素生成PSK，结果是64字节HEX字符串；
 const char * zwGenPSKFromCCB(const char * ccbFact1, const char * ccbFact2)
 {
+	assert(NULL!=ccbFact1 && strlen(ccbFact1)>0);
+	assert(NULL!=ccbFact2 && strlen(ccbFact2)>0);
+	if (NULL==ccbFact1 || strlen(ccbFact1)==0
+		||NULL==ccbFact2 || strlen(ccbFact2)==0)
+	{
+		return "NULLINPUT";
+	}
 	char ccbIn[ZW_ECIES_HASH_LEN];
 	memset(ccbIn,0,ZW_ECIES_HASH_LEN);
 	strcpy(ccbIn,ccbFact1);

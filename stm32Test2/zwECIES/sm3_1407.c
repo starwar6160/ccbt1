@@ -1,4 +1,4 @@
-
+﻿
 #include "SM3.h"
 #include <math.h>
 
