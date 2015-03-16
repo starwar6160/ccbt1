@@ -1,4 +1,4 @@
-LIBRARY
+LIBRARY HidProtocol
 
 EXPORTS
 Open
