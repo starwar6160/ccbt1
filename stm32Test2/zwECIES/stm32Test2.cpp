@@ -221,7 +221,10 @@ int main(int argc, char * argv[])
 	printf("%016I64X\n",myChar2Ui64("44556677"));
 	char outEncDyCode[17];
 	memset(outEncDyCode,0,17);
-	JC3DES_ERROR err= zwCCB3DESEncryptDyCode("1234567890abcdef",56380517,outEncDyCode);
+	JC3DES_ERROR err= zwCCB3DESEncryptDyCode(
+		//"1234567890abcdef"
+		"0000000000000000"
+		,56380517,outEncDyCode);
 	if (JC3DES_OK==err)
 	{
 		printf("zwCCB3DESEncryptDyCode test result is %s\n",outEncDyCode);
