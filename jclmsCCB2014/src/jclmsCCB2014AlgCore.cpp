@@ -69,6 +69,8 @@ JCERROR JCLMSCCB2014_API JcLockSetCmdType(const int handle, const JCITYPE mtype,
 //获得规格化的时间，也就是按照某个值取整的时间
 int myGetNormalTime(int gmtTime, const int TIMEMOD)
 {
+	assert(gmtTime>1300*1000*1000L);
+	assert(TIMEMOD>6 && TIMEMOD<86400);
 	int tail = gmtTime % TIMEMOD;
 	return gmtTime - tail;
 }

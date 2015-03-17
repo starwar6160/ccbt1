@@ -428,9 +428,12 @@ void test4CCB3DES_ECB_EDE2()
 	printf("CCB Decrypt Result:\t%s (shuld same as PlainText)\n", hexBuf);   
 }
 
+
+
+
 //使用建行的通讯加密密钥ccbComm3DESKeyHex把8位动态码dyCode加密，返回在出参outEncDyCodeHex中
 //其中通讯加密密钥，以及加密结果都是HEX字符串，动态码是整数
-void zwCCB3DESEncryptDyCode(const char *ccbComm3DESKeyHex,const int dyCode,char *outEncDyCodeHex)
+JC3DES_ERROR zwCCB3DESEncryptDyCode( const char *ccbComm3DESKeyHex,const int dyCode,char *outEncDyCodeHex )
 {
 	//8位动态码转换为字符串，然后字符串8字节转换为HEX，以便满足3DES的
 	//64bit输入要求，估计这样就满足建行的要求可以被正确解密了；	
@@ -443,17 +446,17 @@ void zwCCB3DESEncryptDyCode(const char *ccbComm3DESKeyHex,const int dyCode,char 
 	if (16!=ccbKeyLen)
 	{
 		printf("invalid ccbComm3DESKeyHex\n");
-		return;
+		return JC3DES_KEY_INVALID_LENGTH;
 	}
 	if (dyCode<10000000 && dyCode>99999999)
 	{
 		printf("invalid dyCode\n");
-		return;
+		return JC3DES_DYCODE_OUTOFRANGE;
 	}
 	if (NULL==outEncDyCodeHex)
 	{
 		printf("NULL outEncDyCodeHex\n");
-		return;
+		return JC3DES_OUTBUF_NULL;
 	}
 	/////////////////////////////////动态码转换为字符串/////////////////////////////////////////
 	char dyCodeStr[DESLEN*2];
@@ -483,7 +486,7 @@ void zwCCB3DESEncryptDyCode(const char *ccbComm3DESKeyHex,const int dyCode,char 
 	printf("K1:%016I64X K2:%016I64X K3:%016I64X \n",key1,key2,key1);
 	printf("3DES Encrypted dyCode is %s\n",outEncDyCodeHex);
 #endif // _DEBUG
-
+	return JC3DES_OK;
 }
 
 

@@ -205,11 +205,14 @@ void myJclmsTest20150306STM32Demo()
 
 
 void test4CCB3DES_ECB_EDE2();
+//把进来的64比特信息转换为64比特无符号整型
+ui64 myChar2Ui64(const char *inStr);
+
 int main(int argc, char * argv[])
 {
 	//myECIES_KeyGenTest123();
 	//////////////////////////////////////////////////////////////////////////
-	//myECIESTest305();
+	myECIESTest305();
 
 	//////////////////////////////////////////////////////////////////////////
 	//myJclmsTest20150305();
@@ -218,9 +221,18 @@ int main(int argc, char * argv[])
 	printf("%016I64X\n",myChar2Ui64("44556677"));
 	char outEncDyCode[17];
 	memset(outEncDyCode,0,17);
-	zwCCB3DESEncryptDyCode("1234567890abcdef",56380517,outEncDyCode);
-	printf("zwCCB3DESEncryptDyCode test result is %s\n",outEncDyCode);
+	JC3DES_ERROR err= zwCCB3DESEncryptDyCode("1234567890abcdef",56380517,outEncDyCode);
+	if (JC3DES_OK==err)
+	{
+		printf("zwCCB3DESEncryptDyCode test result is %s\n",outEncDyCode);
+	}
+	else
+	{
+		printf("ERROR CODE OF zwCCB3DESEncryptDyCode is %d\n",err);
+	}
+	
 	//test4CCB3DES_ECB_EDE2();
+
 	return 0;
 }
 
