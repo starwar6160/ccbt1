@@ -46,7 +46,7 @@ the CertiVox MIRACL Crypto SDK with a closed source product.               *
 
 #include "miracl.h"
 #include <stdlib.h>
-//#include <memory.h>
+#include <memory.h>
 #include <string.h>
 
 #ifndef MR_STATIC

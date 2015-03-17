@@ -1,7 +1,9 @@
 #include "des.h"
 #include "des.h"
 #include <stdio.h>
+#ifdef WIN32
 #include <memory.h>
+#endif // WIN32
 #include <string.h>
 
 #ifdef WIN32

@@ -2,7 +2,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#ifdef WIN32
 #include <memory.h>
+#endif // WIN32
 #include <time.h>
 #include "jclmsCCB2014AlgCore.h"
 #include "zwEcies529.h"
