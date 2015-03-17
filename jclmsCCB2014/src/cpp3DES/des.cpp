@@ -429,6 +429,38 @@ void test4CCB3DES_ECB_EDE2()
 }
 
 
+//判断输入字符串是否是HEX字符串，如果是，返回HEX字符串长度，如果不是，返回0
+int myHexStringLength(const char *hexStr)
+{
+	assert(NULL!=hexStr);
+	assert(0!=strlen(hexStr));
+	if (NULL==hexStr)
+	{
+		return 0;
+	}
+	int inLen=strlen(hexStr);
+	if (0==inLen)
+	{
+		return 0;
+	}
+	int hLen=0;	//HEX长度
+	for (int i=0;i<inLen;i++)
+	{
+		char t=hexStr[i];
+		if(	(t>='0' && t<='9')	||
+			(t>='a' && t<='f')	||
+			(t>='A' && t<='F')	)
+		{
+			hLen++;
+		}
+		else
+		{
+			return 0;	//发现一个非HEX字符就错误返回
+		}
+	}
+
+	return hLen;
+}
 
 
 //使用建行的通讯加密密钥ccbComm3DESKeyHex把8位动态码dyCode加密，返回在出参outEncDyCodeHex中
@@ -441,7 +473,8 @@ JC3DES_ERROR zwCCB3DESEncryptDyCode( const char *ccbComm3DESKeyHex,const int dyC
 	const int DESLEN=sizeof(ui64);	//一个3DES算法基本的64bit块大小的字节数
 	assert(NULL!=ccbComm3DESKeyHex);
 	assert(dyCode>=10000000 && dyCode<=99999999);
-	int ccbKeyLen=strlen(ccbComm3DESKeyHex);
+	int ccbKeyLen=myHexStringLength(ccbComm3DESKeyHex);
+
 	assert(16==ccbKeyLen);	
 	if (16!=ccbKeyLen)
 	{
