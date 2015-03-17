@@ -682,9 +682,9 @@ int embSrvReverseDyCode(const JCCMD Pass,const int dyCode, const int CloseCode,c
 		JcLockReverseVerifyDynaCode(handle, dyCode);
 #ifdef WIN32	//避开ARM没有time函数的问题(板子没有RTC时钟无法提供时间)
 	printf("current time=\t\t%u\n", static_cast<uint32_t>(time(NULL)));
-#endif // WIN32
 	printf("pass1Match Time =\t%d\tValidity=%d\n",
 		pass1Match.s_datetime, pass1Match.s_validity);
+#endif // WIN32
 	JcLockDelete(handle);
 	return pass1Match.s_datetime;
 }
