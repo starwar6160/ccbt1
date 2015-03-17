@@ -463,28 +463,34 @@ int myHexStringLength(const char *hexStr)
 }
 
 //检测常见DES弱密钥
-JC3DES_ERROR myIsDESWeakKey(ui64 desKey)
+JC3DES_ERROR myIsDESWeakKey(const char *desKey)
 {
-	if(	0x0101010101010101==desKey ||
-		0xFEFEFEFEFEFEFEFE==desKey ||
-		0xE0E0E0E0F1F1F1F1==desKey ||
-		0x1F1F1F1F0E0E0E0E==desKey ||
-		0x0000000000000000==desKey ||
-		0xFFFFFFFFFFFFFFFF==desKey ||
-		0xE1E1E1E1F0F0F0F0==desKey ||
-		0x1E1E1E1E0F0F0F0F==desKey ||
-		0x011F011F010E010E==desKey ||
-		0x1F011F010E010E01==desKey ||
-		0x01E001E001F101F1==desKey ||
-		0xE001E001F101F101==desKey ||
-		0x01FE01FE01FE01FE==desKey ||
-		0xFE01FE01FE01FE01==desKey ||
-		0x1FE01FE00EF10EF1==desKey ||
-		0xE01FE01FF10EF10E==desKey ||
-		0x1FFE1FFE0EFE0EFE==desKey ||
-		0xFE1FFE1FFE0EFE0E==desKey ||
-		0xE0FEE0FEF1FEF1FE==desKey ||
-		0xFEE0FEE0FEF1FEF1==desKey 
+	assert(NULL!=desKey && strlen(desKey)>=16);
+	if (NULL==desKey || strlen(desKey)<16)
+	{
+		return JC3DES_KEY_INVALID_LENGTH;
+	}
+	if(	
+		strcmp("0101010101010101",desKey)==0 ||
+		strcmp("FEFEFEFEFEFEFEFE",desKey)==0 ||
+		strcmp("E0E0E0E0F1F1F1F1",desKey)==0 ||
+		strcmp("1F1F1F1F0E0E0E0E",desKey)==0 ||
+		strcmp("0000000000000000",desKey)==0 ||
+		strcmp("FFFFFFFFFFFFFFFF",desKey)==0 ||
+		strcmp("E1E1E1E1F0F0F0F0",desKey)==0 ||
+		strcmp("1E1E1E1E0F0F0F0F",desKey)==0 ||
+		strcmp("011F011F010E010E",desKey)==0 ||
+		strcmp("1F011F010E010E01",desKey)==0 ||
+		strcmp("01E001E001F101F1",desKey)==0 ||
+		strcmp("E001E001F101F101",desKey)==0 ||
+		strcmp("01FE01FE01FE01FE",desKey)==0 ||
+		strcmp("FE01FE01FE01FE01",desKey)==0 ||
+		strcmp("1FE01FE00EF10EF1",desKey)==0 ||
+		strcmp("E01FE01FF10EF10E",desKey)==0 ||
+		strcmp("1FFE1FFE0EFE0EFE",desKey)==0 ||
+		strcmp("FE1FFE1FFE0EFE0E",desKey)==0 ||
+		strcmp("E0FEE0FEF1FEF1FE",desKey)==0 ||
+		strcmp("FEE0FEE0FEF1FEF1",desKey)==0
 		)
 	{
 		return JC3DES_KEY_WEAKKEY;
@@ -540,12 +546,14 @@ JC3DES_ERROR zwCCB3DESEncryptDyCode( const char *ccbComm3DESKeyHex,const int dyC
 	memset(ccbKeyTmp,0,DESLEN*2+1);
 	memcpy(ccbKeyTmp,ccbComm3DESKeyHex,DESLEN*2);
 	//分别把A,B,A当作3DES EDE2的3个Key
+	//检查CCB原始64bit密钥，以及分解出来的2个64bit密钥是否弱密钥
 	ui64 key1=myChar2Ui64(ccbKeyTmp);
 	ui64 key2=myChar2Ui64(ccbKeyTmp+DESLEN);
-	if (JC3DES_OK!=myIsDESWeakKey(key1) ||
-		JC3DES_OK!=myIsDESWeakKey(key2))
+	if (	JC3DES_OK!=myIsDESWeakKey(ccbComm3DESKeyHex)
+		||	JC3DES_OK!=myIsDESWeakKey(ccbKeyTmp) 
+		||	JC3DES_OK!=myIsDESWeakKey(ccbKeyTmp+DESLEN)	)
 	{
-		printf("WEAK 3DES KEY");
+		printf("ERROR:WEAK 3DES KEY!\n");
 		return JC3DES_KEY_WEAKKEY;
 	}
 	DES3 des3(key1,key2,key1);	
