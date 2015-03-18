@@ -111,6 +111,9 @@
     <ClCompile Include="..\jclmsCCB2014\src\cpp3DES\des.cpp">
       <Filter>源文件\3DESref</Filter>
     </ClCompile>
+    <ClCompile Include="zwtest318.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="jclmsCCB2014AlgCoreT2.h">

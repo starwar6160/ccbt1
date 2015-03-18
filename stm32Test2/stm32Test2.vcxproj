@@ -113,6 +113,7 @@
     <ClCompile Include="zwMiracl\mrsroot.c" />
     <ClCompile Include="zwMiracl\mrstrong.c" />
     <ClCompile Include="zwMiracl\mrxgcd.c" />
+    <ClCompile Include="zwtest318.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\jclmsCCB2014\src\cpp3DES\des.h" />

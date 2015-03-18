@@ -10,14 +10,14 @@ extern "C" {
 #define ui32 uint32_t
 #define ui8  uint8_t
 
-enum JC3DES_ERROR{
+typedef enum {
 	JC3DES_OK,	//成功返回
 	JC3DES_KEY_INVALID_LENGTH,	//密钥长度非法
 	JC3DES_KEY_NONHEX,			//密钥不是HEX字符串
 	JC3DES_KEY_WEAKKEY,			//密钥是DES弱密钥
 	JC3DES_DYCODE_OUTOFRANGE,	//动态码范围超出有效范围
 	JC3DES_OUTBUF_NULL			//输出缓冲区为空
-};
+}JC3DES_ERROR;
 
 //判断输入字符串是否是HEX字符串，如果是，返回HEX字符串长度，如果不是，返回0
 int myHexStringLength(const char *hexStr);

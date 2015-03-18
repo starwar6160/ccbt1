@@ -154,7 +154,7 @@ void zwGenKeyPair(char *pubKey,char *priKey);
 void zwGetPSK(const char *priKey,const char *ccbActiveInfo,char *PSK);
 
 
-#ifdef WIN32
+
 #ifdef _DEBUG
 //#define ZWDEBUG(format,...) printf(" "__FILE__","__FUNCTION__",LINE:%d:"format"", __LINE__,##__VA_ARGS__)
 //注意这里的format外面的双重引号一定要
@@ -167,12 +167,18 @@ void zwGetPSK(const char *priKey,const char *ccbActiveInfo,char *PSK);
 //#define ZWDBG_NOTICE(format,...) 
 //#define ZWDBG_WARN(format,...) 
 //#define ZWDBG_ERROR(format,...) 
+//为了去掉在ARM上输出到串口的消息.20150318.1055.
+#ifdef WIN32
 #define ZWDBG_NOTICE(format,...) printf(""format"", ##__VA_ARGS__)
 #define ZWDBG_WARN(format,...) printf(""format"", ##__VA_ARGS__)
 #define ZWDBG_ERROR(format,...) printf(""format"", ##__VA_ARGS__)
-
-#endif // _DEBUG
+#else	
+#define ZWDBG_NOTICE(format,...) 
+#define ZWDBG_WARN(format,...) 
+#define ZWDBG_ERROR(format,...) 
 #endif // WIN32
+#endif // _DEBUG
+
 
 
 #ifdef  __cplusplus
