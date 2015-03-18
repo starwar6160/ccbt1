@@ -524,8 +524,8 @@ int myHexStringLength(const char *hexStr)
 //检测常见DES弱密钥，输入是64bit/16HEX字符的DES密钥
 JC3DES_ERROR myIsDESWeakKey(const char *desKey)
 {
-	assert(NULL!=desKey && strlen(desKey)>=8);
-	if (NULL==desKey || strlen(desKey)<8)
+	assert(NULL!=desKey && strlen(desKey)==16);
+	if (NULL==desKey || strlen(desKey)!=16)
 	{
 		return JC3DES_KEY_INVALID_LENGTH;
 	}
@@ -554,11 +554,40 @@ JC3DES_ERROR myIsDESWeakKey(const char *desKey)
 	{
 		return JC3DES_KEY_WEAKKEY;
 	}
-
-
-
 	return JC3DES_OK;
 }
+
+//检测常见DES弱密钥，输入是64bit/16HEX字符的DES密钥
+JC3DES_ERROR myIsDESWeakKeyBin(ui64 desKey)
+{
+	if(	
+		0x0101010101010101==desKey ||
+		0xFEFEFEFEFEFEFEFE==desKey ||
+		0xE0E0E0E0F1F1F1F1==desKey ||
+		0x1F1F1F1F0E0E0E0E==desKey ||
+		0x0000000000000000==desKey ||
+		0xFFFFFFFFFFFFFFFF==desKey ||
+		0xE1E1E1E1F0F0F0F0==desKey ||
+		0x1E1E1E1E0F0F0F0F==desKey ||
+		0x011F011F010E010E==desKey ||
+		0x1F011F010E010E01==desKey ||
+		0x01E001E001F101F1==desKey ||
+		0xE001E001F101F101==desKey ||
+		0x01FE01FE01FE01FE==desKey ||
+		0xFE01FE01FE01FE01==desKey ||
+		0x1FE01FE00EF10EF1==desKey ||
+		0xE01FE01FF10EF10E==desKey ||
+		0x1FFE1FFE0EFE0EFE==desKey ||
+		0xFE1FFE1FFE0EFE0E==desKey ||
+		0xE0FEE0FEF1FEF1FE==desKey ||
+		0xFEE0FEE0FEF1FEF1==desKey
+		)
+	{
+		return JC3DES_KEY_WEAKKEY;
+	}
+	return JC3DES_OK;
+}
+
 
 
 //使用建行的通讯加密密钥ccbComm3DESKeyHex把8位动态码dyCode加密，返回在出参outEncDyCodeHex中
@@ -609,8 +638,8 @@ JC3DES_ERROR zwCCB3DESEncryptDyCode( const char *ccbComm3DESKeyHex,const int dyC
 	ui64 key1=myChar2Ui64(ccbKeyTmp);
 	ui64 key2=myChar2Ui64(ccbKeyTmp+DESLEN);
 	if (	JC3DES_OK!=myIsDESWeakKey(ccbComm3DESKeyHex)
-		||	JC3DES_OK!=myIsDESWeakKey(ccbKeyTmp) 
-		||	JC3DES_OK!=myIsDESWeakKey(ccbKeyTmp+DESLEN)	)
+		||	JC3DES_OK!=myIsDESWeakKeyBin(key1) 
+		||	JC3DES_OK!=myIsDESWeakKeyBin(key2)	)
 	{
 		printf("ERROR:WEAK 3DES KEY!\n");
 		return JC3DES_KEY_WEAKKEY;

@@ -219,6 +219,7 @@ int main(int argc, char * argv[])
 	//myJclmsTest20150306STM32Demo();
 	//printf("%s\n",zw3desTest311("0123456789ABCDEF").c_str());
 	printf("%016I64X\n",myChar2Ui64("44556677"));
+	JC3DES_ERROR pchk1= myIsDESWeakKey("0123456789abcdef");
 	char outEncDyCode[17];
 	memset(outEncDyCode,0,17);
 	JC3DES_ERROR err= zwCCB3DESEncryptDyCode(
