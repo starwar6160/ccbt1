@@ -524,8 +524,8 @@ int myHexStringLength(const char *hexStr)
 //¼ì²â³£¼ûDESÈõÃÜÔ¿£¬ÊäÈëÊÇ64bit/16HEX×Ö·ûµÄDESÃÜÔ¿
 JC3DES_ERROR myIsDESWeakKey(const char *desKey)
 {
-	assert(NULL!=desKey && strlen(desKey)>=16);
-	if (NULL==desKey || strlen(desKey)<16)
+	assert(NULL!=desKey && strlen(desKey)>=8);
+	if (NULL==desKey || strlen(desKey)<8)
 	{
 		return JC3DES_KEY_INVALID_LENGTH;
 	}

@@ -154,6 +154,7 @@ void zwGenKeyPair(char *pubKey,char *priKey);
 void zwGetPSK(const char *priKey,const char *ccbActiveInfo,char *PSK);
 
 
+#ifdef WIN32
 #ifdef _DEBUG
 //#define ZWDEBUG(format,...) printf(" "__FILE__","__FUNCTION__",LINE:%d:"format"", __LINE__,##__VA_ARGS__)
 //注意这里的format外面的双重引号一定要
@@ -171,6 +172,7 @@ void zwGetPSK(const char *priKey,const char *ccbActiveInfo,char *PSK);
 #define ZWDBG_ERROR(format,...) printf(""format"", ##__VA_ARGS__)
 
 #endif // _DEBUG
+#endif // WIN32
 
 
 #ifdef  __cplusplus
