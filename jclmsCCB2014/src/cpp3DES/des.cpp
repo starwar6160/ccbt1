@@ -634,34 +634,19 @@ JC3DES_ERROR zwCCB3DESEncryptDyCode( const char *ccbComm3DESKeyHex,const int dyC
 		return JC3DES_OUTBUF_NULL;
 	}
 	/////////////////////////////////动态码转换为字符串/////////////////////////////////////////
+	//8位整数变为字符串的形式，就有了8字节，然后这8字节的二进制形式
+	// 反转字节序之后作为ui64进行加密，就可以得到符合建行要求的正确结果
 	char dyCodeStr[DESLEN+1];
 	memset(dyCodeStr,0,DESLEN+1);
 	sprintf(dyCodeStr,"%08d",dyCode);
-
-	char dyHex[DESLEN*2+1];
-	memset(dyHex,0,DESLEN*2+1);
-
-	for (int i=0;i<8;i++)
-	{
-		sprintf(dyHex+i*2,"%02X",dyCodeStr[i]);
-	}
-	printf("dyHex is %s\n",dyHex);
-	//strcpy(dyCodeStr,"F856272510DC7307");
 	memset(outEncDyCodeHex,0,DESLEN*2+1);
 #ifdef _DEBUG
 	printf("ccbComm3DESKeyHex:%s\n",ccbComm3DESKeyHex);
 	printf("dyCode=%d\tdyCodeStr=%s\n",dyCode,dyCodeStr);
 #endif // _DEBUG
 	assert(strlen(dyCodeStr)==8);
-	assert(strlen(dyHex)==16);
 	ui64 dyCodePlain=0;
-	ui32 t32;
-	sscanf(dyCodeStr,"%08X",&t32);
-	dyCodePlain=t32;
-	dyCodePlain<<=32;
-	sscanf(dyCodeStr+8,"%08X",&t32);
-	dyCodePlain+=t32;
-	//dyCodePlain=0xF856272510DC7307;
+
 	////////////////////////////////3DES加密//////////////////////////////////////////
 	char ccbKeyTmp[DESLEN*2+1];
 	memset(ccbKeyTmp,0,DESLEN*2+1);
