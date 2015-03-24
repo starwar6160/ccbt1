@@ -224,8 +224,8 @@ int main(int argc, char * argv[])
 	char outEncDyCode[16*2+1];
 	memset(outEncDyCode,0,16*2+1);
 	JC3DES_ERROR err= zwCCB3DESEncryptDyCode(
-		"0123456789ABCDEF"
-		//"1234567890123456"
+		//"0123456789ABCDEF"
+		"1234567890123456"
 		//"0000000000000000"
 		,21436587,outEncDyCode);
 	if (JC3DES_OK==err)

@@ -634,16 +634,26 @@ JC3DES_ERROR zwCCB3DESEncryptDyCode( const char *ccbComm3DESKeyHex,const int dyC
 		return JC3DES_OUTBUF_NULL;
 	}
 	/////////////////////////////////¶¯Ì¬Âë×ª»»Îª×Ö·û´®/////////////////////////////////////////
-	char dyCodeStr[DESLEN*2+1];
-	memset(dyCodeStr,0,DESLEN*2+1);
-	//sprintf(dyCodeStr,"%d",dyCode);
-	strcpy(dyCodeStr,"F856272510DC7307");
+	char dyCodeStr[DESLEN+1];
+	memset(dyCodeStr,0,DESLEN+1);
+	sprintf(dyCodeStr,"%08d",dyCode);
+
+	char dyHex[DESLEN*2+1];
+	memset(dyHex,0,DESLEN*2+1);
+
+	for (int i=0;i<8;i++)
+	{
+		sprintf(dyHex+i*2,"%02X",dyCodeStr[i]);
+	}
+	printf("dyHex is %s\n",dyHex);
+	//strcpy(dyCodeStr,"F856272510DC7307");
 	memset(outEncDyCodeHex,0,DESLEN*2+1);
 #ifdef _DEBUG
 	printf("ccbComm3DESKeyHex:%s\n",ccbComm3DESKeyHex);
 	printf("dyCode=%d\tdyCodeStr=%s\n",dyCode,dyCodeStr);
 #endif // _DEBUG
-	assert(strlen(dyCodeStr)==16);
+	assert(strlen(dyCodeStr)==8);
+	assert(strlen(dyHex)==16);
 	ui64 dyCodePlain=0;
 	ui32 t32;
 	sscanf(dyCodeStr,"%08X",&t32);
@@ -670,7 +680,8 @@ JC3DES_ERROR zwCCB3DESEncryptDyCode( const char *ccbComm3DESKeyHex,const int dyC
 	key1=zwReverseByteOrder(key1);
 	key2=zwReverseByteOrder(key2);
 	DES3 des3(key1,key2,key1);	
-
+	dyCodePlain=*(ui64 *)(dyCodeStr);
+	dyCodePlain=zwReverseByteOrder(dyCodePlain);
 	ui64 encDyCode=des3.encrypt(dyCodePlain);
 	myui64sprintf(encDyCode,outEncDyCodeHex);
 #ifdef _DEBUG
