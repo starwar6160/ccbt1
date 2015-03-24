@@ -588,7 +588,9 @@ JC3DES_ERROR myIsDESWeakKeyBin(ui64 desKey)
 	return JC3DES_OK;
 }
 
-
+#include <string>
+using std::string;
+string zwCode8ToHex(int Code8);
 
 //使用建行的通讯加密密钥ccbComm3DESKeyHex把8位动态码dyCode加密，返回在出参outEncDyCodeHex中
 //其中通讯加密密钥，以及加密结果都是HEX字符串，动态码是整数
@@ -619,16 +621,18 @@ JC3DES_ERROR zwCCB3DESEncryptDyCode( const char *ccbComm3DESKeyHex,const int dyC
 		return JC3DES_OUTBUF_NULL;
 	}
 	/////////////////////////////////动态码转换为字符串/////////////////////////////////////////
-	char dyCodeStr[DESLEN*2];
-	memset(dyCodeStr,0,DESLEN*2);
-	sprintf(dyCodeStr,"%d",dyCode);
 	memset(outEncDyCodeHex,0,DESLEN*2+1);
 #ifdef _DEBUG
 	printf("ccbComm3DESKeyHex:%s\n",ccbComm3DESKeyHex);
-	printf("dyCode=%d\tdyCodeStr=%s\n",dyCode,dyCodeStr);
 #endif // _DEBUG
-	assert(strlen(dyCodeStr)<=8);
-	ui64 dyCodePlain=myChar2Ui64(dyCodeStr);
+	//输入的8位10进制动态码，转换为16个HEX字符，然后将其二进制形式
+	//内存复制到2个ui64，去做加密
+	std::string dyCodeHexStr=zwCode8ToHex(dyCode);
+	const char *dcS1=dyCodeHexStr.c_str();
+	//printf("324GZ dyCodeHexStr=%s\n",dyCodeHexStr.c_str());
+	ui64 data1=0,data2=0;
+	memcpy(&data1,dcS1,DESLEN);
+	memcpy(&data2,dcS1+DESLEN,DESLEN);
 	////////////////////////////////3DES加密//////////////////////////////////////////
 	char ccbKeyTmp[DESLEN*2+1];
 	memset(ccbKeyTmp,0,DESLEN*2+1);
@@ -642,16 +646,18 @@ JC3DES_ERROR zwCCB3DESEncryptDyCode( const char *ccbComm3DESKeyHex,const int dyC
 		||	JC3DES_OK!=myIsDESWeakKeyBin(key2)	)
 	{
 		printf("ERROR:WEAK 3DES KEY!\n");
-		return JC3DES_KEY_WEAKKEY;
+		//return JC3DES_KEY_WEAKKEY;
 	}
 	DES3 des3(key1,key2,key1);	
-
-	ui64 encDyCode=des3.encrypt(dyCodePlain);
-	myui64sprintf(encDyCode,outEncDyCodeHex);
+	ui64 encDyCode1=des3.encrypt(data1);
+	ui64 encDyCode2=des3.encrypt(data2);
+	myui64sprintf(encDyCode1,outEncDyCodeHex);
 #ifdef _DEBUG
-	printf("encKey:%016I64X\n",encDyCode);
-	printf("dyCodePlain:%016I64X\n",dyCodePlain);
+	printf("encKey:%016I64X\n",encDyCode1);
+	//printf("dyCodePlain:%016I64X\n",dyCodePlain);
 	printf("K1:%016I64X K2:%016I64X K3:%016I64X \n",key1,key2,key1);
+	printf("D1:%016I64X D2:%016I64X\n",data1,data2);
+	printf("E1:%016I64X E2:%016I64X\n",encDyCode1,encDyCode2);
 	printf("3DES Encrypted dyCode is %s\n",outEncDyCodeHex);
 #endif // _DEBUG
 	return JC3DES_OK;

@@ -210,6 +210,7 @@ ui64 myChar2Ui64(const char *inStr);
 
 int main(int argc, char * argv[])
 {
+	test4CCB3DES_ECB_EDE2();
 	//myECIES_KeyGenTest123();
 	//////////////////////////////////////////////////////////////////////////
 	//myECIESTest305();
