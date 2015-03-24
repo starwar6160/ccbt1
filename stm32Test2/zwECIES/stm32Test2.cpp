@@ -221,13 +221,13 @@ int main(int argc, char * argv[])
 	//printf("%s\n",zw3desTest311("0123456789ABCDEF").c_str());
 	printf("%016I64X\n",myChar2Ui64("44556677"));
 	JC3DES_ERROR pchk1= myIsDESWeakKey("0123456789abcdef");
-	char outEncDyCode[17];
-	memset(outEncDyCode,0,17);
+	char outEncDyCode[16*2+1];
+	memset(outEncDyCode,0,16*2+1);
 	JC3DES_ERROR err= zwCCB3DESEncryptDyCode(
-		//"1234567890abcdef"
-		"0123456789abcdef"
+		"0123456789ABCDEF"
+		//"1234567890123456"
 		//"0000000000000000"
-		,56380517,outEncDyCode);
+		,21436587,outEncDyCode);
 	if (JC3DES_OK==err)
 	{
 		printf("zwCCB3DESEncryptDyCode test result is %s\n",outEncDyCode);
