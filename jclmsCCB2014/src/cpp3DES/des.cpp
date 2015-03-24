@@ -644,8 +644,14 @@ JC3DES_ERROR zwCCB3DESEncryptDyCode( const char *ccbComm3DESKeyHex,const int dyC
 	printf("dyCode=%d\tdyCodeStr=%s\n",dyCode,dyCodeStr);
 #endif // _DEBUG
 	assert(strlen(dyCodeStr)==16);
-	ui64 dyCodePlain=myChar2Ui64(dyCodeStr);
-	dyCodePlain=0xF856272510DC7307;
+	ui64 dyCodePlain=0;
+	ui32 t32;
+	sscanf(dyCodeStr,"%08X",&t32);
+	dyCodePlain=t32;
+	dyCodePlain<<=32;
+	sscanf(dyCodeStr+8,"%08X",&t32);
+	dyCodePlain+=t32;
+	//dyCodePlain=0xF856272510DC7307;
 	////////////////////////////////3DES¼ÓÃÜ//////////////////////////////////////////
 	char ccbKeyTmp[DESLEN*2+1];
 	memset(ccbKeyTmp,0,DESLEN*2+1);
