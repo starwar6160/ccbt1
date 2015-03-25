@@ -17,6 +17,9 @@ HWND hWnd;
 #include "zwHidComm.h"
 #include "zwHidMulHeader.h"
 
+namespace zwCfg {
+	extern bool s_hidOpened;
+} //namespace zwCfg{  
 
 static const GUID GUID_DEVINTERFACE_LIST[] =
 {
@@ -120,6 +123,13 @@ void UpdateDevice(PDEV_BROADCAST_DEVICEINTERFACE pDevInf, WPARAM wParam)
 }
 LRESULT DeviceChange(UINT message, WPARAM wParam, LPARAM lParam)
 {
+	//此处是设备插上或者拔出的通知消息的地方
+	//20150325.解决姚工刚发现的ATM机器上直接拔掉锁具以后还获得成功Open结果的问题
+	if (DBT_DEVICEREMOVECOMPLETE == wParam)
+	{
+		printf("20150325.1743 DBT_DEVICEREMOVECOMPLETE , JINCHU ELOCK PlugOuted!\n");
+		zwCfg::s_hidOpened=false;
+	}
 	if ( DBT_DEVICEARRIVAL == wParam || DBT_DEVICEREMOVECOMPLETE == wParam )
 	{
 		PDEV_BROADCAST_HDR pHdr = (PDEV_BROADCAST_HDR)lParam;
