@@ -147,11 +147,12 @@ const char * zwGenPSKFromCCB(const char * ccbFact1, const char * ccbFact2);
 
 ////////////////////////////////ECIES//////////////////////////////////////////
 //从公钥，建行的2个输入因子字符串，输出激活信息字符串，输出缓冲区必须有头文件里面指定的足够大小
-void zwGenActiveInfo(const char *pubkey,const char *ccbFact1,const char *ccbFact2,char *ccbActiveInfo);
+void zwGenActiveInfo(const char *pubkey,const char *ccbFact1,const char *ccbFact2,
+	const time_t nowTime,char *ccbActiveInfo);
 //生成公钥私钥对,输入缓冲区必须有头文件里面宏定义值所指定的足够大小
 void zwGenKeyPair(char *pubKey,char *priKey);
 //从私钥，激活信息，获取PSK，输出缓冲区必须有头文件里面指定的足够大小
-void zwGetPSK(const char *priKey,const char *ccbActiveInfo,char *PSK);
+void zwGetPSK(const char *priKey,const char *ccbActiveInfo,char *PSK,time_t *origTime);
 
 
 

@@ -29,15 +29,7 @@ const int ZW_EXA=4;
 //////////////////////////////////////////////////////////////////////////
 
 
-#ifndef _ZWUSE_AS_JNI
-#ifdef ZWECIES_EXPORTS
-#define ZWECIES_API __declspec(dllexport)
-#else
-#define ZWECIES_API __declspec(dllimport)
-#endif
-#else
 #define ZWECIES_API
-#endif
 
 #ifdef  __cplusplus
 extern "C" {
@@ -70,6 +62,7 @@ extern "C" {
 		ECIES_ENCALLOUT
 	};
 
+#ifdef _DEBUG_123
 //以下所有涉及到结尾叫Str的参数，都是Base64或者HEX编码之一，默认一般是Base64以便减少参数长度
 //其余char的参数是普通字符串；
 //初始化ECIES，并生成私钥和公钥
@@ -96,6 +89,7 @@ extern "C" {
 //EncryptedSyncKeyStr，MsgHashStr，CryptedTextStr：含义同加密输出的3个项目
 	ZWECIES_API int zwEciesDecrypt(const char *prikeyStr,char *outPlainText,const int plainLen, const char *EncryptedSyncKeyStr,const char *MsgHashStr,const char *CryptedTextStr);
 //int myTestEccMain();
+#endif // _DEBUG_123
 //////////////////////////////以下是适合包装给C#使用的接口////////////////////////////////////////////
 //生成ECIES公钥/私钥对，返回保存密钥对等等的内部数据结构句柄
 ZWECIES_API int		EciesGenKeyPair(void);
@@ -111,6 +105,13 @@ ZWECIES_API const char * EciesGetPriKey(int eciesHandle);
 ZWECIES_API const char * EciesEncrypt(const char *pubKey,const char *plainText);
 //输入加密函数输出的base64编码的3个元素的组合的密文，以及base64格式的私钥，返回明文
 ZWECIES_API const char * EciesDecrypt(const char *priKey,const char *cryptText);
+//要求eciesHandle已经被设置了公钥才能成功，返回值是3个元素的组合，不必理解其意义
+//20150325.建行版本，明文增加了时间戳，是UTC秒数的字符串形式
+ZWECIES_API const char *EciesEncryptCCB1503(const char *pubKey, const char *plainText,time_t nowTime);
+//要求eciesHandle已经被设置了私钥才能成功，输入密文是3个元素的组合，不必理解其意义
+//20150325.建行版本，明文增加了时间戳，是UTC秒数的字符串形式
+ZWECIES_API const char *EciesDecryptCCB1503(const char *priKey, const char *cryptText,time_t *origTime);
+
 ZWECIES_API const char * zwMergePsk(const char *pskInput);
 #ifdef  __cplusplus
 }

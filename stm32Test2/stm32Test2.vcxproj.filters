@@ -45,9 +45,6 @@
     <ClCompile Include="zwECIES\sm3hmac_1407.cpp">
       <Filter>源文件\zwECIESCopy</Filter>
     </ClCompile>
-    <ClCompile Include="zwECIES\zwEcies529.cpp">
-      <Filter>源文件\zwECIESCopy</Filter>
-    </ClCompile>
     <ClCompile Include="zwECIES\zwRand201406.cpp">
       <Filter>源文件\zwECIESCopy</Filter>
     </ClCompile>
@@ -113,6 +110,9 @@
     </ClCompile>
     <ClCompile Include="zwtest318.c">
       <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\jclmsCCB2014\zwECIES\zwEcies529.cpp">
+      <Filter>源文件\zwDycodeRef</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

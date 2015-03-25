@@ -1,13 +1,17 @@
-#include "..\stdafx.h"
 #include <string>
 #include <vector>
+#ifdef WIN32
+#include <assert.h>
+#else
+#define assert	//ARM Keil不支持assert
+#endif // WIN32
 using std::string;
 using std::vector;
 #ifdef  __cplusplus
 extern "C" {
 #endif
 #include "ecdh.h"
-void WINAPI OutputDebugStringA(char * lpOutputString);
+//void WINAPI OutputDebugStringA(char * lpOutputString);
 #ifdef  __cplusplus
 }
 #endif
@@ -71,8 +75,7 @@ class jcOctex {
 //此处的初始化值控制着同样的明文，出来不同的对称密钥
 void myPrngInit( csprng * RNG,bool bRandom )
 {
-	assert(RNG != NULL);
-	int i;
+	assert(RNG != NULL);	
 	/* Crypto Strong RNG */
 	jcOctex RAW(EFS * 3);
 	RAW.Value().len = EFS * 3;	/* fake random seed source */
@@ -586,9 +589,9 @@ ZWECIES_API const char *EciesEncrypt(const char *pubKey, const char *plainText)
 	assert(*(int *)pubKey != 0xCCCCCCCC);	
 	assert(strlen(plainText) > 0);
 	assert(*(int *)plainText != 0xCCCCCCCC);
-	static string g_retStr;
+	string retStr;
 	sprintf(dbgBuf,"1701.pubKey=%s plainText=%s",pubKey,plainText);
-	OutputDebugStringA(dbgBuf);
+	//OutputDebugStringA(dbgBuf);
 #define SKELEN	(ZW_ECIES_ENCSYNCKEY_LEN*2)
 #define HASHLEN	(EFS*2+ZW_EXA)
 #define CRLEN	(ZW_ECIES_MESSAGE_MAXLEN*2)
@@ -605,18 +608,23 @@ ZWECIES_API const char *EciesEncrypt(const char *pubKey, const char *plainText)
 	int res = zwEciesEncrypt(pubKey, plainText,
 				 encSyncKey, SKELEN, msgHashBuf, HASHLEN,
 				 cryptText, CRLEN);
-	string dot = ".";
-	g_retStr = encSyncKey + dot + msgHashBuf + dot + cryptText;
+	const string dot = ".";
+	retStr = encSyncKey + dot + msgHashBuf + dot + cryptText;
 	memset(dbgBuf,0,BUFLEN);
 	sprintf(dbgBuf,"R1 zwEciesEncrypt result=%d encSyncKey=%s msgHashBuf=%s cryptText=%s",res,encSyncKey,msgHashBuf,cryptText);
-	OutputDebugStringA(dbgBuf);
+	//OutputDebugStringA(dbgBuf);
 	if (ECIES_SUCCESS != res || strlen(encSyncKey) == 0 ||
 	    strlen(msgHashBuf) == 0 || strlen(cryptText) == 0) {
 		return NULL;
 	}
-	OutputDebugStringA((char *)g_retStr.c_str());
-	return g_retStr.c_str();
+	//OutputDebugStringA((char *)g_retStr.c_str());
+	static char g_retBuf[ZW_ECIES_CRYPT_TOTALLEN];
+	memset(g_retBuf,0,ZW_ECIES_CRYPT_TOTALLEN);
+	strcpy(g_retBuf,retStr.c_str());
+	return g_retBuf;
 }
+
+
 
 //要求eciesHandle已经被设置了私钥才能成功，输入密文是3个元素的组合，不必理解其意义
 ZWECIES_API const char *EciesDecrypt(const char *priKey, const char *cryptText)
@@ -631,7 +639,7 @@ ZWECIES_API const char *EciesDecrypt(const char *priKey, const char *cryptText)
 	vector < string > encout;
 	string delm = ".";
 	zwsplit(cryptText, delm, &encout);
-	if (encout.size() == 1) {
+	if (encout.size() != 3) {
 		//如果不是可以切分的符合要求格式的合法密文，直接返回
 		return NULL;
 	}
@@ -649,4 +657,35 @@ ZWECIES_API const char *EciesDecrypt(const char *priKey, const char *cryptText)
 		return NULL;
 	}
 	return g_plainTextBuf_decrypt;
+}
+
+//要求eciesHandle已经被设置了公钥才能成功，返回值是3个元素的组合，不必理解其意义
+//20150325.建行版本，明文增加了时间戳，是UTC秒数的字符串形式
+ZWECIES_API const char *EciesEncryptCCB1503(const char *pubKey, const char *plainText,time_t nowTime)
+{
+	char ntBuf[16];
+	memset(ntBuf,0,16);
+	sprintf(ntBuf,"%u",nowTime);
+	string plainTimedText=plainText;
+	plainTimedText=plainTimedText+"."+ntBuf;
+	return EciesEncrypt(pubKey,plainTimedText.c_str());
+}
+
+//要求eciesHandle已经被设置了私钥才能成功，输入密文是3个元素的组合，不必理解其意义
+//20150325.建行版本，明文增加了时间戳，是UTC秒数的字符串形式
+ZWECIES_API const char *EciesDecryptCCB1503(const char *priKey, const char *cryptText,time_t *origTime)
+{
+	time_t origTimeUTC=0;
+	const char *deCrypt=EciesDecrypt(priKey,cryptText);
+	//首先把组合的3个项目切分开来
+	vector < string > encout;
+	string delm = ".";
+	zwsplit(deCrypt, delm, &encout);
+	if (encout.size() != 2) {
+		//如果不是可以切分的符合要求格式的合法密文，直接返回
+		return NULL;
+	}
+	sscanf(encout[1].c_str(),"%u",&origTimeUTC);
+	*origTime=origTimeUTC;
+	return deCrypt;
 }

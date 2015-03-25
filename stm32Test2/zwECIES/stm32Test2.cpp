@@ -13,6 +13,12 @@
 using std::string;
 #include "des.h"
 
+extern "C"
+{
+	void	__stdcall	Sleep(uint32_t dwMilliseconds	);	
+};
+
+
 void myECIES_KeyGenTest325(void)
 {
 	//预先设置好的生成的一对非对称密钥，是Base64编码的二进制内容
@@ -70,7 +76,7 @@ void myECIES_KeyGenTest325(void)
 	printf("ccbPSK=\t%s\n",dePSK);
 }
 
-void myECIESTest305()
+void myECIESTest305ForArm()
 {
 	//生成公钥私钥对操作
 	char pubKey[ZW_ECIES_PUBKEY_LEN];
@@ -91,16 +97,18 @@ void myECIESTest305()
 	const char *ccbInput2="1234567890abcdef";
 
 	memset(ccbActiveInfo,0,ZW_ECIES_CRYPT_TOTALLEN);
-	zwGenActiveInfo(pubKey,ccbInput1,ccbInput2,ccbActiveInfo);
-	printf("ccbActiveInfo=%s\n",ccbActiveInfo);
+	time_t nowTime=time(NULL);
+	zwGenActiveInfo(pubKey,ccbInput1,ccbInput2,nowTime,ccbActiveInfo);
+	printf("ccbActiveInfo=%s\nnowTime=\t%u\n",ccbActiveInfo,nowTime);
 	/////////////////////////////解密激活信息/////////////////////////////////////////////
 	char PSK[ZW_ECIES_HASH_LEN*2];
 	memset(PSK,0,ZW_ECIES_HASH_LEN*2);
-	zwGetPSK(priKey,ccbActiveInfo,PSK);
-	printf("PSK=\t%s\n",PSK);
+	time_t origTime=0;
+	zwGetPSK(priKey,ccbActiveInfo,PSK,&origTime);
+	printf("PSK=\t%s \norigTime=\t%u\n",PSK,origTime);
 }
 
-void myECIESTest305();
+void myECIESTest305ForArm();
 
 void myJclmsTest20150305()
 {
@@ -244,7 +252,9 @@ int main(int argc, char * argv[])
 	//test4CCB3DES_ECB_EDE2();
 
 	//////////////////////////////////////////////////////////////////////////
-	//myECIESTest305();
+	myECIESTest305ForArm();
+	Sleep(2000);
+	myECIESTest305ForArm();
 
 	//////////////////////////////////////////////////////////////////////////
 	//myJclmsTest20150305();
@@ -254,7 +264,7 @@ int main(int argc, char * argv[])
 
 
 	//test4CCB3DES_ECB_EDE2();
-	myECIES_KeyGenTest325();
+	//myECIES_KeyGenTest325();
 	//EciesEncryptCCB1503("ECIESPUBKEY","ECIESPLAINTEXT",time(NULL));
 
 	return 0;

@@ -52,7 +52,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\jclmsCCB2014\src;..\jclmsCCB2014\zwECIES;$(ZWLIB)\gtest\include\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\jclmsCCB2014\src;$(ZWLIB)\MIRACL2014\MIRACL2014\miraclSrc\include\;..\jclmsCCB2014\zwECIES;$(ZWLIB)\gtest\include\</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -72,7 +72,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\jclmsCCB2014\src;..\jclmsCCB2014\zwECIES;$(ZWLIB)\gtest\include\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\jclmsCCB2014\src;$(ZWLIB)\MIRACL2014\MIRACL2014\miraclSrc\include\;..\jclmsCCB2014\zwECIES;$(ZWLIB)\gtest\include\</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -93,6 +93,10 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\jclmsCCB2014\zwECIES\zwEcies529.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="ccbTest702.cpp" />
     <ClCompile Include="gtestccb702.cpp" />
     <ClCompile Include="gtestLmsHid20141212.cpp" />

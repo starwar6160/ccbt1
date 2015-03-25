@@ -51,7 +51,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;MR_NOASM;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(ZWSRC)\jclmsCCB2014\stm32Test2\zwMiracl;$(ZWSRC)\jclmsCCB2014\stm32Test2\zwECIES;..\jclmsCCB2014\src;..\jclmsCCB2014\src\cpp3DES</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ZWSRC)\jclmsCCB2014\stm32Test2\zwMiracl;$(ZWSRC)\jclmsCCB2014\jclmsCCB2014\zwECIES;..\jclmsCCB2014\src;..\jclmsCCB2014\src\cpp3DES</AdditionalIncludeDirectories>
       <DisableLanguageExtensions>true</DisableLanguageExtensions>
       <EnablePREfast>false</EnablePREfast>
     </ClCompile>
@@ -69,7 +69,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;MR_NOASM;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(ZWSRC)\jclmsCCB2014\stm32Test2\zwMiracl;$(ZWSRC)\jclmsCCB2014\stm32Test2\zwECIES;..\jclmsCCB2014\src;..\jclmsCCB2014\src\cpp3DES</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ZWSRC)\jclmsCCB2014\stm32Test2\zwMiracl;$(ZWSRC)\jclmsCCB2014\jclmsCCB2014\zwECIES;..\jclmsCCB2014\src;..\jclmsCCB2014\src\cpp3DES</AdditionalIncludeDirectories>
       <DisableLanguageExtensions>true</DisableLanguageExtensions>
     </ClCompile>
     <Link>
@@ -89,13 +89,13 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="..\jclmsCCB2014\src\jclmsCCB2014AlgCore.cpp" />
+    <ClCompile Include="..\jclmsCCB2014\zwECIES\zwEcies529.cpp" />
     <ClCompile Include="zwECIES\ecdh.c" />
     <ClCompile Include="zwECIES\octet.c" />
     <ClCompile Include="zwECIES\sha2.c" />
     <ClCompile Include="zwECIES\sm3hmac_1407.cpp" />
     <ClCompile Include="zwECIES\sm3_1407.c" />
     <ClCompile Include="zwECIES\stm32Test2.cpp" />
-    <ClCompile Include="zwECIES\zwEcies529.cpp" />
     <ClCompile Include="zwECIES\zwRand201406.cpp" />
     <ClCompile Include="zwMiracl\mraes.c" />
     <ClCompile Include="zwMiracl\mralloc.c" />
