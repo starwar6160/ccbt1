@@ -57,12 +57,16 @@ void myECIES_KeyGenTest325(void)
 	char ccbActiveInfo[ZW_ECIES_CRYPT_TOTALLEN];
 	memset(ccbActiveInfo, 0, sizeof(ccbActiveInfo));
 	//从PSK和公钥生成激活信息ccbActiveInfo，然后激活信息就可以通过网络传输出去了
-	strcpy(ccbActiveInfo, EciesEncryptCCB1503(pubkey, ccbPSK,time(NULL)));
+	time_t nowTime=time(NULL);
+	printf("EciesEncryptCCB1503 set Origin ActInfo Time is %u\n",nowTime);
+	strcpy(ccbActiveInfo, EciesEncryptCCB1503(pubkey, ccbPSK,nowTime));
 	printf("ccbActiveInfo= %s\n",ccbActiveInfo);
 	//用私钥解开激活信息，获得PSK
 	char dePSK[ZW_ECIES_CRYPT_TOTALLEN];
 	memset(dePSK,0,ZW_ECIES_CRYPT_TOTALLEN);
-	strcpy(dePSK,EciesDecrypt(prikey, ccbActiveInfo));	
+	time_t origTime=0;
+	strcpy(dePSK,EciesDecryptCCB1503(prikey, ccbActiveInfo,&origTime));	
+	printf("EciesDecryptCCB1503 get Origin ActInfo Time is %u\n",origTime);
 	printf("ccbPSK=\t%s\n",dePSK);
 }
 

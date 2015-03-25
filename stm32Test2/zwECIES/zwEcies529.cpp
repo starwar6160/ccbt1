@@ -639,7 +639,7 @@ ZWECIES_API const char *EciesDecrypt(const char *priKey, const char *cryptText)
 	vector < string > encout;
 	string delm = ".";
 	zwsplit(cryptText, delm, &encout);
-	if (encout.size() == 1) {
+	if (encout.size() != 3) {
 		//如果不是可以切分的符合要求格式的合法密文，直接返回
 		return NULL;
 	}
@@ -669,4 +669,23 @@ ZWECIES_API const char *EciesEncryptCCB1503(const char *pubKey, const char *plai
 	string plainTimedText=plainText;
 	plainTimedText=plainTimedText+"."+ntBuf;
 	return EciesEncrypt(pubKey,plainTimedText.c_str());
+}
+
+//要求eciesHandle已经被设置了私钥才能成功，输入密文是3个元素的组合，不必理解其意义
+//20150325.建行版本，明文增加了时间戳，是UTC秒数的字符串形式
+ZWECIES_API const char *EciesDecryptCCB1503(const char *priKey, const char *cryptText,time_t *origTime)
+{
+	time_t origTimeUTC=0;
+	const char *deCrypt=EciesDecrypt(priKey,cryptText);
+	//首先把组合的3个项目切分开来
+	vector < string > encout;
+	string delm = ".";
+	zwsplit(deCrypt, delm, &encout);
+	if (encout.size() != 2) {
+		//如果不是可以切分的符合要求格式的合法密文，直接返回
+		return NULL;
+	}
+	sscanf(encout[1].c_str(),"%u",&origTimeUTC);
+	*origTime=origTimeUTC;
+	return deCrypt;
 }
