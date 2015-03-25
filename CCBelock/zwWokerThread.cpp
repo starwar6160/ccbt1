@@ -46,14 +46,23 @@ namespace zwccbthr {
 					return;
 				}
 #endif // ZWUSE_HID_MSG_SPLIT
-				ZWNOTICE("连接锁具成功");
-				ZWINFO("通信线程的新一轮等待接收数据循环开始");
+				if (true==zwCfg::s_hidOpened)
+				{
+					ZWNOTICE("连接锁具成功325");
+					ZWINFO("通信线程的新一轮等待接收数据循环开始325");
+				}
+				else
+				{
+					Sleep(1000);
+					continue;
+				}
+				
 				try {
 #ifdef ZWUSE_HID_MSG_SPLIT
 					JCHID_STATUS sts=
 					jcHidRecvData(&zwccbthr::hidHandle,
 						      recvBuf, BLEN, &outLen,JCHID_RECV_TIMEOUT);
-					zwCfg::s_hidOpened=true;	//算是通信线程的一个心跳标志					
+					//zwCfg::s_hidOpened=true;	//算是通信线程的一个心跳标志					
 					//要是什么也没收到，就直接进入下一个循环
 					if (JCHID_STATUS_OK!=sts)
 					{
