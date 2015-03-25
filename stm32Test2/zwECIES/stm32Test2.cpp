@@ -13,7 +13,7 @@
 using std::string;
 #include "des.h"
 
-void myECIES_KeyGenTest123(void)
+void myECIES_KeyGenTest325(void)
 {
 	//预先设置好的生成的一对非对称密钥，是Base64编码的二进制内容
 	//pubkey= BFlfjkxoiRZFdjQKa/W1JWBwFx+FPyzcFGqXjnlVzMcvIAQyK3C1Ha+G2uGUM4nX5khPQP5AiPFiCyuH2WxZefg=
@@ -57,7 +57,7 @@ void myECIES_KeyGenTest123(void)
 	char ccbActiveInfo[ZW_ECIES_CRYPT_TOTALLEN];
 	memset(ccbActiveInfo, 0, sizeof(ccbActiveInfo));
 	//从PSK和公钥生成激活信息ccbActiveInfo，然后激活信息就可以通过网络传输出去了
-	strcpy(ccbActiveInfo, EciesEncrypt(pubkey, ccbPSK));
+	strcpy(ccbActiveInfo, EciesEncryptCCB1503(pubkey, ccbPSK,time(NULL)));
 	printf("ccbActiveInfo= %s\n",ccbActiveInfo);
 	//用私钥解开激活信息，获得PSK
 	char dePSK[ZW_ECIES_CRYPT_TOTALLEN];
@@ -210,26 +210,6 @@ ui64 myChar2Ui64(const char *inStr);
 
 void myCCB3DESTest324();
 
-int main(int argc, char * argv[])
-{
-	myECIES_KeyGenTest123();
-	//myCCB3DESTest324();
-	//test4CCB3DES_ECB_EDE2();
-	
-	//////////////////////////////////////////////////////////////////////////
-	//myECIESTest305();
-
-	//////////////////////////////////////////////////////////////////////////
-	//myJclmsTest20150305();
-	//myJclmsTest20150306STM32Demo();
-	//printf("%s\n",zw3desTest311("0123456789ABCDEF").c_str());
-	
-
-	
-	//test4CCB3DES_ECB_EDE2();
-
-	return 0;
-}
 
 void myCCB3DESTest324()
 {
@@ -253,3 +233,25 @@ void myCCB3DESTest324()
 }
 
 
+
+int main(int argc, char * argv[])
+{	
+	//myCCB3DESTest324();
+	//test4CCB3DES_ECB_EDE2();
+
+	//////////////////////////////////////////////////////////////////////////
+	//myECIESTest305();
+
+	//////////////////////////////////////////////////////////////////////////
+	//myJclmsTest20150305();
+	//myJclmsTest20150306STM32Demo();
+	//printf("%s\n",zw3desTest311("0123456789ABCDEF").c_str());
+
+
+
+	//test4CCB3DES_ECB_EDE2();
+	myECIES_KeyGenTest325();
+	//EciesEncryptCCB1503("ECIESPUBKEY","ECIESPLAINTEXT",time(NULL));
+
+	return 0;
+}

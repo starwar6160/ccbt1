@@ -105,6 +105,9 @@ ZWECIES_API const char * EciesGetPriKey(int eciesHandle);
 ZWECIES_API const char * EciesEncrypt(const char *pubKey,const char *plainText);
 //输入加密函数输出的base64编码的3个元素的组合的密文，以及base64格式的私钥，返回明文
 ZWECIES_API const char * EciesDecrypt(const char *priKey,const char *cryptText);
+//要求eciesHandle已经被设置了公钥才能成功，返回值是3个元素的组合，不必理解其意义
+//20150325.建行版本，明文增加了时间戳，是UTC秒数的字符串形式
+ZWECIES_API const char *EciesEncryptCCB1503(const char *pubKey, const char *plainText,time_t nowTime);
 
 ZWECIES_API const char * zwMergePsk(const char *pskInput);
 #ifdef  __cplusplus
