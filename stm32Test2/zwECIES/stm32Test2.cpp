@@ -208,10 +208,14 @@ void test4CCB3DES_ECB_EDE2();
 //把进来的64比特信息转换为64比特无符号整型
 ui64 myChar2Ui64(const char *inStr);
 
+void myCCB3DESTest324();
+
 int main(int argc, char * argv[])
 {
-	test4CCB3DES_ECB_EDE2();
-	//myECIES_KeyGenTest123();
+	myECIES_KeyGenTest123();
+	//myCCB3DESTest324();
+	//test4CCB3DES_ECB_EDE2();
+	
 	//////////////////////////////////////////////////////////////////////////
 	//myECIESTest305();
 
@@ -219,6 +223,16 @@ int main(int argc, char * argv[])
 	//myJclmsTest20150305();
 	//myJclmsTest20150306STM32Demo();
 	//printf("%s\n",zw3desTest311("0123456789ABCDEF").c_str());
+	
+
+	
+	//test4CCB3DES_ECB_EDE2();
+
+	return 0;
+}
+
+void myCCB3DESTest324()
+{
 	printf("%016I64X\n",myChar2Ui64("44556677"));
 	JC3DES_ERROR pchk1= myIsDESWeakKey("0123456789abcdef");
 	char outEncDyCode[16*2+1];
@@ -236,10 +250,6 @@ int main(int argc, char * argv[])
 	{
 		printf("ERROR CODE OF zwCCB3DESEncryptDyCode is %d\n",err);
 	}
-	
-	//test4CCB3DES_ECB_EDE2();
-
-	return 0;
 }
 
 
