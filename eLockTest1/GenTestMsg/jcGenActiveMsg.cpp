@@ -41,6 +41,10 @@ namespace jcAtmcMsg {
 		//      锁具编号        LockId  是      值：厂商自定的锁具唯一编号
 		//      锁具公钥        LockPubKey      是      值：每把锁具生成的公私钥对中的公钥 16个字符
 	}
+
+//20150326，为了迅速调试姚工报告的USB拔掉线之后还能成功Open的问题暂时屏蔽掉这部分代码
+//好像是因为ecies算法从zwBaseLib里面提取出来到了jclms DLL才导致的；
+#ifdef _DEBUG326
 	//生成发送锁具激活信息报文，发送用锁具公钥加密过后的PSK到锁具
 	    string & myAtmcMsgSendActiveInfo(string & strXML, ptree & pt) {
 
@@ -91,5 +95,6 @@ namespace jcAtmcMsg {
 		//激活标志      ActiveResult    是      值：0成功，1失败
 		//激活信息      ActInfo 是      值：请求中的激活信息，96位，经过锁具解密，传到ATMVH，以后用于计算开锁密码，激活完成后提交闭锁码
 	}
+#endif // _DEBUG326
 
 }				//namespace jcAtmcMsg{
