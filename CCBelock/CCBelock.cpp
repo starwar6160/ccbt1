@@ -79,28 +79,27 @@ CCBELOCK_API long JCAPISTD Open(long lTimeOut)
 		LOG(ERROR)<<
 		    "Open Function incoming timeout Value must in -1 to " <<
 		    JC_CCBDLL_TIMEOUT << "seconds";
-		OutputDebugStringA("ELOCK_ERROR_PARAMINVALID.Open锁具的入口参数非法");
-		ZWNOTICE("ELOCK_ERROR_PARAMINVALID.Open锁具的入口参数非法")
+		OutputDebugStringA("return ELOCK_ERROR_PARAMINVALID.Open锁具的入口参数非法");
+		ZWNOTICE("return ELOCK_ERROR_PARAMINVALID.Open锁具的入口参数非法")
 		return ELOCK_ERROR_PARAMINVALID;
 	}
 	ZWFUNCTRACE boost::mutex::scoped_lock lock(zwCfg::ComPort_mutex);
-	//必须大于0，小于JC_CCBDLL_TIMEOUT，限制在一个合理范围内
-	LOG(WARNING) << "Open Return " << ELOCK_ERROR_SUCCESS << endl;
+	//必须大于0，小于JC_CCBDLL_TIMEOUT，限制在一个合理范围内	
 	string myLockIp;
 	try {
 
 #ifdef ZWUSE_HID_MSG_SPLIT
 		if (true == zwCfg::s_hidOpened) {
-			ZWINFO("ELOCK_ERROR_SUCCESS.锁具已经打开了所以避免重复打开直接返回")
-			OutputDebugStringA("ELOCK_ERROR_SUCCESS.锁具已经打开了所以避免重复打开直接返回");
-			return ELOCK_ERROR_SUCCESS;
+			ZWINFO("return ELOCK_ERROR_PARAMINVALID.锁具已经打开了所以避免重复打开直接返回")
+			OutputDebugStringA("return ELOCK_ERROR_PARAMINVALID.锁具已经打开了所以避免重复打开直接返回");
+			return ELOCK_ERROR_PARAMINVALID;
 		}
 		memset(&zwccbthr::hidHandle, 0, sizeof(JCHID));
 		zwccbthr::hidHandle.vid = JCHID_VID_2014;
 		zwccbthr::hidHandle.pid = JCHID_PID_LOCK5151;
 		if (JCHID_STATUS_OK != jcHidOpen(&zwccbthr::hidHandle)) {
-			ZWERROR("ELOCK_ERROR_PARAMINVALID.锁具打开错误1225");
-			OutputDebugStringA("ELOCK_ERROR_PARAMINVALID.锁具打开错误1225");
+			ZWERROR("return ELOCK_ERROR_PARAMINVALID.锁具打开错误1225");
+			OutputDebugStringA("return ELOCK_ERROR_PARAMINVALID.锁具打开错误1225");
 			return ELOCK_ERROR_PARAMINVALID;
 		}
 		zwCfg::s_hidOpened = true;
@@ -114,8 +113,8 @@ CCBELOCK_API long JCAPISTD Open(long lTimeOut)
 		ZWFATAL(errMsg.c_str())
 	}
 
-	ZWNOTICE("成功打开 到锁具的连接.正常打开")
-		OutputDebugStringA("成功打开 到锁具的连接.正常打开");
+	ZWNOTICE("return ELOCK_ERROR_SUCCESS 成功打开 到锁具的连接.正常打开")
+		OutputDebugStringA("return ELOCK_ERROR_SUCCESS 成功打开 到锁具的连接.正常打开");
 	    return ELOCK_ERROR_SUCCESS;
 }
 

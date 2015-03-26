@@ -118,8 +118,11 @@ namespace zwHidGTest20150130{
 		//EXPECT_EQ(jch::G_SUSSESS,CloseDrives(hidType,devSN1p));
 		
 		printf("***********************Wait for  PlugOut ELock For Test\n");
-		getchar();
+		Sleep(15000);
 		EXPECT_NE(ELOCK_ERROR_SUCCESS,Open(22));
+		Sleep(15000);
+		EXPECT_NE(ELOCK_ERROR_SUCCESS,Open(22));
+
 		EXPECT_EQ(ELOCK_ERROR_SUCCESS,Close());
 		//«Âø’œÚ¡ø
 		jch::vecJcHid.clear();
