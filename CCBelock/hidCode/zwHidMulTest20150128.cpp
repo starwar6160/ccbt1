@@ -117,8 +117,8 @@ namespace zwHidGTest20150130{
 		//EXPECT_EQ(jch::G_SUSSESS,CloseDrives(hidType,devSN1p));
 		//EXPECT_EQ(jch::G_SUSSESS,CloseDrives(hidType,devSN1p));
 		
-		printf("***********************Wait for 5 Seconds PlugOut ELock For Test\n");
-		Sleep(9000);
+		printf("***********************Wait for  PlugOut ELock For Test\n");
+		getchar();
 		EXPECT_NE(ELOCK_ERROR_SUCCESS,Open(22));
 		EXPECT_EQ(ELOCK_ERROR_SUCCESS,Close());
 		//«Âø’œÚ¡ø
