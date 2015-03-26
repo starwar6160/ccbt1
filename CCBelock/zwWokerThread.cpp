@@ -53,12 +53,15 @@ namespace zwccbthr {
 				}
 				else
 				{
-					Sleep(1000);
-					continue;
+					//Sleep(1000);
+					//continue;
+					return;
 				}
 				
 				try {
 #ifdef ZWUSE_HID_MSG_SPLIT
+					boost::this_thread::interruption_point();
+					OutputDebugStringA("jcHidRecvData in ThreadLockComm");
 					JCHID_STATUS sts=
 					jcHidRecvData(&zwccbthr::hidHandle,
 						      recvBuf, BLEN, &outLen,JCHID_RECV_TIMEOUT);
@@ -85,8 +88,10 @@ namespace zwccbthr {
 					    ("RecvData接收数据时到锁具的数据连接异常断开，数据接收线程将终止");
 					return;
 				}
-				ZWNOTICE(recvBuf);
 
+				boost::this_thread::interruption_point();
+				ZWNOTICE(recvBuf);
+				
 				string outXML;
 				jcAtmcConvertDLL::zwJCjson2CCBxml(recvBuf,
 								  outXML);
@@ -110,6 +115,7 @@ namespace zwccbthr {
 					ZWWARN
 					    ("回调函数指针为空，无法调用回调函数")
 				}
+				boost::this_thread::interruption_point();
 			}
 			ZWINFO("金储通信数据接收线程正常退出");
 

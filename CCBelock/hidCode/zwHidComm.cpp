@@ -298,7 +298,12 @@ JCHID_STATUS jcHidRecvData( JCHID *hid,char *outData,const int outMaxLen,int *ou
 		//////////////////////////////////////////////////////////////////////////
 		
 		{	//hid_error´íÎó¼ì²â
-			wchar_t *errmsg=(wchar_t *)hid_error((hid_device *)hid->hid_device);
+			wchar_t *errmsg=NULL;
+			if (NULL!=(hid_device *)hid->hid_device)
+			{
+				errmsg=(wchar_t *)hid_error((hid_device *)hid->hid_device);
+			}
+			
 			if(NULL!=errmsg)
 			{
 				//return JCHID_STATUS_FAIL;

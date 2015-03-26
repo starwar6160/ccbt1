@@ -20,6 +20,7 @@ using boost::property_tree::ptree_bad_path;
 
 namespace zwccbthr {
 	void ThreadLockComm();	//与锁具之间的通讯线程
+	boost::thread *lockCommThr=NULL;
 	string zwGetLockIP(void);
 	extern std::deque < string > dqOutXML;;
 	extern boost::mutex recv_mutex;
@@ -105,7 +106,8 @@ CCBELOCK_API long JCAPISTD Open(long lTimeOut)
 		zwCfg::s_hidOpened = true;
 #endif // ZWUSE_HID_MSG_SPLIT
 		//启动通信线程
-		boost::thread thr(zwccbthr::ThreadLockComm);
+		//boost::thread thr(zwccbthr::ThreadLockComm);
+		zwccbthr::lockCommThr=new boost::thread(zwccbthr::ThreadLockComm);
 	}
 	catch(...) {
 		string errMsg = "打开端口" + myLockIp + "失败";
@@ -128,6 +130,7 @@ CCBELOCK_API long JCAPISTD Close()
 		//if (true==s_hidOpened)
 		//{
 		jcHidClose(&zwccbthr::hidHandle);
+		zwccbthr::lockCommThr->interrupt();
 		//}             
 	}
 #else
