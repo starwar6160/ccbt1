@@ -83,7 +83,7 @@ CCBELOCK_API long JCAPISTD Open(long lTimeOut)
 	}
 	ZWFUNCTRACE boost::mutex::scoped_lock lock(zwCfg::ComPort_mutex);
 	//必须大于0，小于JC_CCBDLL_TIMEOUT，限制在一个合理范围内
-	LOG(WARNING) << "Open Return " << ELOCK_ERROR_SUCCESS << endl;
+	//LOG(WARNING) << "Open Return " << ELOCK_ERROR_SUCCESS << endl;
 	string myLockIp;
 	try {
 

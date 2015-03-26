@@ -2,11 +2,13 @@
 #include <gtest/gtest.h>
 #include "hidapi.h"
 #include "CCBelock.h"
+#include "zwCcbElockHdr.h"
 #include "zwHidMulHeader.h"
 #include "zwHidGtest130.h"
 #define ZWUSEGTEST
-#define _DEBUG_LOCK2TEST
-#define _DEBUG_DEV2
+//#define _DEBUG_LOCK2TEST
+//#define _DEBUG_DEV2
+//#define _DEBUG_ZJYBAD20150325
 
 
 #ifdef ZWUSEGTEST
@@ -100,6 +102,38 @@ namespace zwHidGTest20150130{
 		EXPECT_GT(strlen(s_devList),22);	
 	}
 
+	//监测正常Open以后没有正常Close而是直接拔掉电子锁，之后Open是否还是成功
+	TEST_F(ATMCDLLSelfTest, jcLockPlugOuted)
+	{
+		//测试多次Open和Close设备
+		char devSN1p[48];
+		memset(devSN1p,0,48);
+		strcpy(devSN1p,devSN1);
+		const char *hidType="Lock";
+
+		EXPECT_EQ(ELOCK_ERROR_SUCCESS,Open(22));
+		//EXPECT_EQ(jch::G_SUSSESS,OpenDrives(hidType,	devSN1p));
+		SetReturnMessage(myReturnMessageTest130);
+		//EXPECT_EQ(jch::G_SUSSESS,CloseDrives(hidType,devSN1p));
+		//EXPECT_EQ(jch::G_SUSSESS,CloseDrives(hidType,devSN1p));
+		
+		printf("***********************Wait for  PlugOut ELock For Test\n");
+		Sleep(1200);
+		EXPECT_EQ(ELOCK_ERROR_SUCCESS,Open(22));
+		Sleep(1200);
+		EXPECT_EQ(ELOCK_ERROR_SUCCESS,Close());
+		Sleep(1200);
+		EXPECT_EQ(ELOCK_ERROR_SUCCESS,Open(22));
+
+		
+		//清空向量
+		jch::vecJcHid.clear();
+
+
+
+	}
+
+#ifdef _DEBUG_ZJYBAD20150325
 	TEST_F(ATMCDLLSelfTest, zjydbgBad3)
 	{
 		//测试多次Open和Close设备
@@ -150,6 +184,7 @@ namespace zwHidGTest20150130{
 		//清空向量
 		jch::vecJcHid.clear();
 	}
+#endif // _DEBUG_ZJYBAD20150325
 
 #ifdef _DEBUG_DEV2
 

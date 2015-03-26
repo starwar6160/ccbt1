@@ -105,9 +105,13 @@ namespace jcAtmcMsg {
 			strXML = myAtmcMsgLockActive(strXML, pt);
 			assert(strXML.length() > 42);	//XML开头的固定内容38个字符，外加起码一个标签的两对尖括号合计4个字符
 			break;
-			case JCMSG_SEND_LOCK_ACTIVEINFO:strXML =
-			    myAtmcMsgSendActiveInfo(strXML, pt);
-			assert(strXML.length() > 42);
+			case JCMSG_SEND_LOCK_ACTIVEINFO:
+				//20150326，为了迅速调试姚工报告的USB拔掉线之后还能成功Open的问题暂时屏蔽掉这部分代码
+				//好像是因为ecies算法从zwBaseLib里面提取出来到了jclms DLL才导致的；
+#ifdef _DEBUG326
+				strXML =myAtmcMsgSendActiveInfo(strXML, pt);
+				assert(strXML.length() > 42);
+#endif // _DEBUG326
 			break;
 			case JCMSG_GET_CLOSECODE:strXML =
 			    myAtmcMsgReadCloseCodeInfo(strXML, pt);
