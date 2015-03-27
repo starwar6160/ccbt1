@@ -70,6 +70,11 @@ CCBELOCK_API long JCAPISTD Open(long lTimeOut)
 	memset(buf, 0, 256);
 	sprintf(buf, "Open incoming timeout value seconds is %d", lTimeOut);
 	OutputDebugStringA(buf);
+	if (NULL!=zwccbthr::opCommThr)
+	{
+		ZWNOTICE("关闭上次没有关闭的数据接收线程")
+		Close();//如果上次没有Close就直接再次Open，则首先Close一次；
+	}
 #ifdef _DEBUG327
 //既然暂时不用超时参数，就暂不检测了
 	assert(lTimeOut >= -1 && lTimeOut <= JC_CCBDLL_TIMEOUT);
@@ -123,7 +128,14 @@ CCBELOCK_API long JCAPISTD Close()
 {
 	ZWFUNCTRACE boost::mutex::scoped_lock lock(zwCfg::ComPort_mutex);
 	zwCfg::g_WarnCallback = NULL;
-	zwccbthr::opCommThr->interrupt();
+	//关闭操作要点：先中断数据接收线程，然后join等待其中断完成，
+	// 然后将线程对象指针置位NULL,下次就可以成功打开了
+	if (NULL!=zwccbthr::opCommThr)
+	{
+		zwccbthr::opCommThr->interrupt();
+		zwccbthr::opCommThr->join();
+		zwccbthr::opCommThr=NULL;
+	}
 #ifdef ZWUSE_HID_MSG_SPLIT
 	//goto CloseHidEnd;
 	if (NULL != zwccbthr::hidHandle.vid && NULL != zwccbthr::hidHandle.pid) {

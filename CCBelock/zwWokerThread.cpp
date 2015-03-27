@@ -47,11 +47,7 @@ namespace zwccbthr {
 					return;
 				}
 #endif // ZWUSE_HID_MSG_SPLIT
-				if (true==zwCfg::s_hidOpened)
-				{
-					ZWNOTICE("连接锁具成功");
-					ZWINFO("通信线程的新一轮等待接收数据循环开始");
-				}
+					ZWINFO("连接锁具成功");
 				try {
 #ifdef ZWUSE_HID_MSG_SPLIT
 					boost::this_thread::interruption_point();
@@ -63,7 +59,7 @@ namespace zwccbthr {
 					if (JCHID_STATUS_OK!=sts)
 					{
 						printf("JCHID_STATUS 1225 %d\n",sts);
-						Sleep(200);
+						Sleep(900);
 						continue;
 					}
 					printf("\n");
@@ -76,9 +72,15 @@ namespace zwccbthr {
 
 					ZWNOTICE("wkThr成功从锁具接收数据如下：");
 				}
+				catch(boost::thread_interrupted &e)
+				{
+					ZWERROR
+						("RecvData从电子锁接收数据时到遇到线程收到终止信号，数据接收线程将终止");
+					return;
+				}
 				catch(...) {
 					ZWERROR
-					    ("RecvData从电子锁接收数据时到遇到线路错误或者线程收到终止信号，数据接收线程将终止");
+					    ("RecvData从电子锁接收数据时到遇到线路错误或者未知错误，数据接收线程将终止");
 					return;
 				}
 				ZWNOTICE(recvBuf);

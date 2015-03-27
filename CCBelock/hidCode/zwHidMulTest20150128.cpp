@@ -9,7 +9,7 @@
 //#define _DEBUG_LOCK2TEST
 //#define _DEBUG_DEV2
 //#define _DEBUG_ZJYBAD20150325
-
+#define _DEBUG326
 
 #ifdef ZWUSEGTEST
 
@@ -102,6 +102,7 @@ namespace zwHidGTest20150130{
 		EXPECT_GT(strlen(s_devList),22);	
 	}
 
+#ifdef _DEBUG326
 	//监测正常Open以后没有正常Close而是直接拔掉电子锁，之后Open是否还是成功
 	TEST_F(ATMCDLLSelfTest, jcLockPlugOuted)
 	{
@@ -127,14 +128,31 @@ namespace zwHidGTest20150130{
 		EXPECT_EQ(ELOCK_ERROR_SUCCESS,Open(22));
 		printf("等待9秒看看数据接收线程继续运行的效果");
 		Sleep(9000);
-
-		
 		//清空向量
 		jch::vecJcHid.clear();
-
-
-
 	}
+#endif // _DEBUG326
+
+#ifdef _DEBUG327B
+	TEST_F(ATMCDLLSelfTest, jcLockPlugOuted327)
+	{
+		//测试多次Open和Close设备
+		char devSN1p[48];
+		memset(devSN1p,0,48);
+		strcpy(devSN1p,devSN1);
+		const char *hidType="Lock";
+
+		EXPECT_EQ(ELOCK_ERROR_SUCCESS,Open(22));
+		SetReturnMessage(myReturnMessageTest130);		
+		Sleep(5200);
+		EXPECT_EQ(ELOCK_ERROR_SUCCESS,Open(22));
+		printf("等待9秒看看数据接收线程继续运行的效果");
+		Sleep(9000);
+		//清空向量
+		jch::vecJcHid.clear();
+	}
+#endif // _DEBUG327B
+
 
 #ifdef _DEBUG_ZJYBAD20150325
 	TEST_F(ATMCDLLSelfTest, zjydbgBad3)
