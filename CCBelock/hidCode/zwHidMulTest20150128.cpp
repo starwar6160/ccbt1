@@ -116,14 +116,17 @@ namespace zwHidGTest20150130{
 		SetReturnMessage(myReturnMessageTest130);
 		//EXPECT_EQ(jch::G_SUSSESS,CloseDrives(hidType,devSN1p));
 		//EXPECT_EQ(jch::G_SUSSESS,CloseDrives(hidType,devSN1p));
-		
-		printf("***********************Wait for  PlugOut ELock For Test\n");
-		Sleep(1200);
-		EXPECT_EQ(ELOCK_ERROR_SUCCESS,Open(22));
+		printf("########################1拔下USB线，暂时不要插上，期待Open返回失败327\n");				
+		Sleep(9200);
+		EXPECT_NE(ELOCK_ERROR_SUCCESS,Open(22));
 		Sleep(1200);
 		EXPECT_EQ(ELOCK_ERROR_SUCCESS,Close());
-		Sleep(1200);
+		printf("***********************再次插上USB线，期待Open成功\n");
+		Sleep(9200);
+		
 		EXPECT_EQ(ELOCK_ERROR_SUCCESS,Open(22));
+		printf("等待9秒看看数据接收线程继续运行的效果");
+		Sleep(9000);
 
 		
 		//清空向量

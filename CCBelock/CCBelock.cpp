@@ -20,6 +20,7 @@ using boost::property_tree::ptree_bad_path;
 
 namespace zwccbthr {
 	void ThreadLockComm();	//与锁具之间的通讯线程
+	boost::thread *opCommThr=NULL;	//为了控制通讯线程终止
 	string zwGetLockIP(void);
 	extern std::deque < string > dqOutXML;;
 	extern boost::mutex recv_mutex;
@@ -79,6 +80,7 @@ CCBELOCK_API long JCAPISTD Open(long lTimeOut)
 		LOG(ERROR)<<
 		    "Open Function incoming timeout Value must in -1 to " <<
 		    JC_CCBDLL_TIMEOUT << "seconds";
+		ZWINFO("return ELOCK_ERROR_PARAMINVALID 入口参数非法")
 		return ELOCK_ERROR_PARAMINVALID;
 	}
 	ZWFUNCTRACE boost::mutex::scoped_lock lock(zwCfg::ComPort_mutex);
@@ -89,27 +91,28 @@ CCBELOCK_API long JCAPISTD Open(long lTimeOut)
 
 #ifdef ZWUSE_HID_MSG_SPLIT
 		if (true == zwCfg::s_hidOpened) {
-			ZWNOTICE("s_hidOpened already Opened,so return directly.")
+			ZWNOTICE("return ELOCK_ERROR_SUCCESS 已经打开电子锁，不再重复打开.")
 			return ELOCK_ERROR_SUCCESS;
 		}
 		memset(&zwccbthr::hidHandle, 0, sizeof(JCHID));
 		zwccbthr::hidHandle.vid = JCHID_VID_2014;
 		zwccbthr::hidHandle.pid = JCHID_PID_LOCK5151;
 		if (JCHID_STATUS_OK != jcHidOpen(&zwccbthr::hidHandle)) {
-			ZWERROR("HID Device Open ERROR 1225 !");
+			ZWERROR("return ELOCK_ERROR_PARAMINVALID 电子锁打开失败");
 			return ELOCK_ERROR_PARAMINVALID;
 		}
 		zwCfg::s_hidOpened = true;
 #endif // ZWUSE_HID_MSG_SPLIT
 		//启动通信线程
-		boost::thread thr(zwccbthr::ThreadLockComm);
+		//boost::thread thr(zwccbthr::ThreadLockComm);
+		zwccbthr::opCommThr=new boost::thread(zwccbthr::ThreadLockComm);
 	}
 	catch(...) {
 		string errMsg = "打开端口" + myLockIp + "失败";
 		ZWFATAL(errMsg.c_str())
 	}
 
-	ZWNOTICE("成功打开 到锁具的连接")
+	ZWNOTICE("return ELOCK_ERROR_SUCCESS 成功打开电子锁")
 	    return ELOCK_ERROR_SUCCESS;
 }
 
@@ -117,8 +120,9 @@ CCBELOCK_API long JCAPISTD Close()
 {
 	ZWFUNCTRACE boost::mutex::scoped_lock lock(zwCfg::ComPort_mutex);
 	zwCfg::g_WarnCallback = NULL;
+	zwccbthr::opCommThr->interrupt();
 #ifdef ZWUSE_HID_MSG_SPLIT
-	goto CloseHidEnd;
+	//goto CloseHidEnd;
 	if (NULL != zwccbthr::hidHandle.vid && NULL != zwccbthr::hidHandle.pid) {
 		//if (true==s_hidOpened)
 		//{

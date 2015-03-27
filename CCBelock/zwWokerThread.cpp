@@ -39,6 +39,7 @@ namespace zwccbthr {
 			memset(recvBuf, 0, BLEN + 1);
 			int outLen = 0;
 			while (1) {
+				printf("\n###############JCCOMMTHREAD 327 RUNNING\n");
 #ifndef ZWUSE_HID_MSG_SPLIT
 				if (NULL == zwComPort) {
 					ZWNOTICE
@@ -46,19 +47,23 @@ namespace zwccbthr {
 					return;
 				}
 #endif // ZWUSE_HID_MSG_SPLIT
-				ZWNOTICE("连接锁具成功");
-				ZWINFO("通信线程的新一轮等待接收数据循环开始");
+				if (true==zwCfg::s_hidOpened)
+				{
+					ZWNOTICE("连接锁具成功");
+					ZWINFO("通信线程的新一轮等待接收数据循环开始");
+				}
 				try {
 #ifdef ZWUSE_HID_MSG_SPLIT
+					boost::this_thread::interruption_point();
 					JCHID_STATUS sts=
 					jcHidRecvData(&zwccbthr::hidHandle,
 						      recvBuf, BLEN, &outLen,JCHID_RECV_TIMEOUT);
-					zwCfg::s_hidOpened=true;	//算是通信线程的一个心跳标志					
+					//zwCfg::s_hidOpened=true;	//算是通信线程的一个心跳标志					
 					//要是什么也没收到，就直接进入下一个循环
 					if (JCHID_STATUS_OK!=sts)
 					{
 						printf("JCHID_STATUS 1225 %d\n",sts);
-						Sleep(1000);
+						Sleep(200);
 						continue;
 					}
 					printf("\n");
@@ -72,12 +77,13 @@ namespace zwccbthr {
 					ZWNOTICE("wkThr成功从锁具接收数据如下：");
 				}
 				catch(...) {
-					ZWFATAL
-					    ("RecvData接收数据时到锁具的数据连接异常断开，数据接收线程将终止");
+					ZWERROR
+					    ("RecvData从电子锁接收数据时到遇到线路错误或者线程收到终止信号，数据接收线程将终止");
 					return;
 				}
 				ZWNOTICE(recvBuf);
 
+				boost::this_thread::interruption_point();
 				string outXML;
 				jcAtmcConvertDLL::zwJCjson2CCBxml(recvBuf,
 								  outXML);
