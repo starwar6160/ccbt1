@@ -70,6 +70,8 @@ CCBELOCK_API long JCAPISTD Open(long lTimeOut)
 	memset(buf, 0, 256);
 	sprintf(buf, "Open incoming timeout value seconds is %d", lTimeOut);
 	OutputDebugStringA(buf);
+#ifdef _DEBUG327
+//既然暂时不用超时参数，就暂不检测了
 	assert(lTimeOut >= -1 && lTimeOut <= JC_CCBDLL_TIMEOUT);
 	if (lTimeOut < -1 || lTimeOut > JC_CCBDLL_TIMEOUT) {
 		memset(buf, 0, 256);
@@ -83,6 +85,7 @@ CCBELOCK_API long JCAPISTD Open(long lTimeOut)
 		ZWINFO("return ELOCK_ERROR_PARAMINVALID 入口参数非法")
 		return ELOCK_ERROR_PARAMINVALID;
 	}
+#endif // _DEBUG327
 	ZWFUNCTRACE boost::mutex::scoped_lock lock(zwCfg::ComPort_mutex);
 	//必须大于0，小于JC_CCBDLL_TIMEOUT，限制在一个合理范围内
 	//LOG(WARNING) << "Open Return " << ELOCK_ERROR_SUCCESS << endl;
@@ -90,10 +93,10 @@ CCBELOCK_API long JCAPISTD Open(long lTimeOut)
 	try {
 
 #ifdef ZWUSE_HID_MSG_SPLIT
-		if (true == zwCfg::s_hidOpened) {
-			ZWNOTICE("return ELOCK_ERROR_SUCCESS 已经打开电子锁，不再重复打开.")
-			return ELOCK_ERROR_SUCCESS;
-		}
+		//if (true == zwCfg::s_hidOpened) {
+		//	ZWNOTICE("return ELOCK_ERROR_SUCCESS 已经打开电子锁，不再重复打开.")
+		//	return ELOCK_ERROR_SUCCESS;
+		//}
 		memset(&zwccbthr::hidHandle, 0, sizeof(JCHID));
 		zwccbthr::hidHandle.vid = JCHID_VID_2014;
 		zwccbthr::hidHandle.pid = JCHID_PID_LOCK5151;
