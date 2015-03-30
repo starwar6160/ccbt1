@@ -64,7 +64,7 @@ zw_trace::~zw_trace()
 
 
 
-#ifdef _DEBUG330
+
 CCBELOCK_API long JCAPISTD Open(long lTimeOut)
 {
 	char buf[256];
@@ -236,7 +236,7 @@ CCBELOCK_API int JCAPISTD SetRecvMsgRotine(RecvMsgRotine pRecvMsgFun)
 	zwCfg::g_WarnCallback = pRecvMsgFun;
 	return ELOCK_ERROR_SUCCESS;
 }
-#endif // _DEBUG330
+
 
 void cdecl myATMCRecvMsgRotine(const char *pszMsg)
 {
@@ -267,6 +267,7 @@ CCBELOCK_API const char *dbgGetLockReturnXML(void)
 
 
 
+#ifdef _DEBUG330B
 class zwJcElock1503
 {
 public:
@@ -531,22 +532,23 @@ void ThreadLockComm330(){
 
 
 
-CCBELOCK_API long	JCAPISTD Open(long lTimeOut)
-{
-	return g_jcElock.getStatus();
-}
-CCBELOCK_API long	JCAPISTD Close()
-{
-	return ELOCK_ERROR_SUCCESS;
-}
-
-CCBELOCK_API long	JCAPISTD Notify(const char *pszMsg)
-{
-	return g_jcElock.Notify(pszMsg);
-
-}
-CCBELOCK_API int	JCAPISTD SetRecvMsgRotine(RecvMsgRotine pRecvMsgFun)
-{
-	return g_jcElock.SetCallBack(pRecvMsgFun);
-}
-
+//CCBELOCK_API long	JCAPISTD Open(long lTimeOut)
+//{
+//	return g_jcElock.getStatus();
+//}
+//CCBELOCK_API long	JCAPISTD Close()
+//{
+//	return ELOCK_ERROR_SUCCESS;
+//}
+//
+//CCBELOCK_API long	JCAPISTD Notify(const char *pszMsg)
+//{
+//	return g_jcElock.Notify(pszMsg);
+//
+//}
+//CCBELOCK_API int	JCAPISTD SetRecvMsgRotine(RecvMsgRotine pRecvMsgFun)
+//{
+//	return g_jcElock.SetCallBack(pRecvMsgFun);
+//}
+//
+#endif // _DEBUG330B

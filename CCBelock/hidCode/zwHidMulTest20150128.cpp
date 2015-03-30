@@ -9,7 +9,7 @@
 //#define _DEBUG_LOCK2TEST
 //#define _DEBUG_DEV2
 //#define _DEBUG_ZJYBAD20150325
-#define _DEBUG326
+//#define _DEBUG326
 void cdecl myATMCRecvMsgRotine(const char *pszMsg);
 
 #ifdef ZWUSEGTEST
@@ -415,30 +415,43 @@ namespace zwHidGTest20150130{
 		int r=0;
 		switch (funcIndex)
 		{
-		case 0:r=Open(1);
+		case 0:printf("ZWRND330:Open(1)\n");
+			r=Open(1);			
 			break;
-		case 1:r=Close();
+		case 1:printf("ZWRND330:Close()\n");
+			r=Close();			
 			break;
-		case 2:r=Notify(msg03);
+		case 2:printf("ZWRND330:Notify(msg03)\n");
+			r=Notify(msg03);			
 			break;
-		case 3:r=Notify(NULL);
+		case 3:printf("ZWRND330:Notify(NULL)\n");
+			r=Notify(NULL);			
 			break;
-		case 4:r=SetRecvMsgRotine(myATMCRecvMsgRotine);
+		case 4:printf("ZWRND330:SetRecvMsgRotine(myATMCRecvMsgRotine)\n");
+			r=SetRecvMsgRotine(myATMCRecvMsgRotine);			
 			break;
-		case 5:r=SetRecvMsgRotine(NULL);
+		case 5:printf("ZWRND330:SetRecvMsgRotine(NULL)\n");
+			r=SetRecvMsgRotine(NULL);			
 			break;
-		//case 6:SetRecvMsgRotine(0x11112222);
-		//	break;
-		//case 7:Notify(0x11112222);
-		//	break;
+		case 6:printf("ZWRND330:SetRecvMsgRotine((RecvMsgRotine )0x11112222)\n");
+			SetRecvMsgRotine((RecvMsgRotine )0x11112222);			
+			break;
+		case 7:printf("ZWRND330:Notify((const char *)0x11112222)\n");
+			Notify((const char *)0x11112222);			
+			break;
 		}
 		return r;
 	}
 
 	TEST_F(ATMCDLLSelfTest, jcHidDevRandom1)
 	{
-		int i=1,j=0;
-		EXPECT_EQ(i,j)<<"i="<<i<<" j="<<j<<endl;	
+		int i=1,j=0;		
+		srand(time(NULL));
+		for (int i=0;i<20;i++)
+		{
+			//EXPECT_EQ(ELOCK_ERROR_SUCCESS,myRndFunc(i));
+			myRndFunc(rand()%8);
+		}
 	}
 
 
