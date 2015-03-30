@@ -127,7 +127,7 @@ CCBELOCK_API long JCAPISTD Open(long lTimeOut)
 CCBELOCK_API long JCAPISTD Close()
 {
 	ZWFUNCTRACE boost::mutex::scoped_lock lock(zwCfg::ComPort_mutex);
-	zwCfg::g_WarnCallback = NULL;
+	//zwCfg::g_WarnCallback = NULL;
 	//关闭操作要点：先中断数据接收线程，然后join等待其中断完成，
 	// 然后将线程对象指针置位NULL,下次就可以成功打开了
 	if (NULL!=zwccbthr::opCommThr)
