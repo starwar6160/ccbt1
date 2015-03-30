@@ -10,6 +10,7 @@
 //#define _DEBUG_DEV2
 //#define _DEBUG_ZJYBAD20150325
 #define _DEBUG326
+void cdecl myATMCRecvMsgRotine(const char *pszMsg);
 
 #ifdef ZWUSEGTEST
 
@@ -405,6 +406,41 @@ namespace zwHidGTest20150130{
 	//////////////////////////////////////////////////////////////////////////
 
 #endif // _DEBUG_DEV2
+
+	
+
+	int myRndFunc(const int funcIndex)
+	{
+		const char *msg03="<?xml version='1.0' encoding='UTF-8'?><root><TransCode>0003</TransCode><TransName>TimeSync</TransName><TransDate>20150330</TransDate><TransTime>202416</TransTime></root>";
+		int r=0;
+		switch (funcIndex)
+		{
+		case 0:r=Open(1);
+			break;
+		case 1:r=Close();
+			break;
+		case 2:r=Notify(msg03);
+			break;
+		case 3:r=Notify(NULL);
+			break;
+		case 4:r=SetRecvMsgRotine(myATMCRecvMsgRotine);
+			break;
+		case 5:r=SetRecvMsgRotine(NULL);
+			break;
+		//case 6:SetRecvMsgRotine(0x11112222);
+		//	break;
+		//case 7:Notify(0x11112222);
+		//	break;
+		}
+		return r;
+	}
+
+	TEST_F(ATMCDLLSelfTest, jcHidDevRandom1)
+	{
+		int i=1,j=0;
+		EXPECT_EQ(i,j)<<"i="<<i<<" j="<<j<<endl;	
+	}
+
 
 }	//namespace zwHidGTest20150130{
 #endif // ZWUSEGTEST
