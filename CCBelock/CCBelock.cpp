@@ -230,16 +230,11 @@ void cdecl myATMCRecvMsgRotine(const char *pszMsg)
 		|| inlen >= JC_MSG_MAXLEN) {
 		return;
 	}
-	if (0==inlen)
+	if (inlen>0)	
 	{
-		printf("Callback RECVDATA IS NULL\n");
-		//return;
-	}
-	else
-	{
+		G_TESTCB_SUCC=1;	//成功调用了回调函数
 		printf("%s\n",pszMsg);
-	}
-	G_TESTCB_SUCC=1;	//成功调用了回调函数
+	}	
 }
 
 CCBELOCK_API const char *dbgGetLockReturnXML(void)

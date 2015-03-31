@@ -39,14 +39,7 @@ namespace zwccbthr {
 			memset(recvBuf, 0, BLEN + 1);
 			int outLen = 0;
 			while (1) {
-				printf("\n###############JCCOMMTHREAD 327 RUNNING\n");
-#ifndef ZWUSE_HID_MSG_SPLIT
-				if (NULL == zwComPort) {
-					ZWNOTICE
-					    ("线路已经关闭，通信线程将退出");
-					return;
-				}
-#endif // ZWUSE_HID_MSG_SPLIT
+				printf("###############JCCOMMTHREAD 327 RUNNING\n");
 				time_t thNow=time(NULL);
 				if (thNow % 3 ==0)
 				{
@@ -58,7 +51,6 @@ namespace zwccbthr {
 				}
 					
 				try {
-#ifdef ZWUSE_HID_MSG_SPLIT
 					boost::this_thread::interruption_point();
 					if (NULL==zwccbthr::hidHandle.hid_device)
 					{
@@ -76,16 +68,11 @@ namespace zwccbthr {
 							//调用回调函数传回空
 							zwCfg::g_WarnCallback("");
 						}
-						printf("JCHID_STATUS 1225 %d\n",sts);
+						//printf("JCHID_STATUS 1225 %d\n",sts);
 						Sleep(900);
 						continue;
 					}
 					printf("\n");
-#else
-					zwComPort->RecvData(recvBuf, BLEN,
-							    &outLen);
-#endif // ZWUSE_HID_MSG_SPLIT
-
 					//////////////////////////////////////////////////////////////////////////
 
 					if (strlen(recvBuf)>0)
