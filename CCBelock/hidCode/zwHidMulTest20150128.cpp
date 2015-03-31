@@ -473,11 +473,15 @@ namespace zwHidGTest20150130{
 		SetRecvMsgRotine(myATMCRecvMsgRotine);		
 		//EXPECT_EQ(ELOCK_ERROR_SUCCESS,Open(-33));
 		//printf("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^PlugInOut Multi times\n");
-		//Sleep(15000);
+		Sleep(2000);
+		for (int i=0;i<9;i++)
+		{		 
 		EXPECT_EQ(ELOCK_ERROR_SUCCESS,Notify(g_msg03));	
 		myWaitForRecv331();
-		//EXPECT_EQ(ELOCK_ERROR_SUCCESS,Close());
 		EXPECT_EQ(1,G_TESTCB_SUCC);
+		}
+		//EXPECT_EQ(ELOCK_ERROR_SUCCESS,Close());
+		
 		//Sleep(2000);
 	}
 
@@ -488,13 +492,13 @@ namespace zwHidGTest20150130{
 		SetRecvMsgRotine(myATMCRecvMsgRotine);		
 		//EXPECT_EQ(ELOCK_ERROR_SUCCESS,Open(-33));
 		//Sleep(8200);
-		for (int i=0;i<20;i++)
+		for (int i=0;i<5;i++)
 		{
 			EXPECT_EQ(ELOCK_ERROR_SUCCESS,Notify(g_msg03));	
 			myWaitForRecv331();
+			EXPECT_EQ(1,G_TESTCB_SUCC);
 		}
-		//EXPECT_EQ(ELOCK_ERROR_SUCCESS,Close());
-		EXPECT_EQ(1,G_TESTCB_SUCC);
+		//EXPECT_EQ(ELOCK_ERROR_SUCCESS,Close());		
 		//Sleep(2000);
 	}
 
