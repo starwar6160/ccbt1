@@ -3,17 +3,28 @@
 #include "myConvIntHdr.h"
 
 namespace jcAtmcConvertDLL {
+
+	time_t myGetCcbUTC(const ptree & ptccb)
+	{
+		string ccbDate = ptccb.get < string > (CCBSTR_DATE);
+		string ccbTime = ptccb.get < string > (CCBSTR_TIME);	
+		time_t ccbUTCSec = 0;
+		zwCCBDateTime2UTC(ccbDate.c_str(), ccbTime.c_str(),
+			&ccbUTCSec);
+		return ccbUTCSec;
+	}
+
 	//时间同步
 	void zwconvTimeSyncDown(const ptree & ptccb, ptree & ptjc) {
 		//ZWFUNCTRACE
 		    ptjc.put(jcAtmcConvertDLL::JCSTR_CMDTITLE, JCSTR_TIME_SYNC);
 		//建行字符串格式的日期和时间字段合成转换为UTC秒数.开始
-		time_t nowSec = time(NULL);
-		string ccbDate = ptccb.get < string > (CCBSTR_DATE);
-		string ccbTime = ptccb.get < string > (CCBSTR_TIME);
-		time_t ccbUTCSec = 0;
-		 zwCCBDateTime2UTC(ccbDate.c_str(), ccbTime.c_str(),
-				   &ccbUTCSec);
+		//time_t nowSec = time(NULL);
+		time_t ccbUTCSec = myGetCcbUTC(ptccb);
+		//string ccbDate = ptccb.get < string > (CCBSTR_DATE);
+		//string ccbTime = ptccb.get < string > (CCBSTR_TIME);	
+		// zwCCBDateTime2UTC(ccbDate.c_str(), ccbTime.c_str(),
+		//		   &ccbUTCSec);
 		 assert(ccbUTCSec > 1400 * 1000 * 1000);
 
 		//建行字符串格式的日期和时间字段合成转换为UTC秒数.结束

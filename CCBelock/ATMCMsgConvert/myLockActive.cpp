@@ -3,13 +3,16 @@
 #include "myConvIntHdr.h"
 
 namespace jcAtmcConvertDLL {
+	time_t myGetCcbUTC(const ptree & ptccb);
 //发送锁具激活请求
 	void zwconvLockActiveDown(const ptree & ptccb, ptree & ptjc) {
 		ZWFUNCTRACE
 		    ptjc.put(jcAtmcConvertDLL::JCSTR_CMDTITLE,
 			     JCSTR_LOCK_ACTIVE_REQUEST);
 		ptjc.put("Atm_Serial", ptccb.get < string > (CCBSTR_DEVCODE));
-	} void zwconvLockActiveUp(const ptree & ptjc, ptree & ptccb) {
+	} 
+	
+	void zwconvLockActiveUp(const ptree & ptjc, ptree & ptccb) {
 		ZWFUNCTRACE
 		    //无用的形式化部分
 		    ptccb.put(CCBSTR_CODE, "0000");
@@ -51,10 +54,10 @@ namespace jcAtmcConvertDLL {
 		    ptjc.put(jcAtmcConvertDLL::JCSTR_CMDTITLE, JCSTR_LOCK_INIT);
 		//以下字段(LMS时间)是JC特有，CCB没有,时间或许还应该用建行报文中的时间来转换
 		//建行字符串格式的日期和时间字段合成转换为UTC秒数.开始
-		string ccbDate = ptccb.get < string > (CCBSTR_DATE);
-		string ccbTime = ptccb.get < string > (CCBSTR_TIME);
-		time_t ccbUTCSec = 0;
-		zwCCBDateTime2UTC(ccbDate.c_str(), ccbTime.c_str(), &ccbUTCSec);
+		//string ccbDate = ptccb.get < string > (CCBSTR_DATE);
+		//string ccbTime = ptccb.get < string > (CCBSTR_TIME);
+		time_t ccbUTCSec = myGetCcbUTC(ptccb);
+		//zwCCBDateTime2UTC(ccbDate.c_str(), ccbTime.c_str(), &ccbUTCSec);
 		assert(ccbUTCSec > 1400 * 1000 * 1000);
 		//建行字符串格式的日期和时间字段合成转换为UTC秒数.结束
 
