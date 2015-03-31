@@ -85,6 +85,9 @@ int myOpenElock1503(JCHID *jcElock)
 		zwCfg::s_hidOpened=false;
 		return ELOCK_ERROR_PARAMINVALID;
 	}
+	//printf("##################331 Plug Out/In test for 331 exception\n");
+	//Sleep(9000);
+
 	zwCfg::s_hidOpened=true;
 	return ELOCK_ERROR_SUCCESS;
 }

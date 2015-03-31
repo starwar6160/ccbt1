@@ -16,11 +16,16 @@ HWND hWnd;
 #include "zwHidMulHeader.h"
 #include "zwHidComm.h"
 #include "zwHidMulHeader.h"
+#include "zwCcbElockHdr.h"
+int myOpenElock1503(JCHID *jcElock);
 
 namespace zwCfg {
 	extern bool s_hidOpened;
 } //namespace zwCfg{  
 
+namespace zwccbthr {
+	extern JCHID hidHandle;
+} //namespace zwccbthr{  
 
 static const GUID GUID_DEVINTERFACE_LIST[] =
 {
@@ -128,10 +133,19 @@ LRESULT DeviceChange(UINT message, WPARAM wParam, LPARAM lParam)
 	//20150325.解决姚工刚发现的ATM机器上直接拔掉锁具以后还获得成功Open结果的问题
 	if (DBT_DEVICEREMOVECOMPLETE == wParam)
 	{
-		printf("20150325.1743 DBT_DEVICEREMOVECOMPLETE , JINCHU ELOCK PlugOuted!\n");
+		printf("20150325.1743 DBT_DEVICEREMOVECOMPLETE , JINCHU ELOCK PlugOUT!\n");
 		zwCfg::s_hidOpened=false;
-		Close();
 	}
+	if (DBT_DEVICEARRIVAL == wParam)
+	{
+		printf("20150331.1506 DBT_DEVICEARRIVAL , JINCHU ELOCK PlugIN!\n");
+		int eRes=myOpenElock1503(&zwccbthr::hidHandle);
+		if (ELOCK_ERROR_SUCCESS==eRes)
+		{
+			zwCfg::s_hidOpened=true;
+		}		
+	}
+
 	if ( DBT_DEVICEARRIVAL == wParam || DBT_DEVICEREMOVECOMPLETE == wParam )
 	{
 		PDEV_BROADCAST_HDR pHdr = (PDEV_BROADCAST_HDR)lParam;
