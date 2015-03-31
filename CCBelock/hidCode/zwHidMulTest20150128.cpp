@@ -408,10 +408,10 @@ namespace zwHidGTest20150130{
 #endif // _DEBUG_DEV2
 
 	
-
+	const char *g_msg03="<?xml version='1.0' encoding='UTF-8'?><root><TransCode>0003</TransCode><TransName>TimeSync</TransName><TransDate>20150330</TransDate><TransTime>202416</TransTime></root>";
 	int myRndFunc(const int funcIndex)
 	{
-		const char *msg03="<?xml version='1.0' encoding='UTF-8'?><root><TransCode>0003</TransCode><TransName>TimeSync</TransName><TransDate>20150330</TransDate><TransTime>202416</TransTime></root>";
+		
 		int r=0;
 		switch (funcIndex)
 		{
@@ -422,7 +422,7 @@ namespace zwHidGTest20150130{
 			r=Close();			
 			break;
 		case 2:printf("ZWRND330:Notify(msg03)\n");
-			r=Notify(msg03);			
+			r=Notify(g_msg03);			
 			break;
 		case 3:printf("ZWRND330:Notify(NULL)\n");
 			r=Notify(NULL);			
@@ -443,17 +443,25 @@ namespace zwHidGTest20150130{
 		return r;
 	}
 
-	TEST_F(ATMCDLLSelfTest, jcHidDevRandom1)
-	{
-		int i=1,j=0;		
-		srand(time(NULL));
-		for (int i=0;i<20;i++)
-		{
-			//EXPECT_EQ(ELOCK_ERROR_SUCCESS,myRndFunc(i));
-			myRndFunc(rand()%8);
-		}
-	}
+	//TEST_F(ATMCDLLSelfTest, jcHidDevRandom1)
+	//{
+	//	int i=1,j=0;		
+	//	srand(time(NULL));
+	//	for (int i=0;i<10;i++)
+	//	{
+	//		//EXPECT_EQ(ELOCK_ERROR_SUCCESS,myRndFunc(i));
+	//		myRndFunc(rand()%8);
+	//	}
+	//}
 
+	TEST_F(ATMCDLLSelfTest, jcHidDev331Normal_1)
+	{
+		SetRecvMsgRotine(myATMCRecvMsgRotine);
+		Open(-33);
+		Notify(g_msg03);	
+		Sleep(400);
+		Close();
+	}
 
 }	//namespace zwHidGTest20150130{
 #endif // ZWUSEGTEST
