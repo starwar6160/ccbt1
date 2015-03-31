@@ -195,16 +195,28 @@ CCBELOCK_API int JCAPISTD SetRecvMsgRotine(RecvMsgRotine pRecvMsgFun)
 
 void cdecl myATMCRecvMsgRotine(const char *pszMsg)
 {
-	ZWFUNCTRACE assert(pszMsg != NULL && strlen(pszMsg) > 42);
+	ZWFUNCTRACE 
+	//assert(pszMsg != NULL && strlen(pszMsg) > 42);
 	boost::mutex::scoped_lock lock(zwCfg::ComPort_mutex);
 	//输入必须有内容，但是最大不得长于下位机内存大小，做合理限制
 	assert(NULL != pszMsg);
 	int inlen = strlen(pszMsg);
-	assert(inlen > 0 && inlen < JC_MSG_MAXLEN);
-	if (NULL == pszMsg || inlen == 0 || inlen >= JC_MSG_MAXLEN) {
+	assert(
+		//inlen > 0 && 
+		inlen < JC_MSG_MAXLEN);
+	if (NULL == pszMsg 
+		//|| inlen == 0 
+		|| inlen >= JC_MSG_MAXLEN) {
 		return;
 	}
-	printf("%s\n",pszMsg);
+	if (0==inlen)
+	{
+		printf("Callback RECVDATA IS NULL\n");
+	}
+	else
+	{
+		printf("%s\n",pszMsg);
+	}
 	G_TESTCB_SUCC=1;	//成功调用了回调函数
 }
 

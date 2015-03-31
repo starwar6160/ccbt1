@@ -58,6 +58,10 @@ namespace zwccbthr {
 					//要是什么也没收到，就直接进入下一个循环
 					if (JCHID_STATUS_OK!=sts)
 					{
+						if (NULL != zwCfg::g_WarnCallback) {
+							//调用回调函数传回空
+							zwCfg::g_WarnCallback("");
+						}
 						printf("JCHID_STATUS 1225 %d\n",sts);
 						Sleep(900);
 						continue;
