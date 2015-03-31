@@ -60,6 +60,11 @@ namespace zwccbthr {
 				try {
 #ifdef ZWUSE_HID_MSG_SPLIT
 					boost::this_thread::interruption_point();
+					if (NULL==zwccbthr::hidHandle.hid_device)
+					{
+						Sleep(3000);
+						continue;
+					}
 					JCHID_STATUS sts=
 					jcHidRecvData(&zwccbthr::hidHandle,
 						      recvBuf, BLEN, &outLen,JCHID_RECV_TIMEOUT);

@@ -20,7 +20,8 @@ using boost::property_tree::ptree_bad_path;
 
 namespace zwccbthr {
 	void ThreadLockComm();	//与锁具之间的通讯线程
-	boost::thread *opCommThr=NULL;	//为了控制通讯线程终止
+	//boost::thread *opCommThr=NULL;	//为了控制通讯线程终止
+	boost::thread *opCommThr=new boost::thread(zwccbthr::ThreadLockComm);
 	string zwGetLockIP(void);
 	extern std::deque < string > dqOutXML;;
 	extern boost::mutex recv_mutex;
@@ -65,22 +66,40 @@ zw_trace::~zw_trace()
 
 
 extern int G_TESTCB_SUCC;	//是否成功调用了回调函数的一个标志位，仅仅测试用
+int myOpenElock1503(JCHID *jcElock)
+{
+	assert(NULL!=jcElock);
+	if (NULL==jcElock)
+	{
+		return ELOCK_ERROR_PARAMINVALID;
+	}
+	memset(jcElock, 0, sizeof(JCHID));
+	jcElock->vid = JCHID_VID_2014;
+	jcElock->pid = JCHID_PID_LOCK5151;
+	if (JCHID_STATUS_OK != jcHidOpen(jcElock)) {
+		ZWERROR("return ELOCK_ERROR_PARAMINVALID 电子锁打开失败");
+		return ELOCK_ERROR_PARAMINVALID;
+	}
+	return ELOCK_ERROR_SUCCESS;
+}
+
 CCBELOCK_API long JCAPISTD Open(long lTimeOut)
 {
 	ZWFUNCTRACE 
 	//boost::mutex::scoped_lock lock(zwCfg::ComPort_mutex);
 	try {
-		memset(&zwccbthr::hidHandle, 0, sizeof(JCHID));
-		zwccbthr::hidHandle.vid = JCHID_VID_2014;
-		zwccbthr::hidHandle.pid = JCHID_PID_LOCK5151;
-		if (JCHID_STATUS_OK != jcHidOpen(&zwccbthr::hidHandle)) {
-			ZWERROR("return ELOCK_ERROR_PARAMINVALID 电子锁打开失败");
-			return ELOCK_ERROR_PARAMINVALID;
-		}
+		//memset(&zwccbthr::hidHandle, 0, sizeof(JCHID));
+		//zwccbthr::hidHandle.vid = JCHID_VID_2014;
+		//zwccbthr::hidHandle.pid = JCHID_PID_LOCK5151;
+		//if (JCHID_STATUS_OK != jcHidOpen(&zwccbthr::hidHandle)) {
+		//	ZWERROR("return ELOCK_ERROR_PARAMINVALID 电子锁打开失败");
+		//	return ELOCK_ERROR_PARAMINVALID;
+		//}
+		myOpenElock1503(&zwccbthr::hidHandle);
 		zwCfg::s_hidOpened = true;
 		//启动通信线程
 		//boost::thread thr(zwccbthr::ThreadLockComm);
-		zwccbthr::opCommThr=new boost::thread(zwccbthr::ThreadLockComm);
+		//zwccbthr::opCommThr=new boost::thread(zwccbthr::ThreadLockComm);
 	}
 	catch(...) {
 		string errMsg = "打开金储电子锁失败";
@@ -97,12 +116,12 @@ CCBELOCK_API long JCAPISTD Close()
 	//boost::mutex::scoped_lock lock(zwCfg::ComPort_mutex);
 	//关闭操作要点：先中断数据接收线程，然后join等待其中断完成，
 	// 然后将线程对象指针置位NULL,下次就可以成功打开了
-	if (NULL!=zwccbthr::opCommThr)
-	{
-		zwccbthr::opCommThr->interrupt();
-		zwccbthr::opCommThr->join();
-		zwccbthr::opCommThr=NULL;
-	}
+	//if (NULL!=zwccbthr::opCommThr)
+	//{
+	//	zwccbthr::opCommThr->interrupt();
+	//	zwccbthr::opCommThr->join();
+	//	zwccbthr::opCommThr=NULL;
+	//}
 	if (NULL != zwccbthr::hidHandle.vid && NULL != zwccbthr::hidHandle.pid) {
 		jcHidClose(&zwccbthr::hidHandle);
 	}
