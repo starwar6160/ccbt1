@@ -20,8 +20,8 @@ using boost::property_tree::ptree_bad_path;
 
 namespace zwccbthr {
 	void ThreadLockComm();	//与锁具之间的通讯线程
-	boost::thread *opCommThr=NULL;	//为了控制通讯线程终止
-	//boost::thread *opCommThr=new boost::thread(zwccbthr::ThreadLockComm);
+	//boost::thread *opCommThr=NULL;	//为了控制通讯线程终止
+	boost::thread *opCommThr=new boost::thread(zwccbthr::ThreadLockComm);
 	string zwGetLockIP(void);
 	extern std::deque < string > dqOutXML;;
 	extern boost::mutex recv_mutex;
@@ -96,12 +96,12 @@ int myOpenElock1503(JCHID *jcElock)
 
 void myCloseElock1503(void)
 {
-	if (NULL!=zwccbthr::opCommThr)
-	{
-		zwccbthr::opCommThr->interrupt();
-		zwccbthr::opCommThr->join();
-		zwccbthr::opCommThr=NULL;
-	}
+	//if (NULL!=zwccbthr::opCommThr)
+	//{
+	//	zwccbthr::opCommThr->interrupt();
+	//	zwccbthr::opCommThr->join();
+	//	zwccbthr::opCommThr=NULL;
+	//}
 	if (NULL!=zwccbthr::hidHandle.hid_device
 		&& NULL != zwccbthr::hidHandle.vid 
 		&& NULL != zwccbthr::hidHandle.pid) {
@@ -122,7 +122,7 @@ CCBELOCK_API long JCAPISTD Open(long lTimeOut)
 			//zwCfg::s_hidOpened = true;
 			//启动通信线程
 			//boost::thread thr(zwccbthr::ThreadLockComm);
-			zwccbthr::opCommThr=new boost::thread(zwccbthr::ThreadLockComm);
+			//zwccbthr::opCommThr=new boost::thread(zwccbthr::ThreadLockComm);
 			zwccbthr::lastOpen=time(NULL);
 			ZWNOTICE("return ELOCK_ERROR_SUCCESS 打开电子锁成功")
 				return ELOCK_ERROR_SUCCESS;
@@ -138,7 +138,7 @@ CCBELOCK_API long JCAPISTD Open(long lTimeOut)
 
 CCBELOCK_API long JCAPISTD Close()
 {
-	myCloseElock1503();
+	//myCloseElock1503();
 	    return ELOCK_ERROR_SUCCESS;
 }
 

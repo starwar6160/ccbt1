@@ -7,6 +7,9 @@
 #include <stdio.h>
 using namespace boost::property_tree;
 
+int myOpenElock1503(JCHID *jcElock);
+void myCloseElock1503(void);
+
 namespace zwccbthr {
 	boost::mutex thr_mutex;
 	//建行给的接口，没有设置连接参数的地方，也就是说，完全可以端口，抑或是从配置文件读取
@@ -43,6 +46,7 @@ namespace zwccbthr {
 			//Open(1);
 			while (1) {
 				printf("###############JCCOMMTHREAD 327 RUNNING\n");
+				myOpenElock1503(&zwccbthr::hidHandle);
 				time_t thNow=time(NULL);
 				if (thNow % 3 ==0)
 				{
@@ -65,6 +69,7 @@ namespace zwccbthr {
 					{
 						sts=jcHidRecvData(&zwccbthr::hidHandle,
 							recvBuf, BLEN, &outLen,JCHID_RECV_TIMEOUT);
+						//myCloseElock1503();
 					}
 					//zwCfg::s_hidOpened=true;	//算是通信线程的一个心跳标志					
 					//要是什么也没收到，就直接进入下一个循环
