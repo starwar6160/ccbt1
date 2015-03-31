@@ -81,7 +81,7 @@ namespace zwccbthr {
 						ZWNOTICE(recvBuf);
 					}
 				}
-				catch(boost::thread_interrupted &e)
+				catch(boost::thread_interrupted &)
 				{
 					ZWERROR
 						("RecvData从电子锁接收数据时到遇到线程收到终止信号，数据接收线程将终止");
@@ -113,19 +113,21 @@ namespace zwccbthr {
 
 				if (NULL==zwCfg::g_WarnCallback)
 				{
-					ZWWARN("回调函数指针为空，无法调用回调函数");
+					const char *err1="回调函数指针为空，无法调用回调函数返回从电子锁收到的报文";
+					ZWWARN(err1);
+					MessageBoxA(NULL,err1,"严重警告",MB_OK);
 				}
 				if (outXML.size()==0)
 				{
 					ZWWARN("收到的锁具返回内容为空，无法返回有用信息给回调函数");
 				}
 				if (NULL != zwCfg::g_WarnCallback && outXML.size()>0) {
-					//调用回调函数传回信息，然后就关闭连接，结束通信线程；
+					//调用回调函数传回信息，
 					zwCfg::g_WarnCallback(outXML.c_str());
 					ZWINFO
 					    ("成功把从锁具接收到的数据传递给回调函数");
 				} 					
-				
+				boost::this_thread::interruption_point();
 			}
 			ZWINFO("金储通信数据接收线程正常退出");
 
@@ -150,14 +152,8 @@ CCBELOCK_API void zwPushString(const char *str)
 	if (NULL == str || strlen(str) == 0) {
 		return;
 	}
-#ifndef ZWUSE_HID_MSG_SPLIT
-	if (NULL == zwccbthr::zwComPort) {
-		ZWFATAL("串口对象指针为空！");
-		return;
-	}
-#endif // ZWUSE_HID_MSG_SPLIT
+
 	try {
-#ifdef ZWUSE_HID_MSG_SPLIT
 		JCHID_STATUS sts=JCHID_STATUS_FAIL;
 		do 
 		{
@@ -168,10 +164,6 @@ CCBELOCK_API void zwPushString(const char *str)
 			}
 			Sleep(1000);
 		} while (sts!=JCHID_STATUS_OK);
-		
-#else
-		zwccbthr::zwComPort->SendData(str, strlen(str));
-#endif // ZWUSE_HID_MSG_SPLIT
 	}			//try
 	catch(...) {
 		ZWDBGMSG(__FUNCTION__);

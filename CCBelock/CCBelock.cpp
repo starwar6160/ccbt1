@@ -72,9 +72,8 @@ int myOpenElock1503(JCHID *jcElock)
 	if (NULL==jcElock)
 	{
 		return ELOCK_ERROR_PARAMINVALID;
-	}
-	static bool g_jcElockOpend=false;
-	if (true==g_jcElockOpend)
+	}	
+	if (true==zwCfg::s_hidOpened)
 	{
 		return ELOCK_ERROR_SUCCESS;
 	}
@@ -83,9 +82,10 @@ int myOpenElock1503(JCHID *jcElock)
 	jcElock->pid = JCHID_PID_LOCK5151;
 	if (JCHID_STATUS_OK != jcHidOpen(jcElock)) {
 		ZWERROR("return ELOCK_ERROR_PARAMINVALID 电子锁打开失败");
+		zwCfg::s_hidOpened=false;
 		return ELOCK_ERROR_PARAMINVALID;
 	}
-	g_jcElockOpend=true;
+	zwCfg::s_hidOpened=true;
 	return ELOCK_ERROR_SUCCESS;
 }
 
@@ -95,15 +95,19 @@ CCBELOCK_API long JCAPISTD Open(long lTimeOut)
 	int eRes=ELOCK_ERROR_SUCCESS;
 	//boost::mutex::scoped_lock lock(zwCfg::ComPort_mutex);
 	try {
-		//memset(&zwccbthr::hidHandle, 0, sizeof(JCHID));
-		//zwccbthr::hidHandle.vid = JCHID_VID_2014;
-		//zwccbthr::hidHandle.pid = JCHID_PID_LOCK5151;
-		//if (JCHID_STATUS_OK != jcHidOpen(&zwccbthr::hidHandle)) {
-		//	ZWERROR("return ELOCK_ERROR_PARAMINVALID 电子锁打开失败");
-		//	return ELOCK_ERROR_PARAMINVALID;
-		//}
 		eRes=myOpenElock1503(&zwccbthr::hidHandle);
-		zwCfg::s_hidOpened = true;
+		if (ELOCK_ERROR_SUCCESS==eRes)
+		{
+			//zwCfg::s_hidOpened = true;
+			ZWNOTICE("return ELOCK_ERROR_SUCCESS 打开电子锁成功")
+				return ELOCK_ERROR_SUCCESS;
+		}
+		else
+		{
+			//zwCfg::s_hidOpened = false;
+			ZWNOTICE("return ELOCK_ERROR_PARAMINVALID 打开电子锁失败")
+				return ELOCK_ERROR_PARAMINVALID;
+		}		
 		//启动通信线程
 		//boost::thread thr(zwccbthr::ThreadLockComm);
 		//zwccbthr::opCommThr=new boost::thread(zwccbthr::ThreadLockComm);
@@ -112,17 +116,6 @@ CCBELOCK_API long JCAPISTD Open(long lTimeOut)
 		string errMsg = "打开金储电子锁失败";
 		ZWFATAL(errMsg.c_str())
 	}
-	if (ELOCK_ERROR_SUCCESS==eRes)
-	{
-		ZWNOTICE("return ELOCK_ERROR_SUCCESS 打开电子锁成功")
-			return ELOCK_ERROR_SUCCESS;
-	}
-	else
-	{
-		ZWNOTICE("return ELOCK_ERROR_PARAMINVALID 打开电子锁失败")
-			return ELOCK_ERROR_PARAMINVALID;
-	}
-
 }
 
 CCBELOCK_API long JCAPISTD Close()
