@@ -20,8 +20,8 @@ using boost::property_tree::ptree_bad_path;
 
 namespace zwccbthr {
 	void ThreadLockComm();	//与锁具之间的通讯线程
-	//boost::thread *opCommThr=NULL;	//为了控制通讯线程终止
-	boost::thread *opCommThr=new boost::thread(zwccbthr::ThreadLockComm);
+	boost::thread *opCommThr=NULL;	//为了控制通讯线程终止
+	//boost::thread *opCommThr=new boost::thread(zwccbthr::ThreadLockComm);
 	string zwGetLockIP(void);
 	extern std::deque < string > dqOutXML;;
 	extern boost::mutex recv_mutex;
@@ -123,7 +123,7 @@ CCBELOCK_API long JCAPISTD Open(long lTimeOut)
 			//zwCfg::s_hidOpened = true;
 			//启动通信线程
 			//boost::thread thr(zwccbthr::ThreadLockComm);
-			//zwccbthr::opCommThr=new boost::thread(zwccbthr::ThreadLockComm);
+			zwccbthr::opCommThr=new boost::thread(zwccbthr::ThreadLockComm);
 			zwccbthr::lastOpen=time(NULL);
 			ZWNOTICE("return ELOCK_ERROR_SUCCESS 打开电子锁成功")
 				return ELOCK_ERROR_SUCCESS;
@@ -170,8 +170,8 @@ CCBELOCK_API long JCAPISTD Notify(const char *pszMsg)
 	//反复查询，大量无用日志产生的情况。	
 	//if (time(NULL)-zwccbthr::lastOpen>20)
 	{
-		myCloseElock1503();
-		Open(1);
+		//myCloseElock1503();
+		//Open(1);
 	}
 	
 	if (false == zwCfg::s_hidOpened) {
