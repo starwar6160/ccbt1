@@ -115,7 +115,9 @@ CCBELOCK_API long JCAPISTD Open(long lTimeOut)
 	catch(...) {
 		string errMsg = "打开金储电子锁失败";
 		ZWFATAL(errMsg.c_str())
+		return ELOCK_ERROR_PARAMINVALID;
 	}
+	return ELOCK_ERROR_PARAMINVALID;
 }
 
 CCBELOCK_API long JCAPISTD Close()
@@ -140,9 +142,10 @@ CCBELOCK_API long JCAPISTD Close()
 
 CCBELOCK_API long JCAPISTD Notify(const char *pszMsg)
 {
-	//通过在Notify函数开始检测是否端口已经打开，没有打开就直接返回，避免
+	//通过在Notify函数开始检测是否端口已经打开，没有打开就等待一段时间，避免
 	//2014年11月初在广州遇到的没有连接锁具时，ATMC执行0002报文查询锁具状态，
 	//反复查询，大量无用日志产生的情况。
+	Open(1);
 	if (false == zwCfg::s_hidOpened) {
 		return ELOCK_ERROR_CONNECTLOST;
 	}
