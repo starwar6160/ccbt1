@@ -462,7 +462,7 @@ namespace zwHidGTest20150130{
 		Sleep(1700);
 		EXPECT_EQ(ELOCK_ERROR_SUCCESS,Close());
 		EXPECT_EQ(1,G_TESTCB_SUCC);
-		Sleep(700);
+		Sleep(2000);
 	}
 
 	TEST_F(ATMCDLLSelfTest, jcHidDev331Normal_2)
@@ -473,7 +473,7 @@ namespace zwHidGTest20150130{
 		Sleep(1800);
 		EXPECT_EQ(ELOCK_ERROR_SUCCESS,Close());
 		EXPECT_EQ(1,G_TESTCB_SUCC);
-		Sleep(700);
+		Sleep(2000);
 	}
 
 }	//namespace zwHidGTest20150130{

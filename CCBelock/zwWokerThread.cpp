@@ -47,7 +47,16 @@ namespace zwccbthr {
 					return;
 				}
 #endif // ZWUSE_HID_MSG_SPLIT
-					ZWINFO("连接锁具成功");
+				time_t thNow=time(NULL);
+				if (thNow % 3 ==0)
+				{
+					OutputDebugStringA(("电子锁数据接收线程仍在运行中"));
+				}
+				if (thNow % 60 ==0)
+				{
+					ZWINFO("电子锁数据接收线程仍在运行中");
+				}
+					
 				try {
 #ifdef ZWUSE_HID_MSG_SPLIT
 					boost::this_thread::interruption_point();
@@ -74,7 +83,11 @@ namespace zwccbthr {
 
 					//////////////////////////////////////////////////////////////////////////
 
-					ZWNOTICE("wkThr成功从锁具接收数据如下：");
+					if (strlen(recvBuf)>0)
+					{
+						ZWNOTICE("wkThr成功从锁具接收数据如下：");
+						ZWNOTICE(recvBuf);
+					}
 				}
 				catch(boost::thread_interrupted &e)
 				{
@@ -87,32 +100,40 @@ namespace zwccbthr {
 					    ("RecvData从电子锁接收数据时到遇到线路错误或者未知错误，数据接收线程将终止");
 					return;
 				}
-				ZWNOTICE(recvBuf);
+				
 
 				boost::this_thread::interruption_point();
 				string outXML;
-				jcAtmcConvertDLL::zwJCjson2CCBxml(recvBuf,
-								  outXML);
-				ZWINFO("分析锁具回传的Json并转换为建行XML成功");
-				//XML开头的固定内容38个字符，外加起码一个标签的两对尖括号合计4个字符
-				assert(outXML.length() > 42);
-				ZWDBGMSG(outXML.c_str());
-				{
-					boost::
-					    mutex::scoped_lock lock(recv_mutex);
-					//收到的XML存入队列
-					dqOutXML.push_back(outXML);
+				if (strlen(recvBuf)>0){
+					jcAtmcConvertDLL::zwJCjson2CCBxml(recvBuf,
+						outXML);
+					ZWINFO("分析锁具回传的Json并转换为建行XML成功");
+					//XML开头的固定内容38个字符，外加起码一个标签的两对尖括号合计4个字符
+					assert(outXML.length() > 42);
+					ZWDBGMSG(outXML.c_str());
+					{
+						boost::
+							mutex::scoped_lock lock(recv_mutex);
+						//收到的XML存入队列
+						dqOutXML.push_back(outXML);
+					}
 				}
 
-				if (NULL != zwCfg::g_WarnCallback) {
+				if (NULL==zwCfg::g_WarnCallback)
+				{
+					ZWWARN("回调函数指针为空，无法调用回调函数");
+				}
+				if (outXML.size()==0)
+				{
+					ZWWARN("收到的锁具返回内容为空，无法返回有用信息给回调函数");
+				}
+				if (NULL != zwCfg::g_WarnCallback && outXML.size()>0) {
 					//调用回调函数传回信息，然后就关闭连接，结束通信线程；
 					zwCfg::g_WarnCallback(outXML.c_str());
 					ZWINFO
 					    ("成功把从锁具接收到的数据传递给回调函数");
-				} else {
-					ZWWARN
-					    ("回调函数指针为空，无法调用回调函数")
-				}
+				} 					
+				
 			}
 			ZWINFO("金储通信数据接收线程正常退出");
 

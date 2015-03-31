@@ -214,6 +214,7 @@ void cdecl myATMCRecvMsgRotine(const char *pszMsg)
 	if (0==inlen)
 	{
 		printf("Callback RECVDATA IS NULL\n");
+		//return;
 	}
 	else
 	{
