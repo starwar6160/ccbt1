@@ -73,6 +73,11 @@ int myOpenElock1503(JCHID *jcElock)
 	{
 		return ELOCK_ERROR_PARAMINVALID;
 	}
+	static bool g_jcElockOpend=false;
+	if (true==g_jcElockOpend)
+	{
+		return ELOCK_ERROR_SUCCESS;
+	}
 	memset(jcElock, 0, sizeof(JCHID));
 	jcElock->vid = JCHID_VID_2014;
 	jcElock->pid = JCHID_PID_LOCK5151;
@@ -80,12 +85,14 @@ int myOpenElock1503(JCHID *jcElock)
 		ZWERROR("return ELOCK_ERROR_PARAMINVALID 电子锁打开失败");
 		return ELOCK_ERROR_PARAMINVALID;
 	}
+	g_jcElockOpend=true;
 	return ELOCK_ERROR_SUCCESS;
 }
 
 CCBELOCK_API long JCAPISTD Open(long lTimeOut)
 {
 	ZWFUNCTRACE 
+	int eRes=ELOCK_ERROR_SUCCESS;
 	//boost::mutex::scoped_lock lock(zwCfg::ComPort_mutex);
 	try {
 		//memset(&zwccbthr::hidHandle, 0, sizeof(JCHID));
@@ -95,7 +102,7 @@ CCBELOCK_API long JCAPISTD Open(long lTimeOut)
 		//	ZWERROR("return ELOCK_ERROR_PARAMINVALID 电子锁打开失败");
 		//	return ELOCK_ERROR_PARAMINVALID;
 		//}
-		myOpenElock1503(&zwccbthr::hidHandle);
+		eRes=myOpenElock1503(&zwccbthr::hidHandle);
 		zwCfg::s_hidOpened = true;
 		//启动通信线程
 		//boost::thread thr(zwccbthr::ThreadLockComm);
@@ -105,14 +112,22 @@ CCBELOCK_API long JCAPISTD Open(long lTimeOut)
 		string errMsg = "打开金储电子锁失败";
 		ZWFATAL(errMsg.c_str())
 	}
+	if (ELOCK_ERROR_SUCCESS==eRes)
+	{
+		ZWNOTICE("return ELOCK_ERROR_SUCCESS 打开电子锁成功")
+			return ELOCK_ERROR_SUCCESS;
+	}
+	else
+	{
+		ZWNOTICE("return ELOCK_ERROR_PARAMINVALID 打开电子锁失败")
+			return ELOCK_ERROR_PARAMINVALID;
+	}
 
-	ZWNOTICE("return ELOCK_ERROR_SUCCESS 成功打开电子锁")
-	    return ELOCK_ERROR_SUCCESS;
 }
 
 CCBELOCK_API long JCAPISTD Close()
 {
-	ZWFUNCTRACE 
+	//ZWFUNCTRACE 
 	//boost::mutex::scoped_lock lock(zwCfg::ComPort_mutex);
 	//关闭操作要点：先中断数据接收线程，然后join等待其中断完成，
 	// 然后将线程对象指针置位NULL,下次就可以成功打开了
@@ -122,11 +137,11 @@ CCBELOCK_API long JCAPISTD Close()
 	//	zwccbthr::opCommThr->join();
 	//	zwccbthr::opCommThr=NULL;
 	//}
-	if (NULL != zwccbthr::hidHandle.vid && NULL != zwccbthr::hidHandle.pid) {
-		jcHidClose(&zwccbthr::hidHandle);
-	}
-	zwCfg::s_hidOpened = false;
-	ZWNOTICE("关闭 到锁具的连接")
+	//if (NULL != zwccbthr::hidHandle.vid && NULL != zwccbthr::hidHandle.pid) {
+		//jcHidClose(&zwccbthr::hidHandle);
+	//}
+	//zwCfg::s_hidOpened = false;
+	//ZWNOTICE("关闭 到锁具的连接")
 	    return ELOCK_ERROR_SUCCESS;
 }
 

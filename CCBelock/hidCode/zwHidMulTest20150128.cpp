@@ -473,23 +473,23 @@ namespace zwHidGTest20150130{
 		EXPECT_EQ(ELOCK_ERROR_SUCCESS,Open(-33));
 		EXPECT_EQ(ELOCK_ERROR_SUCCESS,Notify(g_msg03));	
 		myWaitForRecv331();
-		//EXPECT_EQ(ELOCK_ERROR_SUCCESS,Close());
+		EXPECT_EQ(ELOCK_ERROR_SUCCESS,Close());
 		EXPECT_EQ(1,G_TESTCB_SUCC);
 		Sleep(2000);
 	}
 
 	
 
-	//TEST_F(ATMCDLLSelfTest, jcHidDev331Normal_2)
-	//{		
-	//	SetRecvMsgRotine(myATMCRecvMsgRotine);		
-	//	EXPECT_EQ(ELOCK_ERROR_SUCCESS,Open(-33));
-	//	EXPECT_EQ(ELOCK_ERROR_SUCCESS,Notify(g_msg03));	
-	//	myWaitForRecv331();
-	//	//EXPECT_EQ(ELOCK_ERROR_SUCCESS,Close());
-	//	EXPECT_EQ(1,G_TESTCB_SUCC);
-	//	Sleep(2000);
-	//}
+	TEST_F(ATMCDLLSelfTest, jcHidDev331Normal_2)
+	{		
+		SetRecvMsgRotine(myATMCRecvMsgRotine);		
+		EXPECT_EQ(ELOCK_ERROR_SUCCESS,Open(-33));
+		EXPECT_EQ(ELOCK_ERROR_SUCCESS,Notify(g_msg03));	
+		myWaitForRecv331();
+		EXPECT_EQ(ELOCK_ERROR_SUCCESS,Close());
+		EXPECT_EQ(1,G_TESTCB_SUCC);
+		Sleep(2000);
+	}
 
 }	//namespace zwHidGTest20150130{
 #endif // ZWUSEGTEST
