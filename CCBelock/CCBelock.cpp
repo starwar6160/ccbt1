@@ -67,7 +67,8 @@ zw_trace::~zw_trace()
 extern int G_TESTCB_SUCC;	//是否成功调用了回调函数的一个标志位，仅仅测试用
 CCBELOCK_API long JCAPISTD Open(long lTimeOut)
 {
-	ZWFUNCTRACE boost::mutex::scoped_lock lock(zwCfg::ComPort_mutex);
+	ZWFUNCTRACE 
+	//boost::mutex::scoped_lock lock(zwCfg::ComPort_mutex);
 	try {
 		memset(&zwccbthr::hidHandle, 0, sizeof(JCHID));
 		zwccbthr::hidHandle.vid = JCHID_VID_2014;
@@ -92,7 +93,8 @@ CCBELOCK_API long JCAPISTD Open(long lTimeOut)
 
 CCBELOCK_API long JCAPISTD Close()
 {
-	ZWFUNCTRACE boost::mutex::scoped_lock lock(zwCfg::ComPort_mutex);
+	ZWFUNCTRACE 
+	//boost::mutex::scoped_lock lock(zwCfg::ComPort_mutex);
 	//关闭操作要点：先中断数据接收线程，然后join等待其中断完成，
 	// 然后将线程对象指针置位NULL,下次就可以成功打开了
 	if (NULL!=zwccbthr::opCommThr)
@@ -182,7 +184,7 @@ CCBELOCK_API int JCAPISTD SetRecvMsgRotine(RecvMsgRotine pRecvMsgFun)
 {
 	G_TESTCB_SUCC=0;
 	//ZWFUNCTRACE 
-	boost::mutex::scoped_lock lock(zwCfg::ComPort_mutex);
+	//boost::mutex::scoped_lock lock(zwCfg::ComPort_mutex);
 	assert(NULL != pRecvMsgFun);
 	if (NULL == pRecvMsgFun) {
 		ZWFATAL("注册回调函数不能传入空指针0952")
@@ -197,7 +199,7 @@ void cdecl myATMCRecvMsgRotine(const char *pszMsg)
 {
 	ZWFUNCTRACE 
 	//assert(pszMsg != NULL && strlen(pszMsg) > 42);
-	boost::mutex::scoped_lock lock(zwCfg::ComPort_mutex);
+	//boost::mutex::scoped_lock lock(zwCfg::ComPort_mutex);
 	//输入必须有内容，但是最大不得长于下位机内存大小，做合理限制
 	assert(NULL != pszMsg);
 	int inlen = strlen(pszMsg);
