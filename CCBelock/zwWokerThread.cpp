@@ -31,7 +31,9 @@ namespace zwccbthr {
 
 	//与锁具之间的通讯线程
 	void ThreadLockComm() {
-		ZWFUNCTRACE boost::mutex::scoped_lock lock(thr_mutex);
+		//ZWFUNCTRACE 
+		ZWNOTICE("与锁具之间的通讯线程启动")
+		boost::mutex::scoped_lock lock(thr_mutex);
 
 		try {			
 			const int BLEN = 1024;
@@ -58,9 +60,12 @@ namespace zwccbthr {
 						Sleep(3000);
 						continue;
 					}
-					JCHID_STATUS sts=
-					jcHidRecvData(&zwccbthr::hidHandle,
-						      recvBuf, BLEN, &outLen,JCHID_RECV_TIMEOUT);
+					JCHID_STATUS sts=JCHID_STATUS_FAIL;
+					if (NULL!=zwccbthr::hidHandle.hid_device)
+					{
+						sts=jcHidRecvData(&zwccbthr::hidHandle,
+							recvBuf, BLEN, &outLen,JCHID_RECV_TIMEOUT);
+					}
 					//zwCfg::s_hidOpened=true;	//算是通信线程的一个心跳标志					
 					//要是什么也没收到，就直接进入下一个循环
 					if (JCHID_STATUS_OK!=sts)

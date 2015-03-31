@@ -66,6 +66,7 @@ zw_trace::~zw_trace()
 
 
 extern int G_TESTCB_SUCC;	//是否成功调用了回调函数的一个标志位，仅仅测试用
+void myCloseElock1503(void);
 int myOpenElock1503(JCHID *jcElock)
 {
 	assert(NULL!=jcElock);
@@ -73,6 +74,7 @@ int myOpenElock1503(JCHID *jcElock)
 	{
 		return ELOCK_ERROR_PARAMINVALID;
 	}	
+	//myCloseElock1503();
 	if (true==zwCfg::s_hidOpened)
 	{
 		return ELOCK_ERROR_SUCCESS;
@@ -92,6 +94,23 @@ int myOpenElock1503(JCHID *jcElock)
 	return ELOCK_ERROR_SUCCESS;
 }
 
+void myCloseElock1503(void)
+{
+	if (NULL!=zwccbthr::opCommThr)
+	{
+		zwccbthr::opCommThr->interrupt();
+		zwccbthr::opCommThr->join();
+		zwccbthr::opCommThr=NULL;
+	}
+	if (NULL!=zwccbthr::hidHandle.hid_device
+		&& NULL != zwccbthr::hidHandle.vid 
+		&& NULL != zwccbthr::hidHandle.pid) {
+	jcHidClose(&zwccbthr::hidHandle);
+	memset(&zwccbthr::hidHandle,0,sizeof(JCHID));
+	zwCfg::s_hidOpened=false;
+	}
+}
+
 CCBELOCK_API long JCAPISTD Open(long lTimeOut)
 {
 	ZWFUNCTRACE 
@@ -102,6 +121,9 @@ CCBELOCK_API long JCAPISTD Open(long lTimeOut)
 		if (ELOCK_ERROR_SUCCESS==eRes)
 		{
 			//zwCfg::s_hidOpened = true;
+			//启动通信线程
+			//boost::thread thr(zwccbthr::ThreadLockComm);
+			//zwccbthr::opCommThr=new boost::thread(zwccbthr::ThreadLockComm);
 			ZWNOTICE("return ELOCK_ERROR_SUCCESS 打开电子锁成功")
 				return ELOCK_ERROR_SUCCESS;
 		}
@@ -111,9 +133,6 @@ CCBELOCK_API long JCAPISTD Open(long lTimeOut)
 			ZWNOTICE("return ELOCK_ERROR_PARAMINVALID 打开电子锁失败")
 				return ELOCK_ERROR_PARAMINVALID;
 		}		
-		//启动通信线程
-		//boost::thread thr(zwccbthr::ThreadLockComm);
-		//zwccbthr::opCommThr=new boost::thread(zwccbthr::ThreadLockComm);
 	}
 	catch(...) {
 		string errMsg = "打开金储电子锁失败";
@@ -148,6 +167,7 @@ CCBELOCK_API long JCAPISTD Notify(const char *pszMsg)
 	//通过在Notify函数开始检测是否端口已经打开，没有打开就等待一段时间，避免
 	//2014年11月初在广州遇到的没有连接锁具时，ATMC执行0002报文查询锁具状态，
 	//反复查询，大量无用日志产生的情况。
+	//myCloseElock1503();
 	Open(1);
 	if (false == zwCfg::s_hidOpened) {
 		return ELOCK_ERROR_CONNECTLOST;
