@@ -409,6 +409,7 @@ namespace zwHidGTest20150130{
 
 	
 	const char *g_msg03="<?xml version='1.0' encoding='UTF-8'?><root><TransCode>0003</TransCode><TransName>TimeSync</TransName><TransDate>20150330</TransDate><TransTime>202416</TransTime></root>";
+	const char *g_msg00="<root><TransCode>0000</TransCode><TransName>CallForActInfo</TransName><TransDate>20150327</TransDate><TransTime>105915</TransTime><DevCode>440600300145</DevCode><SpareString1></SpareString1><SpareString2></SpareString2></root>";
 	int myRndFunc(const int funcIndex)
 	{
 		
@@ -470,8 +471,10 @@ namespace zwHidGTest20150130{
 	TEST_F(ATMCDLLSelfTest, jcHidDev331Normal_1)
 	{
 		SetRecvMsgRotine(myATMCRecvMsgRotine);		
-		//EXPECT_EQ(ELOCK_ERROR_SUCCESS,Open(-33));
-		EXPECT_EQ(ELOCK_ERROR_SUCCESS,Notify(g_msg03));	
+		EXPECT_EQ(ELOCK_ERROR_SUCCESS,Open(-33));
+		//printf("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^PlugInOut Multi times\n");
+		//Sleep(15000);
+		EXPECT_EQ(ELOCK_ERROR_SUCCESS,Notify(g_msg00));	
 		myWaitForRecv331();
 		//EXPECT_EQ(ELOCK_ERROR_SUCCESS,Close());
 		EXPECT_EQ(1,G_TESTCB_SUCC);

@@ -39,7 +39,11 @@ int zwSecboxData104Dec(void *src,int *jcseq,void *inData,const int inLen);
 #define JCHID_VID_2014	(0X0483)
 #define JCHID_PID_LOCK5151	(0X5710)
 #define JCHID_PID_SECBOX	(0X5712)	
-#define JCHID_RECV_TIMEOUT	(3000)	//默认3秒超时
+//20150331.1754.广州建行.默认6秒超时.原始值是3000毫秒也就是3秒，经常有报文
+// 特别是第二条开始的报文的返回值收不到，跑2条报文的测试，3次内基本必定
+// 碰到第二条报文的返回值收不到。将其加倍到6秒后情况极大改善，基本没有
+// 遇到过收不到返回报文的情况了；
+#define JCHID_RECV_TIMEOUT	(6000)	
 
 
 
