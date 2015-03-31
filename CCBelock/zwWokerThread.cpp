@@ -128,7 +128,8 @@ namespace zwccbthr {
 
 CCBELOCK_API void zwPushString(const char *str)
 {
-	ZWFUNCTRACE assert(NULL != str && strlen(str) > 0);
+	//ZWFUNCTRACE 
+	assert(NULL != str && strlen(str) > 0);
 	if (NULL == str || strlen(str) == 0) {
 		return;
 	}

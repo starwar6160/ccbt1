@@ -64,7 +64,7 @@ zw_trace::~zw_trace()
 
 
 
-
+extern int G_TESTCB_SUCC;	//是否成功调用了回调函数的一个标志位，仅仅测试用
 CCBELOCK_API long JCAPISTD Open(long lTimeOut)
 {
 	ZWFUNCTRACE boost::mutex::scoped_lock lock(zwCfg::ComPort_mutex);
@@ -180,7 +180,9 @@ CCBELOCK_API long JCAPISTD Notify(const char *pszMsg)
 
 CCBELOCK_API int JCAPISTD SetRecvMsgRotine(RecvMsgRotine pRecvMsgFun)
 {
-	ZWFUNCTRACE boost::mutex::scoped_lock lock(zwCfg::ComPort_mutex);
+	G_TESTCB_SUCC=0;
+	//ZWFUNCTRACE 
+	boost::mutex::scoped_lock lock(zwCfg::ComPort_mutex);
 	assert(NULL != pRecvMsgFun);
 	if (NULL == pRecvMsgFun) {
 		ZWFATAL("注册回调函数不能传入空指针0952")
@@ -202,6 +204,8 @@ void cdecl myATMCRecvMsgRotine(const char *pszMsg)
 	if (NULL == pszMsg || inlen == 0 || inlen >= JC_MSG_MAXLEN) {
 		return;
 	}
+	printf("%s\n",pszMsg);
+	G_TESTCB_SUCC=1;	//成功调用了回调函数
 }
 
 CCBELOCK_API const char *dbgGetLockReturnXML(void)

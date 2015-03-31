@@ -13,7 +13,7 @@
 void cdecl myATMCRecvMsgRotine(const char *pszMsg);
 
 #ifdef ZWUSEGTEST
-
+int G_TESTCB_SUCC=0;	//是否成功调用了回调函数的一个标志位，仅仅测试用
 CCBELOCK_API int zwStartGtestInDLL(void)
 {
 	int argc=1;
@@ -457,11 +457,22 @@ namespace zwHidGTest20150130{
 	TEST_F(ATMCDLLSelfTest, jcHidDev331Normal_1)
 	{
 		SetRecvMsgRotine(myATMCRecvMsgRotine);
-		Open(-33);
-		Notify(g_msg03);	
-		Sleep(400);
-		Close();
+		EXPECT_EQ(ELOCK_ERROR_SUCCESS,Open(-33));
+		EXPECT_EQ(ELOCK_ERROR_SUCCESS,Notify(g_msg03));	
+		Sleep(1700);
+		EXPECT_EQ(ELOCK_ERROR_SUCCESS,Close());
+		EXPECT_EQ(1,G_TESTCB_SUCC);
 	}
+
+	//TEST_F(ATMCDLLSelfTest, jcHidDev331Normal_2)
+	//{
+	//	SetRecvMsgRotine(myATMCRecvMsgRotine);
+	//	EXPECT_EQ(ELOCK_ERROR_SUCCESS,Open(-33));
+	//	EXPECT_EQ(ELOCK_ERROR_SUCCESS,Notify(g_msg03));	
+	//	Sleep(1800);
+	//	EXPECT_EQ(ELOCK_ERROR_SUCCESS,Close());
+	//	EXPECT_EQ(1,G_TESTCB_SUCC);
+	//}
 
 }	//namespace zwHidGTest20150130{
 #endif // ZWUSEGTEST

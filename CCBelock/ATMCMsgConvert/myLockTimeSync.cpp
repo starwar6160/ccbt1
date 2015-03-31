@@ -5,7 +5,7 @@
 namespace jcAtmcConvertDLL {
 	//时间同步
 	void zwconvTimeSyncDown(const ptree & ptccb, ptree & ptjc) {
-		ZWFUNCTRACE
+		//ZWFUNCTRACE
 		    ptjc.put(jcAtmcConvertDLL::JCSTR_CMDTITLE, JCSTR_TIME_SYNC);
 		//建行字符串格式的日期和时间字段合成转换为UTC秒数.开始
 		time_t nowSec = time(NULL);
