@@ -96,12 +96,12 @@ int myOpenElock1503(JCHID *jcElock)
 
 void myCloseElock1503(void)
 {
-	//if (NULL!=zwccbthr::opCommThr)
-	//{
-	//	zwccbthr::opCommThr->interrupt();
-	//	zwccbthr::opCommThr->join();
-	//	zwccbthr::opCommThr=NULL;
-	//}
+	if (NULL!=zwccbthr::opCommThr)
+	{
+		zwccbthr::opCommThr->interrupt();
+		zwccbthr::opCommThr->join();
+		zwccbthr::opCommThr=NULL;
+	}
 	if (NULL!=zwccbthr::hidHandle.hid_device
 		&& NULL != zwccbthr::hidHandle.vid 
 		&& NULL != zwccbthr::hidHandle.pid) {
@@ -116,7 +116,6 @@ CCBELOCK_API long JCAPISTD Open(long lTimeOut)
 	ZWFUNCTRACE 
 	int eRes=ELOCK_ERROR_SUCCESS;
 	//boost::mutex::scoped_lock lock(zwCfg::ComPort_mutex);
-	try {
 		eRes=myOpenElock1503(&zwccbthr::hidHandle);
 		if (ELOCK_ERROR_SUCCESS==eRes)
 		{
@@ -134,32 +133,12 @@ CCBELOCK_API long JCAPISTD Open(long lTimeOut)
 			ZWNOTICE("return ELOCK_ERROR_PARAMINVALID 打开电子锁失败")
 				return ELOCK_ERROR_PARAMINVALID;
 		}		
-	}
-	catch(...) {
-		string errMsg = "打开金储电子锁失败";
-		ZWFATAL(errMsg.c_str())
-		return ELOCK_ERROR_PARAMINVALID;
-	}
 	return ELOCK_ERROR_PARAMINVALID;
 }
 
 CCBELOCK_API long JCAPISTD Close()
 {
-	//ZWFUNCTRACE 
-	//boost::mutex::scoped_lock lock(zwCfg::ComPort_mutex);
-	//关闭操作要点：先中断数据接收线程，然后join等待其中断完成，
-	// 然后将线程对象指针置位NULL,下次就可以成功打开了
-	//if (NULL!=zwccbthr::opCommThr)
-	//{
-	//	zwccbthr::opCommThr->interrupt();
-	//	zwccbthr::opCommThr->join();
-	//	zwccbthr::opCommThr=NULL;
-	//}
-	//if (NULL != zwccbthr::hidHandle.vid && NULL != zwccbthr::hidHandle.pid) {
-		//jcHidClose(&zwccbthr::hidHandle);
-	//}
-	//zwCfg::s_hidOpened = false;
-	//ZWNOTICE("关闭 到锁具的连接")
+	myCloseElock1503();
 	    return ELOCK_ERROR_SUCCESS;
 }
 
