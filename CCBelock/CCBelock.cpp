@@ -26,6 +26,7 @@ namespace zwccbthr {
 	extern std::deque < string > dqOutXML;;
 	extern boost::mutex recv_mutex;
 	extern JCHID hidHandle;
+	time_t lastOpen=0;
 } //namespace zwccbthr{  
 
 namespace zwCfg {
@@ -73,8 +74,7 @@ int myOpenElock1503(JCHID *jcElock)
 	if (NULL==jcElock)
 	{
 		return ELOCK_ERROR_PARAMINVALID;
-	}	
-	//myCloseElock1503();
+	}		
 	if (true==zwCfg::s_hidOpened)
 	{
 		return ELOCK_ERROR_SUCCESS;
@@ -96,12 +96,12 @@ int myOpenElock1503(JCHID *jcElock)
 
 void myCloseElock1503(void)
 {
-	if (NULL!=zwccbthr::opCommThr)
-	{
-		zwccbthr::opCommThr->interrupt();
-		zwccbthr::opCommThr->join();
-		zwccbthr::opCommThr=NULL;
-	}
+	//if (NULL!=zwccbthr::opCommThr)
+	//{
+	//	zwccbthr::opCommThr->interrupt();
+	//	zwccbthr::opCommThr->join();
+	//	zwccbthr::opCommThr=NULL;
+	//}
 	if (NULL!=zwccbthr::hidHandle.hid_device
 		&& NULL != zwccbthr::hidHandle.vid 
 		&& NULL != zwccbthr::hidHandle.pid) {
@@ -124,6 +124,7 @@ CCBELOCK_API long JCAPISTD Open(long lTimeOut)
 			//启动通信线程
 			//boost::thread thr(zwccbthr::ThreadLockComm);
 			//zwccbthr::opCommThr=new boost::thread(zwccbthr::ThreadLockComm);
+			zwccbthr::lastOpen=time(NULL);
 			ZWNOTICE("return ELOCK_ERROR_SUCCESS 打开电子锁成功")
 				return ELOCK_ERROR_SUCCESS;
 		}
@@ -166,9 +167,13 @@ CCBELOCK_API long JCAPISTD Notify(const char *pszMsg)
 {
 	//通过在Notify函数开始检测是否端口已经打开，没有打开就等待一段时间，避免
 	//2014年11月初在广州遇到的没有连接锁具时，ATMC执行0002报文查询锁具状态，
-	//反复查询，大量无用日志产生的情况。
-	//myCloseElock1503();
-	Open(1);
+	//反复查询，大量无用日志产生的情况。	
+	//if (time(NULL)-zwccbthr::lastOpen>20)
+	{
+		myCloseElock1503();
+		Open(1);
+	}
+	
 	if (false == zwCfg::s_hidOpened) {
 		return ELOCK_ERROR_CONNECTLOST;
 	}
