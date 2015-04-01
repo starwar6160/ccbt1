@@ -471,7 +471,7 @@ namespace zwHidGTest20150130{
 	TEST_F(ATMCDLLSelfTest, jcHidDev331Normal_1)
 	{
 		SetRecvMsgRotine(myATMCRecvMsgRotine);		
-		//EXPECT_EQ(ELOCK_ERROR_SUCCESS,Open(-33));
+		EXPECT_EQ(ELOCK_ERROR_SUCCESS,Open(-33));
 		//printf("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^PlugInOut Multi times\n");
 		Sleep(2000);
 		for (int i=0;i<9;i++)
@@ -480,7 +480,7 @@ namespace zwHidGTest20150130{
 		myWaitForRecv331();
 		EXPECT_EQ(1,G_TESTCB_SUCC);
 		}
-		//EXPECT_EQ(ELOCK_ERROR_SUCCESS,Close());
+		EXPECT_EQ(ELOCK_ERROR_SUCCESS,Close());
 		
 		//Sleep(2000);
 	}
@@ -490,7 +490,7 @@ namespace zwHidGTest20150130{
 	TEST_F(ATMCDLLSelfTest, jcHidDev331Normal_2)
 	{		
 		SetRecvMsgRotine(myATMCRecvMsgRotine);		
-		//EXPECT_EQ(ELOCK_ERROR_SUCCESS,Open(-33));
+		EXPECT_EQ(ELOCK_ERROR_SUCCESS,Open(-33));
 		//Sleep(8200);
 		for (int i=0;i<5;i++)
 		{
@@ -498,7 +498,7 @@ namespace zwHidGTest20150130{
 			myWaitForRecv331();
 			EXPECT_EQ(1,G_TESTCB_SUCC);
 		}
-		//EXPECT_EQ(ELOCK_ERROR_SUCCESS,Close());		
+		EXPECT_EQ(ELOCK_ERROR_SUCCESS,Close());		
 		//Sleep(2000);
 	}
 

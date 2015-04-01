@@ -43,7 +43,7 @@ namespace zwccbthr {
 			char recvBuf[BLEN + 1];
 			memset(recvBuf, 0, BLEN + 1);
 			int outLen = 0;
-			//Open(1);
+			Open(1);
 			while (1) {
 				printf("###############JCCOMMTHREAD 327 RUNNING\n");
 				myOpenElock1503(&zwccbthr::hidHandle);
