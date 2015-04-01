@@ -169,11 +169,11 @@ CCBELOCK_API int zwPushString( const char *str )
 		sts=jcHidSendData(&zwccbthr::hidHandle, str, strlen(str));
 			if (JCHID_STATUS_OK==sts)
 			{
-				ZWINFO("发送消息到锁具成功,证明锁具在线")
+				ZWINFO("检测到锁具在线")
 			}
 			else
 			{
-				ZWINFO("发送消息到锁具失败,证明锁具离线")
+				ZWINFO("检测到锁具离线")
 			}
 	
 		return sts;

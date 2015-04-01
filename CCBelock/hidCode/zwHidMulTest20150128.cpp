@@ -12,6 +12,7 @@
 //#define _DEBUG326
 //#define _DEBUG401JCHIDENUM
 //#define _DEBUG331
+//#define _DEBUG401ELOCKSTATUS
 void cdecl myATMCRecvMsgRotine(const char *pszMsg);
 
 
@@ -518,7 +519,8 @@ namespace zwHidGTest20150130{
 
 	
 
-	TEST_F(ATMCDLLSelfTest, jcHidDev331Normal_2_ElockStatusA1Online)
+#ifdef _DEBUG401ELOCKSTATUS
+	TEST_F(ATMCDLLSelfTest, jcHidDev401_ElockStatusA1_ELockOnline)
 	{
 		Sleep(2000);
 		printf("测试锁具在线时的状态");
@@ -530,7 +532,7 @@ namespace zwHidGTest20150130{
 	}
 
 
-	TEST_F(ATMCDLLSelfTest, jcHidDev331Normal_2_ElockStatusA1Offline)
+	TEST_F(ATMCDLLSelfTest, jcHidDev401_ElockStatusA2_ELockOffline)
 	{
 		printf("请拔下USB线，测试锁具离线时的状态");
 		Sleep(5000);
@@ -539,6 +541,18 @@ namespace zwHidGTest20150130{
 			EXPECT_EQ(JCHID_STATUS_FAIL,zwPushString("test401"));			
 			Sleep(1000);
 		}	
+	}
+#endif // _DEBUG401ELOCKSTATUS
+
+	TEST_F(ATMCDLLSelfTest, jcHidDev401_ElockStatusA3_ELockPlugIn)
+	{
+		SetRecvMsgRotine(myATMCRecvMsgRotine);		
+		printf("请拔下USB线再插上，测试锁具拔插后是否还能正常工作");
+		Sleep(6000);
+		EXPECT_EQ(ELOCK_ERROR_SUCCESS,Notify(g_msg03));	
+		myWaitForRecv331();
+		EXPECT_EQ(1,G_TESTCB_SUCC);
+
 	}
 
 }	//namespace zwHidGTest20150130{

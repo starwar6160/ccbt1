@@ -75,7 +75,7 @@ int myOpenElock1503(JCHID *jcElock)
 	{
 		return ELOCK_ERROR_PARAMINVALID;
 	}		
-	if (true==zwCfg::s_hidOpened)
+	if (ELOCK_ERROR_SUCCESS==Open(1))
 	{
 		return ELOCK_ERROR_SUCCESS;
 	}
@@ -113,7 +113,16 @@ void myCloseElock1503(void)
 
 CCBELOCK_API long JCAPISTD Open(long lTimeOut)
 {
-	return ELOCK_ERROR_SUCCESS;
+	int elockStatus=zwPushString("test401ElockStatus");
+	if (JCHID_STATUS_OK==elockStatus)
+	{
+		return ELOCK_ERROR_SUCCESS;
+	}
+	else
+	{
+		return ELOCK_ERROR_CONNECTLOST;
+	}
+	
 }
 
 CCBELOCK_API long JCAPISTD Close()
