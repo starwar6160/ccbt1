@@ -11,7 +11,7 @@
 //#define _DEBUG_ZJYBAD20150325
 //#define _DEBUG326
 //#define _DEBUG401JCHIDENUM
-//#define _DEBUG331
+#define _DEBUG331
 //#define _DEBUG401ELOCKSTATUS
 void cdecl myATMCRecvMsgRotine(const char *pszMsg);
 
@@ -502,11 +502,11 @@ namespace zwHidGTest20150130{
 		SetRecvMsgRotine(myATMCRecvMsgRotine);		
 		EXPECT_EQ(ELOCK_ERROR_SUCCESS,Open(-33));
 		//Sleep(8200);
-		for (int i=0;i<300*10;i++)
+		for (int i=0;i<300*30;i++)
 		{
 			EXPECT_EQ(ELOCK_ERROR_SUCCESS,Notify(g_msg03));	
 			myWaitForRecv331();
-			if (i%10==0)
+			if (i%5==0)
 			{
 				Sleep(1000);
 			}			
