@@ -34,7 +34,7 @@ namespace jcAtmcConvertDLL {
 	}
 	//时间同步  
 	void zwconvTimeSyncUp(const ptree & ptjc, ptree & ptccb) {
-		ZWFUNCTRACE
+		//ZWFUNCTRACE
 		    //无用的形式化部分
 		    ptccb.put(CCBSTR_CODE, "0003");
 		ptccb.put(CCBSTR_NAME, "TimeSync");	//使用缓存在内存中的值

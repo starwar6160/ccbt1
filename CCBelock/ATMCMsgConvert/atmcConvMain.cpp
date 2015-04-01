@@ -15,14 +15,16 @@ namespace jcAtmcConvertDLL {
 #endif // TMP_MAHAO_TEST_20150105
 	const JC_MSG_TYPE zwCCBxml2JCjson(const string & downXML,
 					  string & downJson) {
-		ZWFUNCTRACE
+		//ZWFUNCTRACE
 		    //接受ATMC下发的XML，转化为中间形式ptree
 		    assert(downXML.length() > 42);	//XML开头的固定内容38个字符，外加起码一个标签的两对尖括号合计4个字符
+#ifdef _DEBUG401
 		ZWDBGMSG
 		    ("******************建行ATMC下发XML开始*********************\n");
 		ZWDBGMSG(downXML.c_str());
 		ZWDBGMSG
 		    ("******************建行ATMC下发XML结束*********************\n");
+#endif // _DEBUG401
 		JC_MSG_TYPE msgType = JCMSG_INVALID_TYPE;
 		ptree ptCCB;
 		 std::stringstream ss;
@@ -37,7 +39,7 @@ namespace jcAtmcConvertDLL {
 		    ("***建行XML转换后的JSON开始********************************\n");
 		 ZWDBGMSG(ccbJson.c_str());
 		 ZWDBGMSG
-		    ("***建行XML转换后的JSON结束********************************\n");
+		    ("***CCBXML转换后的JSON结束********************************\n");
 
 		//判断消息类型
 		string transCode = ptCCB.get < string > (CCBSTR_CODE);
@@ -121,19 +123,21 @@ namespace jcAtmcConvertDLL {
 		std::stringstream ss2;
 		write_json(ss2, ptJC);
 		downJson = ss2.str();
+#ifdef _DEBUG401
 		ZWDBGMSG
 		    ("***金储JSON下发请求开始***********************************\n");
 		ZWDBGMSG(downJson.c_str());
 		printf("%s\n", downJson.c_str());
 		ZWDBGMSG
 		    ("***金储JSON下发请求结束***********************************\n");
+#endif // _DEBUG401
 
 		return msgType;
 	}
 //////////////////////////////////////////////////////////////////////////
 
 	const JC_MSG_TYPE zwJCjson2CCBxml(const string & upJson, string & upXML) {
-		ZWFUNCTRACE
+		//ZWFUNCTRACE
 		    //从下位机接收而来的json结果字符串，解码为中间形式ptree
 		    assert(upJson.length() > 9);	//json最基本的符号起码好像要9个字符左右
 		ptree ptJC;
@@ -144,12 +148,14 @@ namespace jcAtmcConvertDLL {
 		std::stringstream sst1;
 		write_json(sst1, ptJC);
 		string jsonJc = sst1.str();
+//#ifdef _DEBUG401
 		ZWDBGMSG
 		    ("***金储锁具返回的JSON应答开始*************************####\n");
 		ZWDBGMSG(jsonJc.c_str());
 		printf("%s\n", jsonJc.c_str());
 		ZWDBGMSG
-		    ("***金储锁具返回的JSON应答结束*************************####\n");
+		    ("***JINCHU锁具返回的JSON应答结束*************************####\n");
+//#endif // _DEBUG401
 
 		//判断消息类型并从我们的JSON接口变为建行的接口所需字段
 		string jcCmd =
@@ -210,21 +216,26 @@ namespace jcAtmcConvertDLL {
 		write_json(sst2, ptCCB);		
 		string jsonCcb = sst2.str();
 		//////////////////////////////////////////////////////////////////////////
+#ifdef _DEBUG401
 		ZWDBGMSG
 		    ("***金储锁具应答JSON处理为建行所需元素 开始************####\n");
 		ZWDBGMSG(jsonCcb.c_str());
 		ZWDBGMSG
-		    ("***金储锁具应答JSON处理为建行所需元素 结束************####\n");		
+		    ("***金储锁具应答JSON处理为建行所需元素 结束************####\n");	
+#endif // _DEBUG401
+	
 		//转换JSON为XML供ATMC使用
 		std::stringstream ss2;		
 		write_xml(ss2, ptCCB);
 		upXML = ss2.str();
+#ifdef _DEBUG401
 		ZWDBGMSG
 		    ("*********************金储应答XML开始******************####\n");
 		ZWDBGMSG(upXML.c_str());
 		//printf("%s\n",upXML.c_str());
 		ZWDBGMSG
 		    ("*********************金储应答XML结束******************####\n");
+#endif // _DEBUG401
 #ifdef TMP_MAHAO_TEST_20150105
 		//20150105.1623.应万敏和马浩的临时测试要求添加把0005报文返回内容写入文件的要求临时添加，以后不需要；
 		if (JCSTR_GET_LOCK_LOG == jcCmd) {	//读取闭锁码

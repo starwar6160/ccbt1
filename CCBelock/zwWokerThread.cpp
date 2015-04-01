@@ -96,8 +96,10 @@ namespace zwccbthr {
 
 					if (strlen(recvBuf)>0)
 					{
+#ifdef _DEBUG401
 						ZWNOTICE("wkThr成功从锁具接收数据如下：");
 						ZWNOTICE(recvBuf);
+#endif // _DEBUG401
 					}
 				}
 				catch(boost::thread_interrupted &)
@@ -118,10 +120,10 @@ namespace zwccbthr {
 				if (strlen(recvBuf)>0){
 					jcAtmcConvertDLL::zwJCjson2CCBxml(recvBuf,
 						outXML);
-					ZWINFO("分析锁具回传的Json并转换为建行XML成功");
+					//ZWINFO("分析锁具回传的Json并转换为建行XML成功");
 					//XML开头的固定内容38个字符，外加起码一个标签的两对尖括号合计4个字符
 					assert(outXML.length() > 42);
-					ZWDBGMSG(outXML.c_str());
+					//ZWDBGMSG(outXML.c_str());
 					{
 						boost::
 							mutex::scoped_lock lock(recv_mutex);
@@ -143,8 +145,10 @@ namespace zwccbthr {
 				if (NULL != zwCfg::g_WarnCallback && outXML.size()>0) {
 					//调用回调函数传回信息，
 					zwCfg::g_WarnCallback(outXML.c_str());
+#ifdef _DEBUG401
 					ZWINFO
 					    ("成功把从锁具接收到的数据传递给回调函数");
+#endif // _DEBUG401
 				} 					
 				boost::this_thread::interruption_point();
 			}
@@ -173,8 +177,10 @@ CCBELOCK_API int zwPushString( const char *str )
 	}
 
 		JCHID_STATUS sts=JCHID_STATUS_FAIL;
-
+		static time_t lastPrint=time(NULL);
 		sts=jcHidSendData(&zwccbthr::hidHandle, str, strlen(str));
+		if (time(NULL)-lastPrint>6)
+		{
 			if (JCHID_STATUS_OK==sts)
 			{
 				ZWINFO("检测到锁具在线")
@@ -183,6 +189,8 @@ CCBELOCK_API int zwPushString( const char *str )
 			{
 				ZWINFO("检测到锁具离线")
 			}
+			lastPrint=time(NULL);
+		}
 	
 		return sts;
 }

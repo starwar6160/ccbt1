@@ -145,14 +145,16 @@ CCBELOCK_API long JCAPISTD Notify(const char *pszMsg)
 	if (false == zwCfg::s_hidOpened) {
 		return ELOCK_ERROR_CONNECTLOST;
 	}
-	ZWFUNCTRACE assert(pszMsg != NULL);
+	//ZWFUNCTRACE 
+	assert(pszMsg != NULL);
 	assert(strlen(pszMsg) >= 42);	//XML至少42字节utf8
 	if (pszMsg == NULL || strlen(pszMsg) < 42) {
 		return ELOCK_ERROR_PARAMINVALID;
 	}
 	if (NULL != pszMsg && strlen(pszMsg) > 0) {
-		LOG(INFO) << "CCB下发XML=" << endl << pszMsg <<
-		    endl;
+#ifdef _DEBUG401
+		LOG(INFO) << "CCB下发XML=" << endl << pszMsg <<endl;
+#endif // _DEBUG401
 	}
 	boost::mutex::scoped_lock lock(zwCfg::ComPort_mutex);
 	string strJsonSend;
@@ -174,7 +176,9 @@ CCBELOCK_API long JCAPISTD Notify(const char *pszMsg)
 		assert(strXMLSend.length() > 42);	//XML开头的固定内容38个字符，外加起码一个标签的两对尖括号合计4个字符
 		jcAtmcConvertDLL::zwCCBxml2JCjson(strXMLSend, strJsonSend);
 		assert(strJsonSend.length() > 9);	//json最基本的符号起码好像要9个字符左右
+#ifdef _DEBUG401
 		ZWNOTICE(strJsonSend.c_str());
+#endif // _DEBUG401
 		Sleep(50);
 		zwPushString(strJsonSend.c_str());
 		return ELOCK_ERROR_SUCCESS;
@@ -223,7 +227,7 @@ CCBELOCK_API int JCAPISTD SetRecvMsgRotine(RecvMsgRotine pRecvMsgFun)
 
 void cdecl myATMCRecvMsgRotine(const char *pszMsg)
 {
-	ZWFUNCTRACE 
+	//ZWFUNCTRACE 
 	//assert(pszMsg != NULL && strlen(pszMsg) > 42);
 	//boost::mutex::scoped_lock lock(zwCfg::ComPort_mutex);
 	//输入必须有内容，但是最大不得长于下位机内存大小，做合理限制
@@ -240,7 +244,7 @@ void cdecl myATMCRecvMsgRotine(const char *pszMsg)
 	if (inlen>0)	
 	{
 		G_TESTCB_SUCC=1;	//成功调用了回调函数
-		printf("%s\n",pszMsg);
+		//printf("%s\n",pszMsg);
 	}	
 }
 
