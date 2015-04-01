@@ -10,6 +10,7 @@
 //#define _DEBUG_DEV2
 //#define _DEBUG_ZJYBAD20150325
 //#define _DEBUG326
+//#define _DEBUG401JCHIDENUM
 void cdecl myATMCRecvMsgRotine(const char *pszMsg);
 
 #ifdef ZWUSEGTEST
@@ -93,6 +94,7 @@ namespace zwHidGTest20150130{
 	}
 	//////////////////////////////////////////////////////////////////////////
 
+#ifdef _DEBUG401JCHIDENUM
 	TEST_F(ATMCDLLSelfTest, jcHidDevEnumNormal)
 	{
 		//枚举设备，正常情况测试
@@ -102,8 +104,12 @@ namespace zwHidGTest20150130{
 		//"{"jcElockSerial": "a"}"这样的最低限度json是22字节长度
 		EXPECT_GT(strlen(s_devList),22);	
 	}
+#endif // _DEBUG401JCHIDENUM
+
 
 #ifdef _DEBUG326
+
+
 	//监测正常Open以后没有正常Close而是直接拔掉电子锁，之后Open是否还是成功
 	TEST_F(ATMCDLLSelfTest, jcLockPlugOuted)
 	{

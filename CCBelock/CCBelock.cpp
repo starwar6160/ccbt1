@@ -113,27 +113,7 @@ void myCloseElock1503(void)
 
 CCBELOCK_API long JCAPISTD Open(long lTimeOut)
 {
-	ZWFUNCTRACE 
-	int eRes=ELOCK_ERROR_SUCCESS;
-	//boost::mutex::scoped_lock lock(zwCfg::ComPort_mutex);
-		eRes=myOpenElock1503(&zwccbthr::hidHandle);
-		if (ELOCK_ERROR_SUCCESS==eRes)
-		{
-			//zwCfg::s_hidOpened = true;
-			//启动通信线程
-			//boost::thread thr(zwccbthr::ThreadLockComm);
-			//zwccbthr::opCommThr=new boost::thread(zwccbthr::ThreadLockComm);
-			zwccbthr::lastOpen=time(NULL);
-			ZWNOTICE("return ELOCK_ERROR_SUCCESS 打开电子锁成功")
-				return ELOCK_ERROR_SUCCESS;
-		}
-		else
-		{
-			//zwCfg::s_hidOpened = false;
-			ZWNOTICE("return ELOCK_ERROR_PARAMINVALID 打开电子锁失败")
-				return ELOCK_ERROR_PARAMINVALID;
-		}		
-	return ELOCK_ERROR_PARAMINVALID;
+	return ELOCK_ERROR_SUCCESS;
 }
 
 CCBELOCK_API long JCAPISTD Close()
