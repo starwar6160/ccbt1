@@ -28,7 +28,8 @@ namespace jcAtmcConvertDLL {
 		 assert(ccbUTCSec > 1400 * 1000 * 1000);
 
 		//建行字符串格式的日期和时间字段合成转换为UTC秒数.结束
-
+		 printf("当前机器时间time(NULL)=%u\n",time(NULL));
+		 printf("zwconvTimeSyncDown ccbUTCSec from ATMVH is %u\n",ccbUTCSec);
 		 ptjc.put < time_t > ("Lock_Time", ccbUTCSec);
 		//ptjc.put < time_t > ("Lock_Time", nowSec);
 	}

@@ -123,14 +123,15 @@ namespace jcAtmcConvertDLL {
 		std::stringstream ss2;
 		write_json(ss2, ptJC);
 		downJson = ss2.str();
-#ifdef _DEBUG401
+//#ifdef _DEBUG401
 		ZWDBGMSG
 		    ("***金储JSON下发请求开始***********************************\n");
+		printf("当前机器时间time(NULL)=%u\n",time(NULL));
 		ZWDBGMSG(downJson.c_str());
 		printf("%s\n", downJson.c_str());
 		ZWDBGMSG
 		    ("***金储JSON下发请求结束***********************************\n");
-#endif // _DEBUG401
+//#endif // _DEBUG401
 
 		return msgType;
 	}

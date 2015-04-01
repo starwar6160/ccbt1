@@ -506,7 +506,7 @@ namespace zwHidGTest20150130{
 		{
 			EXPECT_EQ(ELOCK_ERROR_SUCCESS,Notify(g_msg03));	
 			myWaitForRecv331();
-			if (i%5==0)
+			//if (i%2==0)
 			{
 				Sleep(1000);
 			}			
