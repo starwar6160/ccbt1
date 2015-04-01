@@ -32,7 +32,7 @@ void zwGlogInit()
 		return;
 	}
 	runOnce=1;
-	google::InitGoogleLogging("JCATMC151");    // 初始化
+	google::InitGoogleLogging("JCATMC154");    // 初始化
 	google::InstallFailureFunction(zwFatalExec);	//安装默认FATAL处理函数，免得FATAL时直接非正常停止工作	
 	//FLAGS_minloglevel=google::GLOG_WARNING;
 	//FLAGS_minloglevel=google::GLOG_FATAL;
