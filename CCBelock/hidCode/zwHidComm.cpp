@@ -39,12 +39,14 @@ struct hid_device_ {
 //检查输入的结构体内容的正确性
 JCHID_STATUS myCheckHidPara( const JCHID * hid )
 {
+#ifdef _DEBUG401
 	assert(NULL!=hid);
 	assert(0!=hid->vid && 0!=hid->pid);
 	assert(JC_UNINIT!=hid->vid	&& JC_UNINIT!=hid->pid);
+#endif // _DEBUG401
 	if (NULL==hid || hid->vid==0 || hid->pid==0)
 	{
-		return JCHID_STATUS_INPUTNULL;
+		return JCHID_STATUS_FAIL;
 	}
 	return JCHID_STATUS_OK;
 }

@@ -89,7 +89,7 @@ int myOpenElock1503(JCHID *jcElock)
 	}
 	//printf("##################331 Plug Out/In test for 331 exception\n");
 	//Sleep(9000);
-
+	ZWNOTICE("电子锁打开成功20150401.1059")
 	zwCfg::s_hidOpened=true;
 	return ELOCK_ERROR_SUCCESS;
 }

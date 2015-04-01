@@ -43,7 +43,7 @@ namespace zwccbthr {
 			char recvBuf[BLEN + 1];
 			memset(recvBuf, 0, BLEN + 1);
 			int outLen = 0;
-			Open(1);
+			//Open(1);
 			while (1) {
 				printf("###############JCCOMMTHREAD 327 RUNNING\n");
 				myOpenElock1503(&zwccbthr::hidHandle);
@@ -61,7 +61,7 @@ namespace zwccbthr {
 					boost::this_thread::interruption_point();
 					if (NULL==zwccbthr::hidHandle.hid_device)
 					{
-						Sleep(3000);
+						Sleep(700);
 						continue;
 					}
 					JCHID_STATUS sts=JCHID_STATUS_FAIL;
@@ -156,31 +156,26 @@ namespace zwccbthr {
 //////////////////////////////////////////////////////////////////////////
 }				//namespace zwccbthr{
 
-CCBELOCK_API void zwPushString(const char *str)
+CCBELOCK_API int zwPushString( const char *str )
 {
 	//ZWFUNCTRACE 
 	assert(NULL != str && strlen(str) > 0);
 	if (NULL == str || strlen(str) == 0) {
-		return;
+		return JCHID_STATUS_FAIL;
 	}
 
-	try {
 		JCHID_STATUS sts=JCHID_STATUS_FAIL;
-		do 
-		{
-			sts=jcHidSendData(&zwccbthr::hidHandle, str, strlen(str));
+
+		sts=jcHidSendData(&zwccbthr::hidHandle, str, strlen(str));
 			if (JCHID_STATUS_OK==sts)
 			{
-				break;
+				ZWINFO("发送消息到锁具成功,证明锁具在线")
 			}
-			Sleep(1000);
-		} while (sts!=JCHID_STATUS_OK);
-	}			//try
-	catch(...) {
-		ZWDBGMSG(__FUNCTION__);
-		ZWDBGMSG("\t SerialPort Send String Exeception!20140805.1626");
-		ZWFATAL("通过线路发送数据到锁具异常，可能是未连接")
-	}
-
+			else
+			{
+				ZWINFO("发送消息到锁具失败,证明锁具离线")
+			}
+	
+		return sts;
 }
 
