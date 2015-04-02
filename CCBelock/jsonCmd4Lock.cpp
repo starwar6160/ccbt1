@@ -54,14 +54,14 @@ namespace jcLockJsonCmd_t2015a27{
 
 #ifdef ZWUSE_HID_MSG_SPLIT
 			if (true == zwCfg::s_hidOpened) {
-				ZWNOTICE("s_hidOpened already Opened,so return directly.")
+				ZWWARN("s_hidOpened already Opened,so return directly.")
 					return ELOCK_ERROR_SUCCESS;
 			}
 			memset(&zwccbthr::hidHandle, 0, sizeof(JCHID));
 			zwccbthr::hidHandle.vid = JCHID_VID_2014;
 			zwccbthr::hidHandle.pid = JCHID_PID_LOCK5151;
 			if (JCHID_STATUS_OK != jcHidOpen(&zwccbthr::hidHandle)) {
-				ZWERROR("HID Device Open ERROR 1225 !");
+				ZWFATAL("HID Device Open ERROR 1225 !");
 				return ELOCK_ERROR_PARAMINVALID;
 			}
 			zwCfg::s_hidOpened = true;
@@ -72,7 +72,7 @@ namespace jcLockJsonCmd_t2015a27{
 			ZWFATAL(errMsg.c_str())
 		}
 
-		ZWNOTICE("成功打开 到锁具的JSON连接")
+		ZWWARN("成功打开 到锁具的JSON连接")
 			return ELOCK_ERROR_SUCCESS;
 	}
 
@@ -88,7 +88,7 @@ namespace jcLockJsonCmd_t2015a27{
 		}
 CloseHidEnd:
 		zwCfg::s_hidOpened = false;
-		ZWNOTICE("关闭 到锁具的JSON连接")
+		ZWWARN("关闭 到锁具的JSON连接")
 			return ELOCK_ERROR_SUCCESS;
 	}
 
@@ -106,7 +106,7 @@ CloseHidEnd:
 		//输入必须有内容，但是最大不得长于下位机内存大小，做合理限制
 		assert(NULL != pszJson);
 		if (NULL == pszJson) {
-			ZWERROR("Notify输入为空")
+			ZWFATAL("Notify输入为空")
 				return ELOCK_ERROR_PARAMINVALID;
 		}
 		if (NULL != pszJson && strlen(pszJson) > 0) {
@@ -119,11 +119,11 @@ CloseHidEnd:
 			int inlen = strlen(pszJson);
 			assert(inlen > 0 && inlen < JC_MSG_MAXLEN);
 			if (inlen == 0 || inlen >= JC_MSG_MAXLEN) {
-				ZWWARN("notify输入超过最大最小限制");
+				ZWERROR("notify输入超过最大最小限制");
 				return ELOCK_ERROR_PARAMINVALID;
 			}
 			//////////////////////////////////////////////////////////////////////////
-			ZWNOTICE(pszJson);
+			ZWWARN(pszJson);
 			Sleep(50);
 			zwPushString(pszJson);
 			return ELOCK_ERROR_SUCCESS;
@@ -161,12 +161,11 @@ CloseHidEnd:
 			//while (1) {
 #ifndef ZWUSE_HID_MSG_SPLIT
 				if (NULL == zwComPort) {
-					ZWNOTICE
-						("线路已经关闭，通信线程将退出");
+					ZWERROR	("线路已经关闭，通信线程将退出");
 					return;
 				}
 #endif // ZWUSE_HID_MSG_SPLIT
-				ZWNOTICE("连接锁具JSON成功 jsonCmd4Lock.cpp");			
+				ZWWARN("连接锁具JSON成功 jsonCmd4Lock.cpp");			
 				try {
 #ifdef ZWUSE_HID_MSG_SPLIT
 					JCHID_STATUS sts=
@@ -187,14 +186,13 @@ CloseHidEnd:
 
 					//////////////////////////////////////////////////////////////////////////
 
-					ZWNOTICE("jsonCmd4Lock.cpp cmd4Lock成功从锁具接收JSON数据如下：");
+					ZWWARN("jsonCmd4Lock.cpp cmd4Lock成功从锁具接收JSON数据如下：");
 				}
 				catch(...) {
-					ZWFATAL
-						("RecvData接收JSON数据时到锁具的数据连接异常断开，数据接收将终止");
+					ZWFATAL("RecvData接收JSON数据时到锁具的数据连接异常断开，数据接收将终止");
 					return "RecvData接收JSON数据时到锁具的数据连接异常断开，数据接收将终止";
 				}
-				ZWNOTICE(recvBuf);
+				ZWWARN(recvBuf);
 			//}	//while (1) {
 			ZWINFO("金储通信数据接收JSON过程正常结束");
 			{
@@ -208,8 +206,7 @@ CloseHidEnd:
 		catch(...) {			
 			//异常断开就设定该标志为FALSE,以便下次Open不要再跳过启动通信线程的程序段
 			zwCfg::s_hidOpened=false;
-			ZWFATAL
-				("金储通信数据接收过程中数据连接异常断开，现在数据接收JSON过程异常结束");
+			ZWFATAL("金储通信数据接收过程中数据连接异常断开，现在数据接收JSON过程异常结束");
 			return "金储通信数据接收过程中数据连接异常断开，现在数据接收JSON过程异常结束";
 		}	
 	}

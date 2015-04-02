@@ -27,15 +27,15 @@ namespace zwccbthr {
 		if (s_ComPort.length() > 0) {
 			myLockIp = s_ComPort;	//如果有配置文件的串口值，就使用之；
 		}
-		ZWNOTICE("连接锁具IP使用");
-		ZWNOTICE(myLockIp.c_str());
+		ZWWARN("连接锁具IP使用");
+		ZWWARN(myLockIp.c_str());
 		return myLockIp;
 	}
 
 	//与锁具之间的通讯线程
 	void ThreadLockComm() {
 		//ZWFUNCTRACE 
-		ZWNOTICE("与锁具之间的通讯线程启动")
+		ZWWARN("与锁具之间的通讯线程启动")
 		boost::mutex::scoped_lock lock(thr_mutex);
 
 		try {			
@@ -91,13 +91,11 @@ namespace zwccbthr {
 				}
 				catch(boost::thread_interrupted &)
 				{
-					ZWERROR
-						("RecvData从电子锁接收数据时到遇到线程收到终止信号，数据接收线程将终止");
+					ZWERROR	("RecvData从电子锁接收数据时到遇到线程收到终止信号，数据接收线程将终止");
 					return;
 				}
 				catch(...) {
-					ZWERROR
-					    ("RecvData从电子锁接收数据时到遇到线路错误或者未知错误，数据接收线程将终止");
+					ZWFATAL ("RecvData从电子锁接收数据时到遇到线路错误或者未知错误，数据接收线程将终止");
 					return;
 				}
 				
@@ -122,12 +120,12 @@ namespace zwccbthr {
 				if (NULL==zwCfg::g_WarnCallback)
 				{
 					const char *err1="回调函数指针为空，无法调用回调函数返回从电子锁收到的报文";
-					ZWWARN(err1);
+					ZWERROR(err1);
 					MessageBoxA(NULL,err1,"严重警告",MB_OK);
 				}
 				if (outXML.size()==0)
 				{
-					ZWWARN("收到的锁具返回内容为空，无法返回有用信息给回调函数");
+					ZWERROR("收到的锁具返回内容为空，无法返回有用信息给回调函数");
 				}
 				if (NULL != zwCfg::g_WarnCallback && outXML.size()>0) {
 					//调用回调函数传回信息，
@@ -145,8 +143,7 @@ namespace zwccbthr {
 		catch(...) {			
 			//异常断开就设定该标志为FALSE,以便下次Open不要再跳过启动通信线程的程序段
 			zwCfg::s_hidOpened=false;
-			ZWFATAL
-			    ("金储通信数据接收线程数据连接异常断开，现在数据接收线程将结束");
+			ZWFATAL("金储通信数据接收线程数据连接异常断开，现在数据接收线程将结束");
 			return;
 		}	
 	}

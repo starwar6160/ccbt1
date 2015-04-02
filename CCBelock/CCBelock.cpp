@@ -95,7 +95,7 @@ int myOpenElock1503(JCHID *jcElock)
 	}
 	//printf("##################331 Plug Out/In test for 331 exception\n");
 	//Sleep(9000);
-	ZWNOTICE("电子锁打开成功20150401.1059")
+	ZWWARN("电子锁打开成功20150401.1059")
 	zwCfg::s_hidOpened=true;
 	return ELOCK_ERROR_SUCCESS;
 }
@@ -165,13 +165,13 @@ CCBELOCK_API long JCAPISTD Notify(const char *pszMsg)
 		//输入必须有内容，但是最大不得长于下位机内存大小，做合理限制
 		assert(NULL != pszMsg);
 		if (NULL == pszMsg) {
-			ZWERROR("Notify输入为空")
+			ZWFATAL("Notify输入为空")
 			    return ELOCK_ERROR_PARAMINVALID;
 		}
 		int inlen = strlen(pszMsg);
 		assert(inlen > 0 && inlen < JC_MSG_MAXLEN);
 		if (inlen == 0 || inlen >= JC_MSG_MAXLEN) {
-			ZWWARN("Notify输入超过最大最小限制");
+			ZWERROR("Notify输入超过最大最小限制");
 			return ELOCK_ERROR_PARAMINVALID;
 		}
 		//////////////////////////////////////////////////////////////////////////
@@ -184,18 +184,18 @@ CCBELOCK_API long JCAPISTD Notify(const char *pszMsg)
 		return ELOCK_ERROR_SUCCESS;
 	}
 	catch(ptree_bad_path & e) {
-		ZWERROR(e.what());
-		ZWERROR("CCB下发XML有错误节点路径")
+		ZWFATAL(e.what());
+		ZWFATAL("CCB下发XML有错误节点路径")
 		    return ELOCK_ERROR_NOTSUPPORT;
 	}
 	catch(ptree_bad_data & e) {
-		ZWERROR(e.what());
-		ZWERROR("CCB下发XML有错误数据内容")
+		ZWFATAL(e.what());
+		ZWFATAL("CCB下发XML有错误数据内容")
 		    return ELOCK_ERROR_PARAMINVALID;
 	}
 	catch(ptree_error & e) {
-		ZWERROR(e.what());
-		ZWERROR("CCB下发XML有其他未知错误")
+		ZWFATAL(e.what());
+		ZWFATAL("CCB下发XML有其他未知错误")
 		    return ELOCK_ERROR_CONNECTLOST;
 	}
 	catch(...) {		//一切网络异常都直接返回错误。主要是为了捕捉未连接时

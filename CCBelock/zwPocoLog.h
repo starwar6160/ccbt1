@@ -3,13 +3,10 @@
 
 #include "stdafx.h"
 
-//extern Poco::LogStream * pocoLog;
 //#define ZWFATAL(x)    OutputDebugStringA("ZWFATAL"); OutputDebugStringA(x);
-#define ZWDEBUG(x) LOG(INFO)<<(x);
 #define ZWINFO(x)  LOG(INFO)<<(x);
-#define ZWNOTICE(x) LOG(WARNING)<<(x);OutputDebugStringA(x);
-#define ZWWARN(x) LOG(WARNING)<<(x);OutputDebugStringA(x);
-#define ZWERROR(x) LOG(ERROR)<<(x);OutputDebugStringA(x);
-#define ZWFATAL(x) LOG(FATAL)<<(x);OutputDebugStringA(x);
+#define ZWWARN(x) LOG(WARNING)<<(x);
+#define ZWERROR(x) LOG(ERROR)<<(x);
+#define ZWFATAL(x) LOG(FATAL)<<(x);
 
 #endif // zwPocoLog_h__
