@@ -115,7 +115,9 @@ typedef void (cdecl * RecvMsgRotine) (const char *pszMsg);
 namespace zwCfg {
 	extern RecvMsgRotine g_WarnCallback;
 	extern bool s_hidOpened;
-} void ZWDBGMSG(const char *x);
+} 
+void ZWDBGMSG(const char *x);
+void ZWDBGWARN(const char *x);
 #define ZWUSE_HID_MSG_SPLIT
 extern HMODULE G_DLL_HMODULE;
 

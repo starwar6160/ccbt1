@@ -88,14 +88,6 @@ namespace zwccbthr {
 					}
 					printf("\n");
 					//////////////////////////////////////////////////////////////////////////
-
-					if (strlen(recvBuf)>0)
-					{
-#ifdef _DEBUG401
-						ZWNOTICE("wkThr成功从锁具接收数据如下：");
-						ZWNOTICE(recvBuf);
-#endif // _DEBUG401
-					}
 				}
 				catch(boost::thread_interrupted &)
 				{

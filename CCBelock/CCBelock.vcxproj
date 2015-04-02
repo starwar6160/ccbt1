@@ -51,7 +51,7 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <WarningLevel>Level4</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;GOOGLE_GLOG_DLL_DECL=;_DEBUG;_WINDOWS;POCO_STATIC;CCBELOCK_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_DEBUG401;GOOGLE_GLOG_DLL_DECL=;_DEBUG;_WINDOWS;POCO_STATIC;CCBELOCK_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>.\;.\hidCode;$(ZWLIB)\glog\src\windows;$(BOOST);$(ZWLIB)\lua\src;$(ZWLIB)\LuaBridge\Source\LuaBridge;$(ZWLIB)\gtest\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <ExceptionHandling>Sync</ExceptionHandling>
       <AdditionalOptions>-Zm113 %(AdditionalOptions)</AdditionalOptions>
@@ -80,7 +80,7 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>WIN32;GOOGLE_GLOG_DLL_DECL=;NDEBUG;_WINDOWS;POCO_STATIC;CCBELOCK_EXPORTS;_DEBUG_USEPOCOLOG1027;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_DEBUG401;GOOGLE_GLOG_DLL_DECL=;NDEBUG;_WINDOWS;POCO_STATIC;CCBELOCK_EXPORTS;_DEBUG_USEPOCOLOG1027;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>.\;.\hidCode;$(ZWLIB)\glog\src\windows;$(BOOST);$(ZWLIB)\lua\src;$(ZWLIB)\LuaBridge\Source\LuaBridge;$(ZWLIB)\gtest\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalOptions>-Zm113 %(AdditionalOptions)</AdditionalOptions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>

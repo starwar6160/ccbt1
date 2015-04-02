@@ -47,6 +47,12 @@ void ZWDBGMSG(const char *x)
 	LOG(INFO)<<x;
 }
 
+void ZWDBGWARN(const char *x)
+{
+	//OutputDebugStringA(x);
+	LOG(WARNING)<<x;
+}
+
 zw_trace::zw_trace(const char *funcName)
 {
 	m_str = funcName;
@@ -152,9 +158,6 @@ CCBELOCK_API long JCAPISTD Notify(const char *pszMsg)
 		return ELOCK_ERROR_PARAMINVALID;
 	}
 	if (NULL != pszMsg && strlen(pszMsg) > 0) {
-#ifdef _DEBUG401
-		LOG(INFO) << "CCB下发XML=" << endl << pszMsg <<endl;
-#endif // _DEBUG401
 	}
 	boost::mutex::scoped_lock lock(zwCfg::ComPort_mutex);
 	string strJsonSend;
@@ -176,9 +179,6 @@ CCBELOCK_API long JCAPISTD Notify(const char *pszMsg)
 		assert(strXMLSend.length() > 42);	//XML开头的固定内容38个字符，外加起码一个标签的两对尖括号合计4个字符
 		jcAtmcConvertDLL::zwCCBxml2JCjson(strXMLSend, strJsonSend);
 		assert(strJsonSend.length() > 9);	//json最基本的符号起码好像要9个字符左右
-#ifdef _DEBUG401
-		ZWNOTICE(strJsonSend.c_str());
-#endif // _DEBUG401
 		Sleep(50);
 		zwPushString(strJsonSend.c_str());
 		return ELOCK_ERROR_SUCCESS;
