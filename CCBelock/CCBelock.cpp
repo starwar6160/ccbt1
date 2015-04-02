@@ -147,7 +147,7 @@ CCBELOCK_API long JCAPISTD Notify(const char *pszMsg)
 		//myCloseElock1503();
 		//Open(1);
 	}
-	
+	LOG(INFO)<<"Notify¿ªÊ¼###################################################\n";
 	if (false == zwCfg::s_hidOpened) {
 		return ELOCK_ERROR_CONNECTLOST;
 	}

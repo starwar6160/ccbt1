@@ -52,9 +52,9 @@ void myATMCRecvMsgRotine(const char *jcLockResponseXML)
 	string ccbop, ccbname;
 	string rmsg = jcLockResponseXML;
 	zwGetCCBMsgType(rmsg, ccbop, ccbname);
-	cout << "*******************建行ATMC回调函数开始***************####\n";
+	cout << "*******************建行ATMC回调函数开始***####\n";
 	cout << jcLockResponseXML << endl;
-	cout << "*******************建行ATMC回调函数结束***************####\n";
+	cout << "*******************建行ATMC回调函数结束****####\n";
 	OutputDebugStringA(__FUNCTION__);
 	OutputDebugStringA(jcLockResponseXML);
 	if ("0000" == ccbop) {

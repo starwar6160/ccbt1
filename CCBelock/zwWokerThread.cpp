@@ -47,7 +47,7 @@ namespace zwccbthr {
 			time_t lastOpenElock=time(NULL);
 			//Open(1);
 			while (1) {
-				printf("###############JCCOMMTHREAD 327 RUNNING\n");
+				//printf("###############JCCOMMTHREAD 327 RUNNING\n");
 				//每隔多少秒才重新检测并打开电子锁一次
 				if (time(NULL)-lastOpenElock>6)
 				{
@@ -131,8 +131,7 @@ namespace zwccbthr {
 					//调用回调函数传回信息，
 					zwCfg::g_WarnCallback(outXML.c_str());
 #ifdef _DEBUG401
-					ZWINFO
-					    ("成功把从锁具接收到的数据传递给回调函数");
+					ZWINFO("成功把从锁具接收到的数据传递给回调函数");
 #endif // _DEBUG401
 				} 					
 				boost::this_thread::interruption_point();

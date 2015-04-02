@@ -20,10 +20,10 @@ namespace jcAtmcConvertDLL {
 		    assert(downXML.length() > 42);	//XML开头的固定内容38个字符，外加起码一个标签的两对尖括号合计4个字符
 #ifdef _DEBUG401ZW
 		ZWDBGMSG
-		    ("******************建行ATMC下发XML开始*********************\n");
+		    ("******************建行ATMC下发XML开始***\n");
 		ZWDBGMSG(downXML.c_str());
 		ZWDBGMSG
-		    ("******************建行ATMC下发XML结束*********************\n");
+		    ("******************建行ATMC下发XML结束****\n");
 #endif // _DEBUG401ZW
 		JC_MSG_TYPE msgType = JCMSG_INVALID_TYPE;
 		ptree ptCCB;
@@ -35,9 +35,9 @@ namespace jcAtmcConvertDLL {
 		 std::stringstream ssccb;
 		 write_json(ssccb, ptCCB);
 		string ccbJson = ssccb.str();
-		 LOG(INFO)<<"***建行XML转换后的JSON开始********************************\n"<<
-			 ccbJson;
-		 //ZWDBGWARN("***CCBXML转换后的JSON结束********************************\n");
+		 LOG(INFO)<<"建行XML转换后的JSON开始\n"
+			 <<ccbJson;
+		 //ZWDBGWARN("CCBXML转换后的JSON结束\n");
 
 		//判断消息类型
 		string transCode = ptCCB.get < string > (CCBSTR_CODE);
@@ -122,11 +122,13 @@ namespace jcAtmcConvertDLL {
 		write_json(ss2, ptJC);
 		downJson = ss2.str();
 //#ifdef _DEBUG401
-		printf("当前机器时间time(NULL)=%u\n",time(NULL));
-		LOG(WARNING)<<"***金储JSON下发请求开始***********************************\n"		
+#ifdef _DEBUG
+		//printf("当前机器时间time(NULL)=%u\n",time(NULL));
+#endif // _DEBUG
+		LOG(WARNING)<<"金储JSON下发请求开始\n"		
 		<<downJson;
 		//printf("%s\n", downJson.c_str());
-		//ZWDBGWARN("***金储JSON下发请求结束***********************************\n");
+		//ZWDBGWARN("金储JSON下发请求结束\n");
 //#endif // _DEBUG401
 
 		return msgType;
@@ -146,10 +148,10 @@ namespace jcAtmcConvertDLL {
 		write_json(sst1, ptJC);
 		string jsonJc = sst1.str();
 //#ifdef _DEBUG401
-		LOG(WARNING)<<"***金储锁具返回的JSON应答开始*************************####\n"
+		LOG(WARNING)<<"金储锁具返回的JSON应答开始\n"
 		<<jsonJc;
 		//printf("%s\n", jsonJc.c_str());
-		//ZWDBGWARN("***JINCHU锁具返回的JSON应答结束*************************####\n");
+		//ZWDBGWARN("JINCHU锁具返回的JSON应答结束\n");
 //#endif // _DEBUG401
 
 		//判断消息类型并从我们的JSON接口变为建行的接口所需字段
@@ -212,11 +214,9 @@ namespace jcAtmcConvertDLL {
 		string jsonCcb = sst2.str();
 		//////////////////////////////////////////////////////////////////////////
 #ifdef _DEBUG401
-		ZWDBGMSG
-		    ("***金储锁具应答JSON处理为建行所需元素 开始************####\n");
-		ZWDBGMSG(jsonCcb.c_str());
-		ZWDBGMSG
-		    ("***金储锁具应答JSON处理为建行所需元素 结束************####\n");	
+		LOG(INFO)<<"金储锁具应答JSON处理为建行所需元素开始\n"
+		<<jsonCcb.c_str();
+		//ZWDBGMSG("金储锁具应答JSON处理为建行所需元素结束\n");	
 #endif // _DEBUG401
 	
 		//转换JSON为XML供ATMC使用
@@ -224,11 +224,10 @@ namespace jcAtmcConvertDLL {
 		write_xml(ss2, ptCCB);
 		upXML = ss2.str();
 #ifdef _DEBUG401ZW
-		ZWDBGMSG
-		    ("*********************金储应答XML开始******************####\n");
+		ZWDBGMSG("金储应答XML开始\n");
 		ZWDBGMSG(upXML.c_str());
 		//printf("%s\n",upXML.c_str());
-		//ZWDBGMSG("*********************金储应答XML结束******************####\n");
+		//ZWDBGMSG("金储应答XML结束\n");
 #endif // _DEBUG401ZW
 #ifdef TMP_MAHAO_TEST_20150105
 		//20150105.1623.应万敏和马浩的临时测试要求添加把0005报文返回内容写入文件的要求临时添加，以后不需要；
