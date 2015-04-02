@@ -43,7 +43,7 @@ namespace zwCfg {
 
 void ZWDBGMSG(const char *x)
 {
-	OutputDebugStringA(x);
+	//OutputDebugStringA(x);
 	LOG(INFO)<<x;
 }
 

@@ -52,6 +52,7 @@ void myMulHidDevJsonTest20150116B();
 void myMulHidDevJsonTest20150120A();
 void myMulHidDevJsonTest20150120A1();
 
+//void zwCCBDateTime2UTC(const char *ccbDateLocal,const char *ccbTimeLocal,time_t *outUTC);
 int _tmain(int argc, TCHAR * argv[])
 {
 	const char *devSN3="PAAbAAAAAAAAgAKE";
@@ -69,6 +70,9 @@ int _tmain(int argc, TCHAR * argv[])
 	//myHidSerialTest126();
 	//myMulHidDevJsonTest20150116B();
 	zwStartGtestInDLL();
+	//time_t dstDateTime=0;
+	//zwCCBDateTime2UTC("20140515","000000",&dstDateTime);
+	//printf("dstDateTime=%u\n",dstDateTime);
 	return 0;
 }
 

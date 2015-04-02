@@ -488,6 +488,7 @@ namespace zwHidGTest20150130{
 		{		 
 		EXPECT_EQ(ELOCK_ERROR_SUCCESS,Notify(g_msg03));	
 		myWaitForRecv331();
+		Sleep(2000);
 		EXPECT_EQ(1,G_TESTCB_SUCC);
 		}
 		EXPECT_EQ(ELOCK_ERROR_SUCCESS,Close());
@@ -508,7 +509,7 @@ namespace zwHidGTest20150130{
 			myWaitForRecv331();
 			//if (i%2==0)
 			{
-				Sleep(1000);
+				Sleep(3000);
 			}			
 			EXPECT_EQ(1,G_TESTCB_SUCC);
 		}
