@@ -133,6 +133,8 @@ namespace zwccbthr {
 				}
 				if (NULL != zwCfg::g_WarnCallback && outXML.size()>0) {
 					//调用回调函数传回信息，
+					//20150415.1727.为了万敏的要求，控制上传消息速率最多每2秒一条防止ATM死机
+					Sleep(2000);
 					zwCfg::g_WarnCallback(outXML.c_str());
 #ifdef _DEBUG401
 					ZWINFO("成功把从锁具接收到的数据传递给回调函数");
@@ -165,7 +167,13 @@ CCBELOCK_API int zwPushString( const char *str )
 
 		JCHID_STATUS sts=JCHID_STATUS_FAIL;
 		static time_t lastPrint=time(NULL);
-		sts=jcHidSendData(&zwccbthr::hidHandle, str, strlen(str));
+		{			
+			//20150415.1727.为了万敏的要求，控制下发消息速率最多每秒一条防止下位机死机
+			Sleep(1000);
+			boost::mutex::scoped_lock lock(zwccbthr::recv_mutex);
+			sts=jcHidSendData(&zwccbthr::hidHandle, str, strlen(str));
+		}
+		
 		if (time(NULL)-lastPrint>6)
 		{
 			if (JCHID_STATUS_OK==sts)

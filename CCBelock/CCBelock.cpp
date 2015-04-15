@@ -179,13 +179,10 @@ CCBELOCK_API long JCAPISTD Notify(const char *pszMsg)
 		assert(strXMLSend.length() > 42);	//XML开头的固定内容38个字符，外加起码一个标签的两对尖括号合计4个字符
 		jcAtmcConvertDLL::zwCCBxml2JCjson(strXMLSend, strJsonSend);
 		assert(strJsonSend.length() > 9);	//json最基本的符号起码好像要9个字符左右
-		Sleep(50);		
-		{
-			boost::mutex::scoped_lock lock(zwccbthr::recv_mutex);
+		Sleep(50);			
 			OutputDebugStringA("415下发消息给锁具开始\n");
 			zwPushString(strJsonSend.c_str());
 			OutputDebugStringA("415下发消息给锁具结束\n");
-		}
 		
 		return ELOCK_ERROR_SUCCESS;
 	}
