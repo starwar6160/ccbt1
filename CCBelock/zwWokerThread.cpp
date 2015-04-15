@@ -74,9 +74,14 @@ namespace zwccbthr {
 					}
 					JCHID_STATUS sts=JCHID_STATUS_FAIL;
 					if (NULL!=zwccbthr::hidHandle.hid_device)
-					{
-						sts=jcHidRecvData(&zwccbthr::hidHandle,
-							recvBuf, BLEN, &outLen,JCHID_RECV_TIMEOUT);
+					{						
+						{
+							boost::mutex::scoped_lock lock(recv_mutex);
+							OutputDebugStringA("415接收一条锁具返回消息开始\n");
+							sts=jcHidRecvData(&zwccbthr::hidHandle,
+								recvBuf, BLEN, &outLen,JCHID_RECV_TIMEOUT);
+							OutputDebugStringA("415接收一条锁具返回消息结束\n");
+						}						
 						//myCloseElock1503();
 					}
 					//zwCfg::s_hidOpened=true;	//算是通信线程的一个心跳标志					
@@ -110,8 +115,7 @@ namespace zwccbthr {
 					assert(outXML.length() > 42);
 					//ZWDBGMSG(outXML.c_str());
 					{
-						boost::
-							mutex::scoped_lock lock(recv_mutex);
+						boost::mutex::scoped_lock lock(recv_mutex);
 						//收到的XML存入队列
 						dqOutXML.push_back(outXML);
 					}

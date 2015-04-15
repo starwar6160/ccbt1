@@ -417,7 +417,7 @@ namespace zwHidGTest20150130{
 #endif // _DEBUG_DEV2
 
 	
-	const char *g_msg03="<?xml version='1.0' encoding='UTF-8'?><root><TransCode>0003</TransCode><TransName>TimeSync</TransName><TransDate>20150330</TransDate><TransTime>202416</TransTime></root>";
+	const char *g_msg03="<?xml version='1.0' encoding='UTF-8'?><root><TransCode>0003</TransCode><TransName>TimeSync</TransName><TransDate>20150415</TransDate><TransTime>160816</TransTime></root>";
 	const char *g_msg00="<root><TransCode>0000</TransCode><TransName>CallForActInfo</TransName><TransDate>20150327</TransDate><TransTime>105915</TransTime><DevCode>440600300145</DevCode><SpareString1></SpareString1><SpareString2></SpareString2></root>";
 	int myRndFunc(const int funcIndex)
 	{
@@ -481,14 +481,15 @@ namespace zwHidGTest20150130{
 	TEST_F(ATMCDLLSelfTest, jcHidDev331Normal_1_Short)
 	{
 		SetRecvMsgRotine(myATMCRecvMsgRotine);		
-		EXPECT_EQ(ELOCK_ERROR_SUCCESS,Open(-33));
+		Sleep(1000);
+		EXPECT_EQ(ELOCK_ERROR_SUCCESS,Open(22));
 		//printf("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^PlugInOut Multi times\n");
-		Sleep(2000);
-		for (int i=0;i<9;i++)
+		//Sleep(2000);
+		for (int i=0;i<3;i++)
 		{		 
-		EXPECT_EQ(ELOCK_ERROR_SUCCESS,Notify(g_msg03));	
+		EXPECT_EQ(ELOCK_ERROR_SUCCESS,Notify(g_msg00));	
 		myWaitForRecv331();
-		Sleep(2000);
+		//Sleep(2000);
 		EXPECT_EQ(1,G_TESTCB_SUCC);
 		}
 		EXPECT_EQ(ELOCK_ERROR_SUCCESS,Close());
@@ -501,9 +502,9 @@ namespace zwHidGTest20150130{
 	TEST_F(ATMCDLLSelfTest, jcHidDev331Normal_2_Long)
 	{		
 		SetRecvMsgRotine(myATMCRecvMsgRotine);		
-		EXPECT_EQ(ELOCK_ERROR_SUCCESS,Open(-33));
+		EXPECT_EQ(ELOCK_ERROR_SUCCESS,Open(22));
 		//Sleep(8200);
-		for (int i=0;i<300*30;i++)
+		for (int i=0;i<1;i++)
 		{
 			EXPECT_EQ(ELOCK_ERROR_SUCCESS,Notify(g_msg03));	
 			myWaitForRecv331();
@@ -543,7 +544,6 @@ namespace zwHidGTest20150130{
 			Sleep(1000);
 		}	
 	}
-#endif // _DEBUG401ELOCKSTATUS
 
 	TEST_F(ATMCDLLSelfTest, jcHidDev401_ElockStatusA3_ELockPlugIn)
 	{
@@ -555,6 +555,8 @@ namespace zwHidGTest20150130{
 		EXPECT_EQ(1,G_TESTCB_SUCC);
 
 	}
+#endif // _DEBUG401ELOCKSTATUS
+
 
 }	//namespace zwHidGTest20150130{
 #endif // ZWUSEGTEST
