@@ -2,15 +2,22 @@
 #include <gtest/gtest.h>
 #include "hidapi.h"
 #include "CCBelock.h"
+#include "zwCcbElockHdr.h"
 #include "zwHidMulHeader.h"
 #include "zwHidGtest130.h"
 #define ZWUSEGTEST
-#define _DEBUG_LOCK2TEST
-#define _DEBUG_DEV2
+//#define _DEBUG_LOCK2TEST
+//#define _DEBUG_DEV2
+//#define _DEBUG_ZJYBAD20150325
+//#define _DEBUG326
+//#define _DEBUG401JCHIDENUM
+#define _DEBUG331
+//#define _DEBUG401ELOCKSTATUS
+void cdecl myATMCRecvMsgRotine(const char *pszMsg);
 
 
 #ifdef ZWUSEGTEST
-
+int G_TESTCB_SUCC=0;	//是否成功调用了回调函数的一个标志位，仅仅测试用
 CCBELOCK_API int zwStartGtestInDLL(void)
 {
 	int argc=1;
@@ -90,6 +97,7 @@ namespace zwHidGTest20150130{
 	}
 	//////////////////////////////////////////////////////////////////////////
 
+#ifdef _DEBUG401JCHIDENUM
 	TEST_F(ATMCDLLSelfTest, jcHidDevEnumNormal)
 	{
 		//枚举设备，正常情况测试
@@ -99,7 +107,64 @@ namespace zwHidGTest20150130{
 		//"{"jcElockSerial": "a"}"这样的最低限度json是22字节长度
 		EXPECT_GT(strlen(s_devList),22);	
 	}
+#endif // _DEBUG401JCHIDENUM
 
+
+#ifdef _DEBUG326
+
+
+	//监测正常Open以后没有正常Close而是直接拔掉电子锁，之后Open是否还是成功
+	TEST_F(ATMCDLLSelfTest, jcLockPlugOuted)
+	{
+		//测试多次Open和Close设备
+		char devSN1p[48];
+		memset(devSN1p,0,48);
+		strcpy(devSN1p,devSN1);
+		const char *hidType="Lock";
+
+		EXPECT_EQ(ELOCK_ERROR_SUCCESS,Open(22));
+		//EXPECT_EQ(jch::G_SUSSESS,OpenDrives(hidType,	devSN1p));
+		SetReturnMessage(myReturnMessageTest130);
+		//EXPECT_EQ(jch::G_SUSSESS,CloseDrives(hidType,devSN1p));
+		//EXPECT_EQ(jch::G_SUSSESS,CloseDrives(hidType,devSN1p));
+		printf("########################1拔下USB线，暂时不要插上，期待Open返回失败327\n");				
+		Sleep(9200);
+		EXPECT_NE(ELOCK_ERROR_SUCCESS,Open(22));
+		Sleep(1200);
+		EXPECT_EQ(ELOCK_ERROR_SUCCESS,Close());
+		printf("***********************再次插上USB线，期待Open成功\n");
+		Sleep(9200);
+		
+		EXPECT_EQ(ELOCK_ERROR_SUCCESS,Open(22));
+		printf("等待9秒看看数据接收线程继续运行的效果");
+		Sleep(9000);
+		//清空向量
+		jch::vecJcHid.clear();
+	}
+#endif // _DEBUG326
+
+#ifdef _DEBUG327B
+	TEST_F(ATMCDLLSelfTest, jcLockPlugOuted327)
+	{
+		//测试多次Open和Close设备
+		char devSN1p[48];
+		memset(devSN1p,0,48);
+		strcpy(devSN1p,devSN1);
+		const char *hidType="Lock";
+
+		EXPECT_EQ(ELOCK_ERROR_SUCCESS,Open(22));
+		SetReturnMessage(myReturnMessageTest130);		
+		Sleep(5200);
+		EXPECT_EQ(ELOCK_ERROR_SUCCESS,Open(22));
+		printf("等待9秒看看数据接收线程继续运行的效果");
+		Sleep(9000);
+		//清空向量
+		jch::vecJcHid.clear();
+	}
+#endif // _DEBUG327B
+
+
+#ifdef _DEBUG_ZJYBAD20150325
 	TEST_F(ATMCDLLSelfTest, zjydbgBad3)
 	{
 		//测试多次Open和Close设备
@@ -150,6 +215,7 @@ namespace zwHidGTest20150130{
 		//清空向量
 		jch::vecJcHid.clear();
 	}
+#endif // _DEBUG_ZJYBAD20150325
 
 #ifdef _DEBUG_DEV2
 
@@ -349,6 +415,146 @@ namespace zwHidGTest20150130{
 	//////////////////////////////////////////////////////////////////////////
 
 #endif // _DEBUG_DEV2
+
+	
+	const char *g_msg03="<?xml version='1.0' encoding='UTF-8'?><root><TransCode>0003</TransCode><TransName>TimeSync</TransName><TransDate>20150330</TransDate><TransTime>202416</TransTime></root>";
+	const char *g_msg00="<root><TransCode>0000</TransCode><TransName>CallForActInfo</TransName><TransDate>20150327</TransDate><TransTime>105915</TransTime><DevCode>440600300145</DevCode><SpareString1></SpareString1><SpareString2></SpareString2></root>";
+	int myRndFunc(const int funcIndex)
+	{
+		
+		int r=0;
+		switch (funcIndex)
+		{
+		case 0:printf("ZWRND330:Open(1)\n");
+			r=Open(1);			
+			break;
+		case 1:printf("ZWRND330:Close()\n");
+			r=Close();			
+			break;
+		case 2:printf("ZWRND330:Notify(msg03)\n");
+			r=Notify(g_msg03);			
+			break;
+		case 3:printf("ZWRND330:Notify(NULL)\n");
+			r=Notify(NULL);			
+			break;
+		case 4:printf("ZWRND330:SetRecvMsgRotine(myATMCRecvMsgRotine)\n");
+			r=SetRecvMsgRotine(myATMCRecvMsgRotine);			
+			break;
+		case 5:printf("ZWRND330:SetRecvMsgRotine(NULL)\n");
+			r=SetRecvMsgRotine(NULL);			
+			break;
+		case 6:printf("ZWRND330:SetRecvMsgRotine((RecvMsgRotine )0x11112222)\n");
+			SetRecvMsgRotine((RecvMsgRotine )0x11112222);			
+			break;
+		case 7:printf("ZWRND330:Notify((const char *)0x11112222)\n");
+			Notify((const char *)0x11112222);			
+			break;
+		}
+		return r;
+	}
+
+	//TEST_F(ATMCDLLSelfTest, jcHidDevRandom1)
+	//{
+	//	int i=1,j=0;		
+	//	srand(time(NULL));
+	//	for (int i=0;i<10;i++)
+	//	{
+	//		//EXPECT_EQ(ELOCK_ERROR_SUCCESS,myRndFunc(i));
+	//		myRndFunc(rand()%8);
+	//	}
+	//}
+
+	void myWaitForRecv331()
+	{
+		for(int i=0;i<15;i++)
+		{
+			if (1==G_TESTCB_SUCC)
+			{
+				break;
+			}
+			Sleep(1000);
+		}
+	}
+
+
+#ifdef _DEBUG331
+	TEST_F(ATMCDLLSelfTest, jcHidDev331Normal_1_Short)
+	{
+		SetRecvMsgRotine(myATMCRecvMsgRotine);		
+		EXPECT_EQ(ELOCK_ERROR_SUCCESS,Open(22));
+		//printf("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^PlugInOut Multi times\n");
+		Sleep(2000);
+		for (int i=0;i<9;i++)
+		{		 
+		EXPECT_EQ(ELOCK_ERROR_SUCCESS,Notify(g_msg03));	
+		myWaitForRecv331();
+		Sleep(2000);
+		EXPECT_EQ(1,G_TESTCB_SUCC);
+		}
+		EXPECT_EQ(ELOCK_ERROR_SUCCESS,Close());
+		
+		//Sleep(2000);
+	}
+
+	
+
+	TEST_F(ATMCDLLSelfTest, jcHidDev331Normal_2_Long)
+	{		
+		SetRecvMsgRotine(myATMCRecvMsgRotine);		
+		EXPECT_EQ(ELOCK_ERROR_SUCCESS,Open(22));
+		//Sleep(8200);
+		for (int i=0;i<300*30;i++)
+		{
+			EXPECT_EQ(ELOCK_ERROR_SUCCESS,Notify(g_msg03));	
+			myWaitForRecv331();
+			//if (i%2==0)
+			{
+				Sleep(3000);
+			}			
+			EXPECT_EQ(1,G_TESTCB_SUCC);
+		}
+		EXPECT_EQ(ELOCK_ERROR_SUCCESS,Close());		
+		//Sleep(2000);
+	}
+#endif // _DEBUG331
+
+	
+
+#ifdef _DEBUG401ELOCKSTATUS
+	TEST_F(ATMCDLLSelfTest, jcHidDev401_ElockStatusA1_ELockOnline)
+	{
+		Sleep(2000);
+		printf("测试锁具在线时的状态");
+		for (int i=0;i<2;i++)
+		{
+			EXPECT_EQ(JCHID_STATUS_OK,zwPushString("test401"));
+			Sleep(1000);
+		}	
+	}
+
+
+	TEST_F(ATMCDLLSelfTest, jcHidDev401_ElockStatusA2_ELockOffline)
+	{
+		printf("请拔下USB线，测试锁具离线时的状态");
+		Sleep(5000);
+		for (int i=0;i<2;i++)
+		{
+			EXPECT_EQ(JCHID_STATUS_FAIL,zwPushString("test401"));			
+			Sleep(1000);
+		}	
+	}
+#endif // _DEBUG401ELOCKSTATUS
+
+	TEST_F(ATMCDLLSelfTest, jcHidDev401_ElockStatusA3_ELockPlugIn)
+	{
+		SetRecvMsgRotine(myATMCRecvMsgRotine);		
+		printf("请拔下USB线再插上，测试锁具拔插后是否还能正常工作");
+		Sleep(6000);
+		EXPECT_EQ(ELOCK_ERROR_SUCCESS,Notify(g_msg03));	
+		myWaitForRecv331();
+		EXPECT_EQ(1,G_TESTCB_SUCC);
+
+	}
 
 }	//namespace zwHidGTest20150130{
 #endif // ZWUSEGTEST

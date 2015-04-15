@@ -67,13 +67,15 @@ namespace jcAtmcMsg {
 		string pubKeyFromLock=myGetPubKeyFromMsg0000Rep(s_repActReqXML);
 		assert(pubKeyFromLock.length()>0);
 		string pskinput="zhouwei20140912.1014FAKEPSK"+zwDate+zwTime;
+#ifdef _DEBUG415
 		string psk=zwMergePsk(pskinput.c_str());
 		string actInfo=EciesEncrypt(pubKeyFromLock.c_str(),psk.c_str());
+
 		assert(actInfo.length()>0);
 		cout<<"PSK912 FROM ATMC IS "<<psk<<endl;
 		cout<<"ACTINFO912\n"<<actInfo<<endl;
 		pt.put("root.ActInfo",actInfo);
-
+#endif // _DEBUG415
 		std::ostringstream ss;
 		write_xml(ss, pt);
 		strXML = ss.str();
