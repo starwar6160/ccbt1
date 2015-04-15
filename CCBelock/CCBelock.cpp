@@ -119,10 +119,7 @@ void myCloseElock1503(void)
 
 CCBELOCK_API long JCAPISTD Open(long lTimeOut)
 {
-	//20150415.0918.万敏说原先下发的一条随机的字符串导致锁具死机,ATM死机，
-	//所以改为下发“获取固件版本”这条合法的指令来探测锁具在线状态；
-	int elockStatus=
-		zwPushString("{   \"command\": \"Lock_Firmware_Version\",    \"State\": \"get\"}");
+	int elockStatus=zwPushString("test401ElockStatus");
 	if (JCHID_STATUS_OK==elockStatus)
 	{
 		return ELOCK_ERROR_SUCCESS;
