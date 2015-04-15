@@ -40,13 +40,13 @@ namespace zwccbthr {
 
 		try {			
 			const int BLEN = 1024;
-			char recvBuf[BLEN + 1];
-			memset(recvBuf, 0, BLEN + 1);
+			char recvBuf[BLEN + 1];			
 			int outLen = 0;
 			myOpenElock1503(&zwccbthr::hidHandle);
 			time_t lastOpenElock=time(NULL);
 			//Open(1);
 			while (1) {
+				memset(recvBuf, 0, BLEN + 1);
 				//printf("###############JCCOMMTHREAD 327 RUNNING\n");
 				//每隔多少秒才重新检测并打开电子锁一次
 				if (time(NULL)-lastOpenElock>6)
@@ -103,6 +103,9 @@ namespace zwccbthr {
 				boost::this_thread::interruption_point();
 				string outXML;
 				if (strlen(recvBuf)>0){
+#ifdef _DEBUG
+					printf("RECVFROMLOCK415\t%s\n",recvBuf);
+#endif // _DEBUG
 					jcAtmcConvertDLL::zwJCjson2CCBxml(recvBuf,
 						outXML);
 					//ZWINFO("分析锁具回传的Json并转换为建行XML成功");

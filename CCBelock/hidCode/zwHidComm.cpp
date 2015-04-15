@@ -274,6 +274,7 @@ JCHID_STATUS jcHidRecvData( JCHID *hid,char *outData,const int outMaxLen,int *ou
 		//zwTrace1027 zwt1("jcHidRecvData P1hid_read");		
 		memset(partBuf,0,JC_HID_TRANS_BYTES);
 		//hid_read_timeout并不存在timeout为0就是无限期等待的规则，所以需要如此区分
+		//Sleep(1000);
 		if (0==timeout)
 		{
 			res=hid_read((hid_device *)hid->hid_device, (unsigned char *)partBuf, JC_HID_TRANS_BYTES);
@@ -282,6 +283,10 @@ JCHID_STATUS jcHidRecvData( JCHID *hid,char *outData,const int outMaxLen,int *ou
 		{
 			res=hid_read_timeout((hid_device *)hid->hid_device, (unsigned char *)partBuf, JC_HID_TRANS_BYTES,timeout);
 		}		
+		if (res>0)
+		{
+			printf("20150415.%s read %d bytes.\n",__FUNCTION__,res);
+		}
 		//printf("HRZ\t");
 		//////////////////////////////////////////////////////////////////////////
 		
@@ -412,6 +417,10 @@ JCHID_STATUS jcHidRecvData( JCHID *hid,char *outData,const int outMaxLen,int *ou
 	printf("%s Recv Total %d Blocks\n",__FUNCTION__,rTotal);
 	printf("R%d ",rTotal);
 #endif // _DEBUG_ZWHIDCOMM
+	if (s_mpSplit[0].nDataLength>0)
+	{
+		printf("%s:RECV:%s\n",__FUNCTION__,s_mpSplit[0].Data);
+	}
 	
 	//OutputDebugStringA("jcHidRecvData Success Complete");
 	//OutputDebugStringA("jcHidRecvData 20141027 END");
