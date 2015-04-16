@@ -119,7 +119,7 @@ void myCloseElock1503(void)
 
 CCBELOCK_API long JCAPISTD Open(long lTimeOut)
 {
-	int elockStatus=zwPushString("test401ElockStatus");
+	int elockStatus=zwPushString("{   \"command\": \"Lock_Firmware_Version\",    \"State\": \"get\"}");
 	if (JCHID_STATUS_OK==elockStatus)
 	{
 		return ELOCK_ERROR_SUCCESS;
