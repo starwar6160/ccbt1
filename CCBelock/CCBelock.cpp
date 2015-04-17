@@ -93,8 +93,6 @@ int myOpenElock1503(JCHID *jcElock)
 		zwCfg::s_hidOpened=false;
 		return ELOCK_ERROR_PARAMINVALID;
 	}
-	//printf("##################331 Plug Out/In test for 331 exception\n");
-	//Sleep(9000);
 	ZWWARN("电子锁打开成功20150401.1059")
 	zwCfg::s_hidOpened=true;
 	return ELOCK_ERROR_SUCCESS;
@@ -147,7 +145,7 @@ CCBELOCK_API long JCAPISTD Notify(const char *pszMsg)
 		//myCloseElock1503();
 		//Open(1);
 	}
-	LOG(INFO)<<"Notify开始###################################################\n";
+	//LOG(INFO)<<"Notify开始####################\n";
 	if (false == zwCfg::s_hidOpened) {
 		return ELOCK_ERROR_CONNECTLOST;
 	}
@@ -180,9 +178,9 @@ CCBELOCK_API long JCAPISTD Notify(const char *pszMsg)
 		jcAtmcConvertDLL::zwCCBxml2JCjson(strXMLSend, strJsonSend);
 		assert(strJsonSend.length() > 9);	//json最基本的符号起码好像要9个字符左右
 		Sleep(50);			
-			OutputDebugStringA("415下发消息给锁具开始\n");
+			//OutputDebugStringA("415下发消息给锁具开始\n");
 			zwPushString(strJsonSend.c_str());
-			OutputDebugStringA("415下发消息给锁具结束\n");
+			//OutputDebugStringA("415下发消息给锁具结束\n");
 		
 		return ELOCK_ERROR_SUCCESS;
 	}

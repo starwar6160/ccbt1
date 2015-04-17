@@ -43,11 +43,8 @@ int zwSecboxData104Dec(void *src,int *jcseq,void *inData,const int inLen);
 // 特别是第二条开始的报文的返回值收不到，跑2条报文的测试，3次内基本必定
 // 碰到第二条报文的返回值收不到。将其加倍到6秒后情况极大改善，基本没有
 // 遇到过收不到返回报文的情况了；
-#ifdef _DEBUG
-#define JCHID_RECV_TIMEOUT	(3000)	
-#else
-#define JCHID_RECV_TIMEOUT	(6000)	
-#endif // _DEBUG
+
+#define JCHID_RECV_TIMEOUT	(1500)	
 
 
 

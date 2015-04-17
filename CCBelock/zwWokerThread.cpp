@@ -56,7 +56,8 @@ namespace zwccbthr {
 				}
 				
 				time_t thNow=time(NULL);
-				if (thNow % 3 ==0)
+#ifdef _DEBUG417
+				if (thNow % 6 ==0)
 				{
 					OutputDebugStringA(("电子锁数据接收线程仍在运行中"));
 				}
@@ -64,23 +65,24 @@ namespace zwccbthr {
 				{
 					ZWINFO("电子锁数据接收线程仍在运行中");
 				}
+#endif // _DEBUG417
 					
 				try {
 					boost::this_thread::interruption_point();
 					if (NULL==zwccbthr::hidHandle.hid_device)
 					{
-						Sleep(700);
+						Sleep(300);
 						continue;
 					}
 					JCHID_STATUS sts=JCHID_STATUS_FAIL;
 					if (NULL!=zwccbthr::hidHandle.hid_device)
 					{						
 						{
-							//boost::mutex::scoped_lock lock(recv_mutex);
-							OutputDebugStringA("415接收一条锁具返回消息开始\n");
+							boost::mutex::scoped_lock lock(recv_mutex);
+							//OutputDebugStringA("415接收一条锁具返回消息开始\n");
 							sts=jcHidRecvData(&zwccbthr::hidHandle,
 								recvBuf, BLEN, &outLen,JCHID_RECV_TIMEOUT);
-							OutputDebugStringA("415接收一条锁具返回消息结束\n");
+							//OutputDebugStringA("415接收一条锁具返回消息结束\n");
 						}						
 						//myCloseElock1503();
 					}
@@ -88,7 +90,7 @@ namespace zwccbthr {
 					//要是什么也没收到，就直接进入下一个循环
 					if (JCHID_STATUS_OK!=sts)
 					{
-						Sleep(900);
+						Sleep(300);
 						continue;
 					}
 					printf("\n");
@@ -134,7 +136,7 @@ namespace zwccbthr {
 				if (NULL != zwCfg::g_WarnCallback && outXML.size()>0) {
 					//调用回调函数传回信息，
 					//20150415.1727.为了万敏的要求，控制上传消息速率最多每2秒一条防止ATM死机
-					Sleep(2000);
+					Sleep(920);
 					zwCfg::g_WarnCallback(outXML.c_str());
 #ifdef _DEBUG401
 					ZWINFO("成功把从锁具接收到的数据传递给回调函数");
@@ -169,7 +171,7 @@ CCBELOCK_API int zwPushString( const char *str )
 		static time_t lastPrint=time(NULL);
 		{			
 			//20150415.1727.为了万敏的要求，控制下发消息速率最多每秒一条防止下位机死机
-			//Sleep(1000);
+			Sleep(1000);
 			boost::mutex::scoped_lock lock(zwccbthr::recv_mutex);
 			sts=jcHidSendData(&zwccbthr::hidHandle, str, strlen(str));
 		}
@@ -178,7 +180,7 @@ CCBELOCK_API int zwPushString( const char *str )
 		{
 			if (JCHID_STATUS_OK==sts)
 			{
-				ZWINFO("检测到锁具在线")
+				//ZWINFO("检测到锁具在线")
 			}
 			else
 			{
