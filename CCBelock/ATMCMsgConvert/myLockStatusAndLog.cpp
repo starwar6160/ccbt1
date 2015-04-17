@@ -5,11 +5,11 @@
 namespace jcAtmcConvertDLL {
 	//²éÑ¯Ëø¾ß×´Ì¬
 	void zwconvQueryLockStatusDown(const ptree &, ptree & ptjc) {
-		ZWFUNCTRACE
+		//ZWFUNCTRACE
 		    ptjc.put(jcAtmcConvertDLL::JCSTR_CMDTITLE,
 			     JCSTR_QUERY_LOCK_STATUS);
 	} void zwconvCheckLockStatusUp(const ptree & ptjc, ptree & ptccb) {
-		ZWFUNCTRACE
+		//ZWFUNCTRACE
 		    //"Command": "Lock_Now_Info",
 		    //"Lock_Time": "1408434961",
 		    //"Lock_Serial": "A3KE2OK256EO2SPE",

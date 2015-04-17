@@ -35,8 +35,7 @@ namespace jcAtmcConvertDLL {
 		 std::stringstream ssccb;
 		 write_json(ssccb, ptCCB);
 		string ccbJson = ssccb.str();
-		 LOG(INFO)<<"建行XML转换后的JSON开始\n"
-			 <<ccbJson;
+		//LOG(INFO)<<"建行XML转换后的JSON开始\n"<<ccbJson;
 		 //ZWDBGWARN("CCBXML转换后的JSON结束\n");
 
 		//判断消息类型
@@ -214,8 +213,7 @@ namespace jcAtmcConvertDLL {
 		string jsonCcb = sst2.str();
 		//////////////////////////////////////////////////////////////////////////
 #ifdef _DEBUG401
-		LOG(INFO)<<"金储锁具应答JSON处理为建行所需元素开始\n"
-		<<jsonCcb.c_str();
+		//LOG(INFO)<<"金储锁具应答JSON处理为建行所需元素开始\n"<<jsonCcb.c_str();
 		//ZWDBGMSG("金储锁具应答JSON处理为建行所需元素结束\n");	
 #endif // _DEBUG401
 	

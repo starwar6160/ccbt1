@@ -169,7 +169,7 @@ CCBELOCK_API int zwPushString( const char *str )
 		static time_t lastPrint=time(NULL);
 		{			
 			//20150415.1727.为了万敏的要求，控制下发消息速率最多每秒一条防止下位机死机
-			Sleep(1000);
+			//Sleep(1000);
 			boost::mutex::scoped_lock lock(zwccbthr::recv_mutex);
 			sts=jcHidSendData(&zwccbthr::hidHandle, str, strlen(str));
 		}

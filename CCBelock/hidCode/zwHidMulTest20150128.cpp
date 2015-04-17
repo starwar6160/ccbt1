@@ -416,7 +416,8 @@ namespace zwHidGTest20150130{
 
 #endif // _DEBUG_DEV2
 
-	
+	const char *g_msg02="<?xml version='1.0' encoding='UTF-8'?><root><TransCode>0002</TransCode><TransName>QueryForLockStatus</TransName><TransDate>20150417</TransDate><TransTime>095139</TransTime><DevCode>440600300145</DevCode><LockMan></LockMan><LockId></LockId><SpareString1></SpareString1><SpareString2></SpareString2></root>";
+
 	const char *g_msg03="<?xml version='1.0' encoding='UTF-8'?><root><TransCode>0003</TransCode><TransName>TimeSync</TransName><TransDate>20150415</TransDate><TransTime>160816</TransTime></root>";
 	const char *g_msg00="<root><TransCode>0000</TransCode><TransName>CallForActInfo</TransName><TransDate>20150327</TransDate><TransTime>105915</TransTime><DevCode>440600300145</DevCode><SpareString1></SpareString1><SpareString2></SpareString2></root>";
 	int myRndFunc(const int funcIndex)
@@ -483,13 +484,10 @@ namespace zwHidGTest20150130{
 		SetRecvMsgRotine(myATMCRecvMsgRotine);		
 		Sleep(1000);
 		EXPECT_EQ(ELOCK_ERROR_SUCCESS,Open(22));
-		//printf("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^PlugInOut Multi times\n");
-		//Sleep(2000);
-		for (int i=0;i<3;i++)
+		for (int i=0;i<2;i++)
 		{		 
-		EXPECT_EQ(ELOCK_ERROR_SUCCESS,Notify(g_msg00));	
+		EXPECT_EQ(ELOCK_ERROR_SUCCESS,Notify(g_msg02));	
 		myWaitForRecv331();
-		//Sleep(2000);
 		EXPECT_EQ(1,G_TESTCB_SUCC);
 		}
 		EXPECT_EQ(ELOCK_ERROR_SUCCESS,Close());
@@ -504,7 +502,7 @@ namespace zwHidGTest20150130{
 		SetRecvMsgRotine(myATMCRecvMsgRotine);		
 		EXPECT_EQ(ELOCK_ERROR_SUCCESS,Open(22));
 		//Sleep(8200);
-		for (int i=0;i<1;i++)
+		for (int i=0;i<5;i++)
 		{
 			EXPECT_EQ(ELOCK_ERROR_SUCCESS,Notify(g_msg03));	
 			myWaitForRecv331();
