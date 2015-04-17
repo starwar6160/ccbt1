@@ -76,7 +76,7 @@ namespace zwccbthr {
 					if (NULL!=zwccbthr::hidHandle.hid_device)
 					{						
 						{
-							boost::mutex::scoped_lock lock(recv_mutex);
+							//boost::mutex::scoped_lock lock(recv_mutex);
 							OutputDebugStringA("415接收一条锁具返回消息开始\n");
 							sts=jcHidRecvData(&zwccbthr::hidHandle,
 								recvBuf, BLEN, &outLen,JCHID_RECV_TIMEOUT);
