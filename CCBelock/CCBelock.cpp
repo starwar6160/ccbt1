@@ -117,7 +117,9 @@ void myCloseElock1503(void)
 
 CCBELOCK_API long JCAPISTD Open(long lTimeOut)
 {
+	VLOG_IF(1,lTimeOut<=0 || lTimeOut>3)<<"ZIJIN423 Open Invalid Para 20150423.1559";
 	int elockStatus=zwPushString("{   \"command\": \"Lock_Firmware_Version\",    \"State\": \"get\"}");
+	VLOG_IF(1,JCHID_STATUS_OK!=elockStatus)<<"ZIJIN423 Open ELOCK_ERROR_CONNECTLOST Send get_firmware_version to JinChu Elock Fail!";
 	if (JCHID_STATUS_OK==elockStatus)
 	{
 		return ELOCK_ERROR_SUCCESS;
@@ -132,6 +134,7 @@ CCBELOCK_API long JCAPISTD Open(long lTimeOut)
 CCBELOCK_API long JCAPISTD Close()
 {
 	//myCloseElock1503();
+	VLOG(2)<<"ZIJIN423 Close ELOCK_ERROR_SUCCESS";
 	    return ELOCK_ERROR_SUCCESS;
 }
 
@@ -147,12 +150,14 @@ CCBELOCK_API long JCAPISTD Notify(const char *pszMsg)
 	}
 	//LOG(INFO)<<"Notify开始####################\n";
 	if (false == zwCfg::s_hidOpened) {
+		ZWERROR("ZIJIN423 JinChu ELock Not Open")
 		return ELOCK_ERROR_CONNECTLOST;
 	}
 	//ZWFUNCTRACE 
 	assert(pszMsg != NULL);
 	assert(strlen(pszMsg) >= 42);	//XML至少42字节utf8
 	if (pszMsg == NULL || strlen(pszMsg) < 42) {
+		ZWERROR("ZIJIN423 Notify ELOCK_ERROR_PARAMINVALID Input NULL or Not Valid XML !")
 		return ELOCK_ERROR_PARAMINVALID;
 	}
 	if (NULL != pszMsg && strlen(pszMsg) > 0) {
@@ -174,14 +179,16 @@ CCBELOCK_API long JCAPISTD Notify(const char *pszMsg)
 		}
 		//////////////////////////////////////////////////////////////////////////
 		string strXMLSend = pszMsg;
+		VLOG_IF(1,strXMLSend.size()>0)<<"strXMLSend="<<strXMLSend;
 		assert(strXMLSend.length() > 42);	//XML开头的固定内容38个字符，外加起码一个标签的两对尖括号合计4个字符
 		jcAtmcConvertDLL::zwCCBxml2JCjson(strXMLSend, strJsonSend);
 		assert(strJsonSend.length() > 9);	//json最基本的符号起码好像要9个字符左右
+		VLOG_IF(1,strJsonSend.size()>0)<<"strJsonSend="<<strJsonSend;
 		Sleep(50);			
 			//OutputDebugStringA("415下发消息给锁具开始\n");
-			zwPushString(strJsonSend.c_str());
+		int sts=zwPushString(strJsonSend.c_str());
 			//OutputDebugStringA("415下发消息给锁具结束\n");
-		
+		VLOG_IF(1,JCHID_STATUS_OK!=sts)<<"423下发消息给锁具异常\n";
 		return ELOCK_ERROR_SUCCESS;
 	}
 	catch(ptree_bad_path & e) {
@@ -234,12 +241,14 @@ void cdecl myATMCRecvMsgRotine(const char *pszMsg)
 	//输入必须有内容，但是最大不得长于下位机内存大小，做合理限制
 	assert(NULL != pszMsg);
 	int inlen = strlen(pszMsg);
+	VLOG_IF(1,inlen==0)<<"Callback Function myATMCRecvMsgRotine input is NULL";
 	assert(
 		//inlen > 0 && 
 		inlen < JC_MSG_MAXLEN);
 	if (NULL == pszMsg 
 		//|| inlen == 0 
 		|| inlen >= JC_MSG_MAXLEN) {
+		VLOG(1)<<"Callback Function myATMCRecvMsgRotine input TOO LONG";
 		return;
 	}
 	if (inlen>0)	

@@ -5,6 +5,7 @@
 #include "zwHidSplitMsg.h"
 #include "zwHidComm.h"
 #include <stdio.h>
+#include <deque>
 using namespace boost::property_tree;
 
 int myOpenElock1503(JCHID *jcElock);
@@ -16,6 +17,7 @@ namespace zwccbthr {
 	boost::mutex recv_mutex;
 	std::string s_ComPort;
 	std::deque < string > dqOutXML;
+	std::deque <string> dqPushJson;
 	JCHID hidHandle;
 
 	void wait(int milliseconds) {
@@ -164,17 +166,19 @@ CCBELOCK_API int zwPushString( const char *str )
 	//ZWFUNCTRACE 
 	assert(NULL != str && strlen(str) > 0);
 	if (NULL == str || strlen(str) == 0) {
+		ZWERROR("zwPushString input string is NULL")
 		return JCHID_STATUS_FAIL;
 	}
 
 		JCHID_STATUS sts=JCHID_STATUS_FAIL;
-		//Sleep(1000);
+		//Sleep(1000);		
 		static time_t lastPrint=time(NULL);
 		{			
 			//20150415.1727.为了万敏的要求，控制下发消息速率最多每秒一条防止下位机死机
 			boost::mutex::scoped_lock lock(zwccbthr::recv_mutex);
 			//20150421.0935.应万敏的要求，下发消息延迟放到互斥加锁内部
 			Sleep(1000);
+			zwccbthr::dqPushJson.push_back(string(str));
 			sts=jcHidSendData(&zwccbthr::hidHandle, str, strlen(str));
 		}
 		
