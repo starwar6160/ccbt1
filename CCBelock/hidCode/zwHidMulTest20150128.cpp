@@ -483,7 +483,7 @@ namespace zwHidGTest20150130{
 	{			
 		Sleep(1000);
 		EXPECT_EQ(ELOCK_ERROR_SUCCESS,Open(22));
-		for (int i=0;i<30;i++)
+		for (int i=0;i<3;i++)
 		{		 
 		SetRecvMsgRotine(myATMCRecvMsgRotine);	
 		EXPECT_EQ(ELOCK_ERROR_SUCCESS,Notify(g_msg02));	

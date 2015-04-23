@@ -90,7 +90,7 @@ namespace zwccbthr {
 					//要是什么也没收到，就直接进入下一个循环
 					if (JCHID_STATUS_OK!=sts)
 					{
-						Sleep(300);
+						Sleep(900);
 						continue;
 					}
 					printf("\n");
@@ -168,11 +168,13 @@ CCBELOCK_API int zwPushString( const char *str )
 	}
 
 		JCHID_STATUS sts=JCHID_STATUS_FAIL;
+		//Sleep(1000);
 		static time_t lastPrint=time(NULL);
 		{			
 			//20150415.1727.为了万敏的要求，控制下发消息速率最多每秒一条防止下位机死机
-			Sleep(1000);
 			boost::mutex::scoped_lock lock(zwccbthr::recv_mutex);
+			//20150421.0935.应万敏的要求，下发消息延迟放到互斥加锁内部
+			Sleep(1000);
 			sts=jcHidSendData(&zwccbthr::hidHandle, str, strlen(str));
 		}
 		

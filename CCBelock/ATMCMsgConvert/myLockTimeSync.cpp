@@ -77,7 +77,8 @@ namespace jcAtmcConvertDLL {
 	}
 
 	void zwconvLockReqTimeSyncUp(const ptree & ptjc, ptree & ptccb) {
-		ZWFUNCTRACE ptccb.put(CCBSTR_CODE, "1003");
+		ZWFUNCTRACE 
+		ptccb.put(CCBSTR_CODE, "1003");
 		ptccb.put(CCBSTR_NAME, "TimeSync");
 		string zwDate, zwTime;
 		zwGetLocalDateTimeString(time(NULL), zwDate, zwTime);
