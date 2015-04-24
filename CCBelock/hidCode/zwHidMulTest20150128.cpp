@@ -415,11 +415,14 @@ namespace zwHidGTest20150130{
 	//////////////////////////////////////////////////////////////////////////
 
 #endif // _DEBUG_DEV2
+	const char *g_msg00="<?xml version='1.0' encoding='UTF-8'?><root><TransCode>0000</TransCode><TransName>CallForActInfo</TransName><TransDate>20150401</TransDate><TransTime>090333</TransTime><DevCode>440600300145</DevCode><SpareString1></SpareString1><SpareString2></SpareString2></root>";
+	const char *g_msg01="<?xml version='1.0' encoding='UTF-8'?><root><TransCode>0001</TransCode><TransName>SendActInfo</TransName><TransDate>20150401</TransDate><TransTime>090340</TransTime><DevCode>440600300145</DevCode><LockMan>BeiJing.JinChu</LockMan><LockId>22222222</LockId><ActInfo>BFr4af4YvXxtsGmJnDCKsZ3OhmkZimSur0itl6fwuc3fqkiK6j05arPl2on3N4rfVLQkfo9GRceMmbXDebf7rdY=.h/UOVQjtcby5I3wQyUXDdB/uDTeUq1oW.vNDgbpmArJ2CTkBSAJ0NKDeZ6vUifPLKjbLZH3eiFE+QkEBOy5+r2ZJEYEgBmjD1KGIbVfridTa3sjuqaFo0lby7YpqBXTo56v5yIzyz28k=</ActInfo><SpareString1></SpareString1><SpareString2></SpareString2></root>";
+	const char *g_msg02="<?xml version='1.0' encoding='UTF-8'?><root><TransCode>0002</TransCode><TransName>QueryForLockStatus</TransName><TransDate>20150401</TransDate><TransTime>084539</TransTime><DevCode>440600300145</DevCode><LockMan></LockMan><LockId></LockId><SpareString1></SpareString1><SpareString2></SpareString2></root>";
+	const char *g_msg03="<?xml version='1.0' encoding='UTF-8'?><root><TransCode>0003</TransCode><TransName>TimeSync</TransName><TransDate>20150401</TransDate><TransTime>085006</TransTime></root>";
+	const char *g_msg04="<?xml version='1.0' encoding='UTF-8'?><root><TransCode>0004</TransCode><TransName>ReadShutLockCode</TransName><TransDate>20150401</TransDate><TransTime>124932</TransTime><DevCode>440600300145</DevCode><SpareString1></SpareString1><SpareString2></SpareString2></root>";
+	
 
-	const char *g_msg02="<?xml version='1.0' encoding='UTF-8'?><root><TransCode>0002</TransCode><TransName>QueryForLockStatus</TransName><TransDate>20150417</TransDate><TransTime>095139</TransTime><DevCode>440600300145</DevCode><LockMan></LockMan><LockId></LockId><SpareString1></SpareString1><SpareString2></SpareString2></root>";
 
-	const char *g_msg03="<?xml version='1.0' encoding='UTF-8'?><root><TransCode>0003</TransCode><TransName>TimeSync</TransName><TransDate>20150415</TransDate><TransTime>160816</TransTime></root>";
-	const char *g_msg00="<root><TransCode>0000</TransCode><TransName>CallForActInfo</TransName><TransDate>20150327</TransDate><TransTime>105915</TransTime><DevCode>440600300145</DevCode><SpareString1></SpareString1><SpareString2></SpareString2></root>";
 	int myRndFunc(const int funcIndex)
 	{
 		
@@ -585,12 +588,20 @@ namespace zwHidGTest20150130{
 		Sleep(1000);
 		EXPECT_EQ(ELOCK_ERROR_SUCCESS,Open(22));
 		for (int i=0;i<
-			//12*60*9;
-			2;
+			12*60*9;
+			//12;
 			i++)
 		{		 
 			SetRecvMsgRotine(myATMCRecvMsgRotine);	
-			EXPECT_EQ(ELOCK_ERROR_SUCCESS,Notify(g_msg02));	
+			if (i%2==0)
+			{
+				EXPECT_EQ(ELOCK_ERROR_SUCCESS,Notify(g_msg00));	
+				EXPECT_EQ(ELOCK_ERROR_SUCCESS,Notify(g_msg01));	
+			}
+			else
+			{
+				EXPECT_EQ(ELOCK_ERROR_SUCCESS,Notify(g_msg02));	
+			}
 			myWaitForRecvKeyPress424();
 			EXPECT_EQ(1,G_TESTCB_SUCC);
 		}
