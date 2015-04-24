@@ -11,7 +11,7 @@
 //#define _DEBUG_ZJYBAD20150325
 //#define _DEBUG326
 //#define _DEBUG401JCHIDENUM
-#define _DEBUG331
+//#define _DEBUG331
 //#define _DEBUG401ELOCKSTATUS
 void cdecl myATMCRecvMsgRotine(const char *pszMsg);
 
@@ -467,6 +467,7 @@ namespace zwHidGTest20150130{
 
 	void myWaitForRecv331()
 	{
+		printf("%s\n",__FUNCTION__);
 		for(int i=0;i<50;i++)
 		{
 			if (1==G_TESTCB_SUCC)
@@ -474,6 +475,29 @@ namespace zwHidGTest20150130{
 				break;
 			}
 			Sleep(300);
+			putchar('.');
+		}
+		putchar('\n');
+	}
+
+	//等待最大超时时间，还没有收到数据的话，需要人工按键继续
+	void myWaitForRecvKeyPress424()
+	{
+		printf("%s\n",__FUNCTION__);
+		for(int i=0;i<12;i++)
+		{
+			if (1==G_TESTCB_SUCC)
+			{
+				break;
+			}
+			Sleep(500);
+			putchar('.');
+		}
+		putchar('\n');
+		if (1!=G_TESTCB_SUCC)
+		{
+			printf("没有从锁具收到有效数据，请在锁具键盘按下几个键测试后，按电脑键盘继续测试\n");
+			int i=getchar();			
 		}
 	}
 
@@ -555,6 +579,22 @@ namespace zwHidGTest20150130{
 	}
 #endif // _DEBUG401ELOCKSTATUS
 
+///////////////////////////////test20150424///////////////////////////////////////////
+	TEST_F(ATMCDLLSelfTest, jcHidDev424TestLongStable)
+	{			
+		Sleep(1000);
+		EXPECT_EQ(ELOCK_ERROR_SUCCESS,Open(22));
+		for (int i=0;i<2;i++)
+		{		 
+			SetRecvMsgRotine(myATMCRecvMsgRotine);	
+			EXPECT_EQ(ELOCK_ERROR_SUCCESS,Notify(g_msg03));	
+			myWaitForRecvKeyPress424();
+			EXPECT_EQ(1,G_TESTCB_SUCC);
+		}
+		EXPECT_EQ(ELOCK_ERROR_SUCCESS,Close());
+
+		//Sleep(2000);
+	}
 
 }	//namespace zwHidGTest20150130{
 #endif // ZWUSEGTEST
