@@ -179,7 +179,7 @@ CCBELOCK_API long JCAPISTD Notify(const char *pszMsg)
 		}
 		//////////////////////////////////////////////////////////////////////////
 		string strXMLSend = pszMsg;
-		VLOG_IF(1,strXMLSend.size()>0)<<"strXMLSend="<<strXMLSend;
+		VLOG_IF(1,strXMLSend.size()>0)<<"strXMLSend=\n"<<strXMLSend;
 		assert(strXMLSend.length() > 42);	//XML开头的固定内容38个字符，外加起码一个标签的两对尖括号合计4个字符
 		jcAtmcConvertDLL::zwCCBxml2JCjson(strXMLSend, strJsonSend);
 		assert(strJsonSend.length() > 9);	//json最基本的符号起码好像要9个字符左右

@@ -483,7 +483,7 @@ namespace zwHidGTest20150130{
 	//等待最大超时时间，还没有收到数据的话，需要人工按键继续
 	void myWaitForRecvKeyPress424()
 	{
-		printf("%s\n",__FUNCTION__);
+		//printf("%s\n",__FUNCTION__);
 		for(int i=0;i<12;i++)
 		{
 			if (1==G_TESTCB_SUCC)
@@ -584,10 +584,13 @@ namespace zwHidGTest20150130{
 	{			
 		Sleep(1000);
 		EXPECT_EQ(ELOCK_ERROR_SUCCESS,Open(22));
-		for (int i=0;i<2;i++)
+		for (int i=0;i<
+			//12*60*9;
+			2;
+			i++)
 		{		 
 			SetRecvMsgRotine(myATMCRecvMsgRotine);	
-			EXPECT_EQ(ELOCK_ERROR_SUCCESS,Notify(g_msg03));	
+			EXPECT_EQ(ELOCK_ERROR_SUCCESS,Notify(g_msg02));	
 			myWaitForRecvKeyPress424();
 			EXPECT_EQ(1,G_TESTCB_SUCC);
 		}

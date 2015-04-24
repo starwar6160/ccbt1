@@ -45,6 +45,7 @@
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(ZWSRC)\2014BinOut\$(Configuration)\</OutDir>
     <EmbedManifest>false</EmbedManifest>
+    <TargetName>$(ProjectName)424</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>

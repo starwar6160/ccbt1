@@ -73,6 +73,7 @@ int _tmain(int argc, TCHAR * argv[])
 	//time_t dstDateTime=0;
 	//zwCCBDateTime2UTC("20140515","000000",&dstDateTime);
 	//printf("dstDateTime=%u\n",dstDateTime);
+	int aa=getchar();
 	return 0;
 }
 
