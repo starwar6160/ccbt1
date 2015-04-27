@@ -89,11 +89,11 @@ int myOpenElock1503(JCHID *jcElock)
 	jcElock->vid = JCHID_VID_2014;
 	jcElock->pid = JCHID_PID_LOCK5151;
 	if (JCHID_STATUS_OK != jcHidOpen(jcElock)) {
-		ZWERROR("return ELOCK_ERROR_PARAMINVALID 电子锁打开失败");
+		ZWERROR("myOpenElock1503 return ELOCK_ERROR_PARAMINVALID 电子锁打开失败 20150427.1054");
 		zwCfg::s_hidOpened=false;
 		return ELOCK_ERROR_PARAMINVALID;
 	}
-	ZWWARN("电子锁打开成功20150401.1059")
+	ZWWARN("myOpenElock1503 电子锁打开成功20150427.1054")
 	zwCfg::s_hidOpened=true;
 	return ELOCK_ERROR_SUCCESS;
 }

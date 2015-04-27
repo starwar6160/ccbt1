@@ -45,16 +45,29 @@ namespace zwccbthr {
 			char recvBuf[BLEN + 1];			
 			int outLen = 0;
 			myOpenElock1503(&zwccbthr::hidHandle);
+			//每隔几秒钟重新打开一次
 			time_t lastOpenElock=time(NULL);
+			//每隔一二十分钟，最多不出半小时自动强制关闭一次
+			//因为HID连接似乎到一个小时就会有时候失去反应；
+			time_t lastCloseElock=time(NULL);
 			//Open(1);
 			while (1) {
 				memset(recvBuf, 0, BLEN + 1);
 				//printf("###############JCCOMMTHREAD 327 RUNNING\n");
+				//15分钟强制关闭一次,防止一个小时以上HID连接失效
+				if ((time(NULL)-lastCloseElock)>60*15)
+				{					
+					myCloseElock1503();
+					lastCloseElock=time(NULL);
+					Sleep(3000);
+					ZWWARN("20150427.每隔15分钟自动强制断开HID连接防止连接失效，3秒以后恢复")
+				}
+				 
 				//每隔多少秒才重新检测并打开电子锁一次
-				if (time(NULL)-lastOpenElock>6)
-				{
-					lastOpenElock=time(NULL);
+				if ((time(NULL)-lastOpenElock)>6)
+				{					
 					myOpenElock1503(&zwccbthr::hidHandle);
+					lastOpenElock=time(NULL);
 				}
 				
 				time_t thNow=time(NULL);

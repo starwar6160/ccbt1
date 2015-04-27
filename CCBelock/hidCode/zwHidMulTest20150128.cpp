@@ -593,12 +593,12 @@ namespace zwHidGTest20150130{
 			i++)
 		{		 
 			SetRecvMsgRotine(myATMCRecvMsgRotine);	
-			if (i%2==0)
-			{
-				EXPECT_EQ(ELOCK_ERROR_SUCCESS,Notify(g_msg00));	
-				EXPECT_EQ(ELOCK_ERROR_SUCCESS,Notify(g_msg01));	
-			}
-			else
+			//if (i%2==0)
+			//{
+			//	EXPECT_EQ(ELOCK_ERROR_SUCCESS,Notify(g_msg00));	
+			//	EXPECT_EQ(ELOCK_ERROR_SUCCESS,Notify(g_msg01));	
+			//}
+			//else
 			{
 				EXPECT_EQ(ELOCK_ERROR_SUCCESS,Notify(g_msg02));	
 			}
