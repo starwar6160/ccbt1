@@ -497,11 +497,11 @@ namespace zwHidGTest20150130{
 			putchar('.');
 		}
 		putchar('\n');
-		if (1!=G_TESTCB_SUCC)
-		{
-			printf("没有从锁具收到有效数据，请在锁具键盘按下几个键测试后，按电脑键盘继续测试\n");
-			int i=getchar();			
-		}
+		//if (1!=G_TESTCB_SUCC)
+		//{
+		//	printf("没有从锁具收到有效数据，请在锁具键盘按下几个键测试后，按电脑键盘继续测试\n");
+		//	int i=getchar();			
+		//}
 	}
 
 
@@ -589,19 +589,19 @@ namespace zwHidGTest20150130{
 		EXPECT_EQ(ELOCK_ERROR_SUCCESS,Open(22));
 		for (int i=0;i<
 			12*60*9;
-			//12;
+			//1;
 			i++)
 		{		 
 			SetRecvMsgRotine(myATMCRecvMsgRotine);	
 			//if (i%2==0)
 			//{
-			//	EXPECT_EQ(ELOCK_ERROR_SUCCESS,Notify(g_msg00));	
-			//	EXPECT_EQ(ELOCK_ERROR_SUCCESS,Notify(g_msg01));	
+				//EXPECT_EQ(ELOCK_ERROR_SUCCESS,Notify(g_msg00));	
+				//EXPECT_EQ(ELOCK_ERROR_SUCCESS,Notify(g_msg01));	
 			//}
 			//else
-			{
+			//{
 				EXPECT_EQ(ELOCK_ERROR_SUCCESS,Notify(g_msg02));	
-			}
+			//}
 			myWaitForRecvKeyPress424();
 			EXPECT_EQ(1,G_TESTCB_SUCC);
 		}
