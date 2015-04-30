@@ -62,15 +62,19 @@ namespace zwccbthr {
 				//printf("###############JCCOMMTHREAD 327 RUNNING\n");
 				 
 				{
+#ifdef _DEBUG430
+					//强制关闭连接会导致后续收不到数据，暂时不这么做了
 					boost::mutex::scoped_lock lock(recv_mutex);
 					//15分钟强制关闭一次,防止一个小时以上HID连接失效
 					if ((time(NULL)-lastCloseElock)>19)
 					{			
-						myCloseElock1503();
+						//myCloseElock1503();
 						lastCloseElock=time(NULL);						
-						ZWWARN("20150430.每隔4分钟左右自动强制断开HID连接防止连接失效，3秒以后恢复")
-						Sleep(3000);
+						//ZWWARN("20150430.每隔4分钟左右自动强制断开HID连接防止连接失效，3秒以后恢复")
+						//Sleep(3000);
+						continue;
 					}
+#endif // _DEBUG430
 
 
 					//每隔多少秒才重新检测并打开电子锁一次
@@ -79,6 +83,7 @@ namespace zwccbthr {
 						myOpenElock1503(&zwccbthr::hidHandle);
 						lastOpenElock=time(NULL);
 					}
+					
 				}
 				
 				time_t thNow=time(NULL);
