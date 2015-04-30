@@ -55,11 +55,24 @@ namespace zwccbthr {
 				memset(recvBuf, 0, BLEN + 1);
 				//printf("###############JCCOMMTHREAD 327 RUNNING\n");
 				 
-				//每隔多少秒才重新检测并打开电子锁一次
-				if ((time(NULL)-lastOpenElock)>6)
-				{					
-					myOpenElock1503(&zwccbthr::hidHandle);
-					lastOpenElock=time(NULL);
+				{
+					boost::mutex::scoped_lock lock(recv_mutex);
+					//15分钟强制关闭一次,防止一个小时以上HID连接失效
+					if ((time(NULL)-lastCloseElock)>60*15)
+					{			
+						myCloseElock1503();
+						lastCloseElock=time(NULL);
+						//Sleep(3000);
+						ZWWARN("20150427.每隔15分钟自动强制断开HID连接防止连接失效，3秒以后恢复")
+					}
+
+
+					//每隔多少秒才重新检测并打开电子锁一次
+					if ((time(NULL)-lastOpenElock)>6)
+					{					
+						myOpenElock1503(&zwccbthr::hidHandle);
+						lastOpenElock=time(NULL);
+					}
 				}
 				
 				time_t thNow=time(NULL);
@@ -85,7 +98,7 @@ namespace zwccbthr {
 					if (NULL!=zwccbthr::hidHandle.hid_device)
 					{						
 						{
-							//boost::mutex::scoped_lock lock(recv_mutex);
+							boost::mutex::scoped_lock lock(recv_mutex);
 							//OutputDebugStringA("415接收一条锁具返回消息开始\n");
 							sts=jcHidRecvData(&zwccbthr::hidHandle,
 								recvBuf, BLEN, &outLen,JCHID_RECV_TIMEOUT);
@@ -150,15 +163,6 @@ namespace zwccbthr {
 #endif // _DEBUG401
 				} 					
 				boost::this_thread::interruption_point();
-				//15分钟强制关闭一次,防止一个小时以上HID连接失效
-				if ((time(NULL)-lastCloseElock)>60*3)
-				{			
-					boost::mutex::scoped_lock lock(zwccbthr::recv_mutex);
-					myCloseElock1503();
-					lastCloseElock=time(NULL);
-					//Sleep(3000);
-					ZWWARN("20150427.每隔15分钟自动强制断开HID连接防止连接失效，3秒以后恢复")
-				}
 
 			}
 			ZWINFO("金储通信数据接收线程正常退出");
@@ -189,8 +193,7 @@ CCBELOCK_API int zwPushString( const char *str )
 		//Sleep(1000);		
 		static time_t lastPrint=time(NULL);
 		{			
-			//20150415.1727.为了万敏的要求，控制下发消息速率最多每秒一条防止下位机死机
-			boost::mutex::scoped_lock lock(zwccbthr::recv_mutex);
+			//20150415.1727.为了万敏的要求，控制下发消息速率最多每秒一条防止下位机死机			
 			//20150421.0935.应万敏的要求，下发消息延迟放到互斥加锁内部
 			Sleep(1000);
 			zwccbthr::dqPushJson.push_back(string(str));
