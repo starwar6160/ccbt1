@@ -7,7 +7,9 @@
 
 //把ATMC DLL的XML和JSON互转函数集中于此，便于单元测试；
 namespace jcAtmcConvertDLL {
-	
+	//为了匹配上下行报文避免答非所问做的报文类型标志位
+	string s_pipeJcCmdDown;	
+	string s_pipeJcCmdUp;	
 
 #ifdef TMP_MAHAO_TEST_20150105
 	//20150105.万敏和马浩测试用的东西
@@ -116,6 +118,12 @@ namespace jcAtmcConvertDLL {
 			msgType = JCMSG_SEND_UNLOCK_CERTCODE;
 			zwconvRecvVerifyCodeDown(ptCCB, ptJC);
 		}
+////////////////////////////////20150430//////////////////////////////////////////
+		s_pipeJcCmdDown	=
+			ptJC.get < string > (jcAtmcConvertDLL::JCSTR_CMDTITLE);
+
+
+
 		//处理结果输出为Json供下位机使用
 		std::stringstream ss2;
 		write_json(ss2, ptJC);
@@ -156,6 +164,7 @@ namespace jcAtmcConvertDLL {
 		//判断消息类型并从我们的JSON接口变为建行的接口所需字段
 		string jcCmd =
 		    ptJC.get < string > (jcAtmcConvertDLL::JCSTR_CMDTITLE);
+		s_pipeJcCmdUp=jcCmd;
 		ptree ptCCB;
 		if (JCSTR_LOCK_ACTIVE_REQUEST == jcCmd) {	//发送锁具激活请求
 			zwconvLockActiveUp(ptJC, ptCCB);

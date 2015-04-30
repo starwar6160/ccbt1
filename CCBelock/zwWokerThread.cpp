@@ -11,6 +11,12 @@ using namespace boost::property_tree;
 int myOpenElock1503(JCHID *jcElock);
 void myCloseElock1503(void);
 
+namespace jcAtmcConvertDLL {
+	//为了匹配上下行报文避免答非所问做的报文类型标志位
+	extern string s_pipeJcCmdDown;	
+	extern string s_pipeJcCmdUp;
+}
+
 namespace zwccbthr {
 	boost::mutex thr_mutex;
 	//建行给的接口，没有设置连接参数的地方，也就是说，完全可以端口，抑或是从配置文件读取
@@ -58,17 +64,17 @@ namespace zwccbthr {
 				{
 					boost::mutex::scoped_lock lock(recv_mutex);
 					//15分钟强制关闭一次,防止一个小时以上HID连接失效
-					if ((time(NULL)-lastCloseElock)>60*15)
+					if ((time(NULL)-lastCloseElock)>19)
 					{			
 						myCloseElock1503();
-						lastCloseElock=time(NULL);
-						//Sleep(3000);
-						ZWWARN("20150427.每隔15分钟自动强制断开HID连接防止连接失效，3秒以后恢复")
+						lastCloseElock=time(NULL);						
+						ZWWARN("20150430.每隔4分钟左右自动强制断开HID连接防止连接失效，3秒以后恢复")
+						Sleep(3000);
 					}
 
 
 					//每隔多少秒才重新检测并打开电子锁一次
-					if ((time(NULL)-lastOpenElock)>6)
+					if ((time(NULL)-lastOpenElock)>10)
 					{					
 						myOpenElock1503(&zwccbthr::hidHandle);
 						lastOpenElock=time(NULL);
@@ -132,6 +138,13 @@ namespace zwccbthr {
 				if (strlen(recvBuf)>0){
 					jcAtmcConvertDLL::zwJCjson2CCBxml(recvBuf,
 						outXML);
+					if (jcAtmcConvertDLL::s_pipeJcCmdDown!=jcAtmcConvertDLL::s_pipeJcCmdUp)
+					//if(jcAtmcConvertDLL::s_pipeJcCmdDown.size()>0)
+					{
+						ZWERROR("%%%%430jcAtmcConvertDLL::s_pipeJcCmdDown!=jcAtmcConvertDLL::s_pipeJcCmdUp\n");
+						ZWWARN(jcAtmcConvertDLL::s_pipeJcCmdDown)
+						ZWWARN(jcAtmcConvertDLL::s_pipeJcCmdUp)
+					}
 					//ZWINFO("分析锁具回传的Json并转换为建行XML成功");
 					//XML开头的固定内容38个字符，外加起码一个标签的两对尖括号合计4个字符
 					assert(outXML.length() > 42);

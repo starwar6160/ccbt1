@@ -3,6 +3,7 @@
 //把ATMC DLL的XML和JSON互转函数集中于此，便于单元测试；
 namespace jcAtmcConvertDLL {
 
+
 //下发方向处理
 	void zwconvLockActiveDown(const ptree & ptccb, ptree & ptjc);
 	void zwconvLockInitDown(const ptree & ptccb, ptree & ptjc);

@@ -243,6 +243,10 @@ void cdecl myATMCRecvMsgRotine(const char *pszMsg)
 	//输入必须有内容，但是最大不得长于下位机内存大小，做合理限制
 	assert(NULL != pszMsg);
 	int inlen = strlen(pszMsg);
+	if (0==inlen)
+	{
+		ZWERROR("Callback Function myATMCRecvMsgRotine input is NULL")
+	}
 	VLOG_IF(1,inlen==0)<<"Callback Function myATMCRecvMsgRotine input is NULL";
 	assert(
 		//inlen > 0 && 
