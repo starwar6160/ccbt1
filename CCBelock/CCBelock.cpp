@@ -287,14 +287,15 @@ namespace jchidDevice2015{
 	public:
 		jcHidDevice();
 		~jcHidDevice();
-		int Open();
-		void Close();
-		int ConnectStatus();
+		int OpenJcDevice();
+		void CloseJcDevice();
+		int getConnectStatus();
 	protected:
 		
 	private:
 		JCHID m_jcElock;
 		bool m_hidOpened;
+		boost::mutex m_jchid_mutex;
 	};
 
 	jcHidDevice::jcHidDevice()
@@ -304,12 +305,13 @@ namespace jchidDevice2015{
 		m_jcElock.vid = JCHID_VID_2014;
 		m_jcElock.pid = JCHID_PID_LOCK5151;
 		m_hidOpened=false;
-		Open();
+		OpenJcDevice();
 	}
 
-	int jcHidDevice::Open()
+	int jcHidDevice::OpenJcDevice()
 	{
-		ZWFUNCTRACE
+		ZWFUNCTRACE		
+		boost::mutex::scoped_lock lock(m_jchid_mutex);
 		if (JCHID_STATUS_OK != jcHidOpen(&m_jcElock)) {
 			ZWERROR("myOpenElock1503 return ELOCK_ERROR_PARAMINVALID "
 				"电子锁打开失败 20150504.0957 by Class jcHidDevice");
@@ -321,34 +323,43 @@ namespace jchidDevice2015{
 		return ELOCK_ERROR_SUCCESS;
 	}
 
-	void jcHidDevice::Close()
+	void jcHidDevice::CloseJcDevice()
 	{
 		ZWFUNCTRACE
+		boost::mutex::scoped_lock lock(m_jchid_mutex);
 		if (NULL!=m_jcElock.hid_device)
 		{
 			jcHidClose(&m_jcElock);
+			memset(&m_jcElock,0,sizeof(m_jcElock));
+			m_hidOpened=false;
 		}
 	}
 
 	jcHidDevice::~jcHidDevice()
 	{
 		ZWFUNCTRACE
-		Close();
+		CloseJcDevice();
 	}
 
-	int jcHidDevice::ConnectStatus()
+	int jcHidDevice::getConnectStatus()
 	{
-		int elockStatus=zwPushString(
-			"{   \"command\": \"Lock_Firmware_Version\",    \"State\": \"get\"}");
+		boost::mutex::scoped_lock lock(m_jchid_mutex);
+		const char *m_cmdGetFirmware=
+			"{   \"command\": \"Lock_Firmware_Version\",    \"State\": \"get\"}";
+		//
+		int elockStatus=jcHidSendData(&m_jcElock, m_cmdGetFirmware, 
+			strlen(m_cmdGetFirmware));
 		VLOG_IF(1,JCHID_STATUS_OK!=elockStatus)
 			<<"ZIJIN423 Open ELOCK_ERROR_CONNECTLOST Send "
 			"get_firmware_version to JinChu Elock Fail! 20150504.1006";
 		if (JCHID_STATUS_OK==elockStatus)
 		{
+			m_hidOpened=true;
 			return ELOCK_ERROR_SUCCESS;
 		}
 		else
 		{
+			m_hidOpened=false;
 			return ELOCK_ERROR_CONNECTLOST;
 		}
 	}
