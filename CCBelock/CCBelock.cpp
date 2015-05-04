@@ -280,5 +280,78 @@ CCBELOCK_API const char *dbgGetLockReturnXML(void)
 }
 
 
+//////////////////////////////////////////////////////////////////////////
+namespace jchidDevice2015{
+	class jcHidDevice
+	{
+	public:
+		jcHidDevice();
+		~jcHidDevice();
+		int Open();
+		void Close();
+		int ConnectStatus();
+	protected:
+		
+	private:
+		JCHID m_jcElock;
+		bool m_hidOpened;
+	};
 
+	jcHidDevice::jcHidDevice()
+	{
+		ZWFUNCTRACE
+		memset(&m_jcElock, 0, sizeof(JCHID));
+		m_jcElock.vid = JCHID_VID_2014;
+		m_jcElock.pid = JCHID_PID_LOCK5151;
+		m_hidOpened=false;
+		Open();
+	}
+
+	int jcHidDevice::Open()
+	{
+		ZWFUNCTRACE
+		if (JCHID_STATUS_OK != jcHidOpen(&m_jcElock)) {
+			ZWERROR("myOpenElock1503 return ELOCK_ERROR_PARAMINVALID "
+				"电子锁打开失败 20150504.0957 by Class jcHidDevice");
+			m_hidOpened=false;
+			return ELOCK_ERROR_PARAMINVALID;
+		}
+		ZWWARN("myOpenElock1503 电子锁打开成功20150504.0957 by Class jcHidDevice")
+			m_hidOpened=true;
+		return ELOCK_ERROR_SUCCESS;
+	}
+
+	void jcHidDevice::Close()
+	{
+		ZWFUNCTRACE
+		if (NULL!=m_jcElock.hid_device)
+		{
+			jcHidClose(&m_jcElock);
+		}
+	}
+
+	jcHidDevice::~jcHidDevice()
+	{
+		ZWFUNCTRACE
+		Close();
+	}
+
+	int jcHidDevice::ConnectStatus()
+	{
+		int elockStatus=zwPushString(
+			"{   \"command\": \"Lock_Firmware_Version\",    \"State\": \"get\"}");
+		VLOG_IF(1,JCHID_STATUS_OK!=elockStatus)
+			<<"ZIJIN423 Open ELOCK_ERROR_CONNECTLOST Send "
+			"get_firmware_version to JinChu Elock Fail! 20150504.1006";
+		if (JCHID_STATUS_OK==elockStatus)
+		{
+			return ELOCK_ERROR_SUCCESS;
+		}
+		else
+		{
+			return ELOCK_ERROR_CONNECTLOST;
+		}
+	}
+
+}	//namespace jchidDevice2015{
 
