@@ -21,7 +21,8 @@ using boost::property_tree::ptree_bad_path;
 namespace zwccbthr {
 	void ThreadLockComm();	//与锁具之间的通讯线程
 	//boost::thread *opCommThr=NULL;	//为了控制通讯线程终止
-	boost::thread *opCommThr=new boost::thread(zwccbthr::ThreadLockComm);
+	boost::thread *opCommThr=NULL;
+		//new boost::thread(zwccbthr::ThreadLockComm);
 	string zwGetLockIP(void);
 	extern std::deque < string > dqOutXML;;
 	extern boost::mutex recv_mutex;
@@ -364,5 +365,16 @@ namespace jchidDevice2015{
 		}
 	}
 
+
+
 }	//namespace jchidDevice2015{
 
+void zwtest504hidClass(void)
+{
+	jchidDevice2015::jcHidDevice *jc1=new jchidDevice2015::jcHidDevice();
+	jc1->CloseJcDevice();
+	Sleep(2000);
+	jchidDevice2015::jcHidDevice *jc2=new jchidDevice2015::jcHidDevice();
+	jc2->CloseJcDevice();
+	printf(__FUNCTION__);
+}
