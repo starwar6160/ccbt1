@@ -78,8 +78,10 @@ int _tmain(int argc, TCHAR * argv[])
 	//time_t dstDateTime=0;
 	//zwCCBDateTime2UTC("20140515","000000",&dstDateTime);
 	//printf("dstDateTime=%u\n",dstDateTime);
+#ifndef _DEBUG
 	printf("运行结束，按回车键退出，之后请查看JCLOG423目录下的日志文件\n");
 	int aa=getchar();
+#endif // _DEBUG
 	return 0;
 }
 

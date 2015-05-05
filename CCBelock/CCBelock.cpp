@@ -288,8 +288,10 @@ namespace jchidDevice2015{
 	public:
 		jcHidDevice();
 		~jcHidDevice();
-		int OpenJcDevice();
-		void CloseJcDevice();
+		int OpenJc();
+		void CloseJc();
+		int SendJson(const char *jcJson);
+		int RecvJson(char *recvJson,int bufLen);
 		int getConnectStatus();
 	protected:
 		
@@ -306,10 +308,10 @@ namespace jchidDevice2015{
 		m_jcElock.vid = JCHID_VID_2014;
 		m_jcElock.pid = JCHID_PID_LOCK5151;
 		m_hidOpened=false;
-		OpenJcDevice();
+		OpenJc();
 	}
 
-	int jcHidDevice::OpenJcDevice()
+	int jcHidDevice::OpenJc()
 	{
 		ZWFUNCTRACE		
 		boost::mutex::scoped_lock lock(m_jchid_mutex);
@@ -324,7 +326,7 @@ namespace jchidDevice2015{
 		return ELOCK_ERROR_SUCCESS;
 	}
 
-	void jcHidDevice::CloseJcDevice()
+	void jcHidDevice::CloseJc()
 	{
 		ZWFUNCTRACE
 		boost::mutex::scoped_lock lock(m_jchid_mutex);
@@ -339,7 +341,7 @@ namespace jchidDevice2015{
 	jcHidDevice::~jcHidDevice()
 	{
 		ZWFUNCTRACE
-		CloseJcDevice();
+		CloseJc();
 	}
 
 	int jcHidDevice::getConnectStatus()
@@ -365,16 +367,48 @@ namespace jchidDevice2015{
 		}
 	}
 
+	int jcHidDevice::SendJson(const char *jcJson)
+	{
+		assert(NULL!=jcJson);
+		assert(strlen(jcJson)>2);
+		if (NULL==jcJson || strlen(jcJson)==0)
+		{
+			ZWWARN("jcHidDevice::SendJson can't send NULL json command 20150505.0938")
+			return -938;
+		}
+		int sts=jcHidSendData(&m_jcElock, jcJson, strlen(jcJson));
+		return 0;
+	}
+
+	int jcHidDevice::RecvJson(char *recvJson,int bufLen)
+	{
+		assert(NULL!=recvJson);
+		assert(bufLen>=0);
+		if (NULL==recvJson || bufLen<0)
+		{
+			ZWWARN("jcHidDevice::RecvJson can't Using NULL buffer to Receive JinChu Lock Respone data")
+			return 940;
+		}
+		boost::mutex::scoped_lock lock(m_jchid_mutex);
+		//OutputDebugStringA("415接收一条锁具返回消息开始\n");
+		int outLen=0;
+		int sts=jcHidRecvData(&m_jcElock,
+			recvJson, bufLen, &outLen,4000);
+
+		return 0;
+	}
 
 
 }	//namespace jchidDevice2015{
 
+using jchidDevice2015::jcHidDevice;
+
 void zwtest504hidClass(void)
 {
-	jchidDevice2015::jcHidDevice *jc1=new jchidDevice2015::jcHidDevice();
-	jc1->CloseJcDevice();
-	Sleep(2000);
-	jchidDevice2015::jcHidDevice *jc2=new jchidDevice2015::jcHidDevice();
-	jc2->CloseJcDevice();
+	jcHidDevice *jc1=new jcHidDevice();
+	jc1->CloseJc();
+	Sleep(20);
+	jcHidDevice *jc2=new jcHidDevice();
+	jc2->CloseJc();
 	printf(__FUNCTION__);
 }
