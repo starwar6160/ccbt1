@@ -377,7 +377,8 @@ namespace jchidDevice2015{
 			return -938;
 		}
 		int sts=jcHidSendData(&m_jcElock, jcJson, strlen(jcJson));
-		return 0;
+		VLOG_IF(4,JCHID_STATUS_OK!=sts)<<"jcHidDevice::SendJson FAIL\n";
+		return sts;
 	}
 
 	int jcHidDevice::RecvJson(char *recvJson,int bufLen)
@@ -394,8 +395,8 @@ namespace jchidDevice2015{
 		int outLen=0;
 		int sts=jcHidRecvData(&m_jcElock,
 			recvJson, bufLen, &outLen,4000);
-
-		return 0;
+		VLOG_IF(4,JCHID_STATUS_OK!=sts)<<"jcHidDevice::RecvJson FAIL\n";
+		return sts;
 	}
 
 
@@ -405,10 +406,12 @@ using jchidDevice2015::jcHidDevice;
 
 void zwtest504hidClass(void)
 {
+	const char *msg02="{\"Command\":\"Lock_Now_Info\"}";
 	jcHidDevice *jc1=new jcHidDevice();
-	jc1->CloseJc();
-	Sleep(20);
-	jcHidDevice *jc2=new jcHidDevice();
-	jc2->CloseJc();
-	printf(__FUNCTION__);
+	printf("%s\n",__FUNCTION__);
+	jc1->SendJson(	msg02);
+	char recvJson[256];
+	memset(recvJson,0,256);
+	jc1->RecvJson(recvJson,256);
+	ZWWARN(recvJson)
 }
