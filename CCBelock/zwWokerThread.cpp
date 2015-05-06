@@ -25,6 +25,8 @@ namespace zwccbthr {
 	//建行给的接口，没有设置连接参数的地方，也就是说，完全可以端口，抑或是从配置文件读取
 	boost::mutex thrhid_mutex;
 	string s_jsonCmd="";
+	void pushToCallBack( char * recvBuf );
+	deque<string> g_dqLockPop;	//锁具主动上送的答非所问消息的临时队列
 
 	void wait(int milliseconds) {
 		boost::this_thread::sleep(boost::
@@ -88,6 +90,7 @@ namespace zwccbthr {
 						boost::mutex::scoped_lock lock(thrhid_mutex);
 						g_jhc.SendJson(s_jsonCmd.c_str());
 						sts=g_jhc.RecvJson(recvBuf,BLEN);
+						pushToCallBack(recvBuf);
 						s_jsonCmd.clear();
 					}
 					//zwCfg::s_hidOpened=true;	//算是通信线程的一个心跳标志					
@@ -111,44 +114,7 @@ namespace zwccbthr {
 				}
 				
 
-				boost::this_thread::interruption_point();
-				string outXML;
-				if (strlen(recvBuf)>0){
-					jcAtmcConvertDLL::zwJCjson2CCBxml(recvBuf,
-						outXML);
-					if (jcAtmcConvertDLL::s_pipeJcCmdDown!=jcAtmcConvertDLL::s_pipeJcCmdUp)
-					//if(jcAtmcConvertDLL::s_pipeJcCmdDown.size()>0)
-					{
-						ZWERROR("%%%%430jcAtmcConvertDLL::s_pipeJcCmdDown!=jcAtmcConvertDLL::s_pipeJcCmdUp\n");
-						ZWWARN(jcAtmcConvertDLL::s_pipeJcCmdDown)
-						ZWWARN(jcAtmcConvertDLL::s_pipeJcCmdUp)
-					}
-					//ZWINFO("分析锁具回传的Json并转换为建行XML成功");
-					//XML开头的固定内容38个字符，外加起码一个标签的两对尖括号合计4个字符
-					assert(outXML.length() > 42);
-				}
-
-				if (NULL==zwCfg::g_WarnCallback)
-				{
-					const char *err1="回调函数指针为空，无法调用回调函数返回从电子锁收到的报文";
-					ZWERROR(err1);
-					MessageBoxA(NULL,err1,"严重警告",MB_OK);
-				}
-				if (strlen(recvBuf)==0)
-				{
-					ZWERROR("收到的锁具返回内容为空，无法返回有用信息给回调函数");
-					ZWWARN(recvBuf);
-				}
-				if (NULL != zwCfg::g_WarnCallback && outXML.size()>0) {
-					//调用回调函数传回信息，
-					//20150415.1727.为了万敏的要求，控制上传消息速率最多每2秒一条防止ATM死机
-					Sleep(920);
-					zwCfg::g_WarnCallback(outXML.c_str());
-#ifdef _DEBUG401
-					ZWINFO("成功把从锁具接收到的数据传递给回调函数");
-#endif // _DEBUG401
-				} 					
-				boost::this_thread::interruption_point();
+	
 
 			}
 			ZWINFO("金储通信数据接收线程正常退出");
@@ -161,6 +127,47 @@ namespace zwccbthr {
 			return;
 		}	
 	}
+
+	void pushToCallBack( char * recvBuf )
+	{
+		string outXML;
+		if (strlen(recvBuf)>0){
+			jcAtmcConvertDLL::zwJCjson2CCBxml(recvBuf,outXML);
+			if (jcAtmcConvertDLL::s_pipeJcCmdDown!=jcAtmcConvertDLL::s_pipeJcCmdUp)
+			{
+				g_dqLockPop.push_back(outXML);
+				ZWERROR("%%%%430jcAtmcConvertDLL::s_pipeJcCmdDown!=jcAtmcConvertDLL::s_pipeJcCmdUp\n");
+				ZWWARN(jcAtmcConvertDLL::s_pipeJcCmdDown)
+					ZWWARN(jcAtmcConvertDLL::s_pipeJcCmdUp)
+					//return;
+			}
+			//ZWINFO("分析锁具回传的Json并转换为建行XML成功");
+			//XML开头的固定内容38个字符，外加起码一个标签的两对尖括号合计4个字符
+			assert(outXML.length() > 42);
+		}
+
+		if (NULL==zwCfg::g_WarnCallback)
+		{
+			const char *err1="回调函数指针为空，无法调用回调函数返回从电子锁收到的报文";
+			ZWERROR(err1);
+			MessageBoxA(NULL,err1,"严重警告",MB_OK);
+		}
+		if (strlen(recvBuf)==0)
+		{
+			ZWERROR("收到的锁具返回内容为空，无法返回有用信息给回调函数");
+			ZWWARN(recvBuf);
+		}
+		if (NULL != zwCfg::g_WarnCallback && outXML.size()>0) {
+			//调用回调函数传回信息，
+			//20150415.1727.为了万敏的要求，控制上传消息速率最多每2秒一条防止ATM死机
+			//Sleep(920);
+			zwCfg::g_WarnCallback(outXML.c_str());
+#ifdef _DEBUG401
+			ZWINFO("成功把从锁具接收到的数据传递给回调函数");
+#endif // _DEBUG401
+		}
+	}
+
 
 
 //////////////////////////////////////////////////////////////////////////
