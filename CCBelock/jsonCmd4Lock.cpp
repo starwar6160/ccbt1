@@ -8,7 +8,6 @@ using boost::mutex;
 namespace zwccbthr{
 	extern boost::mutex thr_mutex;
 	extern JCHID hidHandle;
-	extern boost::mutex recv_mutex;
 }
 
 
@@ -144,7 +143,6 @@ CloseHidEnd:
 	CCBELOCK_API const char * RecvFromLockJson( const int timeoutMs )
 	{
 		ZWFUNCTRACE 
-		boost::mutex::scoped_lock lock(zwccbthr::thr_mutex);		
 		//超时值默认值
 		int realTimeOut=JCHID_RECV_TIMEOUT;
 		//如果超时值在一个合理范围内，就采用

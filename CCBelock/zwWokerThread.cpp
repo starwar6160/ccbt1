@@ -19,32 +19,20 @@ namespace jcAtmcConvertDLL {
 }
 
 namespace zwccbthr {
-	boost::mutex thr_mutex;
 	//建行给的接口，没有设置连接参数的地方，也就是说，完全可以端口，抑或是从配置文件读取
 	boost::mutex recv_mutex;
-	std::string s_ComPort;
-	std::deque <string> dqPushJson;
 	JCHID hidHandle;
 
 	void wait(int milliseconds) {
 		boost::this_thread::sleep(boost::
 					  posix_time::milliseconds
 					  (milliseconds));
-	} string zwGetLockIP(void) {
-		string myLockIp = "COM2";	//默认值是COM2
-		if (s_ComPort.length() > 0) {
-			myLockIp = s_ComPort;	//如果有配置文件的串口值，就使用之；
-		}
-		ZWWARN("连接锁具IP使用");
-		ZWWARN(myLockIp.c_str());
-		return myLockIp;
-	}
-
+	} 
+	
 	//与锁具之间的通讯线程
 	void ThreadLockComm() {
 		//ZWFUNCTRACE 
 		ZWWARN("与锁具之间的通讯线程启动")
-		boost::mutex::scoped_lock lock(thr_mutex);
 
 		try {			
 			const int BLEN = 1024;
@@ -207,8 +195,7 @@ CCBELOCK_API int zwPushString( const char *str )
 		{			
 			//20150415.1727.为了万敏的要求，控制下发消息速率最多每秒一条防止下位机死机			
 			//20150421.0935.应万敏的要求，下发消息延迟放到互斥加锁内部
-			Sleep(1000);
-			zwccbthr::dqPushJson.push_back(string(str));
+			Sleep(1000);		
 			sts=jcHidSendData(&zwccbthr::hidHandle, str, strlen(str));
 		}
 		

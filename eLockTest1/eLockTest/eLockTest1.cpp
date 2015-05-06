@@ -73,11 +73,12 @@ int _tmain(int argc, TCHAR * argv[])
 	//zwTest121a1();
 	//myHidSerialTest126();
 	//myMulHidDevJsonTest20150116B();
-	//zwStartGtestInDLL();
-	zwtest504hidClass();
 	//time_t dstDateTime=0;
 	//zwCCBDateTime2UTC("20140515","000000",&dstDateTime);
 	//printf("dstDateTime=%u\n",dstDateTime);
+	zwStartGtestInDLL();
+	//zwtest504hidClass();
+
 #ifndef _DEBUG
 	printf("运行结束，按回车键退出，之后请查看JCLOG423目录下的日志文件\n");
 	int aa=getchar();

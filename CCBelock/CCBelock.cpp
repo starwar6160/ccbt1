@@ -23,9 +23,7 @@ using boost::property_tree::ptree_bad_path;
 namespace zwccbthr {
 	void ThreadLockComm();	//与锁具之间的通讯线程
 	//boost::thread *opCommThr=NULL;	//为了控制通讯线程终止
-	boost::thread *opCommThr=NULL;
-		//new boost::thread(zwccbthr::ThreadLockComm);
-	string zwGetLockIP(void);
+	boost::thread *opCommThr=new boost::thread(zwccbthr::ThreadLockComm);
 	extern boost::mutex recv_mutex;
 	extern JCHID hidHandle;
 	time_t lastOpen=0;
