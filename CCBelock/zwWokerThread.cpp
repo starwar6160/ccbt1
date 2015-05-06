@@ -36,7 +36,6 @@ namespace zwccbthr {
 	void ThreadLockComm() {
 		//ZWFUNCTRACE 
 		ZWWARN("与锁具之间的通讯线程启动")
-		//g_jhc.OpenJc();
 		try {			
 			const int BLEN = 1024;
 			char recvBuf[BLEN + 1];			
@@ -72,18 +71,7 @@ namespace zwccbthr {
 					}
 					
 				}
-				
-#ifdef _DEBUG417
-				if (thNow % 6 ==0)
-				{
-					OutputDebugStringA(("电子锁数据接收线程仍在运行中"));
-				}
-				if (thNow % 60 ==0)
-				{
-					ZWINFO("电子锁数据接收线程仍在运行中");
-				}
-#endif // _DEBUG417
-					
+									
 				try {
 					boost::this_thread::interruption_point();
 					if (ELOCK_ERROR_SUCCESS!=g_jhc.getConnectStatus())
@@ -96,10 +84,8 @@ namespace zwccbthr {
 					if (s_jsonCmd.length()>0)
 					{
 						boost::mutex::scoped_lock lock(thrhid_mutex);
-						ZWINFO("数据接收线程接收开始")
-							g_jhc.SendJson(s_jsonCmd.c_str());
-							sts=g_jhc.RecvJson(recvBuf,BLEN);
-						ZWINFO("数据接收线程接收结束")
+						g_jhc.SendJson(s_jsonCmd.c_str());
+						sts=g_jhc.RecvJson(recvBuf,BLEN);
 						s_jsonCmd.clear();
 					}
 					//zwCfg::s_hidOpened=true;	//算是通信线程的一个心跳标志					
@@ -146,9 +132,10 @@ namespace zwccbthr {
 					ZWERROR(err1);
 					MessageBoxA(NULL,err1,"严重警告",MB_OK);
 				}
-				if (outXML.size()==0)
+				if (strlen(recvBuf)==0)
 				{
 					ZWERROR("收到的锁具返回内容为空，无法返回有用信息给回调函数");
+					ZWWARN(recvBuf);
 				}
 				if (NULL != zwCfg::g_WarnCallback && outXML.size()>0) {
 					//调用回调函数传回信息，
