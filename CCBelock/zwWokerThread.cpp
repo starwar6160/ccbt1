@@ -64,9 +64,11 @@ namespace zwccbthr {
 
 
 					//每隔多少秒才重新检测并打开电子锁一次
-					if ((time(NULL)-lastOpenElock)>10)
-					{					
-						//g_jhc.OpenJc();
+					if ((time(NULL)-lastOpenElock)>(60*3))
+					{	
+						ZWWARN("每隔一定时间定期重新关闭和打开电子锁防止异常断线\n");
+						g_jhc.CloseJc();
+						g_jhc.OpenJc();
 						lastOpenElock=time(NULL);
 					}
 					
