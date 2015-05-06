@@ -25,7 +25,7 @@ namespace zwccbthr {
 	//建行给的接口，没有设置连接参数的地方，也就是说，完全可以端口，抑或是从配置文件读取
 	boost::mutex thrhid_mutex;
 	string s_jsonCmd="";
-	void pushToCallBack( char * recvBuf );
+	void pushToCallBack( const char * recvBuf );
 	deque<string> g_dqLockPop;	//锁具主动上送的答非所问消息的临时队列
 
 	void wait(int milliseconds) {
@@ -64,6 +64,11 @@ namespace zwccbthr {
 					}
 #endif // _DEBUG430
 
+					while (g_dqLockPop.size()>0)
+					{
+						pushToCallBack(g_dqLockPop.front().c_str());
+						g_dqLockPop.pop_front();
+					}
 
 					//每隔多少秒才重新检测并打开电子锁一次
 					if ((time(NULL)-lastOpenElock)>(60*3))
@@ -131,7 +136,7 @@ namespace zwccbthr {
 		}	
 	}
 
-	void pushToCallBack( char * recvBuf )
+	void pushToCallBack( const char * recvBuf )
 	{
 		string outXML;
 		if (strlen(recvBuf)>0){
