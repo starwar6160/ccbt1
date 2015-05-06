@@ -23,6 +23,8 @@ namespace jcAtmcConvertDLL {
 
 namespace zwccbthr {
 	//建行给的接口，没有设置连接参数的地方，也就是说，完全可以端口，抑或是从配置文件读取
+	boost::mutex thrhid_mutex;
+	string s_jsonCmd="";
 
 	void wait(int milliseconds) {
 		boost::this_thread::sleep(boost::
@@ -89,9 +91,17 @@ namespace zwccbthr {
 						Sleep(900);
 						continue;
 					}
-					JCHID_STATUS sts=JCHID_STATUS_FAIL;
-					sts=g_jhc.RecvJson(recvBuf,BLEN);
 
+					JCHID_STATUS sts=JCHID_STATUS_FAIL;
+					if (s_jsonCmd.length()>0)
+					{
+						boost::mutex::scoped_lock lock(thrhid_mutex);
+						ZWINFO("数据接收线程接收开始")
+							g_jhc.SendJson(s_jsonCmd.c_str());
+							sts=g_jhc.RecvJson(recvBuf,BLEN);
+						ZWINFO("数据接收线程接收结束")
+						s_jsonCmd.clear();
+					}
 					//zwCfg::s_hidOpened=true;	//算是通信线程的一个心跳标志					
 					//要是什么也没收到，就直接进入下一个循环
 					if (JCHID_STATUS_OK!=sts)

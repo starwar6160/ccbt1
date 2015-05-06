@@ -29,6 +29,8 @@ namespace zwccbthr {
 	//boost::thread *opCommThr=NULL;	//为了控制通讯线程终止
 	boost::thread *opCommThr=new boost::thread(zwccbthr::ThreadLockComm);
 	time_t lastOpen=0;
+	extern boost::mutex thrhid_mutex;
+	extern string s_jsonCmd;
 } //namespace zwccbthr{  
 
 namespace zwCfg {
@@ -101,6 +103,7 @@ CCBELOCK_API long JCAPISTD Close()
 
 CCBELOCK_API long JCAPISTD Notify(const char *pszMsg)
 {
+	boost::mutex::scoped_lock lock(zwccbthr::thrhid_mutex);
 	//通过在Notify函数开始检测是否端口已经打开，没有打开就等待一段时间，避免
 	//2014年11月初在广州遇到的没有连接锁具时，ATMC执行0002报文查询锁具状态，
 	//反复查询，大量无用日志产生的情况。	
@@ -119,7 +122,7 @@ CCBELOCK_API long JCAPISTD Notify(const char *pszMsg)
 	}
 	if (NULL != pszMsg && strlen(pszMsg) > 0) {
 	}
-	boost::mutex::scoped_lock lock(zwCfg::ComPort_mutex);
+
 	string strJsonSend;
 	try {
 		//输入必须有内容，但是最大不得长于下位机内存大小，做合理限制
@@ -142,10 +145,10 @@ CCBELOCK_API long JCAPISTD Notify(const char *pszMsg)
 		assert(strJsonSend.length() > 9);	//json最基本的符号起码好像要9个字符左右
 		VLOG_IF(1,strJsonSend.size()>0)<<"strJsonSend="<<strJsonSend;
 		Sleep(50);			
-			//OutputDebugStringA("415下发消息给锁具开始\n");
-		int sts=g_jhc.SendJson(strJsonSend.c_str());
-			//OutputDebugStringA("415下发消息给锁具结束\n");
-		VLOG_IF(1,JCHID_STATUS_OK!=sts)<<"423下发消息给锁具异常\n";
+
+		//int sts=g_jhc.SendJson(strJsonSend.c_str());
+		//VLOG_IF(1,JCHID_STATUS_OK!=sts)<<"423下发消息给锁具异常\n";
+		zwccbthr::s_jsonCmd=strJsonSend;
 //////////////////////////////////////////////////////////////////////////
 		//const int BLEN = 1024;
 		//char recvBuf[BLEN + 1];			
