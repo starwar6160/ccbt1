@@ -283,6 +283,7 @@ CCBELOCK_API const char *dbgGetLockReturnXML(void)
 
 //////////////////////////////////////////////////////////////////////////
 namespace jchidDevice2015{
+
 	class jcHidDevice
 	{
 	public:
@@ -311,6 +312,7 @@ namespace jchidDevice2015{
 		OpenJc();
 	}
 
+
 	int jcHidDevice::OpenJc()
 	{
 		ZWFUNCTRACE		
@@ -321,7 +323,7 @@ namespace jchidDevice2015{
 			m_hidOpened=false;
 			return ELOCK_ERROR_PARAMINVALID;
 		}
-		ZWWARN("myOpenElock1503 电子锁打开成功20150504.0957 by Class jcHidDevice")
+		ZWINFO("myOpenElock1503 电子锁打开成功20150504.0957 by Class jcHidDevice")
 			m_hidOpened=true;
 		return ELOCK_ERROR_SUCCESS;
 	}
@@ -333,7 +335,8 @@ namespace jchidDevice2015{
 		if (NULL!=m_jcElock.hid_device)
 		{
 			jcHidClose(&m_jcElock);
-			memset(&m_jcElock,0,sizeof(m_jcElock));
+			//memset(&m_jcElock,0,sizeof(m_jcElock));
+			//要允许反复Open/Close的话，就不能在此把数据结构置零
 			m_hidOpened=false;
 		}
 	}
@@ -369,6 +372,7 @@ namespace jchidDevice2015{
 
 	int jcHidDevice::SendJson(const char *jcJson)
 	{
+		boost::mutex::scoped_lock lock(m_jchid_mutex);
 		assert(NULL!=jcJson);
 		assert(strlen(jcJson)>2);
 		if (NULL==jcJson || strlen(jcJson)==0)
@@ -383,14 +387,14 @@ namespace jchidDevice2015{
 
 	int jcHidDevice::RecvJson(char *recvJson,int bufLen)
 	{
+		boost::mutex::scoped_lock lock(m_jchid_mutex);
 		assert(NULL!=recvJson);
 		assert(bufLen>=0);
 		if (NULL==recvJson || bufLen<0)
 		{
 			ZWWARN("jcHidDevice::RecvJson can't Using NULL buffer to Receive JinChu Lock Respone data")
 			return 940;
-		}
-		boost::mutex::scoped_lock lock(m_jchid_mutex);
+		}		
 		//OutputDebugStringA("415接收一条锁具返回消息开始\n");
 		int outLen=0;
 		int sts=jcHidRecvData(&m_jcElock,
@@ -407,11 +411,28 @@ using jchidDevice2015::jcHidDevice;
 void zwtest504hidClass(void)
 {
 	const char *msg02="{\"Command\":\"Lock_Now_Info\"}";
-	jcHidDevice *jc1=new jcHidDevice();
+	jcHidDevice *jc1=new jcHidDevice();	
 	printf("%s\n",__FUNCTION__);
 	jc1->SendJson(	msg02);
+	jc1->SendJson(	msg02);
 	char recvJson[256];
+
 	memset(recvJson,0,256);
 	jc1->RecvJson(recvJson,256);
+	ZWWARN(recvJson)
+
+	jc1->CloseJc();
+	jc1->OpenJc();
+
+	Sleep(3000);
+	memset(recvJson,0,256);
+	jc1->RecvJson(recvJson,256);
+	ZWWARN(recvJson)
+	jc1->CloseJc();
+
+	jcHidDevice *jc2=new jcHidDevice();
+	memset(recvJson,0,256);
+	jc2->SendJson(	msg02);
+	jc2->RecvJson(recvJson,256);
 	ZWWARN(recvJson)
 }

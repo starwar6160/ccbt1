@@ -139,4 +139,9 @@ extern "C" {
 unsigned char crc8Short( const void *inputData,const int inputLen );
 unsigned long Crc32_ComputeBuf(unsigned long inCrc32, const void *buf, size_t bufLen);
 
+
+namespace jchidDevice2015{
+
+}	//namespace jchidDevice2015{
+
 #endif // zwCcbElockHdr_h__
