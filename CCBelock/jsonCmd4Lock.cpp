@@ -9,7 +9,6 @@ namespace zwccbthr{
 	extern boost::mutex thr_mutex;
 	extern JCHID hidHandle;
 	extern boost::mutex recv_mutex;
-	extern std::deque < string > dqOutXML;
 }
 
 

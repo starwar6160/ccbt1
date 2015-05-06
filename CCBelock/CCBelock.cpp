@@ -12,7 +12,9 @@
 #include "CCBelock.h"
 #include "zwCcbElockHdr.h"
 #include "zwHidComm.h"
+#include "zwHidDevClass2015.h"
 #include "zwPocoLog.h"
+
 using namespace std;
 using boost::property_tree::ptree_error;
 using boost::property_tree::ptree_bad_data;
@@ -24,7 +26,6 @@ namespace zwccbthr {
 	boost::thread *opCommThr=NULL;
 		//new boost::thread(zwccbthr::ThreadLockComm);
 	string zwGetLockIP(void);
-	extern std::deque < string > dqOutXML;;
 	extern boost::mutex recv_mutex;
 	extern JCHID hidHandle;
 	time_t lastOpen=0;
@@ -266,42 +267,8 @@ void cdecl myATMCRecvMsgRotine(const char *pszMsg)
 	}	
 }
 
-CCBELOCK_API const char *dbgGetLockReturnXML(void)
-{
-	boost::mutex::scoped_lock lock(zwccbthr::recv_mutex);
-	static string sg_outxml;
-	if (!zwccbthr::dqOutXML.empty()) {
-		sg_outxml = zwccbthr::dqOutXML.front();
-		zwccbthr::dqOutXML.pop_front();
-		return sg_outxml.c_str();
-	} else {
-		return "NODATA916";
-	}
-
-}
-
-
 //////////////////////////////////////////////////////////////////////////
 namespace jchidDevice2015{
-
-	class jcHidDevice
-	{
-	public:
-		jcHidDevice();
-		~jcHidDevice();
-		int OpenJc();
-		void CloseJc();
-		int SendJson(const char *jcJson);
-		int RecvJson(char *recvJson,int bufLen);
-		int getConnectStatus();
-	protected:
-		
-	private:
-		JCHID m_jcElock;
-		bool m_hidOpened;
-		boost::mutex m_jchid_mutex;
-	};
-
 	jcHidDevice::jcHidDevice()
 	{
 		ZWFUNCTRACE

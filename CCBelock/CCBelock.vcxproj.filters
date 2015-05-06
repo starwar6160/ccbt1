@@ -75,6 +75,9 @@
     <ClInclude Include="hidCode\zwHidGtest130.h">
       <Filter>源文件\HidCode</Filter>
     </ClInclude>
+    <ClInclude Include="hidCode\zwHidDevClass2015.h">
+      <Filter>源文件\HidCode</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">

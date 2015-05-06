@@ -4,6 +4,7 @@
 #include "zwPocoLog.h"
 #include "zwHidSplitMsg.h"
 #include "zwHidComm.h"
+#include "zwHidDevClass2015.h"
 #include <stdio.h>
 #include <deque>
 using namespace boost::property_tree;
@@ -22,7 +23,6 @@ namespace zwccbthr {
 	//建行给的接口，没有设置连接参数的地方，也就是说，完全可以端口，抑或是从配置文件读取
 	boost::mutex recv_mutex;
 	std::string s_ComPort;
-	std::deque < string > dqOutXML;
 	std::deque <string> dqPushJson;
 	JCHID hidHandle;
 
@@ -153,12 +153,6 @@ namespace zwccbthr {
 					//ZWINFO("分析锁具回传的Json并转换为建行XML成功");
 					//XML开头的固定内容38个字符，外加起码一个标签的两对尖括号合计4个字符
 					assert(outXML.length() > 42);
-					//ZWDBGMSG(outXML.c_str());
-					{
-						boost::mutex::scoped_lock lock(recv_mutex);
-						//收到的XML存入队列
-						dqOutXML.push_back(outXML);
-					}
 				}
 
 				if (NULL==zwCfg::g_WarnCallback)

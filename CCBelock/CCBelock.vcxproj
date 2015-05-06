@@ -114,6 +114,7 @@
     <ClInclude Include="CCBelock.h" />
     <ClInclude Include="hidCode\hidapi.h" />
     <ClInclude Include="hidCode\usbHidHdr.h" />
+    <ClInclude Include="hidCode\zwHidDevClass2015.h" />
     <ClInclude Include="hidCode\zwHidGtest130.h" />
     <ClInclude Include="hidCode\zwHidMulHeader.h" />
     <ClInclude Include="hidCode\zwHidSplitMsg.h" />
