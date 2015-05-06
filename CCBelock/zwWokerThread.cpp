@@ -89,8 +89,15 @@ namespace zwccbthr {
 					{
 						boost::mutex::scoped_lock lock(thrhid_mutex);
 						g_jhc.SendJson(s_jsonCmd.c_str());
-						sts=g_jhc.RecvJson(recvBuf,BLEN);
-						pushToCallBack(recvBuf);
+						//	
+						//	if ()
+						string zx2;
+						do 
+						{
+							sts=g_jhc.RecvJson(recvBuf,BLEN);
+							pushToCallBack(recvBuf);
+							jcAtmcConvertDLL::zwJCjson2CCBxml(recvBuf,zx2);
+						} while (jcAtmcConvertDLL::s_pipeJcCmdDown!=jcAtmcConvertDLL::s_pipeJcCmdUp);
 						s_jsonCmd.clear();
 					}
 					//zwCfg::s_hidOpened=true;	//算是通信线程的一个心跳标志					
@@ -112,10 +119,6 @@ namespace zwccbthr {
 					ZWFATAL ("RecvData从电子锁接收数据时到遇到线路错误或者未知错误，数据接收线程将终止");
 					return;
 				}
-				
-
-	
-
 			}
 			ZWINFO("金储通信数据接收线程正常退出");
 
@@ -138,8 +141,8 @@ namespace zwccbthr {
 				g_dqLockPop.push_back(outXML);
 				ZWERROR("%%%%430jcAtmcConvertDLL::s_pipeJcCmdDown!=jcAtmcConvertDLL::s_pipeJcCmdUp\n");
 				ZWWARN(jcAtmcConvertDLL::s_pipeJcCmdDown)
-					ZWWARN(jcAtmcConvertDLL::s_pipeJcCmdUp)
-					//return;
+				ZWWARN(jcAtmcConvertDLL::s_pipeJcCmdUp)
+				return;
 			}
 			//ZWINFO("分析锁具回传的Json并转换为建行XML成功");
 			//XML开头的固定内容38个字符，外加起码一个标签的两对尖括号合计4个字符
