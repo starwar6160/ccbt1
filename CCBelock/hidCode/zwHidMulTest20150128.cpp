@@ -547,28 +547,6 @@ namespace zwHidGTest20150130{
 	
 
 #ifdef _DEBUG401ELOCKSTATUS
-	TEST_F(ATMCDLLSelfTest, jcHidDev401_ElockStatusA1_ELockOnline)
-	{
-		Sleep(2000);
-		printf("测试锁具在线时的状态");
-		for (int i=0;i<2;i++)
-		{
-			EXPECT_EQ(JCHID_STATUS_OK,zwPushString("test401"));
-			Sleep(1000);
-		}	
-	}
-
-
-	TEST_F(ATMCDLLSelfTest, jcHidDev401_ElockStatusA2_ELockOffline)
-	{
-		printf("请拔下USB线，测试锁具离线时的状态");
-		Sleep(5000);
-		for (int i=0;i<2;i++)
-		{
-			EXPECT_EQ(JCHID_STATUS_FAIL,zwPushString("test401"));			
-			Sleep(1000);
-		}	
-	}
 
 	TEST_F(ATMCDLLSelfTest, jcHidDev401_ElockStatusA3_ELockPlugIn)
 	{
@@ -587,6 +565,7 @@ namespace zwHidGTest20150130{
 	{			
 		Sleep(1000);
 		EXPECT_EQ(ELOCK_ERROR_SUCCESS,Open(22));
+		Sleep(2000);
 		for (int i=0;i<
 			12*60*9;
 			//1;

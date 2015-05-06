@@ -17,15 +17,15 @@ HWND hWnd;
 #include "zwHidComm.h"
 #include "zwHidMulHeader.h"
 #include "zwCcbElockHdr.h"
-int myOpenElock1503(JCHID *jcElock);
+#include "zwHidDevClass2015.h"
+using jchidDevice2015::jcHidDevice;
+extern jcHidDevice g_jhc;	//实际的HID设备类对象，构造时自动被打开
+
 
 namespace zwCfg {
 	extern bool s_hidOpened;
 } //namespace zwCfg{  
 
-namespace zwccbthr {
-	extern JCHID hidHandle;
-} //namespace zwccbthr{  
 
 static const GUID GUID_DEVINTERFACE_LIST[] =
 {
@@ -139,7 +139,7 @@ LRESULT DeviceChange(UINT message, WPARAM wParam, LPARAM lParam)
 	if (DBT_DEVICEARRIVAL == wParam)
 	{
 		printf("20150331.1506 DBT_DEVICEARRIVAL , JINCHU ELOCK PlugIN!\n");
-		int eRes=myOpenElock1503(&zwccbthr::hidHandle);
+		int eRes=g_jhc.OpenJc();
 		if (ELOCK_ERROR_SUCCESS==eRes)
 		{
 			zwCfg::s_hidOpened=true;

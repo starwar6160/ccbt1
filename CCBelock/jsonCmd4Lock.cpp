@@ -3,22 +3,16 @@
 #include "zwPocoLog.h"
 #include "zwHidComm.h"
 #include "CCBelock.h"
+#include "zwHidDevClass2015.h"
 using namespace boost::property_tree;
 using boost::mutex;
-namespace zwccbthr{
-	extern boost::mutex thr_mutex;
-	extern JCHID hidHandle;
-}
 
+using jchidDevice2015::jcHidDevice;
+extern jcHidDevice g_jhc;	//实际的HID设备类对象，构造时自动被打开
 
 namespace zwCfg {
-	//extern const long JC_CCBDLL_TIMEOUT;	//最长超时时间为30秒,用于测试目的尽快达到限制暴露问题
 	//定义一个回调函数指针
 	extern RecvMsgRotine g_WarnCallback;
-	extern boost::mutex ComPort_mutex;	//用于保护串口连接对象
-	//线程对象作为一个全局静态变量，则不需要显示启动就能启动一个线程
-	extern boost::thread * thr;
-	extern bool s_hidOpened;
 } //namespace zwCfg{  
 
 namespace jcLockJsonCmd_t2015a27{
@@ -44,26 +38,11 @@ namespace jcLockJsonCmd_t2015a27{
 				JC_CCBDLL_TIMEOUT << "seconds";
 			return ELOCK_ERROR_PARAMINVALID;
 		}
-		ZWFUNCTRACE boost::mutex::scoped_lock lock(zwCfg::ComPort_mutex);
 		//必须大于0，小于JC_CCBDLL_TIMEOUT，限制在一个合理范围内
 		LOG(WARNING)<< "Open Return " << ELOCK_ERROR_SUCCESS << endl;
 		string myLockIp;
 		try {
 
-#ifdef ZWUSE_HID_MSG_SPLIT
-			if (true == zwCfg::s_hidOpened) {
-				ZWWARN("s_hidOpened already Opened,so return directly.")
-					return ELOCK_ERROR_SUCCESS;
-			}
-			memset(&zwccbthr::hidHandle, 0, sizeof(JCHID));
-			zwccbthr::hidHandle.vid = JCHID_VID_2014;
-			zwccbthr::hidHandle.pid = JCHID_PID_LOCK5151;
-			if (JCHID_STATUS_OK != jcHidOpen(&zwccbthr::hidHandle)) {
-				ZWFATAL("HID Device Open ERROR 1225 !");
-				return ELOCK_ERROR_PARAMINVALID;
-			}
-			zwCfg::s_hidOpened = true;
-#endif // ZWUSE_HID_MSG_SPLIT			
 		}
 		catch(...) {
 			string errMsg = "打开端口" + myLockIp + "失败";
@@ -76,16 +55,11 @@ namespace jcLockJsonCmd_t2015a27{
 
 	CCBELOCK_API long JCAPISTD CloseJson()
 	{
-		ZWFUNCTRACE boost::mutex::scoped_lock lock(zwCfg::ComPort_mutex);
+		ZWFUNCTRACE 
 		zwCfg::g_WarnCallback = NULL;
-		if (NULL != zwccbthr::hidHandle.vid && NULL != zwccbthr::hidHandle.pid) {
-			//if (true==s_hidOpened)
-			//{
-			jcHidClose(&zwccbthr::hidHandle);
-			//}             
-		}
-CloseHidEnd:
-		zwCfg::s_hidOpened = false;
+		
+			g_jhc.CloseJc();
+
 		ZWWARN("关闭 到锁具的JSON连接")
 			return ELOCK_ERROR_SUCCESS;
 	}
@@ -111,7 +85,6 @@ CloseHidEnd:
 			LOG(INFO)<< "JinChu下发JSON=" << endl << pszJson <<
 				endl;
 		}
-		boost::mutex::scoped_lock lock(zwCfg::ComPort_mutex);
 		
 		try {
 			int inlen = strlen(pszJson);
@@ -123,7 +96,7 @@ CloseHidEnd:
 			//////////////////////////////////////////////////////////////////////////
 			ZWWARN(pszJson);
 			Sleep(50);
-			zwPushString(pszJson);
+			g_jhc.SendJson(pszJson);
 			return ELOCK_ERROR_SUCCESS;
 		}
 		catch(...) {		//一切网络异常都直接返回错误。主要是为了捕捉未连接时
@@ -165,9 +138,7 @@ CloseHidEnd:
 				ZWWARN("连接锁具JSON成功 jsonCmd4Lock.cpp");			
 				try {
 #ifdef ZWUSE_HID_MSG_SPLIT
-					JCHID_STATUS sts=
-						jcHidRecvData(&zwccbthr::hidHandle,
-						recvBuf, BLEN, &recvLen,realTimeOut);
+					JCHID_STATUS sts=g_jhc.RecvJson(recvBuf,BLEN);
 					zwCfg::s_hidOpened=true;	//算是通信线程的一个心跳标志					
 					//要是什么也没收到，就直接进入下一个循环
 					if (JCHID_STATUS_OK!=sts)

@@ -19,13 +19,15 @@ using namespace std;
 using boost::property_tree::ptree_error;
 using boost::property_tree::ptree_bad_data;
 using boost::property_tree::ptree_bad_path;
+using jchidDevice2015::jcHidDevice;
+
+extern jcHidDevice g_jhc;	//实际的HID设备类对象，构造时自动被打开
+
 
 namespace zwccbthr {
 	void ThreadLockComm();	//与锁具之间的通讯线程
 	//boost::thread *opCommThr=NULL;	//为了控制通讯线程终止
 	boost::thread *opCommThr=new boost::thread(zwccbthr::ThreadLockComm);
-	extern boost::mutex recv_mutex;
-	extern JCHID hidHandle;
 	time_t lastOpen=0;
 } //namespace zwccbthr{  
 
@@ -73,52 +75,12 @@ zw_trace::~zw_trace()
 
 
 extern int G_TESTCB_SUCC;	//是否成功调用了回调函数的一个标志位，仅仅测试用
-void myCloseElock1503(void);
-int myOpenElock1503(JCHID *jcElock)
-{
-	assert(NULL!=jcElock);
-	if (NULL==jcElock)
-	{
-		return ELOCK_ERROR_PARAMINVALID;
-	}		
-	if (ELOCK_ERROR_SUCCESS==Open(1))
-	{
-		return ELOCK_ERROR_SUCCESS;
-	}
-	memset(jcElock, 0, sizeof(JCHID));
-	jcElock->vid = JCHID_VID_2014;
-	jcElock->pid = JCHID_PID_LOCK5151;
-	if (JCHID_STATUS_OK != jcHidOpen(jcElock)) {
-		ZWERROR("myOpenElock1503 return ELOCK_ERROR_PARAMINVALID 电子锁打开失败 20150427.1054");
-		zwCfg::s_hidOpened=false;
-		return ELOCK_ERROR_PARAMINVALID;
-	}
-	ZWWARN("myOpenElock1503 电子锁打开成功20150427.1054")
-	zwCfg::s_hidOpened=true;
-	return ELOCK_ERROR_SUCCESS;
-}
 
-void myCloseElock1503(void)
-{
-	//if (NULL!=zwccbthr::opCommThr)
-	//{
-	//	zwccbthr::opCommThr->interrupt();
-	//	zwccbthr::opCommThr->join();
-	//	zwccbthr::opCommThr=NULL;
-	//}
-	if (NULL!=zwccbthr::hidHandle.hid_device
-		&& NULL != zwccbthr::hidHandle.vid 
-		&& NULL != zwccbthr::hidHandle.pid) {
-	jcHidClose(&zwccbthr::hidHandle);
-	memset(&zwccbthr::hidHandle,0,sizeof(JCHID));
-	zwCfg::s_hidOpened=false;
-	}
-}
 
 CCBELOCK_API long JCAPISTD Open(long lTimeOut)
 {
 	VLOG_IF(1,lTimeOut<=0 || lTimeOut>3)<<"ZIJIN423 Open Invalid Para 20150423.1559";
-	int elockStatus=zwPushString("{   \"command\": \"Lock_Firmware_Version\",    \"State\": \"get\"}");
+	int elockStatus=g_jhc.SendJson("{   \"command\": \"Lock_Firmware_Version\",    \"State\": \"get\"}");
 	VLOG_IF(1,JCHID_STATUS_OK!=elockStatus)<<"ZIJIN423 Open ELOCK_ERROR_CONNECTLOST Send get_firmware_version to JinChu Elock Fail!";
 	if (JCHID_STATUS_OK==elockStatus)
 	{
@@ -133,28 +95,21 @@ CCBELOCK_API long JCAPISTD Open(long lTimeOut)
 
 CCBELOCK_API long JCAPISTD Close()
 {
-	//myCloseElock1503();
 	VLOG(2)<<"ZIJIN423 Close ELOCK_ERROR_SUCCESS";
 	    return ELOCK_ERROR_SUCCESS;
 }
 
 CCBELOCK_API long JCAPISTD Notify(const char *pszMsg)
 {
-	boost::mutex::scoped_lock locks1(zwccbthr::recv_mutex);
 	//通过在Notify函数开始检测是否端口已经打开，没有打开就等待一段时间，避免
 	//2014年11月初在广州遇到的没有连接锁具时，ATMC执行0002报文查询锁具状态，
 	//反复查询，大量无用日志产生的情况。	
 	//if (time(NULL)-zwccbthr::lastOpen>20)
 	{
-		//myCloseElock1503();
 		//Open(1);
 	}
 	//LOG(INFO)<<"Notify开始####################\n";
-	if (false == zwCfg::s_hidOpened) {
-		myOpenElock1503(&zwccbthr::hidHandle);
-		ZWERROR("ZIJIN423 JinChu ELock Not Open")
-		return ELOCK_ERROR_CONNECTLOST;
-	}
+
 	//ZWFUNCTRACE 
 	assert(pszMsg != NULL);
 	assert(strlen(pszMsg) >= 42);	//XML至少42字节utf8
@@ -188,9 +143,19 @@ CCBELOCK_API long JCAPISTD Notify(const char *pszMsg)
 		VLOG_IF(1,strJsonSend.size()>0)<<"strJsonSend="<<strJsonSend;
 		Sleep(50);			
 			//OutputDebugStringA("415下发消息给锁具开始\n");
-		int sts=zwPushString(strJsonSend.c_str());
+		int sts=g_jhc.SendJson(strJsonSend.c_str());
 			//OutputDebugStringA("415下发消息给锁具结束\n");
 		VLOG_IF(1,JCHID_STATUS_OK!=sts)<<"423下发消息给锁具异常\n";
+//////////////////////////////////////////////////////////////////////////
+		//const int BLEN = 1024;
+		//char recvBuf[BLEN + 1];			
+		//memset(recvBuf, 0, BLEN + 1);
+		//sts=g_jhc.RecvJson(recvBuf,BLEN);
+		//if (strlen(recvBuf)>0)
+		//{
+		//	ZWWARN(recvBuf)
+		//}
+//////////////////////////////////////////////////////////////////////////
 		return ELOCK_ERROR_SUCCESS;
 	}
 	catch(ptree_bad_path & e) {
@@ -259,7 +224,7 @@ void cdecl myATMCRecvMsgRotine(const char *pszMsg)
 	}
 	if (inlen>0)	
 	{
-		boost::mutex::scoped_lock lock(zwccbthr::recv_mutex);
+		//boost::mutex::scoped_lock lock(zwccbthr::recv_mutex);
 		G_TESTCB_SUCC=1;	//成功调用了回调函数
 		//printf("%s\n",pszMsg);
 	}	
@@ -350,7 +315,7 @@ namespace jchidDevice2015{
 		return sts;
 	}
 
-	int jcHidDevice::RecvJson(char *recvJson,int bufLen)
+	JCHID_STATUS jcHidDevice::RecvJson( char *recvJson,int bufLen )
 	{
 		boost::mutex::scoped_lock lock(m_jchid_mutex);
 		assert(NULL!=recvJson);
@@ -358,11 +323,12 @@ namespace jchidDevice2015{
 		if (NULL==recvJson || bufLen<0)
 		{
 			ZWWARN("jcHidDevice::RecvJson can't Using NULL buffer to Receive JinChu Lock Respone data")
-			return 940;
+			return JCHID_STATUS_INPUTNULL;
 		}		
+
 		//OutputDebugStringA("415接收一条锁具返回消息开始\n");
 		int outLen=0;
-		int sts=jcHidRecvData(&m_jcElock,
+		JCHID_STATUS sts=jcHidRecvData(&m_jcElock,
 			recvJson, bufLen, &outLen,4000);
 		VLOG_IF(4,JCHID_STATUS_OK!=sts)<<"jcHidDevice::RecvJson FAIL\n";
 		return sts;
@@ -371,7 +337,7 @@ namespace jchidDevice2015{
 
 }	//namespace jchidDevice2015{
 
-using jchidDevice2015::jcHidDevice;
+
 
 void zwtest504hidClass(void)
 {
