@@ -565,10 +565,10 @@ namespace zwHidGTest20150130{
 	{			
 		Sleep(1000);
 		EXPECT_EQ(ELOCK_ERROR_SUCCESS,Open(22));
-		Sleep(2000);
+		
 		for (int i=0;i<
 			//12*60*9;
-			3;
+			10*10;
 			i++)
 		{		 
 			SetRecvMsgRotine(myATMCRecvMsgRotine);	
@@ -577,7 +577,7 @@ namespace zwHidGTest20150130{
 			//Sleep(5000);
 
 			EXPECT_EQ(ELOCK_ERROR_SUCCESS,Notify(g_msg02));	
-
+			Sleep(2000);
 			myWaitForRecvKeyPress424();
 			EXPECT_EQ(1,G_TESTCB_SUCC);
 		}

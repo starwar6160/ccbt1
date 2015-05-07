@@ -340,10 +340,11 @@ namespace jchidDevice2015{
 		int nc1=0;
 		while (JCHID_STATUS_OK!=sts)
 		{
+			const int gap=200;
 			sts=jcHidRecvData(&m_jcElock,recvJson, bufLen, &outLen,0);
-			Sleep(500);
+			Sleep(gap);
 			nc1++;
-			if (nc1>20)
+			if (nc1>(8000/gap))
 			{
 				break;
 			}

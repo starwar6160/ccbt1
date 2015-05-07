@@ -70,9 +70,14 @@ namespace zwccbthr {
 					if (s_jsonCmd.length()>0)
 					{
 						boost::mutex::scoped_lock lock(thrhid_mutex);
+#ifdef _DEBUG
+						ZWWARN("thrhid_mutex START")
+#endif // _DEBUG
 						//发送命令给锁具
 						g_jhc.SendJson(s_jsonCmd.c_str());
 						s_jsonCmd.clear();
+
+
 						string outXML;
 						memset(recvBuf, 0, BLEN + 1);
 						sts=g_jhc.RecvJson(recvBuf,BLEN);							
@@ -84,10 +89,13 @@ namespace zwccbthr {
 							if(jcAtmcConvertDLL::s_pipeJcCmdDown!=jcAtmcConvertDLL::s_pipeJcCmdUp)
 							{
 								ZWWARN("答非所问")	
-									ZWWARN(jcAtmcConvertDLL::s_pipeJcCmdDown)
-									ZWWARN(jcAtmcConvertDLL::s_pipeJcCmdUp)
+								ZWWARN(jcAtmcConvertDLL::s_pipeJcCmdDown)
+								ZWWARN(jcAtmcConvertDLL::s_pipeJcCmdUp)
 							}
 						}
+#ifdef _DEBUG
+						ZWWARN("thrhid_mutex END")
+#endif // _DEBUG
 					}
 					//要是什么也没收到，就直接进入下一个循环
 					if (JCHID_STATUS_OK!=sts)
