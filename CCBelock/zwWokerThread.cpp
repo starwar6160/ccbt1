@@ -79,18 +79,34 @@ namespace zwccbthr {
 
 
 						string outXML;
-						memset(recvBuf, 0, BLEN + 1);
-						sts=g_jhc.RecvJson(recvBuf,BLEN);							
-						if (strlen(recvBuf)>0)
+						//鉴于锁具主动上送信息不多，最多尝试读取5次
+						//读到对应的回答就调用回调函数，否则暂且抛弃
+						for (int i=0;i<5;i++)
 						{
-							jcAtmcConvertDLL::zwJCjson2CCBxml(recvBuf,outXML);							
-							pushToCallBack(outXML.c_str());	//传递给回调函数												
-							//对应下发命令的回答的话直接上传给回调函数
-							if(jcAtmcConvertDLL::s_pipeJcCmdDown!=jcAtmcConvertDLL::s_pipeJcCmdUp)
+							memset(recvBuf, 0, BLEN + 1);
+							sts=g_jhc.RecvJson(recvBuf,BLEN);							
+							if (strlen(recvBuf)>0)
 							{
-								ZWWARN("答非所问")	
-								ZWWARN(jcAtmcConvertDLL::s_pipeJcCmdDown)
-								ZWWARN(jcAtmcConvertDLL::s_pipeJcCmdUp)
+								ZWINFO("recvBuf=")
+								ZWWARN(recvBuf)
+
+								jcAtmcConvertDLL::zwJCjson2CCBxml(recvBuf,outXML);							
+								if(jcAtmcConvertDLL::s_pipeJcCmdDown==jcAtmcConvertDLL::s_pipeJcCmdUp)
+								{
+									//对应下发命令的回答的话直接上传给回调函数
+									pushToCallBack(outXML.c_str());	//传递给回调函数																					
+									break;
+								}
+								else
+								{
+									ZWWARN("答非所问")	
+									ZWWARN(jcAtmcConvertDLL::s_pipeJcCmdDown)
+									ZWWARN(jcAtmcConvertDLL::s_pipeJcCmdUp)
+								}
+							}
+							else
+							{
+								break;
 							}
 						}
 #ifdef _DEBUG
