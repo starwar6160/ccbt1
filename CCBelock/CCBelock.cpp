@@ -31,7 +31,7 @@ namespace zwccbthr {
 	boost::thread *opCommThr=new boost::thread(zwccbthr::ThreadLockComm);
 	time_t lastOpen=0;
 	extern boost::mutex thrhid_mutex;
-	extern string s_jsonCmd;
+	//extern string s_jsonCmd;
 } //namespace zwccbthr{  
 
 namespace zwCfg {
@@ -147,9 +147,9 @@ CCBELOCK_API long JCAPISTD Notify(const char *pszMsg)
 		VLOG_IF(1,strJsonSend.size()>0)<<"strJsonSend="<<strJsonSend;
 		Sleep(50);			
 
-		//int sts=g_jhc.SendJson(strJsonSend.c_str());
-		//VLOG_IF(1,JCHID_STATUS_OK!=sts)<<"423下发消息给锁具异常\n";
-		zwccbthr::s_jsonCmd=strJsonSend;
+		int sts=g_jhc.SendJson(strJsonSend.c_str());
+		VLOG_IF(1,JCHID_STATUS_OK!=sts)<<"423下发消息给锁具异常\n";
+		//zwccbthr::s_jsonCmd=strJsonSend;
 //////////////////////////////////////////////////////////////////////////
 		//const int BLEN = 1024;
 		//char recvBuf[BLEN + 1];			
@@ -344,7 +344,7 @@ namespace jchidDevice2015{
 			sts=jcHidRecvData(&m_jcElock,recvJson, bufLen, &outLen,0);
 			Sleep(gap);
 			nc1++;
-			if (nc1>(8000/gap))
+			if (nc1>(5000/gap))
 			{
 				break;
 			}

@@ -24,7 +24,7 @@ namespace jcAtmcConvertDLL {
 namespace zwccbthr {
 	//建行给的接口，没有设置连接参数的地方，也就是说，完全可以端口，抑或是从配置文件读取
 	boost::mutex thrhid_mutex;
-	string s_jsonCmd="";
+	//string s_jsonCmd="";
 	void pushToCallBack( const char * recvBuf );
 	deque<string> g_dqLockUpMsg;	//锁具主动上送的答非所问消息的临时队列
 
@@ -54,34 +54,30 @@ namespace zwccbthr {
 						{
 							g_jhc.CloseJc();
 							g_jhc.OpenJc();
-						}
-						lastOpenElock=time(NULL);
+							lastOpenElock=time(NULL);
+							Sleep(900);							
+							//continue;
+						}						
 					}
 									
 				try {
 					boost::this_thread::interruption_point();
-					if (ELOCK_ERROR_SUCCESS!=g_jhc.getConnectStatus())
-					{
-						Sleep(900);
-						continue;
-					}
-
 					JCHID_STATUS sts=JCHID_STATUS_FAIL;
-					if (s_jsonCmd.length()>0)
+					//if (s_jsonCmd.length()>0)
 					{
 						boost::mutex::scoped_lock lock(thrhid_mutex);
 #ifdef _DEBUG
 						ZWWARN("thrhid_mutex START")
 #endif // _DEBUG
 						//发送命令给锁具
-						g_jhc.SendJson(s_jsonCmd.c_str());
-						s_jsonCmd.clear();
+						//g_jhc.SendJson(s_jsonCmd.c_str());
+						//s_jsonCmd.clear();
 
 
 						string outXML;
-						//鉴于锁具主动上送信息不多，最多尝试读取5次
+						//鉴于锁具主动上送信息不多，最多尝试读取3次
 						//读到对应的回答就调用回调函数，否则暂且抛弃
-						for (int i=0;i<5;i++)
+						for (int i=0;i<3;i++)
 						{
 							memset(recvBuf, 0, BLEN + 1);
 							sts=g_jhc.RecvJson(recvBuf,BLEN);							
@@ -107,10 +103,11 @@ namespace zwccbthr {
 							}
 							else
 							{
+								ZWINFO("g_jhc.RecvJson(recvBuf,BLEN) get 0 bytes")
 								break;
 							}
 						}	//end for (int i=0;i<5;i++)
-
+						VLOG_IF(4,g_dqLockUpMsg.size()>0)<<"g_dqLockUpMsg.size()="<<g_dqLockUpMsg.size()<<endl;
 						for (int i=0;i<g_dqLockUpMsg.size();i++)
 						{
 							ZWWARN("现在开始传递暂存的锁具主动上送消息给回调函数")
@@ -122,7 +119,7 @@ namespace zwccbthr {
 						{
 							ZWWARN("暂存起来的不对口上传消息没有全部传给回调函数")
 						}
-
+						VLOG_IF(4,g_dqLockUpMsg.size()>0)<<"g_dqLockUpMsg.size()="<<g_dqLockUpMsg.size()<<endl;
 #ifdef _DEBUG
 						ZWWARN("thrhid_mutex END")
 #endif // _DEBUG
