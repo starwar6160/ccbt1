@@ -251,6 +251,7 @@ namespace jchidDevice2015{
 	{
 		ZWFUNCTRACE		
 		boost::mutex::scoped_lock lock(m_jchid_mutex);
+		ZWWARN(__FUNCTION__)
 		if (JCHID_STATUS_OK != jcHidOpen(&m_jcElock)) {
 			ZWERROR("myOpenElock1503 return ELOCK_ERROR_PARAMINVALID "
 				"电子锁打开失败 20150504.0957 by Class jcHidDevice");
@@ -269,6 +270,7 @@ namespace jchidDevice2015{
 		boost::mutex::scoped_lock lock(m_jchid_mutex);
 		if (NULL!=m_jcElock.hid_device)
 		{
+			ZWWARN(__FUNCTION__)
 			jcHidClose(&m_jcElock);
 			//memset(&m_jcElock,0,sizeof(m_jcElock));
 			//要允许反复Open/Close的话，就不能在此把数据结构置零

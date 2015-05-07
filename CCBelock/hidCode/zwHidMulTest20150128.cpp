@@ -568,7 +568,7 @@ namespace zwHidGTest20150130{
 		Sleep(2000);
 		for (int i=0;i<
 			//12*60*9;
-			2;
+			3;
 			i++)
 		{		 
 			SetRecvMsgRotine(myATMCRecvMsgRotine);	

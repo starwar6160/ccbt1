@@ -45,41 +45,18 @@ namespace zwccbthr {
 			time_t lastOpenElock=time(NULL);
 			//每隔一二十分钟，最多不出半小时自动强制关闭一次
 			//因为HID连接似乎到一个小时就会有时候失去反应；
-			//Open(1);
-			while (1) {
-				memset(recvBuf, 0, BLEN + 1);
-				//printf("###############JCCOMMTHREAD 327 RUNNING\n");
-				 
-				{
-#ifdef _DEBUG430
-					//强制关闭连接会导致后续收不到数据，暂时不这么做了
-					//boost::mutex::scoped_lock lock(recv_mutex);
-					//15分钟强制关闭一次,防止一个小时以上HID连接失效
-					if ((time(NULL)-lastCloseElock)>19)
-					{			
-						lastCloseElock=time(NULL);						
-						//ZWWARN("20150430.每隔4分钟左右自动强制断开HID连接防止连接失效，3秒以后恢复")
-						//Sleep(3000);
-						continue;
-					}
-#endif // _DEBUG430
-
-					while (g_dqLockPop.size()>0)
-					{
-						pushToCallBack(g_dqLockPop.front().c_str());
-						g_dqLockPop.pop_front();
-					}
-
+			while (1) {				
 					//每隔多少秒才重新检测并打开电子锁一次
-					if ((time(NULL)-lastOpenElock)>(60*3))
+					if ((time(NULL)-lastOpenElock)>(60*15))
 					{	
-						ZWWARN("每隔一定时间定期重新关闭和打开电子锁防止异常断线\n");
-						g_jhc.CloseJc();
-						g_jhc.OpenJc();
+						ZWWARN("每隔15分钟定期检测和重新连接电子锁防止异常断线\n");
+						if (ELOCK_ERROR_SUCCESS!=g_jhc.getConnectStatus())
+						{
+							g_jhc.CloseJc();
+							g_jhc.OpenJc();
+						}
 						lastOpenElock=time(NULL);
 					}
-					
-				}
 									
 				try {
 					boost::this_thread::interruption_point();
@@ -93,19 +70,22 @@ namespace zwccbthr {
 					if (s_jsonCmd.length()>0)
 					{
 						boost::mutex::scoped_lock lock(thrhid_mutex);
+						//发送命令给锁具
 						g_jhc.SendJson(s_jsonCmd.c_str());
-						//	
-						//	if ()
-						string zx2;
-						do 
-						{
-							sts=g_jhc.RecvJson(recvBuf,BLEN);
-							pushToCallBack(recvBuf);
-							jcAtmcConvertDLL::zwJCjson2CCBxml(recvBuf,zx2);
-						} while (jcAtmcConvertDLL::s_pipeJcCmdDown!=jcAtmcConvertDLL::s_pipeJcCmdUp);
 						s_jsonCmd.clear();
+						string outXML;
+						memset(recvBuf, 0, BLEN + 1);
+						sts=g_jhc.RecvJson(recvBuf,BLEN);							
+						jcAtmcConvertDLL::zwJCjson2CCBxml(recvBuf,outXML);							
+						pushToCallBack(outXML.c_str());	//传递给回调函数												
+						//对应下发命令的回答的话直接上传给回调函数
+						if(jcAtmcConvertDLL::s_pipeJcCmdDown!=jcAtmcConvertDLL::s_pipeJcCmdUp)
+						{
+							ZWWARN("答非所问")	
+							ZWWARN(jcAtmcConvertDLL::s_pipeJcCmdDown)
+							ZWWARN(jcAtmcConvertDLL::s_pipeJcCmdUp)
+						}
 					}
-					//zwCfg::s_hidOpened=true;	//算是通信线程的一个心跳标志					
 					//要是什么也没收到，就直接进入下一个循环
 					if (JCHID_STATUS_OK!=sts)
 					{
@@ -117,10 +97,12 @@ namespace zwccbthr {
 				}
 				catch(boost::thread_interrupted &)
 				{
+					g_jhc.CloseJc();
 					ZWERROR	("RecvData从电子锁接收数据时到遇到线程收到终止信号，数据接收线程将终止");
 					return;
 				}
 				catch(...) {
+					g_jhc.CloseJc();
 					ZWFATAL ("RecvData从电子锁接收数据时到遇到线路错误或者未知错误，数据接收线程将终止");
 					return;
 				}
@@ -130,28 +112,25 @@ namespace zwccbthr {
 		}		//try
 		catch(...) {			
 			//异常断开就设定该标志为FALSE,以便下次Open不要再跳过启动通信线程的程序段
-			zwCfg::s_hidOpened=false;
+			g_jhc.CloseJc();
 			ZWFATAL("金储通信数据接收线程数据连接异常断开，现在数据接收线程将结束");
 			return;
 		}	
 	}
 
-	void pushToCallBack( const char * recvBuf )
+	void pushToCallBack( const char * recvConvedXML )
 	{
-		string outXML;
-		if (strlen(recvBuf)>0){
-			jcAtmcConvertDLL::zwJCjson2CCBxml(recvBuf,outXML);
-			if (jcAtmcConvertDLL::s_pipeJcCmdDown!=jcAtmcConvertDLL::s_pipeJcCmdUp)
-			{
-				g_dqLockPop.push_back(outXML);
-				ZWERROR("%%%%430jcAtmcConvertDLL::s_pipeJcCmdDown!=jcAtmcConvertDLL::s_pipeJcCmdUp\n");
-				ZWWARN(jcAtmcConvertDLL::s_pipeJcCmdDown)
-				ZWWARN(jcAtmcConvertDLL::s_pipeJcCmdUp)
-				return;
-			}
+		if (NULL==recvConvedXML || strlen(recvConvedXML)==0)
+		{
+			ZWERROR("收到的锁具返回内容为空，无法返回有用信息给回调函数");
+			ZWWARN(recvConvedXML);
+		}
+
+		
+		if (strlen(recvConvedXML)>0){		
 			//ZWINFO("分析锁具回传的Json并转换为建行XML成功");
 			//XML开头的固定内容38个字符，外加起码一个标签的两对尖括号合计4个字符
-			assert(outXML.length() > 42);
+			assert(strlen(recvConvedXML) > 42);
 		}
 
 		if (NULL==zwCfg::g_WarnCallback)
@@ -160,16 +139,11 @@ namespace zwccbthr {
 			ZWERROR(err1);
 			MessageBoxA(NULL,err1,"严重警告",MB_OK);
 		}
-		if (strlen(recvBuf)==0)
-		{
-			ZWERROR("收到的锁具返回内容为空，无法返回有用信息给回调函数");
-			ZWWARN(recvBuf);
-		}
-		if (NULL != zwCfg::g_WarnCallback && outXML.size()>0) {
+		if (NULL != zwCfg::g_WarnCallback && strlen(recvConvedXML)>0) {
 			//调用回调函数传回信息，
 			//20150415.1727.为了万敏的要求，控制上传消息速率最多每2秒一条防止ATM死机
-			//Sleep(920);
-			zwCfg::g_WarnCallback(outXML.c_str());
+			Sleep(920);
+			zwCfg::g_WarnCallback(recvConvedXML);
 #ifdef _DEBUG401
 			ZWINFO("成功把从锁具接收到的数据传递给回调函数");
 #endif // _DEBUG401
