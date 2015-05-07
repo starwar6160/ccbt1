@@ -12,21 +12,10 @@ using jchidDevice2015::jcHidDevice;
 
 jcHidDevice g_jhc;	//实际的HID设备类对象，构造时自动被打开
 
-
-
-
-namespace jcAtmcConvertDLL {
-	//为了匹配上下行报文避免答非所问做的报文类型标志位
-	extern string s_pipeJcCmdDown;	
-	extern string s_pipeJcCmdUp;
-}
-
 namespace zwccbthr {
 	//建行给的接口，没有设置连接参数的地方，也就是说，完全可以端口，抑或是从配置文件读取
 	boost::mutex thrhid_mutex;
-	//string s_jsonCmd="";
 	void pushToCallBack( const char * recvBuf );
-	deque<string> g_dqLockUpMsg;	//锁具主动上送的答非所问消息的临时队列
 
 	void wait(int milliseconds) {
 		boost::this_thread::sleep(boost::
@@ -45,7 +34,7 @@ namespace zwccbthr {
 			time_t lastOpenElock=time(NULL);
 			//每隔一二十分钟，最多不出半小时自动强制关闭一次
 			//因为HID连接似乎到一个小时就会有时候失去反应；
-			while (1) {				
+			while (1) {		
 					//每隔多少秒才重新检测并打开电子锁一次
 					if ((time(NULL)-lastOpenElock)>(60*15))
 					{	
@@ -53,73 +42,35 @@ namespace zwccbthr {
 						if (ELOCK_ERROR_SUCCESS!=g_jhc.getConnectStatus())
 						{
 							g_jhc.CloseJc();
+							Sleep(900);	
 							g_jhc.OpenJc();
-							lastOpenElock=time(NULL);
-							Sleep(900);							
-							//continue;
+							lastOpenElock=time(NULL);							
 						}						
 					}
 									
 				try {
 					boost::this_thread::interruption_point();
 					JCHID_STATUS sts=JCHID_STATUS_FAIL;
-					//if (s_jsonCmd.length()>0)
 					{
 						boost::mutex::scoped_lock lock(thrhid_mutex);
 #ifdef _DEBUG
 						ZWWARN("thrhid_mutex START")
 #endif // _DEBUG
-						//发送命令给锁具
-						//g_jhc.SendJson(s_jsonCmd.c_str());
-						//s_jsonCmd.clear();
-
-
-						string outXML;
-						//鉴于锁具主动上送信息不多，最多尝试读取3次
-						//读到对应的回答就调用回调函数，否则暂且抛弃
-						for (int i=0;i<3;i++)
+						
+						memset(recvBuf, 0, BLEN + 1);
+						sts=g_jhc.RecvJson(recvBuf,BLEN);							
+						if (strlen(recvBuf)>0)
 						{
-							memset(recvBuf, 0, BLEN + 1);
-							sts=g_jhc.RecvJson(recvBuf,BLEN);							
-							if (strlen(recvBuf)>0)
-							{
-								ZWWARN("收到锁具返回消息=")
-								ZWWARN(recvBuf)
-
-								jcAtmcConvertDLL::zwJCjson2CCBxml(recvBuf,outXML);							
-								if(jcAtmcConvertDLL::s_pipeJcCmdDown==jcAtmcConvertDLL::s_pipeJcCmdUp)
-								{
-									//对应下发命令的回答的话直接上传给回调函数
-									pushToCallBack(outXML.c_str());	//传递给回调函数																					
-									break;
-								}
-								else
-								{
-									ZWWARN("答非所问,暂存起来晚些时候再传给回调函数")	
-									ZWWARN(jcAtmcConvertDLL::s_pipeJcCmdDown)
-									ZWWARN(jcAtmcConvertDLL::s_pipeJcCmdUp)
-									g_dqLockUpMsg.push_back(outXML);
-								}
-							}
-							else
-							{
-								ZWINFO("g_jhc.RecvJson(recvBuf,BLEN) get 0 bytes")
-								break;
-							}
-						}	//end for (int i=0;i<5;i++)
-						VLOG_IF(4,g_dqLockUpMsg.size()>0)<<"g_dqLockUpMsg.size()="<<g_dqLockUpMsg.size()<<endl;
-						for (int i=0;i<g_dqLockUpMsg.size();i++)
-						{
-							ZWWARN("现在开始传递暂存的锁具主动上送消息给回调函数")
-							ZWWARN(g_dqLockUpMsg.front().c_str())
-							pushToCallBack(g_dqLockUpMsg.front().c_str());
-							g_dqLockUpMsg.pop_front();
+							ZWWARN("收到锁具返回消息=")
+							ZWWARN(recvBuf)
+							string outXML;
+							jcAtmcConvertDLL::zwJCjson2CCBxml(recvBuf,outXML);							
+							pushToCallBack(outXML.c_str());	//传递给回调函数
 						}
-						if(g_dqLockUpMsg.size()>0)
+						else
 						{
-							ZWWARN("暂存起来的不对口上传消息没有全部传给回调函数")
-						}
-						VLOG_IF(4,g_dqLockUpMsg.size()>0)<<"g_dqLockUpMsg.size()="<<g_dqLockUpMsg.size()<<endl;
+							ZWINFO("g_jhc.RecvJson(recvBuf,BLEN) get 0 bytes")
+						}						
 #ifdef _DEBUG
 						ZWWARN("thrhid_mutex END")
 #endif // _DEBUG
@@ -132,7 +83,7 @@ namespace zwccbthr {
 					}
 					printf("\n");
 					//////////////////////////////////////////////////////////////////////////
-				}
+				}	//end of try {
 				catch(boost::thread_interrupted &)
 				{
 					g_jhc.CloseJc();
@@ -144,7 +95,7 @@ namespace zwccbthr {
 					ZWFATAL ("RecvData从电子锁接收数据时到遇到线路错误或者未知错误，数据接收线程将终止");
 					return;
 				}
-			}
+			}	//end of while (1) {	
 			ZWINFO("金储通信数据接收线程正常退出");
 
 		}		//try
