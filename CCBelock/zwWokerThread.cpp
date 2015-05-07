@@ -26,7 +26,7 @@ namespace zwccbthr {
 	boost::mutex thrhid_mutex;
 	string s_jsonCmd="";
 	void pushToCallBack( const char * recvBuf );
-	deque<string> g_dqLockPop;	//锁具主动上送的答非所问消息的临时队列
+	deque<string> g_dqLockUpMsg;	//锁具主动上送的答非所问消息的临时队列
 
 	void wait(int milliseconds) {
 		boost::this_thread::sleep(boost::
@@ -87,7 +87,7 @@ namespace zwccbthr {
 							sts=g_jhc.RecvJson(recvBuf,BLEN);							
 							if (strlen(recvBuf)>0)
 							{
-								ZWINFO("recvBuf=")
+								ZWWARN("收到锁具返回消息=")
 								ZWWARN(recvBuf)
 
 								jcAtmcConvertDLL::zwJCjson2CCBxml(recvBuf,outXML);							
@@ -99,20 +99,34 @@ namespace zwccbthr {
 								}
 								else
 								{
-									ZWWARN("答非所问")	
+									ZWWARN("答非所问,暂存起来晚些时候再传给回调函数")	
 									ZWWARN(jcAtmcConvertDLL::s_pipeJcCmdDown)
 									ZWWARN(jcAtmcConvertDLL::s_pipeJcCmdUp)
+									g_dqLockUpMsg.push_back(outXML);
 								}
 							}
 							else
 							{
 								break;
 							}
+						}	//end for (int i=0;i<5;i++)
+
+						for (int i=0;i<g_dqLockUpMsg.size();i++)
+						{
+							ZWWARN("现在开始传递暂存的锁具主动上送消息给回调函数")
+							ZWWARN(g_dqLockUpMsg.front().c_str())
+							pushToCallBack(g_dqLockUpMsg.front().c_str());
+							g_dqLockUpMsg.pop_front();
 						}
+						if(g_dqLockUpMsg.size()>0)
+						{
+							ZWWARN("暂存起来的不对口上传消息没有全部传给回调函数")
+						}
+
 #ifdef _DEBUG
 						ZWWARN("thrhid_mutex END")
 #endif // _DEBUG
-					}
+					}	//end if (s_jsonCmd.length()>0)
 					//要是什么也没收到，就直接进入下一个循环
 					if (JCHID_STATUS_OK!=sts)
 					{
