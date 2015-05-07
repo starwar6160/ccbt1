@@ -230,7 +230,7 @@ void cdecl myATMCRecvMsgRotine(const char *pszMsg)
 	{
 		//boost::mutex::scoped_lock lock(zwccbthr::recv_mutex);
 		G_TESTCB_SUCC=1;	//成功调用了回调函数
-		//printf("%s\n",pszMsg);
+		printf("%s\n%s\n",__FUNCTION__,pszMsg);
 	}	
 }
 

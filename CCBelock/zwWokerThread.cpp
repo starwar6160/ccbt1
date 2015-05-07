@@ -76,14 +76,17 @@ namespace zwccbthr {
 						string outXML;
 						memset(recvBuf, 0, BLEN + 1);
 						sts=g_jhc.RecvJson(recvBuf,BLEN);							
-						jcAtmcConvertDLL::zwJCjson2CCBxml(recvBuf,outXML);							
-						pushToCallBack(outXML.c_str());	//传递给回调函数												
-						//对应下发命令的回答的话直接上传给回调函数
-						if(jcAtmcConvertDLL::s_pipeJcCmdDown!=jcAtmcConvertDLL::s_pipeJcCmdUp)
+						if (strlen(recvBuf)>0)
 						{
-							ZWWARN("答非所问")	
-							ZWWARN(jcAtmcConvertDLL::s_pipeJcCmdDown)
-							ZWWARN(jcAtmcConvertDLL::s_pipeJcCmdUp)
+							jcAtmcConvertDLL::zwJCjson2CCBxml(recvBuf,outXML);							
+							pushToCallBack(outXML.c_str());	//传递给回调函数												
+							//对应下发命令的回答的话直接上传给回调函数
+							if(jcAtmcConvertDLL::s_pipeJcCmdDown!=jcAtmcConvertDLL::s_pipeJcCmdUp)
+							{
+								ZWWARN("答非所问")	
+									ZWWARN(jcAtmcConvertDLL::s_pipeJcCmdDown)
+									ZWWARN(jcAtmcConvertDLL::s_pipeJcCmdUp)
+							}
 						}
 					}
 					//要是什么也没收到，就直接进入下一个循环
