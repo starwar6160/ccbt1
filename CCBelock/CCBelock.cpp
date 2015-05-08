@@ -22,7 +22,7 @@ using boost::property_tree::ptree_bad_data;
 using boost::property_tree::ptree_bad_path;
 using jchidDevice2015::jcHidDevice;
 
-extern jcHidDevice g_jhc;	//实际的HID设备类对象，构造时自动被打开
+extern jcHidDevice *g_jhc;	//实际的HID设备类对象
 
 
 namespace zwccbthr {
@@ -83,8 +83,13 @@ extern int G_TESTCB_SUCC;	//是否成功调用了回调函数的一个标志位，仅仅测试用
 CCBELOCK_API long JCAPISTD Open(long lTimeOut)
 {
 	VLOG_IF(1,lTimeOut<=0 || lTimeOut>3)<<"ZIJIN423 Open Invalid Para 20150423.1559";
-	int elockStatus=g_jhc.SendJson("{   \"command\": \"Lock_Firmware_Version\",    \"State\": \"get\"}");
+	if (NULL==g_jhc)
+	{
+		g_jhc=new jcHidDevice();
+	}
+	int elockStatus=g_jhc->SendJson("{   \"command\": \"Lock_Firmware_Version\",    \"State\": \"get\"}");
 	VLOG_IF(1,JCHID_STATUS_OK!=elockStatus)<<"ZIJIN423 Open ELOCK_ERROR_CONNECTLOST Send get_firmware_version to JinChu Elock Fail!";
+	
 	if (NULL==zwccbthr::opCommThr)
 	{
 		zwccbthr::opCommThr=new boost::thread(zwccbthr::ThreadLockComm);
@@ -105,6 +110,11 @@ CCBELOCK_API long JCAPISTD Close()
 {
 	VLOG(2)<<"ZIJIN423 Close ELOCK_ERROR_SUCCESS";
 	zwccbthr::opCommThr=NULL;
+	if (NULL!=g_jhc)
+	{
+		delete g_jhc;
+		g_jhc=NULL;
+	}
 	    return ELOCK_ERROR_SUCCESS;
 }
 
@@ -153,14 +163,14 @@ CCBELOCK_API long JCAPISTD Notify(const char *pszMsg)
 		VLOG_IF(1,strJsonSend.size()>0)<<"strJsonSend="<<strJsonSend;
 		Sleep(50);			
 
-		int sts=g_jhc.SendJson(strJsonSend.c_str());
+		int sts=g_jhc->SendJson(strJsonSend.c_str());
 		VLOG_IF(1,JCHID_STATUS_OK!=sts)<<"423下发消息给锁具异常\n";
 		//zwccbthr::s_jsonCmd=strJsonSend;
 //////////////////////////////////////////////////////////////////////////
 		//const int BLEN = 1024;
 		//char recvBuf[BLEN + 1];			
 		//memset(recvBuf, 0, BLEN + 1);
-		//sts=g_jhc.RecvJson(recvBuf,BLEN);
+		//sts=g_jhc->RecvJson(recvBuf,BLEN);
 		//if (strlen(recvBuf)>0)
 		//{
 		//	ZWWARN(recvBuf)
@@ -368,13 +378,13 @@ namespace jchidDevice2015{
 void zwtest504hidClass(void)
 {
 	const char *msg02="{\"Command\":\"Lock_Now_Info\"}";
+	char recvJson[256];
+	memset(recvJson,0,256);
+
 	jcHidDevice *jc1=new jcHidDevice();	
 	printf("%s\n",__FUNCTION__);
 	jc1->SendJson(	msg02);
 	//jc1->SendJson(	msg02);
-	char recvJson[256];
-
-	memset(recvJson,0,256);
 	jc1->RecvJson(recvJson,256);
 	ZWWARN(recvJson)
 

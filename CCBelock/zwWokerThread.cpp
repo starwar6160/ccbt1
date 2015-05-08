@@ -10,7 +10,7 @@
 using namespace boost::property_tree;
 using jchidDevice2015::jcHidDevice;
 
-jcHidDevice g_jhc;	//实际的HID设备类对象，构造时自动被打开
+jcHidDevice *g_jhc=NULL;	//实际的HID设备类对象
 
 namespace zwccbthr {
 	//建行给的接口，没有设置连接参数的地方，也就是说，完全可以端口，抑或是从配置文件读取
@@ -26,7 +26,7 @@ namespace zwccbthr {
 	//与锁具之间的通讯线程
 	void ThreadLockComm() {
 		//ZWFUNCTRACE 
-		ZWWARN("与锁具之间的通讯线程启动")
+		ZWWARN("与锁具之间的通讯线程启动712_20150508.0915")
 		try {			
 			const int BLEN = 1024;
 			char recvBuf[BLEN + 1];			
@@ -54,11 +54,11 @@ namespace zwccbthr {
 					{
 						boost::mutex::scoped_lock lock(thrhid_mutex);
 #ifdef _DEBUG
-						ZWWARN("thrhid_mutex START")
+						ZWINFO("thrhid_mutex START")
 #endif // _DEBUG
 						
 						memset(recvBuf, 0, BLEN + 1);
-						sts=g_jhc.RecvJson(recvBuf,BLEN);							
+						sts=g_jhc->RecvJson(recvBuf,BLEN);							
 						if (strlen(recvBuf)>0)
 						{
 							ZWWARN("收到锁具返回消息=")
@@ -72,7 +72,7 @@ namespace zwccbthr {
 							ZWINFO("g_jhc.RecvJson(recvBuf,BLEN) get 0 bytes")
 						}						
 #ifdef _DEBUG
-						ZWWARN("thrhid_mutex END")
+						ZWINFO("thrhid_mutex END")
 #endif // _DEBUG
 					}	//end if (s_jsonCmd.length()>0)
 					//要是什么也没收到，就直接进入下一个循环
@@ -86,12 +86,12 @@ namespace zwccbthr {
 				}	//end of try {
 				catch(boost::thread_interrupted &)
 				{
-					g_jhc.CloseJc();
+					g_jhc->CloseJc();
 					ZWERROR	("RecvData从电子锁接收数据时到遇到线程收到终止信号，数据接收线程将终止");
 					return;
 				}
 				catch(...) {
-					g_jhc.CloseJc();
+					g_jhc->CloseJc();
 					ZWFATAL ("RecvData从电子锁接收数据时到遇到线路错误或者未知错误，数据接收线程将终止");
 					return;
 				}
@@ -101,7 +101,7 @@ namespace zwccbthr {
 		}		//try
 		catch(...) {			
 			//异常断开就设定该标志为FALSE,以便下次Open不要再跳过启动通信线程的程序段
-			g_jhc.CloseJc();
+			g_jhc->CloseJc();
 			ZWFATAL("金储通信数据接收线程数据连接异常断开，现在数据接收线程将结束");
 			return;
 		}	

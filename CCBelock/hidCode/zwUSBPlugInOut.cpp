@@ -19,7 +19,7 @@ HWND hWnd;
 #include "zwCcbElockHdr.h"
 #include "zwHidDevClass2015.h"
 using jchidDevice2015::jcHidDevice;
-extern jcHidDevice g_jhc;	//实际的HID设备类对象，构造时自动被打开
+extern jcHidDevice* g_jhc;	//实际的HID设备类对象，构造时自动被打开
 
 
 namespace zwCfg {
@@ -139,7 +139,7 @@ LRESULT DeviceChange(UINT message, WPARAM wParam, LPARAM lParam)
 	if (DBT_DEVICEARRIVAL == wParam)
 	{
 		printf("20150331.1506 DBT_DEVICEARRIVAL , JINCHU ELOCK PlugIN!\n");
-		int eRes=g_jhc.OpenJc();
+		int eRes=g_jhc->OpenJc();
 		if (ELOCK_ERROR_SUCCESS==eRes)
 		{
 			zwCfg::s_hidOpened=true;

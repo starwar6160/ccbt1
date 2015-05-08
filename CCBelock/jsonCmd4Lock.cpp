@@ -8,7 +8,7 @@ using namespace boost::property_tree;
 using boost::mutex;
 
 using jchidDevice2015::jcHidDevice;
-extern jcHidDevice g_jhc;	//实际的HID设备类对象，构造时自动被打开
+extern jcHidDevice* g_jhc;	//实际的HID设备类对象，构造时自动被打开
 
 namespace zwCfg {
 	//定义一个回调函数指针
@@ -58,7 +58,7 @@ namespace jcLockJsonCmd_t2015a27{
 		ZWFUNCTRACE 
 		zwCfg::g_WarnCallback = NULL;
 		
-			g_jhc.CloseJc();
+			g_jhc->CloseJc();
 
 		ZWWARN("关闭 到锁具的JSON连接")
 			return ELOCK_ERROR_SUCCESS;
@@ -96,7 +96,7 @@ namespace jcLockJsonCmd_t2015a27{
 			//////////////////////////////////////////////////////////////////////////
 			ZWWARN(pszJson);
 			Sleep(50);
-			g_jhc.SendJson(pszJson);
+			g_jhc->SendJson(pszJson);
 			return ELOCK_ERROR_SUCCESS;
 		}
 		catch(...) {		//一切网络异常都直接返回错误。主要是为了捕捉未连接时
@@ -138,7 +138,7 @@ namespace jcLockJsonCmd_t2015a27{
 				ZWWARN("连接锁具JSON成功 jsonCmd4Lock.cpp");			
 				try {
 #ifdef ZWUSE_HID_MSG_SPLIT
-					JCHID_STATUS sts=g_jhc.RecvJson(recvBuf,BLEN);
+					JCHID_STATUS sts=g_jhc->RecvJson(recvBuf,BLEN);
 					zwCfg::s_hidOpened=true;	//算是通信线程的一个心跳标志					
 					//要是什么也没收到，就直接进入下一个循环
 					if (JCHID_STATUS_OK!=sts)
