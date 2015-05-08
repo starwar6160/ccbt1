@@ -46,12 +46,12 @@ namespace zwccbthr {
 #endif // _DEBUG
 							//每隔多少秒才重新检测并打开电子锁一次
 							if ((time(NULL)-lastOpenElock)>(60))
-							{	
-								ZWWARN("1508每隔1分钟定期检测和重新连接电子锁防止异常断线\n");
+							{									
 								if (ELOCK_ERROR_SUCCESS!=g_jhc->getConnectStatus())
 								{
+									ZWWARN("1551每隔1分钟定期检测和重新连接电子锁防止异常断线\n");
 									ZWWARN("真正关闭连接后再次打开连接508")
-										g_jhc->CloseJc();
+									g_jhc->CloseJc();
 									g_jhc->OpenJc();							
 								}					
 								lastOpenElock=time(NULL);							
