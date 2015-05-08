@@ -384,11 +384,14 @@ void zwtest504hidClass(void)
 	jcHidDevice *jc1=new jcHidDevice();	
 	printf("%s\n",__FUNCTION__);
 	jc1->SendJson(	msg02);
+	jc1->CloseJc();
+	jc1->OpenJc();
+	//jc1->OpenJc();
 	//jc1->SendJson(	msg02);
 	jc1->RecvJson(recvJson,256);
 	ZWWARN(recvJson)
-
-	jc1->CloseJc();
+	Sleep(2000);
+	
 	//jc1->OpenJc();
 
 	//Sleep(3000);
