@@ -81,6 +81,7 @@ int _tmain(int argc, TCHAR * argv[])
 int eLockGoogleTest2014( int argc, _TCHAR ** argv )
 {
 	testing::InitGoogleTest(&argc, argv);
+
 	return RUN_ALL_TESTS();
 }
 

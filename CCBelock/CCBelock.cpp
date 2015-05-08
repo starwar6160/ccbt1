@@ -12,11 +12,14 @@
 #include "CCBelock.h"
 #include "zwCcbElockHdr.h"
 #include "zwHidComm.h"
+#include "hidapi.h"
 #include "zwPocoLog.h"
+#include "jcHidDevice.h"
 using namespace std;
 using boost::property_tree::ptree_error;
 using boost::property_tree::ptree_bad_data;
 using boost::property_tree::ptree_bad_path;
+
 
 namespace zwccbthr {
 	void ThreadLockComm();	//与锁具之间的通讯线程
@@ -280,5 +283,163 @@ CCBELOCK_API const char *dbgGetLockReturnXML(void)
 }
 
 
+//////////////////////////////////////////////////////////////////////////
+namespace jchidDevice2015{
+
+
+
+
+
+	jcHidDevice::jcHidDevice()
+	{
+		ZWFUNCTRACE
+			memset(&m_jcElock, 0, sizeof(JCHID));
+		m_jcElock.vid = JCHID_VID_2014;
+		m_jcElock.pid = JCHID_PID_LOCK5151;
+		m_hidOpened=false;
+		OpenJc();
+	}
+
+
+	int jcHidDevice::OpenJc()
+	{
+		ZWFUNCTRACE		
+			boost::mutex::scoped_lock lock(m_jchid_mutex);
+		ZWWARN(__FUNCTION__)
+			if (JCHID_STATUS_OK != jcHidOpen(&m_jcElock)) {
+				ZWERROR("myOpenElock1503 return ELOCK_ERROR_PARAMINVALID "
+					"电子锁打开失败 20150504.0957 by Class jcHidDevice");
+				m_hidOpened=false;
+				return ELOCK_ERROR_PARAMINVALID;
+			}
+			hid_set_nonblocking(static_cast<hid_device *>(m_jcElock.hid_device),1);
+			ZWINFO("myOpenElock1503 电子锁打开成功20150504.0957 by Class jcHidDevice")
+				m_hidOpened=true;
+			return ELOCK_ERROR_SUCCESS;
+	}
+
+	void jcHidDevice::CloseJc()
+	{
+		ZWFUNCTRACE
+			boost::mutex::scoped_lock lock(m_jchid_mutex);
+		if (NULL!=m_jcElock.hid_device)
+		{
+			ZWWARN(__FUNCTION__)
+				jcHidClose(&m_jcElock);
+			//memset(&m_jcElock,0,sizeof(m_jcElock));
+			//要允许反复Open/Close的话，就不能在此把数据结构置零
+			m_hidOpened=false;
+		}
+	}
+
+	jcHidDevice::~jcHidDevice()
+	{
+		ZWFUNCTRACE
+			CloseJc();
+	}
+
+	int jcHidDevice::getConnectStatus()
+	{
+		boost::mutex::scoped_lock lock(m_jchid_mutex);
+		const char *m_cmdGetFirmware=
+			"{   \"command\": \"Lock_Firmware_Version\",    \"State\": \"get\"}";
+		//
+		int elockStatus=jcHidSendData(&m_jcElock, m_cmdGetFirmware, 
+			strlen(m_cmdGetFirmware));
+		VLOG_IF(1,JCHID_STATUS_OK!=elockStatus)
+			<<"ZIJIN423 Open ELOCK_ERROR_CONNECTLOST Send "
+			"get_firmware_version to JinChu Elock Fail! 20150504.1006";
+		if (JCHID_STATUS_OK==elockStatus)
+		{
+			m_hidOpened=true;
+			return ELOCK_ERROR_SUCCESS;
+		}
+		else
+		{
+			m_hidOpened=false;
+			return ELOCK_ERROR_CONNECTLOST;
+		}
+	}
+
+	int jcHidDevice::SendJson(const char *jcJson)
+	{
+		boost::mutex::scoped_lock lock(m_jchid_mutex);
+		assert(NULL!=jcJson);
+		assert(strlen(jcJson)>2);
+		if (NULL==jcJson || strlen(jcJson)==0)
+		{
+			ZWWARN("jcHidDevice::SendJson can't send NULL json command 20150505.0938")
+				return -938;
+		}
+		int sts=jcHidSendData(&m_jcElock, jcJson, strlen(jcJson));
+		VLOG_IF(4,JCHID_STATUS_OK!=sts)<<"jcHidDevice::SendJson FAIL\n";
+		return sts;
+	}
+
+	JCHID_STATUS jcHidDevice::RecvJson( char *recvJson,int bufLen )
+	{
+		boost::mutex::scoped_lock lock(m_jchid_mutex);
+		assert(NULL!=recvJson);
+		assert(bufLen>=0);
+		if (NULL==recvJson || bufLen<0)
+		{
+			ZWWARN("jcHidDevice::RecvJson can't Using NULL buffer to Receive JinChu Lock Respone data")
+				return JCHID_STATUS_INPUTNULL;
+		}		
+
+		//OutputDebugStringA("415接收一条锁具返回消息开始\n");
+		int outLen=0;
+
+		JCHID_STATUS sts=JCHID_STATUS_FAIL;
+		int nc1=0;
+		while (JCHID_STATUS_OK!=sts)
+		{
+			const int gap=200;
+			sts=jcHidRecvData(&m_jcElock,recvJson, bufLen, &outLen,0);
+			Sleep(gap);
+			nc1++;
+			if (nc1>(5000/gap))
+			{
+				break;
+			}
+		}
+
+		VLOG_IF(4,JCHID_STATUS_OK!=sts)<<"jcHidDevice::RecvJson FAIL\n";
+		return sts;
+	}
+
+
+}	//namespace jchidDevice2015{
+
+
+using jchidDevice2015::jcHidDevice;
+void zwtest504hidClass(void)
+{
+	const char *msg02="{\"Command\":\"Lock_Now_Info\"}";
+	jcHidDevice *jc1=new jcHidDevice();	
+	printf("%s\n",__FUNCTION__);
+	jc1->SendJson(	msg02);
+	//jc1->SendJson(	msg02);
+	char recvJson[256];
+
+	memset(recvJson,0,256);
+	jc1->RecvJson(recvJson,256);
+	ZWWARN(recvJson)
+
+		jc1->CloseJc();
+	//jc1->OpenJc();
+
+	//Sleep(3000);
+	//memset(recvJson,0,256);
+	//jc1->RecvJson(recvJson,256);
+	//ZWWARN(recvJson)
+	//jc1->CloseJc();
+
+	//jcHidDevice *jc2=new jcHidDevice();
+	//memset(recvJson,0,256);
+	//jc2->SendJson(	msg02);
+	//jc2->RecvJson(recvJson,256);
+	//ZWWARN(recvJson)
+}
 
 
