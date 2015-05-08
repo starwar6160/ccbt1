@@ -27,8 +27,8 @@ extern jcHidDevice g_jhc;	//实际的HID设备类对象，构造时自动被打开
 
 namespace zwccbthr {
 	void ThreadLockComm();	//与锁具之间的通讯线程
-	//boost::thread *opCommThr=NULL;	//为了控制通讯线程终止
-	boost::thread *opCommThr=new boost::thread(zwccbthr::ThreadLockComm);
+	boost::thread *opCommThr=NULL;	//为了控制通讯线程终止
+	//boost::thread *opCommThr=new boost::thread(zwccbthr::ThreadLockComm);
 	time_t lastOpen=0;
 	extern boost::mutex thrhid_mutex;
 	//extern string s_jsonCmd;
@@ -85,6 +85,11 @@ CCBELOCK_API long JCAPISTD Open(long lTimeOut)
 	VLOG_IF(1,lTimeOut<=0 || lTimeOut>3)<<"ZIJIN423 Open Invalid Para 20150423.1559";
 	int elockStatus=g_jhc.SendJson("{   \"command\": \"Lock_Firmware_Version\",    \"State\": \"get\"}");
 	VLOG_IF(1,JCHID_STATUS_OK!=elockStatus)<<"ZIJIN423 Open ELOCK_ERROR_CONNECTLOST Send get_firmware_version to JinChu Elock Fail!";
+	if (NULL==zwccbthr::opCommThr)
+	{
+		zwccbthr::opCommThr=new boost::thread(zwccbthr::ThreadLockComm);
+	}	
+
 	if (JCHID_STATUS_OK==elockStatus)
 	{
 		return ELOCK_ERROR_SUCCESS;
@@ -99,6 +104,7 @@ CCBELOCK_API long JCAPISTD Open(long lTimeOut)
 CCBELOCK_API long JCAPISTD Close()
 {
 	VLOG(2)<<"ZIJIN423 Close ELOCK_ERROR_SUCCESS";
+	zwccbthr::opCommThr=NULL;
 	    return ELOCK_ERROR_SUCCESS;
 }
 
@@ -365,7 +371,7 @@ void zwtest504hidClass(void)
 	jcHidDevice *jc1=new jcHidDevice();	
 	printf("%s\n",__FUNCTION__);
 	jc1->SendJson(	msg02);
-	jc1->SendJson(	msg02);
+	//jc1->SendJson(	msg02);
 	char recvJson[256];
 
 	memset(recvJson,0,256);
@@ -373,17 +379,17 @@ void zwtest504hidClass(void)
 	ZWWARN(recvJson)
 
 	jc1->CloseJc();
-	jc1->OpenJc();
+	//jc1->OpenJc();
 
-	Sleep(3000);
-	memset(recvJson,0,256);
-	jc1->RecvJson(recvJson,256);
-	ZWWARN(recvJson)
-	jc1->CloseJc();
+	//Sleep(3000);
+	//memset(recvJson,0,256);
+	//jc1->RecvJson(recvJson,256);
+	//ZWWARN(recvJson)
+	//jc1->CloseJc();
 
-	jcHidDevice *jc2=new jcHidDevice();
-	memset(recvJson,0,256);
-	jc2->SendJson(	msg02);
-	jc2->RecvJson(recvJson,256);
-	ZWWARN(recvJson)
+	//jcHidDevice *jc2=new jcHidDevice();
+	//memset(recvJson,0,256);
+	//jc2->SendJson(	msg02);
+	//jc2->RecvJson(recvJson,256);
+	//ZWWARN(recvJson)
 }

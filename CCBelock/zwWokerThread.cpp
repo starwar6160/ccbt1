@@ -36,17 +36,17 @@ namespace zwccbthr {
 			//因为HID连接似乎到一个小时就会有时候失去反应；
 			while (1) {		
 					//每隔多少秒才重新检测并打开电子锁一次
-					if ((time(NULL)-lastOpenElock)>(60*15))
-					{	
-						ZWWARN("每隔15分钟定期检测和重新连接电子锁防止异常断线\n");
-						if (ELOCK_ERROR_SUCCESS!=g_jhc.getConnectStatus())
-						{
-							g_jhc.CloseJc();
-							Sleep(900);	
-							g_jhc.OpenJc();
-							lastOpenElock=time(NULL);							
-						}						
-					}
+					//if ((time(NULL)-lastOpenElock)>(60*15))
+					//{	
+					//	ZWWARN("每隔15分钟定期检测和重新连接电子锁防止异常断线\n");
+					//	if (ELOCK_ERROR_SUCCESS!=g_jhc.getConnectStatus())
+					//	{
+					//		g_jhc.CloseJc();
+					//		Sleep(900);	
+					//		g_jhc.OpenJc();
+					//		lastOpenElock=time(NULL);							
+					//	}						
+					//}
 									
 				try {
 					boost::this_thread::interruption_point();
