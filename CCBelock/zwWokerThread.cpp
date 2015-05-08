@@ -26,7 +26,7 @@ namespace zwccbthr {
 	//与锁具之间的通讯线程
 	void ThreadLockComm() {
 		//ZWFUNCTRACE 
-		ZWWARN("与锁具之间的通讯线程启动712_20150508.0915")
+		ZWWARN("与锁具之间的通讯线程启动v717")
 		try {			
 			const int BLEN = 1024;
 			char recvBuf[BLEN + 1];			
@@ -36,15 +36,16 @@ namespace zwccbthr {
 			//因为HID连接似乎到一个小时就会有时候失去反应；
 			while (1) {		
 					//每隔多少秒才重新检测并打开电子锁一次
-					if ((time(NULL)-lastOpenElock)>(60*15))
+					if ((time(NULL)-lastOpenElock)>(60*3))
 					{	
-						ZWWARN("1147每隔15秒定期检测和重新连接电子锁防止异常断线\n");
+						ZWWARN("1424每隔3分钟定期检测和重新连接电子锁防止异常断线\n");
 						if (ELOCK_ERROR_SUCCESS!=g_jhc->getConnectStatus())
 						{
+							ZWWARN("真正关闭连接后再次打开连接508")
 							g_jhc->CloseJc();
-							g_jhc->OpenJc();
-							lastOpenElock=time(NULL);							
-						}						
+							g_jhc->OpenJc();							
+						}					
+						lastOpenElock=time(NULL);							
 					}
 									
 				try {
@@ -66,10 +67,7 @@ namespace zwccbthr {
 							jcAtmcConvertDLL::zwJCjson2CCBxml(recvBuf,outXML);							
 							pushToCallBack(outXML.c_str());	//传递给回调函数
 						}
-						else
-						{
-							ZWINFO("g_jhc.RecvJson(recvBuf,BLEN) get 0 bytes")
-						}						
+			
 #ifdef _DEBUG
 						ZWINFO("thrhid_mutex END")
 #endif // _DEBUG

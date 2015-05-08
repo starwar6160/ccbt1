@@ -567,8 +567,8 @@ namespace zwHidGTest20150130{
 		EXPECT_EQ(ELOCK_ERROR_SUCCESS,Open(22));
 		
 		for (int i=0;i<
-			12*60*9;
-			//3;
+			//12*60*9;
+			9;
 			i++)
 		{		 
 			SetRecvMsgRotine(myATMCRecvMsgRotine);	

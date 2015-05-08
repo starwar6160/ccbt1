@@ -364,9 +364,7 @@ namespace jchidDevice2015{
 			{
 				break;
 			}
-		}
-			
-		VLOG_IF(4,JCHID_STATUS_OK!=sts)<<"jcHidDevice::RecvJson FAIL\n";
+		}			
 		return sts;
 	}
 
