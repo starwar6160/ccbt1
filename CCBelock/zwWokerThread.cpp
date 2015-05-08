@@ -43,7 +43,7 @@ namespace zwccbthr {
 	//与锁具之间的通讯线程
 	void ThreadLockComm() {
 		//ZWFUNCTRACE 
-		ZWWARN("与锁具之间的通讯线程启动")
+		ZWWARN("与锁具之间的通讯线程启动713Base689On20150430")
 		boost::mutex::scoped_lock lock(thr_mutex);
 
 		try {			
@@ -60,43 +60,8 @@ namespace zwccbthr {
 			while (1) {
 				memset(recvBuf, 0, BLEN + 1);
 				//printf("###############JCCOMMTHREAD 327 RUNNING\n");
-				 
-				{
-#ifdef _DEBUG430
-					//强制关闭连接会导致后续收不到数据，暂时不这么做了
-					boost::mutex::scoped_lock lock(recv_mutex);
-					//15分钟强制关闭一次,防止一个小时以上HID连接失效
-					if ((time(NULL)-lastCloseElock)>19)
-					{			
-						//myCloseElock1503();
-						lastCloseElock=time(NULL);						
-						//ZWWARN("20150430.每隔4分钟左右自动强制断开HID连接防止连接失效，3秒以后恢复")
-						//Sleep(3000);
-						continue;
-					}
-#endif // _DEBUG430
-
-
-					//每隔多少秒才重新检测并打开电子锁一次
-					if ((time(NULL)-lastOpenElock)>10)
-					{					
-						myOpenElock1503(&zwccbthr::hidHandle);
-						lastOpenElock=time(NULL);
-					}
-					
-				}
 				
 				time_t thNow=time(NULL);
-#ifdef _DEBUG417
-				if (thNow % 6 ==0)
-				{
-					OutputDebugStringA(("电子锁数据接收线程仍在运行中"));
-				}
-				if (thNow % 60 ==0)
-				{
-					ZWINFO("电子锁数据接收线程仍在运行中");
-				}
-#endif // _DEBUG417
 					
 				try {
 					boost::this_thread::interruption_point();
@@ -110,14 +75,10 @@ namespace zwccbthr {
 					{						
 						{
 							boost::mutex::scoped_lock lock(recv_mutex);
-							//OutputDebugStringA("415接收一条锁具返回消息开始\n");
 							sts=jcHidRecvData(&zwccbthr::hidHandle,
 								recvBuf, BLEN, &outLen,JCHID_RECV_TIMEOUT);
-							//OutputDebugStringA("415接收一条锁具返回消息结束\n");
 						}						
-						//myCloseElock1503();
 					}
-					//zwCfg::s_hidOpened=true;	//算是通信线程的一个心跳标志					
 					//要是什么也没收到，就直接进入下一个循环
 					if (JCHID_STATUS_OK!=sts)
 					{
