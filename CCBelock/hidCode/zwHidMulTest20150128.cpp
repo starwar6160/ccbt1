@@ -494,7 +494,7 @@ namespace zwHidGTest20150130{
 				break;
 			}
 			Sleep(500);
-			putchar('.');
+			putchar('B');
 		}
 		putchar('\n');
 		//if (1!=G_TESTCB_SUCC)
@@ -568,18 +568,29 @@ namespace zwHidGTest20150130{
 		
 		for (int i=0;i<
 			//12*60*9;
-			9;
+			5;
 			i++)
 		{		 
 			SetRecvMsgRotine(myATMCRecvMsgRotine);	
-			//EXPECT_EQ(ELOCK_ERROR_SUCCESS,Notify(g_msg00));	
-			//EXPECT_EQ(ELOCK_ERROR_SUCCESS,Notify(g_msg01));	
-			//Sleep(5000);
 
+#define _DEBUG508A1
+#ifdef _DEBUG508A1
+			EXPECT_EQ(ELOCK_ERROR_SUCCESS,Notify(g_msg00));	
+			Sleep(2000);
+			myWaitForRecvKeyPress424();			
+			EXPECT_EQ(1,G_TESTCB_SUCC);
+			EXPECT_EQ(ELOCK_ERROR_SUCCESS,Notify(g_msg01));	
+			Sleep(2000);
+			myWaitForRecvKeyPress424();
+			EXPECT_EQ(1,G_TESTCB_SUCC);
+			Sleep(2000);
+#else
 			EXPECT_EQ(ELOCK_ERROR_SUCCESS,Notify(g_msg02));	
 			Sleep(2000);
 			myWaitForRecvKeyPress424();
 			EXPECT_EQ(1,G_TESTCB_SUCC);
+#endif // _DEBUG508A1
+
 		}
 		EXPECT_EQ(ELOCK_ERROR_SUCCESS,Close());
 
