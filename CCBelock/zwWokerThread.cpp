@@ -26,7 +26,7 @@ namespace zwccbthr {
 	//与锁具之间的通讯线程
 	void ThreadLockComm() {
 		//ZWFUNCTRACE 
-		ZWWARN("与锁具之间的通讯线程启动v717")
+		ZWWARN("与锁具之间的通讯线程启动v718")
 		try {			
 			const int BLEN = 1024;
 			char recvBuf[BLEN + 1];			
@@ -35,19 +35,7 @@ namespace zwccbthr {
 			//每隔一二十分钟，最多不出半小时自动强制关闭一次
 			//因为HID连接似乎到一个小时就会有时候失去反应；
 			while (1) {		
-					//每隔多少秒才重新检测并打开电子锁一次
-					if ((time(NULL)-lastOpenElock)>(60*3))
-					{	
-						ZWWARN("1424每隔3分钟定期检测和重新连接电子锁防止异常断线\n");
-						if (ELOCK_ERROR_SUCCESS!=g_jhc->getConnectStatus())
-						{
-							ZWWARN("真正关闭连接后再次打开连接508")
-							g_jhc->CloseJc();
-							g_jhc->OpenJc();							
-						}					
-						lastOpenElock=time(NULL);							
-					}
-									
+								
 				try {
 					boost::this_thread::interruption_point();
 					JCHID_STATUS sts=JCHID_STATUS_FAIL;
@@ -56,7 +44,18 @@ namespace zwccbthr {
 #ifdef _DEBUG
 						ZWINFO("thrhid_mutex START")
 #endif // _DEBUG
-						
+							//每隔多少秒才重新检测并打开电子锁一次
+							if ((time(NULL)-lastOpenElock)>(60))
+							{	
+								ZWWARN("1508每隔1分钟定期检测和重新连接电子锁防止异常断线\n");
+								if (ELOCK_ERROR_SUCCESS!=g_jhc->getConnectStatus())
+								{
+									ZWWARN("真正关闭连接后再次打开连接508")
+										g_jhc->CloseJc();
+									g_jhc->OpenJc();							
+								}					
+								lastOpenElock=time(NULL);							
+							}						
 						memset(recvBuf, 0, BLEN + 1);
 						sts=g_jhc->RecvJson(recvBuf,BLEN);							
 						if (strlen(recvBuf)>0)
