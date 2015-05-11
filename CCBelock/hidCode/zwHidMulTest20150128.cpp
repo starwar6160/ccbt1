@@ -568,7 +568,7 @@ namespace zwHidGTest20150130{
 		
 		for (int i=0;i<
 			//12*60*9;
-			1;
+			2;
 			i++)
 		{		 
 			SetRecvMsgRotine(myATMCRecvMsgRotine);	
@@ -582,15 +582,14 @@ namespace zwHidGTest20150130{
 			EXPECT_EQ(ELOCK_ERROR_SUCCESS,Notify(g_msg01));	
 			Sleep(2000);
 			myWaitForRecvKeyPress424();
-			EXPECT_EQ(1,G_TESTCB_SUCC);
-			Sleep(4000);
+			EXPECT_EQ(1,G_TESTCB_SUCC);			
 #else
 			EXPECT_EQ(ELOCK_ERROR_SUCCESS,Notify(g_msg02));	
 			Sleep(2000);
 			myWaitForRecvKeyPress424();
 			EXPECT_EQ(1,G_TESTCB_SUCC);
 #endif // _DEBUG508A1
-
+			Sleep(6000);
 		}
 		EXPECT_EQ(ELOCK_ERROR_SUCCESS,Close());
 

@@ -360,7 +360,7 @@ namespace jchidDevice2015{
 			sts=jcHidRecvData(&m_jcElock,recvJson, bufLen, &outLen,0);
 			Sleep(gap);
 			nc1++;
-			if (nc1>(9000/gap))
+			if (nc1>(3000/gap))
 			{
 				break;
 			}

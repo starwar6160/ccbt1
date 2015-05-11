@@ -8,8 +8,8 @@
 //把ATMC DLL的XML和JSON互转函数集中于此，便于单元测试；
 namespace jcAtmcConvertDLL {
 	//为了匹配上下行报文避免答非所问做的报文类型标志位
-	string s_pipeJcCmdDown;	
-	string s_pipeJcCmdUp;	
+	string s_pipeJcCmdDown="";	
+	string s_pipeJcCmdUp="";	
 
 #ifdef TMP_MAHAO_TEST_20150105
 	//20150105.万敏和马浩测试用的东西

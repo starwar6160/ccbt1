@@ -33,12 +33,13 @@ namespace zwccbthr {
 	//与锁具之间的通讯线程
 	void ThreadLockComm() {
 		//ZWFUNCTRACE 
-		ZWWARN("与锁具之间的通讯线程启动v724")
+		ZWWARN("与锁具之间的通讯线程启动v725")
 		try {			
 			const int BLEN = 1024;
 			char recvBuf[BLEN + 1];			
 			//每隔几秒钟重新打开一次
 			time_t lastOpenElock=time(NULL);
+			time_t lastPopUpMsg=time(NULL);
 			//每隔一二十分钟，最多不出半小时自动强制关闭一次
 			//因为HID连接似乎到一个小时就会有时候失去反应；
 			while (1) {		
@@ -60,13 +61,25 @@ namespace zwccbthr {
 									ZWWARN("真正关闭连接后再次打开连接508")
 									g_jhc->CloseJc();
 									g_jhc->OpenJc();							
-								}					
+								}												
 								lastOpenElock=time(NULL);							
 							}						
+
+							//定期上传报警信息，如果有的话
+							if ((time(NULL)-lastPopUpMsg)>(20))
+							{
+								for (auto iter=g_dqLockUpMsg.begin();iter!=g_dqLockUpMsg.end();iter++)
+								{
+									ZWWARN("每隔1分钟弹出前面暂存的锁具主动上送信息给回调函数")
+										ZWWARN((*iter).c_str())
+										pushToCallBack((*iter).c_str());
+								}
+								g_dqLockUpMsg.clear();
+								lastPopUpMsg=time(NULL);
+							}
 //////////////////////////////////////////////////////////////////////////
 						//假定锁具主动上送报文不超过3条。一般应该也就2条
 						int upMsgCount=0;
-						//for (int i=0;i<3;i++)
 						do
 						{
 							upMsgCount++;
@@ -96,14 +109,15 @@ namespace zwccbthr {
 									ZWINFO("单条锁具主动上送报文不涉及答非所问问题")
 									pushToCallBack(outXML.c_str());	//传递给回调函数
 								}
-								//锁具主动上送报文答非所问
-								if(jcAtmcConvertDLL::s_pipeJcCmdDown!=jcAtmcConvertDLL::s_pipeJcCmdUp
-									&& jcAtmcConvertDLL::s_pipeJcCmdDown!="")
+								//锁具主动上送报文答非所问,以及特别处理报警信息及时压下
+								if((jcAtmcConvertDLL::s_pipeJcCmdDown!=jcAtmcConvertDLL::s_pipeJcCmdUp
+									&& jcAtmcConvertDLL::s_pipeJcCmdDown!="") ||
+									jcAtmcConvertDLL::s_pipeJcCmdUp=="Lock_Alarm_Info")
 								{									
 									ZWWARN("答非所问,暂存起来晚些时候再传给回调函数")	
-										ZWWARN(jcAtmcConvertDLL::s_pipeJcCmdDown)
-										ZWWARN(jcAtmcConvertDLL::s_pipeJcCmdUp)
-										g_dqLockUpMsg.push_back(outXML);
+									ZWWARN(jcAtmcConvertDLL::s_pipeJcCmdDown)
+									ZWWARN(jcAtmcConvertDLL::s_pipeJcCmdUp)
+									g_dqLockUpMsg.push_back(outXML);
 								}
 							}
 							else
@@ -112,16 +126,8 @@ namespace zwccbthr {
 								DLOG(INFO)<<"HID读取没有任何数据，跳出循环"<<endl;
 								break;
 							}
-						}while(jcAtmcConvertDLL::s_pipeJcCmdDown!=jcAtmcConvertDLL::s_pipeJcCmdUp);
-						//end for (int i=0;i<3;i++)
+						}while(strlen(recvBuf)>0);						
 
-						for (auto iter=g_dqLockUpMsg.begin();iter!=g_dqLockUpMsg.end();iter++)
-						{
-							ZWWARN("弹出前面暂存的锁具主动上送信息给回调函数")
-							ZWWARN((*iter).c_str())
-							pushToCallBack((*iter).c_str());
-						}
-						g_dqLockUpMsg.clear();
 //////////////////////////////////////////////////////////////////////////
 			
 #ifdef _DEBUG
