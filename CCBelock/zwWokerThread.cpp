@@ -33,7 +33,7 @@ namespace zwccbthr {
 	//与锁具之间的通讯线程
 	void ThreadLockComm() {
 		//ZWFUNCTRACE 
-		ZWWARN("与锁具之间的通讯线程启动v722")
+		ZWWARN("与锁具之间的通讯线程启动v724")
 		try {			
 			const int BLEN = 1024;
 			char recvBuf[BLEN + 1];			
@@ -65,8 +65,15 @@ namespace zwccbthr {
 							}						
 //////////////////////////////////////////////////////////////////////////
 						//假定锁具主动上送报文不超过3条。一般应该也就2条
-						for (int i=0;i<3;i++)
+						int upMsgCount=0;
+						//for (int i=0;i<3;i++)
+						do
 						{
+							upMsgCount++;
+							if (upMsgCount>19)
+							{
+								break;
+							}
 							memset(recvBuf, 0, BLEN + 1);
 							sts=g_jhc->RecvJson(recvBuf,BLEN);							
 							if (strlen(recvBuf)>0)
@@ -105,7 +112,8 @@ namespace zwccbthr {
 								DLOG(INFO)<<"HID读取没有任何数据，跳出循环"<<endl;
 								break;
 							}
-						}	//end for (int i=0;i<3;i++)
+						}while(jcAtmcConvertDLL::s_pipeJcCmdDown!=jcAtmcConvertDLL::s_pipeJcCmdUp);
+						//end for (int i=0;i<3;i++)
 
 						for (auto iter=g_dqLockUpMsg.begin();iter!=g_dqLockUpMsg.end();iter++)
 						{
