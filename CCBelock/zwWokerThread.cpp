@@ -12,10 +12,17 @@ using jchidDevice2015::jcHidDevice;
 
 jcHidDevice *g_jhc=NULL;	//实际的HID设备类对象
 
+namespace jcAtmcConvertDLL {
+	//为了匹配上下行报文避免答非所问做的报文类型标志位
+	extern string s_pipeJcCmdDown;	
+	extern string s_pipeJcCmdUp;
+}
+
 namespace zwccbthr {
 	//建行给的接口，没有设置连接参数的地方，也就是说，完全可以端口，抑或是从配置文件读取
 	boost::mutex thrhid_mutex;
 	void pushToCallBack( const char * recvBuf );
+	deque<string> g_dqLockUpMsg;	//锁具主动上送的答非所问消息的临时队列
 
 	void wait(int milliseconds) {
 		boost::this_thread::sleep(boost::
@@ -56,16 +63,50 @@ namespace zwccbthr {
 								}					
 								lastOpenElock=time(NULL);							
 							}						
-						memset(recvBuf, 0, BLEN + 1);
-						sts=g_jhc->RecvJson(recvBuf,BLEN);							
-						if (strlen(recvBuf)>0)
+//////////////////////////////////////////////////////////////////////////
+						//假定锁具主动上送报文不超过3条。一般应该也就2条
+						for (int i=0;i<3;i++)
 						{
-							ZWWARN("收到锁具返回消息=")
-							ZWWARN(recvBuf)
-							string outXML;
-							jcAtmcConvertDLL::zwJCjson2CCBxml(recvBuf,outXML);							
-							pushToCallBack(outXML.c_str());	//传递给回调函数
+							memset(recvBuf, 0, BLEN + 1);
+							sts=g_jhc->RecvJson(recvBuf,BLEN);							
+							if (strlen(recvBuf)>0)
+							{
+								ZWWARN("收到锁具返回消息=")
+								ZWWARN(recvBuf)
+								string outXML;
+								jcAtmcConvertDLL::zwJCjson2CCBxml(recvBuf,outXML);							
+								if(jcAtmcConvertDLL::s_pipeJcCmdDown==jcAtmcConvertDLL::s_pipeJcCmdUp)
+								{
+									//正确的对应下发报文的回应报文
+									DLOG(WARNING)<<"返回正确对口报文给上层"<<endl;
+									pushToCallBack(outXML.c_str());	//传递给回调函数
+									break;
+								}								
+								else
+								{
+									//其他锁具主动上送报文
+									ZWWARN("答非所问,暂存起来晚些时候再传给回调函数")	
+									ZWWARN(jcAtmcConvertDLL::s_pipeJcCmdDown)
+									ZWWARN(jcAtmcConvertDLL::s_pipeJcCmdUp)
+									g_dqLockUpMsg.push_back(outXML);
+								}
+							}
+							else
+							{
+								//收不到什么东西就立刻跳出循环
+								DLOG(INFO)<<"HID读取没有任何数据，跳出循环"<<endl;
+								break;
+							}
+						}	//end for (int i=0;i<3;i++)
+
+						for (auto iter=g_dqLockUpMsg.begin();iter!=g_dqLockUpMsg.end();iter++)
+						{
+							ZWWARN("弹出前面暂存的锁具主动上送信息给回调函数")
+							ZWWARN((*iter).c_str())
+							pushToCallBack((*iter).c_str());
 						}
+						g_dqLockUpMsg.clear();
+//////////////////////////////////////////////////////////////////////////
 			
 #ifdef _DEBUG
 						ZWINFO("thrhid_mutex END")
