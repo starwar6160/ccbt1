@@ -33,7 +33,7 @@ namespace zwccbthr {
 	//与锁具之间的通讯线程
 	void ThreadLockComm() {
 		//ZWFUNCTRACE 
-		ZWWARN("与锁具之间的通讯线程启动v718")
+		ZWWARN("与锁具之间的通讯线程启动v722")
 		try {			
 			const int BLEN = 1024;
 			char recvBuf[BLEN + 1];			
@@ -75,20 +75,28 @@ namespace zwccbthr {
 								ZWWARN(recvBuf)
 								string outXML;
 								jcAtmcConvertDLL::zwJCjson2CCBxml(recvBuf,outXML);							
+								//正确的对应下发报文的回应报文
 								if(jcAtmcConvertDLL::s_pipeJcCmdDown==jcAtmcConvertDLL::s_pipeJcCmdUp)
-								{
-									//正确的对应下发报文的回应报文
+								{									
 									DLOG(WARNING)<<"返回正确对口报文给上层"<<endl;
 									pushToCallBack(outXML.c_str());	//传递给回调函数
+									jcAtmcConvertDLL::s_pipeJcCmdDown="";
 									break;
 								}								
-								else
+								//单条锁具主动上送报文不涉及答非所问问题的
+								if(jcAtmcConvertDLL::s_pipeJcCmdDown=="")
 								{
-									//其他锁具主动上送报文
+									ZWINFO("单条锁具主动上送报文不涉及答非所问问题")
+									pushToCallBack(outXML.c_str());	//传递给回调函数
+								}
+								//锁具主动上送报文答非所问
+								if(jcAtmcConvertDLL::s_pipeJcCmdDown!=jcAtmcConvertDLL::s_pipeJcCmdUp
+									&& jcAtmcConvertDLL::s_pipeJcCmdDown!="")
+								{									
 									ZWWARN("答非所问,暂存起来晚些时候再传给回调函数")	
-									ZWWARN(jcAtmcConvertDLL::s_pipeJcCmdDown)
-									ZWWARN(jcAtmcConvertDLL::s_pipeJcCmdUp)
-									g_dqLockUpMsg.push_back(outXML);
+										ZWWARN(jcAtmcConvertDLL::s_pipeJcCmdDown)
+										ZWWARN(jcAtmcConvertDLL::s_pipeJcCmdUp)
+										g_dqLockUpMsg.push_back(outXML);
 								}
 							}
 							else
