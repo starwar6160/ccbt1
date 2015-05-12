@@ -23,6 +23,7 @@ namespace zwccbthr {
 	boost::mutex thrhid_mutex;
 	void pushToCallBack( const char * recvBuf );
 	deque<string> g_dqLockUpMsg;	//锁具主动上送的答非所问消息的临时队列
+	bool myDownUpLoopIng=false;	//为了维持一个下发/上行循环的完整
 
 	void wait(int milliseconds) {
 		boost::this_thread::sleep(boost::
@@ -33,14 +34,14 @@ namespace zwccbthr {
 	//与锁具之间的通讯线程
 	void ThreadLockComm() {
 		//ZWFUNCTRACE 
-		ZWWARN("与锁具之间的通讯线程启动v727")
+		ZWWARN("与锁具之间的通讯线程启动v728")
 		try {			
 			const int BLEN = 1024;
 			char recvBuf[BLEN + 1];			
 			//每隔几秒钟重新打开一次
 			time_t lastOpenElock=time(NULL);
 			time_t lastPopUpMsg=time(NULL);
-			bool myDownUpLoopEnd=false;	//为了维持一个下发/上行循环的完整
+			
 			//每隔一二十分钟，最多不出半小时自动强制关闭一次
 			//因为HID连接似乎到一个小时就会有时候失去反应；
 			while (1) {		
@@ -66,8 +67,8 @@ namespace zwccbthr {
 								lastOpenElock=time(NULL);							
 							}						
 
-							//定期上传报警信息，如果有的话
-							if ((time(NULL)-lastPopUpMsg)>(20))
+							//定期上传报警信息，如果有的话.并且要此时不在一问一答周期内
+							if ((time(NULL)-lastPopUpMsg)>(20) && zwccbthr::myDownUpLoopIng==false)
 							{
 								for (auto iter=g_dqLockUpMsg.begin();iter!=g_dqLockUpMsg.end();iter++)
 								{
@@ -102,12 +103,14 @@ namespace zwccbthr {
 									DLOG(WARNING)<<"返回正确对口报文给上层"<<endl;
 									pushToCallBack(outXML.c_str());	//传递给回调函数
 									jcAtmcConvertDLL::s_pipeJcCmdDown="";
+									zwccbthr::myDownUpLoopIng=false;	//一问一答周期完成
 									break;
 								}								
 								//单条锁具主动上送报文不涉及答非所问问题的
-								if(jcAtmcConvertDLL::s_pipeJcCmdDown=="")
+								if(jcAtmcConvertDLL::s_pipeJcCmdDown=="" &&
+									zwccbthr::myDownUpLoopIng==false)
 								{
-									ZWWARN("单条锁具主动上送报文不涉及答非所问问题")
+									ZWWARN("不在一问一答期间的单条锁具主动上送报文不涉及答非所问问题")
 									pushToCallBack(outXML.c_str());	//传递给回调函数
 								}
 								//锁具主动上送报文答非所问,以及特别处理报警信息及时压下

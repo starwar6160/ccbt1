@@ -568,12 +568,12 @@ namespace zwHidGTest20150130{
 		
 		for (int i=0;i<
 			//12*60*9;
-			22;
+			5;
 			i++)
 		{		 
 			SetRecvMsgRotine(myATMCRecvMsgRotine);	
 
-#define _DEBUG508A1s
+#define _DEBUG508A1
 #ifdef _DEBUG508A1
 			EXPECT_EQ(ELOCK_ERROR_SUCCESS,Notify(g_msg00));	
 			Sleep(2000);

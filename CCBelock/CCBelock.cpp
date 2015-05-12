@@ -31,6 +31,7 @@ namespace zwccbthr {
 	//boost::thread *opCommThr=new boost::thread(zwccbthr::ThreadLockComm);
 	time_t lastOpen=0;
 	extern boost::mutex thrhid_mutex;
+	extern bool myDownUpLoopIng;	//为了维持一个下发/上行循环的完整
 	//extern string s_jsonCmd;
 } //namespace zwccbthr{  
 
@@ -163,6 +164,8 @@ CCBELOCK_API long JCAPISTD Notify(const char *pszMsg)
 		VLOG_IF(4,strJsonSend.size()>0)<<"strJsonSend="<<strJsonSend;
 		Sleep(50);			
 
+		//现在开始一问一答过程，在获得对口回复报文之前不得上传其他报文
+		zwccbthr::myDownUpLoopIng=true;	
 		int sts=g_jhc->SendJson(strJsonSend.c_str());
 		VLOG_IF(1,JCHID_STATUS_OK!=sts)<<"423下发消息给锁具异常\n";
 		//zwccbthr::s_jsonCmd=strJsonSend;
