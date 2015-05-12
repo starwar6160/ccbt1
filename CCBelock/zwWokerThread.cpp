@@ -33,13 +33,14 @@ namespace zwccbthr {
 	//与锁具之间的通讯线程
 	void ThreadLockComm() {
 		//ZWFUNCTRACE 
-		ZWWARN("与锁具之间的通讯线程启动v725")
+		ZWWARN("与锁具之间的通讯线程启动v727")
 		try {			
 			const int BLEN = 1024;
 			char recvBuf[BLEN + 1];			
 			//每隔几秒钟重新打开一次
 			time_t lastOpenElock=time(NULL);
 			time_t lastPopUpMsg=time(NULL);
+			bool myDownUpLoopEnd=false;	//为了维持一个下发/上行循环的完整
 			//每隔一二十分钟，最多不出半小时自动强制关闭一次
 			//因为HID连接似乎到一个小时就会有时候失去反应；
 			while (1) {		
@@ -53,9 +54,9 @@ namespace zwccbthr {
 						VLOG(4)<<"thrhid_mutex START"<<endl;
 #endif // _DEBUG
 							//每隔多少秒才重新检测并打开电子锁一次
-							if ((time(NULL)-lastOpenElock)>(60))
+							if ((time(NULL)-lastOpenElock)>(60*1))
 							{									
-								if (ELOCK_ERROR_SUCCESS!=g_jhc->getConnectStatus())
+								//if (ELOCK_ERROR_SUCCESS!=g_jhc->getConnectStatus())
 								{
 									ZWINFO("0908每隔1分钟定期检测和重新连接电子锁防止异常断线\n");
 									ZWWARN("真正关闭连接后再次打开连接512")
