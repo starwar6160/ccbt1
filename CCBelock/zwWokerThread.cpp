@@ -50,15 +50,15 @@ namespace zwccbthr {
 					{
 						boost::mutex::scoped_lock lock(thrhid_mutex);
 #ifdef _DEBUG
-						ZWINFO("thrhid_mutex START")
+						VLOG(4)<<"thrhid_mutex START"<<endl;
 #endif // _DEBUG
 							//每隔多少秒才重新检测并打开电子锁一次
 							if ((time(NULL)-lastOpenElock)>(60))
 							{									
 								if (ELOCK_ERROR_SUCCESS!=g_jhc->getConnectStatus())
 								{
-									ZWWARN("1551每隔1分钟定期检测和重新连接电子锁防止异常断线\n");
-									ZWWARN("真正关闭连接后再次打开连接508")
+									ZWINFO("0908每隔1分钟定期检测和重新连接电子锁防止异常断线\n");
+									ZWWARN("真正关闭连接后再次打开连接512")
 									g_jhc->CloseJc();
 									g_jhc->OpenJc();							
 								}												
@@ -70,7 +70,7 @@ namespace zwccbthr {
 							{
 								for (auto iter=g_dqLockUpMsg.begin();iter!=g_dqLockUpMsg.end();iter++)
 								{
-									ZWWARN("每隔1分钟弹出前面暂存的锁具主动上送信息给回调函数")
+									ZWWARN("每隔20秒弹出前面暂存的锁具主动上送信息给回调函数")
 										ZWWARN((*iter).c_str())
 										pushToCallBack((*iter).c_str());
 								}
@@ -91,8 +91,8 @@ namespace zwccbthr {
 							sts=g_jhc->RecvJson(recvBuf,BLEN);							
 							if (strlen(recvBuf)>0)
 							{
-								ZWWARN("收到锁具返回消息=")
-								ZWWARN(recvBuf)
+								ZWINFO("收到锁具返回消息=")
+								ZWINFO(recvBuf)
 								string outXML;
 								jcAtmcConvertDLL::zwJCjson2CCBxml(recvBuf,outXML);							
 								//正确的对应下发报文的回应报文
@@ -106,7 +106,7 @@ namespace zwccbthr {
 								//单条锁具主动上送报文不涉及答非所问问题的
 								if(jcAtmcConvertDLL::s_pipeJcCmdDown=="")
 								{
-									ZWINFO("单条锁具主动上送报文不涉及答非所问问题")
+									ZWWARN("单条锁具主动上送报文不涉及答非所问问题")
 									pushToCallBack(outXML.c_str());	//传递给回调函数
 								}
 								//锁具主动上送报文答非所问,以及特别处理报警信息及时压下
@@ -123,7 +123,7 @@ namespace zwccbthr {
 							else
 							{
 								//收不到什么东西就立刻跳出循环
-								DLOG(INFO)<<"HID读取没有任何数据，跳出循环"<<endl;
+								VLOG(4)<<"HID读取没有任何数据，跳出循环"<<endl;
 								break;
 							}
 						}while(strlen(recvBuf)>0);						
@@ -131,7 +131,7 @@ namespace zwccbthr {
 //////////////////////////////////////////////////////////////////////////
 			
 #ifdef _DEBUG
-						ZWINFO("thrhid_mutex END")
+						VLOG(4)<<"thrhid_mutex END"<<endl;
 #endif // _DEBUG
 					}	//end if (s_jsonCmd.length()>0)
 					//要是什么也没收到，就直接进入下一个循环

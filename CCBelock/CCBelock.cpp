@@ -64,14 +64,14 @@ zw_trace::zw_trace(const char *funcName)
 	m_start = m_str + "\tSTART";
 	m_end = m_str + "\tEND";
 	OutputDebugStringA(m_start.c_str());
-	LOG(INFO)<<m_start;
+	VLOG(4)<<m_start;
 }
 
 zw_trace::~zw_trace()
 {
 
 	OutputDebugStringA(m_end.c_str());	
-	LOG(INFO)<<m_end;
+	VLOG(4)<<m_end;
 }
 
 
@@ -156,11 +156,11 @@ CCBELOCK_API long JCAPISTD Notify(const char *pszMsg)
 		}
 		//////////////////////////////////////////////////////////////////////////
 		string strXMLSend = pszMsg;
-		VLOG_IF(1,strXMLSend.size()>0)<<"strXMLSend=\n"<<strXMLSend;
+		VLOG_IF(4,strXMLSend.size()>0)<<"strXMLSend=\n"<<strXMLSend;
 		assert(strXMLSend.length() > 42);	//XML开头的固定内容38个字符，外加起码一个标签的两对尖括号合计4个字符
 		jcAtmcConvertDLL::zwCCBxml2JCjson(strXMLSend, strJsonSend);
 		assert(strJsonSend.length() > 9);	//json最基本的符号起码好像要9个字符左右
-		VLOG_IF(1,strJsonSend.size()>0)<<"strJsonSend="<<strJsonSend;
+		VLOG_IF(4,strJsonSend.size()>0)<<"strJsonSend="<<strJsonSend;
 		Sleep(50);			
 
 		int sts=g_jhc->SendJson(strJsonSend.c_str());
@@ -246,7 +246,8 @@ void cdecl myATMCRecvMsgRotine(const char *pszMsg)
 	{
 		//boost::mutex::scoped_lock lock(zwccbthr::recv_mutex);
 		G_TESTCB_SUCC=1;	//成功调用了回调函数
-		printf("%s\n%s\n",__FUNCTION__,pszMsg);
+		//printf("%s\n%s\n",__FUNCTION__,pszMsg);
+		VLOG_IF(4,strlen(pszMsg)>0)<<"CALLBACK512 RECV= "<<pszMsg<<endl;
 	}	
 }
 
@@ -275,7 +276,7 @@ namespace jchidDevice2015{
 			return ELOCK_ERROR_PARAMINVALID;
 		}
 		hid_set_nonblocking(static_cast<hid_device *>(m_jcElock.hid_device),1);
-		ZWINFO("myOpenElock1503 电子锁打开成功20150504.0957 by Class jcHidDevice")
+		ZWWARN("myOpenElock1503 电子锁打开成功20150504.0957 by Class jcHidDevice")
 		m_hidOpened=true;
 		return ELOCK_ERROR_SUCCESS;
 	}
