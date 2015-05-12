@@ -34,7 +34,7 @@ namespace zwccbthr {
 	//与锁具之间的通讯线程
 	void ThreadLockComm() {
 		//ZWFUNCTRACE 
-		ZWWARN("与锁具之间的通讯线程启动v729")
+		ZWWARN("与锁具之间的通讯线程启动v730")
 		try {			
 			const int BLEN = 1024;
 			char recvBuf[BLEN + 1];			
@@ -70,6 +70,7 @@ namespace zwccbthr {
 							//定期上传报警信息，如果有的话.并且要此时不在一问一答周期内
 							if ((time(NULL)-lastPopUpMsg)>(20) && zwccbthr::myDownUpLoopIng==false)
 							{
+								VLOG_IF(3,g_dqLockUpMsg.size()>0)<<"g_dqLockUpMsg.size()="<<g_dqLockUpMsg.size()<<endl;
 								for (auto iter=g_dqLockUpMsg.begin();iter!=g_dqLockUpMsg.end();iter++)
 								{
 									ZWWARN("每隔20秒弹出前面暂存的锁具主动上送信息给回调函数")
@@ -97,26 +98,29 @@ namespace zwccbthr {
 								ZWINFO(recvBuf)
 								string outXML;
 								jcAtmcConvertDLL::zwJCjson2CCBxml(recvBuf,outXML);							
-								//正确的对应下发报文的回应报文
-								if(jcAtmcConvertDLL::s_pipeJcCmdDown==jcAtmcConvertDLL::s_pipeJcCmdUp)
-								{									
-									DLOG(WARNING)<<"返回正确对口报文给上层"<<endl;
-									pushToCallBack(outXML.c_str());	//传递给回调函数
-									jcAtmcConvertDLL::s_pipeJcCmdDown="";
-									zwccbthr::myDownUpLoopIng=false;	//一问一答周期完成
-									break;
-								}								
-								//单条锁具主动上送报文不涉及答非所问问题的
-								if((jcAtmcConvertDLL::s_pipeJcCmdDown=="" &&
-									zwccbthr::myDownUpLoopIng==false) ||									
-									jcAtmcConvertDLL::s_pipeJcCmdUp=="Lock_Open_Ident"
-									)
+								//单条锁具主动上送报文不涉及答非所问问题的,以及锁具上送闭锁码和验证码两条都放行
+								if(zwccbthr::myDownUpLoopIng==false 
+									&& (jcAtmcConvertDLL::s_pipeJcCmdUp=="Lock_Open_Ident" ||
+									jcAtmcConvertDLL::s_pipeJcCmdUp=="Lock_Close_Code_Lock" )	)
 								{
 									//Lock_Open_Ident这条报文是开锁的关键部分验证码报文，不该被压下
 									//所以在这里提前上送
 									ZWWARN("不在一问一答期间的单条锁具主动上送报文不涉及答非所问问题")
-									pushToCallBack(outXML.c_str());	//传递给回调函数
+										pushToCallBack(outXML.c_str());	//传递给回调函数
 								}
+
+								//正确的对应下发报文的回应报文
+								if(jcAtmcConvertDLL::s_pipeJcCmdDown==jcAtmcConvertDLL::s_pipeJcCmdUp)
+								{									
+									DLOG(WARNING)<<"返回正确对口报文给上层"<<endl;
+									//传递给回调函数
+									pushToCallBack(outXML.c_str());	
+									jcAtmcConvertDLL::s_pipeJcCmdDown="";
+									//一问一答周期完成
+									zwccbthr::myDownUpLoopIng=false;	
+									break;
+								}								
+
 								//锁具主动上送报文答非所问,以及特别处理报警信息及时压下
 								if((jcAtmcConvertDLL::s_pipeJcCmdDown!=jcAtmcConvertDLL::s_pipeJcCmdUp
 									&& jcAtmcConvertDLL::s_pipeJcCmdDown!="") ||
