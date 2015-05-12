@@ -34,7 +34,7 @@ namespace zwccbthr {
 	//与锁具之间的通讯线程
 	void ThreadLockComm() {
 		//ZWFUNCTRACE 
-		ZWWARN("与锁具之间的通讯线程启动v730")
+		ZWWARN("与锁具之间的通讯线程启动v731")
 		try {			
 			const int BLEN = 1024;
 			char recvBuf[BLEN + 1];			
@@ -183,8 +183,8 @@ namespace zwccbthr {
 		if (NULL==recvConvedXML || strlen(recvConvedXML)==0)
 		{
 			ZWERROR("收到的锁具返回内容为空，无法返回有用信息给回调函数");
-			ZWWARN(recvConvedXML);
-		}
+			return;
+		}		
 
 		
 		if (strlen(recvConvedXML)>0){		
@@ -202,8 +202,9 @@ namespace zwccbthr {
 		if (NULL != zwCfg::g_WarnCallback && strlen(recvConvedXML)>0) {
 			//调用回调函数传回信息，
 			//20150415.1727.为了万敏的要求，控制上传消息速率最多每2秒一条防止ATM死机
-			Sleep(920);
+			Sleep(2920);
 			zwCfg::g_WarnCallback(recvConvedXML);
+			VLOG_IF(3,strlen(recvConvedXML)>0)<<"回调函数收到以下内容\n"<<recvConvedXML<<endl;
 #ifdef _DEBUG401
 			ZWINFO("成功把从锁具接收到的数据传递给回调函数");
 #endif // _DEBUG401
