@@ -34,7 +34,7 @@ namespace zwccbthr {
 	//与锁具之间的通讯线程
 	void ThreadLockComm() {
 		//ZWFUNCTRACE 
-		ZWWARN("与锁具之间的通讯线程启动v728")
+		ZWWARN("与锁具之间的通讯线程启动v729")
 		try {			
 			const int BLEN = 1024;
 			char recvBuf[BLEN + 1];			
@@ -107,9 +107,13 @@ namespace zwccbthr {
 									break;
 								}								
 								//单条锁具主动上送报文不涉及答非所问问题的
-								if(jcAtmcConvertDLL::s_pipeJcCmdDown=="" &&
-									zwccbthr::myDownUpLoopIng==false)
+								if((jcAtmcConvertDLL::s_pipeJcCmdDown=="" &&
+									zwccbthr::myDownUpLoopIng==false) ||									
+									jcAtmcConvertDLL::s_pipeJcCmdUp=="Lock_Open_Ident"
+									)
 								{
+									//Lock_Open_Ident这条报文是开锁的关键部分验证码报文，不该被压下
+									//所以在这里提前上送
 									ZWWARN("不在一问一答期间的单条锁具主动上送报文不涉及答非所问问题")
 									pushToCallBack(outXML.c_str());	//传递给回调函数
 								}
