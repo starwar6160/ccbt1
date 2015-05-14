@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "zwCcbElockHdr.h"
-#include "zwPocoLog.h"
 #include "myConvIntHdr.h"
 //20150105.万敏和马浩测试用的东西
 #define TMP_MAHAO_TEST_20150105

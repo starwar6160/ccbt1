@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "zwCcbElockHdr.h"
-#include "zwPocoLog.h"
 #include "zwHidComm.h"
 #include "CCBelock.h"
 #include "zwHidDevClass2015.h"
@@ -138,7 +137,7 @@ namespace jcLockJsonCmd_t2015a27{
 				ZWWARN("连接锁具JSON成功 jsonCmd4Lock.cpp");			
 				try {
 #ifdef ZWUSE_HID_MSG_SPLIT
-					JCHID_STATUS sts=g_jhc->RecvJson(recvBuf,BLEN);
+					JCHID_STATUS sts=static_cast<JCHID_STATUS>(g_jhc->RecvJson(recvBuf,BLEN));
 					zwCfg::s_hidOpened=true;	//算是通信线程的一个心跳标志					
 					//要是什么也没收到，就直接进入下一个循环
 					if (JCHID_STATUS_OK!=sts)

@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "CCBelock.h"
 #include "zwCcbElockHdr.h"
-#include "zwPocoLog.h"
 #include "zwHidSplitMsg.h"
 #include "zwHidComm.h"
 #include "zwHidDevClass2015.h"
@@ -98,7 +97,7 @@ namespace zwccbthr {
 								break;
 							}
 							memset(recvBuf, 0, BLEN + 1);
-							sts=g_jhc->RecvJson(recvBuf,BLEN);							
+							sts=static_cast<JCHID_STATUS>(g_jhc->RecvJson(recvBuf,BLEN));							
 							if (strlen(recvBuf)>0)
 							{
 								ZWINFO("收到锁具返回消息=")

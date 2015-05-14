@@ -51,9 +51,6 @@
     <ClInclude Include="resource.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="zwPocoLog.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="ATMCMsgConvert\myConvIntHdr.h">
       <Filter>源文件\convert</Filter>
     </ClInclude>
@@ -150,6 +147,9 @@
       <Filter>源文件\HidCode</Filter>
     </ClCompile>
     <ClCompile Include="hidCode\zwHtons.c">
+      <Filter>源文件\HidCode</Filter>
+    </ClCompile>
+    <ClCompile Include="zwTestCode504.cpp">
       <Filter>源文件\HidCode</Filter>
     </ClCompile>
   </ItemGroup>

@@ -11,7 +11,7 @@ namespace jchidDevice2015{
 		int OpenJc();
 		void CloseJc();
 		int SendJson(const char *jcJson);
-		JCHID_STATUS RecvJson(char *recvJson,int bufLen);
+		int RecvJson(char *recvJson,int bufLen);
 		int getConnectStatus();
 	protected:
 

@@ -4,7 +4,6 @@
 //20140922.1545.该宏定义用于在这几天调试期间临时切换HID和原始不切分消息的串口通信，方便万敏和马浩调试
 #define ZWUSE_HID_MSG_SPLIT		//是否使用HID的64字节消息切分方案
 
-
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -45,9 +44,6 @@ int zwSecboxData104Dec(void *src,int *jcseq,void *inData,const int inLen);
 // 遇到过收不到返回报文的情况了；
 
 #define JCHID_RECV_TIMEOUT	(4000)	
-
-
-
 
 #ifdef __cplusplus
 }	//extern "C" {

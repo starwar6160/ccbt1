@@ -48,3 +48,7 @@ using std::vector;
 #define GLOG_NO_ABBREVIATED_SEVERITIES
 #include <glog/logging.h>   // glog м╥нд╪Ч
 
+#define ZWINFO(x)  LOG(INFO)<<(x);
+#define ZWWARN(x) LOG(WARNING)<<(x);
+#define ZWERROR(x) LOG(ERROR)<<(x);
+#define ZWFATAL(x) LOG(FATAL)<<(x);
