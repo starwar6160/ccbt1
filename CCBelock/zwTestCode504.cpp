@@ -50,40 +50,46 @@ namespace zwtest504
 	{
 		//此处是为了等待消费者线程先启动后用条件变量阻塞在那里
 		Sleep(100);
-		cout<<__FUNCTION__<<" START data input"<<endl;
-		for(int i=0;i<3;i++)
+		cout<<endl<<__FUNCTION__<<" START data input"<<endl;
+		for(int i=0;i<199;i++)
 		{
 			//需要保护的操作代码段加锁
 			boost::mutex::scoped_lock lock(mu1);	
 			char sbuf[32];
 			memset(sbuf,0,32);
-			sprintf(sbuf,"dqstr by thr1 insert Line %d",i+1);
-			dqStr.push_back(sbuf);
+			sprintf(sbuf,"%d",i+1);
+			dqStr.push_back(sbuf);			
 			//操作完毕，利用条件变量的notify_all或者notify_one通知
-			//其他等待线程可以开始操作了
-						
+			//其他等待线程可以开始操作了						
+			cv1.notify_one();
+			Sleep(50);
 		}
-		cout<<__FUNCTION__<<" END data input"<<endl;
-		cv1.notify_one();
 		
+		
+		cout<<endl<<__FUNCTION__<<" END data input"<<endl;
 	}
 
 	//消费者线程，需要首先启动，用条件变量阻塞等待生产者线程
 	void zwtest514thr2(void)
 	{
 		cout<<__FUNCTION__<<" START"<<endl;		
+		cout<<__FUNCTION__<<" start output data from thr1's deque"<<endl;
+		for(int i=0;i<30;i++)
 		{
 				//和另一个线程使用同一个锁，利用条件变量等待该锁解开
 				//注意此处必须要把这两行包括在一个花括号中，以便起到
 				//阻塞执行到这里的作用。否则就是阻塞整个线程了
 				boost::mutex::scoped_lock lock(mu1);
 				cv1.wait(lock);
+				for (auto iter=dqStr.begin();iter!=dqStr.end();iter++)
+				{
+					cout<<(*iter)<<" ";
+				}
+				dqStr.clear();
+				Sleep(500);
+				cout<<"#";
 		}
-			cout<<__FUNCTION__<<" start output data from thr1's deque"<<endl;
-			for (auto iter=dqStr.begin();iter!=dqStr.end();iter++)
-			{
-				cout<<(*iter)<<endl;
-			}
+			
 
 		cout<<__FUNCTION__<<" END"<<endl;
 
