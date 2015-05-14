@@ -26,9 +26,9 @@ extern jcHidDevice *g_jhc;	//实际的HID设备类对象
 
 
 namespace zwccbthr {
-	void ThreadLockComm();	//与锁具之间的通讯线程
+	void ThreadLockRecv();	//与锁具之间的通讯线程
 	boost::thread *opCommThr=NULL;	//为了控制通讯线程终止
-	//boost::thread *opCommThr=new boost::thread(zwccbthr::ThreadLockComm);
+	//boost::thread *opCommThr=new boost::thread(zwccbthr::ThreadLockRecv);
 	time_t lastOpen=0;
 	extern boost::mutex thrhid_mutex;
 	extern bool myDownUpLoopIng;	//为了维持一个下发/上行循环的完整
@@ -93,7 +93,7 @@ CCBELOCK_API long JCAPISTD Open(long lTimeOut)
 	
 	if (NULL==zwccbthr::opCommThr)
 	{
-		zwccbthr::opCommThr=new boost::thread(zwccbthr::ThreadLockComm);
+		zwccbthr::opCommThr=new boost::thread(zwccbthr::ThreadLockRecv);
 	}	
 
 	if (JCHID_STATUS_OK==elockStatus)
@@ -376,35 +376,53 @@ namespace jchidDevice2015{
 }	//namespace jchidDevice2015{
 
 
-
-void zwtest504hidClass(void)
+namespace zwtest504
 {
-	const char *msg02="{\"Command\":\"Lock_Now_Info\"}";
-	char recvJson[256];
-	memset(recvJson,0,256);
+	void zwtest504hidClass(void)
+	{
+		const char *msg02="{\"Command\":\"Lock_Now_Info\"}";
+		char recvJson[256];
+		memset(recvJson,0,256);
 
-	jcHidDevice *jc1=new jcHidDevice();	
-	printf("%s\n",__FUNCTION__);
-	jc1->SendJson(	msg02);
-	jc1->CloseJc();
-	jc1->OpenJc();
-	//jc1->OpenJc();
-	//jc1->SendJson(	msg02);
-	jc1->RecvJson(recvJson,256);
-	ZWWARN(recvJson)
-	Sleep(2000);
-	
-	//jc1->OpenJc();
+		jcHidDevice *jc1=new jcHidDevice();	
+		printf("%s\n",__FUNCTION__);
+		jc1->SendJson(	msg02);
+		jc1->CloseJc();
+		jc1->OpenJc();
+		//jc1->OpenJc();
+		//jc1->SendJson(	msg02);
+		jc1->RecvJson(recvJson,256);
+		ZWWARN(recvJson)
+			Sleep(2000);
 
-	//Sleep(3000);
-	//memset(recvJson,0,256);
-	//jc1->RecvJson(recvJson,256);
-	//ZWWARN(recvJson)
-	//jc1->CloseJc();
+		//jc1->OpenJc();
 
-	//jcHidDevice *jc2=new jcHidDevice();
-	//memset(recvJson,0,256);
-	//jc2->SendJson(	msg02);
-	//jc2->RecvJson(recvJson,256);
-	//ZWWARN(recvJson)
+		//Sleep(3000);
+		//memset(recvJson,0,256);
+		//jc1->RecvJson(recvJson,256);
+		//ZWWARN(recvJson)
+		//jc1->CloseJc();
+
+		//jcHidDevice *jc2=new jcHidDevice();
+		//memset(recvJson,0,256);
+		//jc2->SendJson(	msg02);
+		//jc2->RecvJson(recvJson,256);
+		//ZWWARN(recvJson)
+	}
+
+	void zwtest514deque1(void)
+	{
+		deque<string> dqStr;
+		cout<<"dqStr empty size is "<<dqStr.size()<<endl;
+		dqStr.push_back("dqstr Line1");
+		dqStr.push_back("dqstr Line2");
+		dqStr.push_back("dqstr Line3");
+		cout<<"dqStr after push 3 item size is "<<dqStr.size()<<endl;
+		cout<<"deque front item is "<<dqStr.front()<<endl;
+		dqStr.pop_front();
+		cout<<"dqStr after pope 3 item size is "<<dqStr.size()<<endl;
+		dqStr.clear();
+		cout<<"dqStr after clear size is "<<dqStr.size()<<endl;
+
+	}
 }

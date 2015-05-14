@@ -18,14 +18,6 @@ void cdecl myATMCRecvMsgRotine(const char *pszMsg);
 
 #ifdef ZWUSEGTEST
 int G_TESTCB_SUCC=0;	//是否成功调用了回调函数的一个标志位，仅仅测试用
-CCBELOCK_API int zwStartGtestInDLL(void)
-{
-	int argc=1;
-	char *argv[1];
-	argv[0]=NULL;
-	testing::InitGoogleTest(&argc, argv);
-	return RUN_ALL_TESTS();
-}
 
 namespace zwHidGTest20150130{
 	const int G_BUFSIZE=1024;

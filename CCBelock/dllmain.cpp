@@ -123,3 +123,23 @@ BOOL APIENTRY DllMain(HMODULE hModule,
 
 	return TRUE;
 }
+
+namespace zwtest504
+{
+void zwtest504hidClass(void);
+void zwtest514deque1(void);
+}
+
+#include "CCBelock.h"
+CCBELOCK_API int zwStartGtestInDLL(void)
+{
+#ifdef _DEBUG514
+	int argc=1;
+	char *argv[1];
+	argv[0]=NULL;
+	testing::InitGoogleTest(&argc, argv);
+	return RUN_ALL_TESTS();
+#endif // _DEBUG514
+	zwtest504::zwtest514deque1();
+	return 1;
+}

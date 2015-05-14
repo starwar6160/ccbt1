@@ -53,8 +53,6 @@ void myMulHidDevJsonTest20150120A();
 void myMulHidDevJsonTest20150120A1();
 
 
-	void zwtest504hidClass(void);
-
 
 //void zwCCBDateTime2UTC(const char *ccbDateLocal,const char *ccbTimeLocal,time_t *outUTC);
 int _tmain(int argc, TCHAR * argv[])
@@ -77,7 +75,8 @@ int _tmain(int argc, TCHAR * argv[])
 	//zwCCBDateTime2UTC("20140515","000000",&dstDateTime);
 	//printf("dstDateTime=%u\n",dstDateTime);
 	zwStartGtestInDLL();
-	//zwtest504hidClass();
+	
+	
 
 #ifndef _DEBUG
 	printf("运行结束，按回车键退出，之后请查看JCLOG423目录下的日志文件\n");

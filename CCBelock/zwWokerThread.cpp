@@ -30,9 +30,16 @@ namespace zwccbthr {
 					  posix_time::milliseconds
 					  (milliseconds));
 	} 
+
+	void ThrreadLockSend()
+	{
+
+	}
+
+
 	
-	//与锁具之间的通讯线程
-	void ThreadLockComm() {
+	//与锁具之间的通讯数据接收线程
+	void ThreadLockRecv() {
 		//ZWFUNCTRACE 
 		ZWWARN("与锁具之间的通讯线程启动v731")
 		try {			
