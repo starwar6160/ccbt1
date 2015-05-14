@@ -61,7 +61,7 @@ namespace zwtest504
 			dqStr.push_back(sbuf);			
 			//操作完毕，利用条件变量的notify_all或者notify_one通知
 			//其他等待线程可以开始操作了						
-			cv1.notify_one();
+			cv1.notify_all();
 			Sleep(50);
 		}
 		
@@ -76,6 +76,7 @@ namespace zwtest504
 		cout<<__FUNCTION__<<" start output data from thr1's deque"<<endl;
 		for(int i=0;i<30;i++)
 		{
+				cout<<"{";
 				//和另一个线程使用同一个锁，利用条件变量等待该锁解开
 				//注意此处必须要把这两行包括在一个花括号中，以便起到
 				//阻塞执行到这里的作用。否则就是阻塞整个线程了
@@ -87,12 +88,32 @@ namespace zwtest504
 				}
 				dqStr.clear();
 				Sleep(500);
-				cout<<"#";
+				cout<<"}";
 		}
-			
-
 		cout<<__FUNCTION__<<" END"<<endl;
+	}
 
+	void zwtest514thr3(void)
+	{
+		cout<<__FUNCTION__<<" START"<<endl;		
+		cout<<__FUNCTION__<<" start output data from thr1's deque"<<endl;
+		for(int i=0;i<30;i++)
+		{
+			cout<<"[";
+			//和另一个线程使用同一个锁，利用条件变量等待该锁解开
+			//注意此处必须要把这两行包括在一个花括号中，以便起到
+			//阻塞执行到这里的作用。否则就是阻塞整个线程了
+			boost::mutex::scoped_lock lock(mu1);
+			cv1.wait(lock);
+			for (auto iter=dqStr.begin();iter!=dqStr.end();iter++)
+			{
+				cout<<(*iter)<<" ";
+			}
+			dqStr.clear();
+			Sleep(200);
+			cout<<"]";
+		}
+		cout<<__FUNCTION__<<" END"<<endl;
 	}
 //////////////////////////////////////////////////////////////////////////
 
@@ -101,10 +122,10 @@ namespace zwtest504
 		//boost::thread tt1(zwtest514thr1);
 		//boost::thread tt2(zwtest514thr2);
 		boost::thread_group grp;		
-				
-		grp.create_thread(zwtest514thr2);
-		//Sleep(500);
+						
 		grp.create_thread(zwtest514thr1);
+		grp.create_thread(zwtest514thr2);
+		grp.create_thread(zwtest514thr3);
 		//cv1.notify_all();
 		grp.join_all();
 	}
