@@ -128,6 +128,7 @@ namespace zwtest504
 {
 void zwtest504hidClass(void);
 void zwtest514deque1(void);
+void zwtest514Main(void);
 }
 
 #include "CCBelock.h"
@@ -140,6 +141,7 @@ CCBELOCK_API int zwStartGtestInDLL(void)
 	testing::InitGoogleTest(&argc, argv);
 	return RUN_ALL_TESTS();
 #endif // _DEBUG514
-	zwtest504::zwtest514deque1();
+	zwtest504::zwtest514Main();
+
 	return 1;
 }
