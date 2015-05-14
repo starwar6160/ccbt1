@@ -42,50 +42,49 @@ namespace zwtest504
 	}
 
 	boost::mutex mu1;
-	//boost::mutex mu2;
 	boost::condition_variable cv1;
-	//boost::condition_variable cv2;
 	deque<string> dqStr;
-	
 
-	void zwtest514deque1(void)
+	//生产者线程，需要比消费者线程晚一点启动，100毫秒即可
+	void zwtest514thr1(void)
 	{
-		cout<<__FUNCTION__<<" START"<<endl;
+		//此处是为了等待消费者线程先启动后用条件变量阻塞在那里
+		Sleep(100);
+		cout<<__FUNCTION__<<" START data input"<<endl;
+		for(int i=0;i<3;i++)
 		{
 			//需要保护的操作代码段加锁
-			boost::mutex::scoped_lock lock(mu1);
-			//cv1.wait(lock);
-			cout<<"dqStr empty size is "<<dqStr.size()<<endl;
-			dqStr.push_back("dqstr Line1");
-			dqStr.push_back("dqstr Line2");
-			dqStr.push_back("dqstr Line3");
-			cout<<"dq input data end"<<endl;	
-			Sleep(1000);			
+			boost::mutex::scoped_lock lock(mu1);	
+			char sbuf[32];
+			memset(sbuf,0,32);
+			sprintf(sbuf,"dqstr by thr1 insert Line %d",i+1);
+			dqStr.push_back(sbuf);
+			//操作完毕，利用条件变量的notify_all或者notify_one通知
+			//其他等待线程可以开始操作了
+						
 		}
-		//操作完毕，利用条件变量的notify_all或者notify_one通知
-		//其他等待线程可以开始操作了
-		cv1.notify_all();
-		cout<<"Sleep 2s start\n";
-		Sleep(2000);
-		cout<<"Sleep 2s end\n";		
-		cout<<__FUNCTION__<<" END"<<endl;
+		cout<<__FUNCTION__<<" END data input"<<endl;
+		cv1.notify_one();
+		
 	}
 
+	//消费者线程，需要首先启动，用条件变量阻塞等待生产者线程
 	void zwtest514thr2(void)
 	{
 		cout<<__FUNCTION__<<" START"<<endl;		
 		{
-			//和另一个线程使用同一个锁，利用条件变量等待该锁解开
-			//注意此处必须要把这两行包括在一个花括号中，以便起到
-			//阻塞执行到这里的作用。否则就是阻塞整个线程了
-			boost::mutex::scoped_lock lock(mu1);
-			cv1.wait(lock);
-		}		
-		
-		for (auto iter=dqStr.begin();iter!=dqStr.end();iter++)
-		{
-			cout<<(*iter)<<endl;
+				//和另一个线程使用同一个锁，利用条件变量等待该锁解开
+				//注意此处必须要把这两行包括在一个花括号中，以便起到
+				//阻塞执行到这里的作用。否则就是阻塞整个线程了
+				boost::mutex::scoped_lock lock(mu1);
+				cv1.wait(lock);
 		}
+			cout<<__FUNCTION__<<" start output data from thr1's deque"<<endl;
+			for (auto iter=dqStr.begin();iter!=dqStr.end();iter++)
+			{
+				cout<<(*iter)<<endl;
+			}
+
 		cout<<__FUNCTION__<<" END"<<endl;
 
 	}
@@ -93,12 +92,13 @@ namespace zwtest504
 
 	void zwtest514Main(void)
 	{
-		//boost::thread tt1(zwtest514deque1);
+		//boost::thread tt1(zwtest514thr1);
 		//boost::thread tt2(zwtest514thr2);
 		boost::thread_group grp;		
+				
 		grp.create_thread(zwtest514thr2);
-		Sleep(500);
-		grp.create_thread(zwtest514deque1);
+		//Sleep(500);
+		grp.create_thread(zwtest514thr1);
 		//cv1.notify_all();
 		grp.join_all();
 	}

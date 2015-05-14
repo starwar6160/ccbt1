@@ -127,7 +127,7 @@ BOOL APIENTRY DllMain(HMODULE hModule,
 namespace zwtest504
 {
 void zwtest504hidClass(void);
-void zwtest514deque1(void);
+void zwtest514thr1(void);
 void zwtest514Main(void);
 }
 
