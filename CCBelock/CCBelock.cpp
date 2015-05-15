@@ -26,6 +26,8 @@ extern jcHidDevice *g_jhc;	//实际的HID设备类对象
 
 namespace zwccbthr {
 	void ThreadLockRecv();	//与锁具之间的通讯线程
+	void my515LockRecvThr();	//与锁具之间的通讯线程20150515
+	
 	boost::thread *opCommThr=NULL;	//为了控制通讯线程终止
 	//boost::thread *opCommThr=new boost::thread(zwccbthr::ThreadLockRecv);
 	time_t lastOpen=0;
@@ -92,7 +94,7 @@ CCBELOCK_API long JCAPISTD Open(long lTimeOut)
 	
 	if (NULL==zwccbthr::opCommThr)
 	{
-		zwccbthr::opCommThr=new boost::thread(zwccbthr::ThreadLockRecv);
+		zwccbthr::opCommThr=new boost::thread(zwccbthr::my515LockRecvThr);
 	}	
 
 	if (JCHID_STATUS_OK==elockStatus)

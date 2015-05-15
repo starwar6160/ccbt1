@@ -7,6 +7,8 @@
 #include <stdio.h>
 #include <deque>
 using namespace boost::property_tree;
+using boost::condition_variable;
+using boost::condition_variable_any;
 using jchidDevice2015::jcHidDevice;
 
 jcHidDevice *g_jhc=NULL;	//实际的HID设备类对象
@@ -23,6 +25,7 @@ namespace zwccbthr {
 	void pushToCallBack( const char * recvBuf );
 	deque<string> g_dqLockUpMsg;	//锁具主动上送的答非所问消息的临时队列
 	bool myDownUpLoopIng=false;	//为了维持一个下发/上行循环的完整
+	boost::condition_variable condJcLock;
 
 	void wait(int milliseconds) {
 		boost::this_thread::sleep(boost::
@@ -215,6 +218,30 @@ namespace zwccbthr {
 			ZWINFO("成功把从锁具接收到的数据传递给回调函数");
 #endif // _DEBUG401
 		}
+	}
+
+	void my515LockRecvThr(void)
+	{
+		ZWWARN("与锁具之间的数据接收线程启动.20150515.1524")
+		const int BLEN = 1024;
+		char recvBuf[BLEN];			
+		Sleep(300);
+		while (1)
+		{
+			boost::mutex::scoped_lock lock(thrhid_mutex);
+			memset(recvBuf,0,BLEN);
+			JCHID_STATUS sts=JCHID_STATUS_FAIL;
+			sts=static_cast<JCHID_STATUS>(g_jhc->RecvJson(recvBuf,BLEN));	
+			if (strlen(recvBuf)>0)
+			{
+				LOG(INFO)<<"收到锁具返回消息= "<<recvBuf<<endl;
+				string outXML;
+				jcAtmcConvertDLL::zwJCjson2CCBxml(recvBuf,outXML);	
+				g_dqLockUpMsg.push_back(outXML);
+				condJcLock.notify_all();
+			}
+		}
+
 	}
 
 

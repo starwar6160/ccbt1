@@ -2,6 +2,9 @@
 #include <boost/thread/condition.hpp>
 #include "zwHidComm.h"
 #include "zwHidDevClass2015.h"
+#include "CCBelock.h"
+
+
 using jchidDevice2015::jcHidDevice;
 using boost::condition_variable;
 using boost::condition_variable_any;
@@ -137,3 +140,18 @@ namespace zwtest504
 }
 
 
+CCBELOCK_API int zwStartGtestInDLL(void)
+{
+#define _DEBUG514
+#ifdef _DEBUG514
+	int argc=1;
+	char *argv[1];
+	argv[0]=NULL;
+	testing::InitGoogleTest(&argc, argv);
+	return RUN_ALL_TESTS();
+#else
+	zwtest504::zwtest514Main();
+#endif // _DEBUG514
+
+	return 1;
+}

@@ -479,7 +479,7 @@ namespace zwHidGTest20150130{
 	void myWaitForRecvKeyPress424()
 	{
 		//printf("%s\n",__FUNCTION__);
-		for(int i=0;i<60;i++)
+		for(int i=0;i<12;i++)
 		{
 			if (1==G_TESTCB_SUCC)
 			{

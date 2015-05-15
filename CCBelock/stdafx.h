@@ -38,6 +38,7 @@ using std::vector;
 #include <boost/lexical_cast.hpp>  
 #include <boost/bind.hpp>  
 #include <boost/function.hpp>  
+#include <gtest/gtest.h>
 using boost::property_tree::ptree;
 #include <map>
 #include <vector>

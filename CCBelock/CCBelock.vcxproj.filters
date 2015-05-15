@@ -13,9 +13,6 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="源文件\ingtest">
-      <UniqueIdentifier>{0011dad8-91c2-4654-93bd-5c51aa6342cd}</UniqueIdentifier>
-    </Filter>
     <Filter Include="源文件\convert">
       <UniqueIdentifier>{b773109f-6cf3-4e63-8990-89fde05b5ff8}</UniqueIdentifier>
     </Filter>
@@ -25,7 +22,10 @@
     <Filter Include="源文件\HidCode">
       <UniqueIdentifier>{135929a5-b165-414a-afc9-213d3a441b30}</UniqueIdentifier>
     </Filter>
-    <Filter Include="源文件\algSrc">
+    <Filter Include="源文件\testCode">
+      <UniqueIdentifier>{0011dad8-91c2-4654-93bd-5c51aa6342cd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\BaseAlgSrc">
       <UniqueIdentifier>{a249618a-9b9c-4824-8cf3-ccceec157162}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
@@ -77,9 +77,6 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="stdafx.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="CCBelock.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
@@ -88,9 +85,6 @@
     </ClCompile>
     <ClCompile Include="zwWokerThread.cpp">
       <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="jcJsonCommandDefine.cpp">
-      <Filter>源文件\ingtest</Filter>
     </ClCompile>
     <ClCompile Include="atmcDLLConvert731.cpp">
       <Filter>源文件\convert</Filter>
@@ -113,20 +107,14 @@
     <ClCompile Include="zwLockStatusParse.cpp">
       <Filter>源文件\convert</Filter>
     </ClCompile>
-    <ClCompile Include="jsonCmd4Lock.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="ccbElockLuaWrap107.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="hidCode\zwUSBPlugInOut.cpp">
       <Filter>源文件\HidCode</Filter>
     </ClCompile>
     <ClCompile Include="..\..\jclmsCCB2014\jclmsCCB2014\src\crc32\zwcrc32.c">
-      <Filter>源文件\algSrc</Filter>
+      <Filter>源文件\BaseAlgSrc</Filter>
     </ClCompile>
     <ClCompile Include="zwCRC32_2015.cpp">
-      <Filter>源文件\algSrc</Filter>
+      <Filter>源文件\BaseAlgSrc</Filter>
     </ClCompile>
     <ClCompile Include="hidCode\hid.c">
       <Filter>源文件\HidCode</Filter>
@@ -140,17 +128,29 @@
     <ClCompile Include="hidCode\jchidMulDev20150121.cpp">
       <Filter>源文件\HidCode</Filter>
     </ClCompile>
-    <ClCompile Include="hidCode\zwHidMulTest20150128.cpp">
-      <Filter>源文件\HidCode</Filter>
-    </ClCompile>
-    <ClCompile Include="hidCode\base64arduino.cpp">
-      <Filter>源文件\HidCode</Filter>
-    </ClCompile>
-    <ClCompile Include="hidCode\zwHtons.c">
+    <ClCompile Include="jcJsonCommandDefine.cpp">
       <Filter>源文件\HidCode</Filter>
     </ClCompile>
     <ClCompile Include="zwTestCode504.cpp">
-      <Filter>源文件\HidCode</Filter>
+      <Filter>源文件\testCode</Filter>
+    </ClCompile>
+    <ClCompile Include="hidCode\zwHidMulTest20150128.cpp">
+      <Filter>源文件\testCode</Filter>
+    </ClCompile>
+    <ClCompile Include="ccbElockLuaWrap107.cpp">
+      <Filter>源文件\testCode</Filter>
+    </ClCompile>
+    <ClCompile Include="jsonCmd4Lock.cpp">
+      <Filter>源文件\testCode</Filter>
+    </ClCompile>
+    <ClCompile Include="stdafx.cpp">
+      <Filter>源文件\testCode</Filter>
+    </ClCompile>
+    <ClCompile Include="hidCode\base64arduino.cpp">
+      <Filter>源文件\BaseAlgSrc</Filter>
+    </ClCompile>
+    <ClCompile Include="hidCode\zwHtons.c">
+      <Filter>源文件\BaseAlgSrc</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
