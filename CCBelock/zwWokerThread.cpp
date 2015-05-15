@@ -222,29 +222,52 @@ namespace zwccbthr {
 
 	void my515LockRecvThr(void)
 	{
-		ZWWARN("与锁具之间的数据接收线程启动.20150515.1524")
+		ZWERROR("与锁具之间的数据接收线程启动.20150515.1524")
 		const int BLEN = 1024;
 		char recvBuf[BLEN];			
 		Sleep(300);
 		while (1)
 		{
 			boost::mutex::scoped_lock lock(thrhid_mutex);
+			VLOG(4)<<__FUNCTION__<<"START"<<endl;
 			memset(recvBuf,0,BLEN);
-			JCHID_STATUS sts=JCHID_STATUS_FAIL;
+			JCHID_STATUS sts=JCHID_STATUS_FAIL;			
 			sts=static_cast<JCHID_STATUS>(g_jhc->RecvJson(recvBuf,BLEN));	
 			if (strlen(recvBuf)>0)
 			{
 				LOG(INFO)<<"收到锁具返回消息= "<<recvBuf<<endl;
 				string outXML;
 				jcAtmcConvertDLL::zwJCjson2CCBxml(recvBuf,outXML);	
-				g_dqLockUpMsg.push_back(outXML);
-				condJcLock.notify_all();
+				g_dqLockUpMsg.push_back(outXML);				
 			}
+			else
+			{
+				condJcLock.notify_all();
+				Sleep(200);
+			}
+			
+			VLOG(4)<<__FUNCTION__<<"END"<<endl;
 		}
 
 	}
 
-
+	void my515UpMsgThr(void)
+	{
+		ZWERROR("与ATMC之间的数据上传线程启动.20150515.1655")
+			while (1)
+			{
+				boost::mutex::scoped_lock lock(thrhid_mutex);
+				VLOG(4)<<__FUNCTION__<<"START"<<endl;
+				condJcLock.wait(lock);			
+				VLOG(3)<<__FUNCTION__;
+				for (auto it=g_dqLockUpMsg.begin();it!=g_dqLockUpMsg.end();it++)
+				{
+					LOG(ERROR)<<(*it);					
+				}
+				g_dqLockUpMsg.clear();				
+				VLOG(4)<<__FUNCTION__<<"END"<<endl;
+			}
+	}
 
 //////////////////////////////////////////////////////////////////////////
 }				//namespace zwccbthr{

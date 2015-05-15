@@ -27,8 +27,9 @@ extern jcHidDevice *g_jhc;	//实际的HID设备类对象
 namespace zwccbthr {
 	void ThreadLockRecv();	//与锁具之间的通讯线程
 	void my515LockRecvThr();	//与锁具之间的通讯线程20150515
-	
+	void my515UpMsgThr(void);
 	boost::thread *opCommThr=NULL;	//为了控制通讯线程终止
+	boost::thread *opUpMsgThr=NULL;	
 	//boost::thread *opCommThr=new boost::thread(zwccbthr::ThreadLockRecv);
 	time_t lastOpen=0;
 	extern boost::mutex thrhid_mutex;
@@ -91,7 +92,11 @@ CCBELOCK_API long JCAPISTD Open(long lTimeOut)
 	}
 	int elockStatus=g_jhc->SendJson("{   \"command\": \"Lock_Firmware_Version\",    \"State\": \"get\"}");
 	VLOG_IF(1,JCHID_STATUS_OK!=elockStatus)<<"ZIJIN423 Open ELOCK_ERROR_CONNECTLOST Send get_firmware_version to JinChu Elock Fail!";
-	
+	if (NULL==zwccbthr::opUpMsgThr)
+	{
+		zwccbthr::opUpMsgThr=new boost::thread(zwccbthr::my515UpMsgThr);
+	}	
+
 	if (NULL==zwccbthr::opCommThr)
 	{
 		zwccbthr::opCommThr=new boost::thread(zwccbthr::my515LockRecvThr);
