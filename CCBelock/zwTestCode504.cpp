@@ -51,7 +51,7 @@ namespace zwtest504
 		//此处是为了等待消费者线程先启动后用条件变量阻塞在那里
 		Sleep(100);
 		cout<<endl<<__FUNCTION__<<" START data input"<<endl;
-		for(int i=0;i<199;i++)
+		for(int i=0;i<60;i++)
 		{
 			//需要保护的操作代码段加锁
 			boost::mutex::scoped_lock lock(mu1);	
@@ -59,14 +59,16 @@ namespace zwtest504
 			memset(sbuf,0,32);
 			sprintf(sbuf,"%d",i+1);
 			dqStr.push_back(sbuf);			
+			//printf("^%s^\t",sbuf);
 			//操作完毕，利用条件变量的notify_all或者notify_one通知
-			//其他等待线程可以开始操作了						
-			cv1.notify_all();
-			Sleep(50);
+			//其他等待线程可以开始操作了									
+			cv1.notify_all();				
+			Sleep(10);
+
 		}
 		
 		
-		cout<<endl<<__FUNCTION__<<" END data input"<<endl;
+		cout<<endl<<__FUNCTION__<<" END data input dqSize="<<dqStr.size()<<endl;
 	}
 
 	//消费者线程，需要首先启动，用条件变量阻塞等待生产者线程
@@ -74,21 +76,22 @@ namespace zwtest504
 	{
 		cout<<__FUNCTION__<<" START"<<endl;		
 		cout<<__FUNCTION__<<" start output data from thr1's deque"<<endl;
-		for(int i=0;i<30;i++)
+		while(1)
 		{
-				cout<<"{";
 				//和另一个线程使用同一个锁，利用条件变量等待该锁解开
 				//注意此处必须要把这两行包括在一个花括号中，以便起到
 				//阻塞执行到这里的作用。否则就是阻塞整个线程了
 				boost::mutex::scoped_lock lock(mu1);
 				cv1.wait(lock);
-				for (auto iter=dqStr.begin();iter!=dqStr.end();iter++)
+				cout<<".";
+				assert(dqStr.size()>0);
+				for (int i=0;i<dqStr.size();i++)
 				{
-					cout<<(*iter)<<" ";
-				}
+					cout<<dqStr[i]<<" ";
+
+				}				 
 				dqStr.clear();
-				Sleep(500);
-				cout<<"}";
+				//Sleep(10);
 		}
 		cout<<__FUNCTION__<<" END"<<endl;
 	}
@@ -97,20 +100,20 @@ namespace zwtest504
 	{
 		cout<<__FUNCTION__<<" START"<<endl;		
 		cout<<__FUNCTION__<<" start output data from thr1's deque"<<endl;
-		for(int i=0;i<30;i++)
+		for(int i=0;i<22;i++)
 		{
 			cout<<"[";
 			//和另一个线程使用同一个锁，利用条件变量等待该锁解开
 			//注意此处必须要把这两行包括在一个花括号中，以便起到
 			//阻塞执行到这里的作用。否则就是阻塞整个线程了
 			boost::mutex::scoped_lock lock(mu1);
-			cv1.wait(lock);
+				cv1.wait(lock);
 			for (auto iter=dqStr.begin();iter!=dqStr.end();iter++)
 			{
 				cout<<(*iter)<<" ";
 			}
 			dqStr.clear();
-			Sleep(200);
+			//Sleep(20);
 			cout<<"]";
 		}
 		cout<<__FUNCTION__<<" END"<<endl;
@@ -125,7 +128,7 @@ namespace zwtest504
 						
 		grp.create_thread(zwtest514thr1);
 		grp.create_thread(zwtest514thr2);
-		grp.create_thread(zwtest514thr3);
+		//grp.create_thread(zwtest514thr3);
 		//cv1.notify_all();
 		grp.join_all();
 	}
