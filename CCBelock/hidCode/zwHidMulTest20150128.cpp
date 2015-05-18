@@ -584,7 +584,8 @@ namespace zwHidGTest20150130{
 			//Sleep(3000);
 		}		
 		printf("SLEEP 5 SEC BEFORE PROGRAM END\n");
-		Sleep(9000);
+		//测试代码晚一点结束，以便锁具后续较慢报文能收到
+		Sleep(19000);
 		EXPECT_EQ(ELOCK_ERROR_SUCCESS,Close());
 	}
 

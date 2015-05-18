@@ -233,7 +233,7 @@ namespace zwccbthr {
 		{			
 			VLOG(4)<<__FUNCTION__<<"START"<<endl;
 			VLOG(3)<<__FUNCTION__;				
-			memset(recvBuf,0,BLEN);
+			
 			JCHID_STATUS sts=JCHID_STATUS_FAIL;			
 			{
 				boost::mutex::scoped_lock lock(thrhid_mutex);		
@@ -243,15 +243,26 @@ namespace zwccbthr {
 					s_jcNotify="";
 				}
 			}
-			sts=static_cast<JCHID_STATUS>(g_jhc->RecvJson(recvBuf,BLEN));				
-			if (strlen(recvBuf)>0)
-			{
-				boost::mutex::scoped_lock lock(thrhid_mutex);
-				LOG(INFO)<<"收到锁具返回消息= "<<recvBuf<<endl;
-				string outXML;
-				jcAtmcConvertDLL::zwJCjson2CCBxml(recvBuf,outXML);	
-				g_dqLockUpMsg.push_back(outXML);		
-			}
+			int nc1=0;
+			do{
+				//考虑到有可能锁具单向上行信息导致一条下发信息有多条
+				//上行信息，所以多读取几次直到读不到信息为止
+				memset(recvBuf,0,BLEN);
+				sts=static_cast<JCHID_STATUS>(g_jhc->RecvJson(recvBuf,BLEN));				
+				if (strlen(recvBuf)>0)
+				{
+					boost::mutex::scoped_lock lock(thrhid_mutex);
+					LOG(INFO)<<"收到锁具返回消息= "<<recvBuf<<endl;
+					string outXML;
+					jcAtmcConvertDLL::zwJCjson2CCBxml(recvBuf,outXML);	
+					g_dqLockUpMsg.push_back(outXML);		
+					nc1++;
+					if (nc1>9)
+					{
+						break;
+					}
+				}
+			}while(strlen(recvBuf)>0);
 			condJcLock.notify_all();	
 			Sleep(500);
 			VLOG(4)<<__FUNCTION__<<"END"<<endl;
