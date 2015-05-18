@@ -581,11 +581,11 @@ namespace zwHidGTest20150130{
 			//myWaitForRecvKeyPress424();
 			//EXPECT_EQ(1,G_TESTCB_SUCC);
 #endif // _DEBUG508A1
-			Sleep(15000);
-		}
+			//Sleep(3000);
+		}		
+		printf("SLEEP 5 SEC BEFORE PROGRAM END\n");
+		Sleep(9000);
 		EXPECT_EQ(ELOCK_ERROR_SUCCESS,Close());
-
-		//Sleep(2000);
 	}
 
 }	//namespace zwHidGTest20150130{

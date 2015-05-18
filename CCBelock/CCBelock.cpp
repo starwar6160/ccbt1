@@ -34,6 +34,9 @@ namespace zwccbthr {
 	time_t lastOpen=0;
 	extern boost::mutex thrhid_mutex;
 	extern bool myDownUpLoopIng;	//为了维持一个下发/上行循环的完整
+	extern boost::timer g_LatTimer;	//用于自动计算延迟
+	extern boost::condition_variable condJcLock;
+	extern string s_jcNotify;		//下发命令
 	//extern string s_jsonCmd;
 } //namespace zwccbthr{  
 
@@ -128,6 +131,7 @@ CCBELOCK_API long JCAPISTD Close()
 CCBELOCK_API long JCAPISTD Notify(const char *pszMsg)
 {
 	boost::mutex::scoped_lock lock(zwccbthr::thrhid_mutex);
+	zwccbthr::condJcLock.wait(lock);							
 	//通过在Notify函数开始检测是否端口已经打开，没有打开就等待一段时间，避免
 	//2014年11月初在广州遇到的没有连接锁具时，ATMC执行0002报文查询锁具状态，
 	//反复查询，大量无用日志产生的情况。	
@@ -172,9 +176,11 @@ CCBELOCK_API long JCAPISTD Notify(const char *pszMsg)
 
 		//现在开始一问一答过程，在获得对口回复报文之前不得上传其他报文
 		zwccbthr::myDownUpLoopIng=true;	
-		int sts=g_jhc->SendJson(strJsonSend.c_str());
-		VLOG_IF(1,JCHID_STATUS_OK!=sts)<<"423下发消息给锁具异常\n";
+		zwccbthr::s_jcNotify=strJsonSend;
+		//int sts=g_jhc->SendJson(strJsonSend.c_str());
+		//VLOG_IF(1,JCHID_STATUS_OK!=sts)<<"423下发消息给锁具异常\n";
 		//zwccbthr::s_jsonCmd=strJsonSend;
+		 zwccbthr::condJcLock.notify_all();	
 //////////////////////////////////////////////////////////////////////////
 		//const int BLEN = 1024;
 		//char recvBuf[BLEN + 1];			
@@ -366,7 +372,7 @@ namespace jchidDevice2015{
 		int nc1=0;
 		while (JCHID_STATUS_OK!=sts)
 		{
-			const int gap=200;
+			const int gap=500;
 			sts=jcHidRecvData(&m_jcElock,recvJson, bufLen, &outLen,0);
 			Sleep(gap);
 			nc1++;

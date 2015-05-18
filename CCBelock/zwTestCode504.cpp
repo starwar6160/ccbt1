@@ -12,6 +12,10 @@ using boost::condition_variable_any;
 
 namespace zwtest504
 {
+
+	using namespace boost;
+
+
 	void zwtest504hidClass(void)
 	{
 		const char *msg02="{\"Command\":\"Lock_Now_Info\"}";
@@ -136,12 +140,29 @@ namespace zwtest504
 		grp.join_all();
 	}
 
+	timer t;
+
+	void mybtimerTest518()
+	{	
+		cout << t.elapsed_max() / 3600 << "h elapsed_max" << endl;
+		cout << t.elapsed_min() << "s elapsed_min" <<endl;
+		Sleep(500);
+		cout << t.elapsed()<< "s" << endl;
+		Sleep(700);
+		cout << t.elapsed()<< "s" << endl;
+		
+
+	}
 
 }
 
 
+
+
 CCBELOCK_API int zwStartGtestInDLL(void)
 {
+	zwtest504::mybtimerTest518();
+	//return 1;
 #define _DEBUG514
 #ifdef _DEBUG514
 	int argc=1;

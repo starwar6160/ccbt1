@@ -26,6 +26,8 @@ namespace zwccbthr {
 	deque<string> g_dqLockUpMsg;	//锁具主动上送的答非所问消息的临时队列
 	bool myDownUpLoopIng=false;	//为了维持一个下发/上行循环的完整
 	boost::condition_variable condJcLock;
+	boost::timer g_LatTimer;	//用于自动计算延迟
+	string s_jcNotify;		//下发命令
 
 	void wait(int milliseconds) {
 		boost::this_thread::sleep(boost::
@@ -225,27 +227,33 @@ namespace zwccbthr {
 		ZWERROR("与锁具之间的数据接收线程启动.20150515.1524")
 		const int BLEN = 1024;
 		char recvBuf[BLEN];			
-		Sleep(300);
+		using zwccbthr::s_jcNotify;
+		Sleep(1300);
 		while (1)
-		{
-			boost::mutex::scoped_lock lock(thrhid_mutex);
+		{			
 			VLOG(4)<<__FUNCTION__<<"START"<<endl;
+			VLOG(3)<<__FUNCTION__;				
 			memset(recvBuf,0,BLEN);
 			JCHID_STATUS sts=JCHID_STATUS_FAIL;			
-			sts=static_cast<JCHID_STATUS>(g_jhc->RecvJson(recvBuf,BLEN));	
+			{
+				boost::mutex::scoped_lock lock(thrhid_mutex);		
+				if (s_jcNotify.size()>0)
+				{
+					g_jhc->SendJson(s_jcNotify.c_str());
+					s_jcNotify="";
+				}
+			}
+			sts=static_cast<JCHID_STATUS>(g_jhc->RecvJson(recvBuf,BLEN));				
 			if (strlen(recvBuf)>0)
 			{
+				boost::mutex::scoped_lock lock(thrhid_mutex);
 				LOG(INFO)<<"收到锁具返回消息= "<<recvBuf<<endl;
 				string outXML;
 				jcAtmcConvertDLL::zwJCjson2CCBxml(recvBuf,outXML);	
-				g_dqLockUpMsg.push_back(outXML);				
+				g_dqLockUpMsg.push_back(outXML);		
 			}
-			else
-			{
-				condJcLock.notify_all();
-				Sleep(200);
-			}
-			
+			condJcLock.notify_all();	
+			Sleep(500);
 			VLOG(4)<<__FUNCTION__<<"END"<<endl;
 		}
 
@@ -256,16 +264,20 @@ namespace zwccbthr {
 		ZWERROR("与ATMC之间的数据上传线程启动.20150515.1655")
 			while (1)
 			{
-				boost::mutex::scoped_lock lock(thrhid_mutex);
+				VLOG(3)<<__FUNCTION__;				
 				VLOG(4)<<__FUNCTION__<<"START"<<endl;
-				condJcLock.wait(lock);			
-				VLOG(3)<<__FUNCTION__;
+				//等待数据接收线程操作完毕“收到的数据”队列
+				//获得该队列的锁的所有权，开始操作
+				boost::mutex::scoped_lock lock(thrhid_mutex);				
+				condJcLock.wait(lock);	
 				for (auto it=g_dqLockUpMsg.begin();it!=g_dqLockUpMsg.end();it++)
 				{
 					LOG(ERROR)<<(*it);					
 				}
 				g_dqLockUpMsg.clear();				
 				VLOG(4)<<__FUNCTION__<<"END"<<endl;
+				//操作完毕“收到的数据”队列，释放锁的所有权
+				condJcLock.notify_all();	
 			}
 	}
 
