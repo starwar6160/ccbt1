@@ -81,10 +81,10 @@ namespace zwccbthr {
 		{			
 			VLOG(3)<<__FUNCTION__<<"START"<<endl;
 			//VLOG(3)<<__FUNCTION__;				
-			boost::mutex::scoped_lock lock(thrhid_mutex);		
+			//boost::mutex::scoped_lock lock(thrhid_mutex);		
 			JCHID_STATUS sts=JCHID_STATUS_FAIL;			
 			{
-				//boost::mutex::scoped_lock lock(thrhid_mutex);		
+				boost::mutex::scoped_lock lock(thrhid_mutex);		
 				if (s_jcNotify.size()>0)
 				{
 					zwccbthr::myWaittingReturnMsg=true;
@@ -100,11 +100,12 @@ namespace zwccbthr {
 				sts=static_cast<JCHID_STATUS>(g_jhc->RecvJson(recvBuf,BLEN));				
 				if (strlen(recvBuf)>0)
 				{
-					//boost::mutex::scoped_lock lock(thrhid_mutex);
+					boost::mutex::scoped_lock lock(thrhid_mutex);
 					LOG(INFO)<<"收到锁具返回消息= "<<recvBuf<<endl;
 					string outXML;
 					jcAtmcConvertDLL::zwJCjson2CCBxml(recvBuf,outXML);	
-					if ("Lock_Time_Sync_Lock"==jcAtmcConvertDLL::s_pipeJcCmdUp)
+					if ("Lock_Time_Sync_Lock"==jcAtmcConvertDLL::s_pipeJcCmdUp ||
+						"Lock_Alarm_Info"==jcAtmcConvertDLL::s_pipeJcCmdUp)
 					{
 						g_dqLockUpMsg.push_back(outXML);		
 					} 
