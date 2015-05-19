@@ -24,7 +24,7 @@ namespace zwccbthr {
 	boost::mutex thrhid_mutex;
 	void pushToCallBack( const char * recvBuf );
 	deque<string> g_dqLockUpMsg;	//锁具主动上送的答非所问消息的临时队列
-	bool myDownUpLoopIng=false;	//为了维持一个下发/上行循环的完整
+	bool myWaittingReturnMsg=false;	//等待返回报文期间不要下发报文
 	boost::condition_variable condJcLock;
 	boost::timer g_LatTimer;	//用于自动计算延迟
 	string s_jcNotify;		//下发命令
@@ -41,7 +41,8 @@ namespace zwccbthr {
 	}
 
 
-	
+//该代码预计以后废弃.20150519	
+#ifdef _OLDRECVTHR519
 	//与锁具之间的通讯数据接收线程
 	void ThreadLockRecv() {
 		//ZWFUNCTRACE 
@@ -222,6 +223,8 @@ namespace zwccbthr {
 		}
 	}
 
+#endif // _OLDRECVTHR519
+
 	void my515LockRecvThr(void)
 	{
 		ZWERROR("与锁具之间的数据接收线程启动.20150515.1524")
@@ -233,12 +236,13 @@ namespace zwccbthr {
 		{			
 			VLOG(4)<<__FUNCTION__<<"START"<<endl;
 			VLOG(3)<<__FUNCTION__;				
-			
+			boost::mutex::scoped_lock lock(thrhid_mutex);		
 			JCHID_STATUS sts=JCHID_STATUS_FAIL;			
 			{
-				boost::mutex::scoped_lock lock(thrhid_mutex);		
+				//boost::mutex::scoped_lock lock(thrhid_mutex);		
 				if (s_jcNotify.size()>0)
 				{
+					zwccbthr::myWaittingReturnMsg=true;
 					g_jhc->SendJson(s_jcNotify.c_str());
 					s_jcNotify="";
 				}
@@ -251,11 +255,14 @@ namespace zwccbthr {
 				sts=static_cast<JCHID_STATUS>(g_jhc->RecvJson(recvBuf,BLEN));				
 				if (strlen(recvBuf)>0)
 				{
-					boost::mutex::scoped_lock lock(thrhid_mutex);
+					//boost::mutex::scoped_lock lock(thrhid_mutex);
 					LOG(INFO)<<"收到锁具返回消息= "<<recvBuf<<endl;
 					string outXML;
 					jcAtmcConvertDLL::zwJCjson2CCBxml(recvBuf,outXML);	
 					g_dqLockUpMsg.push_back(outXML);		
+					//如果有下行报文，那么此时已经收到结果了，可以解除封锁了
+					//如果没有下行报文，更没关系
+					zwccbthr::myWaittingReturnMsg=false;
 					nc1++;
 					if (nc1>9)
 					{
