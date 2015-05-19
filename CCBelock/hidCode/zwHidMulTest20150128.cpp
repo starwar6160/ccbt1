@@ -555,7 +555,7 @@ namespace zwHidGTest20150130{
 ///////////////////////////////test20150424///////////////////////////////////////////
 	TEST_F(ATMCDLLSelfTest, jcHidDev424TestLongStable)
 	{			
-		Sleep(1000);
+		Sleep(3000);
 		EXPECT_EQ(ELOCK_ERROR_SUCCESS,Open(22));
 		
 		for (int i=0;i<
