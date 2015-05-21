@@ -568,11 +568,11 @@ namespace zwHidGTest20150130{
 #define _DEBUG508A1
 #ifdef _DEBUG508A1
 			EXPECT_EQ(ELOCK_ERROR_SUCCESS,Notify(g_msg00));	
-			Sleep(2000);
+			//Sleep(2000);
 			//myWaitForRecvKeyPress424();			
 			//EXPECT_EQ(1,G_TESTCB_SUCC);
 			EXPECT_EQ(ELOCK_ERROR_SUCCESS,Notify(g_msg01));	
-			Sleep(2000);
+			Sleep(1000);
 			//myWaitForRecvKeyPress424();
 			//EXPECT_EQ(1,G_TESTCB_SUCC);			
 #else
@@ -585,7 +585,7 @@ namespace zwHidGTest20150130{
 		}		
 		printf("SLEEP 5 SEC BEFORE PROGRAM END\n");
 		//测试代码晚一点结束，以便锁具后续较慢报文能收到
-		Sleep(19000);
+		Sleep(9000);
 		EXPECT_EQ(ELOCK_ERROR_SUCCESS,Close());
 	}
 

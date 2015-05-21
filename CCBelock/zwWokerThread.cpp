@@ -27,7 +27,7 @@ namespace zwccbthr {
 	bool myWaittingReturnMsg=false;	//等待返回报文期间不要下发报文
 	boost::condition_variable condJcLock;
 	boost::timer g_LatTimer;	//用于自动计算延迟
-	string s_jcNotify;		//下发命令
+	deque<string> s_jcNotify;		//下发命令
 
 	void wait(int milliseconds) {
 		boost::this_thread::sleep(boost::
@@ -72,7 +72,7 @@ namespace zwccbthr {
 
 	void my515LockRecvThr(void)
 	{
-		ZWERROR("与锁具之间的数据接收线程启动.20150515.1524")
+		ZWERROR("与锁具之间的数据接收线程启动.20150521.v746")
 		const int BLEN = 1024;
 		char recvBuf[BLEN];			
 		using zwccbthr::s_jcNotify;
@@ -85,11 +85,12 @@ namespace zwccbthr {
 			JCHID_STATUS sts=JCHID_STATUS_FAIL;			
 			{
 				boost::mutex::scoped_lock lock(thrhid_mutex);		
+				VLOG_IF(3,s_jcNotify.size()>0)<<"s_jcNotify.size()="<<s_jcNotify.size()<<endl;
 				if (s_jcNotify.size()>0)
 				{
 					zwccbthr::myWaittingReturnMsg=true;
-					g_jhc->SendJson(s_jcNotify.c_str());
-					s_jcNotify="";
+					g_jhc->SendJson(s_jcNotify.front().c_str());
+					s_jcNotify.pop_front();
 				}
 			}
 			int nc1=0;
@@ -104,8 +105,10 @@ namespace zwccbthr {
 					LOG(INFO)<<"收到锁具返回消息= "<<recvBuf<<endl;
 					string outXML;
 					jcAtmcConvertDLL::zwJCjson2CCBxml(recvBuf,outXML);	
-					if ("Lock_Time_Sync_Lock"==jcAtmcConvertDLL::s_pipeJcCmdUp ||
-						"Lock_Alarm_Info"==jcAtmcConvertDLL::s_pipeJcCmdUp)
+					if ("Lock_Time_Sync_Lock"==jcAtmcConvertDLL::s_pipeJcCmdUp 
+						|| "Lock_Alarm_Info"==jcAtmcConvertDLL::s_pipeJcCmdUp
+						|| "Lock_Status"==jcAtmcConvertDLL::s_pipeJcCmdUp
+						)
 					{
 						g_dqLockUpMsg.push_back(outXML);		
 					} 
