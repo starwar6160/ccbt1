@@ -72,13 +72,14 @@ namespace zwccbthr {
 
 	void my515LockRecvThr(void)
 	{
-		ZWERROR("与锁具之间的数据接收线程启动.20150521.v746")
+		ZWERROR("与锁具之间的数据接收线程启动.20150521.v747")
 		const int BLEN = 1024;
 		char recvBuf[BLEN];			
 		using zwccbthr::s_jcNotify;
 		Sleep(1300);
 		while (1)
 		{			
+			//LOG(ERROR)<<__FUNCTION__<<"RUNNING " <<time(NULL)<<endl;
 			VLOG(3)<<__FUNCTION__<<"START"<<endl;
 			//VLOG(3)<<__FUNCTION__;				
 			//boost::mutex::scoped_lock lock(thrhid_mutex);		
@@ -89,7 +90,13 @@ namespace zwccbthr {
 				if (s_jcNotify.size()>0)
 				{
 					zwccbthr::myWaittingReturnMsg=true;
-					g_jhc->SendJson(s_jcNotify.front().c_str());
+					LOG(WARNING)<<"SendToLock JsonIS\n"<<s_jcNotify.front().c_str()<<endl;
+					sts=static_cast<JCHID_STATUS>( g_jhc->SendJson(s_jcNotify.front().c_str()));
+					//断线重连探测机制
+					if (JCHID_STATUS_OK!=static_cast<JCHID_STATUS>(sts))
+					{
+						g_jhc->OpenJc();
+					}
 					s_jcNotify.pop_front();
 				}
 			}
@@ -139,6 +146,7 @@ namespace zwccbthr {
 		ZWERROR("与ATMC之间的数据上传线程启动.20150515.1655")
 			while (1)
 			{
+				//LOG(ERROR)<<__FUNCTION__<<"RUNNING " <<time(NULL)<<endl;
 				VLOG(4)<<__FUNCTION__;				
 				VLOG(3)<<__FUNCTION__<<"START"<<endl;
 				//等待数据接收线程操作完毕“收到的数据”队列

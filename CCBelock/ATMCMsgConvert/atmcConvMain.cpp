@@ -131,8 +131,7 @@ namespace jcAtmcConvertDLL {
 #ifdef _DEBUG
 		//printf("当前机器时间time(NULL)=%u\n",time(NULL));
 #endif // _DEBUG
-		LOG(WARNING)<<"金储JSON下发请求开始\n"		
-		<<downJson;
+		//LOG(WARNING)<<"金储JSON下发请求开始\n"		<<downJson;
 		//printf("%s\n", downJson.c_str());
 		//ZWDBGWARN("金储JSON下发请求结束\n");
 //#endif // _DEBUG401

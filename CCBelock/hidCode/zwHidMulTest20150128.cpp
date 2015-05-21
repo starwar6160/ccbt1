@@ -560,7 +560,7 @@ namespace zwHidGTest20150130{
 		
 		for (int i=0;i<
 			//12*60*9;
-			3;
+			3*5;
 			i++)
 		{		 
 			SetRecvMsgRotine(myATMCRecvMsgRotine);	
@@ -585,7 +585,7 @@ namespace zwHidGTest20150130{
 		}		
 		printf("SLEEP 5 SEC BEFORE PROGRAM END\n");
 		//测试代码晚一点结束，以便锁具后续较慢报文能收到
-		Sleep(9000);
+		Sleep(19000);
 		EXPECT_EQ(ELOCK_ERROR_SUCCESS,Close());
 	}
 
