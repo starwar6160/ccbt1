@@ -93,8 +93,16 @@ CCBELOCK_API long JCAPISTD Open(long lTimeOut)
 	{
 		g_jhc=new jcHidDevice();
 	}
-	int elockStatus=g_jhc->SendJson("{   \"command\": \"Lock_Firmware_Version\",    \"State\": \"get\"}");
+	int elockStatus=JCHID_STATUS_OK;		
+	//断线重连探测机制
+	elockStatus=g_jhc->SendJson("{   \"command\": \"Lock_Firmware_Version\",    \"State\": \"get\"}");
 	VLOG_IF(1,JCHID_STATUS_OK!=elockStatus)<<"ZIJIN423 Open ELOCK_ERROR_CONNECTLOST Send get_firmware_version to JinChu Elock Fail!";
+	if (JCHID_STATUS_OK!=static_cast<JCHID_STATUS>(elockStatus))
+	{
+		g_jhc->OpenJc();
+	}
+
+
 	if (NULL==zwccbthr::opUpMsgThr)
 	{
 		zwccbthr::opUpMsgThr=new boost::thread(zwccbthr::my515UpMsgThr);
@@ -388,5 +396,6 @@ namespace jchidDevice2015{
 
 
 }	//namespace jchidDevice2015{
+
 
 

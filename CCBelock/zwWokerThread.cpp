@@ -35,6 +35,13 @@ namespace zwccbthr {
 					  (milliseconds));
 	} 
 
+	time_t zwNormalTime521(time_t inTime,time_t gapSeconds)
+	{
+		time_t tail=inTime % gapSeconds;
+		return inTime-tail;
+
+	}
+
 	void pushToCallBack( const char * recvConvedXML )
 	{
 		if (NULL==recvConvedXML || strlen(recvConvedXML)==0)
@@ -72,7 +79,7 @@ namespace zwccbthr {
 
 	void my515LockRecvThr(void)
 	{
-		ZWERROR("与锁具之间的数据接收线程启动.20150521.v747")
+		ZWERROR("与锁具之间的数据接收线程启动.20150521.v748")
 		const int BLEN = 1024;
 		char recvBuf[BLEN];			
 		using zwccbthr::s_jcNotify;
@@ -80,7 +87,7 @@ namespace zwccbthr {
 		while (1)
 		{			
 			//LOG(ERROR)<<__FUNCTION__<<"RUNNING " <<time(NULL)<<endl;
-			VLOG(3)<<__FUNCTION__<<"START"<<endl;
+			VLOG(4)<<__FUNCTION__<<"START"<<endl;
 			//VLOG(3)<<__FUNCTION__;				
 			//boost::mutex::scoped_lock lock(thrhid_mutex);		
 			JCHID_STATUS sts=JCHID_STATUS_FAIL;			
@@ -136,7 +143,7 @@ namespace zwccbthr {
 			}while(strlen(recvBuf)>0);
 			condJcLock.notify_all();	
 			Sleep(500);
-			VLOG(3)<<__FUNCTION__<<"END"<<endl;
+			VLOG(4)<<__FUNCTION__<<"END"<<endl;
 		}
 
 	}
@@ -148,7 +155,7 @@ namespace zwccbthr {
 			{
 				//LOG(ERROR)<<__FUNCTION__<<"RUNNING " <<time(NULL)<<endl;
 				VLOG(4)<<__FUNCTION__;				
-				VLOG(3)<<__FUNCTION__<<"START"<<endl;
+				VLOG(4)<<__FUNCTION__<<"START"<<endl;
 				//等待数据接收线程操作完毕“收到的数据”队列
 				//获得该队列的锁的所有权，开始操作
 				boost::mutex::scoped_lock lock(thrhid_mutex);				
@@ -158,7 +165,7 @@ namespace zwccbthr {
 					LOG(ERROR)<<(*it);					
 				}
 				g_dqLockUpMsg.clear();				
-				VLOG(3)<<__FUNCTION__<<"END"<<endl;
+				VLOG(4)<<__FUNCTION__<<"END"<<endl;
 				//操作完毕“收到的数据”队列，释放锁的所有权
 				condJcLock.notify_all();	
 			}
