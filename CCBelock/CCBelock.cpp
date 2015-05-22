@@ -93,21 +93,17 @@ CCBELOCK_API long JCAPISTD Open(long lTimeOut)
 	{
 		g_jhc=new jcHidDevice();
 	}
-	g_jhc->CloseJc();
-	int elockStatus=g_jhc->OpenJc();	//不由分说直接断线再重连比较快
 
-#ifdef _DEBUG522
 	int elockStatus=JCHID_STATUS_OK;		
 	//断线重连探测机制
 	elockStatus=g_jhc->SendJson("{   \"command\": \"Lock_Firmware_Version\",    \"State\": \"get\"}");
-	VLOG_IF(1,JCHID_STATUS_OK!=elockStatus)<<"ZIJIN423 Open ELOCK_ERROR_CONNECTLOST Send get_firmware_version to JinChu Elock Fail!";
+	VLOG_IF(1,JCHID_STATUS_OK!=elockStatus)<<"ZIJIN522 Open ELOCK_ERROR_CONNECTLOST Send get_firmware_version to JinChu Elock Fail!";
 	if (JCHID_STATUS_OK!=static_cast<JCHID_STATUS>(elockStatus))
 	{
-		g_jhc->OpenJc();
+		g_jhc->CloseJc();
+		elockStatus=g_jhc->OpenJc();
+		VLOG_IF(1,JCHID_STATUS_OK!=elockStatus)<<"ZIJIN522 Open ELOCK_ERROR_CONNECTLOST Send get_firmware_version to JinChu Elock Fail on retry 2!";
 	}
-#endif // _DEBUG522
-
-
 
 	if (NULL==zwccbthr::opUpMsgThr)
 	{
