@@ -134,6 +134,7 @@ LRESULT DeviceChange(UINT message, WPARAM wParam, LPARAM lParam)
 	if (DBT_DEVICEREMOVECOMPLETE == wParam)
 	{
 		printf("20150325.1743 DBT_DEVICEREMOVECOMPLETE , JINCHU ELOCK PlugOUT!\n");
+		g_jhc->CloseJc();
 		zwCfg::s_hidOpened=false;
 	}
 	if (DBT_DEVICEARRIVAL == wParam)

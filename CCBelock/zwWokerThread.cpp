@@ -79,7 +79,7 @@ namespace zwccbthr {
 
 	void my515LockRecvThr(void)
 	{
-		ZWERROR("与锁具之间的数据接收线程启动.20150521.v748")
+		ZWERROR("与锁具之间的数据接收线程启动.20150522.v749")
 		const int BLEN = 1024;
 		char recvBuf[BLEN];			
 		using zwccbthr::s_jcNotify;
@@ -121,7 +121,7 @@ namespace zwccbthr {
 					jcAtmcConvertDLL::zwJCjson2CCBxml(recvBuf,outXML);	
 					if ("Lock_Time_Sync_Lock"==jcAtmcConvertDLL::s_pipeJcCmdUp 
 						|| "Lock_Alarm_Info"==jcAtmcConvertDLL::s_pipeJcCmdUp
-						|| "Lock_Status"==jcAtmcConvertDLL::s_pipeJcCmdUp
+						//|| "Lock_Status"==jcAtmcConvertDLL::s_pipeJcCmdUp
 						)
 					{
 						g_dqLockUpMsg.push_back(outXML);		
