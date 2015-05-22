@@ -88,11 +88,15 @@ extern int G_TESTCB_SUCC;	//是否成功调用了回调函数的一个标志位，仅仅测试用
 
 CCBELOCK_API long JCAPISTD Open(long lTimeOut)
 {
-	VLOG_IF(1,lTimeOut<=0 || lTimeOut>3)<<"ZIJIN423 Open Invalid Para 20150423.1559";
+	VLOG_IF(1,lTimeOut<=0 || lTimeOut>60)<<"ZIJIN423 Open Invalid Para 20150423.1559";
 	if (NULL==g_jhc)
 	{
 		g_jhc=new jcHidDevice();
 	}
+	g_jhc->CloseJc();
+	int elockStatus=g_jhc->OpenJc();	//不由分说直接断线再重连比较快
+
+#ifdef _DEBUG522
 	int elockStatus=JCHID_STATUS_OK;		
 	//断线重连探测机制
 	elockStatus=g_jhc->SendJson("{   \"command\": \"Lock_Firmware_Version\",    \"State\": \"get\"}");
@@ -101,6 +105,8 @@ CCBELOCK_API long JCAPISTD Open(long lTimeOut)
 	{
 		g_jhc->OpenJc();
 	}
+#endif // _DEBUG522
+
 
 
 	if (NULL==zwccbthr::opUpMsgThr)

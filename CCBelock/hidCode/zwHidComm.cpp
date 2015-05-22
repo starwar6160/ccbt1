@@ -90,7 +90,7 @@ JCHID_STATUS jcHidOpen(JCHID *hid)
 			break;
 		}
 		printf("Wait for Reconnect USB Line\n");
-		Sleep(1000);
+		Sleep(200);
 		openCount++;
 #ifdef _DEBUG
 		if (openCount>1)

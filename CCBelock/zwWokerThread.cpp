@@ -79,7 +79,7 @@ namespace zwccbthr {
 
 	void my515LockRecvThr(void)
 	{
-		ZWERROR("与锁具之间的数据接收线程启动.20150522.v749")
+		ZWERROR("与锁具之间的数据接收线程启动.20150522.v750")
 		const int BLEN = 1024;
 		char recvBuf[BLEN];			
 		using zwccbthr::s_jcNotify;
