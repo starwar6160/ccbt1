@@ -79,7 +79,7 @@ namespace zwccbthr {
 
 	void my515LockRecvThr(void)
 	{
-		ZWERROR("与锁具之间的数据接收线程启动.20150522.v751")
+		ZWERROR("与锁具之间的数据接收线程启动.20150522.v752")
 		const int BLEN = 1024;
 		char recvBuf[BLEN];			
 		using zwccbthr::s_jcNotify;
@@ -163,6 +163,7 @@ namespace zwccbthr {
 				for (auto it=g_dqLockUpMsg.begin();it!=g_dqLockUpMsg.end();it++)
 				{
 					LOG(ERROR)<<(*it);					
+					pushToCallBack((*it).c_str());
 				}
 				g_dqLockUpMsg.clear();				
 				VLOG(4)<<__FUNCTION__<<"END"<<endl;
