@@ -24,7 +24,6 @@ namespace zwccbthr {
 	boost::mutex thrhid_mutex;
 	void pushToCallBack( const char * recvBuf );
 	deque<string> g_dqLockUpMsg;	//锁具主动上送的答非所问消息的临时队列
-	bool myWaittingReturnMsg=false;	//等待返回报文期间不要下发报文
 	boost::condition_variable condJcLock;
 	boost::timer g_LatTimer;	//用于自动计算延迟
 	deque<string> s_jcNotify;		//下发命令
@@ -90,13 +89,13 @@ namespace zwccbthr {
 			VLOG(4)<<__FUNCTION__<<"START"<<endl;
 			//VLOG(3)<<__FUNCTION__;				
 			//boost::mutex::scoped_lock lock(thrhid_mutex);		
+			// 下发报文
 			JCHID_STATUS sts=JCHID_STATUS_FAIL;			
 			{
 				boost::mutex::scoped_lock lock(thrhid_mutex);		
 				VLOG_IF(3,s_jcNotify.size()>0)<<"s_jcNotify.size()="<<s_jcNotify.size()<<endl;
 				if (s_jcNotify.size()>0)
 				{
-					zwccbthr::myWaittingReturnMsg=true;
 					LOG(WARNING)<<"SendToLock JsonIS\n"<<s_jcNotify.front().c_str()<<endl;
 					sts=static_cast<JCHID_STATUS>( g_jhc->SendJson(s_jcNotify.front().c_str()));
 					//断线重连探测机制
@@ -107,7 +106,7 @@ namespace zwccbthr {
 					s_jcNotify.pop_front();
 				}
 			}
-			int nc1=0;
+			//开始读取返回报文直到读不到为止
 			do{
 				//考虑到有可能锁具单向上行信息导致一条下发信息有多条
 				//上行信息，所以多读取几次直到读不到信息为止
@@ -119,28 +118,27 @@ namespace zwccbthr {
 					LOG(INFO)<<"收到锁具返回消息= "<<recvBuf<<endl;
 					string outXML;
 					jcAtmcConvertDLL::zwJCjson2CCBxml(recvBuf,outXML);	
+					//对于某两种比如对时以及报警的单独上行报文，暂时扔到一个队列里面押后上传；
 					if ("Lock_Time_Sync_Lock"==jcAtmcConvertDLL::s_pipeJcCmdUp 
-						|| "Lock_Alarm_Info"==jcAtmcConvertDLL::s_pipeJcCmdUp
-						//|| "Lock_Status"==jcAtmcConvertDLL::s_pipeJcCmdUp
-						)
+						|| "Lock_Alarm_Info"==jcAtmcConvertDLL::s_pipeJcCmdUp)
 					{
 						g_dqLockUpMsg.push_back(outXML);		
 					} 
+					//对于其他一问一答的上行报文，但是答非所问的，也暂存到一个队列里面押后上传
+					if (jcAtmcConvertDLL::s_pipeJcCmdDown.length()>0
+						&& jcAtmcConvertDLL::s_pipeJcCmdUp.length()>0
+						&&		jcAtmcConvertDLL::s_pipeJcCmdDown
+							!=	jcAtmcConvertDLL::s_pipeJcCmdUp	)
+					{
+						g_dqLockUpMsg.push_back(outXML);		
+					}
 					else
 					{
+						//读到了和下发报文同样类型的返回报文则直接上传
 						pushToCallBack(outXML.c_str());
-					}
-					
-					//如果有下行报文，那么此时已经收到结果了，可以解除封锁了
-					//如果没有下行报文，更没关系
-					zwccbthr::myWaittingReturnMsg=false;
-					nc1++;
-					if (nc1>9)
-					{
-						break;
-					}
+					}					
 				}
-			}while(strlen(recvBuf)>0);
+			}while(strlen(recvBuf)>0);	//直到读不到内容
 			condJcLock.notify_all();	
 			Sleep(500);
 			VLOG(4)<<__FUNCTION__<<"END"<<endl;
