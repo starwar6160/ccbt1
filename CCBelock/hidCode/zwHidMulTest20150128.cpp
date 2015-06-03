@@ -581,7 +581,7 @@ namespace zwHidGTest20150130{
 			//myWaitForRecvKeyPress424();
 			//EXPECT_EQ(1,G_TESTCB_SUCC);
 #endif // _DEBUG508A1
-			//Sleep(3000);
+			Sleep(2000);
 		}		
 		printf("SLEEP 5 SEC BEFORE PROGRAM END\n");
 		//测试代码晚一点结束，以便锁具后续较慢报文能收到

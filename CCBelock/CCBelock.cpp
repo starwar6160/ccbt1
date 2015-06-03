@@ -385,7 +385,7 @@ namespace jchidDevice2015{
 		int nc1=0;
 		while (JCHID_STATUS_OK!=sts)
 		{
-			const int gap=200;
+			const int gap=400;
 			sts=jcHidRecvData(&m_jcElock,recvJson, bufLen, &outLen,0);
 
 			Sleep(gap);
@@ -394,7 +394,7 @@ namespace jchidDevice2015{
 				break;
 			}
 			nc1++;
-			if (nc1>(4000/gap))
+			if (nc1>(4100/gap))
 			{
 				break;
 			}
