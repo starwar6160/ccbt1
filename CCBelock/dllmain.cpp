@@ -48,7 +48,7 @@ void zwGlogInit()
 	FLAGS_max_log_size=1;	//最大日志文件大小多少M字节，之后就会自动生成新的日志文件，以便前面的日志被查看或者备份
 	FLAGS_colorlogtostderr=true;	//如果终端支持，采用彩色输出
 	FLAGS_logbufsecs=1;	//日志缓冲1秒输出，有利于大量日志输出时的性能，我认为
-	FLAGS_v=3;	//只有VLOG值小于等于该数字，才会被输出，尤其适合于调试日志
+	FLAGS_v=2;	//只有VLOG值小于等于该数字，才会被输出，尤其适合于调试日志
 	//
 	//google::SetLogDestination(google::GLOG_INFO,"./zw1231");  
 #ifdef _DEBUG113

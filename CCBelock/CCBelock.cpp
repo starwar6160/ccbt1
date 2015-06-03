@@ -88,7 +88,7 @@ extern int G_TESTCB_SUCC;	//是否成功调用了回调函数的一个标志位，仅仅测试用
 
 CCBELOCK_API long JCAPISTD Open(long lTimeOut)
 {
-	VLOG_IF(1,lTimeOut<=0 || lTimeOut>60)<<"ZIJIN423 Open Invalid Para 20150423.1559";
+	VLOG_IF(3,lTimeOut<=0 || lTimeOut>60)<<"ZIJIN423 Open Invalid Para 20150423.1559";
 	if (NULL==g_jhc)
 	{
 		g_jhc=new jcHidDevice();
@@ -178,11 +178,11 @@ CCBELOCK_API long JCAPISTD Notify(const char *pszMsg)
 		}
 		//////////////////////////////////////////////////////////////////////////
 		string strXMLSend = pszMsg;
-		VLOG_IF(4,strXMLSend.size()>0)<<"strXMLSend=\n"<<strXMLSend;
+		VLOG_IF(3,strXMLSend.size()>0)<<"strXMLSend=\n"<<strXMLSend;
 		assert(strXMLSend.length() > 42);	//XML开头的固定内容38个字符，外加起码一个标签的两对尖括号合计4个字符
 		jcAtmcConvertDLL::zwCCBxml2JCjson(strXMLSend, strJsonSend);
 		assert(strJsonSend.length() > 9);	//json最基本的符号起码好像要9个字符左右
-		VLOG_IF(4,strJsonSend.size()>0)<<"strJsonSend="<<strJsonSend;
+		VLOG_IF(3,strJsonSend.size()>0)<<"strJsonSend="<<strJsonSend;
 		Sleep(50);			
 
 		//现在开始一问一答过程，在获得对口回复报文之前不得上传其他报文
@@ -368,7 +368,8 @@ namespace jchidDevice2015{
 
 	int jcHidDevice::RecvJson( char *recvJson,int bufLen )
 	{
-		boost::mutex::scoped_lock lock(m_jchid_mutex);
+		ZWFUNCTRACE
+		boost::mutex::scoped_lock lock(m_jchid_mutex);		
 		assert(NULL!=recvJson);
 		assert(bufLen>=0);
 		if (NULL==recvJson || bufLen<0)
@@ -384,11 +385,16 @@ namespace jchidDevice2015{
 		int nc1=0;
 		while (JCHID_STATUS_OK!=sts)
 		{
-			const int gap=500;
+			const int gap=200;
 			sts=jcHidRecvData(&m_jcElock,recvJson, bufLen, &outLen,0);
+
 			Sleep(gap);
+			if (strlen(recvJson)>0) 
+			{
+				break;
+			}
 			nc1++;
-			if (nc1>(3000/gap))
+			if (nc1>(4000/gap))
 			{
 				break;
 			}
