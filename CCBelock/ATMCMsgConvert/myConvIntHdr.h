@@ -51,4 +51,8 @@ namespace jcAtmcConvertDLL {
 	extern string ns_LockInitName;
 	extern string ns_ReadCloseCodeName;
 	//extern string ns_ccbAtmno;    //ATM编号
+
+	//获取XML报文类型
+	string zwGetJcxmlMsgType(const char *jcXML);
+
 }				//namespace jcAtmcConvertDLL{

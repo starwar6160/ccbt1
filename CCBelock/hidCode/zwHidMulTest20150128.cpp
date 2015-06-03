@@ -3,6 +3,7 @@
 #include "hidapi.h"
 #include "CCBelock.h"
 #include "zwCcbElockHdr.h"
+
 #include "zwHidMulHeader.h"
 #include "zwHidGtest130.h"
 #define ZWUSEGTEST
@@ -564,6 +565,7 @@ namespace zwHidGTest20150130{
 			i++)
 		{		 
 			SetRecvMsgRotine(myATMCRecvMsgRotine);	
+			
 
 #define _DEBUG508A1
 #ifdef _DEBUG508A1

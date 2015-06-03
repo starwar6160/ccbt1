@@ -246,9 +246,11 @@ CCBELOCK_API int JCAPISTD SetRecvMsgRotine(RecvMsgRotine pRecvMsgFun)
 	return ELOCK_ERROR_SUCCESS;
 }
 
+#include "ATMCMsgConvert\\myConvIntHdr.h"
+using jcAtmcConvertDLL::zwGetJcxmlMsgType;
 
 void cdecl myATMCRecvMsgRotine(const char *pszMsg)
-{
+{	
 	//ZWFUNCTRACE 
 	//assert(pszMsg != NULL && strlen(pszMsg) > 42);
 	//boost::mutex::scoped_lock lock(zwCfg::ComPort_mutex);
@@ -275,6 +277,8 @@ void cdecl myATMCRecvMsgRotine(const char *pszMsg)
 		G_TESTCB_SUCC=1;	//成功调用了回调函数
 		//printf("%s\n%s\n",__FUNCTION__,pszMsg);
 		VLOG_IF(4,strlen(pszMsg)>0)<<"CALLBACK512 RECV= "<<pszMsg<<endl;
+		string msgType=zwGetJcxmlMsgType(pszMsg);
+		cout<<"JcUpMsgType="<<msgType<<endl;
 	}	
 }
 

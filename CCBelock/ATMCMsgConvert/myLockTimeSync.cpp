@@ -199,5 +199,41 @@ namespace jcAtmcConvertDLL {
 		ptccb.put("root.Status", ptjc.get < int >("Status"));
 	}
 
+//////////////////////////////////////////////////////////////////////////
+	//获取XML报文类型
+	string zwGetJcxmlMsgType(const char *jcXML) 
+	{
+		ptree ptccb;
+		std::stringstream ss;
+		ss << jcXML;
+		read_xml(ss, ptccb);
+		string msgType=ptccb.get<string>("root.TransCode");		
+		return msgType;
+#ifdef _DEBUGTEST603
+		//ZWFUNCTRACE
+		//无用的形式化部分
+		ptccb.put(CCBSTR_CODE, "0003");
+		ptccb.put(CCBSTR_NAME, "TimeSync");	//使用缓存在内存中的值
+		string zwDate, zwTime;
+		zwGetLocalDateTimeString(ptjc.get < time_t > ("Lock_Time"),
+			zwDate, zwTime);
+		ptccb.put(CCBSTR_DATE, zwDate);
+		ptccb.put(CCBSTR_TIME, zwTime);
+		//////////////////////////////////////////////////////////////////////////
+		ptccb.put(CCBSTR_DEVCODE, ptjc.get < string > ("Atm_Serial"));	//使用缓存在内存中的值
+		ptccb.put("root.LockMan", LOCKMAN_NAME);
+		ptccb.put("root.LockId", ptjc.get < string > ("Lock_Serial"));
+		//////////////////////////////////////////////////////////////////////////
+		//有用部分
+		time_t exTimeValue = ptjc.get < time_t > ("Ex_Syn_Time");
+		string exDate, exTime;
+		zwGetLocalDateTimeString(exTimeValue, exDate, exTime);
+		ptccb.put("root.ExSynDate", exDate);
+		ptccb.put("root.ExSynTime", exTime);
+#endif // _DEBUGTEST603
+	}
+
+
+
 
 }				//namespace jcAtmcConvertDLL{

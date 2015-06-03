@@ -120,8 +120,14 @@ namespace zwccbthr {
 					VLOG(3)<<"收到锁具返回消息= "<<recvBuf<<endl;
 					string outXML;
 					jcAtmcConvertDLL::zwJCjson2CCBxml(recvBuf,outXML);	
-#define _DEBUG603
-#ifdef _DEBUG603
+
+					if (jcAtmcConvertDLL::s_pipeJcCmdUp
+						!=jcAtmcConvertDLL::s_pipeJcCmdDown)
+					{
+						VLOG(2)<<jcAtmcConvertDLL::s_pipeJcCmdUp<<"!="
+							<<jcAtmcConvertDLL::s_pipeJcCmdDown<<endl;
+					}
+
 					if ("Lock_Time_Sync_Lock"==jcAtmcConvertDLL::s_pipeJcCmdUp 
 						|| "Lock_Alarm_Info"==jcAtmcConvertDLL::s_pipeJcCmdUp
 						//|| "Lock_Status"==jcAtmcConvertDLL::s_pipeJcCmdUp
@@ -133,18 +139,6 @@ namespace zwccbthr {
 					{
 						pushToCallBack(outXML.c_str());
 					}
-#else
-					if (jcAtmcConvertDLL::s_pipeJcCmdUp==jcAtmcConvertDLL::s_pipeJcCmdDown)
-					{
-						LOG(ERROR)<<"对口回应报文=\t"<<endl;
-						pushToCallBack(outXML.c_str());
-					}
-					else
-					{
-						g_dqLockUpMsg.push_back(outXML);
-					}
-
-#endif // _DEBUG603
 					
 					//如果有下行报文，那么此时已经收到结果了，可以解除封锁了
 					//如果没有下行报文，更没关系
