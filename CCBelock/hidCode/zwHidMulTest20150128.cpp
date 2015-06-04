@@ -570,7 +570,7 @@ namespace zwHidGTest20150130{
 		
 		for (int i=0;i<
 			//12*60*9;
-			5;
+			10*3;
 			i++)
 		{		 
 			SetRecvMsgRotine(myATMCRecvMsgRotine);	
@@ -579,11 +579,11 @@ namespace zwHidGTest20150130{
 #define _DEBUG508A1
 #ifdef _DEBUG508A1
 			EXPECT_EQ(ELOCK_ERROR_SUCCESS,Notify(g_msg00));	
-			//Sleep(2000);
+			Sleep(2000);
 			//myWaitForRecvKeyPress424();			
 			//EXPECT_EQ(1,G_TESTCB_SUCC);
 			EXPECT_EQ(ELOCK_ERROR_SUCCESS,Notify(g_msg01));	
-			Sleep(1000);
+			Sleep(3000);
 			//myWaitForRecvKeyPress424();
 			//EXPECT_EQ(1,G_TESTCB_SUCC);			
 #else
@@ -592,37 +592,35 @@ namespace zwHidGTest20150130{
 			//myWaitForRecvKeyPress424();
 			//EXPECT_EQ(1,G_TESTCB_SUCC);
 #endif // _DEBUG508A1
-			Sleep(2000);
+			Sleep(1000);
 		}		
 		printf("SLEEP 5 SEC BEFORE PROGRAM END\n");
 		//测试代码晚一点结束，以便锁具后续较慢报文能收到
-		Sleep(29000);
+		Sleep(25000);
 		EXPECT_EQ(ELOCK_ERROR_SUCCESS,Close());
 		LOG(INFO)<<"LISTOFUPMSG20150604"<<endl;
 		string upAllMsg;
 		for (auto it=g_vecTestResultXML.begin();it!=g_vecTestResultXML.end();it++)
-		{
-			upAllMsg+=(*it); 
-			upAllMsg+="\t";
+		{			
+			if ("0000"==(*it))
+			{
+				upAllMsg+="0";
+			}
+			//upAllMsg+=(*it); 
+			if ("0001"==(*it))
+			{
+				upAllMsg+="1";
+			}
+			upAllMsg+=" ";
 		}
 		LOG(INFO)<<upAllMsg<<endl;
 		//检查返回报文结果是不是0号和1号返回报文交错的正确顺序
-		for (int i=0;i<g_vecTestResultXML.size();i++)
+		for (int i=0;i<g_vecTestResultXML.size()-1;i++)
 		{
 			//cout<<g_vecTestResultXML[i]<<"\t";
-			if (0==(i % 2))
+			if (g_vecTestResultXML[i]==g_vecTestResultXML[i+1])
 			{
-				if ("0000"!=g_vecTestResultXML[i])
-				{
-					LOG(WARNING)<<"GTEST20150604.0000ERROR SHUNXU ON INDEX "<<i<<endl;
-				}
-			}
-			if (1==(i % 2))
-			{
-				if ("0001"!=g_vecTestResultXML[i])
-				{
-					LOG(WARNING)<<"GTEST20150604.0001ERROR SHUNXU ON INDEX "<<i<<endl;
-				}
+				LOG(WARNING)<<"g_vecTestResultXML ERROR on Index "<<i<<endl;
 			}
 		}
 		cout<<endl;
@@ -633,6 +631,9 @@ namespace zwHidGTest20150130{
 
 void cdecl myATMCRecvMsgRotine(const char *pszMsg)
 {	
+	static string lastUpMsg;
+	static int nUpErrCount=0;
+	static int nUpCount=0;
 	//ZWFUNCTRACE 
 	//assert(pszMsg != NULL && strlen(pszMsg) > 42);
 	//boost::mutex::scoped_lock lock(zwCfg::ComPort_mutex);
@@ -660,12 +661,20 @@ void cdecl myATMCRecvMsgRotine(const char *pszMsg)
 		//printf("%s\n%s\n",__FUNCTION__,pszMsg);
 		VLOG_IF(4,strlen(pszMsg)>0)<<"CALLBACK512 RECV= "<<pszMsg<<endl;
 		string msgType=zwGetJcxmlMsgType(pszMsg);
+		//VLOG(3)<<"604LastUpMsg Error Count= "<<msgType<<endl;
 		if ("1003"!=msgType)
 		{
 			zwHidGTest20150130::g_vecTestResultXML.push_back(msgType);
+			//VLOG(3)<<lastUpMsg<<" UPMSGEQ "<<msgType<<endl;
+			if (lastUpMsg==msgType)
+			{
+				nUpErrCount++;								
+			}
+			lastUpMsg=msgType;
 		}
-		
-		cout<<"JcUpMsgType="<<msgType<<endl;
+		nUpCount++;
+		LOG(ERROR)<<"604LastUpMsg Error Count= "<<nUpErrCount<<" nUpCount="<<nUpCount<<endl;	
+		VLOG(3)<<"JcUpMsgType="<<msgType<<endl;
 	}	
 }
 

@@ -69,7 +69,7 @@ namespace zwccbthr {
 			//Sleep(2920);
 			zwCfg::g_WarnCallback(recvConvedXML);
 			//ZWERROR(recvConvedXML)
-			LOG_IF(ERROR,strlen(recvConvedXML)>0)<<"回调函数收到以下内容\n"<<recvConvedXML<<endl;
+			VLOG_IF(4,strlen(recvConvedXML)>0)<<"回调函数收到以下内容\n"<<recvConvedXML<<endl;
 #ifdef _DEBUG401
 			
 			VLOG(4)<<"成功把从锁具接收到的数据传递给回调函数\n";
