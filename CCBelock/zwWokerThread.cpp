@@ -86,14 +86,15 @@ namespace zwccbthr {
 		using zwccbthr::s_jcNotify;
 		Sleep(1300);
 		while (1)
-		{			
+		{		
+			{
 			//LOG(ERROR)<<__FUNCTION__<<"RUNNING " <<time(NULL)<<endl;
 			VLOG(4)<<__FUNCTION__<<"START"<<endl;
 			//VLOG(3)<<__FUNCTION__;				
-			//boost::mutex::scoped_lock lock(thrhid_mutex);		
+			boost::mutex::scoped_lock lock(thrhid_mutex);		
 			JCHID_STATUS sts=JCHID_STATUS_FAIL;			
 			{
-				boost::mutex::scoped_lock lock(thrhid_mutex);		
+				//boost::mutex::scoped_lock lock(thrhid_mutex);		
 				VLOG_IF(4,s_jcNotify.size()>0)<<"s_jcNotify.size()="<<s_jcNotify.size()<<endl;
 				if (s_jcNotify.size()>0)
 				{
@@ -116,8 +117,8 @@ namespace zwccbthr {
 				sts=static_cast<JCHID_STATUS>(g_jhc->RecvJson(recvBuf,BLEN));				
 				if (strlen(recvBuf)>0)
 				{
-					boost::mutex::scoped_lock lock(thrhid_mutex);
-					VLOG(3)<<"收到锁具返回消息= "<<recvBuf<<endl;
+					//boost::mutex::scoped_lock lock(thrhid_mutex);
+					VLOG(4)<<"收到锁具返回消息= "<<recvBuf<<endl;
 					string outXML;
 					jcAtmcConvertDLL::zwJCjson2CCBxml(recvBuf,outXML);	
 
@@ -150,6 +151,7 @@ namespace zwccbthr {
 					}
 				}
 			}while(strlen(recvBuf)>0);
+		}
 			condJcLock.notify_all();	
 			Sleep(500);
 			VLOG(4)<<__FUNCTION__<<"END"<<endl;

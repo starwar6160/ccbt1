@@ -6,6 +6,9 @@
 
 #include "zwHidMulHeader.h"
 #include "zwHidGtest130.h"
+#include "ATMCMsgConvert\\myConvIntHdr.h"
+using jcAtmcConvertDLL::zwGetJcxmlMsgType;
+
 #define ZWUSEGTEST
 //#define _DEBUG_LOCK2TEST
 //#define _DEBUG_DEV2
@@ -553,7 +556,13 @@ namespace zwHidGTest20150130{
 	}
 #endif // _DEBUG401ELOCKSTATUS
 
+
+
 ///////////////////////////////test20150424///////////////////////////////////////////
+
+	vector<string> g_vecTestResultXML;
+
+
 	TEST_F(ATMCDLLSelfTest, jcHidDev424TestLongStable)
 	{			
 		Sleep(3000);
@@ -561,7 +570,7 @@ namespace zwHidGTest20150130{
 		
 		for (int i=0;i<
 			//12*60*9;
-			3;
+			5;
 			i++)
 		{		 
 			SetRecvMsgRotine(myATMCRecvMsgRotine);	
@@ -587,9 +596,78 @@ namespace zwHidGTest20150130{
 		}		
 		printf("SLEEP 5 SEC BEFORE PROGRAM END\n");
 		//测试代码晚一点结束，以便锁具后续较慢报文能收到
-		Sleep(19000);
+		Sleep(29000);
 		EXPECT_EQ(ELOCK_ERROR_SUCCESS,Close());
+		LOG(INFO)<<"LISTOFUPMSG20150604"<<endl;
+		string upAllMsg;
+		for (auto it=g_vecTestResultXML.begin();it!=g_vecTestResultXML.end();it++)
+		{
+			upAllMsg+=(*it); 
+			upAllMsg+="\t";
+		}
+		LOG(INFO)<<upAllMsg<<endl;
+		//检查返回报文结果是不是0号和1号返回报文交错的正确顺序
+		for (int i=0;i<g_vecTestResultXML.size();i++)
+		{
+			//cout<<g_vecTestResultXML[i]<<"\t";
+			if (0==(i % 2))
+			{
+				if ("0000"!=g_vecTestResultXML[i])
+				{
+					LOG(WARNING)<<"GTEST20150604.0000ERROR SHUNXU ON INDEX "<<i<<endl;
+				}
+			}
+			if (1==(i % 2))
+			{
+				if ("0001"!=g_vecTestResultXML[i])
+				{
+					LOG(WARNING)<<"GTEST20150604.0001ERROR SHUNXU ON INDEX "<<i<<endl;
+				}
+			}
+		}
+		cout<<endl;
 	}
 
 }	//namespace zwHidGTest20150130{
+
+
+void cdecl myATMCRecvMsgRotine(const char *pszMsg)
+{	
+	//ZWFUNCTRACE 
+	//assert(pszMsg != NULL && strlen(pszMsg) > 42);
+	//boost::mutex::scoped_lock lock(zwCfg::ComPort_mutex);
+	//输入必须有内容，但是最大不得长于下位机内存大小，做合理限制
+	assert(NULL != pszMsg);
+	int inlen = strlen(pszMsg);
+	if (0==inlen)
+	{
+		ZWERROR("Callback Function myATMCRecvMsgRotine input is NULL")
+	}
+	VLOG_IF(1,inlen==0)<<"Callback Function myATMCRecvMsgRotine input is NULL";
+	assert(
+		//inlen > 0 && 
+		inlen < JC_MSG_MAXLEN);
+	if (NULL == pszMsg 
+		//|| inlen == 0 
+		|| inlen >= JC_MSG_MAXLEN) {
+			VLOG(1)<<"Callback Function myATMCRecvMsgRotine input TOO LONG";
+			return;
+	}
+	if (inlen>0)	
+	{
+		//boost::mutex::scoped_lock lock(zwccbthr::recv_mutex);
+		G_TESTCB_SUCC=1;	//成功调用了回调函数
+		//printf("%s\n%s\n",__FUNCTION__,pszMsg);
+		VLOG_IF(4,strlen(pszMsg)>0)<<"CALLBACK512 RECV= "<<pszMsg<<endl;
+		string msgType=zwGetJcxmlMsgType(pszMsg);
+		if ("1003"!=msgType)
+		{
+			zwHidGTest20150130::g_vecTestResultXML.push_back(msgType);
+		}
+		
+		cout<<"JcUpMsgType="<<msgType<<endl;
+	}	
+}
+
+
 #endif // ZWUSEGTEST

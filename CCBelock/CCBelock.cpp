@@ -178,11 +178,11 @@ CCBELOCK_API long JCAPISTD Notify(const char *pszMsg)
 		}
 		//////////////////////////////////////////////////////////////////////////
 		string strXMLSend = pszMsg;
-		VLOG_IF(3,strXMLSend.size()>0)<<"strXMLSend=\n"<<strXMLSend;
+		VLOG_IF(4,strXMLSend.size()>0)<<"strXMLSend=\n"<<strXMLSend;
 		assert(strXMLSend.length() > 42);	//XML开头的固定内容38个字符，外加起码一个标签的两对尖括号合计4个字符
 		jcAtmcConvertDLL::zwCCBxml2JCjson(strXMLSend, strJsonSend);
 		assert(strJsonSend.length() > 9);	//json最基本的符号起码好像要9个字符左右
-		VLOG_IF(3,strJsonSend.size()>0)<<"strJsonSend="<<strJsonSend;
+		VLOG_IF(4,strJsonSend.size()>0)<<"strJsonSend="<<strJsonSend;
 		Sleep(50);			
 
 		//现在开始一问一答过程，在获得对口回复报文之前不得上传其他报文
@@ -246,41 +246,6 @@ CCBELOCK_API int JCAPISTD SetRecvMsgRotine(RecvMsgRotine pRecvMsgFun)
 	return ELOCK_ERROR_SUCCESS;
 }
 
-#include "ATMCMsgConvert\\myConvIntHdr.h"
-using jcAtmcConvertDLL::zwGetJcxmlMsgType;
-
-void cdecl myATMCRecvMsgRotine(const char *pszMsg)
-{	
-	//ZWFUNCTRACE 
-	//assert(pszMsg != NULL && strlen(pszMsg) > 42);
-	//boost::mutex::scoped_lock lock(zwCfg::ComPort_mutex);
-	//输入必须有内容，但是最大不得长于下位机内存大小，做合理限制
-	assert(NULL != pszMsg);
-	int inlen = strlen(pszMsg);
-	if (0==inlen)
-	{
-		ZWERROR("Callback Function myATMCRecvMsgRotine input is NULL")
-	}
-	VLOG_IF(1,inlen==0)<<"Callback Function myATMCRecvMsgRotine input is NULL";
-	assert(
-		//inlen > 0 && 
-		inlen < JC_MSG_MAXLEN);
-	if (NULL == pszMsg 
-		//|| inlen == 0 
-		|| inlen >= JC_MSG_MAXLEN) {
-		VLOG(1)<<"Callback Function myATMCRecvMsgRotine input TOO LONG";
-		return;
-	}
-	if (inlen>0)	
-	{
-		//boost::mutex::scoped_lock lock(zwccbthr::recv_mutex);
-		G_TESTCB_SUCC=1;	//成功调用了回调函数
-		//printf("%s\n%s\n",__FUNCTION__,pszMsg);
-		VLOG_IF(4,strlen(pszMsg)>0)<<"CALLBACK512 RECV= "<<pszMsg<<endl;
-		string msgType=zwGetJcxmlMsgType(pszMsg);
-		cout<<"JcUpMsgType="<<msgType<<endl;
-	}	
-}
 
 //////////////////////////////////////////////////////////////////////////
 namespace jchidDevice2015{
