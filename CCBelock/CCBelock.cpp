@@ -271,7 +271,7 @@ namespace jchidDevice2015{
 			m_hidOpened=false;
 			return ELOCK_ERROR_PARAMINVALID;
 		}
-		hid_set_nonblocking(static_cast<hid_device *>(m_jcElock.hid_device),1);
+		//hid_set_nonblocking(static_cast<hid_device *>(m_jcElock.hid_device),1);
 		ZWWARN("myOpenElock1503 电子锁打开成功20150504.0957 by Class jcHidDevice")
 		m_hidOpened=true;
 		return ELOCK_ERROR_SUCCESS;
@@ -351,23 +351,8 @@ namespace jchidDevice2015{
 		int outLen=0;
 
 		JCHID_STATUS sts=JCHID_STATUS_FAIL;
-		int nc1=0;
-		while (JCHID_STATUS_OK!=sts)
-		{
-			const int gap=200;
-			sts=jcHidRecvData(&m_jcElock,recvJson, bufLen, &outLen,0);
-
-			Sleep(gap);
-			if (strlen(recvJson)>0) 
-			{
-				break;
-			}
-			nc1++;
-			if (nc1>(9100/gap))
-			{
-				break;
-			}
-		}			
+		sts=jcHidRecvData(&m_jcElock,recvJson, bufLen, &outLen,5000);
+			
 		return sts;
 	}
 
