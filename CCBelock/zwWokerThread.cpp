@@ -4,6 +4,7 @@
 #include "zwHidSplitMsg.h"
 #include "zwHidComm.h"
 #include "zwHidDevClass2015.h"
+#include ".\\ATMCMsgConvert\\myConvIntHdr.h"
 #include <stdio.h>
 #include <deque>
 using namespace boost::property_tree;
@@ -12,12 +13,6 @@ using boost::condition_variable_any;
 using jchidDevice2015::jcHidDevice;
 
 jcHidDevice *g_jhc=NULL;	//实际的HID设备类对象
-
-namespace jcAtmcConvertDLL {
-	//为了匹配上下行报文避免答非所问做的报文类型标志位
-	extern string s_pipeJcCmdDown;	
-	extern string s_pipeJcCmdUp;
-}
 
 namespace zwccbthr {
 	//建行给的接口，没有设置连接参数的地方，也就是说，完全可以端口，抑或是从配置文件读取
@@ -68,7 +63,7 @@ namespace zwccbthr {
 			//20150415.1727.为了万敏的要求，控制上传消息速率最多每2秒一条防止ATM死机
 			//Sleep(2920);
 			zwCfg::g_WarnCallback(recvConvedXML);
-			//ZWERROR(recvConvedXML)
+			ZWERROR(recvConvedXML)
 			VLOG_IF(4,strlen(recvConvedXML)>0)<<"回调函数收到以下内容\n"<<recvConvedXML<<endl;
 #ifdef _DEBUG401
 			
@@ -80,7 +75,7 @@ namespace zwccbthr {
 
 	void my515LockRecvThr(void)
 	{
-		ZWERROR("与锁具之间的数据接收线程启动.20150522.v752")
+		ZWERROR("与锁具之间的数据接收线程启动.20150612.v763")
 		const int BLEN = 1024;
 		char recvBuf[BLEN];			
 		using zwccbthr::s_jcNotify;
@@ -92,6 +87,7 @@ namespace zwccbthr {
 			VLOG(4)<<__FUNCTION__<<"START"<<endl;
 			//VLOG(3)<<__FUNCTION__;				
 			boost::mutex::scoped_lock lock(thrhid_mutex);		
+			string upMsgType,downMsgType;
 			JCHID_STATUS sts=JCHID_STATUS_FAIL;			
 			{
 				//boost::mutex::scoped_lock lock(thrhid_mutex);		
@@ -100,6 +96,8 @@ namespace zwccbthr {
 				{
 					zwccbthr::myWaittingReturnMsg=true;
 					LOG(WARNING)<<"SendToLock JsonIS\n"<<s_jcNotify.front().c_str()<<endl;
+					downMsgType=jcAtmcConvertDLL::zwGetJcJsonMsgType(s_jcNotify.front().c_str());
+					LOG(INFO)<<"发送给锁具的消息.类型是"<<downMsgType<<endl;
 					sts=static_cast<JCHID_STATUS>( g_jhc->SendJson(s_jcNotify.front().c_str()));
 					//断线重连探测机制
 					if (JCHID_STATUS_OK!=static_cast<JCHID_STATUS>(sts))
@@ -109,7 +107,6 @@ namespace zwccbthr {
 					s_jcNotify.pop_front();
 				}
 			}
-			int nc1=0;
 			do{
 				//考虑到有可能锁具单向上行信息导致一条下发信息有多条
 				//上行信息，所以多读取几次直到读不到信息为止
@@ -119,36 +116,27 @@ namespace zwccbthr {
 				{
 					//boost::mutex::scoped_lock lock(thrhid_mutex);
 					VLOG(4)<<"收到锁具返回消息= "<<recvBuf<<endl;
+					upMsgType=jcAtmcConvertDLL::zwGetJcJsonMsgType(recvBuf);
+					LOG(INFO)<<"收到锁具返回消息.类型是"<<upMsgType<<endl;
 					string outXML;
 					jcAtmcConvertDLL::zwJCjson2CCBxml(recvBuf,outXML);	
 
-					if (jcAtmcConvertDLL::s_pipeJcCmdUp
-						!=jcAtmcConvertDLL::s_pipeJcCmdDown)
+					if (downMsgType!=upMsgType)
 					{
-						VLOG(2)<<jcAtmcConvertDLL::s_pipeJcCmdUp<<"!="
-							<<jcAtmcConvertDLL::s_pipeJcCmdDown<<endl;
-					}
-
-					if ("Lock_Time_Sync_Lock"==jcAtmcConvertDLL::s_pipeJcCmdUp 
-						|| "Lock_Alarm_Info"==jcAtmcConvertDLL::s_pipeJcCmdUp
-						//|| "Lock_Status"==jcAtmcConvertDLL::s_pipeJcCmdUp
-						)
-					{
+						LOG(WARNING)<<"downMsgType!=upMsgType:\t"<<
+							downMsgType<<"!="<<upMsgType<<endl;
 						g_dqLockUpMsg.push_back(outXML);		
-					} 
+						continue;
+					}
 					else
 					{
+						ZWWARN("正常上传报文")
 						pushToCallBack(outXML.c_str());
 					}
 					
 					//如果有下行报文，那么此时已经收到结果了，可以解除封锁了
 					//如果没有下行报文，更没关系
 					zwccbthr::myWaittingReturnMsg=false;
-					nc1++;
-					if (nc1>9)
-					{
-						break;
-					}
 				}
 			}while(strlen(recvBuf)>0);
 		}
@@ -173,7 +161,7 @@ namespace zwccbthr {
 				condJcLock.wait(lock);					
 				for (int i=0;i<g_dqLockUpMsg.size();i++)
 				{
-					LOG(INFO)<<"延迟上传报文"<<endl;
+					LOG(WARNING)<<"延迟上传报文"<<endl;
 					//LOG(ERROR)<<(g_dqLockUpMsg[i]);
 					pushToCallBack(g_dqLockUpMsg[i].c_str());
 					g_dqLockUpMsg.pop_front();

@@ -54,5 +54,7 @@ namespace jcAtmcConvertDLL {
 
 	//获取XML报文类型
 	string zwGetJcxmlMsgType(const char *jcXML);
+	//获取JSON报文类型
+	string zwGetJcJsonMsgType(const char *jcJson);
 
 }				//namespace jcAtmcConvertDLL{

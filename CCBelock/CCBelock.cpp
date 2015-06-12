@@ -187,7 +187,6 @@ CCBELOCK_API long JCAPISTD Notify(const char *pszMsg)
 
 		//现在开始一问一答过程，在获得对口回复报文之前不得上传其他报文
 		
-
 		zwccbthr::s_jcNotify.push_back(strJsonSend);
 		//int sts=g_jhc->SendJson(strJsonSend.c_str());
 		//VLOG_IF(1,JCHID_STATUS_OK!=sts)<<"423下发消息给锁具异常\n";
