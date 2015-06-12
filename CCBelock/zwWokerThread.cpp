@@ -75,7 +75,7 @@ namespace zwccbthr {
 
 	void my515LockRecvThr(void)
 	{
-		ZWERROR("与锁具之间的数据接收线程启动.20150612.v763")
+		ZWERROR("与锁具之间的数据接收线程启动.20150612.v764")
 		const int BLEN = 1024;
 		char recvBuf[BLEN];			
 		using zwccbthr::s_jcNotify;
@@ -88,16 +88,19 @@ namespace zwccbthr {
 			//VLOG(3)<<__FUNCTION__;				
 			boost::mutex::scoped_lock lock(thrhid_mutex);		
 			string upMsgType,downMsgType;
+			string upMsg,downMsg;
 			JCHID_STATUS sts=JCHID_STATUS_FAIL;			
 			{
 				//boost::mutex::scoped_lock lock(thrhid_mutex);		
 				VLOG_IF(4,s_jcNotify.size()>0)<<"s_jcNotify.size()="<<s_jcNotify.size()<<endl;
 				if (s_jcNotify.size()>0)
 				{
-					zwccbthr::myWaittingReturnMsg=true;
+					zwccbthr::myWaittingReturnMsg=true;					
 					LOG(WARNING)<<"SendToLock JsonIS\n"<<s_jcNotify.front().c_str()<<endl;
+					downMsg=s_jcNotify.front();
 					downMsgType=jcAtmcConvertDLL::zwGetJcJsonMsgType(s_jcNotify.front().c_str());
 					LOG(INFO)<<"发送给锁具的消息.类型是"<<downMsgType<<endl;
+					LOG(INFO)<<"发送给锁具的消息.内容是"<<downMsg<<endl;
 					sts=static_cast<JCHID_STATUS>( g_jhc->SendJson(s_jcNotify.front().c_str()));
 					//断线重连探测机制
 					if (JCHID_STATUS_OK!=static_cast<JCHID_STATUS>(sts))
@@ -115,7 +118,11 @@ namespace zwccbthr {
 				if (strlen(recvBuf)>0)
 				{
 					//boost::mutex::scoped_lock lock(thrhid_mutex);
+					downMsgType=jcAtmcConvertDLL::zwGetJcJsonMsgType(downMsg.c_str());
+					LOG(INFO)<<"再次分析发给锁具的消息.类型是"<<downMsgType
+						<<"内容是\n"<<downMsg<<endl;
 					VLOG(4)<<"收到锁具返回消息= "<<recvBuf<<endl;
+					upMsg=recvBuf;
 					upMsgType=jcAtmcConvertDLL::zwGetJcJsonMsgType(recvBuf);
 					LOG(INFO)<<"收到锁具返回消息.类型是"<<upMsgType<<endl;
 					string outXML;
@@ -126,7 +133,8 @@ namespace zwccbthr {
 						LOG(WARNING)<<"downMsgType!=upMsgType:\t"<<
 							downMsgType<<"!="<<upMsgType<<endl;
 						g_dqLockUpMsg.push_back(outXML);		
-						continue;
+						ZWWARN("将会被延迟上传报文")
+						//continue;
 					}
 					else
 					{
