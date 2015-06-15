@@ -80,7 +80,7 @@ namespace zwccbthr {
 
 	void my515LockRecvThr(void)
 	{
-		ZWERROR("与锁具之间的数据接收线程启动.20150615.v767")
+		ZWERROR("与锁具之间的数据接收线程启动.20150615.v768")
 		const int BLEN = 1024;
 		char recvBuf[BLEN];			
 		using zwccbthr::s_jcNotify;
@@ -149,6 +149,7 @@ namespace zwccbthr {
 						}													
 						downMsgType="";
 					}
+#ifdef _DEBUG615
 					//对于验证码，以及锁具主动上送的闭锁码这两种特殊报文，
 					//不予拦截延迟上传而是直接上传
 					if (	"Lock_Open_Ident"		==upMsgType
@@ -161,6 +162,7 @@ namespace zwccbthr {
 							outXML="";
 						}						
 					}
+#endif // _DEBUG615
 					//其他不符合一问一答的，延迟上传；
 					if (downMsgType!=upMsgType)
 					{
