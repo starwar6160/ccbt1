@@ -25,6 +25,7 @@ namespace zwccbthr {
 	deque<string> s_jcNotify;		//下发命令
 
 	void wait(int milliseconds) {
+		assert(milliseconds>0);
 		boost::this_thread::sleep(boost::
 					  posix_time::milliseconds
 					  (milliseconds));
@@ -32,6 +33,8 @@ namespace zwccbthr {
 
 	time_t zwNormalTime521(time_t inTime,time_t gapSeconds)
 	{
+		assert(inTime>0);
+		assert(gapSeconds>1);
 		time_t tail=inTime % gapSeconds;
 		return inTime-tail;
 
@@ -39,6 +42,8 @@ namespace zwccbthr {
 
 	void pushToCallBack( const char * recvConvedXML )
 	{
+		assert(NULL!=recvConvedXML);
+		assert(strlen(recvConvedXML)>0);
 		if (NULL==recvConvedXML || strlen(recvConvedXML)==0)
 		{
 			ZWERROR("收到的锁具返回内容为空，无法返回有用信息给回调函数");
@@ -75,10 +80,13 @@ namespace zwccbthr {
 
 	void my515LockRecvThr(void)
 	{
-		ZWERROR("与锁具之间的数据接收线程启动.20150612.v764")
+		ZWERROR("与锁具之间的数据接收线程启动.20150615.v765")
 		const int BLEN = 1024;
 		char recvBuf[BLEN];			
 		using zwccbthr::s_jcNotify;
+		string upMsgType,downMsgType;
+		string upMsg,downMsg;
+
 		Sleep(1300);
 		while (1)
 		{		
@@ -87,18 +95,17 @@ namespace zwccbthr {
 			VLOG(4)<<__FUNCTION__<<"START"<<endl;
 			//VLOG(3)<<__FUNCTION__;				
 			boost::mutex::scoped_lock lock(thrhid_mutex);		
-			string upMsgType,downMsgType;
-			string upMsg,downMsg;
 			JCHID_STATUS sts=JCHID_STATUS_FAIL;			
 			{
-				//boost::mutex::scoped_lock lock(thrhid_mutex);		
+				//boost::mutex::scoped_lock lock(thrhid_mutex);						
 				VLOG_IF(4,s_jcNotify.size()>0)<<"s_jcNotify.size()="<<s_jcNotify.size()<<endl;
 				if (s_jcNotify.size()>0)
 				{
 					zwccbthr::myWaittingReturnMsg=true;					
 					LOG(WARNING)<<"SendToLock JsonIS\n"<<s_jcNotify.front().c_str()<<endl;
 					downMsg=s_jcNotify.front();
-					downMsgType=jcAtmcConvertDLL::zwGetJcJsonMsgType(s_jcNotify.front().c_str());
+					assert(downMsg.size()>0);
+					downMsgType=jcAtmcConvertDLL::zwGetJcJsonMsgType(downMsg.c_str());
 					LOG(INFO)<<"发送给锁具的消息.类型是"<<downMsgType<<endl;
 					LOG(INFO)<<"发送给锁具的消息.内容是"<<downMsg<<endl;
 					sts=static_cast<JCHID_STATUS>( g_jhc->SendJson(s_jcNotify.front().c_str()));
@@ -118,11 +125,14 @@ namespace zwccbthr {
 				if (strlen(recvBuf)>0)
 				{
 					//boost::mutex::scoped_lock lock(thrhid_mutex);
+					assert(downMsg.size()>0);
 					downMsgType=jcAtmcConvertDLL::zwGetJcJsonMsgType(downMsg.c_str());
+					assert(downMsgType.size()>0);
 					LOG(INFO)<<"再次分析发给锁具的消息.类型是"<<downMsgType
 						<<"内容是\n"<<downMsg<<endl;
 					VLOG(4)<<"收到锁具返回消息= "<<recvBuf<<endl;
 					upMsg=recvBuf;
+					assert(strlen(recvBuf)>0);
 					upMsgType=jcAtmcConvertDLL::zwGetJcJsonMsgType(recvBuf);
 					LOG(INFO)<<"收到锁具返回消息.类型是"<<upMsgType<<endl;
 					string outXML;

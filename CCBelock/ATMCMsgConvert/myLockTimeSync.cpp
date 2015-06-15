@@ -203,11 +203,14 @@ namespace jcAtmcConvertDLL {
 	//获取XML报文类型
 	string zwGetJcxmlMsgType(const char *jcXML) 
 	{
+		assert(NULL!=jcXML);
+		assert(strlen(jcXML)>0);
 		ptree ptccb;
 		std::stringstream ss;
 		ss << jcXML;
 		read_xml(ss, ptccb);
 		string msgType=ptccb.get<string>("root.TransCode");		
+		assert(msgType.size()>0);
 		return msgType;
 	}
 
@@ -215,11 +218,14 @@ namespace jcAtmcConvertDLL {
 	//获取JSON报文类型
 	string zwGetJcJsonMsgType(const char *jcJson) 
 	{
+		assert(NULL!=jcJson);
+		assert(strlen(jcJson)>0);
 		ptree ptjc;
 		std::stringstream ss;
 		ss << jcJson;
 		read_json(ss, ptjc);
 		string msgType=ptjc.get<string>("Command");		
+		assert(msgType.size()>0);
 		return msgType;
 	}
 
