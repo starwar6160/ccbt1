@@ -45,6 +45,8 @@ namespace jcAtmcConvertDLL {
 		ptccb.put("root.NodeTemp", lockStatusStrings.nodeTemp);
 		ptccb.put("root.PswTryAlert", lockStatusStrings.PswTryAlert);
 		ptccb.put("root.LockOverTime", lockStatusStrings.LockOverTime);
+		//20150906.1443.潘飞为公安部一所检测，要求我修改769版本基础上做个临时版本增加这一项
+		ptccb.put("root.keyboardalarm", lockStatusStrings.keyboardalarm);
 	}
 
 	//读取日志
@@ -118,6 +120,8 @@ namespace jcAtmcConvertDLL {
 		ptccb.put("root.NodeTemp", lockStatusStrings.nodeTemp);
 		ptccb.put("root.PswTryAlert", lockStatusStrings.PswTryAlert);
 		ptccb.put("root.LockOverTime", lockStatusStrings.LockOverTime);
+		//20150906.1443.潘飞为公安部一所检测，要求我修改769版本基础上做个临时版本增加这一项
+		ptccb.put("root.keyboardalarm", lockStatusStrings.keyboardalarm);
 	}
 
 }				//namespace jcAtmcConvertDLL{

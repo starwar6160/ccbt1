@@ -70,11 +70,14 @@ void zwLockStatusDataSplit(const char *LockStatus, JCLOCKSTATUS & lst)
 	if (nIndex >= vecSize)
 		return;		//为了预防下位机返回的数据项目不足的临时措施
 	lst.PswTryAlert = StatusVec[nIndex];
-	nIndex++;
+	nIndex++;	
 	//20141011.结构体有12个项目，但是下位机返回的只有11项数据，需要万敏修复；
 	if (nIndex >= vecSize)
 		return;		//为了预防下位机返回的数据项目不足的临时措施
 	lst.LockOverTime = StatusVec[nIndex];
+	//20150906.1443.潘飞为公安部一所检测，要求我修改769版本基础上做个临时版本增加这一项
+	nIndex++;
+	lst.keyboardalarm = StatusVec[nIndex];
 }
 
 void zwStatusData2String(const JCLOCKSTATUS & lst, JCLOCKSTATUS & ostr)

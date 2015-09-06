@@ -38,6 +38,7 @@ typedef struct jcLockStatus_t {
 	string nodeTemp;
 	string PswTryAlert;
 	string LockOverTime;
+	string keyboardalarm;	//20150906.1443.潘飞为公安部一所检测，要求我修改769版本基础上做个临时版本增加这一项
 } JCLOCKSTATUS;
 
 namespace jcAtmcConvertDLL {
