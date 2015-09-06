@@ -35,7 +35,7 @@ CCBELOCK_API int	JCAPISTD SetRecvMsgRotine(RecvMsgRotine pRecvMsgFun);
 
 //////////////////////////////////////////////////////////////////////////
 CCBELOCK_API void myLuaBridgeSendJsonAPI(const char *luaScriptFile);
-
+CCBELOCK_API void test906PanFei(void);
 #ifdef __cplusplus
 }
 #endif

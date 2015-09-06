@@ -1,4 +1,5 @@
 #include "stdafx.h"
+#include "CCBelock.h"
 #include "zwCcbElockHdr.h"
 #include "myConvIntHdr.h"
 //20150105.万敏和马浩测试用的东西
@@ -250,4 +251,14 @@ namespace jcAtmcConvertDLL {
 		}		
 		return JCMSG_INVALID_TYPE;
 	}
+
 }				//namespace jcAtmcConvertDLL{
+
+void test906PanFei(void)
+{
+	const char *my906Json = "{\"Command\":\"Lock_Alarm_Info\",\"Lock_Time\":1441524494,\"Atm_Serial\":\"\",\"Lock_Serial\":\"515066001007\",\"Lock_Status\":\"1,0,0,0,0,0,0,0,33,0,0,1\"}";
+	string ccbXML;
+	jcAtmcConvertDLL::zwJCjson2CCBxml(my906Json, ccbXML);
+	cout << "json=" << endl << my906Json << endl;
+	cout << "XML=" << endl << ccbXML << endl;
+}

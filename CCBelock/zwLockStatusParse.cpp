@@ -30,6 +30,7 @@ void zwLockStatusDataSplit(const char *LockStatus, JCLOCKSTATUS & lst)
 		lst.LogGenDate = StatusVec[0];
 		nIndex = 1;
 	}
+#endif // _DEBUG_20150906PANFEI_TMP
 	if (nIndex >= vecSize)
 		return;		//为了预防下位机返回的数据项目不足的临时措施
 	lst.ActiveStatus = StatusVec[nIndex];

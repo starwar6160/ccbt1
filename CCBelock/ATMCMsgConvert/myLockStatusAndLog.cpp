@@ -14,6 +14,9 @@ namespace jcAtmcConvertDLL {
 		    //"Lock_Time": "1408434961",
 		    //"Lock_Serial": "A3KE2OK256EO2SPE",
 		    //"Lock_Status": "0,0,0,1,100,0,1,20,100,0,0"
+		//20150906.例子json数据：
+		//{"Command":"Lock_Alarm_Info","Lock_Time":1441524494,"Atm_Serial":"",
+		//"Lock_Serial":"515066001007","Lock_Status":"1,0,0,0,0,0,0,0,33,0,0,1"}
 		    //无用的形式化部分
 		    ptccb.put(CCBSTR_CODE, "0002");
 		ptccb.put(CCBSTR_NAME, "QueryForLockStatus");

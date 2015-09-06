@@ -1,6 +1,8 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2010
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.31101.0
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "HidProtocol", "CCBelock\CCBelock.vcxproj", "{2466CA9D-28E7-4156-B35E-B1D595ED5F99}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "eLockTest1", "eLockTest1\eLockTest1.vcxproj", "{F5F5FDD3-71E8-4878-BB6A-9B295C790FC4}"
@@ -13,6 +15,11 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ccbElockCSLib107", "ccbElockCSLib107\ccbElockCSLib107.csproj", "{93F091AE-73C0-48FE-ACB1-080DCAA94779}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "jcMultiHID15", "jcMultiHID15\jcMultiHID15.vcxproj", "{938A43DE-CEB3-4EA2-B9BF-D5A05E026E01}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "atmcDLLTest906", "atmcDLLTest906\atmcDLLTest906.vcxproj", "{74DCB539-5861-4F0B-9FFA-683A615EB657}"
+	ProjectSection(ProjectDependencies) = postProject
+		{2466CA9D-28E7-4156-B35E-B1D595ED5F99} = {2466CA9D-28E7-4156-B35E-B1D595ED5F99}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -86,6 +93,20 @@ Global
 		{938A43DE-CEB3-4EA2-B9BF-D5A05E026E01}.Release|Win32.ActiveCfg = Release|Win32
 		{938A43DE-CEB3-4EA2-B9BF-D5A05E026E01}.Release|Win32.Build.0 = Release|Win32
 		{938A43DE-CEB3-4EA2-B9BF-D5A05E026E01}.Release|x86.ActiveCfg = Release|Win32
+		{74DCB539-5861-4F0B-9FFA-683A615EB657}.Debug|Any CPU.ActiveCfg = Debug|Win32
+		{74DCB539-5861-4F0B-9FFA-683A615EB657}.Debug|Mixed Platforms.ActiveCfg = Debug|Win32
+		{74DCB539-5861-4F0B-9FFA-683A615EB657}.Debug|Mixed Platforms.Build.0 = Debug|Win32
+		{74DCB539-5861-4F0B-9FFA-683A615EB657}.Debug|Win32.ActiveCfg = Debug|Win32
+		{74DCB539-5861-4F0B-9FFA-683A615EB657}.Debug|Win32.Build.0 = Debug|Win32
+		{74DCB539-5861-4F0B-9FFA-683A615EB657}.Debug|x86.ActiveCfg = Debug|Win32
+		{74DCB539-5861-4F0B-9FFA-683A615EB657}.Debug|x86.Build.0 = Debug|Win32
+		{74DCB539-5861-4F0B-9FFA-683A615EB657}.Release|Any CPU.ActiveCfg = Release|Win32
+		{74DCB539-5861-4F0B-9FFA-683A615EB657}.Release|Mixed Platforms.ActiveCfg = Release|Win32
+		{74DCB539-5861-4F0B-9FFA-683A615EB657}.Release|Mixed Platforms.Build.0 = Release|Win32
+		{74DCB539-5861-4F0B-9FFA-683A615EB657}.Release|Win32.ActiveCfg = Release|Win32
+		{74DCB539-5861-4F0B-9FFA-683A615EB657}.Release|Win32.Build.0 = Release|Win32
+		{74DCB539-5861-4F0B-9FFA-683A615EB657}.Release|x86.ActiveCfg = Release|Win32
+		{74DCB539-5861-4F0B-9FFA-683A615EB657}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
