@@ -25,6 +25,7 @@ void zwLockStatusDataSplit(const char *LockStatus, JCLOCKSTATUS & lst)
 	int vecSize = StatusVec.size();
 	if (vecSize == 0)
 		return;
+#ifdef _DEBUG_20150906PANFEI_TMP
 	if (vecSize == 12) {
 		//有万敏要求加上的日期字段的话，就从1开始
 		lst.LogGenDate = StatusVec[0];
