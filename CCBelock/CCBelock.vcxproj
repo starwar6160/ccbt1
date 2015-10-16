@@ -65,8 +65,8 @@
       <GenerateMapFile>false</GenerateMapFile>
       <MapExports>false</MapExports>
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
-      <AdditionalDependencies>setupapi.lib;zwBaseLibStatic.lib;libglog_staticS.lib;lua51LibStatic.lib;gtestStatic.lib;gtest_mainStatic.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <ShowProgress>LinkVerboseLib</ShowProgress>
+      <AdditionalDependencies>setupapi.lib;gtestStatic.lib;libglog_staticS.lib;lua523LibS.lib;zwBaseLibStatic.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <ShowProgress>NotSet</ShowProgress>
     </Link>
     <PostBuildEvent>
       <Command>
@@ -95,7 +95,7 @@
       <ModuleDefinitionFile>ccbElock.def</ModuleDefinitionFile>
       <AdditionalLibraryDirectories>$(BOOST)\lib;$(ZWSRC)\2014BinOut\$(Configuration)\</AdditionalLibraryDirectories>
       <GenerateMapFile>false</GenerateMapFile>
-      <AdditionalDependencies>setupapi.lib;zwBaseLibStatic.lib;libglog_staticS.lib;lua51LibStatic.lib;gtestStatic.lib;gtest_mainStatic.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>setupapi.lib;gtestStatic.lib;libglog_staticS.lib;lua523LibS.lib;zwBaseLibStatic.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <IgnoreSpecificDefaultLibraries>
       </IgnoreSpecificDefaultLibraries>
       <ShowProgress>NotSet</ShowProgress>
