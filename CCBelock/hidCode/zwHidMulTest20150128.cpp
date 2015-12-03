@@ -566,11 +566,13 @@ namespace zwHidGTest20150130{
 	TEST_F(ATMCDLLSelfTest, jcHidDev424TestLongStable)
 	{			
 		Sleep(3000);
+		LOG(INFO)<<"Before Open JinChu ELock"<<endl;
 		EXPECT_EQ(ELOCK_ERROR_SUCCESS,Open(22));
+		LOG(INFO)<<"After Open JinChu ELock"<<endl;
 		
 		for (int i=0;i<
 			//12*60*9;
-			2;
+			1;
 			i++)
 		{		 
 			SetRecvMsgRotine(myATMCRecvMsgRotine);	
@@ -578,13 +580,13 @@ namespace zwHidGTest20150130{
 
 #define _DEBUG508A1
 #ifdef _DEBUG508A1
-			EXPECT_EQ(ELOCK_ERROR_SUCCESS,Notify(g_msg00));	
-			//EXPECT_EQ(ELOCK_ERROR_SUCCESS,Notify(g_msg02));	
+			//EXPECT_EQ(ELOCK_ERROR_SUCCESS,Notify(g_msg00));				
+			EXPECT_EQ(ELOCK_ERROR_SUCCESS,Notify(g_msg02));	
 			//Sleep(2000);
 			//myWaitForRecvKeyPress424();			
 			//EXPECT_EQ(1,G_TESTCB_SUCC);
-			EXPECT_EQ(ELOCK_ERROR_SUCCESS,Notify(g_msg01));	
-			Sleep(3000);
+			//EXPECT_EQ(ELOCK_ERROR_SUCCESS,Notify(g_msg01));	
+			//Sleep(3000);
 			//myWaitForRecvKeyPress424();
 			//EXPECT_EQ(1,G_TESTCB_SUCC);			
 #else
@@ -593,9 +595,9 @@ namespace zwHidGTest20150130{
 			//myWaitForRecvKeyPress424();
 			//EXPECT_EQ(1,G_TESTCB_SUCC);
 #endif // _DEBUG508A1
-			Sleep(1000);
+			//Sleep(1000);
 		}		
-		printf("SLEEP 5 SEC BEFORE PROGRAM END\n");
+		//printf("SLEEP 5 SEC BEFORE PROGRAM END\n");
 		//测试代码晚一点结束，以便锁具后续较慢报文能收到
 		Sleep(15000);
 		EXPECT_EQ(ELOCK_ERROR_SUCCESS,Close());
@@ -639,6 +641,7 @@ void cdecl myATMCRecvMsgRotine(const char *pszMsg)
 	//assert(pszMsg != NULL && strlen(pszMsg) > 42);
 	//boost::mutex::scoped_lock lock(zwCfg::ComPort_mutex);
 	//输入必须有内容，但是最大不得长于下位机内存大小，做合理限制
+	LOG(INFO)<<"锁具返回的消息回掉函数开始"<<endl;
 	assert(NULL != pszMsg);
 	int inlen = strlen(pszMsg);
 	if (0==inlen)
@@ -676,6 +679,7 @@ void cdecl myATMCRecvMsgRotine(const char *pszMsg)
 		nUpCount++;
 		LOG(INFO)<<"604LastUpMsg Error Count= "<<nUpErrCount<<" nUpCount="<<nUpCount<<endl;	
 		VLOG(3)<<"JcUpMsgType="<<msgType<<endl;
+		LOG(INFO)<<"锁具返回的消息回掉函数结束"<<endl;
 	}	
 }
 

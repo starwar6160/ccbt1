@@ -232,7 +232,7 @@ uint32_t zwJcHidDbg15A::PushJson(const char *strJsonCmd)
 			else
 			{
 				LOG(WARNING)<<__FUNCTION__<<" Push Data to jcHid Device "<<m_dev.hid_device<<" Fail"<<endl;
-				Sleep(1000);
+				Sleep(1000);	//下发Json报文给锁具
 				count++;
 			}
 			//最多重试3次发送
@@ -439,8 +439,8 @@ void jcMulHidEnum( const int hidPid,string &jcDevListJson )
 	write_json(ss, pt);
 	jcDevListJson=ss.str();
 	LOG(INFO)<<"jcDevListJson=\n"<<jcDevListJson;
-	//经过实验，美剧完毕设备至少要等待900毫秒以后，才能再次打开设备，所以直接在此等待1000毫秒以便外部使用
-	Sleep(1000);
+	//经过实验，枚举完毕设备至少要等待900毫秒以后，才能再次打开设备，所以直接在此等待1000毫秒以便外部使用
+	Sleep(1000);	//枚举完毕设备后等待起码900毫秒才能再次打开设备
 }
 
 uint32_t zwSnToHashID( const char* DrivesTypePID, const char * DrivesIdSN)
@@ -681,6 +681,6 @@ void zwGetHidDevSerialTest126()
 		}
 		cur_dev = cur_dev->next;
 	}
-	Sleep(1000);
+	Sleep(1000);	//zwGetHidDevSerialTest126
 }
 

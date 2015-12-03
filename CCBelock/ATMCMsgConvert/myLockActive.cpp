@@ -87,8 +87,12 @@ namespace jcAtmcConvertDLL {
 		ActiveResult = ptjc.get < int >("State");
 		ptccb.put("root.ActiveResult", ActiveResult);
 		//1.1版本里面下位机解密了ECIES加密的PSK并在Lock_Init_Info字段返回
-		ptccb.put("root.ActInfo",
-			  ptjc.get < string > ("Lock_Init_Info"));
+		string lActInfo=ptjc.get < string > ("Lock_Init_Info");
+		if (lActInfo.length()==0)
+		{
+			lActInfo="ErrorGetActInfoFromJinChuELock";
+		}
+		ptccb.put("root.ActInfo",lActInfo);
 	}
 
 }				//namespace jcAtmcConvertDLL{

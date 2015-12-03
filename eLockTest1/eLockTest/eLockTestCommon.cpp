@@ -10,7 +10,7 @@ void ccbElockTest::SetUp()
 	const char *errmsg="Wait 9 Seconds for Plug Out/In Test 20141225\n";
 	printf(errmsg);
 	OutputDebugStringA(errmsg);
-	Sleep(9000);
+	Sleep(9000);	//测试开始之前延时9秒
 }
 
 void ccbElockTest::TearDown()

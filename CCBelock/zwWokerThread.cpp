@@ -80,14 +80,14 @@ namespace zwccbthr {
 
 	void my515LockRecvThr(void)
 	{
-		ZWERROR("与锁具之间的数据接收线程启动.20150615.v768")
+		ZWERROR("与锁具之间的数据接收线程启动.20151203.v777")
 		const int BLEN = 1024;
 		char recvBuf[BLEN];			
 		using zwccbthr::s_jcNotify;
 		string upMsgType,downMsgType;
 		string upMsg,downMsg;
 
-		Sleep(1300);
+		//Sleep(1300);	//接收锁具上行报文的线程启动前的适当延迟
 		while (1)
 		{		
 			{	//收发thrhid_mutex开始
@@ -95,6 +95,7 @@ namespace zwccbthr {
 			VLOG(4)<<__FUNCTION__<<"START"<<endl;
 			//VLOG(3)<<__FUNCTION__;				
 			boost::mutex::scoped_lock lock(thrhid_mutex);		
+			VLOG(4)<<"ZJY20151203OPENLOCK8S.P1"<<endl;
 			JCHID_STATUS sts=JCHID_STATUS_FAIL;			
 			{
 				//boost::mutex::scoped_lock lock(thrhid_mutex);						
@@ -183,7 +184,7 @@ namespace zwccbthr {
 			}while(strlen(recvBuf)>0);
 		}	//收发thrhid_mutex结束
 			condJcLock.notify_all();	
-			Sleep(500);
+			Sleep(500);	//接收完毕一轮报文后暂停500毫秒给下发报文腾出时间；
 			VLOG(4)<<__FUNCTION__<<"END"<<endl;
 		}
 
@@ -191,7 +192,7 @@ namespace zwccbthr {
 
 	void my515UpMsgThr(void)
 	{
-		ZWERROR("与ATMC之间的数据上传线程启动.20150515.1655")
+		ZWERROR("与ATMC之间的数据上传线程启动.20151203.1720")
 			while (1)
 			{
 				//LOG(ERROR)<<__FUNCTION__<<"RUNNING " <<time(NULL)<<endl;
