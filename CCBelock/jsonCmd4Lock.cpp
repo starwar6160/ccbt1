@@ -95,6 +95,7 @@ namespace jcLockJsonCmd_t2015a27{
 			//////////////////////////////////////////////////////////////////////////
 			ZWWARN(pszJson);
 			Sleep(50);
+			VLOG(3)<<__FUNCTION__<<"\tSleep 50 ms"<<endl;
 			g_jhc->SendJson(pszJson);
 			return ELOCK_ERROR_SUCCESS;
 		}

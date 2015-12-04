@@ -94,8 +94,9 @@ namespace zwccbthr {
 			//LOG(ERROR)<<__FUNCTION__<<"RUNNING " <<time(NULL)<<endl;
 			VLOG(4)<<__FUNCTION__<<"START"<<endl;
 			//VLOG(3)<<__FUNCTION__;				
+			VLOG(3)<<__FUNCTION__<<" scoped_lock lock(thrhid_mutex) START"<<endl;
 			boost::mutex::scoped_lock lock(thrhid_mutex);		
-			VLOG(4)<<"ZJY20151203OPENLOCK8S.P1"<<endl;
+			
 			JCHID_STATUS sts=JCHID_STATUS_FAIL;			
 			{
 				//boost::mutex::scoped_lock lock(thrhid_mutex);						
@@ -182,9 +183,12 @@ namespace zwccbthr {
 					zwccbthr::myWaittingReturnMsg=false;
 				}
 			}while(strlen(recvBuf)>0);
+			VLOG(3)<<__FUNCTION__<<" scoped_lock lock(thrhid_mutex) END"<<endl;
 		}	//收发thrhid_mutex结束
+			VLOG(3)<<__FUNCTION__<<" condJcLock.notify_all();"<<endl;
 			condJcLock.notify_all();	
 			Sleep(500);	//接收完毕一轮报文后暂停500毫秒给下发报文腾出时间；
+			VLOG(3)<<__FUNCTION__<<"\tSleep 500 ms"<<endl;
 			VLOG(4)<<__FUNCTION__<<"END"<<endl;
 		}
 
@@ -200,7 +204,9 @@ namespace zwccbthr {
 				VLOG(4)<<__FUNCTION__<<"START"<<endl;
 				//等待数据接收线程操作完毕“收到的数据”队列
 				//获得该队列的锁的所有权，开始操作
+				VLOG(3)<<__FUNCTION__<<" scoped_lock lock(thrhid_mutex) START"<<endl;
 				boost::mutex::scoped_lock lock(thrhid_mutex);				
+				VLOG(3)<<__FUNCTION__<<"condJcLock.wait(lock);"<<endl;
 				condJcLock.wait(lock);		
 				//只有当数据收发线程不在等待一条一问一答的返回报文期间
 				// 才上传该被延迟上传的报文以免打乱一问一答
@@ -217,7 +223,9 @@ namespace zwccbthr {
 				//g_dqLockUpMsg.clear();				
 				VLOG(4)<<__FUNCTION__<<"END"<<endl;
 				//操作完毕“收到的数据”队列，释放锁的所有权
+				VLOG(3)<<__FUNCTION__<<" condJcLock.notify_all();"<<endl;
 				condJcLock.notify_all();	
+				VLOG(3)<<__FUNCTION__<<" scoped_lock lock(thrhid_mutex) END"<<endl;
 			}
 	}
 

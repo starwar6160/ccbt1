@@ -565,7 +565,7 @@ namespace zwHidGTest20150130{
 
 	TEST_F(ATMCDLLSelfTest, jcHidDev424TestLongStable)
 	{			
-		Sleep(3000);
+		//Sleep(1000);
 		LOG(INFO)<<"Before Open JinChu ELock"<<endl;
 		EXPECT_EQ(ELOCK_ERROR_SUCCESS,Open(22));
 		LOG(INFO)<<"After Open JinChu ELock"<<endl;
@@ -599,7 +599,7 @@ namespace zwHidGTest20150130{
 		}		
 		//printf("SLEEP 5 SEC BEFORE PROGRAM END\n");
 		//测试代码晚一点结束，以便锁具后续较慢报文能收到
-		Sleep(15000);
+		Sleep(5000);
 		EXPECT_EQ(ELOCK_ERROR_SUCCESS,Close());
 		LOG(INFO)<<"LISTOFUPMSG20150604"<<endl;
 		string upAllMsg;

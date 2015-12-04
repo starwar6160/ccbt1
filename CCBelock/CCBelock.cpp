@@ -140,7 +140,9 @@ CCBELOCK_API long JCAPISTD Close()
 
 CCBELOCK_API long JCAPISTD Notify(const char *pszMsg)
 {
+	VLOG(3)<<__FUNCTION__<<" scoped_lock lock(thrhid_mutex) START"<<endl;
 	boost::mutex::scoped_lock lock(zwccbthr::thrhid_mutex);
+	VLOG(3)<<__FUNCTION__<<"condJcLock.wait(lock);"<<endl;
 	zwccbthr::condJcLock.wait(lock);							
 	//LOG(ERROR)<<__FUNCTION__<<"RUNNING " <<time(NULL)<<endl;
 	//通过在Notify函数开始检测是否端口已经打开，没有打开就等待一段时间，避免
@@ -184,6 +186,7 @@ CCBELOCK_API long JCAPISTD Notify(const char *pszMsg)
 		assert(strJsonSend.length() > 9);	//json最基本的符号起码好像要9个字符左右
 		VLOG_IF(4,strJsonSend.size()>0)<<"strJsonSend="<<strJsonSend;
 		Sleep(50);			
+		VLOG(3)<<__FUNCTION__<<"\tSleep 50 ms"<<endl;
 
 		//现在开始一问一答过程，在获得对口回复报文之前不得上传其他报文
 		
@@ -191,6 +194,7 @@ CCBELOCK_API long JCAPISTD Notify(const char *pszMsg)
 		//int sts=g_jhc->SendJson(strJsonSend.c_str());
 		//VLOG_IF(1,JCHID_STATUS_OK!=sts)<<"423下发消息给锁具异常\n";
 		//zwccbthr::s_jsonCmd=strJsonSend;
+		VLOG(3)<<"condJcLock.notify_all();"<<endl;
 		 zwccbthr::condJcLock.notify_all();	
 //////////////////////////////////////////////////////////////////////////
 		//const int BLEN = 1024;
@@ -202,6 +206,7 @@ CCBELOCK_API long JCAPISTD Notify(const char *pszMsg)
 		//	ZWWARN(recvBuf)
 		//}
 //////////////////////////////////////////////////////////////////////////
+		VLOG(3)<<__FUNCTION__<<" scoped_lock lock(thrhid_mutex) END"<<endl;
 		return ELOCK_ERROR_SUCCESS;
 	}
 	catch(ptree_bad_path & e) {
@@ -229,6 +234,7 @@ CCBELOCK_API long JCAPISTD Notify(const char *pszMsg)
 		ZWFATAL("Notify通过线路发送数据异常，可能网络故障")
 		    return ELOCK_ERROR_CONNECTLOST;
 	}
+	
 }
 
 CCBELOCK_API int JCAPISTD SetRecvMsgRotine(RecvMsgRotine pRecvMsgFun)

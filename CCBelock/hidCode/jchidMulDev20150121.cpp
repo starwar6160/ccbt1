@@ -233,6 +233,7 @@ uint32_t zwJcHidDbg15A::PushJson(const char *strJsonCmd)
 			{
 				LOG(WARNING)<<__FUNCTION__<<" Push Data to jcHid Device "<<m_dev.hid_device<<" Fail"<<endl;
 				Sleep(1000);	//下发Json报文给锁具
+				VLOG(3)<<__FUNCTION__<<"\tSleep 1000 ms"<<endl;
 				count++;
 			}
 			//最多重试3次发送
@@ -355,6 +356,7 @@ void zwJcHidDbg15A::StartRecvThread()
 	//再次使用boost::bind把函数对象与实参绑定到一起，就可以传递给boost::thread作为线程体函数了
 	thr=new boost::thread(boost::bind(memberFunctionWrapper,&m_dev));	
 	Sleep(5);	//等待线程启动完毕，其实也就2毫秒一般就启动了；
+	VLOG(3)<<__FUNCTION__<<"\tSleep 5 ms"<<endl;
 }
 
 void zwJcHidDbg15A::StopRecvThread()
@@ -441,6 +443,7 @@ void jcMulHidEnum( const int hidPid,string &jcDevListJson )
 	LOG(INFO)<<"jcDevListJson=\n"<<jcDevListJson;
 	//经过实验，枚举完毕设备至少要等待900毫秒以后，才能再次打开设备，所以直接在此等待1000毫秒以便外部使用
 	Sleep(1000);	//枚举完毕设备后等待起码900毫秒才能再次打开设备
+	VLOG(3)<<__FUNCTION__<<"\tSleep 1000 ms"<<endl;
 }
 
 uint32_t zwSnToHashID( const char* DrivesTypePID, const char * DrivesIdSN)
@@ -682,5 +685,6 @@ void zwGetHidDevSerialTest126()
 		cur_dev = cur_dev->next;
 	}
 	Sleep(1000);	//zwGetHidDevSerialTest126
+	VLOG(3)<<__FUNCTION__<<"\tSleep 1000 ms"<<endl;
 }
 
