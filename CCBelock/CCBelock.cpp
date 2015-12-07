@@ -140,10 +140,10 @@ CCBELOCK_API long JCAPISTD Close()
 
 CCBELOCK_API long JCAPISTD Notify(const char *pszMsg)
 {
-	VLOG(3)<<__FUNCTION__<<" scoped_lock lock(thrhid_mutex) START"<<endl;
+	VLOG(4)<<__FUNCTION__<<" scoped_lock lock(thrhid_mutex) START"<<endl;
 	boost::mutex::scoped_lock lock(zwccbthr::thrhid_mutex);
-	VLOG(3)<<__FUNCTION__<<"condJcLock.wait(lock);"<<endl;
-	zwccbthr::condJcLock.wait(lock);							
+	VLOG(4)<<__FUNCTION__<<"condJcLock.wait(lock);"<<endl;
+	//zwccbthr::condJcLock.wait(lock);							
 	//LOG(ERROR)<<__FUNCTION__<<"RUNNING " <<time(NULL)<<endl;
 	//通过在Notify函数开始检测是否端口已经打开，没有打开就等待一段时间，避免
 	//2014年11月初在广州遇到的没有连接锁具时，ATMC执行0002报文查询锁具状态，
@@ -194,8 +194,8 @@ CCBELOCK_API long JCAPISTD Notify(const char *pszMsg)
 		//int sts=g_jhc->SendJson(strJsonSend.c_str());
 		//VLOG_IF(1,JCHID_STATUS_OK!=sts)<<"423下发消息给锁具异常\n";
 		//zwccbthr::s_jsonCmd=strJsonSend;
-		VLOG(3)<<"condJcLock.notify_all();"<<endl;
-		 zwccbthr::condJcLock.notify_all();	
+		VLOG(4)<<"condJcLock.notify_all();"<<endl;
+		 //zwccbthr::condJcLock.notify_all();	
 //////////////////////////////////////////////////////////////////////////
 		//const int BLEN = 1024;
 		//char recvBuf[BLEN + 1];			

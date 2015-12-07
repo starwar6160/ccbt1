@@ -563,6 +563,7 @@ namespace zwHidGTest20150130{
 	vector<string> g_vecTestResultXML;
 
 
+#ifdef _DEBUG20151207SPEEDTEST
 	TEST_F(ATMCDLLSelfTest, jcHidDev424TestLongStable)
 	{			
 		//Sleep(1000);
@@ -628,7 +629,20 @@ namespace zwHidGTest20150130{
 		}
 		cout<<endl;
 	}
+#endif // _DEBUG20151207SPEEDTEST
 
+	TEST_F(ATMCDLLSelfTest, jcHidDev20151207SpeedTestInATMCDLL)
+	{			
+		LOG(INFO)<<"Before Open JinChu ELock"<<endl;
+		EXPECT_EQ(ELOCK_ERROR_SUCCESS,Open(22));
+		LOG(INFO)<<"After Open JinChu ELock"<<endl;
+
+			SetRecvMsgRotine(myATMCRecvMsgRotine);	
+			EXPECT_EQ(ELOCK_ERROR_SUCCESS,Notify(g_msg02));	
+		//测试代码晚一点结束，以便锁具后续较慢报文能收到
+		Sleep(5000);
+		EXPECT_EQ(ELOCK_ERROR_SUCCESS,Close());
+	}
 }	//namespace zwHidGTest20150130{
 
 

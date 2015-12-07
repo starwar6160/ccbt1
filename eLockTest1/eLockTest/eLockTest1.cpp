@@ -55,35 +55,9 @@ void myMulHidDevJsonTest20150120A1();
 
 
 //void zwCCBDateTime2UTC(const char *ccbDateLocal,const char *ccbTimeLocal,time_t *outUTC);
-int _tmain(int argc, TCHAR * argv[])
-{
-	const char *devSN3="PAAbAAAAAAAAgAKE";
-	const char *jcHidJsonMsg116t1="{\"command\": \"Test_Motor_Open\",\"cmd_id\": \"1234567890\",\"State\": \"test\"}";
-
-	//return eLockGoogleTest2014(argc, argv);
-
-	//eLockJsonTest20150106();
-	//luaSendJsonTest1(argc, argv);
-	//myMulHidDevJsonTest20150116A();
-	
-	//myMulHidDevJsonTest20150120A();
-	//myMulHidDevJsonTest20150120A1();
-	//zwTest121a1();
-	//myHidSerialTest126();
-	//myMulHidDevJsonTest20150116B();
-	//time_t dstDateTime=0;
-	//zwCCBDateTime2UTC("20140515","000000",&dstDateTime);
-	//printf("dstDateTime=%u\n",dstDateTime);
-	zwStartGtestInDLL();
 	
 	
 
-#ifndef _DEBUG
-	printf("运行结束，按回车键退出，之后请查看JCLOG423目录下的日志文件\n");
-	int aa=getchar();
-#endif // _DEBUG
-	return 0;
-}
 
 int eLockGoogleTest2014( int argc, _TCHAR ** argv )
 {
@@ -276,4 +250,27 @@ void myMulHidDevJsonTest20150120A1()
 		Sleep(500);
 		cout<<"Count "<<i<<" Complete"<<endl;
 	}
+}
+
+int _tmain(int argc, TCHAR * argv[])
+{
+	const char *devSN3="PAAbAAAAAAAAgAKE";
+	const char *jcHidJsonMsg116t1="{\"command\": \"Test_Motor_Open\",\"cmd_id\": \"1234567890\",\"State\": \"test\"}";
+
+	//zwStartGtestInDLL();
+	eLockGoogleTest2014(argc, argv);
+
+	//eLockJsonTest20150106();
+	//luaSendJsonTest1(argc, argv);
+	//myMulHidDevJsonTest20150116A();
+
+	//myMulHidDevJsonTest20150120A();
+	//myMulHidDevJsonTest20150120A1();
+	//zwTest121a1();
+	//myHidSerialTest126();
+	//myMulHidDevJsonTest20150116B();
+	//time_t dstDateTime=0;
+	//zwCCBDateTime2UTC("20140515","000000",&dstDateTime);
+	//printf("dstDateTime=%u\n",dstDateTime);
+	
 }

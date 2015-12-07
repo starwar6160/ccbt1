@@ -6,7 +6,7 @@ void zwSecboxWDXtest20141023(void);
 
 string s_repActReqXML;	//从锁具收到的激活请求的返回报文
 string s_repLockInitXML;//从锁具收到的初始化请求的返回报文
-
+static const char *g_msg02t="<?xml version='1.0' encoding='UTF-8'?><root><TransCode>0002</TransCode><TransName>QueryForLockStatus</TransName><TransDate>20150401</TransDate><TransTime>084539</TransTime><DevCode>440600300145</DevCode><LockMan></LockMan><LockId></LockId><SpareString1></SpareString1><SpareString2></SpareString2></root>";
  
 //从0号报文返回XML提取公钥并返回
 string myGetPubKeyFromMsg0000Rep(const string msg0000RepXML)
@@ -125,3 +125,15 @@ TEST_F(secBoxTest, WenDingXingTestZJY20141023)
 	zwSecboxWDXtest20141023();
 }
 #endif // _DEBUG_SECBOX_WDXTEST1
+
+
+TEST_F(ccbElockTest, jcHidDev20151207SpeedTestInATMCDLL)
+{			
+	EXPECT_EQ(ELOCK_ERROR_SUCCESS,Open(22));
+
+	SetRecvMsgRotine(myATMCRecvMsgRotine);	
+	EXPECT_EQ(ELOCK_ERROR_SUCCESS,Notify(g_msg02t));	
+	//测试代码晚一点结束，以便锁具后续较慢报文能收到
+	Sleep(5000);
+	EXPECT_EQ(ELOCK_ERROR_SUCCESS,Close());
+}
