@@ -631,6 +631,12 @@ namespace zwHidGTest20150130{
 	}
 #endif // _DEBUG20151207SPEEDTEST
 
+	void zwTestThr1207A1(void)
+	{
+
+	}
+
+
 	TEST_F(ATMCDLLSelfTest, jcHidDev20151207SpeedTestInATMCDLL)
 	{			
 		LOG(INFO)<<"Before Open JinChu ELock"<<endl;
@@ -646,6 +652,18 @@ namespace zwHidGTest20150130{
 }	//namespace zwHidGTest20150130{
 
 
+void cdecl myATMCRecvMsgRotineTest1207(const char *pszMsg)
+{
+	LOG(INFO)<<"锁具返回的消息回调函数2开始"<<endl;
+	assert(NULL != pszMsg);
+	int inlen = strlen(pszMsg);
+	if (inlen>0)
+	{
+		cout<<pszMsg<<endl;
+	}
+	LOG(INFO)<<"锁具返回的消息回调函数2结束"<<endl;
+}
+
 void cdecl myATMCRecvMsgRotine(const char *pszMsg)
 {	
 	static string lastUpMsg;
@@ -655,7 +673,7 @@ void cdecl myATMCRecvMsgRotine(const char *pszMsg)
 	//assert(pszMsg != NULL && strlen(pszMsg) > 42);
 	//boost::mutex::scoped_lock lock(zwCfg::ComPort_mutex);
 	//输入必须有内容，但是最大不得长于下位机内存大小，做合理限制
-	LOG(INFO)<<"锁具返回的消息回掉函数开始"<<endl;
+	LOG(INFO)<<"锁具返回的消息回调函数开始"<<endl;
 	assert(NULL != pszMsg);
 	int inlen = strlen(pszMsg);
 	if (0==inlen)
@@ -663,12 +681,8 @@ void cdecl myATMCRecvMsgRotine(const char *pszMsg)
 		ZWERROR("Callback Function myATMCRecvMsgRotine input is NULL")
 	}
 	VLOG_IF(1,inlen==0)<<"Callback Function myATMCRecvMsgRotine input is NULL";
-	assert(
-		//inlen > 0 && 
-		inlen < JC_MSG_MAXLEN);
-	if (NULL == pszMsg 
-		//|| inlen == 0 
-		|| inlen >= JC_MSG_MAXLEN) {
+	assert(inlen < JC_MSG_MAXLEN);
+	if (NULL == pszMsg || inlen >= JC_MSG_MAXLEN) {
 			VLOG(1)<<"Callback Function myATMCRecvMsgRotine input TOO LONG";
 			return;
 	}
@@ -693,7 +707,7 @@ void cdecl myATMCRecvMsgRotine(const char *pszMsg)
 		nUpCount++;
 		LOG(INFO)<<"604LastUpMsg Error Count= "<<nUpErrCount<<" nUpCount="<<nUpCount<<endl;	
 		VLOG(3)<<"JcUpMsgType="<<msgType<<endl;
-		LOG(INFO)<<"锁具返回的消息回掉函数结束"<<endl;
+		LOG(INFO)<<"锁具返回的消息回调函数结束"<<endl;
 	}	
 }
 

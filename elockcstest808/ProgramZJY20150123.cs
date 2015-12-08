@@ -37,7 +37,7 @@ namespace ConsoleApplication1
 
         //public ReturnMessage _ReturnMessage = new ReturnMessage(MyReturnMessage);
 
-        static void Main(string[] args)
+        static void MainZJY(string[] args)
         {
             //ReturnMessage _ReturnMessage = new ReturnMessage(MyReturnMessage);
             //SetReturnMessage(_ReturnMessage);

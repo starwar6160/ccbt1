@@ -128,10 +128,10 @@ TEST_F(secBoxTest, WenDingXingTestZJY20141023)
 
 
 TEST_F(ccbElockTest, jcHidDev20151207SpeedTestInATMCDLL)
-{			
-	EXPECT_EQ(ELOCK_ERROR_SUCCESS,Open(22));
-
+{	
 	SetRecvMsgRotine(myATMCRecvMsgRotine);	
+	EXPECT_EQ(ELOCK_ERROR_SUCCESS,Open(22));		
+	//Sleep(3000);
 	EXPECT_EQ(ELOCK_ERROR_SUCCESS,Notify(g_msg02t));	
 	//测试代码晚一点结束，以便锁具后续较慢报文能收到
 	Sleep(5000);
