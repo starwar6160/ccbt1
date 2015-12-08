@@ -108,9 +108,10 @@ namespace zwccbthr {
 					downMsg=s_jcNotify.front();
 					assert(downMsg.size()>0);
 					downMsgType=jcAtmcConvertDLL::zwGetJcJsonMsgType(downMsg.c_str());
-					LOG(WARNING)<<"发送给锁具的消息.类型是"<<downMsgType<<endl;
+					LOG(WARNING)<<"发送给锁具的消息.类型是"<<downMsgType<<endl;					
 					LOG(INFO)<<"发送给锁具的消息.内容是"<<downMsg<<endl;
 					sts=static_cast<JCHID_STATUS>( g_jhc->SendJson(s_jcNotify.front().c_str()));
+					
 					//断线重连探测机制
 					if (JCHID_STATUS_OK!=static_cast<JCHID_STATUS>(sts))
 					{
@@ -123,7 +124,9 @@ namespace zwccbthr {
 				//考虑到有可能锁具单向上行信息导致一条下发信息有多条
 				//上行信息，所以多读取几次直到读不到信息为止
 				memset(recvBuf,0,BLEN);
+				VLOG(3)<<"接收数据的RecvJson之前"<<endl;
 				sts=static_cast<JCHID_STATUS>(g_jhc->RecvJson(recvBuf,BLEN));				
+				VLOG(3)<<"接收数据的RecvJson之后 收到"<<strlen(recvBuf)<<"字节的数据"<<endl;
 				if (strlen(recvBuf)>0)
 				{
 					//boost::mutex::scoped_lock lock(thrhid_mutex);

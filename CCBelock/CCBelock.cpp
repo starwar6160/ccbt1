@@ -356,7 +356,7 @@ namespace jchidDevice2015{
 		int outLen=0;
 
 		JCHID_STATUS sts=JCHID_STATUS_FAIL;
-		sts=jcHidRecvData(&m_jcElock,recvJson, bufLen, &outLen,2000);
+		sts=jcHidRecvData(&m_jcElock,recvJson, bufLen, &outLen,0);
 			
 		return sts;
 	}
