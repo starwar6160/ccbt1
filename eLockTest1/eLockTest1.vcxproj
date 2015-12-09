@@ -60,7 +60,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(ZWSRC)\2014BinOut\$(Configuration)\;$(ZWLIB)\gtest\msvc\gtest-md\$(Configuration)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(BOOST)\lib;$(ZWSRC)\2014BinOut\$(Configuration)\;$(ZWLIB)\gtest\msvc\gtest-md\$(Configuration)</AdditionalLibraryDirectories>
       <AdditionalDependencies>jclmsCCB2014.lib;zwBaseLibStatic.lib;HidProtocol.lib;lua51.lib;MSVCRTD.LIB;LIBCMTD.LIB;%(AdditionalDependencies)</AdditionalDependencies>
       <ShowProgress>NotSet</ShowProgress>
       <IgnoreSpecificDefaultLibraries>MSVCRTD.LIB;LITCMTD.LIB</IgnoreSpecificDefaultLibraries>
@@ -84,7 +84,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>$(ZWSRC)\2014BinOut\$(Configuration)\;$(ZWLIB)\gtest\msvc\gtest-md\$(Configuration)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(BOOST)\lib;$(ZWSRC)\2014BinOut\$(Configuration)\;$(ZWLIB)\gtest\msvc\gtest-md\$(Configuration)</AdditionalLibraryDirectories>
       <AdditionalDependencies>jclmsCCB2014.lib;zwBaseLibStatic.lib;HidProtocol.lib;lua51.lib;MSVCRT.LIB;LIBCMT.LIB;%(AdditionalDependencies)</AdditionalDependencies>
       <IgnoreSpecificDefaultLibraries>MSVCRT.LIB;LIBCMT.LIB;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
     </Link>

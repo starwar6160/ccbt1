@@ -105,16 +105,6 @@ CCBELOCK_API long JCAPISTD Open(long lTimeOut)
 		VLOG_IF(1,JCHID_STATUS_OK!=elockStatus)<<"ZIJIN522 Open ELOCK_ERROR_CONNECTLOST Send get_firmware_version to JinChu Elock Fail on retry 2!";
 	}
 
-	if (NULL==zwccbthr::opUpMsgThr)
-	{
-		zwccbthr::opUpMsgThr=new boost::thread(zwccbthr::my515UpMsgThr);
-	}	
-
-	if (NULL==zwccbthr::opCommThr)
-	{
-		zwccbthr::opCommThr=new boost::thread(zwccbthr::my515LockRecvThr);
-	}	
-
 	if (JCHID_STATUS_OK==elockStatus)
 	{
 		return ELOCK_ERROR_SUCCESS;
@@ -140,6 +130,16 @@ CCBELOCK_API long JCAPISTD Close()
 
 CCBELOCK_API long JCAPISTD Notify(const char *pszMsg)
 {
+	if (NULL==zwccbthr::opUpMsgThr)
+	{
+		zwccbthr::opUpMsgThr=new boost::thread(zwccbthr::my515UpMsgThr);
+	}	
+
+	if (NULL==zwccbthr::opCommThr)
+	{
+		zwccbthr::opCommThr=new boost::thread(zwccbthr::my515LockRecvThr);
+	}	
+
 	VLOG(4)<<__FUNCTION__<<" scoped_lock lock(thrhid_mutex) START"<<endl;
 	boost::mutex::scoped_lock lock(zwccbthr::thrhid_mutex);
 	VLOG(4)<<__FUNCTION__<<"condJcLock.wait(lock);"<<endl;
