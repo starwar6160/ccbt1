@@ -22,7 +22,7 @@ using boost::property_tree::ptree_bad_path;
 using jchidDevice2015::jcHidDevice;
 
 extern jcHidDevice *g_jhc;	//实际的HID设备类对象
-
+#define DBGTHRID	VLOG(3)<<"["<<__FUNCTION__<<"] ThreadID of Caller is "<<GetCurrentThreadId()<<endl;
 
 namespace zwccbthr {
 	void ThreadLockRecv();	//与锁具之间的通讯线程
@@ -88,6 +88,7 @@ extern int G_TESTCB_SUCC;	//是否成功调用了回调函数的一个标志位，仅仅测试用
 
 CCBELOCK_API long JCAPISTD Open(long lTimeOut)
 {
+	DBGTHRID
 	VLOG_IF(3,lTimeOut<=0 || lTimeOut>60)<<"ZIJIN423 Open Invalid Para 20150423.1559";
 	if (NULL==g_jhc)
 	{
@@ -118,6 +119,7 @@ CCBELOCK_API long JCAPISTD Open(long lTimeOut)
 
 CCBELOCK_API long JCAPISTD Close()
 {
+	DBGTHRID
 	VLOG(2)<<"ZIJIN423 Close ELOCK_ERROR_SUCCESS";
 	zwccbthr::opCommThr=NULL;
 	if (NULL!=g_jhc)
@@ -130,6 +132,7 @@ CCBELOCK_API long JCAPISTD Close()
 
 CCBELOCK_API long JCAPISTD Notify(const char *pszMsg)
 {
+	DBGTHRID
 	if (NULL==zwccbthr::opUpMsgThr)
 	{
 		zwccbthr::opUpMsgThr=new boost::thread(zwccbthr::my515UpMsgThr);
@@ -239,6 +242,7 @@ CCBELOCK_API long JCAPISTD Notify(const char *pszMsg)
 
 CCBELOCK_API int JCAPISTD SetRecvMsgRotine(RecvMsgRotine pRecvMsgFun)
 {
+	DBGTHRID
 	G_TESTCB_SUCC=0;
 	//ZWFUNCTRACE 
 	//boost::mutex::scoped_lock lock(zwCfg::ComPort_mutex);

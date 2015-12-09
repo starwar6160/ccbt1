@@ -6,7 +6,8 @@ void zwSecboxWDXtest20141023(void);
 
 string s_repActReqXML;	//从锁具收到的激活请求的返回报文
 string s_repLockInitXML;//从锁具收到的初始化请求的返回报文
-static const char *g_msg02t="<?xml version='1.0' encoding='UTF-8'?><root><TransCode>0002</TransCode><TransName>QueryForLockStatus</TransName><TransDate>20150401</TransDate><TransTime>084539</TransTime><DevCode>440600300145</DevCode><LockMan></LockMan><LockId></LockId><SpareString1></SpareString1><SpareString2></SpareString2></root>";
+static const char *g_msg02="<?xml version='1.0' encoding='UTF-8'?><root><TransCode>0002</TransCode><TransName>QueryForLockStatus</TransName><TransDate>20150401</TransDate><TransTime>084539</TransTime><DevCode>440600300145</DevCode><LockMan></LockMan><LockId></LockId><SpareString1></SpareString1><SpareString2></SpareString2></root>";
+static const char *g_msg03="<?xml version='1.0' encoding='UTF-8'?><root><TransCode>0003</TransCode><TransName>TimeSync</TransName><TransDate>20150401</TransDate><TransTime>085006</TransTime></root>";
  
 //从0号报文返回XML提取公钥并返回
 string myGetPubKeyFromMsg0000Rep(const string msg0000RepXML)
@@ -129,22 +130,35 @@ TEST_F(secBoxTest, WenDingXingTestZJY20141023)
 
 void zw1209SpeedTestThr1(void)
 {
-	cout<<"Thread\t"<<"["<<__FUNCTION__<<"] ThreadPID="<<GetCurrentThreadId()<<"START"<<endl;
+	cout<<endl<<"Thread\t"<<"["<<__FUNCTION__<<"] ThreadPID=["<<GetCurrentThreadId()<<"]START"<<endl;	
 	SetRecvMsgRotine(myATMCRecvMsgRotine);	
 	EXPECT_EQ(ELOCK_ERROR_SUCCESS,Open(22));		
 	//Sleep(3000);
-	EXPECT_EQ(ELOCK_ERROR_SUCCESS,Notify(g_msg02t));	
+	EXPECT_EQ(ELOCK_ERROR_SUCCESS,Notify(g_msg02));	
 	//测试代码晚一点结束，以便锁具后续较慢报文能收到
 	Sleep(9000);
 	EXPECT_EQ(ELOCK_ERROR_SUCCESS,Close());
-	cout<<"Thread\t"<<"["<<__FUNCTION__<<"] ThreadPID="<<GetCurrentThreadId()<<"END"<<endl;
-	Sleep(3000);
 }
+
+void zw1209SpeedTestThr2(void)
+{
+	cout<<endl<<"Thread\t"<<"["<<__FUNCTION__<<"] ThreadPID=["<<GetCurrentThreadId()<<"]START"<<endl;	
+	SetRecvMsgRotine(myATMCRecvMsgRotine);	
+	EXPECT_EQ(ELOCK_ERROR_SUCCESS,Open(22));		
+	//Sleep(3000);
+	EXPECT_EQ(ELOCK_ERROR_SUCCESS,Notify(g_msg03));	
+	//测试代码晚一点结束，以便锁具后续较慢报文能收到
+	Sleep(9000);
+	EXPECT_EQ(ELOCK_ERROR_SUCCESS,Close());
+}
+
 
 TEST_F(ccbElockTest, jcHidDev20151207SpeedTestInATMCDLL)
 {	
+	boost::thread *thr2=new boost::thread(zw1209SpeedTestThr2);
 	boost::thread *thr1=new boost::thread(zw1209SpeedTestThr1);
-	boost::thread *thr2=new boost::thread(zw1209SpeedTestThr1);
-	thr1->join();
-	thr2->join();
+	//thr2->join();
+	//thr1->join();
+	Sleep(9000);
+	
 }
