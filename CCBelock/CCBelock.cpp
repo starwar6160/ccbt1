@@ -133,19 +133,22 @@ CCBELOCK_API long JCAPISTD Close()
 CCBELOCK_API long JCAPISTD Notify(const char *pszMsg)
 {
 	DBGTHRID
+	LOG(WARNING)<<__FUNCTION__<<" Normal START"<<endl;
 	if (NULL==zwccbthr::opUpMsgThr)
 	{
+		VLOG(3)<<"Start my515UpMsgThr"<<endl;
 		zwccbthr::opUpMsgThr=new boost::thread(zwccbthr::my515UpMsgThr);
 	}	
 
 	if (NULL==zwccbthr::opCommThr)
 	{
+		VLOG(3)<<"Start my515LockRecvThr"<<endl;
 		zwccbthr::opCommThr=new boost::thread(zwccbthr::my515LockRecvThr);
 	}	
 
 	VLOG(4)<<__FUNCTION__<<" scoped_lock lock(thrhid_mutex) START"<<endl;
 	boost::mutex::scoped_lock lock(zwccbthr::thrhid_mutex);
-	VLOG(4)<<__FUNCTION__<<"condJcLock.wait(lock);"<<endl;
+	//VLOG(4)<<__FUNCTION__<<"condJcLock.wait(lock);"<<endl;
 	//zwccbthr::condJcLock.wait(lock);							
 	//LOG(ERROR)<<__FUNCTION__<<"RUNNING " <<time(NULL)<<endl;
 	//通过在Notify函数开始检测是否端口已经打开，没有打开就等待一段时间，避免
@@ -164,10 +167,9 @@ CCBELOCK_API long JCAPISTD Notify(const char *pszMsg)
 		ZWERROR("ZIJIN423 Notify ELOCK_ERROR_PARAMINVALID Input NULL or Not Valid XML !")
 		return ELOCK_ERROR_PARAMINVALID;
 	}
-	if (NULL != pszMsg && strlen(pszMsg) > 0) {
-	}
 
 	string strJsonSend;
+	if (NULL != pszMsg && strlen(pszMsg) > 0) {
 	try {
 		//输入必须有内容，但是最大不得长于下位机内存大小，做合理限制
 		assert(NULL != pszMsg);
@@ -209,7 +211,7 @@ CCBELOCK_API long JCAPISTD Notify(const char *pszMsg)
 		//	ZWWARN(recvBuf)
 		//}
 //////////////////////////////////////////////////////////////////////////
-		VLOG(3)<<__FUNCTION__<<" scoped_lock lock(thrhid_mutex) END"<<endl;
+		LOG(WARNING)<<__FUNCTION__<<" Normal END"<<endl;
 		return ELOCK_ERROR_SUCCESS;
 	}
 	catch(ptree_bad_path & e) {
@@ -237,7 +239,8 @@ CCBELOCK_API long JCAPISTD Notify(const char *pszMsg)
 		ZWFATAL("Notify通过线路发送数据异常，可能网络故障")
 		    return ELOCK_ERROR_CONNECTLOST;
 	}
-	
+	}	//if (NULL != pszMsg && strlen(pszMsg) > 0) {
+	return ELOCK_ERROR_SUCCESS;
 }
 
 CCBELOCK_API int JCAPISTD SetRecvMsgRotine(RecvMsgRotine pRecvMsgFun)

@@ -84,19 +84,12 @@ namespace zwccbthr {
 		const int BLEN = 1024;
 		char recvBuf[BLEN];			
 		using zwccbthr::s_jcNotify;
-		string upMsgType,downMsgType;
-		string upMsg,downMsg;
 
 		//Sleep(1300);	//接收锁具上行报文的线程启动前的适当延迟
 		while (1)
 		{		
-			{	//收发thrhid_mutex开始
-			//LOG(ERROR)<<__FUNCTION__<<"RUNNING " <<time(NULL)<<endl;
-			VLOG(4)<<__FUNCTION__<<"START"<<endl;
-			//VLOG(3)<<__FUNCTION__;				
-			VLOG(4)<<__FUNCTION__<<" scoped_lock lock(thrhid_mutex) START"<<endl;
+			{
 			boost::mutex::scoped_lock lock(thrhid_mutex);		
-			
 			JCHID_STATUS sts=JCHID_STATUS_FAIL;			
 			{
 				//boost::mutex::scoped_lock lock(thrhid_mutex);						
@@ -105,11 +98,7 @@ namespace zwccbthr {
 				{
 					zwccbthr::myWaittingReturnMsg=true;					
 					LOG(WARNING)<<"SendToLock JsonIS\n"<<s_jcNotify.front().c_str()<<endl;
-					downMsg=s_jcNotify.front();
-					assert(downMsg.size()>0);
-					downMsgType=jcAtmcConvertDLL::zwGetJcJsonMsgType(downMsg.c_str());
-					LOG(WARNING)<<"发送给锁具的消息.类型是"<<downMsgType<<endl;					
-					LOG(INFO)<<"发送给锁具的消息.内容是"<<downMsg<<endl;
+					LOG(INFO)<<"发送给锁具的消息.内容是"<<s_jcNotify.front()<<endl;
 					sts=static_cast<JCHID_STATUS>( g_jhc->SendJson(s_jcNotify.front().c_str()));
 					
 					//断线重连探测机制
@@ -129,22 +118,12 @@ namespace zwccbthr {
 				VLOG(3)<<"接收数据的RecvJson之后 收到"<<strlen(recvBuf)<<"字节的数据"<<endl;
 				if (strlen(recvBuf)>0)
 				{
-					//boost::mutex::scoped_lock lock(thrhid_mutex);
-					assert(downMsg.size()>0);
-					downMsgType=jcAtmcConvertDLL::zwGetJcJsonMsgType(downMsg.c_str());
-					assert(downMsgType.size()>0);
-					LOG(WARNING)<<"再次分析发给锁具的消息.类型是"<<downMsgType<<endl;
-					//	<<"内容是\n"<<downMsg<<endl;
 					VLOG(4)<<"收到锁具返回消息= "<<recvBuf<<endl;
-					upMsg=recvBuf;
 					assert(strlen(recvBuf)>0);
-					upMsgType=jcAtmcConvertDLL::zwGetJcJsonMsgType(recvBuf);
-					LOG(WARNING)<<"收到锁具返回消息.类型是"<<upMsgType<<endl;
+					LOG(WARNING)<<"收到锁具返回消息.内容是\n"<<recvBuf<<endl;
 					string outXML;
 					jcAtmcConvertDLL::zwJCjson2CCBxml(recvBuf,outXML);	
 
-					if(downMsgType==upMsgType)
-					{
 						//符合一问一答的，正常上传						
 						if (outXML.size()>0)
 						{
@@ -152,38 +131,6 @@ namespace zwccbthr {
 							pushToCallBack(outXML.c_str());
 							outXML="";
 						}													
-						downMsgType="";
-						zwccbthr::myWaittingReturnMsg=false;
-					}
-#ifdef _DEBUG615
-					//对于验证码，以及锁具主动上送的闭锁码这两种特殊报文，
-					//不予拦截延迟上传而是直接上传
-					if (	"Lock_Open_Ident"		==upMsgType
-						||	"Lock_Close_Code_Lock"	==upMsgType	)
-					{						
-						if (outXML.size()>0)
-						{
-							ZWWARN("特殊锁具主动单向上传报文.验证码，主动闭锁码等")
-							pushToCallBack(outXML.c_str());
-							outXML="";
-						}						
-					}
-#endif // _DEBUG615
-					//其他不符合一问一答的，延迟上传；
-					if (downMsgType!=upMsgType)
-					{
-						if (outXML.size()>0)
-						{
-							LOG(WARNING)<<"downMsgType!=upMsgType:\t"<<
-								downMsgType<<"!="<<upMsgType<<endl;
-							g_dqLockUpMsg.push_back(outXML);		
-							ZWWARN("将会被延迟上传报文")
-							outXML="";
-						}
-					}										
-					//如果有下行报文，那么此时已经收到结果了，可以解除封锁了
-					//如果没有下行报文，更没关系
-					zwccbthr::myWaittingReturnMsg=false;
 				}
 			}while(strlen(recvBuf)>0);
 			VLOG(4)<<__FUNCTION__<<" scoped_lock lock(thrhid_mutex) END"<<endl;
@@ -213,17 +160,12 @@ namespace zwccbthr {
 				//condJcLock.wait(lock);		
 				//只有当数据收发线程不在等待一条一问一答的返回报文期间
 				// 才上传该被延迟上传的报文以免打乱一问一答
-				if (false==zwccbthr::myWaittingReturnMsg)
-				{
 					for (int i=0;i<g_dqLockUpMsg.size();i++)
 					{
 						LOG(WARNING)<<"延迟上传报文"<<endl;
-						//LOG(ERROR)<<(g_dqLockUpMsg[i]);
 						pushToCallBack(g_dqLockUpMsg[i].c_str());
 						g_dqLockUpMsg.pop_front();
 					}
-				}
-				//g_dqLockUpMsg.clear();				
 				VLOG(4)<<__FUNCTION__<<"END"<<endl;
 				//操作完毕“收到的数据”队列，释放锁的所有权
 				VLOG(4)<<__FUNCTION__<<" condJcLock.notify_all();"<<endl;

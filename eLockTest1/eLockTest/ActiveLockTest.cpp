@@ -6,9 +6,11 @@ void zwSecboxWDXtest20141023(void);
 
 string s_repActReqXML;	//从锁具收到的激活请求的返回报文
 string s_repLockInitXML;//从锁具收到的初始化请求的返回报文
+static const char *g_msg00="<?xml version='1.0' encoding='UTF-8'?><root><TransCode>0000</TransCode><TransName>CallForActInfo</TransName><TransDate>20150401</TransDate><TransTime>090333</TransTime><DevCode>440600300145</DevCode><SpareString1></SpareString1><SpareString2></SpareString2></root>";
+static const char *g_msg01="<?xml version='1.0' encoding='UTF-8'?><root><TransCode>0001</TransCode><TransName>SendActInfo</TransName><TransDate>20150401</TransDate><TransTime>090340</TransTime><DevCode>440600300145</DevCode><LockMan>BeiJing.JinChu</LockMan><LockId>22222222</LockId><ActInfo>BFr4af4YvXxtsGmJnDCKsZ3OhmkZimSur0itl6fwuc3fqkiK6j05arPl2on3N4rfVLQkfo9GRceMmbXDebf7rdY=.h/UOVQjtcby5I3wQyUXDdB/uDTeUq1oW.vNDgbpmArJ2CTkBSAJ0NKDeZ6vUifPLKjbLZH3eiFE+QkEBOy5+r2ZJEYEgBmjD1KGIbVfridTa3sjuqaFo0lby7YpqBXTo56v5yIzyz28k=</ActInfo><SpareString1></SpareString1><SpareString2></SpareString2></root>";
 static const char *g_msg02="<?xml version='1.0' encoding='UTF-8'?><root><TransCode>0002</TransCode><TransName>QueryForLockStatus</TransName><TransDate>20150401</TransDate><TransTime>084539</TransTime><DevCode>440600300145</DevCode><LockMan></LockMan><LockId></LockId><SpareString1></SpareString1><SpareString2></SpareString2></root>";
 static const char *g_msg03="<?xml version='1.0' encoding='UTF-8'?><root><TransCode>0003</TransCode><TransName>TimeSync</TransName><TransDate>20150401</TransDate><TransTime>085006</TransTime></root>";
- 
+static const char *g_msg04="<?xml version='1.0' encoding='UTF-8'?><root><TransCode>0004</TransCode><TransName>ReadShutLockCode</TransName><TransDate>20150401</TransDate><TransTime>124932</TransTime><DevCode>440600300145</DevCode><SpareString1></SpareString1><SpareString2></SpareString2></root>"; 
 //从0号报文返回XML提取公钥并返回
 string myGetPubKeyFromMsg0000Rep(const string msg0000RepXML)
 {
@@ -131,29 +133,30 @@ TEST_F(secBoxTest, WenDingXingTestZJY20141023)
 void zw1209SpeedTestThr1(void)
 {
 	Sleep(100);
-	cout<<"Thread\t"<<"["<<__FUNCTION__<<"] ThreadPID=["<<GetCurrentThreadId()<<"]START"<<endl;	
+	cout<<"["<<__FUNCTION__<<"] ThreadPID=["<<GetCurrentThreadId()<<"]\tSTART"<<endl;	
 	SetRecvMsgRotine(myATMCRecvMsgRotine);	
-	EXPECT_EQ(ELOCK_ERROR_SUCCESS,Open(22));		
-	//Sleep(3000);
-	EXPECT_EQ(ELOCK_ERROR_SUCCESS,Notify(g_msg02));	
+	EXPECT_EQ(ELOCK_ERROR_SUCCESS,Open(22));			
+	EXPECT_EQ(ELOCK_ERROR_SUCCESS,Notify(g_msg00));	
+	//Sleep(1500);
+	EXPECT_EQ(ELOCK_ERROR_SUCCESS,Notify(g_msg01));	
 	//测试代码晚一点结束，以便锁具后续较慢报文能收到
-	Sleep(6000);
+	Sleep(5000);
 	EXPECT_EQ(ELOCK_ERROR_SUCCESS,Close());
-	cout<<"Thread\t"<<"["<<__FUNCTION__<<"] ThreadPID=["<<GetCurrentThreadId()<<"]END"<<endl;	
+	cout<<"["<<__FUNCTION__<<"] ThreadPID=["<<GetCurrentThreadId()<<"]\tEND"<<endl;	
 }
 
 void zw1209SpeedTestThr2(void)
 {
-	Sleep(300);
-	cout<<"Thread\t"<<"["<<__FUNCTION__<<"] ThreadPID=["<<GetCurrentThreadId()<<"]START"<<endl;		
+	Sleep(200);
+	cout<<"["<<__FUNCTION__<<"] ThreadPID=["<<GetCurrentThreadId()<<"]\tSTART"<<endl;		
 	SetRecvMsgRotine(myATMCRecvMsgRotine);	
 	EXPECT_EQ(ELOCK_ERROR_SUCCESS,Open(22));		
-	//Sleep(3000);
-	EXPECT_EQ(ELOCK_ERROR_SUCCESS,Notify(g_msg03));	
+	Sleep(1000);
+	EXPECT_EQ(ELOCK_ERROR_SUCCESS,Notify(g_msg02));	
 	//测试代码晚一点结束，以便锁具后续较慢报文能收到
-	Sleep(5000);
+	Sleep(9000);
 	EXPECT_EQ(ELOCK_ERROR_SUCCESS,Close());
-	cout<<"Thread\t"<<"["<<__FUNCTION__<<"] ThreadPID=["<<GetCurrentThreadId()<<"]END"<<endl;	
+	cout<<"["<<__FUNCTION__<<"] ThreadPID=["<<GetCurrentThreadId()<<"]\tEND"<<endl;	
 }
 
 
@@ -161,11 +164,10 @@ TEST_F(ccbElockTest, jcHidDev20151207SpeedTestInATMCDLL)
 {	
 	boost::thread *thr1=new boost::thread(zw1209SpeedTestThr1);	
 	Sleep(500);
-	boost::thread *thr2=new boost::thread(zw1209SpeedTestThr2);
+	//boost::thread *thr2=new boost::thread(zw1209SpeedTestThr2);
 
+	//thr2->join();
 	thr1->join();
-	thr2->join();
 	
-	//Sleep(9000);
-	
+
 }
