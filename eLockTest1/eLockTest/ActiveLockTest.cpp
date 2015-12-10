@@ -132,30 +132,30 @@ TEST_F(secBoxTest, WenDingXingTestZJY20141023)
 
 void zw1209SpeedTestThr1(void)
 {
-	Sleep(100);
+	//Sleep(100);
 	cout<<"["<<__FUNCTION__<<"] ThreadPID=["<<GetCurrentThreadId()<<"]\tSTART"<<endl;	
 	SetRecvMsgRotine(myATMCRecvMsgRotine);	
 	EXPECT_EQ(ELOCK_ERROR_SUCCESS,Open(22));			
-	EXPECT_EQ(ELOCK_ERROR_SUCCESS,Notify(g_msg00));	
+	EXPECT_EQ(ELOCK_ERROR_SUCCESS,Notify(g_msg02));	
 	//Sleep(1500);
-	EXPECT_EQ(ELOCK_ERROR_SUCCESS,Notify(g_msg01));	
+	//EXPECT_EQ(ELOCK_ERROR_SUCCESS,Notify(g_msg03));	
 	//测试代码晚一点结束，以便锁具后续较慢报文能收到
-	Sleep(5000);
-	EXPECT_EQ(ELOCK_ERROR_SUCCESS,Close());
+	Sleep(1800);
+	//EXPECT_EQ(ELOCK_ERROR_SUCCESS,Close());
 	cout<<"["<<__FUNCTION__<<"] ThreadPID=["<<GetCurrentThreadId()<<"]\tEND"<<endl;	
 }
 
 void zw1209SpeedTestThr2(void)
 {
-	Sleep(200);
+	//Sleep(200);
 	cout<<"["<<__FUNCTION__<<"] ThreadPID=["<<GetCurrentThreadId()<<"]\tSTART"<<endl;		
 	SetRecvMsgRotine(myATMCRecvMsgRotine);	
 	EXPECT_EQ(ELOCK_ERROR_SUCCESS,Open(22));		
-	Sleep(1000);
-	EXPECT_EQ(ELOCK_ERROR_SUCCESS,Notify(g_msg02));	
+	//Sleep(1000);
+	EXPECT_EQ(ELOCK_ERROR_SUCCESS,Notify(g_msg03));	
 	//测试代码晚一点结束，以便锁具后续较慢报文能收到
-	Sleep(9000);
-	EXPECT_EQ(ELOCK_ERROR_SUCCESS,Close());
+	Sleep(1800);
+	//EXPECT_EQ(ELOCK_ERROR_SUCCESS,Close());
 	cout<<"["<<__FUNCTION__<<"] ThreadPID=["<<GetCurrentThreadId()<<"]\tEND"<<endl;	
 }
 
@@ -163,11 +163,10 @@ void zw1209SpeedTestThr2(void)
 TEST_F(ccbElockTest, jcHidDev20151207SpeedTestInATMCDLL)
 {	
 	boost::thread *thr1=new boost::thread(zw1209SpeedTestThr1);	
-	Sleep(500);
-	//boost::thread *thr2=new boost::thread(zw1209SpeedTestThr2);
-
-	//thr2->join();
-	thr1->join();
+	Sleep(200);
+	boost::thread *thr2=new boost::thread(zw1209SpeedTestThr2);
 	
-
+	thr1->join();
+	thr2->join();
+	EXPECT_EQ(ELOCK_ERROR_SUCCESS,Close());
 }

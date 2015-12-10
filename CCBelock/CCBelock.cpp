@@ -190,8 +190,8 @@ CCBELOCK_API long JCAPISTD Notify(const char *pszMsg)
 		jcAtmcConvertDLL::zwCCBxml2JCjson(strXMLSend, strJsonSend);
 		assert(strJsonSend.length() > 9);	//json最基本的符号起码好像要9个字符左右
 		VLOG_IF(4,strJsonSend.size()>0)<<"strJsonSend="<<strJsonSend;
-		Sleep(50);			
-		VLOG(3)<<__FUNCTION__<<"\tSleep 50 ms"<<endl;
+		//Sleep(50);			
+		//VLOG(3)<<__FUNCTION__<<"\tSleep 50 ms"<<endl;
 
 		//现在开始一问一答过程，在获得对口回复报文之前不得上传其他报文
 		
@@ -363,7 +363,7 @@ namespace jchidDevice2015{
 		int outLen=0;
 
 		JCHID_STATUS sts=JCHID_STATUS_FAIL;
-		sts=jcHidRecvData(&m_jcElock,recvJson, bufLen, &outLen,0);
+		sts=jcHidRecvData(&m_jcElock,recvJson, bufLen, &outLen,300*1);
 			
 		return sts;
 	}

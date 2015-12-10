@@ -137,8 +137,8 @@ namespace zwccbthr {
 		}	//收发thrhid_mutex结束
 			VLOG(4)<<__FUNCTION__<<" condJcLock.notify_all();"<<endl;
 			//condJcLock.notify_all();	
-			Sleep(500);	//接收完毕一轮报文后暂停500毫秒给下发报文腾出时间；
-			VLOG(3)<<__FUNCTION__<<"\tSleep 500 ms"<<endl;
+			Sleep(100);	//接收完毕一轮报文后暂停100毫秒给下发报文腾出时间；
+			VLOG(3)<<__FUNCTION__<<"\tSleep 100 ms"<<endl;
 			VLOG(4)<<__FUNCTION__<<"END"<<endl;
 		}
 
