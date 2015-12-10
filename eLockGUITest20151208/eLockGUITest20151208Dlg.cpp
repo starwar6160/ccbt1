@@ -11,6 +11,7 @@
 #define new DEBUG_NEW
 #endif
 
+static const char *g_msg03="<?xml version='1.0' encoding='UTF-8'?><root><TransCode>0003</TransCode><TransName>TimeSync</TransName><TransDate>20150401</TransDate><TransTime>085006</TransTime></root>";
 
 // 用于应用程序“关于”菜单项的 CAboutDlg 对话框
 
@@ -159,7 +160,26 @@ HCURSOR CeLockGUITest20151208Dlg::OnQueryDragIcon()
 
 void CeLockGUITest20151208Dlg::OnBnClickedButton1()
 {
-	// TODO: 在此添加控件通知处理程序代码
+	// std::string to variant.
+	_bstr_t strMessage = g_msg03;
+	
+	VARIANT variant;
+	variant.vt=VT_BSTR;
+	variant.bstrVal= strMessage;
+	// TODO: 在此添加控件通知处理程序代码	
 	m_zjOCX.Open(22);
+	m_zjOCX.Notify(variant);
+	Sleep(1000);
 	m_zjOCX.Close();
+}
+BEGIN_EVENTSINK_MAP(CeLockGUITest20151208Dlg, CDialogEx)
+	ON_EVENT(CeLockGUITest20151208Dlg, IDC_ZJELOCKCTRL1, 1, CeLockGUITest20151208Dlg::OnRecvMsgZjelockctrl1, VTS_VARIANT)
+END_EVENTSINK_MAP()
+
+
+void CeLockGUITest20151208Dlg::OnRecvMsgZjelockctrl1(const VARIANT& varMsg)
+{
+	// TODO: 在此处添加消息处理程序代码
+	//OutputDebugStringA(__FUNCTION__);
+	MessageBox(varMsg.bstrVal,_T("TIPZW1623"),MB_OK);
 }

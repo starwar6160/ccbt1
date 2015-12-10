@@ -70,14 +70,14 @@ zw_trace::zw_trace(const char *funcName)
 	m_start = m_str + "\tSTART";
 	m_end = m_str + "\tEND";
 	OutputDebugStringA(m_start.c_str());
-	VLOG(4)<<m_start;
+	VLOG(3)<<m_start;
 }
 
 zw_trace::~zw_trace()
 {
 
 	OutputDebugStringA(m_end.c_str());	
-	VLOG(4)<<m_end;
+	VLOG(3)<<m_end;
 }
 
 
@@ -89,6 +89,7 @@ extern int G_TESTCB_SUCC;	//是否成功调用了回调函数的一个标志位，仅仅测试用
 CCBELOCK_API long JCAPISTD Open(long lTimeOut)
 {
 	DBGTHRID
+	ZWFUNCTRACE
 	VLOG_IF(3,lTimeOut<=0 || lTimeOut>60)<<"ZIJIN423 Open Invalid Para 20150423.1559";
 	if (NULL==g_jhc)
 	{
@@ -120,7 +121,11 @@ CCBELOCK_API long JCAPISTD Open(long lTimeOut)
 CCBELOCK_API long JCAPISTD Close()
 {
 	DBGTHRID
+	ZWFUNCTRACE
 	VLOG(2)<<"ZIJIN423 Close ELOCK_ERROR_SUCCESS";
+	//结束的话，及时中断数据接收线程
+	//注意，在这里做Sleep无效，要在主程序中Close之前做Sleep才能让回调函数收到结果，奇怪。20151210.1706.周伟
+	zwccbthr::opCommThr->interrupt();
 	zwccbthr::opCommThr=NULL;
 	if (NULL!=g_jhc)
 	{
@@ -133,6 +138,7 @@ CCBELOCK_API long JCAPISTD Close()
 CCBELOCK_API long JCAPISTD Notify(const char *pszMsg)
 {
 	DBGTHRID
+	
 	LOG(WARNING)<<__FUNCTION__<<" Normal START"<<endl;
 	if (NULL==zwccbthr::opUpMsgThr)
 	{
@@ -146,7 +152,6 @@ CCBELOCK_API long JCAPISTD Notify(const char *pszMsg)
 		zwccbthr::opCommThr=new boost::thread(zwccbthr::my515LockRecvThr);
 	}	
 
-	VLOG(4)<<__FUNCTION__<<" scoped_lock lock(thrhid_mutex) START"<<endl;
 	boost::mutex::scoped_lock lock(zwccbthr::thrhid_mutex);
 	//VLOG(4)<<__FUNCTION__<<"condJcLock.wait(lock);"<<endl;
 	//zwccbthr::condJcLock.wait(lock);							
@@ -199,7 +204,7 @@ CCBELOCK_API long JCAPISTD Notify(const char *pszMsg)
 		//int sts=g_jhc->SendJson(strJsonSend.c_str());
 		//VLOG_IF(1,JCHID_STATUS_OK!=sts)<<"423下发消息给锁具异常\n";
 		//zwccbthr::s_jsonCmd=strJsonSend;
-		VLOG(4)<<"condJcLock.notify_all();"<<endl;
+		//VLOG(4)<<"condJcLock.notify_all();"<<endl;
 		 //zwccbthr::condJcLock.notify_all();	
 //////////////////////////////////////////////////////////////////////////
 		//const int BLEN = 1024;
@@ -211,7 +216,6 @@ CCBELOCK_API long JCAPISTD Notify(const char *pszMsg)
 		//	ZWWARN(recvBuf)
 		//}
 //////////////////////////////////////////////////////////////////////////
-		LOG(WARNING)<<__FUNCTION__<<" Normal END"<<endl;
 		return ELOCK_ERROR_SUCCESS;
 	}
 	catch(ptree_bad_path & e) {
@@ -247,8 +251,6 @@ CCBELOCK_API int JCAPISTD SetRecvMsgRotine(RecvMsgRotine pRecvMsgFun)
 {
 	DBGTHRID
 	G_TESTCB_SUCC=0;
-	//ZWFUNCTRACE 
-	//boost::mutex::scoped_lock lock(zwCfg::ComPort_mutex);
 	assert(NULL != pRecvMsgFun);
 	if (NULL == pRecvMsgFun) {
 		ZWFATAL("注册回调函数不能传入空指针0952")
@@ -354,7 +356,7 @@ namespace jchidDevice2015{
 		assert(NULL!=recvJson);
 		assert(bufLen>=0);
 		if (NULL==recvJson || bufLen<0)
-		{
+		{			
 			ZWWARN("jcHidDevice::RecvJson can't Using NULL buffer to Receive JinChu Lock Respone data")
 			return JCHID_STATUS_INPUTNULL;
 		}		
@@ -364,7 +366,6 @@ namespace jchidDevice2015{
 
 		JCHID_STATUS sts=JCHID_STATUS_FAIL;
 		sts=jcHidRecvData(&m_jcElock,recvJson, bufLen, &outLen,300*1);
-			
 		return sts;
 	}
 

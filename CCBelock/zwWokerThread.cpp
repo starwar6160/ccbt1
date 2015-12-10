@@ -87,7 +87,8 @@ namespace zwccbthr {
 
 		//Sleep(1300);	//接收锁具上行报文的线程启动前的适当延迟
 		while (1)
-		{		
+		{	
+			boost::this_thread::interruption_point();
 			{
 			boost::mutex::scoped_lock lock(thrhid_mutex);		
 			JCHID_STATUS sts=JCHID_STATUS_FAIL;			
@@ -133,13 +134,11 @@ namespace zwccbthr {
 						}													
 				}
 			}while(strlen(recvBuf)>0);
-			VLOG(4)<<__FUNCTION__<<" scoped_lock lock(thrhid_mutex) END"<<endl;
-		}	//收发thrhid_mutex结束
-			VLOG(4)<<__FUNCTION__<<" condJcLock.notify_all();"<<endl;
+			
+		}	//收发thrhid_mutex结束			
 			//condJcLock.notify_all();	
 			Sleep(100);	//接收完毕一轮报文后暂停100毫秒给下发报文腾出时间；
 			VLOG(3)<<__FUNCTION__<<"\tSleep 100 ms"<<endl;
-			VLOG(4)<<__FUNCTION__<<"END"<<endl;
 		}
 
 	}
