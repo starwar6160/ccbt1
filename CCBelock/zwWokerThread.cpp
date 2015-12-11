@@ -17,6 +17,7 @@ jcHidDevice *g_jhc=NULL;	//实际的HID设备类对象
 namespace zwccbthr {
 	//建行给的接口，没有设置连接参数的地方，也就是说，完全可以端口，抑或是从配置文件读取
 	boost::mutex thrhid_mutex;
+	boost::mutex upDeque_mutex;
 	void pushToCallBack( const char * recvBuf );
 	deque<string> g_dqLockUpMsg;	//锁具主动上送的答非所问消息的临时队列
 	bool myWaittingReturnMsg=false;	//等待返回报文期间不要下发报文
@@ -80,7 +81,7 @@ namespace zwccbthr {
 
 	void my515LockRecvThr(void)
 	{
-		ZWERROR("与锁具之间的数据接收线程启动.20151203.v777")
+		ZWERROR("与锁具之间的数据接收线程启动.20151210.v788")
 		const int BLEN = 1024;
 		char recvBuf[BLEN];			
 		using zwccbthr::s_jcNotify;
@@ -90,10 +91,10 @@ namespace zwccbthr {
 		{	
 			boost::this_thread::interruption_point();
 			{
+			//下发命令和接收锁具回复的整个过程加锁
 			boost::mutex::scoped_lock lock(thrhid_mutex);		
 			JCHID_STATUS sts=JCHID_STATUS_FAIL;			
 			{
-				//boost::mutex::scoped_lock lock(thrhid_mutex);						
 				VLOG_IF(4,s_jcNotify.size()>0)<<"s_jcNotify.size()="<<s_jcNotify.size()<<endl;
 				if (s_jcNotify.size()>0)
 				{
@@ -123,22 +124,17 @@ namespace zwccbthr {
 					assert(strlen(recvBuf)>0);
 					LOG(WARNING)<<"收到锁具返回消息.内容是\n"<<recvBuf<<endl;
 					string outXML;
-					jcAtmcConvertDLL::zwJCjson2CCBxml(recvBuf,outXML);	
-
-						//符合一问一答的，正常上传						
+					jcAtmcConvertDLL::zwJCjson2CCBxml(recvBuf,outXML);					
 						if (outXML.size()>0)
 						{
-							ZWWARN("正常上传报文")
-							pushToCallBack(outXML.c_str());
-							outXML="";
+							boost::mutex::scoped_lock lock(upDeque_mutex);	
+							//收到的报文放入上传队列，由单独的线程去上传
+							g_dqLockUpMsg.push_back(outXML);
 						}													
 				}
-			}while(strlen(recvBuf)>0);
-			
+			}while(strlen(recvBuf)>0);			
 		}	//收发thrhid_mutex结束			
-			//condJcLock.notify_all();	
 			Sleep(100);	//接收完毕一轮报文后暂停100毫秒给下发报文腾出时间；
-			VLOG(3)<<__FUNCTION__<<"\tSleep 100 ms"<<endl;
 		}
 
 	}
@@ -148,28 +144,16 @@ namespace zwccbthr {
 		ZWERROR("与ATMC之间的数据上传线程启动.20151203.1720")
 			while (1)
 			{
-				//LOG(ERROR)<<__FUNCTION__<<"RUNNING " <<time(NULL)<<endl;
-				VLOG(4)<<__FUNCTION__;				
-				VLOG(4)<<__FUNCTION__<<"START"<<endl;
-				//等待数据接收线程操作完毕“收到的数据”队列
-				//获得该队列的锁的所有权，开始操作
-				VLOG(4)<<__FUNCTION__<<" scoped_lock lock(thrhid_mutex) START"<<endl;
-				boost::mutex::scoped_lock lock(thrhid_mutex);				
-				VLOG(4)<<__FUNCTION__<<"condJcLock.wait(lock);"<<endl;
-				//condJcLock.wait(lock);		
-				//只有当数据收发线程不在等待一条一问一答的返回报文期间
-				// 才上传该被延迟上传的报文以免打乱一问一答
+					//等待数据接收线程操作完毕“收到的数据”队列
+					//获得该队列的锁的所有权，开始操作
+					boost::mutex::scoped_lock lock(upDeque_mutex);	
 					for (int i=0;i<g_dqLockUpMsg.size();i++)
 					{
-						LOG(WARNING)<<"延迟上传报文"<<endl;
+						LOG(WARNING)<<"单独线程上传报文"<<endl;
 						pushToCallBack(g_dqLockUpMsg[i].c_str());
 						g_dqLockUpMsg.pop_front();
 					}
-				VLOG(4)<<__FUNCTION__<<"END"<<endl;
-				//操作完毕“收到的数据”队列，释放锁的所有权
-				VLOG(4)<<__FUNCTION__<<" condJcLock.notify_all();"<<endl;
-				//condJcLock.notify_all();	
-				VLOG(4)<<__FUNCTION__<<" scoped_lock lock(thrhid_mutex) END"<<endl;
+					Sleep(100);
 			}
 	}
 

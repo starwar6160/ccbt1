@@ -70,14 +70,14 @@ zw_trace::zw_trace(const char *funcName)
 	m_start = m_str + "\tSTART";
 	m_end = m_str + "\tEND";
 	OutputDebugStringA(m_start.c_str());
-	VLOG(3)<<m_start;
+	VLOG(4)<<m_start;
 }
 
 zw_trace::~zw_trace()
 {
 
 	OutputDebugStringA(m_end.c_str());	
-	VLOG(3)<<m_end;
+	VLOG(4)<<m_end;
 }
 
 
@@ -109,10 +109,12 @@ CCBELOCK_API long JCAPISTD Open(long lTimeOut)
 
 	if (JCHID_STATUS_OK==elockStatus)
 	{
+		VLOG(3)<<"JCELock Open return ELOCK_ERROR_SUCCESS";
 		return ELOCK_ERROR_SUCCESS;
 	}
 	else
 	{
+		VLOG(3)<<"JCELock Open return ELOCK_ERROR_CONNECTLOST";
 		return ELOCK_ERROR_CONNECTLOST;
 	}
 	
