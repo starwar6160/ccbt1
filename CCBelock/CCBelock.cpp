@@ -33,9 +33,7 @@ namespace zwccbthr {
 	//boost::thread *opCommThr=new boost::thread(zwccbthr::ThreadLockRecv);
 	time_t lastOpen=0;
 	extern boost::mutex thrhid_mutex;
-	extern bool myWaittingReturnMsg;	//等待返回报文期间不要下发报文
 	extern boost::timer g_LatTimer;	//用于自动计算延迟
-	extern boost::condition_variable condJcLock;
 	extern deque<string> s_jcNotify;		//下发命令
 	//extern string s_jsonCmd;
 } //namespace zwccbthr{  

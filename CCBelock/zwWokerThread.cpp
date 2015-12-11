@@ -20,8 +20,6 @@ namespace zwccbthr {
 	boost::mutex upDeque_mutex;
 	void pushToCallBack( const char * recvBuf );
 	deque<string> g_dqLockUpMsg;	//锁具主动上送的答非所问消息的临时队列
-	bool myWaittingReturnMsg=false;	//等待返回报文期间不要下发报文
-	boost::condition_variable condJcLock;
 	boost::timer g_LatTimer;	//用于自动计算延迟
 	deque<string> s_jcNotify;		//下发命令
 
@@ -40,7 +38,62 @@ namespace zwccbthr {
 		return inTime-tail;
 
 	}
+//////////////////////////////////JcLockSendRecvData START////////////////////////////////////////
+	//为每个调用者线程准备的专用下发和上传消息的队列
+	class JcLockSendRecvData
+	{
+	public:
+		JcLockSendRecvData();
+		~JcLockSendRecvData();
+		DWORD m_CallerThreadID;		//上层程序调用者的线程ID
+		void PushNotifyMsg(const string &NotifyMsg);
+		string PullNotifyMsg(void);
+		void PushUpMsg(const string &UpMsg);
+		string PullUpMsg(void);
+	private:		
+		boost::mutex notify_mutex;
+		boost::mutex upmsg_mutex;
+		std::deque<string> m_Notify;	//该上层程序线程专用的下发队列
+		std::deque<string> m_UpMsg;		//该上层程序线程专用的上传队列
+	};
 
+	void JcLockSendRecvData::PushNotifyMsg(const string &NotifyMsg)
+	{
+		boost::mutex::scoped_lock lock(notify_mutex);
+		m_Notify.push_back(NotifyMsg);
+	}
+
+	string JcLockSendRecvData::PullNotifyMsg()
+	{
+		boost::mutex::scoped_lock lock(notify_mutex);
+		if (m_Notify.size()>0)
+		{
+			string retMsg=m_Notify.front();
+			m_Notify.pop_front();
+			return retMsg;
+		}
+		return "";
+	}
+
+	void JcLockSendRecvData::PushUpMsg(const string &UpMsg)
+	{
+		boost::mutex::scoped_lock lock(upmsg_mutex);
+		m_UpMsg.push_back(UpMsg);
+	}
+
+	string JcLockSendRecvData::PullUpMsg()
+	{
+		boost::mutex::scoped_lock lock(upmsg_mutex);
+		if (m_UpMsg.size()>0)
+		{
+			string retMsg=m_UpMsg.front();
+			m_UpMsg.pop_front();
+			return retMsg;
+		}
+		return "";
+	}
+
+//////////////////////////////////JcLockSendRecvData END////////////////////////////////////////
 	void pushToCallBack( const char * recvConvedXML )
 	{
 		assert(NULL!=recvConvedXML);
@@ -98,7 +151,7 @@ namespace zwccbthr {
 				VLOG_IF(4,s_jcNotify.size()>0)<<"s_jcNotify.size()="<<s_jcNotify.size()<<endl;
 				if (s_jcNotify.size()>0)
 				{
-					zwccbthr::myWaittingReturnMsg=true;					
+
 					LOG(WARNING)<<"SendToLock JsonIS\n"<<s_jcNotify.front().c_str()<<endl;
 					LOG(INFO)<<"发送给锁具的消息.内容是"<<s_jcNotify.front()<<endl;
 					sts=static_cast<JCHID_STATUS>( g_jhc->SendJson(s_jcNotify.front().c_str()));
