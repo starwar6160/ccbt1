@@ -14,6 +14,8 @@ using jchidDevice2015::jcHidDevice;
 
 jcHidDevice *g_jhc=NULL;	//实际的HID设备类对象
 
+
+
 namespace zwccbthr {
 	//建行给的接口，没有设置连接参数的地方，也就是说，完全可以端口，抑或是从配置文件读取
 	boost::mutex thrhid_mutex;
@@ -21,7 +23,6 @@ namespace zwccbthr {
 	void pushToCallBack( const char * recvBuf );
 	deque<string> g_dqLockUpMsg;	//锁具主动上送的答非所问消息的临时队列
 	boost::timer g_LatTimer;	//用于自动计算延迟
-	deque<string> s_jcNotify;		//下发命令
 
 	void wait(int milliseconds) {
 		assert(milliseconds>0);
@@ -147,7 +148,6 @@ namespace zwccbthr {
 		ZWERROR("与锁具之间的数据接收线程启动.20151210.v788")
 		const int BLEN = 1024;
 		char recvBuf[BLEN];			
-		using zwccbthr::s_jcNotify;
 
 		//Sleep(1300);	//接收锁具上行报文的线程启动前的适当延迟
 		while (1)
@@ -158,21 +158,31 @@ namespace zwccbthr {
 			boost::mutex::scoped_lock lock(thrhid_mutex);		
 			JCHID_STATUS sts=JCHID_STATUS_FAIL;			
 			{
-				VLOG_IF(4,s_jcNotify.size()>0)<<"s_jcNotify.size()="<<s_jcNotify.size()<<endl;
-				if (s_jcNotify.size()>0)
+				//遍历所有收发队列
+				int cmdDqSize=zwCfg::vecCallerCmdDq.size();
+				for (int i=0;i<cmdDqSize;i++)
 				{
-
-					//LOG(WARNING)<<"SendToLock JsonIS\n"<<s_jcNotify.front().c_str()<<endl;
-					LOG(WARNING)<<"下发给锁具的消息.内容是"<<s_jcNotify.front()<<endl;
-					sts=static_cast<JCHID_STATUS>( g_jhc->SendJson(s_jcNotify.front().c_str()));
-					
-					//断线重连探测机制
-					if (JCHID_STATUS_OK!=static_cast<JCHID_STATUS>(sts))
+					string curCmd;
+					while(1)
 					{
-						g_jhc->OpenJc();
-					}
-					s_jcNotify.pop_front();
-				}
+						curCmd=zwCfg::vecCallerCmdDq[i]->PullNotifyMsg();
+						if (""==curCmd)
+						{
+							break;
+						}
+						LOG(WARNING)<<"从线程"<<zwCfg::vecCallerCmdDq[i]->getCallerID()<<
+							"的收发队列取出下发给锁具的消息.内容是"<<curCmd<<endl;
+
+						sts=static_cast<JCHID_STATUS>( g_jhc->SendJson(curCmd.c_str()));
+
+						//断线重连探测机制
+						if (JCHID_STATUS_OK!=static_cast<JCHID_STATUS>(sts))
+						{
+							g_jhc->OpenJc();
+						}
+
+					}	//end while(1)					
+				}	//end for
 			}
 			do{
 				//考虑到有可能锁具单向上行信息导致一条下发信息有多条

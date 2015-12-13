@@ -161,4 +161,10 @@ private:
 };
 
 }	//namespace zwccbthr {
+
+namespace zwCfg {
+	//按照线程ID保存每个调用我们的DLL的上层主程序线程的命令上传下发队列类对象
+	extern vector<zwccbthr::JcLockSendRecvData *> vecCallerCmdDq;
+} //namespace zwCfg{  
+
 #endif // zwCcbElockHdr_h__
