@@ -39,8 +39,6 @@ namespace zwccbthr {
 namespace zwCfg {
 	//const long JC_CCBDLL_TIMEOUT = 86400;	//最长超时时间为30秒,用于测试目的尽快达到限制暴露问题
 //	const int JC_MSG_MAXLEN = 4 * 1024;	//最长为128字节,用于测试目的尽快达到限制暴露问题
-	//定义一个回调函数指针
-	RecvMsgRotine g_WarnCallback = NULL;
 	boost::mutex ComPort_mutex;	//用于保护串口连接对象
 	//线程对象作为一个全局静态变量，则不需要显示启动就能启动一个线程
 	boost::thread * thr = NULL;
@@ -263,18 +261,19 @@ CCBELOCK_API long JCAPISTD Notify(const char *pszMsg)
 CCBELOCK_API int JCAPISTD SetRecvMsgRotine(RecvMsgRotine pRecvMsgFun)
 {
 	DBGTHRID
+		G_TESTCB_SUCC=0;
+	assert(NULL != pRecvMsgFun);
+	if (NULL == pRecvMsgFun) {
+		ZWFATAL("注册回调函数不能传入空指针0952")
+			return ELOCK_ERROR_PARAMINVALID;
+	}
+
 	DWORD iCallerThrId=GetCurrentThreadId();
 	zwccbthr::JcLockSendRecvData *thrCmdDq=
 		new zwccbthr::JcLockSendRecvData(iCallerThrId,pRecvMsgFun);
 	zwCfg::vecCallerCmdDq.push_back(thrCmdDq);
 	VLOG(2)<<"JCELOCK收发消息队列数量是"<<zwCfg::vecCallerCmdDq.size()<<endl;
-	G_TESTCB_SUCC=0;
-	assert(NULL != pRecvMsgFun);
-	if (NULL == pRecvMsgFun) {
-		ZWFATAL("注册回调函数不能传入空指针0952")
-		    return ELOCK_ERROR_PARAMINVALID;
-	}
-	zwCfg::g_WarnCallback = pRecvMsgFun;
+
 	return ELOCK_ERROR_SUCCESS;
 }
 

@@ -11,6 +11,7 @@ using namespace boost::property_tree;
 using boost::condition_variable;
 using boost::condition_variable_any;
 using jchidDevice2015::jcHidDevice;
+using jcAtmcConvertDLL::zwGetJcJsonMsgType;
 
 jcHidDevice *g_jhc=NULL;	//实际的HID设备类对象
 
@@ -157,7 +158,9 @@ namespace zwccbthr {
 					"的收发队列取出下发给锁具的消息.内容是"<<curCmd<<endl;
 
 				sts=static_cast<JCHID_STATUS>( g_jhc->SendJson(curCmd.c_str()));
-
+				string cmdType=zwGetJcJsonMsgType(curCmd.c_str());
+				zwCfg::vecCallerCmdDq[i]->m_cmdType.push_back(cmdType) ;
+				VLOG(3)<<"发送给锁具的消息类型是 "<<cmdType<<endl;
 				//断线重连探测机制
 				if (JCHID_STATUS_OK!=static_cast<JCHID_STATUS>(sts))
 				{
@@ -183,6 +186,16 @@ namespace zwccbthr {
 			{
 				VLOG(1)<<"收到锁具返回消息= "<<recvBuf<<endl;
 				assert(strlen(recvBuf)>0);
+				VLOG(3)<<"收到锁具返回消息类型是 "<<zwGetJcJsonMsgType(recvBuf)<<endl;
+				if (zwGetJcJsonMsgType(recvBuf)!=zwCfg::vecCallerCmdDq[i]->m_cmdType.front())
+				{
+					LOG(ERROR)<<"答非所问，需要延迟上传"<<endl;
+				}
+				else
+				{
+					zwCfg::vecCallerCmdDq[i]->m_cmdType.pop_front();
+				}
+
 				LOG(WARNING)<<"收到锁具返回消息.内容是\n"<<recvBuf<<endl;
 				string outXML;
 				jcAtmcConvertDLL::zwJCjson2CCBxml(recvBuf,outXML);					

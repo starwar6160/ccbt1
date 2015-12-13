@@ -9,11 +9,6 @@ using boost::mutex;
 using jchidDevice2015::jcHidDevice;
 extern jcHidDevice* g_jhc;	//实际的HID设备类对象，构造时自动被打开
 
-namespace zwCfg {
-	//定义一个回调函数指针
-	extern RecvMsgRotine g_WarnCallback;
-} //namespace zwCfg{  
-
 namespace jcLockJsonCmd_t2015a27{
 	//为了保护接收json时返回的静态缓冲区在多线程状况下的使用
 	boost::mutex recvstr_mutex;
@@ -55,10 +50,7 @@ namespace jcLockJsonCmd_t2015a27{
 	CCBELOCK_API long JCAPISTD CloseJson()
 	{
 		ZWFUNCTRACE 
-		zwCfg::g_WarnCallback = NULL;
-		
-			g_jhc->CloseJc();
-
+		g_jhc->CloseJc();
 		ZWWARN("关闭 到锁具的JSON连接")
 			return ELOCK_ERROR_SUCCESS;
 	}
