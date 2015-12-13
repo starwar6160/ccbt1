@@ -43,9 +43,10 @@ namespace zwccbthr {
 	//为每个调用者线程准备的专用下发和上传消息的队列
 
 
-	JcLockSendRecvData::JcLockSendRecvData(DWORD callerID)
+	JcLockSendRecvData::JcLockSendRecvData(DWORD callerID,RecvMsgRotine pCallBack)
 	{
 		m_CallerThreadID=callerID;
+		m_CallBack=pCallBack;
 		VLOG(2)<<"分配了一个JCATMC DLL上层应用每个线程专用的上传下发队列 线程ID= "<<m_CallerThreadID<<endl;
 	}
 
@@ -143,74 +144,78 @@ namespace zwccbthr {
 	}
 	
 
+	void mySendCmd2Lock() 
+	{
+		JCHID_STATUS sts=JCHID_STATUS_FAIL;		
+		//遍历所有收发队列
+		int cmdDqSize=zwCfg::vecCallerCmdDq.size();
+		for (int i=0;i<cmdDqSize;i++)
+		{
+			string curCmd;
+			while(1)
+			{
+				curCmd=zwCfg::vecCallerCmdDq[i]->PullNotifyMsg();
+				if (""==curCmd)
+				{
+					break;
+				}
+				LOG(WARNING)<<"从线程"<<zwCfg::vecCallerCmdDq[i]->getCallerID()<<
+					"的收发队列取出下发给锁具的消息.内容是"<<curCmd<<endl;
+
+				sts=static_cast<JCHID_STATUS>( g_jhc->SendJson(curCmd.c_str()));
+
+				//断线重连探测机制
+				if (JCHID_STATUS_OK!=static_cast<JCHID_STATUS>(sts))
+				{
+					g_jhc->OpenJc();
+				}
+
+			}	//end while(1)					
+		}	//end for
+	}
+
+	void myRecvFromLock() 
+	{
+		const int BLEN = 1024;
+		char recvBuf[BLEN];	
+		JCHID_STATUS sts=JCHID_STATUS_FAIL;							
+		do{				
+			//考虑到有可能锁具单向上行信息导致一条下发信息有多条
+			//上行信息，所以多读取几次直到读不到信息为止
+			memset(recvBuf,0,BLEN);
+			//VLOG(3)<<"接收数据的RecvJson之前"<<endl;
+			sts=static_cast<JCHID_STATUS>(g_jhc->RecvJson(recvBuf,BLEN));				
+			VLOG_IF(3,strlen(recvBuf)>0)<<"接收数据的RecvJson之后 收到 "<<
+				strlen(recvBuf)<<" 字节的数据"<<endl;
+			if (strlen(recvBuf)>0)
+			{
+				VLOG(1)<<"收到锁具返回消息= "<<recvBuf<<endl;
+				assert(strlen(recvBuf)>0);
+				LOG(WARNING)<<"收到锁具返回消息.内容是\n"<<recvBuf<<endl;
+				string outXML;
+				jcAtmcConvertDLL::zwJCjson2CCBxml(recvBuf,outXML);					
+				if (outXML.size()>0)
+				{
+					boost::mutex::scoped_lock lock(upDeque_mutex);	
+					//收到的报文放入上传队列，由单独的线程去上传
+					g_dqLockUpMsg.push_back(outXML);
+				}													
+			}
+		}while(strlen(recvBuf)>0);			
+	}
+
 	void my515LockRecvThr(void)
 	{
 		ZWERROR("与锁具之间的数据接收线程启动.20151210.v788")
-		const int BLEN = 1024;
-		char recvBuf[BLEN];			
-
-		//Sleep(1300);	//接收锁具上行报文的线程启动前的适当延迟
 		while (1)
 		{	
 			boost::this_thread::interruption_point();
-			{
 			//下发命令和接收锁具回复的整个过程加锁
 			boost::mutex::scoped_lock lock(thrhid_mutex);		
-			JCHID_STATUS sts=JCHID_STATUS_FAIL;			
-			{
-				//遍历所有收发队列
-				int cmdDqSize=zwCfg::vecCallerCmdDq.size();
-				for (int i=0;i<cmdDqSize;i++)
-				{
-					string curCmd;
-					while(1)
-					{
-						curCmd=zwCfg::vecCallerCmdDq[i]->PullNotifyMsg();
-						if (""==curCmd)
-						{
-							break;
-						}
-						LOG(WARNING)<<"从线程"<<zwCfg::vecCallerCmdDq[i]->getCallerID()<<
-							"的收发队列取出下发给锁具的消息.内容是"<<curCmd<<endl;
-
-						sts=static_cast<JCHID_STATUS>( g_jhc->SendJson(curCmd.c_str()));
-
-						//断线重连探测机制
-						if (JCHID_STATUS_OK!=static_cast<JCHID_STATUS>(sts))
-						{
-							g_jhc->OpenJc();
-						}
-
-					}	//end while(1)					
-				}	//end for
-			}
-			do{
-				//考虑到有可能锁具单向上行信息导致一条下发信息有多条
-				//上行信息，所以多读取几次直到读不到信息为止
-				memset(recvBuf,0,BLEN);
-				//VLOG(3)<<"接收数据的RecvJson之前"<<endl;
-				sts=static_cast<JCHID_STATUS>(g_jhc->RecvJson(recvBuf,BLEN));				
-				VLOG_IF(3,strlen(recvBuf)>0)<<"接收数据的RecvJson之后 收到 "<<
-					strlen(recvBuf)<<" 字节的数据"<<endl;
-				if (strlen(recvBuf)>0)
-				{
-					VLOG(1)<<"收到锁具返回消息= "<<recvBuf<<endl;
-					assert(strlen(recvBuf)>0);
-					LOG(WARNING)<<"收到锁具返回消息.内容是\n"<<recvBuf<<endl;
-					string outXML;
-					jcAtmcConvertDLL::zwJCjson2CCBxml(recvBuf,outXML);					
-						if (outXML.size()>0)
-						{
-							boost::mutex::scoped_lock lock(upDeque_mutex);	
-							//收到的报文放入上传队列，由单独的线程去上传
-							g_dqLockUpMsg.push_back(outXML);
-						}													
-				}
-			}while(strlen(recvBuf)>0);			
-		}	//收发thrhid_mutex结束			
+			mySendCmd2Lock();
+			myRecvFromLock();
 			Sleep(100);	//接收完毕一轮报文后暂停100毫秒给下发报文腾出时间；
 		}
-
 	}
 
 	void my515UpMsgThr(void)

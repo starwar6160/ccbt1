@@ -145,7 +145,7 @@ namespace zwccbthr {
 class JcLockSendRecvData
 {
 public:
-	JcLockSendRecvData(DWORD callerID);
+	JcLockSendRecvData(DWORD callerID,RecvMsgRotine pCallBack);
 	~JcLockSendRecvData();	
 	DWORD getCallerID(void);
 	void PushNotifyMsg(const string &NotifyMsg);
@@ -154,11 +154,17 @@ public:
 	string PullUpMsg(void);
 private:		
 	DWORD m_CallerThreadID;		//上层程序调用者的线程ID
+	RecvMsgRotine m_CallBack;	//回调函数指针
 	boost::mutex  notify_mutex;
 	boost::mutex upmsg_mutex;
 	std::deque<string> m_Notify;	//该上层程序线程专用的下发队列
+	string m_CmdType;				//当前下发的命令类型
 	std::deque<string> m_UpMsg;		//该上层程序线程专用的上传队列
 };
+
+
+
+
 
 }	//namespace zwccbthr {
 

@@ -202,7 +202,8 @@ CCBELOCK_API long JCAPISTD Notify(const char *pszMsg)
 		//////////////////////////////////////////////////////////////////////////
 		string strXMLSend = pszMsg;
 		VLOG_IF(4,strXMLSend.size()>0)<<"strXMLSend=\n"<<strXMLSend;
-		assert(strXMLSend.length() > 42);	//XML开头的固定内容38个字符，外加起码一个标签的两对尖括号合计4个字符
+		//XML开头的固定内容38个字符，外加起码一个标签的两对尖括号合计4个字符
+		assert(strXMLSend.length() > 42);	
 		jcAtmcConvertDLL::zwCCBxml2JCjson(strXMLSend, strJsonSend);
 		assert(strJsonSend.length() > 9);	//json最基本的符号起码好像要9个字符左右
 		VLOG_IF(4,strJsonSend.size()>0)<<"strJsonSend="<<strJsonSend;
@@ -263,7 +264,8 @@ CCBELOCK_API int JCAPISTD SetRecvMsgRotine(RecvMsgRotine pRecvMsgFun)
 {
 	DBGTHRID
 	DWORD iCallerThrId=GetCurrentThreadId();
-	zwccbthr::JcLockSendRecvData *thrCmdDq=new zwccbthr::JcLockSendRecvData(iCallerThrId);
+	zwccbthr::JcLockSendRecvData *thrCmdDq=
+		new zwccbthr::JcLockSendRecvData(iCallerThrId,pRecvMsgFun);
 	zwCfg::vecCallerCmdDq.push_back(thrCmdDq);
 	VLOG(2)<<"JCELOCK收发消息队列数量是"<<zwCfg::vecCallerCmdDq.size()<<endl;
 	G_TESTCB_SUCC=0;
