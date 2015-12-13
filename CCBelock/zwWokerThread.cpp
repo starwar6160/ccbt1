@@ -21,7 +21,6 @@ namespace zwccbthr {
 	boost::mutex thrhid_mutex;
 	boost::mutex upDeque_mutex;
 	void pushToCallBack( const char * recvBuf );
-	deque<string> g_dqLockUpMsg;	//锁具主动上送的答非所问消息的临时队列
 	boost::timer g_LatTimer;	//用于自动计算延迟
 
 	void wait(int milliseconds) {
@@ -59,7 +58,7 @@ namespace zwccbthr {
 
 	DWORD JcLockSendRecvData::getCallerID()
 	{
-		VLOG_IF(3,m_CallerThreadID>0)<<__FUNCTION__<<"\t"<<m_CallerThreadID<<endl;
+		VLOG_IF(4,m_CallerThreadID>0)<<__FUNCTION__<<"\t"<<m_CallerThreadID<<endl;
 		return m_CallerThreadID;
 	}
 
@@ -67,7 +66,7 @@ namespace zwccbthr {
 	{
 		boost::mutex::scoped_lock lock(notify_mutex);
 		m_Notify.push_back(NotifyMsg);
-		VLOG_IF(3,NotifyMsg.size()>0)<<__FUNCTION__<<"\t"<<NotifyMsg<<endl;
+		VLOG_IF(4,NotifyMsg.size()>0)<<__FUNCTION__<<"\t"<<NotifyMsg<<endl;
 	}
 
 	string JcLockSendRecvData::PullNotifyMsg()
@@ -77,10 +76,10 @@ namespace zwccbthr {
 		{
 			string retMsg=m_Notify.front();
 			m_Notify.pop_front();
-			VLOG_IF(3,retMsg.size()>0)<<__FUNCTION__<<"\t"<<retMsg<<endl;
+			VLOG_IF(4,retMsg.size()>0)<<__FUNCTION__<<"\t"<<retMsg<<endl;
 			return retMsg;
 		}
-		VLOG(3)<<__FUNCTION__<<"\tNOMSG CAN PULL"<<endl;
+		VLOG(4)<<__FUNCTION__<<"\tNOMSG CAN PULL"<<endl;
 		return "";
 	}
 
@@ -88,7 +87,7 @@ namespace zwccbthr {
 	{
 		boost::mutex::scoped_lock lock(upmsg_mutex);
 		m_UpMsg.push_back(UpMsg);
-		VLOG_IF(3,UpMsg.size()>0)<<__FUNCTION__<<"\t"<<UpMsg<<endl;
+		VLOG_IF(4,UpMsg.size()>0)<<__FUNCTION__<<"\t"<<UpMsg<<endl;
 	}
 
 	string JcLockSendRecvData::PullUpMsg()
@@ -98,10 +97,10 @@ namespace zwccbthr {
 		{
 			string retMsg=m_UpMsg.front();
 			m_UpMsg.pop_front();
-			VLOG_IF(3,retMsg.size()>0)<<__FUNCTION__<<"\t"<<retMsg<<endl;
+			VLOG_IF(4,retMsg.size()>0)<<__FUNCTION__<<"\t"<<retMsg<<endl;
 			return retMsg;
 		}
-		VLOG(3)<<__FUNCTION__<<"\tNOMSG CAN PULL"<<endl;
+		VLOG(4)<<__FUNCTION__<<"\tNOMSG CAN PULL"<<endl;
 		return "";
 	}
 
@@ -144,21 +143,14 @@ namespace zwccbthr {
 	}
 	
 
-	void mySendCmd2Lock() 
+	void mySendCmd2Lock(int i) 
 	{
 		JCHID_STATUS sts=JCHID_STATUS_FAIL;		
-		//遍历所有收发队列
-		int cmdDqSize=zwCfg::vecCallerCmdDq.size();
-		for (int i=0;i<cmdDqSize;i++)
-		{
+
 			string curCmd;
-			while(1)
+			curCmd=zwCfg::vecCallerCmdDq[i]->PullNotifyMsg();
+			if (""!=curCmd)
 			{
-				curCmd=zwCfg::vecCallerCmdDq[i]->PullNotifyMsg();
-				if (""==curCmd)
-				{
-					break;
-				}
 				LOG(WARNING)<<"从线程"<<zwCfg::vecCallerCmdDq[i]->getCallerID()<<
 					"的收发队列取出下发给锁具的消息.内容是"<<curCmd<<endl;
 
@@ -168,13 +160,11 @@ namespace zwccbthr {
 				if (JCHID_STATUS_OK!=static_cast<JCHID_STATUS>(sts))
 				{
 					g_jhc->OpenJc();
-				}
-
-			}	//end while(1)					
-		}	//end for
+				}					
+			}		
 	}
 
-	void myRecvFromLock() 
+	void myRecvFromLock(int i) 
 	{
 		const int BLEN = 1024;
 		char recvBuf[BLEN];	
@@ -198,7 +188,7 @@ namespace zwccbthr {
 				{
 					boost::mutex::scoped_lock lock(upDeque_mutex);	
 					//收到的报文放入上传队列，由单独的线程去上传
-					g_dqLockUpMsg.push_back(outXML);
+					zwCfg::vecCallerCmdDq[i]->PushUpMsg(outXML);
 				}													
 			}
 		}while(strlen(recvBuf)>0);			
@@ -210,10 +200,15 @@ namespace zwccbthr {
 		while (1)
 		{	
 			boost::this_thread::interruption_point();
-			//下发命令和接收锁具回复的整个过程加锁
-			boost::mutex::scoped_lock lock(thrhid_mutex);		
-			mySendCmd2Lock();
-			myRecvFromLock();
+			//遍历所有收发队列
+			int cmdDqSize=zwCfg::vecCallerCmdDq.size();
+			for (int i=0;i<cmdDqSize;i++)
+			{
+				//下发命令和接收锁具回复的整个过程加锁
+				boost::mutex::scoped_lock lock(thrhid_mutex);		
+				mySendCmd2Lock(i);
+				myRecvFromLock(i);
+			}	//end for
 			Sleep(100);	//接收完毕一轮报文后暂停100毫秒给下发报文腾出时间；
 		}
 	}
@@ -226,11 +221,16 @@ namespace zwccbthr {
 					//等待数据接收线程操作完毕“收到的数据”队列
 					//获得该队列的锁的所有权，开始操作
 					boost::mutex::scoped_lock lock(upDeque_mutex);	
-					for (size_t i=0;i<g_dqLockUpMsg.size();i++)
+					for(int i=0;i<zwCfg::vecCallerCmdDq.size();i++)
 					{
-						LOG(WARNING)<<"单独线程上传报文"<<endl;
-						pushToCallBack(g_dqLockUpMsg[i].c_str());
-						g_dqLockUpMsg.pop_front();
+						DWORD tid=zwCfg::vecCallerCmdDq[i]->getCallerID();
+						string tMsg=zwCfg::vecCallerCmdDq[i]->PullUpMsg();
+						if (tMsg.size()>0)
+						{
+							pushToCallBack(tMsg.c_str());
+						}						
+						//VLOG_IF(3,tMsg.size()>0)<<__FUNCTION__<<" 线程ID "<<tid<<
+						//	"的上传队列报文是"<<tMsg<<endl;
 					}
 					Sleep(100);
 			}
