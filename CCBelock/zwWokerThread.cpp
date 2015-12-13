@@ -96,6 +96,7 @@ namespace zwccbthr {
 		if (m_UpMsg.size()>0)
 		{
 			string retMsg=m_UpMsg.front();
+			VLOG(3)<<"下面的锁具返回报文上传给线程ID="<<m_CallerThreadID<<"的线程"<<endl;
 			pushToCallBack(retMsg.c_str(),m_CallBack);
 			m_UpMsg.pop_front();
 			VLOG_IF(4,retMsg.size()>0)<<__FUNCTION__<<"\t"<<retMsg<<endl;
@@ -170,7 +171,7 @@ namespace zwccbthr {
 		const int BLEN = 1024;
 		char recvBuf[BLEN];	
 		JCHID_STATUS sts=JCHID_STATUS_FAIL;							
-		do{				
+		//do{				
 			//考虑到有可能锁具单向上行信息导致一条下发信息有多条
 			//上行信息，所以多读取几次直到读不到信息为止
 			memset(recvBuf,0,BLEN);
@@ -190,9 +191,10 @@ namespace zwccbthr {
 					boost::mutex::scoped_lock lock(upDeque_mutex);	
 					//收到的报文放入上传队列，由单独的线程去上传
 					zwCfg::vecCallerCmdDq[i]->PushUpMsg(outXML);
+					zwCfg::vecCallerCmdDq[i]->UploadLockResult();
 				}													
 			}
-		}while(strlen(recvBuf)>0);			
+		//}while(strlen(recvBuf)>0);			
 	}
 
 	void my515LockRecvThr(void)
@@ -217,6 +219,7 @@ namespace zwccbthr {
 	void my515UpMsgThr(void)
 	{
 		ZWERROR("与ATMC之间的数据上传线程启动.20151203.1720")
+		return;
 			while (1)
 			{
 					//等待数据接收线程操作完毕“收到的数据”队列
@@ -225,13 +228,7 @@ namespace zwccbthr {
 					for(int i=0;i<zwCfg::vecCallerCmdDq.size();i++)
 					{
 						DWORD tid=zwCfg::vecCallerCmdDq[i]->getCallerID();
-						string tMsg=zwCfg::vecCallerCmdDq[i]->UploadLockResult();
-						if (tMsg.size()>0)
-						{
-							//pushToCallBack(tMsg.c_str());
-						}						
-						//VLOG_IF(3,tMsg.size()>0)<<__FUNCTION__<<" 线程ID "<<tid<<
-						//	"的上传队列报文是"<<tMsg<<endl;
+
 					}
 					Sleep(100);
 			}
