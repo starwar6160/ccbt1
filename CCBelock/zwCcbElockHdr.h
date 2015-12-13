@@ -151,7 +151,7 @@ public:
 	void PushNotifyMsg(const string &NotifyMsg);
 	string PullNotifyMsg(void);
 	void PushUpMsg(const string &UpMsg);
-	string PullUpMsg(void);
+	string UploadLockResult(void);
 private:		
 	DWORD m_CallerThreadID;		//上层程序调用者的线程ID
 	RecvMsgRotine m_CallBack;	//回调函数指针
@@ -160,6 +160,7 @@ private:
 	std::deque<string> m_Notify;	//该上层程序线程专用的下发队列
 	string m_CmdType;				//当前下发的命令类型
 	std::deque<string> m_UpMsg;		//该上层程序线程专用的上传队列
+	void pushToCallBack( const char * recvConvedXML,RecvMsgRotine pCallBack );
 };
 
 

@@ -20,7 +20,7 @@ namespace zwccbthr {
 	//建行给的接口，没有设置连接参数的地方，也就是说，完全可以端口，抑或是从配置文件读取
 	boost::mutex thrhid_mutex;
 	boost::mutex upDeque_mutex;
-	void pushToCallBack( const char * recvBuf );
+	void pushToCallBack( const char * recvConvedXML,RecvMsgRotine pCallBack );
 	boost::timer g_LatTimer;	//用于自动计算延迟
 
 	void wait(int milliseconds) {
@@ -90,12 +90,13 @@ namespace zwccbthr {
 		VLOG_IF(4,UpMsg.size()>0)<<__FUNCTION__<<"\t"<<UpMsg<<endl;
 	}
 
-	string JcLockSendRecvData::PullUpMsg()
+	string JcLockSendRecvData::UploadLockResult()
 	{
 		boost::mutex::scoped_lock lock(upmsg_mutex);
 		if (m_UpMsg.size()>0)
 		{
 			string retMsg=m_UpMsg.front();
+			pushToCallBack(retMsg.c_str(),m_CallBack);
 			m_UpMsg.pop_front();
 			VLOG_IF(4,retMsg.size()>0)<<__FUNCTION__<<"\t"<<retMsg<<endl;
 			return retMsg;
@@ -105,7 +106,7 @@ namespace zwccbthr {
 	}
 
 //////////////////////////////////JcLockSendRecvData END////////////////////////////////////////
-	void pushToCallBack( const char * recvConvedXML )
+	void JcLockSendRecvData::pushToCallBack( const char * recvConvedXML,RecvMsgRotine pCallBack )
 	{
 		assert(NULL!=recvConvedXML);
 		assert(strlen(recvConvedXML)>0);
@@ -122,17 +123,17 @@ namespace zwccbthr {
 			assert(strlen(recvConvedXML) > 42);
 		}
 
-		if (NULL==zwCfg::g_WarnCallback)
+		if (NULL==pCallBack)
 		{
 			const char *err1="回调函数指针为空，无法调用回调函数返回从电子锁收到的报文";
 			ZWERROR(err1);
 			MessageBoxA(NULL,err1,"严重警告",MB_OK);
 		}
-		if (NULL != zwCfg::g_WarnCallback && strlen(recvConvedXML)>0) {
+		if (NULL != pCallBack && strlen(recvConvedXML)>0) {
 			//调用回调函数传回信息，
 			//20150415.1727.为了万敏的要求，控制上传消息速率最多每2秒一条防止ATM死机
 			//Sleep(2920);
-			zwCfg::g_WarnCallback(recvConvedXML);
+			pCallBack(recvConvedXML);
 			ZWERROR(recvConvedXML)
 			VLOG_IF(4,strlen(recvConvedXML)>0)<<"回调函数收到以下内容\n"<<recvConvedXML<<endl;
 #ifdef _DEBUG401
@@ -224,10 +225,10 @@ namespace zwccbthr {
 					for(int i=0;i<zwCfg::vecCallerCmdDq.size();i++)
 					{
 						DWORD tid=zwCfg::vecCallerCmdDq[i]->getCallerID();
-						string tMsg=zwCfg::vecCallerCmdDq[i]->PullUpMsg();
+						string tMsg=zwCfg::vecCallerCmdDq[i]->UploadLockResult();
 						if (tMsg.size()>0)
 						{
-							pushToCallBack(tMsg.c_str());
+							//pushToCallBack(tMsg.c_str());
 						}						
 						//VLOG_IF(3,tMsg.size()>0)<<__FUNCTION__<<" 线程ID "<<tid<<
 						//	"的上传队列报文是"<<tMsg<<endl;

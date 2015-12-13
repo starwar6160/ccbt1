@@ -168,6 +168,6 @@ TEST_F(ccbElockTest, jcHidDev20151207SpeedTestInATMCDLL)
 	
 	thr1->join();
 	thr2->join();
-	Sleep(5000);
+	Sleep(6000);
 	EXPECT_EQ(ELOCK_ERROR_SUCCESS,Close());
 }
