@@ -131,6 +131,8 @@ extern "C" {
 #endif
 
 
+
+
 #ifdef __cplusplus
 }
 #endif
@@ -139,9 +141,24 @@ extern "C" {
 unsigned char crc8Short( const void *inputData,const int inputLen );
 unsigned long Crc32_ComputeBuf(unsigned long inCrc32, const void *buf, size_t bufLen);
 
+namespace zwccbthr {
+class JcLockSendRecvData
+{
+public:
+	JcLockSendRecvData(DWORD callerID);
+	~JcLockSendRecvData();	
+	DWORD getCallerID(void);
+	void PushNotifyMsg(const string &NotifyMsg);
+	string PullNotifyMsg(void);
+	void PushUpMsg(const string &UpMsg);
+	string PullUpMsg(void);
+private:		
+	DWORD m_CallerThreadID;		//上层程序调用者的线程ID
+	boost::mutex  notify_mutex;
+	boost::mutex upmsg_mutex;
+	std::deque<string> m_Notify;	//该上层程序线程专用的下发队列
+	std::deque<string> m_UpMsg;		//该上层程序线程专用的上传队列
+};
 
-namespace jchidDevice2015{
-
-}	//namespace jchidDevice2015{
-
+}	//namespace zwccbthr {
 #endif // zwCcbElockHdr_h__

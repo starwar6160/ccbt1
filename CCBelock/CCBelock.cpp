@@ -22,7 +22,7 @@ using boost::property_tree::ptree_bad_path;
 using jchidDevice2015::jcHidDevice;
 
 extern jcHidDevice *g_jhc;	//实际的HID设备类对象
-#define DBGTHRID	VLOG(3)<<"["<<__FUNCTION__<<"] ThreadID of Caller is "<<GetCurrentThreadId()<<endl;
+#define DBGTHRID	VLOG(2)<<"["<<__FUNCTION__<<"] ThreadID of Caller is "<<GetCurrentThreadId()<<endl;
 
 namespace zwccbthr {
 	void ThreadLockRecv();	//与锁具之间的通讯线程
@@ -47,6 +47,8 @@ namespace zwCfg {
 	//线程对象作为一个全局静态变量，则不需要显示启动就能启动一个线程
 	boost::thread * thr = NULL;
 	bool s_hidOpened = false;
+	//按照线程ID保存每个调用我们的DLL的上层主程序线程的命令上传下发队列类对象
+	vector<zwccbthr::JcLockSendRecvData *> vecCallerCmdDq;
 } //namespace zwCfg{  
 
 
@@ -107,12 +109,12 @@ CCBELOCK_API long JCAPISTD Open(long lTimeOut)
 
 	if (JCHID_STATUS_OK==elockStatus)
 	{
-		VLOG(3)<<"JCELock Open return ELOCK_ERROR_SUCCESS";
+		VLOG(2)<<"JCELock Open return ELOCK_ERROR_SUCCESS";
 		return ELOCK_ERROR_SUCCESS;
 	}
 	else
 	{
-		VLOG(3)<<"JCELock Open return ELOCK_ERROR_CONNECTLOST";
+		VLOG(2)<<"JCELock Open return ELOCK_ERROR_CONNECTLOST";
 		return ELOCK_ERROR_CONNECTLOST;
 	}
 	
@@ -132,6 +134,19 @@ CCBELOCK_API long JCAPISTD Close()
 		delete g_jhc;
 		g_jhc=NULL;
 	}
+
+	//获取调用我们的主程序线程ID
+	DWORD iCallerThrId=GetCurrentThreadId();
+	int iCmdVecSize=zwCfg::vecCallerCmdDq.size();
+	VLOG(1)<<"每线程收发队列数量是"<<iCmdVecSize<<endl;
+	for (int i=0;i<iCmdVecSize;i++)
+	{	
+		//在消息收发队列的向量里面逐个删除
+		VLOG(1)<<"删除线程ID是 "<<zwCfg::vecCallerCmdDq[i]->getCallerID()<<"的收发队列"<<endl;
+		delete zwCfg::vecCallerCmdDq[i];
+		
+	}
+	zwCfg::vecCallerCmdDq.clear();
 	    return ELOCK_ERROR_SUCCESS;
 }
 
@@ -142,13 +157,13 @@ CCBELOCK_API long JCAPISTD Notify(const char *pszMsg)
 	LOG(WARNING)<<__FUNCTION__<<" Normal START"<<endl;
 	if (NULL==zwccbthr::opUpMsgThr)
 	{
-		VLOG(3)<<"Start my515UpMsgThr"<<endl;
+		VLOG(2)<<"Start my515UpMsgThr"<<endl;
 		zwccbthr::opUpMsgThr=new boost::thread(zwccbthr::my515UpMsgThr);
 	}	
 
 	if (NULL==zwccbthr::opCommThr)
 	{
-		VLOG(3)<<"Start my515LockRecvThr"<<endl;
+		VLOG(2)<<"Start my515LockRecvThr"<<endl;
 		zwccbthr::opCommThr=new boost::thread(zwccbthr::my515LockRecvThr);
 	}	
 
@@ -250,6 +265,10 @@ CCBELOCK_API long JCAPISTD Notify(const char *pszMsg)
 CCBELOCK_API int JCAPISTD SetRecvMsgRotine(RecvMsgRotine pRecvMsgFun)
 {
 	DBGTHRID
+	DWORD iCallerThrId=GetCurrentThreadId();
+	zwccbthr::JcLockSendRecvData *thrCmdDq=new zwccbthr::JcLockSendRecvData(iCallerThrId);
+	zwCfg::vecCallerCmdDq.push_back(thrCmdDq);
+	VLOG(2)<<"JCELOCK收发消息队列数量是"<<zwCfg::vecCallerCmdDq.size()<<endl;
 	G_TESTCB_SUCC=0;
 	assert(NULL != pRecvMsgFun);
 	if (NULL == pRecvMsgFun) {

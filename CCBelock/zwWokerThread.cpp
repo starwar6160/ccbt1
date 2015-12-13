@@ -40,27 +40,32 @@ namespace zwccbthr {
 	}
 //////////////////////////////////JcLockSendRecvData START////////////////////////////////////////
 	//为每个调用者线程准备的专用下发和上传消息的队列
-	class JcLockSendRecvData
+
+
+	JcLockSendRecvData::JcLockSendRecvData(DWORD callerID)
 	{
-	public:
-		JcLockSendRecvData();
-		~JcLockSendRecvData();
-		DWORD m_CallerThreadID;		//上层程序调用者的线程ID
-		void PushNotifyMsg(const string &NotifyMsg);
-		string PullNotifyMsg(void);
-		void PushUpMsg(const string &UpMsg);
-		string PullUpMsg(void);
-	private:		
-		boost::mutex notify_mutex;
-		boost::mutex upmsg_mutex;
-		std::deque<string> m_Notify;	//该上层程序线程专用的下发队列
-		std::deque<string> m_UpMsg;		//该上层程序线程专用的上传队列
-	};
+		m_CallerThreadID=callerID;
+		VLOG(2)<<"分配了一个JCATMC DLL上层应用每个线程专用的上传下发队列 线程ID= "<<m_CallerThreadID<<endl;
+	}
+
+	JcLockSendRecvData::~JcLockSendRecvData()
+	{
+		m_Notify.clear();
+		m_UpMsg.clear();
+		VLOG(2)<<"删除了一个JCATMC DLL上层应用每个线程专用的上传下发队列 线程ID= "<<m_CallerThreadID<<endl;
+	}
+
+	DWORD JcLockSendRecvData::getCallerID()
+	{
+		VLOG_IF(3,m_CallerThreadID>0)<<__FUNCTION__<<"\t"<<m_CallerThreadID<<endl;
+		return m_CallerThreadID;
+	}
 
 	void JcLockSendRecvData::PushNotifyMsg(const string &NotifyMsg)
 	{
 		boost::mutex::scoped_lock lock(notify_mutex);
 		m_Notify.push_back(NotifyMsg);
+		VLOG_IF(3,NotifyMsg.size()>0)<<__FUNCTION__<<"\t"<<NotifyMsg<<endl;
 	}
 
 	string JcLockSendRecvData::PullNotifyMsg()
@@ -70,8 +75,10 @@ namespace zwccbthr {
 		{
 			string retMsg=m_Notify.front();
 			m_Notify.pop_front();
+			VLOG_IF(3,retMsg.size()>0)<<__FUNCTION__<<"\t"<<retMsg<<endl;
 			return retMsg;
 		}
+		VLOG(3)<<__FUNCTION__<<"\tNOMSG CAN PULL"<<endl;
 		return "";
 	}
 
@@ -79,6 +86,7 @@ namespace zwccbthr {
 	{
 		boost::mutex::scoped_lock lock(upmsg_mutex);
 		m_UpMsg.push_back(UpMsg);
+		VLOG_IF(3,UpMsg.size()>0)<<__FUNCTION__<<"\t"<<UpMsg<<endl;
 	}
 
 	string JcLockSendRecvData::PullUpMsg()
@@ -88,8 +96,10 @@ namespace zwccbthr {
 		{
 			string retMsg=m_UpMsg.front();
 			m_UpMsg.pop_front();
+			VLOG_IF(3,retMsg.size()>0)<<__FUNCTION__<<"\t"<<retMsg<<endl;
 			return retMsg;
 		}
+		VLOG(3)<<__FUNCTION__<<"\tNOMSG CAN PULL"<<endl;
 		return "";
 	}
 
@@ -126,7 +136,7 @@ namespace zwccbthr {
 			VLOG_IF(4,strlen(recvConvedXML)>0)<<"回调函数收到以下内容\n"<<recvConvedXML<<endl;
 #ifdef _DEBUG401
 			
-			VLOG(4)<<"成功把从锁具接收到的数据传递给回调函数\n";
+			VLOG(2)<<"成功把从锁具接收到的数据传递给回调函数\n";
 #endif // _DEBUG401
 		}
 	}
@@ -152,8 +162,8 @@ namespace zwccbthr {
 				if (s_jcNotify.size()>0)
 				{
 
-					LOG(WARNING)<<"SendToLock JsonIS\n"<<s_jcNotify.front().c_str()<<endl;
-					LOG(INFO)<<"发送给锁具的消息.内容是"<<s_jcNotify.front()<<endl;
+					//LOG(WARNING)<<"SendToLock JsonIS\n"<<s_jcNotify.front().c_str()<<endl;
+					LOG(WARNING)<<"下发给锁具的消息.内容是"<<s_jcNotify.front()<<endl;
 					sts=static_cast<JCHID_STATUS>( g_jhc->SendJson(s_jcNotify.front().c_str()));
 					
 					//断线重连探测机制
@@ -168,12 +178,13 @@ namespace zwccbthr {
 				//考虑到有可能锁具单向上行信息导致一条下发信息有多条
 				//上行信息，所以多读取几次直到读不到信息为止
 				memset(recvBuf,0,BLEN);
-				VLOG(3)<<"接收数据的RecvJson之前"<<endl;
+				//VLOG(3)<<"接收数据的RecvJson之前"<<endl;
 				sts=static_cast<JCHID_STATUS>(g_jhc->RecvJson(recvBuf,BLEN));				
-				VLOG(3)<<"接收数据的RecvJson之后 收到"<<strlen(recvBuf)<<"字节的数据"<<endl;
+				VLOG_IF(3,strlen(recvBuf)>0)<<"接收数据的RecvJson之后 收到 "<<
+					strlen(recvBuf)<<" 字节的数据"<<endl;
 				if (strlen(recvBuf)>0)
 				{
-					VLOG(4)<<"收到锁具返回消息= "<<recvBuf<<endl;
+					VLOG(1)<<"收到锁具返回消息= "<<recvBuf<<endl;
 					assert(strlen(recvBuf)>0);
 					LOG(WARNING)<<"收到锁具返回消息.内容是\n"<<recvBuf<<endl;
 					string outXML;
@@ -200,7 +211,7 @@ namespace zwccbthr {
 					//等待数据接收线程操作完毕“收到的数据”队列
 					//获得该队列的锁的所有权，开始操作
 					boost::mutex::scoped_lock lock(upDeque_mutex);	
-					for (int i=0;i<g_dqLockUpMsg.size();i++)
+					for (size_t i=0;i<g_dqLockUpMsg.size();i++)
 					{
 						LOG(WARNING)<<"单独线程上传报文"<<endl;
 						pushToCallBack(g_dqLockUpMsg[i].c_str());
