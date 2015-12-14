@@ -240,19 +240,7 @@ namespace zwccbthr {
 
 	void my515LockRecvThr(void)
 	{
-		ZWERROR("与锁具之间的数据接收线程启动")
-//#define _DEBUG20151214
-			//为了测试答非所问报文，直接生造一个
-#ifdef _DEBUG20151214
-		{
-			boost::mutex::scoped_lock lock(upDeque_mutex);	
-			string outXML;
-			string jcExJson="{\"Command\": \"Lock_Alarm_Info\",\"Lock_Time\": \"1419780417\",\"Atm_Serial\": \"\",\"Lock_Serial\": \"22222222\",\"Lock_Status\": \"1,1,0,0,0,0,0,0,31,0,0,1\"}";
-			jcAtmcConvertDLL::zwJCjson2CCBxml(jcExJson,outXML);								
-			s_SingleUpMsg.push_back(outXML);
-			VLOG(3)<<"s_SingleUpMsg.size()=="<<s_SingleUpMsg.size()<<endl;
-		}				
-#endif // _DEBUG20151214
+		ZWERROR("与锁具之间的数据接收线程启动.20151214.v802")
 		while (1)
 		{	
 			boost::this_thread::interruption_point();
@@ -272,7 +260,22 @@ namespace zwccbthr {
 
 	void my515UpMsgThr(void)
 	{
-		ZWERROR("与ATMC之间的数据上传线程启动")
+		ZWERROR("与ATMC之间的数据上传线程启动")		
+#ifdef _DEBUG
+#define _DEBUG20151214
+//为了测试答非所问报文，直接生造一个
+#ifdef _DEBUG20151214
+		{
+			boost::mutex::scoped_lock lock(upDeque_mutex);	
+			string outXML;
+			string jcExJson="{\"Command\": \"Lock_Alarm_Info\",\"Lock_Time\": \"1419780417\",\"Atm_Serial\": \"\",\"Lock_Serial\": \"22222222\",\"Lock_Status\": \"1,1,0,0,0,0,0,0,31,0,0,1\"}";
+			jcAtmcConvertDLL::zwJCjson2CCBxml(jcExJson,outXML);								
+			s_SingleUpMsg.push_back(outXML);
+			VLOG(3)<<"s_SingleUpMsg.size()=="<<s_SingleUpMsg.size()<<endl;
+		}				
+#endif // _DEBUG20151214
+#endif // _DEBUG
+
 			while (1)
 			{
 				VLOG(4)<<"上传线程运行中20151214.1515"<<endl;
@@ -284,16 +287,17 @@ namespace zwccbthr {
 					VLOG_IF(3,upNum>0)<<"s_SingleUpMsg.size()=="<<upNum<<endl;
 					if (upNum>0)
 					{
-						VLOG(3)<<"zwCfg::vecCallerCmdDq.size()=="<<zwCfg::vecCallerCmdDq.size()<<endl;
+						int cmdDqNum=zwCfg::vecCallerCmdDq.size();
+						VLOG(3)<<"zwCfg::vecCallerCmdDq.size()=="<<cmdDqNum<<endl;
 						//单方向上传报警等报文发送给每一个线程
-						for(int i=0;i<zwCfg::vecCallerCmdDq.size();i++)
+						for(int i=0;i<cmdDqNum;i++)
 						{
 							DWORD tid=zwCfg::vecCallerCmdDq[i]->getCallerID();
 							zwCfg::vecCallerCmdDq[i]->PushUpMsg(s_SingleUpMsg.front());
 							zwCfg::vecCallerCmdDq[i]->UploadLockResult();				
-							LOG(ERROR)<<__FUNCTION__<<" 上传单向上传报文"<<s_SingleUpMsg.front()
+							LOG(WARNING)<<__FUNCTION__<<" 上传单向上传报文"<<s_SingleUpMsg.front()
 								<<"给线程ID "<<tid<<endl;
-							s_SingleUpMsg.pop_front();
+							s_SingleUpMsg.pop_front();						
 						}
 					}
 					Sleep(100);
