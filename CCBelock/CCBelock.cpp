@@ -124,9 +124,12 @@ CCBELOCK_API long JCAPISTD Close()
 	//结束的话，及时中断数据接收线程
 	//注意，在这里做Sleep无效，要在主程序中Close之前做Sleep才能让回调函数收到结果，奇怪。20151210.1706.周伟
 	zwccbthr::opCommThr->interrupt();
+	zwccbthr::opUpMsgThr->interrupt();
 	zwccbthr::opCommThr=NULL;
+	zwccbthr::opUpMsgThr=NULL;
 	if (NULL!=g_jhc)
 	{
+		Sleep(100);
 		delete g_jhc;
 		g_jhc=NULL;
 	}
@@ -222,7 +225,7 @@ CCBELOCK_API long JCAPISTD Notify(const char *pszMsg)
 			if (tdq->getCallerID()==iCallerThrId)
 			{				
 				tdq->PushNotifyMsg(strJsonSend);
-				LOG(WARNING)<<"线程 "<<iCallerThrId<<"的收发队列存入下发消息\n"<<strJsonSend<<endl;
+				//LOG(WARNING)<<"线程 "<<iCallerThrId<<"的收发队列存入下发消息\n"<<strJsonSend<<endl;
 				break;
 			}
 		}

@@ -141,6 +141,7 @@ unsigned char crc8Short( const void *inputData,const int inputLen );
 unsigned long Crc32_ComputeBuf(unsigned long inCrc32, const void *buf, size_t bufLen);
 
 namespace zwccbthr {
+extern std::deque<string> s_cmdType;	//记录下发命令类型的队列
 class JcLockSendRecvData
 {
 public:
@@ -151,7 +152,7 @@ public:
 	string PullNotifyMsg(void);
 	void PushUpMsg(const string &UpMsg);
 	string UploadLockResult(void);
-	std::deque<string> m_cmdType;	//记录下发命令类型的队列
+	
 private:		
 	DWORD m_CallerThreadID;		//上层程序调用者的线程ID
 	RecvMsgRotine m_CallBack;	//回调函数指针

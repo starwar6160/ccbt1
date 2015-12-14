@@ -41,7 +41,7 @@ namespace zwccbthr {
 	}
 //////////////////////////////////JcLockSendRecvData START////////////////////////////////////////
 	//为每个调用者线程准备的专用下发和上传消息的队列
-
+	std::deque<string> s_cmdType;	//记录下发命令类型的队列
 
 	JcLockSendRecvData::JcLockSendRecvData(DWORD callerID,RecvMsgRotine pCallBack)
 	{
@@ -68,6 +68,10 @@ namespace zwccbthr {
 		boost::mutex::scoped_lock lock(notify_mutex);
 		m_Notify.push_back(NotifyMsg);
 		VLOG_IF(4,NotifyMsg.size()>0)<<__FUNCTION__<<"\t"<<NotifyMsg<<endl;
+		string cmdType=zwGetJcJsonMsgType(NotifyMsg.c_str());
+		LOG(WARNING)<<__FUNCTION__<<"保存的发送给锁具的消息类型是 "<<cmdType<<endl;
+		s_cmdType.push_back(cmdType) ;
+		VLOG(3)<<"threadID="<<m_CallerThreadID<<" s_cmdType size ="<<s_cmdType.size()<<endl; 
 	}
 
 	string JcLockSendRecvData::PullNotifyMsg()
@@ -155,12 +159,10 @@ namespace zwccbthr {
 			if (""!=curCmd)
 			{
 				LOG(WARNING)<<"从线程"<<zwCfg::vecCallerCmdDq[i]->getCallerID()<<
-					"的收发队列取出下发给锁具的消息.内容是"<<curCmd<<endl;
+					"的收发队列取出下发给锁具的消息.内容是"<<curCmd;
 
 				sts=static_cast<JCHID_STATUS>( g_jhc->SendJson(curCmd.c_str()));
-				string cmdType=zwGetJcJsonMsgType(curCmd.c_str());
-				zwCfg::vecCallerCmdDq[i]->m_cmdType.push_back(cmdType) ;
-				VLOG(3)<<"发送给锁具的消息类型是 "<<cmdType<<endl;
+				
 				//断线重连探测机制
 				if (JCHID_STATUS_OK!=static_cast<JCHID_STATUS>(sts))
 				{
@@ -187,25 +189,41 @@ namespace zwccbthr {
 				VLOG(1)<<"收到锁具返回消息= "<<recvBuf<<endl;
 				assert(strlen(recvBuf)>0);
 				VLOG(3)<<"收到锁具返回消息类型是 "<<zwGetJcJsonMsgType(recvBuf)<<endl;
-				if (zwGetJcJsonMsgType(recvBuf)!=zwCfg::vecCallerCmdDq[i]->m_cmdType.front())
+				string recvType=zwGetJcJsonMsgType(recvBuf);				
+				string notifyType="";
+				VLOG(3)<<"s_cmdType size ="<<zwccbthr::s_cmdType.size()<<endl;
+				if (zwccbthr::s_cmdType.size()>0)
 				{
-					LOG(ERROR)<<"答非所问，需要延迟上传"<<endl;
+					notifyType=zwccbthr::s_cmdType.front();
+				}				
+				VLOG(3)<<"recvType="<<recvType<<"\tnotifyType="<<notifyType<<endl;
+				VLOG(3)<<"before s_cmdType.pop_front()\tonThreadID= "<<
+					zwCfg::vecCallerCmdDq[i]->getCallerID()
+					<<" s_cmdType.size()="<<zwccbthr::s_cmdType.size()
+					<<endl;
+				if (""!=notifyType  && recvType==notifyType)
+				{					
+					zwccbthr::s_cmdType.pop_front();					
+					VLOG(3)<<"after s_cmdType.pop_front()\tonThreadID= "<<
+						zwCfg::vecCallerCmdDq[i]->getCallerID()
+						<<" s_cmdType.size()="<<zwccbthr::s_cmdType.size()
+						<<endl;
+					LOG(WARNING)<<"收到锁具返回消息.内容是\n"<<recvBuf<<endl;
+					string outXML;
+					jcAtmcConvertDLL::zwJCjson2CCBxml(recvBuf,outXML);					
+					if (outXML.size()>0)
+					{						
+						boost::mutex::scoped_lock lock(upDeque_mutex);	
+						//收到的报文放入上传队列，由类成员函数去上传
+						zwCfg::vecCallerCmdDq[i]->PushUpMsg(outXML);
+						zwCfg::vecCallerCmdDq[i]->UploadLockResult();						
+					}													
 				}
-				else
+				if (""!=notifyType  && recvType!=notifyType)
 				{
-					zwCfg::vecCallerCmdDq[i]->m_cmdType.pop_front();
+					LOG(ERROR)<<"答非所问，需要延迟上传"<<endl;					
 				}
 
-				LOG(WARNING)<<"收到锁具返回消息.内容是\n"<<recvBuf<<endl;
-				string outXML;
-				jcAtmcConvertDLL::zwJCjson2CCBxml(recvBuf,outXML);					
-				if (outXML.size()>0)
-				{
-					boost::mutex::scoped_lock lock(upDeque_mutex);	
-					//收到的报文放入上传队列，由单独的线程去上传
-					zwCfg::vecCallerCmdDq[i]->PushUpMsg(outXML);
-					zwCfg::vecCallerCmdDq[i]->UploadLockResult();
-				}													
 			}
 		//}while(strlen(recvBuf)>0);			
 	}
@@ -235,6 +253,7 @@ namespace zwccbthr {
 		return;
 			while (1)
 			{
+				boost::this_thread::interruption_point();
 					//等待数据接收线程操作完毕“收到的数据”队列
 					//获得该队列的锁的所有权，开始操作
 					boost::mutex::scoped_lock lock(upDeque_mutex);	
