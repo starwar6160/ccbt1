@@ -47,14 +47,14 @@ namespace zwccbthr {
 	{
 		m_CallerThreadID=callerID;
 		m_CallBack=pCallBack;
-		VLOG(2)<<"分配了一个JCATMC DLL上层应用每个线程专用的上传下发队列 线程ID= "<<m_CallerThreadID<<endl;
+		VLOG(3)<<"分配了一个JCATMC DLL上层应用每个线程专用的上传下发队列 线程ID= "<<m_CallerThreadID<<endl;
 	}
 
 	JcLockSendRecvData::~JcLockSendRecvData()
 	{
 		m_Notify.clear();
 		m_UpMsg.clear();
-		VLOG(2)<<"删除了一个JCATMC DLL上层应用每个线程专用的上传下发队列 线程ID= "<<m_CallerThreadID<<endl;
+		VLOG(3)<<"删除了一个JCATMC DLL上层应用每个线程专用的上传下发队列 线程ID= "<<m_CallerThreadID<<endl;
 	}
 
 	DWORD JcLockSendRecvData::getCallerID()
@@ -69,9 +69,9 @@ namespace zwccbthr {
 		m_Notify.push_back(NotifyMsg);
 		VLOG_IF(4,NotifyMsg.size()>0)<<__FUNCTION__<<"\t"<<NotifyMsg<<endl;
 		string cmdType=zwGetJcJsonMsgType(NotifyMsg.c_str());
-		LOG(WARNING)<<__FUNCTION__<<"保存的发送给锁具的消息类型是 "<<cmdType<<endl;
+		VLOG(4)<<__FUNCTION__<<"保存的发送给锁具的消息类型是 "<<cmdType<<endl;
 		s_cmdType.push_back(cmdType) ;
-		VLOG(3)<<"threadID="<<m_CallerThreadID<<" s_cmdType size ="<<s_cmdType.size()<<endl; 
+		VLOG(4)<<"threadID="<<m_CallerThreadID<<" s_cmdType size ="<<s_cmdType.size()<<endl; 
 	}
 
 	string JcLockSendRecvData::PullNotifyMsg()
@@ -144,7 +144,7 @@ namespace zwccbthr {
 			VLOG_IF(4,strlen(recvConvedXML)>0)<<"回调函数收到以下内容\n"<<recvConvedXML<<endl;
 #ifdef _DEBUG401
 			
-			VLOG(2)<<"成功把从锁具接收到的数据传递给回调函数\n";
+			VLOG(4)<<"成功把从锁具接收到的数据传递给回调函数\n";
 #endif // _DEBUG401
 		}
 	}
@@ -188,27 +188,27 @@ namespace zwccbthr {
 			{
 				VLOG(1)<<"收到锁具返回消息= "<<recvBuf<<endl;
 				assert(strlen(recvBuf)>0);
-				VLOG(3)<<"收到锁具返回消息类型是 "<<zwGetJcJsonMsgType(recvBuf)<<endl;
+				VLOG(4)<<"收到锁具返回消息类型是 "<<zwGetJcJsonMsgType(recvBuf)<<endl;
 				string recvType=zwGetJcJsonMsgType(recvBuf);				
 				string notifyType="";
-				VLOG(3)<<"s_cmdType size ="<<zwccbthr::s_cmdType.size()<<endl;
+				VLOG(4)<<"s_cmdType size ="<<zwccbthr::s_cmdType.size()<<endl;
 				if (zwccbthr::s_cmdType.size()>0)
 				{
 					notifyType=zwccbthr::s_cmdType.front();
 				}				
-				VLOG(3)<<"recvType="<<recvType<<"\tnotifyType="<<notifyType<<endl;
-				VLOG(3)<<"before s_cmdType.pop_front()\tonThreadID= "<<
+				VLOG(4)<<"recvType="<<recvType<<"\tnotifyType="<<notifyType<<endl;
+				VLOG(4)<<"before s_cmdType.pop_front()\tonThreadID= "<<
 					zwCfg::vecCallerCmdDq[i]->getCallerID()
 					<<" s_cmdType.size()="<<zwccbthr::s_cmdType.size()
 					<<endl;
 				if (""!=notifyType  && recvType==notifyType)
 				{					
 					zwccbthr::s_cmdType.pop_front();					
-					VLOG(3)<<"after s_cmdType.pop_front()\tonThreadID= "<<
+					VLOG(4)<<"after s_cmdType.pop_front()\tonThreadID= "<<
 						zwCfg::vecCallerCmdDq[i]->getCallerID()
 						<<" s_cmdType.size()="<<zwccbthr::s_cmdType.size()
 						<<endl;
-					LOG(WARNING)<<"收到锁具返回消息.内容是\n"<<recvBuf<<endl;
+					VLOG(1)<<"收到锁具返回消息.内容是\n"<<recvBuf<<endl;
 					string outXML;
 					jcAtmcConvertDLL::zwJCjson2CCBxml(recvBuf,outXML);					
 					if (outXML.size()>0)

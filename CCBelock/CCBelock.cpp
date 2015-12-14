@@ -105,12 +105,12 @@ CCBELOCK_API long JCAPISTD Open(long lTimeOut)
 
 	if (JCHID_STATUS_OK==elockStatus)
 	{
-		VLOG(2)<<"JCELock Open return ELOCK_ERROR_SUCCESS";
+		VLOG(4)<<"JCELock Open return ELOCK_ERROR_SUCCESS";
 		return ELOCK_ERROR_SUCCESS;
 	}
 	else
 	{
-		VLOG(2)<<"JCELock Open return ELOCK_ERROR_CONNECTLOST";
+		LOG(ERROR)<<"JCELock Open return ELOCK_ERROR_CONNECTLOST";
 		return ELOCK_ERROR_CONNECTLOST;
 	}
 	
@@ -120,7 +120,6 @@ CCBELOCK_API long JCAPISTD Close()
 {
 	DBGTHRID
 	ZWFUNCTRACE
-	VLOG(2)<<"ZIJIN423 Close ELOCK_ERROR_SUCCESS";
 	//结束的话，及时中断数据接收线程
 	//注意，在这里做Sleep无效，要在主程序中Close之前做Sleep才能让回调函数收到结果，奇怪。20151210.1706.周伟
 	zwccbthr::opCommThr->interrupt();
@@ -151,16 +150,16 @@ CCBELOCK_API long JCAPISTD Notify(const char *pszMsg)
 {
 	DBGTHRID
 	
-	LOG(WARNING)<<__FUNCTION__<<" Normal START"<<endl;
+	VLOG(4)<<__FUNCTION__<<" Normal START"<<endl;
 	if (NULL==zwccbthr::opUpMsgThr)
 	{
-		VLOG(2)<<"Start my515UpMsgThr"<<endl;
+		VLOG(4)<<"Start my515UpMsgThr"<<endl;
 		zwccbthr::opUpMsgThr=new boost::thread(zwccbthr::my515UpMsgThr);
 	}	
 
 	if (NULL==zwccbthr::opCommThr)
 	{
-		VLOG(2)<<"Start my515LockRecvThr"<<endl;
+		VLOG(4)<<"Start my515LockRecvThr"<<endl;
 		zwccbthr::opCommThr=new boost::thread(zwccbthr::my515LockRecvThr);
 	}	
 
@@ -275,7 +274,7 @@ CCBELOCK_API int JCAPISTD SetRecvMsgRotine(RecvMsgRotine pRecvMsgFun)
 	zwccbthr::JcLockSendRecvData *thrCmdDq=
 		new zwccbthr::JcLockSendRecvData(iCallerThrId,pRecvMsgFun);
 	zwCfg::vecCallerCmdDq.push_back(thrCmdDq);
-	VLOG(2)<<"JCELOCK收发消息队列数量是"<<zwCfg::vecCallerCmdDq.size()<<endl;
+	VLOG(4)<<"JCELOCK收发消息队列数量是"<<zwCfg::vecCallerCmdDq.size()<<endl;
 
 	return ELOCK_ERROR_SUCCESS;
 }
