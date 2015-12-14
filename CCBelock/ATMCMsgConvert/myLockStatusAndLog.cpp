@@ -67,6 +67,10 @@ namespace jcAtmcConvertDLL {
 		ptccb.put("root.RevResult", ptjc.get < int >("State"));
 		string LockStatus = ptjc.get < string > ("Journal");
 		assert(LockStatus.size() > 0);
+		//20151214.1152.潘飞说Lock_System_Journal命令的Journal字段有时候
+		//错误的返回空格内容造成上层应用base64编码后成为无用的多余乱码
+		// 所以在此提前过滤掉； 周伟
+		LockStatus=zwtrim(LockStatus);
 
 //////////////////////////////////////////////////////////////////////////
 //20140916.1458.万敏给我的测试电路板对于0005报文返回的日志内容有问题，所以

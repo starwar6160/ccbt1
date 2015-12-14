@@ -4,8 +4,34 @@
 //20150105.万敏和马浩测试用的东西
 #define TMP_MAHAO_TEST_20150105
 
+
+#include <algorithm> 
+#include <functional> 
+#include <cctype>
+#include <locale>
+
+
 //把ATMC DLL的XML和JSON互转函数集中于此，便于单元测试；
 namespace jcAtmcConvertDLL {
+
+	// zwtrim from start
+	std::string &zwltrim(std::string &s) {
+		s.erase(s.begin(), std::find_if(s.begin(), s.end(), std::not1(std::ptr_fun<int, int>(std::isspace))));
+		return s;
+	}
+
+	// zwtrim from end
+	std::string &zwrtrim(std::string &s) {
+		s.erase(std::find_if(s.rbegin(), s.rend(), std::not1(std::ptr_fun<int, int>(std::isspace))).base(), s.end());
+		return s;
+	}
+
+	// zwtrim from both ends
+	std::string &zwtrim(std::string &s) {
+		return zwltrim(zwrtrim(s));
+	}
+
+
 #ifdef TMP_MAHAO_TEST_20150105
 	//20150105.万敏和马浩测试用的东西
 	int G_MAHAO_LOG_COUNT=1;

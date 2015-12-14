@@ -57,4 +57,13 @@ namespace jcAtmcConvertDLL {
 	//获取JSON报文类型
 	string zwGetJcJsonMsgType(const char *jcJson);
 
+
+	// zwtrim from start
+	std::string &zwltrim(std::string &s);
+	// zwtrim from end
+	std::string &zwrtrim(std::string &s);
+	// zwtrim from both ends
+	std::string &zwtrim(std::string &s);
 }				//namespace jcAtmcConvertDLL{
+
+

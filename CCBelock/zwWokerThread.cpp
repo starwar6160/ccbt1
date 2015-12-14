@@ -176,7 +176,7 @@ namespace zwccbthr {
 		const int BLEN = 1024;
 		char recvBuf[BLEN];	
 		JCHID_STATUS sts=JCHID_STATUS_FAIL;							
-		//do{				
+		do{				
 			//考虑到有可能锁具单向上行信息导致一条下发信息有多条
 			//上行信息，所以多读取几次直到读不到信息为止
 			memset(recvBuf,0,BLEN);
@@ -225,7 +225,7 @@ namespace zwccbthr {
 				}
 
 			}
-		//}while(strlen(recvBuf)>0);			
+		}while(strlen(recvBuf)>0);			
 	}
 
 	void my515LockRecvThr(void)
