@@ -23,6 +23,8 @@ namespace zwccbthr {
 	boost::mutex upDeque_mutex;
 	void pushToCallBack( const char * recvConvedXML,RecvMsgRotine pCallBack );
 	boost::timer g_LatTimer;	//用于自动计算延迟
+	std::deque<string> s_cmdType;	//记录下发命令类型的队列
+	std::deque<string> s_SingleUpMsg;	//单方向上传的报警等消息的专用队列
 
 	void wait(int milliseconds) {
 		assert(milliseconds>0);
@@ -41,7 +43,7 @@ namespace zwccbthr {
 	}
 //////////////////////////////////JcLockSendRecvData START////////////////////////////////////////
 	//为每个调用者线程准备的专用下发和上传消息的队列
-	std::deque<string> s_cmdType;	//记录下发命令类型的队列
+	
 
 	JcLockSendRecvData::JcLockSendRecvData(DWORD callerID,RecvMsgRotine pCallBack)
 	{
@@ -188,7 +190,7 @@ namespace zwccbthr {
 			{
 				VLOG(1)<<"收到锁具返回消息= "<<recvBuf<<endl;
 				assert(strlen(recvBuf)>0);
-				VLOG(4)<<"收到锁具返回消息类型是 "<<zwGetJcJsonMsgType(recvBuf)<<endl;
+				VLOG(3)<<"收到锁具返回消息类型是 "<<zwGetJcJsonMsgType(recvBuf)<<endl;
 				string recvType=zwGetJcJsonMsgType(recvBuf);				
 				string notifyType="";
 				VLOG(4)<<"s_cmdType size ="<<zwccbthr::s_cmdType.size()<<endl;
@@ -196,32 +198,40 @@ namespace zwccbthr {
 				{
 					notifyType=zwccbthr::s_cmdType.front();
 				}				
-				VLOG(4)<<"recvType="<<recvType<<"\tnotifyType="<<notifyType<<endl;
-				VLOG(4)<<"before s_cmdType.pop_front()\tonThreadID= "<<
+				VLOG(3)<<"recvType="<<recvType<<"\tnotifyType="<<notifyType<<endl;
+				VLOG(3)<<"before s_cmdType.pop_front()\tonThreadID= "<<
 					zwCfg::vecCallerCmdDq[i]->getCallerID()
 					<<" s_cmdType.size()="<<zwccbthr::s_cmdType.size()
 					<<endl;
+				string outXML;
+				jcAtmcConvertDLL::zwJCjson2CCBxml(recvBuf,outXML);					
+
 				if (""!=notifyType  && recvType==notifyType)
 				{					
 					zwccbthr::s_cmdType.pop_front();					
-					VLOG(4)<<"after s_cmdType.pop_front()\tonThreadID= "<<
+					VLOG(3)<<"after s_cmdType.pop_front()\tonThreadID= "<<
 						zwCfg::vecCallerCmdDq[i]->getCallerID()
 						<<" s_cmdType.size()="<<zwccbthr::s_cmdType.size()
 						<<endl;
 					VLOG(1)<<"收到锁具返回消息.内容是\n"<<recvBuf<<endl;
-					string outXML;
-					jcAtmcConvertDLL::zwJCjson2CCBxml(recvBuf,outXML);					
 					if (outXML.size()>0)
-					{						
-						boost::mutex::scoped_lock lock(upDeque_mutex);	
-						//收到的报文放入上传队列，由类成员函数去上传
+					{												
+						//收到的报文由类成员函数去阻塞上传
 						zwCfg::vecCallerCmdDq[i]->PushUpMsg(outXML);
 						zwCfg::vecCallerCmdDq[i]->UploadLockResult();						
 					}													
 				}
-				if (""!=notifyType  && recvType!=notifyType)
-				{
-					LOG(ERROR)<<"答非所问，需要延迟上传"<<endl;					
+
+
+				if (notifyType.size()==0  && recvType.size()>0)
+				{					
+					LOG(ERROR)<<"答非所问，需要延迟上传"<<endl;	
+					if (outXML.size()>0)
+					{
+						//收到的报文放入上传队列，由上传线程去上传
+						boost::mutex::scoped_lock lock(upDeque_mutex);	
+						s_SingleUpMsg.push_back(outXML);
+					}					
 				}
 
 			}
@@ -230,7 +240,19 @@ namespace zwccbthr {
 
 	void my515LockRecvThr(void)
 	{
-		ZWERROR("与锁具之间的数据接收线程启动.20151210.v788")
+		ZWERROR("与锁具之间的数据接收线程启动")
+//#define _DEBUG20151214
+			//为了测试答非所问报文，直接生造一个
+#ifdef _DEBUG20151214
+		{
+			boost::mutex::scoped_lock lock(upDeque_mutex);	
+			string outXML;
+			string jcExJson="{\"Command\": \"Lock_Alarm_Info\",\"Lock_Time\": \"1419780417\",\"Atm_Serial\": \"\",\"Lock_Serial\": \"22222222\",\"Lock_Status\": \"1,1,0,0,0,0,0,0,31,0,0,1\"}";
+			jcAtmcConvertDLL::zwJCjson2CCBxml(jcExJson,outXML);								
+			s_SingleUpMsg.push_back(outXML);
+			VLOG(3)<<"s_SingleUpMsg.size()=="<<s_SingleUpMsg.size()<<endl;
+		}				
+#endif // _DEBUG20151214
 		while (1)
 		{	
 			boost::this_thread::interruption_point();
@@ -245,25 +267,38 @@ namespace zwccbthr {
 			}	//end for
 			Sleep(100);	//接收完毕一轮报文后暂停100毫秒给下发报文腾出时间；
 		}
+		ZWERROR("与锁具之间的数据接收线程结束")
 	}
 
 	void my515UpMsgThr(void)
 	{
-		ZWERROR("与ATMC之间的数据上传线程启动.20151203.1720")
-		return;
+		ZWERROR("与ATMC之间的数据上传线程启动")
 			while (1)
 			{
+				VLOG(4)<<"上传线程运行中20151214.1515"<<endl;
 				boost::this_thread::interruption_point();
 					//等待数据接收线程操作完毕“收到的数据”队列
 					//获得该队列的锁的所有权，开始操作
 					boost::mutex::scoped_lock lock(upDeque_mutex);	
-					for(int i=0;i<zwCfg::vecCallerCmdDq.size();i++)
+					int upNum=s_SingleUpMsg.size();
+					VLOG_IF(3,upNum>0)<<"s_SingleUpMsg.size()=="<<upNum<<endl;
+					if (upNum>0)
 					{
-						DWORD tid=zwCfg::vecCallerCmdDq[i]->getCallerID();
-
+						VLOG(3)<<"zwCfg::vecCallerCmdDq.size()=="<<zwCfg::vecCallerCmdDq.size()<<endl;
+						//单方向上传报警等报文发送给每一个线程
+						for(int i=0;i<zwCfg::vecCallerCmdDq.size();i++)
+						{
+							DWORD tid=zwCfg::vecCallerCmdDq[i]->getCallerID();
+							zwCfg::vecCallerCmdDq[i]->PushUpMsg(s_SingleUpMsg.front());
+							zwCfg::vecCallerCmdDq[i]->UploadLockResult();				
+							LOG(ERROR)<<__FUNCTION__<<" 上传单向上传报文"<<s_SingleUpMsg.front()
+								<<"给线程ID "<<tid<<endl;
+							s_SingleUpMsg.pop_front();
+						}
 					}
 					Sleep(100);
 			}
+		ZWERROR("与ATMC之间的数据上传线程结束")
 	}
 
 //////////////////////////////////////////////////////////////////////////
