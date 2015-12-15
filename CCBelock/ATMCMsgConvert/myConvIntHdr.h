@@ -64,4 +64,13 @@ namespace jcAtmcConvertDLL {
 	// zwtrim from both ends
 	std::string &zwtrim(std::string &s);
 
+	//保存一条下发报文及其返回报文，还有线程ID等相关信息；
+	struct jcLockMsg1512_t 
+	{
+		DWORD CallerThreadID;	//主程序线程ID
+		string NotifyMsg;		//下发的报文
+		string NotifyType;		//下发报文类型
+		string UpMsg;			//返回报文		
+	};
+
 }				//namespace jcAtmcConvertDLL{

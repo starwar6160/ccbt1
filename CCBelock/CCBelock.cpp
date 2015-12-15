@@ -14,12 +14,14 @@
 #include "zwHidComm.h"
 #include "zwHidDevClass2015.h"
 #include "hidapi.h"
+#include ".\\ATMCMsgConvert\\myConvIntHdr.h"
 
 using namespace std;
 using boost::property_tree::ptree_error;
 using boost::property_tree::ptree_bad_data;
 using boost::property_tree::ptree_bad_path;
 using jchidDevice2015::jcHidDevice;
+using jcAtmcConvertDLL::jcLockMsg1512_t;
 
 extern jcHidDevice *g_jhc;	//实际的HID设备类对象
 #define DBGTHRID	VLOG(3)<<"["<<__FUNCTION__<<"] ThreadID of Caller is "<<GetCurrentThreadId()<<endl;
@@ -36,7 +38,7 @@ namespace zwccbthr {
 	extern bool myWaittingReturnMsg;	//等待返回报文期间不要下发报文
 	extern boost::timer g_LatTimer;	//用于自动计算延迟
 	extern boost::condition_variable condJcLock;
-	extern deque<string> s_jcNotify;		//下发命令
+	extern deque<jcLockMsg1512_t *> s_jcNotify;		//下发命令
 	//extern string s_jsonCmd;
 } //namespace zwccbthr{  
 
@@ -198,8 +200,13 @@ CCBELOCK_API long JCAPISTD Notify(const char *pszMsg)
 		//VLOG(3)<<__FUNCTION__<<"\tSleep 50 ms"<<endl;
 
 		//现在开始一问一答过程，在获得对口回复报文之前不得上传其他报文
-		
-		zwccbthr::s_jcNotify.push_back(strJsonSend);
+		DWORD iCallerThrId=GetCurrentThreadId();
+		jcLockMsg1512_t *nItem=new jcLockMsg1512_t;
+		nItem->CallerThreadID=iCallerThrId;
+		nItem->NotifyMsg=strJsonSend;
+		nItem->NotifyType=jcAtmcConvertDLL::zwGetJcJsonMsgType(strJsonSend.c_str());
+		nItem->UpMsg="";
+		zwccbthr::s_jcNotify.push_back(nItem);
 		//int sts=g_jhc->SendJson(strJsonSend.c_str());
 		//VLOG_IF(1,JCHID_STATUS_OK!=sts)<<"423下发消息给锁具异常\n";
 		//zwccbthr::s_jsonCmd=strJsonSend;
@@ -255,6 +262,7 @@ CCBELOCK_API int JCAPISTD SetRecvMsgRotine(RecvMsgRotine pRecvMsgFun)
 		ZWFATAL("注册回调函数不能传入空指针0952")
 		    return ELOCK_ERROR_PARAMINVALID;
 	}
+	DWORD iCallerThrId=GetCurrentThreadId();
 	zwCfg::g_WarnCallback = pRecvMsgFun;
 	return ELOCK_ERROR_SUCCESS;
 }

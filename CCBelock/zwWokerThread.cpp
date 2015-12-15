@@ -11,6 +11,7 @@ using namespace boost::property_tree;
 using boost::condition_variable;
 using boost::condition_variable_any;
 using jchidDevice2015::jcHidDevice;
+using jcAtmcConvertDLL::jcLockMsg1512_t;
 
 jcHidDevice *g_jhc=NULL;	//实际的HID设备类对象
 
@@ -22,7 +23,7 @@ namespace zwccbthr {
 	bool myWaittingReturnMsg=false;	//等待返回报文期间不要下发报文
 	boost::condition_variable condJcLock;
 	boost::timer g_LatTimer;	//用于自动计算延迟
-	deque<string> s_jcNotify;		//下发命令
+	deque<jcLockMsg1512_t *> s_jcNotify;		//下发命令
 
 	void wait(int milliseconds) {
 		assert(milliseconds>0);
@@ -80,7 +81,8 @@ namespace zwccbthr {
 
 	void my515LockRecvThr(void)
 	{
-		ZWERROR("与锁具之间的数据接收线程启动.20151215.0915")
+		
+		ZWERROR("与锁具之间的数据接收线程启动.20151215.0925.v804")
 		const int BLEN = 1024;
 		char recvBuf[BLEN];			
 		using zwccbthr::s_jcNotify;
@@ -97,9 +99,10 @@ namespace zwccbthr {
 				VLOG_IF(4,s_jcNotify.size()>0)<<"s_jcNotify.size()="<<s_jcNotify.size()<<endl;
 				if (s_jcNotify.size()>0)
 				{
-					zwccbthr::myWaittingReturnMsg=true;									
-					LOG(WARNING)<<"发送给锁具的消息.内容是"<<s_jcNotify.front()<<endl;
-					sts=static_cast<JCHID_STATUS>( g_jhc->SendJson(s_jcNotify.front().c_str()));
+					zwccbthr::myWaittingReturnMsg=true;	
+					string sCmd=s_jcNotify.front()->NotifyMsg;
+					LOG(WARNING)<<"发送给锁具的消息.内容是"<<sCmd<<endl;
+					sts=static_cast<JCHID_STATUS>( g_jhc->SendJson(sCmd.c_str()));
 					
 					//断线重连探测机制
 					if (JCHID_STATUS_OK!=static_cast<JCHID_STATUS>(sts))
