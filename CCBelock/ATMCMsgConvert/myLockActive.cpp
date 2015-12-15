@@ -88,10 +88,10 @@ namespace jcAtmcConvertDLL {
 		ptccb.put("root.ActiveResult", ActiveResult);
 		//1.1版本里面下位机解密了ECIES加密的PSK并在Lock_Init_Info字段返回
 		string lActInfo=ptjc.get < string > ("Lock_Init_Info");
-		if (lActInfo.length()==0)
-		{
-			lActInfo="ErrorGetActInfoFromJinChuELock";
-		}
+		//20151214.1152.潘飞说Lock_System_Init命令的Lock_Init_Info字段有时候
+		//错误的返回空格内容造成上层应用base64编码后成为无用的多余乱码
+		// 所以在此提前过滤掉； 周伟
+		lActInfo=zwtrim(lActInfo);
 		ptccb.put("root.ActInfo",lActInfo);
 	}
 
