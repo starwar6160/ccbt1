@@ -156,7 +156,7 @@ namespace zwccbthr {
 						}
 						else
 						{
-							ZWERROR("该单向上行消息暂未上传，此处代码有待改进20151215")
+							ZWERROR("该单向上行消息将会被另一个上传线程在不打破一问一答的前提下延迟上传")
 							s_SingleUpMsg.push_back(outXML);
 						}
 				}
@@ -175,18 +175,19 @@ namespace zwccbthr {
 		ZWERROR("与ATMC之间的数据上传线程启动.20151215")
 			while (1)
 			{		
-				Sleep(1000);
-				VLOG(3)<<__FUNCTION__<<"RUNNING"<<endl;
+				Sleep(2000);
+				//VLOG(3)<<__FUNCTION__<<"RUNNING"<<endl;
 				//等待数据接收线程操作完毕“收到的数据”队列
 				//获得该队列的锁的所有权，开始操作
 				{
 					boost::mutex::scoped_lock lock(thrhid_mutex);				
 					//只有当数据收发线程不在等待一条一问一答的返回报文期间
 					// 才上传该被延迟上传的报文以免打乱一问一答
-					for (int i=0;i<s_SingleUpMsg.size();i++)
+					if (s_SingleUpMsg.size()>0 && s_jcUpMsg.size()==0)
 					{
-						LOG(WARNING)<<"延迟上传报文"<<endl<<s_SingleUpMsg[i]<<endl;
-					}					
+						LOG(WARNING)<<"延迟上传报文"<<endl<<s_SingleUpMsg.front()<<endl;
+						s_SingleUpMsg.pop_front();
+					}
 				}
 			}
 	}
