@@ -80,7 +80,7 @@ namespace zwccbthr {
 
 	void my515LockRecvThr(void)
 	{
-		ZWERROR("与锁具之间的数据接收线程启动.20151203.v777")
+		ZWERROR("与锁具之间的数据接收线程启动.20151215.0915")
 		const int BLEN = 1024;
 		char recvBuf[BLEN];			
 		using zwccbthr::s_jcNotify;
@@ -97,9 +97,8 @@ namespace zwccbthr {
 				VLOG_IF(4,s_jcNotify.size()>0)<<"s_jcNotify.size()="<<s_jcNotify.size()<<endl;
 				if (s_jcNotify.size()>0)
 				{
-					zwccbthr::myWaittingReturnMsg=true;					
-					LOG(WARNING)<<"SendToLock JsonIS\n"<<s_jcNotify.front().c_str()<<endl;
-					LOG(INFO)<<"发送给锁具的消息.内容是"<<s_jcNotify.front()<<endl;
+					zwccbthr::myWaittingReturnMsg=true;									
+					LOG(WARNING)<<"发送给锁具的消息.内容是"<<s_jcNotify.front()<<endl;
 					sts=static_cast<JCHID_STATUS>( g_jhc->SendJson(s_jcNotify.front().c_str()));
 					
 					//断线重连探测机制
@@ -114,21 +113,22 @@ namespace zwccbthr {
 				//考虑到有可能锁具单向上行信息导致一条下发信息有多条
 				//上行信息，所以多读取几次直到读不到信息为止
 				memset(recvBuf,0,BLEN);
-				VLOG(3)<<"接收数据的RecvJson之前"<<endl;
-				sts=static_cast<JCHID_STATUS>(g_jhc->RecvJson(recvBuf,BLEN));				
-				VLOG(3)<<"接收数据的RecvJson之后 收到"<<strlen(recvBuf)<<"字节的数据"<<endl;
+				VLOG(4)<<"接收数据的RecvJson之前"<<endl;
+				sts=static_cast<JCHID_STATUS>(g_jhc->RecvJson(recvBuf,BLEN));	
+				int lRecvBytes=strlen(recvBuf);
+				VLOG_IF(3,lRecvBytes>0)<<"RecvJson收到"<<lRecvBytes<<"字节的数据"<<endl;
 				if (strlen(recvBuf)>0)
 				{
 					VLOG(4)<<"收到锁具返回消息= "<<recvBuf<<endl;
 					assert(strlen(recvBuf)>0);
-					LOG(WARNING)<<"收到锁具返回消息.内容是\n"<<recvBuf<<endl;
+					VLOG(1)<<"收到锁具返回消息.内容是\n"<<recvBuf<<endl;
 					string outXML;
 					jcAtmcConvertDLL::zwJCjson2CCBxml(recvBuf,outXML);	
 
 						//符合一问一答的，正常上传						
 						if (outXML.size()>0)
 						{
-							ZWWARN("正常上传报文")
+							//ZWWARN("正常上传报文")
 							pushToCallBack(outXML.c_str());
 							outXML="";
 						}													
@@ -138,14 +138,14 @@ namespace zwccbthr {
 		}	//收发thrhid_mutex结束			
 			//condJcLock.notify_all();	
 			Sleep(100);	//接收完毕一轮报文后暂停100毫秒给下发报文腾出时间；
-			VLOG(3)<<__FUNCTION__<<"\tSleep 100 ms"<<endl;
+			VLOG(4)<<__FUNCTION__<<"\tSleep 100 ms"<<endl;
 		}
 
 	}
 
 	void my515UpMsgThr(void)
 	{
-		ZWERROR("与ATMC之间的数据上传线程启动.20151203.1720")
+		ZWERROR("与ATMC之间的数据上传线程启动.20151215")
 			while (1)
 			{
 				//LOG(ERROR)<<__FUNCTION__<<"RUNNING " <<time(NULL)<<endl;

@@ -70,14 +70,14 @@ zw_trace::zw_trace(const char *funcName)
 	m_start = m_str + "\tSTART";
 	m_end = m_str + "\tEND";
 	OutputDebugStringA(m_start.c_str());
-	VLOG(3)<<m_start;
+	VLOG(4)<<m_start;
 }
 
 zw_trace::~zw_trace()
 {
 
 	OutputDebugStringA(m_end.c_str());	
-	VLOG(3)<<m_end;
+	VLOG(4)<<m_end;
 }
 
 
@@ -122,7 +122,7 @@ CCBELOCK_API long JCAPISTD Close()
 {
 	DBGTHRID
 	ZWFUNCTRACE
-	VLOG(2)<<"ZIJIN423 Close ELOCK_ERROR_SUCCESS";
+	VLOG(4)<<"ZIJIN423 Close ELOCK_ERROR_SUCCESS";
 	//结束的话，及时中断数据接收线程
 	//注意，在这里做Sleep无效，要在主程序中Close之前做Sleep才能让回调函数收到结果，奇怪。20151210.1706.周伟
 	zwccbthr::opCommThr->interrupt();
@@ -139,16 +139,15 @@ CCBELOCK_API long JCAPISTD Notify(const char *pszMsg)
 {
 	DBGTHRID
 	
-	LOG(WARNING)<<__FUNCTION__<<" Normal START"<<endl;
 	if (NULL==zwccbthr::opUpMsgThr)
 	{
-		VLOG(3)<<"Start my515UpMsgThr"<<endl;
+		VLOG(4)<<"Start my515UpMsgThr"<<endl;
 		zwccbthr::opUpMsgThr=new boost::thread(zwccbthr::my515UpMsgThr);
 	}	
 
 	if (NULL==zwccbthr::opCommThr)
 	{
-		VLOG(3)<<"Start my515LockRecvThr"<<endl;
+		VLOG(4)<<"Start my515LockRecvThr"<<endl;
 		zwccbthr::opCommThr=new boost::thread(zwccbthr::my515LockRecvThr);
 	}	
 
