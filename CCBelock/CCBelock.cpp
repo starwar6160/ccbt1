@@ -39,14 +39,13 @@ namespace zwccbthr {
 	extern boost::timer g_LatTimer;	//用于自动计算延迟
 	extern boost::condition_variable condJcLock;
 	extern deque<jcLockMsg1512_t *> s_jcNotify;		//下发命令
+	extern map<DWORD,RecvMsgRotine> s_thrIdToPointer;	//线程ID到回调函数指针的map
 	//extern string s_jsonCmd;
 } //namespace zwccbthr{  
 
 namespace zwCfg {
 	//const long JC_CCBDLL_TIMEOUT = 86400;	//最长超时时间为30秒,用于测试目的尽快达到限制暴露问题
 //	const int JC_MSG_MAXLEN = 4 * 1024;	//最长为128字节,用于测试目的尽快达到限制暴露问题
-	//定义一个回调函数指针
-	RecvMsgRotine g_WarnCallback = NULL;
 	boost::mutex ComPort_mutex;	//用于保护串口连接对象
 	//线程对象作为一个全局静态变量，则不需要显示启动就能启动一个线程
 	boost::thread * thr = NULL;
@@ -265,7 +264,8 @@ CCBELOCK_API int JCAPISTD SetRecvMsgRotine(RecvMsgRotine pRecvMsgFun)
 		    return ELOCK_ERROR_PARAMINVALID;
 	}
 	DWORD iCallerThrId=GetCurrentThreadId();
-	zwCfg::g_WarnCallback = pRecvMsgFun;
+	zwccbthr::s_thrIdToPointer[iCallerThrId]=pRecvMsgFun;
+	VLOG(3)<<__FUNCTION__<<" s_thrIdToPointer.size()="<<zwccbthr::s_thrIdToPointer.size();
 	return ELOCK_ERROR_SUCCESS;
 }
 

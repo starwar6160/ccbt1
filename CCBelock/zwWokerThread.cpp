@@ -18,13 +18,14 @@ jcHidDevice *g_jhc=NULL;	//实际的HID设备类对象
 namespace zwccbthr {
 	//建行给的接口，没有设置连接参数的地方，也就是说，完全可以端口，抑或是从配置文件读取
 	boost::mutex thrhid_mutex;
-	void pushToCallBack( const char * recvBuf );
+	void pushToCallBack( const char * recvConvedXML,RecvMsgRotine pRecvMsgFun );
 	deque<string> g_dqLockUpMsg;	//锁具主动上送的答非所问消息的临时队列
 	bool myWaittingReturnMsg=false;	//等待返回报文期间不要下发报文
 	boost::condition_variable condJcLock;
 	boost::timer g_LatTimer;	//用于自动计算延迟
 	deque<jcLockMsg1512_t *> s_jcNotify;		//下发命令队列，下发完毕后移动到上传队列
 	deque<jcLockMsg1512_t *> s_jcUpMsg;		//上传命令队列
+	map<DWORD,RecvMsgRotine> s_thrIdToPointer;	//线程ID到回调函数指针的map
 
 	void wait(int milliseconds) {
 		assert(milliseconds>0);
@@ -42,7 +43,7 @@ namespace zwccbthr {
 
 	}
 
-	void pushToCallBack( const char * recvConvedXML )
+	void pushToCallBack( const char * recvConvedXML,RecvMsgRotine pRecvMsgFun )
 	{
 		assert(NULL!=recvConvedXML);
 		assert(strlen(recvConvedXML)>0);
@@ -59,17 +60,17 @@ namespace zwccbthr {
 			assert(strlen(recvConvedXML) > 42);
 		}
 
-		if (NULL==zwCfg::g_WarnCallback)
+		if (NULL==pRecvMsgFun)
 		{
 			const char *err1="回调函数指针为空，无法调用回调函数返回从电子锁收到的报文";
 			ZWERROR(err1);
 			MessageBoxA(NULL,err1,"严重警告",MB_OK);
 		}
-		if (NULL != zwCfg::g_WarnCallback && strlen(recvConvedXML)>0) {
+		if (NULL != pRecvMsgFun && strlen(recvConvedXML)>0) {
 			//调用回调函数传回信息，
 			//20150415.1727.为了万敏的要求，控制上传消息速率最多每2秒一条防止ATM死机
 			//Sleep(2920);
-			zwCfg::g_WarnCallback(recvConvedXML);
+			pRecvMsgFun(recvConvedXML);
 			ZWERROR(recvConvedXML)
 			VLOG_IF(4,strlen(recvConvedXML)>0)<<"回调函数收到以下内容\n"<<recvConvedXML<<endl;
 #ifdef _DEBUG401
@@ -145,8 +146,11 @@ namespace zwccbthr {
 							)
 						{
 							//ZWWARN("正常上传报文")
-							VLOG(3)<<"消息返回给线程ID="<<s_jcUpMsg.front()->CallerThreadID<<endl;
-							pushToCallBack(outXML.c_str());
+							DWORD tid=s_jcUpMsg.front()->CallerThreadID;
+							VLOG(3)<<"消息返回给线程ID="<<tid<<endl;
+							RecvMsgRotine pRecvMsgFun=
+								zwccbthr::s_thrIdToPointer[tid];
+							pushToCallBack(outXML.c_str(),pRecvMsgFun);
 							s_jcUpMsg.pop_front();
 						}
 						else
@@ -166,6 +170,7 @@ namespace zwccbthr {
 
 	void my515UpMsgThr(void)
 	{
+		return;
 		ZWERROR("与ATMC之间的数据上传线程启动.20151215")
 			while (1)
 			{
@@ -183,7 +188,7 @@ namespace zwccbthr {
 					for (int i=0;i<g_dqLockUpMsg.size();i++)
 					{
 						LOG(WARNING)<<"延迟上传报文"<<endl;
-						pushToCallBack(g_dqLockUpMsg[i].c_str());
+						//pushToCallBack(g_dqLockUpMsg[i].c_str());
 						g_dqLockUpMsg.pop_front();
 					}
 				VLOG(4)<<__FUNCTION__<<"END"<<endl;

@@ -113,7 +113,6 @@ using zwTimeFunc::zwCCBDateTime2UTC;
 
 typedef void (cdecl * RecvMsgRotine) (const char *pszMsg);
 namespace zwCfg {
-	extern RecvMsgRotine g_WarnCallback;
 	extern bool s_hidOpened;
 } 
 void ZWDBGMSG(const char *x);

@@ -72,6 +72,7 @@ namespace jcAtmcConvertDLL {
 		string NotifyType;		//下发报文类型
 		string UpMsg;			//返回报文	
 		bool bSended;			//已经发送标志
+		RecvMsgRotine pRecvMsgFun;	//回调函数指针
 	};
 
 }				//namespace jcAtmcConvertDLL{
