@@ -23,7 +23,8 @@ namespace zwccbthr {
 	bool myWaittingReturnMsg=false;	//等待返回报文期间不要下发报文
 	boost::condition_variable condJcLock;
 	boost::timer g_LatTimer;	//用于自动计算延迟
-	deque<jcLockMsg1512_t *> s_jcNotify;		//下发命令
+	deque<jcLockMsg1512_t *> s_jcNotify;		//下发命令队列，下发完毕后移动到上传队列
+	deque<jcLockMsg1512_t *> s_jcUpMsg;		//上传命令队列
 
 	void wait(int milliseconds) {
 		assert(milliseconds>0);
@@ -114,6 +115,8 @@ namespace zwccbthr {
 					{
 						g_jhc->OpenJc();
 					}
+					s_jcUpMsg.push_back(nItem);
+					VLOG_IF(3,s_jcUpMsg.size()>0)<<"s_jcUpMsg.size()="<<s_jcUpMsg.size()<<endl;
 					s_jcNotify.pop_front();
 				}
 			}
@@ -131,18 +134,25 @@ namespace zwccbthr {
 					assert(strlen(recvBuf)>0);
 					string sType=jcAtmcConvertDLL::zwGetJcJsonMsgType(recvBuf);
 					VLOG(1)<<"收到锁具返回消息.类型是"<<sType<<"内容是\n"<<recvBuf<<endl;
+					LOG_IF (WARNING,s_jcUpMsg.front()->NotifyType!=sType)<<
+						"锁具返回消息不符合下发消息类型"<<endl;
+
 					string outXML;
 					jcAtmcConvertDLL::zwJCjson2CCBxml(recvBuf,outXML);	
-
 						//符合一问一答的，正常上传						
-						if (outXML.size()>0
-							//&& s_jcNotify.front()->NotifyType==sType
+						if (outXML.size()>0 &&
+							s_jcUpMsg.front()->NotifyType==sType
 							)
 						{
 							//ZWWARN("正常上传报文")
+							VLOG(3)<<"消息返回给线程ID="<<s_jcUpMsg.front()->CallerThreadID<<endl;
 							pushToCallBack(outXML.c_str());
-							
-						}													
+							s_jcUpMsg.pop_front();
+						}
+						else
+						{
+							ZWERROR("该单向上行消息暂未上传，此处代码有待改进20151215")
+						}
 				}
 			}while(strlen(recvBuf)>0);
 			
