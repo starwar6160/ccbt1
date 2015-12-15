@@ -202,10 +202,12 @@ CCBELOCK_API long JCAPISTD Notify(const char *pszMsg)
 		//现在开始一问一答过程，在获得对口回复报文之前不得上传其他报文
 		DWORD iCallerThrId=GetCurrentThreadId();
 		jcLockMsg1512_t *nItem=new jcLockMsg1512_t;
+		//下发消息前填写各个项目
 		nItem->CallerThreadID=iCallerThrId;
 		nItem->NotifyMsg=strJsonSend;
 		nItem->NotifyType=jcAtmcConvertDLL::zwGetJcJsonMsgType(strJsonSend.c_str());
 		nItem->UpMsg="";
+		nItem->bSended=false;
 		zwccbthr::s_jcNotify.push_back(nItem);
 		//int sts=g_jhc->SendJson(strJsonSend.c_str());
 		//VLOG_IF(1,JCHID_STATUS_OK!=sts)<<"423下发消息给锁具异常\n";

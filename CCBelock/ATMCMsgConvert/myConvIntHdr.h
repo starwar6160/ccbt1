@@ -70,7 +70,8 @@ namespace jcAtmcConvertDLL {
 		DWORD CallerThreadID;	//主程序线程ID
 		string NotifyMsg;		//下发的报文
 		string NotifyType;		//下发报文类型
-		string UpMsg;			//返回报文		
+		string UpMsg;			//返回报文	
+		bool bSended;			//已经发送标志
 	};
 
 }				//namespace jcAtmcConvertDLL{

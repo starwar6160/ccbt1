@@ -99,9 +99,14 @@ namespace zwccbthr {
 				VLOG_IF(4,s_jcNotify.size()>0)<<"s_jcNotify.size()="<<s_jcNotify.size()<<endl;
 				if (s_jcNotify.size()>0)
 				{
+					jcLockMsg1512_t *nItem=s_jcNotify.front();
 					zwccbthr::myWaittingReturnMsg=true;	
-					string sCmd=s_jcNotify.front()->NotifyMsg;
-					LOG(WARNING)<<"发送给锁具的消息.内容是"<<sCmd<<endl;
+					string sCmd=nItem->NotifyMsg;
+					DWORD tid=nItem->CallerThreadID;
+					string sType=nItem->NotifyType;
+					nItem->bSended=true;
+					LOG(WARNING)<<"线程["<<tid<<"]发送给锁具的"<<
+						sType<<"类型消息.内容是"<<endl<<sCmd;
 					sts=static_cast<JCHID_STATUS>( g_jhc->SendJson(sCmd.c_str()));
 					
 					//断线重连探测机制
@@ -124,16 +129,19 @@ namespace zwccbthr {
 				{
 					VLOG(4)<<"收到锁具返回消息= "<<recvBuf<<endl;
 					assert(strlen(recvBuf)>0);
-					VLOG(1)<<"收到锁具返回消息.内容是\n"<<recvBuf<<endl;
+					string sType=jcAtmcConvertDLL::zwGetJcJsonMsgType(recvBuf);
+					VLOG(1)<<"收到锁具返回消息.类型是"<<sType<<"内容是\n"<<recvBuf<<endl;
 					string outXML;
 					jcAtmcConvertDLL::zwJCjson2CCBxml(recvBuf,outXML);	
 
 						//符合一问一答的，正常上传						
-						if (outXML.size()>0)
+						if (outXML.size()>0
+							//&& s_jcNotify.front()->NotifyType==sType
+							)
 						{
 							//ZWWARN("正常上传报文")
 							pushToCallBack(outXML.c_str());
-							outXML="";
+							
 						}													
 				}
 			}while(strlen(recvBuf)>0);
