@@ -25,6 +25,7 @@ namespace zwccbthr {
 	boost::timer g_LatTimer;	//用于自动计算延迟
 	deque<jcLockMsg1512_t *> s_jcNotify;		//下发命令队列，下发完毕后移动到上传队列
 	deque<jcLockMsg1512_t *> s_jcUpMsg;		//上传命令队列
+	deque<string> s_SingleUpMsg;				//单向上传队列
 	map<DWORD,RecvMsgRotine> s_thrIdToPointer;	//线程ID到回调函数指针的map
 
 	void wait(int milliseconds) {
@@ -156,6 +157,7 @@ namespace zwccbthr {
 						else
 						{
 							ZWERROR("该单向上行消息暂未上传，此处代码有待改进20151215")
+							s_SingleUpMsg.push_back(outXML);
 						}
 				}
 			}while(strlen(recvBuf)>0);
@@ -170,32 +172,22 @@ namespace zwccbthr {
 
 	void my515UpMsgThr(void)
 	{
-		return;
 		ZWERROR("与ATMC之间的数据上传线程启动.20151215")
 			while (1)
-			{
-				//LOG(ERROR)<<__FUNCTION__<<"RUNNING " <<time(NULL)<<endl;
-				VLOG(4)<<__FUNCTION__;				
-				VLOG(4)<<__FUNCTION__<<"START"<<endl;
+			{		
+				Sleep(1000);
+				VLOG(3)<<__FUNCTION__<<"RUNNING"<<endl;
 				//等待数据接收线程操作完毕“收到的数据”队列
 				//获得该队列的锁的所有权，开始操作
-				VLOG(4)<<__FUNCTION__<<" scoped_lock lock(thrhid_mutex) START"<<endl;
-				boost::mutex::scoped_lock lock(thrhid_mutex);				
-				VLOG(4)<<__FUNCTION__<<"condJcLock.wait(lock);"<<endl;
-				//condJcLock.wait(lock);		
-				//只有当数据收发线程不在等待一条一问一答的返回报文期间
-				// 才上传该被延迟上传的报文以免打乱一问一答
-					for (int i=0;i<g_dqLockUpMsg.size();i++)
+				{
+					boost::mutex::scoped_lock lock(thrhid_mutex);				
+					//只有当数据收发线程不在等待一条一问一答的返回报文期间
+					// 才上传该被延迟上传的报文以免打乱一问一答
+					for (int i=0;i<s_SingleUpMsg.size();i++)
 					{
-						LOG(WARNING)<<"延迟上传报文"<<endl;
-						//pushToCallBack(g_dqLockUpMsg[i].c_str());
-						g_dqLockUpMsg.pop_front();
-					}
-				VLOG(4)<<__FUNCTION__<<"END"<<endl;
-				//操作完毕“收到的数据”队列，释放锁的所有权
-				VLOG(4)<<__FUNCTION__<<" condJcLock.notify_all();"<<endl;
-				//condJcLock.notify_all();	
-				VLOG(4)<<__FUNCTION__<<" scoped_lock lock(thrhid_mutex) END"<<endl;
+						LOG(WARNING)<<"延迟上传报文"<<endl<<s_SingleUpMsg[i]<<endl;
+					}					
+				}
 			}
 	}
 
