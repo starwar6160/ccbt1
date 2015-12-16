@@ -27,6 +27,9 @@ namespace zwccbthr {
 	deque<jcLockMsg1512_t *> s_jcUpMsg;		//上传命令队列
 	deque<string> s_SingleUpMsg;				//单向上传队列
 	map<DWORD,RecvMsgRotine> s_thrIdToPointer;	//线程ID到回调函数指针的map
+	//供单向上传报文专用的保存所有回调函数指针的向量,好让单向报文发给所有线程;
+	vector<RecvMsgRotine> s_vecSingleUp;	
+	//RecvMsgRotine s_tmp_pRecvMsgFun;	//临时测试的供单向上传使用的回调函数指针;
 
 	void wait(int milliseconds) {
 		assert(milliseconds>0);
@@ -136,13 +139,14 @@ namespace zwccbthr {
 					assert(strlen(recvBuf)>0);
 					string sType=jcAtmcConvertDLL::zwGetJcJsonMsgType(recvBuf);
 					VLOG(1)<<"收到锁具返回消息.类型是"<<sType<<"内容是\n"<<recvBuf<<endl;
-					LOG_IF (WARNING,s_jcUpMsg.front()->NotifyType!=sType)<<
-						"锁具返回消息不符合下发消息类型"<<endl;
+					LOG_IF (WARNING,s_jcUpMsg.size()>0 && 
+						s_jcUpMsg.front()->NotifyType!=sType)
+						<<"锁具返回消息不符合下发消息类型"<<endl;
 
 					string outXML;
 					jcAtmcConvertDLL::zwJCjson2CCBxml(recvBuf,outXML);	
 						//符合一问一答的，正常上传						
-						if (outXML.size()>0 &&
+						if (outXML.size()>0 && s_jcUpMsg.size()>0 &&
 							s_jcUpMsg.front()->NotifyType==sType
 							)
 						{
@@ -153,6 +157,7 @@ namespace zwccbthr {
 								zwccbthr::s_thrIdToPointer[tid];
 							pushToCallBack(outXML.c_str(),pRecvMsgFun);
 							s_jcUpMsg.pop_front();
+							//s_tmp_pRecvMsgFun=pRecvMsgFun;
 						}
 						else
 						{
@@ -175,17 +180,24 @@ namespace zwccbthr {
 		ZWERROR("与ATMC之间的数据上传线程启动.20151215")
 			while (1)
 			{		
-				Sleep(2000);
+				Sleep(800);
 				//VLOG(3)<<__FUNCTION__<<"RUNNING"<<endl;
 				//等待数据接收线程操作完毕“收到的数据”队列
 				//获得该队列的锁的所有权，开始操作
 				{
 					boost::mutex::scoped_lock lock(thrhid_mutex);				
-					//只有当数据收发线程不在等待一条一问一答的返回报文期间
+					//只有当等待配对上传的消息都已经上传完毕后
 					// 才上传该被延迟上传的报文以免打乱一问一答
 					if (s_SingleUpMsg.size()>0 && s_jcUpMsg.size()==0)
 					{
-						LOG(WARNING)<<"延迟上传报文"<<endl<<s_SingleUpMsg.front()<<endl;
+						string &strSingleUp=s_SingleUpMsg.front();
+						
+						for (int i=0;i<zwccbthr::s_vecSingleUp.size();i++)
+						{							
+							RecvMsgRotine pCallBack=zwccbthr::s_vecSingleUp[i];
+							LOG(WARNING)<<"延迟上传报文到回调函数地址"<<std::hex<<pCallBack<<endl;
+							pushToCallBack(strSingleUp.c_str(),pCallBack);
+						}						
 						s_SingleUpMsg.pop_front();
 					}
 				}

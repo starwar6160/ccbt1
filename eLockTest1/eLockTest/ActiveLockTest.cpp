@@ -138,22 +138,28 @@ void zw1209SpeedTestThr1(void)
 	EXPECT_EQ(ELOCK_ERROR_SUCCESS,Open(22));			
 	EXPECT_EQ(ELOCK_ERROR_SUCCESS,Notify(g_msg02));	
 	//Sleep(300*1);
-	EXPECT_EQ(ELOCK_ERROR_SUCCESS,Notify(g_msg02));	
+	EXPECT_EQ(ELOCK_ERROR_SUCCESS,Notify(g_msg03));	
 	//测试代码晚一点结束，以便锁具后续较慢报文能收到
 	//Sleep(1800);
 	//EXPECT_EQ(ELOCK_ERROR_SUCCESS,Close());
 	cout<<"["<<__FUNCTION__<<"] ThreadPID=["<<GetCurrentThreadId()<<"]\tEND"<<endl;	
 }
 
+void myATMCRecvMsgRotineT2(const char *pszMsg)
+{
+	myATMCRecvMsgRotine(pszMsg);
+}
+
+
 void zw1209SpeedTestThr2(void)
 {
 	//Sleep(200);
 	cout<<"["<<__FUNCTION__<<"] ThreadPID=["<<GetCurrentThreadId()<<"]\tSTART"<<endl;		
-	SetRecvMsgRotine(myATMCRecvMsgRotine);	
+	SetRecvMsgRotine(myATMCRecvMsgRotineT2);	
 	EXPECT_EQ(ELOCK_ERROR_SUCCESS,Open(22));		
 	//Sleep(5000);
 	EXPECT_EQ(ELOCK_ERROR_SUCCESS,Notify(g_msg03));	
-	EXPECT_EQ(ELOCK_ERROR_SUCCESS,Notify(g_msg03));	
+	EXPECT_EQ(ELOCK_ERROR_SUCCESS,Notify(g_msg02));	
 	//测试代码晚一点结束，以便锁具后续较慢报文能收到
 	//Sleep(1800);
 	//EXPECT_EQ(ELOCK_ERROR_SUCCESS,Close());
