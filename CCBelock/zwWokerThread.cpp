@@ -157,6 +157,7 @@ namespace zwccbthr {
 								zwccbthr::s_thrIdToPointer[tid];
 							pushToCallBack(outXML.c_str(),pRecvMsgFun);
 							s_jcUpMsg.pop_front();
+							VLOG(3)<<"s_jcUpMsg.size()="<<s_jcUpMsg.size()<<endl;
 							//s_tmp_pRecvMsgFun=pRecvMsgFun;
 						}
 						else
@@ -180,7 +181,7 @@ namespace zwccbthr {
 		ZWERROR("与ATMC之间的数据上传线程启动.20151215")
 			while (1)
 			{		
-				Sleep(800);
+				Sleep(3000);
 				//VLOG(3)<<__FUNCTION__<<"RUNNING"<<endl;
 				//等待数据接收线程操作完毕“收到的数据”队列
 				//获得该队列的锁的所有权，开始操作

@@ -669,7 +669,6 @@ void cdecl myATMCRecvMsgRotine(const char *pszMsg)
 	static string lastUpMsg;
 	static int nUpErrCount=0;
 	static int nUpCount=0;
-	//ZWFUNCTRACE 
 	//assert(pszMsg != NULL && strlen(pszMsg) > 42);
 	//boost::mutex::scoped_lock lock(zwCfg::ComPort_mutex);
 	//输入必须有内容，但是最大不得长于下位机内存大小，做合理限制

@@ -16,7 +16,6 @@ namespace jcAtmcConvertDLL {
 
 	//时间同步
 	void zwconvTimeSyncDown(const ptree & ptccb, ptree & ptjc) {
-		//ZWFUNCTRACE
 		    ptjc.put(jcAtmcConvertDLL::JCSTR_CMDTITLE, JCSTR_TIME_SYNC);
 		//建行字符串格式的日期和时间字段合成转换为UTC秒数.开始
 		//time_t nowSec = time(NULL);
@@ -37,7 +36,6 @@ namespace jcAtmcConvertDLL {
 	}
 	//时间同步  
 	void zwconvTimeSyncUp(const ptree & ptjc, ptree & ptccb) {
-		//ZWFUNCTRACE
 		    //无用的形式化部分
 		    ptccb.put(CCBSTR_CODE, "0003");
 		ptccb.put(CCBSTR_NAME, "TimeSync");	//使用缓存在内存中的值
@@ -62,7 +60,7 @@ namespace jcAtmcConvertDLL {
 	//////////////////////////////////////////////////////////////////////////
 
 	void zwconvLockReqTimeSyncDown(const ptree & ptccb, ptree & ptjc) {
-		ZWFUNCTRACE
+		
 		    ptjc.put(jcAtmcConvertDLL::JCSTR_CMDTITLE,
 			     jcAtmcConvertDLL::JCSTR_REQUEST_TIME_SYNC);
 		//建行字符串格式的日期和时间字段合成转换为UTC秒数.开始
@@ -77,7 +75,7 @@ namespace jcAtmcConvertDLL {
 	}
 
 	void zwconvLockReqTimeSyncUp(const ptree & ptjc, ptree & ptccb) {
-		ZWFUNCTRACE 
+		 
 		ptccb.put(CCBSTR_CODE, "1003");
 		ptccb.put(CCBSTR_NAME, "TimeSync");
 		string zwDate, zwTime;
@@ -94,14 +92,14 @@ namespace jcAtmcConvertDLL {
 //20141111万敏.温度振动传感器报文支持
 
 	void zwconvTemptureSenseDown(const ptree & ptccb, ptree & ptjc) {
-		ZWFUNCTRACE
+		
 		    ptjc.put(jcAtmcConvertDLL::JCSTR_CMDTITLE,
 			     jcAtmcConvertDLL::JCSTR_SENSE_TEMPTURE);
 		ptjc.put("Temperature", ptccb.get < int >("root.Temperature"));
 	}
 
 	void zwconvTemptureSenseUp(const ptree & ptjc, ptree & ptccb) {
-		ZWFUNCTRACE ptccb.put(CCBSTR_CODE, "5000");
+		 ptccb.put(CCBSTR_CODE, "5000");
 		ptccb.put(CCBSTR_NAME, "Set_Senser_Temperature");
 		string zwDate, zwTime;
 		zwGetLocalDateTimeString(time(NULL), zwDate, zwTime);
@@ -114,14 +112,14 @@ namespace jcAtmcConvertDLL {
 	}
 
 	void zwconvShockSenseDown(const ptree & ptccb, ptree & ptjc) {
-		ZWFUNCTRACE
+		
 		    ptjc.put(jcAtmcConvertDLL::JCSTR_CMDTITLE,
 			     jcAtmcConvertDLL::JCSTR_SENSE_SHOCK);
 		ptjc.put("Shock", ptccb.get < int >("root.Shock"));
 	}
 
 	void zwconvShockSenseUp(const ptree & ptjc, ptree & ptccb) {
-		ZWFUNCTRACE ptccb.put(CCBSTR_CODE, "5001");
+		 ptccb.put(CCBSTR_CODE, "5001");
 		ptccb.put(CCBSTR_NAME, "Set_Senser_Shock");
 		string zwDate, zwTime;
 		zwGetLocalDateTimeString(time(NULL), zwDate, zwTime);
@@ -136,7 +134,6 @@ namespace jcAtmcConvertDLL {
 //20141125.1508.万敏新增的5002/3/4三条命令
 	////ATM机设置上传的小循环次数命令
 	void zwconvTemptureSetInsideLoopTimesDown(const ptree & ptccb, ptree & ptjc) {
-		ZWFUNCTRACE
 			ptjc.put(jcAtmcConvertDLL::JCSTR_CMDTITLE,
 			jcAtmcConvertDLL::JCSTR_SENSE_SET_INSIDE_LOOP_TIMES);
 		ptjc.put("Times", ptccb.get < int >("root.Times"));
@@ -144,7 +141,7 @@ namespace jcAtmcConvertDLL {
 
 	void zwconvTemptureSetInsideLoopTimesUp( const ptree & ptjc, ptree & ptccb )
 	{
-		ZWFUNCTRACE 
+		 
 		ptccb.put(CCBSTR_CODE, "5002");
 		ptccb.put(CCBSTR_NAME, jcAtmcConvertDLL::JCSTR_SENSE_SET_INSIDE_LOOP_TIMES);
 		string zwDate, zwTime;
@@ -158,7 +155,7 @@ namespace jcAtmcConvertDLL {
 	}
 	//ATM机设置上传的小循环周期(单位秒)命令
 	void zwconvTemptureSetInsideLoopPeriodDown(const ptree & ptccb, ptree & ptjc) {
-		ZWFUNCTRACE
+		
 			ptjc.put(jcAtmcConvertDLL::JCSTR_CMDTITLE,
 			jcAtmcConvertDLL::JCSTR_SENSE_SET_INSIDE_LOOP_PERIOD);
 		ptjc.put("Period", ptccb.get < int >("root.Period"));
@@ -166,7 +163,7 @@ namespace jcAtmcConvertDLL {
 
 	void zwconvTemptureSetInsideLoopPeriodUp( const ptree & ptjc, ptree & ptccb )
 	{
-		ZWFUNCTRACE ptccb.put(CCBSTR_CODE, "5003");
+		ptccb.put(CCBSTR_CODE, "5003");
 		ptccb.put(CCBSTR_NAME, jcAtmcConvertDLL::JCSTR_SENSE_SET_INSIDE_LOOP_PERIOD);
 		string zwDate, zwTime;
 		zwGetLocalDateTimeString(time(NULL), zwDate, zwTime);
@@ -179,7 +176,7 @@ namespace jcAtmcConvertDLL {
 	}
 	//ATM机设置上传的大循环周期(单位分钟)命令
 	void zwconvTemptureSetOutsideLoopPeriodDown(const ptree & ptccb, ptree & ptjc) {
-		ZWFUNCTRACE
+		
 			ptjc.put(jcAtmcConvertDLL::JCSTR_CMDTITLE,
 			jcAtmcConvertDLL::JCSTR_SENSE_SET_OUTSIDE_LOOP_PERIOD);
 		ptjc.put("Period", ptccb.get < int >("root.Period"));
@@ -187,7 +184,7 @@ namespace jcAtmcConvertDLL {
 
 	void zwconvTemptureSetOutsideLoopPeriodUp( const ptree & ptjc, ptree & ptccb )
 	{
-		ZWFUNCTRACE ptccb.put(CCBSTR_CODE, "5004");
+		 ptccb.put(CCBSTR_CODE, "5004");
 		ptccb.put(CCBSTR_NAME, jcAtmcConvertDLL::JCSTR_SENSE_SET_OUTSIDE_LOOP_PERIOD);
 		string zwDate, zwTime;
 		zwGetLocalDateTimeString(time(NULL), zwDate, zwTime);

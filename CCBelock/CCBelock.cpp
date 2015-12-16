@@ -72,14 +72,14 @@ zw_trace::zw_trace(const char *funcName)
 	m_str = funcName;
 	m_start = m_str + "\tSTART";
 	m_end = m_str + "\tEND";
-	OutputDebugStringA(m_start.c_str());
+	//OutputDebugStringA(m_start.c_str());
 	VLOG(4)<<m_start;
 }
 
 zw_trace::~zw_trace()
 {
 
-	OutputDebugStringA(m_end.c_str());	
+	//OutputDebugStringA(m_end.c_str());	
 	VLOG(4)<<m_end;
 }
 
@@ -91,8 +91,6 @@ extern int G_TESTCB_SUCC;	//是否成功调用了回调函数的一个标志位，仅仅测试用
 
 CCBELOCK_API long JCAPISTD Open(long lTimeOut)
 {
-	DBGTHRID
-	ZWFUNCTRACE
 	VLOG_IF(3,lTimeOut<=0 || lTimeOut>60)<<"ZIJIN423 Open Invalid Para 20150423.1559";
 	if (NULL==g_jhc)
 	{
@@ -123,8 +121,6 @@ CCBELOCK_API long JCAPISTD Open(long lTimeOut)
 
 CCBELOCK_API long JCAPISTD Close()
 {
-	DBGTHRID
-	ZWFUNCTRACE
 	VLOG(4)<<"ZIJIN423 Close ELOCK_ERROR_SUCCESS";
 	//结束的话，及时中断数据接收线程
 	//注意，在这里做Sleep无效，要在主程序中Close之前做Sleep才能让回调函数收到结果，奇怪。20151210.1706.周伟
@@ -167,7 +163,6 @@ CCBELOCK_API long JCAPISTD Notify(const char *pszMsg)
 	}
 	//LOG(INFO)<<"Notify开始####################\n";
 
-	//ZWFUNCTRACE 
 	assert(pszMsg != NULL);
 	assert(strlen(pszMsg) >= 42);	//XML至少42字节utf8
 	if (pszMsg == NULL || strlen(pszMsg) < 42) {
@@ -280,7 +275,6 @@ CCBELOCK_API int JCAPISTD SetRecvMsgRotine(RecvMsgRotine pRecvMsgFun)
 namespace jchidDevice2015{
 	jcHidDevice::jcHidDevice()
 	{
-		ZWFUNCTRACE
 		memset(&m_jcElock, 0, sizeof(JCHID));
 		m_jcElock.vid = JCHID_VID_2014;
 		m_jcElock.pid = JCHID_PID_LOCK5151;
@@ -291,7 +285,6 @@ namespace jchidDevice2015{
 
 	int jcHidDevice::OpenJc()
 	{
-		ZWFUNCTRACE		
 		boost::mutex::scoped_lock lock(m_jchid_mutex);
 		ZWWARN(__FUNCTION__)
 		if (JCHID_STATUS_OK != jcHidOpen(&m_jcElock)) {
@@ -308,7 +301,6 @@ namespace jchidDevice2015{
 
 	void jcHidDevice::CloseJc()
 	{
-		ZWFUNCTRACE
 		boost::mutex::scoped_lock lock(m_jchid_mutex);
 		if (NULL!=m_jcElock.hid_device)
 		{
@@ -322,7 +314,6 @@ namespace jchidDevice2015{
 
 	jcHidDevice::~jcHidDevice()
 	{
-		ZWFUNCTRACE
 		CloseJc();
 	}
 
@@ -366,7 +357,6 @@ namespace jchidDevice2015{
 
 	int jcHidDevice::RecvJson( char *recvJson,int bufLen )
 	{
-		ZWFUNCTRACE
 		boost::mutex::scoped_lock lock(m_jchid_mutex);		
 		assert(NULL!=recvJson);
 		assert(bufLen>=0);

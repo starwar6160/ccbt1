@@ -50,7 +50,6 @@ namespace jcLockJsonCmd_t2015a27{
 
 	CCBELOCK_API long JCAPISTD CloseJson()
 	{
-		ZWFUNCTRACE 
 			g_jhc->CloseJc();
 
 		ZWWARN("关闭 到锁具的JSON连接")
@@ -67,7 +66,6 @@ namespace jcLockJsonCmd_t2015a27{
 		if (false == zwCfg::s_hidOpened) {
 			return ELOCK_ERROR_CONNECTLOST;
 		}
-		ZWFUNCTRACE 
 		//输入必须有内容，但是最大不得长于下位机内存大小，做合理限制
 		assert(NULL != pszJson);
 		if (NULL == pszJson) {
@@ -109,7 +107,6 @@ namespace jcLockJsonCmd_t2015a27{
 	//阻塞接受锁具返回值，3秒超时返回；直接返回收到的JSON数据
 	CCBELOCK_API const char * RecvFromLockJson( const int timeoutMs )
 	{
-		ZWFUNCTRACE 
 		//超时值默认值
 		int realTimeOut=JCHID_RECV_TIMEOUT;
 		//如果超时值在一个合理范围内，就采用

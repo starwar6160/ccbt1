@@ -5,11 +5,9 @@
 namespace jcAtmcConvertDLL {
 	//查询锁具状态
 	void zwconvQueryLockStatusDown(const ptree &, ptree & ptjc) {
-		//ZWFUNCTRACE
 		    ptjc.put(jcAtmcConvertDLL::JCSTR_CMDTITLE,
 			     JCSTR_QUERY_LOCK_STATUS);
 	} void zwconvCheckLockStatusUp(const ptree & ptjc, ptree & ptccb) {
-		//ZWFUNCTRACE
 		    //"Command": "Lock_Now_Info",
 		    //"Lock_Time": "1408434961",
 		    //"Lock_Serial": "A3KE2OK256EO2SPE",
@@ -49,7 +47,7 @@ namespace jcAtmcConvertDLL {
 
 	//读取日志
 	void zwconvGetLockLogDown(const ptree & ptccb, ptree & ptjc) {
-		ZWFUNCTRACE
+		
 		    ptjc.put(jcAtmcConvertDLL::JCSTR_CMDTITLE,
 			     JCSTR_GET_LOCK_LOG);
 		ptjc.put("Begin_No", ptccb.get < int >("root.BeginNo"));
@@ -57,7 +55,7 @@ namespace jcAtmcConvertDLL {
 	}
 
 	void zwconvGetLockLogUp(const ptree & ptjc, ptree & ptccb) {
-		ZWFUNCTRACE ptccb.put(CCBSTR_CODE, "0005");
+		 ptccb.put(CCBSTR_CODE, "0005");
 		ptccb.put(CCBSTR_NAME, "ReadLog");
 		string zwDate, zwTime;
 		zwGetLocalDateTimeString(ptjc.get < time_t > ("Lock_Time"),
@@ -84,7 +82,7 @@ namespace jcAtmcConvertDLL {
 	}
 
 	void zwconvLockPushWarnDown(const ptree & ptccb, ptree & ptjc) {
-		ZWFUNCTRACE
+		
 		    ptjc.put(jcAtmcConvertDLL::JCSTR_CMDTITLE,
 			     jcAtmcConvertDLL::JCSTR_PUSH_WARNING);
 		ptjc.put("State", ptccb.get < int >("root.RevResult"));
@@ -92,7 +90,7 @@ namespace jcAtmcConvertDLL {
 	}
 
 	void zwconvLockPushWarnUp(const ptree & ptjc, ptree & ptccb) {
-		ZWFUNCTRACE ptccb.put(CCBSTR_CODE, "1001");
+		 ptccb.put(CCBSTR_CODE, "1001");
 		ptccb.put(CCBSTR_NAME, "SendAlertStatus");
 		string zwDate, zwTime;
 		zwGetLocalDateTimeString(time(NULL), zwDate, zwTime);

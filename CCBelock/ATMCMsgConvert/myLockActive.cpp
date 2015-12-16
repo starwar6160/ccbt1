@@ -6,14 +6,12 @@ namespace jcAtmcConvertDLL {
 	time_t myGetCcbUTC(const ptree & ptccb);
 //发送锁具激活请求
 	void zwconvLockActiveDown(const ptree & ptccb, ptree & ptjc) {
-		ZWFUNCTRACE
 		    ptjc.put(jcAtmcConvertDLL::JCSTR_CMDTITLE,
 			     JCSTR_LOCK_ACTIVE_REQUEST);
 		ptjc.put("Atm_Serial", ptccb.get < string > (CCBSTR_DEVCODE));
 	} 
 	
 	void zwconvLockActiveUp(const ptree & ptjc, ptree & ptccb) {
-		ZWFUNCTRACE
 		    //无用的形式化部分
 		    ptccb.put(CCBSTR_CODE, "0000");
 		assert("CallForActInfo" == ns_ActReqName);
@@ -38,7 +36,6 @@ namespace jcAtmcConvertDLL {
 
 //发送锁具激活信息(锁具初始化)
 	void zwconvLockInitDown(const ptree & ptccb, ptree & ptjc) {
-		ZWFUNCTRACE
 		    //锁具初始化
 		    //>> 上位机下发
 		    //      "command": JCSTR_LOCK_INIT,
@@ -69,7 +66,6 @@ namespace jcAtmcConvertDLL {
 	}
 
 	void zwconvLockInitUp(const ptree & ptjc, ptree & ptccb) {
-		ZWFUNCTRACE
 		    //无用的形式化部分
 		    ptccb.put(CCBSTR_CODE, "0001");
 		ptccb.put(CCBSTR_NAME, ns_LockInitName);	//使用缓存在内存中的值

@@ -5,7 +5,6 @@
 namespace jcAtmcConvertDLL {
 	//读取闭锁码
 	void zwconvReadCloseCodeDown(const ptree & ptccb, ptree & ptjc) {
-		ZWFUNCTRACE
 		    //>> 读取闭锁码
 		    //请求
 		    //      "command": JCSTR_READ_CLOSECODE,
@@ -24,7 +23,6 @@ namespace jcAtmcConvertDLL {
 
 		ptjc.put("Lock_Time", ccbUTCSec);
 	} void zwconvReadCloseCodeUp(const ptree & ptjc, ptree & ptccb) {
-		ZWFUNCTRACE
 		    //读取闭锁码 应答
 		    //      交易代码        TransCode       是      值：0004
 		    //      交易名称        TransName       是      值：ReadShutLockCode
@@ -51,14 +49,13 @@ namespace jcAtmcConvertDLL {
 
 	void zwconvRecvInitCloseCodeDown( const ptree & ptccb, ptree & ptjc )
 	{
-		ZWFUNCTRACE
 		    ptjc.put(jcAtmcConvertDLL::JCSTR_CMDTITLE,
 			     "Lock_Close_Code_Lock");
 			ptjc.put("State",ptccb.get < int > ("root.RevResult"));			
 	}
 
 	void zwconvRecvInitCloseCodeUp(const ptree & ptjc, ptree & ptccb) {
-		ZWFUNCTRACE ptccb.put(CCBSTR_CODE, "1000");
+		ptccb.put(CCBSTR_CODE, "1000");
 		ptccb.put(CCBSTR_NAME, "SendShutLockCode");
 		string zwDate, zwTime;
 		zwGetLocalDateTimeString(time(NULL), zwDate, zwTime);
@@ -75,8 +72,7 @@ namespace jcAtmcConvertDLL {
 
 	void zwconvRecvVerifyCodeDown( const ptree & ptccb, ptree & ptjc )
 	{
-		ZWFUNCTRACE
-		    ptjc.put(jcAtmcConvertDLL::JCSTR_CMDTITLE,
+	    ptjc.put(jcAtmcConvertDLL::JCSTR_CMDTITLE,
 			     "Lock_Open_Ident");
 		ptjc.put("State",ptccb.get < int > ("root.RevResult"));
 		ptjc.put("Atm_Serial",ptccb.get < string > (CCBSTR_DEVCODE));
@@ -84,7 +80,7 @@ namespace jcAtmcConvertDLL {
 
 	void zwconvRecvVerifyCodeUp(const ptree & ptjc, ptree & ptccb) {
 		try {
-			ZWFUNCTRACE ptccb.put(CCBSTR_CODE, "1002");
+			ptccb.put(CCBSTR_CODE, "1002");
 			ptccb.put(CCBSTR_NAME, "SendUnLockIdent");
 			string zwDate, zwTime;
 			zwGetLocalDateTimeString(time(NULL), zwDate, zwTime);

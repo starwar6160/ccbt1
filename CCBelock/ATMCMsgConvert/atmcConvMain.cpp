@@ -36,7 +36,6 @@ namespace jcAtmcConvertDLL {
 #endif // TMP_MAHAO_TEST_20150105
 	const JC_MSG_TYPE zwCCBxml2JCjson(const string & downXML,
 					  string & downJson) {
-		//ZWFUNCTRACE
 		    //接受ATMC下发的XML，转化为中间形式ptree
 		    assert(downXML.length() > 42);	//XML开头的固定内容38个字符，外加起码一个标签的两对尖括号合计4个字符
 #ifdef _DEBUG401ZW
@@ -157,7 +156,6 @@ namespace jcAtmcConvertDLL {
 //////////////////////////////////////////////////////////////////////////
 
 	const JC_MSG_TYPE zwJCjson2CCBxml(const string & upJson, string & upXML) {
-		//ZWFUNCTRACE
 		    //从下位机接收而来的json结果字符串，解码为中间形式ptree
 		    assert(upJson.length() > 9);	//json最基本的符号起码好像要9个字符左右
 		ptree ptJC;
