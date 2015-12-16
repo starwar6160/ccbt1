@@ -139,19 +139,34 @@ namespace zwccbthr {
 					assert(strlen(recvBuf)>0);
 					string sType=jcAtmcConvertDLL::zwGetJcJsonMsgType(recvBuf);
 					VLOG(1)<<"收到锁具返回消息.类型是"<<sType<<"内容是\n"<<recvBuf<<endl;
-					LOG_IF (WARNING,s_jcUpMsg.size()>0 && 
-						s_jcUpMsg.front()->NotifyType!=sType)
-						<<"锁具返回消息不符合下发消息类型"
-						<<"s_jcUpMsg.front()->NotifyType=="<<s_jcUpMsg.front()->NotifyType
-						<<"UpMsgType="<<sType
-						<<endl;
+					LOG(WARNING)<<"锁具下发和返回消息类型分别是 "
+						<<"下发类型="<<s_jcUpMsg.front()->NotifyType
+						<<"\t返回类型="<<sType<<endl;
 
 					string outXML;
 					jcAtmcConvertDLL::zwJCjson2CCBxml(recvBuf,outXML);	
-						//符合一问一答的，正常上传						
+					//首先单独处理下位机主动发送闭锁码和主动请求时间同步
+					//这两个特殊报文没有上下行类型匹配，直接上传
+					if (outXML.size()>0 &&
+						(sType=="Lock_Close_Code_Lock" ||
+						sType=="Lock_Time_Sync_Lock"))
+					{
+						set<RecvMsgRotine>::iterator it; //定义前向迭代器 
+						for (it=zwccbthr::s_setSingleUp.begin();
+							it!=zwccbthr::s_setSingleUp.end();it++)
+						{
+							RecvMsgRotine pCallBack=(*it);
+							LOG(WARNING)<<"直接上传锁具主动发送闭锁码和请求时间同步报文到回调函数地址"
+								<<std::hex<<pCallBack<<endl;
+							pushToCallBack(outXML.c_str(),pCallBack);
+						}
+					}
+
+						//除了这两个报文以外符合一问一答的，正常上传						
 						if (outXML.size()>0 && s_jcUpMsg.size()>0 &&
 							s_jcUpMsg.front()->NotifyType==sType
-							)
+							&& (sType!="Lock_Close_Code_Lock" &&
+							sType!="Lock_Time_Sync_Lock"))
 						{
 							//ZWWARN("正常上传报文")
 							DWORD tid=s_jcUpMsg.front()->CallerThreadID;
@@ -160,12 +175,13 @@ namespace zwccbthr {
 								zwccbthr::s_thrIdToPointer[tid];
 							pushToCallBack(outXML.c_str(),pRecvMsgFun);
 							s_jcUpMsg.pop_front();
-							VLOG(3)<<"s_jcUpMsg.size()="<<s_jcUpMsg.size()<<endl;
+							VLOG(3)<<"普通上传队列大小s_jcUpMsg.size()="<<s_jcUpMsg.size()<<endl;
 						}
 						else
 						{
 							ZWERROR("该单向上行消息将会被另一个上传线程在不打破一问一答的前提下延迟上传")
 							s_SingleUpMsg.push_back(outXML);
+							LOG(INFO)<<__FUNCTION__<<"单向上传队列s_SingleUpMsg大小="<<s_SingleUpMsg.size()<<endl;
 						}
 				}
 			}while(strlen(recvBuf)>0);
@@ -202,6 +218,7 @@ namespace zwccbthr {
 							pushToCallBack(strSingleUp.c_str(),pCallBack);
 						}
 						s_SingleUpMsg.pop_front();
+						LOG(INFO)<<__FUNCTION__<<"单向上传队列s_SingleUpMsg大小="<<s_SingleUpMsg.size()<<endl;
 					}
 				}
 			}
