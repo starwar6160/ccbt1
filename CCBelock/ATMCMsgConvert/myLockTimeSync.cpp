@@ -213,7 +213,7 @@ namespace jcAtmcConvertDLL {
 
 
 	//获取JSON报文类型
-	string zwGetJcJsonMsgType(const char *jcJson) 
+	CCBELOCK_API string zwGetJcJsonMsgType(const char *jcJson) 
 	{
 		assert(NULL!=jcJson);
 		assert(strlen(jcJson)>0);

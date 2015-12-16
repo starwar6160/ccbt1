@@ -1,5 +1,12 @@
 #include "stdafx.h"
 
+
+#ifdef CCBELOCK_EXPORTS
+#define CCBELOCK_API __declspec(dllexport) 
+#else
+#define CCBELOCK_API __declspec(dllimport)
+#endif
+
 //把ATMC DLL的XML和JSON互转函数集中于此，便于单元测试；
 namespace jcAtmcConvertDLL {
 
@@ -55,7 +62,7 @@ namespace jcAtmcConvertDLL {
 	//获取XML报文类型
 	string zwGetJcxmlMsgType(const char *jcXML);
 	//获取JSON报文类型
-	string zwGetJcJsonMsgType(const char *jcJson);
+	CCBELOCK_API string zwGetJcJsonMsgType(const char *jcJson);
 
 	// zwtrim from start
 	std::string &zwltrim(std::string &s);

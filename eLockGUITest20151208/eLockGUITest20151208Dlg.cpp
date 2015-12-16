@@ -7,6 +7,14 @@
 #include "eLockGUITest20151208Dlg.h"
 #include "afxdialogex.h"
 
+namespace jcAtmcConvertDLL {
+	//获取XML报文类型
+	string zwGetJcxmlMsgType(const char *jcXML);
+	//获取JSON报文类型
+	string zwGetJcJsonMsgType(const char *jcJson);
+}	//namespace jcAtmcConvertDLL {
+
+
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
@@ -171,6 +179,7 @@ void CeLockGUITest20151208Dlg::OnBnClickedButton1()
 	m_zjOCX.Notify(variant);
 	Sleep(1000);
 	m_zjOCX.Close();
+	jcAtmcConvertDLL::zwGetJcJsonMsgType("aaa");
 }
 BEGIN_EVENTSINK_MAP(CeLockGUITest20151208Dlg, CDialogEx)
 	ON_EVENT(CeLockGUITest20151208Dlg, IDC_ZJELOCKCTRL1, 1, CeLockGUITest20151208Dlg::OnRecvMsgZjelockctrl1, VTS_VARIANT)
