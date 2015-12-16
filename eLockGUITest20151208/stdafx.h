@@ -41,9 +41,12 @@
 #include <afxsock.h>            // MFC Ì×½Ó×ÖÀ©Õ¹
 
 
+#include <boost/thread.hpp> 
+#include <boost/property_tree/ptree.hpp>
+#include <boost/property_tree/xml_parser.hpp>
 #include <string>
 using std::string;
-
+using boost::property_tree::ptree;
 
 
 

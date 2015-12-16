@@ -141,7 +141,10 @@ namespace zwccbthr {
 					VLOG(1)<<"收到锁具返回消息.类型是"<<sType<<"内容是\n"<<recvBuf<<endl;
 					LOG_IF (WARNING,s_jcUpMsg.size()>0 && 
 						s_jcUpMsg.front()->NotifyType!=sType)
-						<<"锁具返回消息不符合下发消息类型"<<endl;
+						<<"锁具返回消息不符合下发消息类型"
+						<<"s_jcUpMsg.front()->NotifyType=="<<s_jcUpMsg.front()->NotifyType
+						<<"UpMsgType="<<sType
+						<<endl;
 
 					string outXML;
 					jcAtmcConvertDLL::zwJCjson2CCBxml(recvBuf,outXML);	

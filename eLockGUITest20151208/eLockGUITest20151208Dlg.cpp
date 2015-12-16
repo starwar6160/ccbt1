@@ -7,18 +7,28 @@
 #include "eLockGUITest20151208Dlg.h"
 #include "afxdialogex.h"
 
-namespace jcAtmcConvertDLL {
-	//获取XML报文类型
-	string zwGetJcxmlMsgType(const char *jcXML);
-	//获取JSON报文类型
-	string zwGetJcJsonMsgType(const char *jcJson);
-}	//namespace jcAtmcConvertDLL {
 
+//获取XML报文类型
+//临时复制过来的代码，因为该段代码在DLL中被上层应用调用会导致堆栈破坏，原因暂时未知
+// 20151216.1702.周伟
+string zwGetJcxmlMsgType(const char *jcXML) 
+{
+	assert(NULL!=jcXML);
+	assert(strlen(jcXML)>0);
+	ptree ptccb;
+	std::stringstream ss;
+	ss << jcXML;
+	read_xml(ss, ptccb);
+	string msgType=ptccb.get<string>("root.TransCode");		
+	assert(msgType.size()>0);
+	return msgType;
+}
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
 
+static const char *g_msg02="<?xml version='1.0' encoding='UTF-8'?><root><TransCode>0002</TransCode><TransName>QueryForLockStatus</TransName><TransDate>20150401</TransDate><TransTime>084539</TransTime><DevCode>440600300145</DevCode><LockMan></LockMan><LockId></LockId><SpareString1></SpareString1><SpareString2></SpareString2></root>";
 static const char *g_msg03="<?xml version='1.0' encoding='UTF-8'?><root><TransCode>0003</TransCode><TransName>TimeSync</TransName><TransDate>20150401</TransDate><TransTime>085006</TransTime></root>";
 
 // 用于应用程序“关于”菜单项的 CAboutDlg 对话框
@@ -175,11 +185,11 @@ void CeLockGUITest20151208Dlg::OnBnClickedButton1()
 	variant.vt=VT_BSTR;
 	variant.bstrVal= strMessage;
 	// TODO: 在此添加控件通知处理程序代码	
-	//m_zjOCX.Open(22);
+	m_zjOCX.Open(22);
 	m_zjOCX.Notify(variant);
 	Sleep(1000);
 	m_zjOCX.Close();
-	//jcAtmcConvertDLL::zwGetJcJsonMsgType("aaa");
+	
 }
 BEGIN_EVENTSINK_MAP(CeLockGUITest20151208Dlg, CDialogEx)
 	ON_EVENT(CeLockGUITest20151208Dlg, IDC_ZJELOCKCTRL1, 1, CeLockGUITest20151208Dlg::OnRecvMsgZjelockctrl1, VTS_VARIANT)
@@ -190,5 +200,8 @@ void CeLockGUITest20151208Dlg::OnRecvMsgZjelockctrl1(const VARIANT& varMsg)
 {
 	// TODO: 在此处添加消息处理程序代码
 	//OutputDebugStringA(__FUNCTION__);
-	MessageBox(varMsg.bstrVal,_T("TIPZW1623"),MB_OK);
+	char *rMsg=_com_util::ConvertBSTRToString(varMsg.bstrVal);
+	string sType=zwGetJcxmlMsgType(rMsg);
+	MessageBoxA(NULL,sType.c_str(),"TIPZW1216",MB_OK);
+	
 }

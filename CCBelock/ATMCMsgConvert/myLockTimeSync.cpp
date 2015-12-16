@@ -198,7 +198,7 @@ namespace jcAtmcConvertDLL {
 
 //////////////////////////////////////////////////////////////////////////
 	//获取XML报文类型
-	string zwGetJcxmlMsgType(const char *jcXML) 
+	CCBELOCK_API string zwGetJcxmlMsgType(const char *jcXML) 
 	{
 		assert(NULL!=jcXML);
 		assert(strlen(jcXML)>0);

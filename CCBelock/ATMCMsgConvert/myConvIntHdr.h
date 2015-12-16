@@ -60,7 +60,7 @@ namespace jcAtmcConvertDLL {
 	//extern string ns_ccbAtmno;    //ATM编号
 
 	//获取XML报文类型
-	string zwGetJcxmlMsgType(const char *jcXML);
+	CCBELOCK_API string zwGetJcxmlMsgType(const char *jcXML);
 	//获取JSON报文类型
 	CCBELOCK_API string zwGetJcJsonMsgType(const char *jcJson);
 
