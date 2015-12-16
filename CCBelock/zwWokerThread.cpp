@@ -27,9 +27,9 @@ namespace zwccbthr {
 	deque<jcLockMsg1512_t *> s_jcUpMsg;		//上传命令队列
 	deque<string> s_SingleUpMsg;				//单向上传队列
 	map<DWORD,RecvMsgRotine> s_thrIdToPointer;	//线程ID到回调函数指针的map
-	//供单向上传报文专用的保存所有回调函数指针的向量,好让单向报文发给所有线程;
-	vector<RecvMsgRotine> s_vecSingleUp;	
-	//RecvMsgRotine s_tmp_pRecvMsgFun;	//临时测试的供单向上传使用的回调函数指针;
+	////供单向上传报文专用的保存所有回调函数指针的集合,好让单向报文发给所有线程;
+	set<RecvMsgRotine> s_setSingleUp;	
+
 
 	void wait(int milliseconds) {
 		assert(milliseconds>0);
@@ -158,7 +158,6 @@ namespace zwccbthr {
 							pushToCallBack(outXML.c_str(),pRecvMsgFun);
 							s_jcUpMsg.pop_front();
 							VLOG(3)<<"s_jcUpMsg.size()="<<s_jcUpMsg.size()<<endl;
-							//s_tmp_pRecvMsgFun=pRecvMsgFun;
 						}
 						else
 						{
@@ -169,7 +168,6 @@ namespace zwccbthr {
 			}while(strlen(recvBuf)>0);
 			
 		}	//收发thrhid_mutex结束			
-			//condJcLock.notify_all();	
 			Sleep(100);	//接收完毕一轮报文后暂停100毫秒给下发报文腾出时间；
 			VLOG(4)<<__FUNCTION__<<"\tSleep 100 ms"<<endl;
 		}
@@ -181,7 +179,7 @@ namespace zwccbthr {
 		ZWERROR("与ATMC之间的数据上传线程启动.20151215")
 			while (1)
 			{		
-				Sleep(3000);
+				Sleep(1000);
 				//VLOG(3)<<__FUNCTION__<<"RUNNING"<<endl;
 				//等待数据接收线程操作完毕“收到的数据”队列
 				//获得该队列的锁的所有权，开始操作
@@ -191,14 +189,15 @@ namespace zwccbthr {
 					// 才上传该被延迟上传的报文以免打乱一问一答
 					if (s_SingleUpMsg.size()>0 && s_jcUpMsg.size()==0)
 					{
-						string &strSingleUp=s_SingleUpMsg.front();
-						
-						for (int i=0;i<zwccbthr::s_vecSingleUp.size();i++)
-						{							
-							RecvMsgRotine pCallBack=zwccbthr::s_vecSingleUp[i];
+						string &strSingleUp=s_SingleUpMsg.front();					
+						set<RecvMsgRotine>::iterator it; //定义前向迭代器 
+						for (it=zwccbthr::s_setSingleUp.begin();
+							it!=zwccbthr::s_setSingleUp.end();it++)
+						{
+							RecvMsgRotine pCallBack=(*it);
 							LOG(WARNING)<<"延迟上传报文到回调函数地址"<<std::hex<<pCallBack<<endl;
 							pushToCallBack(strSingleUp.c_str(),pCallBack);
-						}						
+						}
 						s_SingleUpMsg.pop_front();
 					}
 				}

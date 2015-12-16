@@ -155,7 +155,7 @@ void zw1209SpeedTestThr2(void)
 {
 	//Sleep(200);
 	cout<<"["<<__FUNCTION__<<"] ThreadPID=["<<GetCurrentThreadId()<<"]\tSTART"<<endl;		
-	SetRecvMsgRotine(myATMCRecvMsgRotineT2);	
+	SetRecvMsgRotine(myATMCRecvMsgRotine);	
 	EXPECT_EQ(ELOCK_ERROR_SUCCESS,Open(22));		
 	//Sleep(5000);
 	EXPECT_EQ(ELOCK_ERROR_SUCCESS,Notify(g_msg03));	

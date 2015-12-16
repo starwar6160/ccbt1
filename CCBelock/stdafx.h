@@ -19,6 +19,7 @@
 #include <cassert>
 #include <vector>
 #include <deque>
+#include <set>
 using std::cout;
 using std::cin;
 using std::cerr;
@@ -26,6 +27,7 @@ using std::endl;
 using std::string;
 using std::deque;
 using std::vector;
+using std::set;
 
 #include <boost/thread.hpp> 
 #include <boost/thread/mutex.hpp>
