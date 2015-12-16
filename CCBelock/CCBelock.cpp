@@ -122,6 +122,11 @@ CCBELOCK_API long JCAPISTD Open(long lTimeOut)
 
 CCBELOCK_API long JCAPISTD Close()
 {
+	if (NULL==g_jhc)
+	{
+		LOG(WARNING)<<"没有Open就执行Close 20151216"<<endl;
+		return ELOCK_ERROR_HARDWAREERROR;
+	}
 	VLOG(4)<<"ZIJIN423 Close ELOCK_ERROR_SUCCESS";
 	//结束的话，及时中断数据接收线程
 	//注意，在这里做Sleep无效，要在主程序中Close之前做Sleep才能让回调函数收到结果，奇怪。20151210.1706.周伟
@@ -139,6 +144,11 @@ CCBELOCK_API long JCAPISTD Notify(const char *pszMsg)
 {
 	DBGTHRID
 	
+		if (NULL==g_jhc)
+		{
+			LOG(WARNING)<<"没有Open就执行Notify 20151216"<<endl;
+			return ELOCK_ERROR_HARDWAREERROR;
+		}
 	if (NULL==zwccbthr::opUpMsgThr)
 	{
 		VLOG(4)<<"Start my515UpMsgThr"<<endl;

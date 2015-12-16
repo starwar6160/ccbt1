@@ -175,11 +175,11 @@ void CeLockGUITest20151208Dlg::OnBnClickedButton1()
 	variant.vt=VT_BSTR;
 	variant.bstrVal= strMessage;
 	// TODO: 在此添加控件通知处理程序代码	
-	m_zjOCX.Open(22);
+	//m_zjOCX.Open(22);
 	m_zjOCX.Notify(variant);
 	Sleep(1000);
 	m_zjOCX.Close();
-	jcAtmcConvertDLL::zwGetJcJsonMsgType("aaa");
+	//jcAtmcConvertDLL::zwGetJcJsonMsgType("aaa");
 }
 BEGIN_EVENTSINK_MAP(CeLockGUITest20151208Dlg, CDialogEx)
 	ON_EVENT(CeLockGUITest20151208Dlg, IDC_ZJELOCKCTRL1, 1, CeLockGUITest20151208Dlg::OnRecvMsgZjelockctrl1, VTS_VARIANT)
