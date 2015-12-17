@@ -25,7 +25,7 @@ namespace zwccbthr {
 	boost::timer g_LatTimer;	//用于自动计算延迟
 	deque<jcLockMsg1512_t *> s_jcNotify;		//下发命令队列，下发完毕后移动到上传队列
 	deque<jcLockMsg1512_t *> s_jcUpMsg;		//上传命令队列
-	deque<string> s_SingleUpMsg;				//单向上传队列
+	deque<jcLockMsg1512_t *> s_LockFirstUpMsg;				//单向上传队列
 	map<DWORD,RecvMsgRotine> s_thrIdToPointer;	//线程ID到回调函数指针的map
 	////供单向上传报文专用的保存所有回调函数指针的集合,好让单向报文发给所有线程;
 	set<RecvMsgRotine> s_setSingleUp;	
@@ -110,11 +110,15 @@ namespace zwccbthr {
 					string sCmd=nItem->NotifyMsg;
 					DWORD tid=nItem->CallerThreadID;
 					string sType=nItem->NotifyType;
-					nItem->bSended=true;
+					nItem->bSended=true;					
 					LOG(WARNING)<<"线程["<<tid<<"]发送给锁具的"<<
 						sType<<"类型消息.内容是"<<endl<<sCmd;
 					sts=static_cast<JCHID_STATUS>( g_jhc->SendJson(sCmd.c_str()));
-					
+					if (s_LockFirstUpMsg.size()>0 && 
+						s_LockFirstUpMsg.front()->NotifyType==sType)
+					{
+						s_LockFirstUpMsg.pop_front();
+					}
 					//断线重连探测机制
 					if (JCHID_STATUS_OK!=static_cast<JCHID_STATUS>(sts))
 					{
@@ -146,23 +150,20 @@ namespace zwccbthr {
 					string outXML;
 					jcAtmcConvertDLL::zwJCjson2CCBxml(recvBuf,outXML);	
 					//首先单独处理下位机主动发送闭锁码和主动请求时间同步
-					//这两个特殊报文没有上下行类型匹配，直接上传
+					//这两个反向循环报文需要单独处理
 					if (outXML.size()>0 &&
 						(sType=="Lock_Close_Code_Lock" ||
 						sType=="Lock_Time_Sync_Lock"))
 					{
-						set<RecvMsgRotine>::iterator it; //定义前向迭代器 
-						for (it=zwccbthr::s_setSingleUp.begin();
-							it!=zwccbthr::s_setSingleUp.end();it++)
-						{
-							RecvMsgRotine pCallBack=(*it);
-							LOG(WARNING)<<"直接上传锁具主动发送闭锁码和请求时间同步报文到回调函数地址"
-								<<std::hex<<pCallBack<<endl;
-							pushToCallBack(outXML.c_str(),pCallBack);
-						}
+						ZWERROR("该锁具主动上传消息将会被另一个上传线程在不打破一问一答的前提下延迟上传")
+						jcLockMsg1512_t *nItem=new jcLockMsg1512_t;
+						nItem->CallerThreadID=0;
+						nItem->UpMsg=outXML;
+						nItem->NotifyType=sType;
+						s_LockFirstUpMsg.push_back(nItem);
+						LOG(INFO)<<__FUNCTION__<<"单向上传队列s_LockFirstUpMsg大小="<<s_LockFirstUpMsg.size()<<endl;
 					}
-
-						//除了这两个报文以外符合一问一答的，正常上传						
+						//除了这两个报文以外符合正向循环一问一答的，正常上传						
 						if (outXML.size()>0 && s_jcUpMsg.size()>0 &&
 							s_jcUpMsg.front()->NotifyType==sType
 							&& (sType!="Lock_Close_Code_Lock" &&
@@ -177,13 +178,7 @@ namespace zwccbthr {
 							s_jcUpMsg.pop_front();
 							VLOG(3)<<"普通上传队列大小s_jcUpMsg.size()="<<s_jcUpMsg.size()<<endl;
 						}
-						else
-						{
-							ZWERROR("该单向上行消息将会被另一个上传线程在不打破一问一答的前提下延迟上传")
-							s_SingleUpMsg.push_back(outXML);
-							LOG(INFO)<<__FUNCTION__<<"单向上传队列s_SingleUpMsg大小="<<s_SingleUpMsg.size()<<endl;
-						}
-				}
+				}	//if (strlen(recvBuf)>0)
 			}while(strlen(recvBuf)>0);
 			
 		}	//收发thrhid_mutex结束			
@@ -206,10 +201,11 @@ namespace zwccbthr {
 					boost::mutex::scoped_lock lock(thrhid_mutex);				
 					//只有当等待配对上传的消息都已经上传完毕后
 					// 才上传该被延迟上传的报文以免打乱一问一答
-					if (s_SingleUpMsg.size()>0 && s_jcUpMsg.size()==0)
+					if (s_LockFirstUpMsg.size()>0 && s_jcUpMsg.size()==0)
 					{
-						string &strSingleUp=s_SingleUpMsg.front();					
+						string &strSingleUp=s_LockFirstUpMsg.front()->UpMsg;					
 						set<RecvMsgRotine>::iterator it; //定义前向迭代器 
+						//锁具主动上传报文发给每一个线程的回调函数
 						for (it=zwccbthr::s_setSingleUp.begin();
 							it!=zwccbthr::s_setSingleUp.end();it++)
 						{
@@ -217,8 +213,8 @@ namespace zwccbthr {
 							LOG(WARNING)<<"延迟上传报文到回调函数地址"<<std::hex<<pCallBack<<endl;
 							pushToCallBack(strSingleUp.c_str(),pCallBack);
 						}
-						s_SingleUpMsg.pop_front();
-						LOG(INFO)<<__FUNCTION__<<"单向上传队列s_SingleUpMsg大小="<<s_SingleUpMsg.size()<<endl;
+						//s_LockFirstUpMsg.pop_front();
+						//LOG(INFO)<<__FUNCTION__<<"单向上传队列s_SingleUpMsg大小="<<s_LockFirstUpMsg.size()<<endl;
 					}
 				}
 			}
