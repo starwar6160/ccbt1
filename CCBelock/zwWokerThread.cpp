@@ -187,7 +187,7 @@ namespace zwccbthr {
 			
 		}	//收发thrhid_mutex结束			
 			Sleep(100);	//接收完毕一轮报文后暂停100毫秒给下发报文腾出时间；
-			VLOG(3)<<__FUNCTION__<<" 主要的数据收发线程运行中，循环末尾"<<endl;
+			//VLOG(3)<<__FUNCTION__<<" 主要的数据收发线程运行中，循环末尾"<<endl;
 		}	//end while
 
 	}
@@ -197,7 +197,7 @@ namespace zwccbthr {
 		ZWERROR("与ATMC之间的数据上传线程启动.20151215")
 			while (1)
 			{		
-				Sleep(1000);
+				Sleep(500);
 				//VLOG(3)<<__FUNCTION__<<"RUNNING"<<endl;
 				//等待数据接收线程操作完毕“收到的数据”队列
 				//获得该队列的锁的所有权，开始操作
@@ -205,30 +205,35 @@ namespace zwccbthr {
 					boost::mutex::scoped_lock lock(thrhid_mutex);				
 					//只有当等待配对上传的消息都已经上传完毕后
 					// 才上传该被延迟上传的报文以免打乱一问一答
-					if (s_LockFirstUpMsg.size()>0 && s_jcUpMsg.size()==0)
-					{
-						VLOG(3)<<"zwccbthr::s_setSingleUp.size()="<<zwccbthr::s_setSingleUp.size()<<endl;
+					VLOG(3)<<"s_LockFirstUpMsg.size()="<<s_LockFirstUpMsg.size()
+						<<"s_jcUpMsg.size()==0"<<s_jcUpMsg.size()<<endl;
+					if (s_LockFirstUpMsg.size()>0
+						//&& s_jcUpMsg.size()==0
+						)
+					{						
 						string &strSingleUp=s_LockFirstUpMsg.front()->UpMsg;					
 						set<RecvMsgRotine>::iterator it; //定义前向迭代器 
 						//锁具主动上传报文发给每一个线程的回调函数
 						int icc=1;
 						RecvMsgRotine pOld=NULL;
+						VLOG(3)<<"zwccbthr::s_setSingleUp.size()="
+							<<zwccbthr::s_setSingleUp.size()<<endl;
 						for (it=zwccbthr::s_setSingleUp.begin();
 							it!=zwccbthr::s_setSingleUp.end();it++)
 						{							
 							RecvMsgRotine pCallBack=(*it);
-							pOld=pCallBack;
 							LOG(WARNING)<<"延迟上传报文到回调函数地址"<<std::hex<<pCallBack
 							<<"\t第"<<(icc++)<<"次"<<endl;
 							if (pCallBack!=pOld)
 							{
 								pushToCallBack(strSingleUp.c_str(),pCallBack);
+								pOld=pCallBack;
 							}							
 						}
 						//s_LockFirstUpMsg.pop_front();
 					}
 				}
-				VLOG(3)<<__FUNCTION__<<"\t单向上传线程运行中，刚结束一个循环"<<endl;
+				//VLOG(3)<<__FUNCTION__<<"\t单向上传线程运行中，刚结束一个循环"<<endl;
 			}
 	}
 
