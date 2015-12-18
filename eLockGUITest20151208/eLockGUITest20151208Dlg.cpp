@@ -185,7 +185,11 @@ void CeLockGUITest20151208Dlg::OnBnClickedButton1()
 	variant.vt=VT_BSTR;
 	variant.bstrVal= strMessage;
 	// TODO: 在此添加控件通知处理程序代码	
-	m_zjOCX.Open(22);
+	DWORD iOpen=m_zjOCX.Open(22);
+	if (0!=iOpen)
+	{
+		MessageBoxA(NULL,"金储电子密码锁打开失败","失败",MB_OK);
+	}
 	m_zjOCX.Notify(variant);
 	Sleep(1000);
 	m_zjOCX.Close();

@@ -168,14 +168,42 @@ void zw1209SpeedTestThr2(void)
 }
 
 
+void zw1218OpenTimeTestThr(void)
+{
+	cout<<"["<<__FUNCTION__<<"] ThreadPID=["<<GetCurrentThreadId()<<"]\tSTART"<<endl;		
+	SetRecvMsgRotine(myATMCRecvMsgRotine);	
+	int opMs=0;
+	int opInv=800;
+	for (int i=0;i<86400;i++)
+	{
+		int iErrCode=Open(-333);
+		if (ELOCK_ERROR_SUCCESS==iErrCode)
+		{
+			cout<<"打开锁具成功"<<endl;
+		}
+		if (ELOCK_ERROR_SUCCESS!=iErrCode)
+		{
+			cout<<"打开锁具失败,返回值="<<iErrCode<<endl;
+		}
+
+		Sleep(opInv);
+		opMs=opMs+opInv;
+		cout<<"从开始过去了"<<opMs/1000.0<<"秒"<<endl;
+	}
+	
+}
+
 TEST_F(ccbElockTest, jcHidDev20151207SpeedTestInATMCDLL)
 {	
 	boost::thread *thr1=new boost::thread(zw1209SpeedTestThr1);	
 	Sleep(100);
 	boost::thread *thr2=new boost::thread(zw1209SpeedTestThr2);
+	//boost::thread *thr3=new boost::thread(zw1218OpenTimeTestThr);
+	
 	
 	thr1->join();
 	thr2->join();
+	//thr3->join();
 	Sleep(8000);
 	EXPECT_EQ(ELOCK_ERROR_SUCCESS,Close());
 }

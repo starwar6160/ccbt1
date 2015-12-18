@@ -41,8 +41,8 @@ namespace zwccbthr {
 	extern deque<jcLockMsg1512_t *> s_jcNotify;		//下发命令
 	extern map<DWORD,RecvMsgRotine> s_thrIdToPointer;	//线程ID到回调函数指针的map
 
-	////供单向上传报文专用的保存所有回调函数指针的集合,好让单向报文发给所有线程;
-	extern set<RecvMsgRotine> s_setSingleUp;	
+	////供单向上传报文专用的保存所有回调函数指针的向量,好让单向报文发给所有线程;
+	extern vector <RecvMsgRotine> s_vecSingleUp;	
 
 } //namespace zwccbthr{  
 
@@ -92,7 +92,7 @@ extern int G_TESTCB_SUCC;	//是否成功调用了回调函数的一个标志位，仅仅测试用
 
 CCBELOCK_API long JCAPISTD Open(long lTimeOut)
 {
-	VLOG_IF(3,lTimeOut<=0 || lTimeOut>60)<<"ZIJIN423 Open Invalid Para 20150423.1559";
+	VLOG_IF(3,lTimeOut<=-600 || lTimeOut>600)<<"ZIJIN423 Open Invalid Para 20150423.1559";
 	if (NULL==g_jhc)
 	{
 		g_jhc=new jcHidDevice();
@@ -253,8 +253,8 @@ CCBELOCK_API int JCAPISTD SetRecvMsgRotine(RecvMsgRotine pRecvMsgFun)
 	//把回调函数指针保存到线程ID为索引的MAP里面
 	zwccbthr::s_thrIdToPointer[iCallerThrId]=pRecvMsgFun;
 	//把回调函数指针保存到一个集合里面供单向上传报文提供给所有线程的不重复回调函数
-	zwccbthr::s_setSingleUp.insert(pRecvMsgFun);
-	VLOG(3)<<"zwccbthr::s_setSingleUp.size()="<<zwccbthr::s_setSingleUp.size()<<endl;
+	zwccbthr::s_vecSingleUp.push_back(pRecvMsgFun);
+	VLOG(3)<<"zwccbthr::s_vecSingleUp.size()="<<zwccbthr::s_vecSingleUp.size()<<endl;
 	VLOG(3)<<"主程序的线程ID="<<iCallerThrId<<"\t回调函数地址="<<std::hex<<pRecvMsgFun<<endl;
 	VLOG(3)<<__FUNCTION__<<" s_thrIdToPointer.size()="<<zwccbthr::s_thrIdToPointer.size();
 	return ELOCK_ERROR_SUCCESS;
