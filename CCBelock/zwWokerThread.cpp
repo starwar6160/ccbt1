@@ -88,7 +88,7 @@ namespace zwccbthr {
 	void my515LockRecvThr(void)
 	{
 		
-		ZWERROR("与锁具之间的数据接收线程启动.20151215.0925.v804")
+		ZWERROR("与锁具之间的数据接收线程启动.20151218.v822")
 		const int BLEN = 1024;
 		char recvBuf[BLEN];			
 		using zwccbthr::s_jcNotify;
@@ -161,6 +161,10 @@ namespace zwccbthr {
 						nItem->NotifyType=sType;
 						s_LockFirstUpMsg.push_back(nItem);
 						LOG(INFO)<<__FUNCTION__<<"单向上传队列s_LockFirstUpMsg大小="<<s_LockFirstUpMsg.size()<<endl;
+						if (s_jcUpMsg.size()>0)
+						{
+							s_jcUpMsg.pop_front();
+						}						
 					}
 						//除了这3个报文以外符合正向循环一问一答的，正常上传						
 						if (outXML.size()>0 && s_jcUpMsg.size()>0 &&
@@ -217,12 +221,12 @@ namespace zwccbthr {
 						for (int i=0;i<zwccbthr::s_vecSingleUp.size();i++)
 						{							
 							RecvMsgRotine pCallBack=zwccbthr::s_vecSingleUp[i];
-							LOG(WARNING)<<"延迟上传报文到回调函数地址"<<std::hex<<pCallBack
-							<<"\t第"<<(icc++)<<"次"<<endl;
 							if (pCallBack!=pOld)
 							{
 								pushToCallBack(strSingleUp.c_str(),pCallBack);
 								pOld=pCallBack;
+								LOG(WARNING)<<"延迟上传报文到回调函数地址"<<std::hex<<pCallBack
+									<<"\t第"<<(icc++)<<"次"<<endl;
 							}							
 						}
 						if (s_LockFirstUpMsg.size()>0)
