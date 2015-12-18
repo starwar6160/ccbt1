@@ -62,6 +62,7 @@ void myLuaBridgeTest1(void)
 
 void myLuaBridgeSendJsonAPI(const char *luaScriptFile)
 {
+#ifdef _DEBUG1218
 	//printf("#################Start##################\n");
 	lua_State* L = luaL_newstate();  //也可以用luaL_newState()函数  
 	luaL_openlibs(L);   //注意将lua默认库打开，要不会出现N多错误的，比如print函数都没有  
@@ -76,4 +77,5 @@ void myLuaBridgeSendJsonAPI(const char *luaScriptFile)
 	luaL_dofile(L, luaScriptFile);  	
 	lua_close(L);
 	//printf("#################End##################\n");
+#endif // _DEBUG1218
 }

@@ -125,10 +125,6 @@
     <ClInclude Include="zwSecretBoxCCBcsWrap.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\jclmsCCB2014\jclmsCCB2014\src\crc32\zwcrc32.c">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
-    </ClCompile>
     <ClCompile Include="atmcDLLConvert731.cpp" />
     <ClCompile Include="ATMCMsgConvert\atmcConvMain.cpp" />
     <ClCompile Include="ATMCMsgConvert\myLockActive.cpp" />
