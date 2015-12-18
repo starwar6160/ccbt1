@@ -143,17 +143,21 @@ namespace zwccbthr {
 					assert(strlen(recvBuf)>0);
 					string sType=jcAtmcConvertDLL::zwGetJcJsonMsgType(recvBuf);
 					VLOG(1)<<"收到锁具返回消息.类型是"<<sType<<"内容是\n"<<recvBuf<<endl;
-					LOG(WARNING)<<"锁具下发和返回消息类型分别是 "
+					LOG_IF(WARNING,s_jcUpMsg.front()->NotifyType!=sType)
+						<<"锁具下发和返回消息类型不同，两者分别是 "
 						<<"下发类型="<<s_jcUpMsg.front()->NotifyType
 						<<"\t返回类型="<<sType<<endl;
 
 					string outXML;
 					jcAtmcConvertDLL::zwJCjson2CCBxml(recvBuf,outXML);	
 					//首先单独处理下位机主动发送闭锁码和主动请求时间同步
-					//这两个反向循环报文需要单独处理
+					// 还有锁具发送验证码
+					//这3个反向循环报文需要单独处理
 					if (outXML.size()>0 &&
 						(sType=="Lock_Close_Code_Lock" ||
-						sType=="Lock_Time_Sync_Lock"))
+						sType=="Lock_Time_Sync_Lock")  ||
+						sType=="Lock_Open_Ident"
+						)
 					{
 						ZWERROR("该锁具主动上传消息将会被另一个上传线程在不打破一问一答的前提下延迟上传")
 						jcLockMsg1512_t *nItem=new jcLockMsg1512_t;
@@ -183,8 +187,8 @@ namespace zwccbthr {
 			
 		}	//收发thrhid_mutex结束			
 			Sleep(100);	//接收完毕一轮报文后暂停100毫秒给下发报文腾出时间；
-			VLOG(4)<<__FUNCTION__<<"\tSleep 100 ms"<<endl;
-		}
+			VLOG(3)<<__FUNCTION__<<" 主要的数据收发线程运行中，循环末尾"<<endl;
+		}	//end while
 
 	}
 
@@ -203,20 +207,28 @@ namespace zwccbthr {
 					// 才上传该被延迟上传的报文以免打乱一问一答
 					if (s_LockFirstUpMsg.size()>0 && s_jcUpMsg.size()==0)
 					{
+						VLOG(3)<<"zwccbthr::s_setSingleUp.size()="<<zwccbthr::s_setSingleUp.size()<<endl;
 						string &strSingleUp=s_LockFirstUpMsg.front()->UpMsg;					
 						set<RecvMsgRotine>::iterator it; //定义前向迭代器 
 						//锁具主动上传报文发给每一个线程的回调函数
+						int icc=1;
+						RecvMsgRotine pOld=NULL;
 						for (it=zwccbthr::s_setSingleUp.begin();
 							it!=zwccbthr::s_setSingleUp.end();it++)
-						{
+						{							
 							RecvMsgRotine pCallBack=(*it);
-							LOG(WARNING)<<"延迟上传报文到回调函数地址"<<std::hex<<pCallBack<<endl;
-							pushToCallBack(strSingleUp.c_str(),pCallBack);
+							pOld=pCallBack;
+							LOG(WARNING)<<"延迟上传报文到回调函数地址"<<std::hex<<pCallBack
+							<<"\t第"<<(icc++)<<"次"<<endl;
+							if (pCallBack!=pOld)
+							{
+								pushToCallBack(strSingleUp.c_str(),pCallBack);
+							}							
 						}
 						//s_LockFirstUpMsg.pop_front();
-						//LOG(INFO)<<__FUNCTION__<<"单向上传队列s_SingleUpMsg大小="<<s_LockFirstUpMsg.size()<<endl;
 					}
 				}
+				VLOG(3)<<__FUNCTION__<<"\t单向上传线程运行中，刚结束一个循环"<<endl;
 			}
 	}
 

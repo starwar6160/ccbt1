@@ -101,12 +101,14 @@ CCBELOCK_API long JCAPISTD Open(long lTimeOut)
 	int elockStatus=JCHID_STATUS_OK;		
 	//断线重连探测机制
 	elockStatus=g_jhc->SendJson("{   \"command\": \"Lock_Firmware_Version\",    \"State\": \"get\"}");
-	VLOG_IF(1,JCHID_STATUS_OK!=elockStatus)<<"ZIJIN522 Open ELOCK_ERROR_CONNECTLOST Send get_firmware_version to JinChu Elock Fail!";
+	VLOG_IF(1,JCHID_STATUS_OK!=elockStatus)
+		<<"ZIJIN522 Open ELOCK_ERROR_CONNECTLOST Send get_firmware_version to JinChu Elock Fail!";
 	if (JCHID_STATUS_OK!=static_cast<JCHID_STATUS>(elockStatus))
 	{
 		g_jhc->CloseJc();
 		elockStatus=g_jhc->OpenJc();
-		VLOG_IF(1,JCHID_STATUS_OK!=elockStatus)<<"ZIJIN522 Open ELOCK_ERROR_CONNECTLOST Send get_firmware_version to JinChu Elock Fail on retry 2!";
+		VLOG_IF(1,JCHID_STATUS_OK!=elockStatus)
+			<<"ZIJIN522 Open ELOCK_ERROR_CONNECTLOST Send get_firmware_version to JinChu Elock Fail on retry 2!";
 	}
 
 	if (JCHID_STATUS_OK==elockStatus)
@@ -127,23 +129,25 @@ CCBELOCK_API long JCAPISTD Close()
 		LOG(WARNING)<<"没有Open就执行Close 20151216"<<endl;
 		return ELOCK_ERROR_HARDWAREERROR;
 	}
-	VLOG(4)<<"ZIJIN423 Close ELOCK_ERROR_SUCCESS";
+
 	//结束的话，及时中断数据接收线程
-	//注意，在这里做Sleep无效，要在主程序中Close之前做Sleep才能让回调函数收到结果，奇怪。20151210.1706.周伟
+	//注意，在这里做Sleep无效，要在主程序中Close之前做Sleep才能
+	// 让回调函数收到结果，奇怪。20151210.1706.周伟
+	VLOG_IF(3,zwccbthr::opCommThr!=NULL)<<" 现在关闭数据收发的主线程"<<endl;
 	zwccbthr::opCommThr->interrupt();
 	zwccbthr::opCommThr=NULL;
 	if (NULL!=g_jhc)
 	{
+		VLOG(3)<<__FUNCTION__<<" 现在关闭底层HID设备的连接对象"<<endl;
 		delete g_jhc;
 		g_jhc=NULL;
 	}
+		VLOG(3)<<"ZIJIN423 Close ELOCK_ERROR_SUCCESS";
 	    return ELOCK_ERROR_SUCCESS;
 }
 
 CCBELOCK_API long JCAPISTD Notify(const char *pszMsg)
 {
-	DBGTHRID
-	
 		if (NULL==g_jhc)
 		{
 			LOG(WARNING)<<"没有Open就执行Notify 20151216"<<endl;
@@ -162,17 +166,6 @@ CCBELOCK_API long JCAPISTD Notify(const char *pszMsg)
 	}	
 
 	boost::mutex::scoped_lock lock(zwccbthr::thrhid_mutex);
-	//VLOG(4)<<__FUNCTION__<<"condJcLock.wait(lock);"<<endl;
-	//zwccbthr::condJcLock.wait(lock);							
-	//LOG(ERROR)<<__FUNCTION__<<"RUNNING " <<time(NULL)<<endl;
-	//通过在Notify函数开始检测是否端口已经打开，没有打开就等待一段时间，避免
-	//2014年11月初在广州遇到的没有连接锁具时，ATMC执行0002报文查询锁具状态，
-	//反复查询，大量无用日志产生的情况。	
-	//if (time(NULL)-zwccbthr::lastOpen>20)
-	{
-		//Open(1);
-	}
-	//LOG(INFO)<<"Notify开始####################\n";
 
 	assert(pszMsg != NULL);
 	assert(strlen(pszMsg) >= 42);	//XML至少42字节utf8
@@ -199,12 +192,11 @@ CCBELOCK_API long JCAPISTD Notify(const char *pszMsg)
 		//////////////////////////////////////////////////////////////////////////
 		string strXMLSend = pszMsg;
 		VLOG_IF(4,strXMLSend.size()>0)<<"strXMLSend=\n"<<strXMLSend;
-		assert(strXMLSend.length() > 42);	//XML开头的固定内容38个字符，外加起码一个标签的两对尖括号合计4个字符
+		//XML开头的固定内容38个字符，外加起码一个标签的两对尖括号合计4个字符
+		assert(strXMLSend.length() > 42);	
 		jcAtmcConvertDLL::zwCCBxml2JCjson(strXMLSend, strJsonSend);
 		assert(strJsonSend.length() > 9);	//json最基本的符号起码好像要9个字符左右
 		VLOG_IF(4,strJsonSend.size()>0)<<"strJsonSend="<<strJsonSend;
-		//Sleep(50);			
-		//VLOG(3)<<__FUNCTION__<<"\tSleep 50 ms"<<endl;
 
 		//现在开始一问一答过程，在获得对口回复报文之前不得上传其他报文
 		DWORD iCallerThrId=GetCurrentThreadId();
@@ -216,21 +208,7 @@ CCBELOCK_API long JCAPISTD Notify(const char *pszMsg)
 		nItem->UpMsg="";
 		nItem->bSended=false;
 		zwccbthr::s_jcNotify.push_back(nItem);
-		//int sts=g_jhc->SendJson(strJsonSend.c_str());
-		//VLOG_IF(1,JCHID_STATUS_OK!=sts)<<"423下发消息给锁具异常\n";
-		//zwccbthr::s_jsonCmd=strJsonSend;
-		//VLOG(4)<<"condJcLock.notify_all();"<<endl;
-		 //zwccbthr::condJcLock.notify_all();	
-//////////////////////////////////////////////////////////////////////////
-		//const int BLEN = 1024;
-		//char recvBuf[BLEN + 1];			
-		//memset(recvBuf, 0, BLEN + 1);
-		//sts=g_jhc->RecvJson(recvBuf,BLEN);
-		//if (strlen(recvBuf)>0)
-		//{
-		//	ZWWARN(recvBuf)
-		//}
-//////////////////////////////////////////////////////////////////////////
+
 		return ELOCK_ERROR_SUCCESS;
 	}
 	catch(ptree_bad_path & e) {
