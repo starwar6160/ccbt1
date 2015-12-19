@@ -31,8 +31,10 @@ extern "C" {
 }
 #endif
 
+#ifdef _DEBUG_GTEST20151219
 /////////////////////////////Google Test In DLL/////////////////////////////////////////////
 CCBELOCK_API int zwStartGtestInDLL(void);
+#endif // _DEBUG_GTEST20151219
 
 namespace jcLockJsonCmd_t2015a21{
 	CCBELOCK_API long OpenJson(long lTimeOut);

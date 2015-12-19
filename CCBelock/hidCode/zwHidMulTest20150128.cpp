@@ -1,5 +1,7 @@
 #include "stdafx.h"
+#ifdef _DEBUG_GTEST20151219
 #include <gtest/gtest.h>
+#endif // _DEBUG_GTEST20151219
 #include "hidapi.h"
 #include "CCBelock.h"
 #include "zwCcbElockHdr.h"
@@ -9,7 +11,6 @@
 #include "ATMCMsgConvert\\myConvIntHdr.h"
 using jcAtmcConvertDLL::zwGetJcxmlMsgType;
 
-#define ZWUSEGTEST
 //#define _DEBUG_LOCK2TEST
 //#define _DEBUG_DEV2
 //#define _DEBUG_ZJYBAD20150325
@@ -19,9 +20,10 @@ using jcAtmcConvertDLL::zwGetJcxmlMsgType;
 //#define _DEBUG401ELOCKSTATUS
 void cdecl myATMCRecvMsgRotine(const char *pszMsg);
 
-
-#ifdef ZWUSEGTEST
 int G_TESTCB_SUCC=0;	//是否成功调用了回调函数的一个标志位，仅仅测试用
+
+#ifdef _DEBUG_GTEST20151219
+
 
 namespace zwHidGTest20150130{
 	const int G_BUFSIZE=1024;

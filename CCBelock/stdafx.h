@@ -42,7 +42,11 @@ using std::set;
 #include <boost/function.hpp>  
 #include <boost/timer.hpp>
 
+#ifdef _DEBUG_GTEST20151219
 #include <gtest/gtest.h>
+#endif // _DEBUG_GTEST20151219
+
+
 using boost::property_tree::ptree;
 using boost::timer;
 #include <map>

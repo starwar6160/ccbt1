@@ -158,6 +158,7 @@ namespace zwtest504
 
 
 
+#ifdef _DEBUG_GTEST20151219
 
 CCBELOCK_API int zwStartGtestInDLL(void)
 {
@@ -176,3 +177,4 @@ CCBELOCK_API int zwStartGtestInDLL(void)
 
 	return 1;
 }
+#endif // _DEBUG_GTEST20151219
