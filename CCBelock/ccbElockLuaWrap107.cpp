@@ -5,11 +5,11 @@ extern "C"
 #include "lualib.h"
 #include "lauxlib.h"
 }
-#include "LuaBridge.h"
+//#include "LuaBridge.h"
 #include "CCBelock.h"
 #include "zwHidMulHeader.h"
 
-using namespace luabridge;
+//using namespace luabridge;
 #ifdef _DEBUG_LUABRIDGE_DEMO107
 class zwNumTest1
 {

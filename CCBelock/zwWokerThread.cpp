@@ -89,7 +89,8 @@ namespace zwccbthr {
 	{
 		if(jcMsg=="Lock_Close_Code_Lock" ||
 			jcMsg=="Lock_Time_Sync_Lock" ||
-			jcMsg=="Lock_Open_Ident"	)
+			jcMsg=="Lock_Open_Ident"	  ||
+			jcMsg== "Lock_Alarm_Info")
 		{
 			return true;
 		}
@@ -102,7 +103,7 @@ namespace zwccbthr {
 	void my515LockRecvThr(void)
 	{
 		
-		ZWERROR("与锁具之间的数据接收线程启动.20151218.v822")
+		ZWERROR("与锁具之间的数据接收线程启动.20151220.v829")
 		const int BLEN = 1024;
 		char recvBuf[BLEN];			
 		using zwccbthr::s_jcNotify;
@@ -160,8 +161,8 @@ namespace zwccbthr {
 					string outXML;
 					jcAtmcConvertDLL::zwJCjson2CCBxml(recvBuf,outXML);	
 					//首先单独处理下位机主动发送闭锁码和主动请求时间同步
-					// 还有锁具发送验证码
-					//这3个反向循环报文需要单独处理
+					// 还有锁具发送验证码,锁具发送报警信息
+					//这几个反向循环报文需要单独处理
 					if (outXML.size()>0 && myIsMsgFromLockFirstUp(sType))
 					{
 						ZWERROR("该锁具主动上传消息将会被另一个上传线程在不打破一问一答的前提下延迟上传")
@@ -176,7 +177,7 @@ namespace zwccbthr {
 							s_jcUpMsg.pop_front();
 						}						
 					}
-						//除了这3个报文以外都是符合正向循环一问一答的，正常上传		
+						//除了这几个报文以外都是符合正向循环一问一答的，正常上传		
 						// 按照正向和反向报文区分以后，暂不检测上下行报文类型对应了
 						// 下一步改造目标应该是正向和反向两个循环彻底分开两个线程来处理应该就最好了
 						if (outXML.size()>0 && s_jcUpMsg.size()>0 
@@ -214,7 +215,7 @@ namespace zwccbthr {
 					boost::mutex::scoped_lock lock(thrhid_mutex);				
 					//只有当等待配对上传的消息都已经上传完毕后
 					// 才上传该被延迟上传的报文以免打乱一问一答
-					VLOG_IF(3,
+					VLOG_IF(4,
 						s_LockFirstUpMsg.size()>0 || s_jcUpMsg.size()>0
 						)<<"s_LockFirstUpMsg.size()="<<s_LockFirstUpMsg.size()
 						<<" s_jcUpMsg.size()==0"<<s_jcUpMsg.size()<<endl;
