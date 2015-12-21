@@ -26,7 +26,9 @@ namespace zwccbthr {
 	deque<jcLockMsg1512_t *> s_jcNotify;		//下发命令队列，下发完毕后移动到上传队列
 	deque<jcLockMsg1512_t *> s_jcUpMsg;		//上传命令队列
 	deque<jcLockMsg1512_t *> s_LockFirstUpMsg;				//单向上传队列
-	map<DWORD,RecvMsgRotine> s_thrIdToPointer;	//线程ID到回调函数指针的map
+	//map<DWORD,RecvMsgRotine> s_thrIdToPointer;	//线程ID到回调函数指针的map
+	RecvMsgRotine s_CallBack=NULL;
+
 	////供单向上传报文专用的保存所有回调函数指针的向量,好让单向报文发给所有线程;
 	vector <RecvMsgRotine> s_vecSingleUp;	
 
@@ -66,7 +68,7 @@ namespace zwccbthr {
 
 		if (NULL==pRecvMsgFun)
 		{
-			const char *err1="回调函数指针为空，无法调用回调函数返回从电子锁收到的报文";
+			const char *err1="回调函数指针为空，无法调用回调函数返回从电子锁收到的报文20151221";
 			ZWERROR(err1);
 			MessageBoxA(NULL,err1,"严重警告",MB_OK);
 		}
@@ -186,8 +188,8 @@ namespace zwccbthr {
 							//ZWWARN("正常上传报文")
 							DWORD tid=s_jcUpMsg.front()->CallerThreadID;
 							VLOG(3)<<"消息返回给线程ID="<<tid<<endl;
-							RecvMsgRotine pRecvMsgFun=
-								zwccbthr::s_thrIdToPointer[tid];
+							RecvMsgRotine pRecvMsgFun=zwccbthr::s_CallBack;
+								//zwccbthr::s_thrIdToPointer[tid];
 							pushToCallBack(outXML.c_str(),pRecvMsgFun);
 							s_jcUpMsg.pop_front();
 							VLOG(3)<<"普通上传队列大小s_jcUpMsg.size()="<<s_jcUpMsg.size()<<endl;
