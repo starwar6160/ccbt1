@@ -105,7 +105,7 @@ namespace zwccbthr {
 	void my515LockRecvThr(void)
 	{
 		
-		ZWERROR("与锁具之间的数据接收线程启动.20151220.v829")
+		ZWERROR("与锁具之间的数据接收线程启动.20151224.v831")
 		const int BLEN = 1024;
 		char recvBuf[BLEN];			
 		using zwccbthr::s_jcNotify;
@@ -209,11 +209,23 @@ namespace zwccbthr {
 		ZWERROR("与ATMC之间的数据上传线程启动.20151215")
 			while (1)
 			{		
-				Sleep(500);
 				//VLOG(3)<<__FUNCTION__<<"RUNNING"<<endl;
 				//等待数据接收线程操作完毕“收到的数据”队列
 				//获得该队列的锁的所有权，开始操作
 				{
+					if (s_LockFirstUpMsg.size()>0){
+						string &strSingleUp=s_LockFirstUpMsg.front()->UpMsg;					
+						string sType=jcAtmcConvertDLL::zwGetJcJsonMsgType(strSingleUp.c_str());
+						//除了验证码报文，其他反向循环报文都可以延迟上传
+						if (myIsMsgFromLockFirstUp(sType)==true 
+							&& "Lock_Open_Ident"!=sType)
+						{
+							Sleep(6000);
+						}
+						else{
+							Sleep(500);
+						}
+					}
 					boost::mutex::scoped_lock lock(thrhid_mutex);				
 					//只有当等待配对上传的消息都已经上传完毕后
 					// 才上传该被延迟上传的报文以免打乱一问一答
@@ -235,6 +247,7 @@ namespace zwccbthr {
 							RecvMsgRotine pCallBack=zwccbthr::s_vecSingleUp[i];
 							if (pCallBack!=pOld)
 							{
+
 								pushToCallBack(strSingleUp.c_str(),pCallBack);
 								pOld=pCallBack;
 								LOG(WARNING)<<"延迟上传报文到回调函数地址"<<std::hex<<pCallBack
