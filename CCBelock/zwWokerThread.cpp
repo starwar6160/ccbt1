@@ -28,6 +28,8 @@ namespace zwccbthr {
 	deque<jcLockMsg1512_t *> s_LockFirstUpMsg;				//单向上传队列
 	//map<DWORD,RecvMsgRotine> s_thrIdToPointer;	//线程ID到回调函数指针的map
 	RecvMsgRotine s_CallBack=NULL;
+	double s_zwProcStartMs=0.0;			//程序启动的时间戳，毫秒计算
+	double s_LastNormalMsgUpTimeMs=0.0;	//最后一次正常循环报文上传的时间，毫秒计算
 
 	////供单向上传报文专用的保存所有回调函数指针的向量,好让单向报文发给所有线程;
 	vector <RecvMsgRotine> s_vecSingleUp;	
@@ -102,13 +104,38 @@ namespace zwccbthr {
 		}
 	}
 
+	double zwGetUs(void)
+	{
+		LARGE_INTEGER frq,cur;
+		QueryPerformanceCounter(&cur);
+		QueryPerformanceFrequency(&frq);
+		return 1.0e6*cur.QuadPart/frq.QuadPart;
+	}
+
+	double zwGetMs(void)
+	{
+		return zwGetUs()/1000.0;
+	}
+
+	boost::mutex tms_mutex;
+
+	void myDbgPrintMs(const char *myFuncName)
+	{
+		boost::mutex::scoped_lock lock(tms_mutex);	
+		double cur=zwGetMs();
+		std::cerr<<myFuncName<<" "<<std::setprecision(0)<<std::setiosflags(std::ios::fixed)
+			<<"ZWHTms="<<(cur-s_zwProcStartMs)<<endl;
+	}
+
+
 	void my515LockRecvThr(void)
 	{
 		
-		ZWERROR("与锁具之间的数据接收线程启动.20151224.v831")
+		ZWERROR("与锁具之间的数据接收线程启动.20151227.v832")
 		const int BLEN = 1024;
 		char recvBuf[BLEN];			
 		using zwccbthr::s_jcNotify;
+		zwccbthr::s_zwProcStartMs=zwGetMs();
 
 		//Sleep(1300);	//接收锁具上行报文的线程启动前的适当延迟
 		while (1)
@@ -116,6 +143,7 @@ namespace zwccbthr {
 			boost::this_thread::interruption_point();
 			{
 			boost::mutex::scoped_lock lock(thrhid_mutex);		
+			myDbgPrintMs("RECV");
 			JCHID_STATUS sts=JCHID_STATUS_FAIL;			
 			{
 				//boost::mutex::scoped_lock lock(thrhid_mutex);						
@@ -139,6 +167,8 @@ namespace zwccbthr {
 					s_jcUpMsg.push_back(nItem);
 					VLOG_IF(3,s_jcUpMsg.size()>0)<<"s_jcUpMsg.size()="<<s_jcUpMsg.size()<<endl;
 					s_jcNotify.pop_front();
+					s_LastNormalMsgUpTimeMs=zwGetMs();
+					VLOG(3)<<"s_LastNormalMsgUpTimeMs="<<s_LastNormalMsgUpTimeMs<<endl;
 				}
 			}
 			do{
@@ -193,6 +223,8 @@ namespace zwccbthr {
 							pushToCallBack(outXML.c_str(),pRecvMsgFun);
 							s_jcUpMsg.pop_front();
 							VLOG(3)<<"普通上传队列大小s_jcUpMsg.size()="<<s_jcUpMsg.size()<<endl;
+							s_LastNormalMsgUpTimeMs=zwGetMs();
+							VLOG(3)<<"s_LastNormalMsgUpTimeMs="<<s_LastNormalMsgUpTimeMs<<endl;
 						}
 				}	//if (strlen(recvBuf)>0)
 			}while(strlen(recvBuf)>0);
@@ -206,27 +238,12 @@ namespace zwccbthr {
 
 	void my515UpMsgThr(void)
 	{
-		ZWERROR("与ATMC之间的数据上传线程启动.20151215")
+		ZWERROR("与ATMC之间的数据上传线程启动.20151227")
 			while (1)
-			{		
-				//VLOG(3)<<__FUNCTION__<<"RUNNING"<<endl;
-				//等待数据接收线程操作完毕“收到的数据”队列
-				//获得该队列的锁的所有权，开始操作
+			{
 				{
-					if (s_LockFirstUpMsg.size()>0){
-						string &strSingleUp=s_LockFirstUpMsg.front()->UpMsg;					
-						string sType=jcAtmcConvertDLL::zwGetJcJsonMsgType(strSingleUp.c_str());
-						//除了验证码报文，其他反向循环报文都可以延迟上传
-						if (myIsMsgFromLockFirstUp(sType)==true 
-							&& "Lock_Open_Ident"!=sType)
-						{
-							Sleep(6000);
-						}
-						else{
-							Sleep(500);
-						}
-					}
-					boost::mutex::scoped_lock lock(thrhid_mutex);				
+					boost::this_thread::interruption_point();
+					boost::mutex::scoped_lock lock(thrhid_mutex);	
 					//只有当等待配对上传的消息都已经上传完毕后
 					// 才上传该被延迟上传的报文以免打乱一问一答
 					VLOG_IF(4,
@@ -236,12 +253,31 @@ namespace zwccbthr {
 					if (s_LockFirstUpMsg.size()>0)
 					{						
 						string &strSingleUp=s_LockFirstUpMsg.front()->UpMsg;					
+						string sType=jcAtmcConvertDLL::zwGetJcJsonMsgType(strSingleUp.c_str());
+						int delayMs=5000;
+						//上送闭锁码需要尽快，其他默认5秒延迟
+						if ("Lock_Open_Ident"==sType)
+						{
+							delayMs=300;
+						}
+						//最后一次正向循环的报文发出或者接收操作的时间戳
+						//只有起码5秒没事了才启动反向循环报文的上传以免打乱一问一答
+						// 或者是时间上过去靠近上一条正向循环的返回报文造成
+						//上位机“报文解析错误”；
+						if(zwGetMs()-s_LastNormalMsgUpTimeMs<delayMs)
+						{
+							VLOG(3)<<"s_LastNormalMsgUpTimeMs="<<s_LastNormalMsgUpTimeMs<<
+								"\tcurtime="<<zwGetMs()<<endl;
+							continue;
+						}
+
 						set<RecvMsgRotine>::iterator it; //定义前向迭代器 
 						//锁具主动上传报文发给每一个线程的回调函数
 						int icc=1;
 						RecvMsgRotine pOld=NULL;
 						VLOG(3)<<"zwccbthr::s_vecSingleUp.size()="
 							<<zwccbthr::s_vecSingleUp.size()<<endl;
+						myDbgPrintMs("  UPLOAD");
 						for (int i=0;i<zwccbthr::s_vecSingleUp.size();i++)
 						{							
 							RecvMsgRotine pCallBack=zwccbthr::s_vecSingleUp[i];
@@ -258,10 +294,11 @@ namespace zwccbthr {
 						{
 							s_LockFirstUpMsg.pop_front();
 						}
-					}
-				}
+					}//end if (s_LockFirstUpMsg.size()>0)
+				}	//end mutex
+				Sleep(100);	//mutex控制范围结束后，Sleep一下，让出互斥锁给收发线程
+				}//end while
 				//VLOG(3)<<__FUNCTION__<<"\t单向上传线程运行中，刚结束一个循环"<<endl;
-			}
 	}
 
 //////////////////////////////////////////////////////////////////////////

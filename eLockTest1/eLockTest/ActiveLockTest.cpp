@@ -133,15 +133,15 @@ TEST_F(secBoxTest, WenDingXingTestZJY20141023)
 void zw1209SpeedTestThr1(void)
 {
 	//Sleep(100);
-	cout<<"["<<__FUNCTION__<<"] ThreadPID=["<<GetCurrentThreadId()<<"]\tSTART"<<endl;	
+	//cout<<"["<<__FUNCTION__<<"] ThreadPID=["<<GetCurrentThreadId()<<"]\tSTART"<<endl;	
 	SetRecvMsgRotine(myATMCRecvMsgRotine);	
 	//EXPECT_EQ(ELOCK_ERROR_SUCCESS,Open(22));			
 	EXPECT_EQ(ELOCK_ERROR_SUCCESS,Notify(g_msg02));	
-	EXPECT_EQ(ELOCK_ERROR_SUCCESS,Notify(g_msg04));	
+	EXPECT_EQ(ELOCK_ERROR_SUCCESS,Notify(g_msg03));	
 	//测试代码晚一点结束，以便锁具后续较慢报文能收到
 	//Sleep(1800);
 	//EXPECT_EQ(ELOCK_ERROR_SUCCESS,Close());
-	cout<<"["<<__FUNCTION__<<"] ThreadPID=["<<GetCurrentThreadId()<<"]\tEND"<<endl;	
+	//cout<<"["<<__FUNCTION__<<"] ThreadPID=["<<GetCurrentThreadId()<<"]\tEND"<<endl;	
 }
 
 void myATMCRecvMsgRotineT2(const char *pszMsg)
@@ -153,24 +153,24 @@ void myATMCRecvMsgRotineT2(const char *pszMsg)
 void zw1209SpeedTestThr2(void)
 {
 	//Sleep(200);
-	cout<<"["<<__FUNCTION__<<"] ThreadPID=["<<GetCurrentThreadId()<<"]\tSTART"<<endl;		
+	//cout<<"["<<__FUNCTION__<<"] ThreadPID=["<<GetCurrentThreadId()<<"]\tSTART"<<endl;		
 	SetRecvMsgRotine(myATMCRecvMsgRotine);	
 	//EXPECT_EQ(ELOCK_ERROR_SUCCESS,Open(22));		
 	//Sleep(5000);
 
-	EXPECT_EQ(ELOCK_ERROR_SUCCESS,Notify(g_msg03));	
+	EXPECT_EQ(ELOCK_ERROR_SUCCESS,Notify(g_msg04));	
 	EXPECT_EQ(ELOCK_ERROR_SUCCESS,Notify(g_msg02));	
 
 	//测试代码晚一点结束，以便锁具后续较慢报文能收到
 	//Sleep(1800);
 	//EXPECT_EQ(ELOCK_ERROR_SUCCESS,Close());
-	cout<<"["<<__FUNCTION__<<"] ThreadPID=["<<GetCurrentThreadId()<<"]\tEND"<<endl;	
+	//cout<<"["<<__FUNCTION__<<"] ThreadPID=["<<GetCurrentThreadId()<<"]\tEND"<<endl;	
 }
 
 
 void zw1218OpenTimeTestThr(void)
 {
-	cout<<"["<<__FUNCTION__<<"] ThreadPID=["<<GetCurrentThreadId()<<"]\tSTART"<<endl;		
+	//cout<<"["<<__FUNCTION__<<"] ThreadPID=["<<GetCurrentThreadId()<<"]\tSTART"<<endl;		
 	SetRecvMsgRotine(myATMCRecvMsgRotine);	
 	int opMs=0;
 	int opInv=800;
