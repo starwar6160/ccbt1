@@ -137,6 +137,10 @@ CCBELOCK_API long JCAPISTD Close()
 	VLOG_IF(3,zwccbthr::opCommThr!=NULL)<<" 现在关闭数据收发的主线程"<<endl;
 	zwccbthr::opCommThr->interrupt();
 	zwccbthr::opCommThr=NULL;
+	Sleep(300);
+	zwccbthr::opUpMsgThr->interrupt();
+	zwccbthr::opUpMsgThr=NULL;
+	Sleep(300);
 	if (NULL!=g_jhc)
 	{
 		VLOG(3)<<__FUNCTION__<<" 现在关闭底层HID设备的连接对象"<<endl;

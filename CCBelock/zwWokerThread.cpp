@@ -124,16 +124,19 @@ namespace zwccbthr {
 	{
 		boost::mutex::scoped_lock lock(tms_mutex);	
 		double cur=zwGetMs();
-		VLOG(3)<<myFuncName<<" "<<MYFD1
-			//std::setprecision(0)<<std::setiosflags(std::ios::fixed)
-			<<"ZWHTms="<<(cur-s_zwProcStartMs)<<endl;
+#ifdef _DEBUG
+VLOG(3)<<myFuncName<<" "<<MYFD1<<"ZWHTms="<<(cur-s_zwProcStartMs)<<endl;
+#else
+VLOG(4)<<myFuncName<<" "<<MYFD1<<"ZWHTms="<<(cur-s_zwProcStartMs)<<endl;
+#endif // _DEBUG
+		
 	}
 
 
 	void my515LockRecvThr(void)
 	{
 		
-		ZWERROR("与锁具之间的数据接收线程启动.20151228.v833")
+		ZWERROR("与锁具之间的数据接收线程启动.20151228.v834")
 		const int BLEN = 1024;
 		char recvBuf[BLEN];			
 		using zwccbthr::s_jcNotify;
@@ -181,20 +184,24 @@ namespace zwccbthr {
 				VLOG(4)<<"接收数据的RecvJson之前"<<endl;
 				sts=static_cast<JCHID_STATUS>(g_jhc->RecvJson(recvBuf,BLEN));	
 				int lRecvBytes=strlen(recvBuf);
-				VLOG_IF(3,lRecvBytes>0)<<"RecvJson收到"<<lRecvBytes<<"字节的数据"<<endl;
+				VLOG_IF(4,lRecvBytes>0)<<"RecvJson收到"<<lRecvBytes<<"字节的数据"<<endl;
 				if (strlen(recvBuf)>0)
 				{
 					VLOG(4)<<"收到锁具返回消息= "<<recvBuf<<endl;
 					assert(strlen(recvBuf)>0);
 					string sType=jcAtmcConvertDLL::zwGetJcJsonMsgType(recvBuf);
 					VLOG(1)<<"收到锁具返回消息.类型是"<<sType<<"内容是\n"<<recvBuf<<endl;
-					LOG_IF(WARNING,s_jcUpMsg.front()->NotifyType!=sType)
-						<<"锁具下发和返回消息类型不同，两者分别是 "
-						<<"下发类型="<<s_jcUpMsg.front()->NotifyType
-						<<"\t返回类型="<<sType<<endl;
+					if (s_jcUpMsg.size()>0)
+					{
+						LOG_IF(WARNING,s_jcUpMsg.front()->NotifyType!=sType)
+							<<"锁具下发和返回消息类型不同，两者分别是 "
+							<<"下发类型="<<s_jcUpMsg.front()->NotifyType
+							<<"\t返回类型="<<sType<<endl;
+					}
 
 					string outXML;
 					jcAtmcConvertDLL::zwJCjson2CCBxml(recvBuf,outXML);	
+					assert(outXML.size()>0);
 					//首先单独处理下位机主动发送闭锁码和主动请求时间同步
 					// 还有锁具发送验证码,锁具发送报警信息
 					//这几个反向循环报文需要单独处理
@@ -220,10 +227,13 @@ namespace zwccbthr {
 						{
 							//ZWWARN("正常上传报文")
 							DWORD tid=s_jcUpMsg.front()->CallerThreadID;
+							assert(tid>0);
 							VLOG(3)<<"消息返回给线程ID="<<tid<<endl;
 							RecvMsgRotine pRecvMsgFun=zwccbthr::s_CallBack;
+							assert(pRecvMsgFun!=NULL);
 								//zwccbthr::s_thrIdToPointer[tid];
 							pushToCallBack(outXML.c_str(),pRecvMsgFun);
+							assert(s_jcUpMsg.size()>0);
 							s_jcUpMsg.pop_front();
 							VLOG(3)<<"普通上传队列大小s_jcUpMsg.size()="<<s_jcUpMsg.size()<<endl;
 							s_LastNormalMsgUpTimeMs=zwGetMs();
@@ -252,14 +262,11 @@ namespace zwccbthr {
 					boost::mutex::scoped_lock lock(thrhid_mutex);	
 					//只有当等待配对上传的消息都已经上传完毕后
 					// 才上传该被延迟上传的报文以免打乱一问一答
-					VLOG_IF(4,
-						s_LockFirstUpMsg.size()>0 || s_jcUpMsg.size()>0
-						)<<"s_LockFirstUpMsg.size()="<<s_LockFirstUpMsg.size()
-						<<" s_jcUpMsg.size()==0"<<s_jcUpMsg.size()<<endl;
 					//我试了试，利用发送和接收操作完成后设置一个最后首发时间戳的方法，上传线程在该时间之后多少
 					// 能不干扰一问一答呢？300的话挺严重的穿插干扰，600的话还有少量干扰，900的话试了一次没看到，
 					// 那我就设置双倍左右，2000，也就是2秒，2秒的延迟对于人的感觉来看还是属于很快的，也正好是
 					// 韦工随口说的延迟5秒减去一个黄金分割0.6之后的值，我就设定为2秒延迟吧。
+#ifdef _DEBUG
 					if(zwGetMs()-s_LastNormalMsgUpTimeMs<900)
 					{
 						myDbgPrintMs("my515UpMsgThrTest1228NOTEXEC");
@@ -268,29 +275,31 @@ namespace zwccbthr {
 					{
 						static int lUpTimes=1;
 						//myDbgPrintMs("my515UpMsgThrTest1228UPLOADED");
-						LOG(WARNING)<<MYFD1<<"my515UpMsgThrTest1228UPLOADED\tms="<<zwGetMs()-s_zwProcStartMs
+						LOG_IF(WARNING,lUpTimes<=3)<<MYFD1<<"my515UpMsgThrTest1228UPLOADED\tms="<<zwGetMs()-s_zwProcStartMs
 							<<"\tlUpTimes="<<(lUpTimes++)<<endl;
 					}
+#endif // _DEBUG
+
 					if (s_LockFirstUpMsg.size()>0)
-					{						
-						string &strSingleUp=s_LockFirstUpMsg.front()->UpMsg;					
-						string sType=jcAtmcConvertDLL::zwGetJcJsonMsgType(strSingleUp.c_str());
+					{				
+						string &strSingleUp=s_LockFirstUpMsg.front()->UpMsg;	
+						assert(strSingleUp.size()>0);
+						
+						string sType=jcAtmcConvertDLL::zwGetJcxmlMsgType(strSingleUp.c_str());
+						assert(sType.size()>0);
 						int delayMs=2000;
 						//上送闭锁码需要尽快，其他默认2秒延迟
 						if ("Lock_Open_Ident"==sType)
 						{
 							delayMs=200;
 						}
-						LOG(WARNING)<<__FUNCTION__<<" sType="<<sType<<"\tdelayMs="<<delayMs<<endl;
+						VLOG(4)<<__FUNCTION__<<" sType="<<sType<<"\tdelayMs="<<delayMs<<endl;
 						//最后一次正向循环的报文发出或者接收操作的时间戳
 						//只有起码2秒没事了才启动反向循环报文的上传以免打乱一问一答
 						// 或者是时间上过去靠近上一条正向循环的返回报文造成
 						//上位机“报文解析错误”；
 						if(zwGetMs()-s_LastNormalMsgUpTimeMs<delayMs)
 						{
-							//VLOG(3)<<"s_LastNormalMsgUpTimeMs="<<MYFD1
-							//	<<s_LastNormalMsgUpTimeMs
-							//	<<"\tcurtime="<<zwGetMs()<<endl;
 							myDbgPrintMs("my515UpMsgThr还没到上传延迟期限，先continue");
 							continue;
 						}
@@ -299,12 +308,12 @@ namespace zwccbthr {
 						//锁具主动上传报文发给每一个线程的回调函数
 						int icc=1;
 						RecvMsgRotine pOld=NULL;
-						VLOG(3)<<"zwccbthr::s_vecSingleUp.size()="
-							<<zwccbthr::s_vecSingleUp.size()<<endl;
+						assert(zwccbthr::s_vecSingleUp.size()>0);
 						myDbgPrintMs("  UPLOAD");
 						for (int i=0;i<zwccbthr::s_vecSingleUp.size();i++)
 						{							
 							RecvMsgRotine pCallBack=zwccbthr::s_vecSingleUp[i];
+							assert(NULL!=pCallBack);
 							if (pCallBack!=pOld)
 							{
 
@@ -312,6 +321,7 @@ namespace zwccbthr {
 								pOld=pCallBack;
 								LOG(WARNING)<<"延迟上传报文到回调函数地址"<<std::hex<<pCallBack
 									<<"\t第"<<(icc++)<<"次"<<endl;
+								VLOG(4)<<"strSingleUp="<<strSingleUp<<endl;
 							}							
 						}
 						if (s_LockFirstUpMsg.size()>0)
