@@ -158,8 +158,8 @@ void zw1209SpeedTestThr2(void)
 	//EXPECT_EQ(ELOCK_ERROR_SUCCESS,Open(22));		
 	//Sleep(5000);
 
-	EXPECT_EQ(ELOCK_ERROR_SUCCESS,Notify(g_msg04));	
 	EXPECT_EQ(ELOCK_ERROR_SUCCESS,Notify(g_msg02));	
+	EXPECT_EQ(ELOCK_ERROR_SUCCESS,Notify(g_msg03));	
 
 	//测试代码晚一点结束，以便锁具后续较慢报文能收到
 	//Sleep(1800);
@@ -204,6 +204,6 @@ TEST_F(ccbElockTest, jcHidDev20151207SpeedTestInATMCDLL)
 	thr1->join();
 	thr2->join();
 	//thr3->join();
-	Sleep(8000);
+	Sleep(3000*2);
 	EXPECT_EQ(ELOCK_ERROR_SUCCESS,Close());
 }

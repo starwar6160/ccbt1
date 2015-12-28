@@ -12,6 +12,7 @@ using boost::condition_variable;
 using boost::condition_variable_any;
 using jchidDevice2015::jcHidDevice;
 using jcAtmcConvertDLL::jcLockMsg1512_t;
+#define MYFD1	std::setprecision(0)<<std::setiosflags(std::ios::fixed)
 
 jcHidDevice *g_jhc=NULL;	//实际的HID设备类对象
 
@@ -123,7 +124,8 @@ namespace zwccbthr {
 	{
 		boost::mutex::scoped_lock lock(tms_mutex);	
 		double cur=zwGetMs();
-		std::cerr<<myFuncName<<" "<<std::setprecision(0)<<std::setiosflags(std::ios::fixed)
+		VLOG(3)<<myFuncName<<" "<<MYFD1
+			//std::setprecision(0)<<std::setiosflags(std::ios::fixed)
 			<<"ZWHTms="<<(cur-s_zwProcStartMs)<<endl;
 	}
 
@@ -131,7 +133,7 @@ namespace zwccbthr {
 	void my515LockRecvThr(void)
 	{
 		
-		ZWERROR("与锁具之间的数据接收线程启动.20151227.v832")
+		ZWERROR("与锁具之间的数据接收线程启动.20151228.v833")
 		const int BLEN = 1024;
 		char recvBuf[BLEN];			
 		using zwccbthr::s_jcNotify;
@@ -168,7 +170,8 @@ namespace zwccbthr {
 					VLOG_IF(3,s_jcUpMsg.size()>0)<<"s_jcUpMsg.size()="<<s_jcUpMsg.size()<<endl;
 					s_jcNotify.pop_front();
 					s_LastNormalMsgUpTimeMs=zwGetMs();
-					VLOG(3)<<"s_LastNormalMsgUpTimeMs="<<s_LastNormalMsgUpTimeMs<<endl;
+					//VLOG(3)<<"s_LastNormalMsgUpTimeMs="<<MYFD1<<s_LastNormalMsgUpTimeMs<<endl;
+					myDbgPrintMs("s_LastNormalMsgUpTimeMsSend");
 				}
 			}
 			do{
@@ -224,7 +227,8 @@ namespace zwccbthr {
 							s_jcUpMsg.pop_front();
 							VLOG(3)<<"普通上传队列大小s_jcUpMsg.size()="<<s_jcUpMsg.size()<<endl;
 							s_LastNormalMsgUpTimeMs=zwGetMs();
-							VLOG(3)<<"s_LastNormalMsgUpTimeMs="<<s_LastNormalMsgUpTimeMs<<endl;
+							//VLOG(3)<<"s_LastNormalMsgUpTimeMs="<<MYFD1<<s_LastNormalMsgUpTimeMs<<endl;
+							myDbgPrintMs("s_LastNormalMsgUpTimeMs_Recv");
 						}
 				}	//if (strlen(recvBuf)>0)
 			}while(strlen(recvBuf)>0);
@@ -238,6 +242,8 @@ namespace zwccbthr {
 
 	void my515UpMsgThr(void)
 	{
+		//反向循环报文没必要那么早上送，所以延迟300毫秒乃至1-2秒启动该线程基本都是可以的
+		Sleep(300);
 		ZWERROR("与ATMC之间的数据上传线程启动.20151227")
 			while (1)
 			{
@@ -250,24 +256,42 @@ namespace zwccbthr {
 						s_LockFirstUpMsg.size()>0 || s_jcUpMsg.size()>0
 						)<<"s_LockFirstUpMsg.size()="<<s_LockFirstUpMsg.size()
 						<<" s_jcUpMsg.size()==0"<<s_jcUpMsg.size()<<endl;
+					//我试了试，利用发送和接收操作完成后设置一个最后首发时间戳的方法，上传线程在该时间之后多少
+					// 能不干扰一问一答呢？300的话挺严重的穿插干扰，600的话还有少量干扰，900的话试了一次没看到，
+					// 那我就设置双倍左右，2000，也就是2秒，2秒的延迟对于人的感觉来看还是属于很快的，也正好是
+					// 韦工随口说的延迟5秒减去一个黄金分割0.6之后的值，我就设定为2秒延迟吧。
+					if(zwGetMs()-s_LastNormalMsgUpTimeMs<900)
+					{
+						myDbgPrintMs("my515UpMsgThrTest1228NOTEXEC");
+					}
+					else
+					{
+						static int lUpTimes=1;
+						//myDbgPrintMs("my515UpMsgThrTest1228UPLOADED");
+						LOG(WARNING)<<MYFD1<<"my515UpMsgThrTest1228UPLOADED\tms="<<zwGetMs()-s_zwProcStartMs
+							<<"\tlUpTimes="<<(lUpTimes++)<<endl;
+					}
 					if (s_LockFirstUpMsg.size()>0)
 					{						
 						string &strSingleUp=s_LockFirstUpMsg.front()->UpMsg;					
 						string sType=jcAtmcConvertDLL::zwGetJcJsonMsgType(strSingleUp.c_str());
-						int delayMs=5000;
-						//上送闭锁码需要尽快，其他默认5秒延迟
+						int delayMs=2000;
+						//上送闭锁码需要尽快，其他默认2秒延迟
 						if ("Lock_Open_Ident"==sType)
 						{
-							delayMs=300;
+							delayMs=200;
 						}
+						LOG(WARNING)<<__FUNCTION__<<" sType="<<sType<<"\tdelayMs="<<delayMs<<endl;
 						//最后一次正向循环的报文发出或者接收操作的时间戳
-						//只有起码5秒没事了才启动反向循环报文的上传以免打乱一问一答
+						//只有起码2秒没事了才启动反向循环报文的上传以免打乱一问一答
 						// 或者是时间上过去靠近上一条正向循环的返回报文造成
 						//上位机“报文解析错误”；
 						if(zwGetMs()-s_LastNormalMsgUpTimeMs<delayMs)
 						{
-							VLOG(3)<<"s_LastNormalMsgUpTimeMs="<<s_LastNormalMsgUpTimeMs<<
-								"\tcurtime="<<zwGetMs()<<endl;
+							//VLOG(3)<<"s_LastNormalMsgUpTimeMs="<<MYFD1
+							//	<<s_LastNormalMsgUpTimeMs
+							//	<<"\tcurtime="<<zwGetMs()<<endl;
+							myDbgPrintMs("my515UpMsgThr还没到上传延迟期限，先continue");
 							continue;
 						}
 
