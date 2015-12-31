@@ -109,7 +109,8 @@ namespace zwccbthr {
 	bool myIsLockInitMsg(const string &jcMsg)
 	{
 		if ("Lock_Secret_Key"==jcMsg 
-	||	"Lock_System_Init"==jcMsg)
+	||	"Lock_System_Init"==jcMsg
+	|| "Lock_Open_Ident"==jcMsg)
 		{
 			return true;
 		}
@@ -151,7 +152,7 @@ VLOG(4)<<myFuncName<<" "<<MYFD1<<"ZWHTms="<<(cur-s_zwProcStartMs)<<endl;
 	void my515LockRecvThr(void)
 	{
 		
-		ZWERROR("与锁具之间的数据接收线程启动.20151231.v835")
+		ZWERROR("与锁具之间的数据接收线程启动.20151231.v836")
 		const int BLEN = 1024;
 		char recvBuf[BLEN];			
 		using zwccbthr::s_jcNotify;
@@ -221,9 +222,8 @@ VLOG(4)<<myFuncName<<" "<<MYFD1<<"ZWHTms="<<(cur-s_zwProcStartMs)<<endl;
 					string outXML;
 					jcAtmcConvertDLL::zwJCjson2CCBxml(recvBuf,outXML);	
 					assert(outXML.size()>0);
-					//首先单独处理下位机主动发送闭锁码和主动请求时间同步
-					// 还有锁具发送验证码,锁具发送报警信息
-					//这几个反向循环报文需要单独处理
+					//首先单独处理锁具初始化的0，1，以及开锁时上传验证码这3条报文
+					// 以外的放到单独的上传队列
 					if (outXML.size()>0 && !myIsLockInitMsg(sType))
 					{
 						ZWERROR("该锁具主动上传消息将会被另一个上传线程在不打破一问一答的前提下延迟上传")
@@ -238,9 +238,7 @@ VLOG(4)<<myFuncName<<" "<<MYFD1<<"ZWHTms="<<(cur-s_zwProcStartMs)<<endl;
 							s_jcUpMsg.pop_front();
 						}						
 					}
-						//除了这几个报文以外都是符合正向循环一问一答的，正常上传		
-						// 按照正向和反向报文区分以后，暂不检测上下行报文类型对应了
-						// 下一步改造目标应该是正向和反向两个循环彻底分开两个线程来处理应该就最好了
+						//初始化和开锁的3条重要报文，直接上传		
 						if (outXML.size()>0 && s_jcUpMsg.size()>0 
 							&& myIsLockInitMsg(sType))
 						{
