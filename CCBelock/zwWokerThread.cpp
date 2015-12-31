@@ -31,6 +31,7 @@ namespace zwccbthr {
 	RecvMsgRotine s_CallBack=NULL;
 	double s_zwProcStartMs=0.0;			//程序启动的时间戳，毫秒计算
 	double s_LastNormalMsgUpTimeMs=0.0;	//最后一次正常循环报文上传的时间，毫秒计算
+	bool s_bLockInitDur=false;	//是否在锁具初始化期间
 
 	////供单向上传报文专用的保存所有回调函数指针的向量,好让单向报文发给所有线程;
 	vector <RecvMsgRotine> s_vecSingleUp;	
@@ -105,6 +106,20 @@ namespace zwccbthr {
 		}
 	}
 
+	bool myIsLockInitMsg(const string &jcMsg)
+	{
+		if ("Lock_Secret_Key"==jcMsg 
+	||	"Lock_System_Init"==jcMsg)
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+
+
 	double zwGetUs(void)
 	{
 		LARGE_INTEGER frq,cur;
@@ -136,7 +151,7 @@ VLOG(4)<<myFuncName<<" "<<MYFD1<<"ZWHTms="<<(cur-s_zwProcStartMs)<<endl;
 	void my515LockRecvThr(void)
 	{
 		
-		ZWERROR("与锁具之间的数据接收线程启动.20151228.v834")
+		ZWERROR("与锁具之间的数据接收线程启动.20151231.v835")
 		const int BLEN = 1024;
 		char recvBuf[BLEN];			
 		using zwccbthr::s_jcNotify;
@@ -163,6 +178,10 @@ VLOG(4)<<myFuncName<<" "<<MYFD1<<"ZWHTms="<<(cur-s_zwProcStartMs)<<endl;
 					nItem->bSended=true;					
 					LOG(WARNING)<<"线程["<<tid<<"]发送给锁具的"<<
 						sType<<"类型消息.内容是"<<endl<<sCmd;
+					if ("Lock_Secret_Key"==sType)
+					{
+						s_bLockInitDur=true;
+					}
 					sts=static_cast<JCHID_STATUS>( g_jhc->SendJson(sCmd.c_str()));
 					//断线重连探测机制
 					if (JCHID_STATUS_OK!=static_cast<JCHID_STATUS>(sts))
@@ -205,7 +224,7 @@ VLOG(4)<<myFuncName<<" "<<MYFD1<<"ZWHTms="<<(cur-s_zwProcStartMs)<<endl;
 					//首先单独处理下位机主动发送闭锁码和主动请求时间同步
 					// 还有锁具发送验证码,锁具发送报警信息
 					//这几个反向循环报文需要单独处理
-					if (outXML.size()>0 && myIsMsgFromLockFirstUp(sType))
+					if (outXML.size()>0 && !myIsLockInitMsg(sType))
 					{
 						ZWERROR("该锁具主动上传消息将会被另一个上传线程在不打破一问一答的前提下延迟上传")
 						jcLockMsg1512_t *nItem=new jcLockMsg1512_t;
@@ -223,7 +242,7 @@ VLOG(4)<<myFuncName<<" "<<MYFD1<<"ZWHTms="<<(cur-s_zwProcStartMs)<<endl;
 						// 按照正向和反向报文区分以后，暂不检测上下行报文类型对应了
 						// 下一步改造目标应该是正向和反向两个循环彻底分开两个线程来处理应该就最好了
 						if (outXML.size()>0 && s_jcUpMsg.size()>0 
-							&& !myIsMsgFromLockFirstUp(sType))
+							&& myIsLockInitMsg(sType))
 						{
 							//ZWWARN("正常上传报文")
 							DWORD tid=s_jcUpMsg.front()->CallerThreadID;
@@ -239,6 +258,10 @@ VLOG(4)<<myFuncName<<" "<<MYFD1<<"ZWHTms="<<(cur-s_zwProcStartMs)<<endl;
 							s_LastNormalMsgUpTimeMs=zwGetMs();
 							//VLOG(3)<<"s_LastNormalMsgUpTimeMs="<<MYFD1<<s_LastNormalMsgUpTimeMs<<endl;
 							myDbgPrintMs("s_LastNormalMsgUpTimeMs_Recv");
+							if ("Lock_System_Init"==sType)
+							{
+								s_bLockInitDur=false;
+							}
 						}
 				}	//if (strlen(recvBuf)>0)
 			}while(strlen(recvBuf)>0);
@@ -298,7 +321,8 @@ VLOG(4)<<myFuncName<<" "<<MYFD1<<"ZWHTms="<<(cur-s_zwProcStartMs)<<endl;
 						//只有起码2秒没事了才启动反向循环报文的上传以免打乱一问一答
 						// 或者是时间上过去靠近上一条正向循环的返回报文造成
 						//上位机“报文解析错误”；
-						if(zwGetMs()-s_LastNormalMsgUpTimeMs<delayMs)
+						if((zwGetMs()-s_LastNormalMsgUpTimeMs<delayMs) ||
+							true==zwccbthr::s_bLockInitDur)
 						{
 							myDbgPrintMs("my515UpMsgThr还没到上传延迟期限，先continue");
 							continue;
