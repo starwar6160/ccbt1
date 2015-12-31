@@ -136,7 +136,7 @@ VLOG(4)<<myFuncName<<" "<<MYFD1<<"ZWHTms="<<(cur-s_zwProcStartMs)<<endl;
 	void my515LockRecvThr(void)
 	{
 		
-		ZWERROR("与锁具之间的数据接收线程启动.20151228.v834")
+		ZWERROR("与锁具之间的数据接收线程启动.20151231.v837Base834")
 		const int BLEN = 1024;
 		char recvBuf[BLEN];			
 		using zwccbthr::s_jcNotify;
@@ -205,7 +205,11 @@ VLOG(4)<<myFuncName<<" "<<MYFD1<<"ZWHTms="<<(cur-s_zwProcStartMs)<<endl;
 					//首先单独处理下位机主动发送闭锁码和主动请求时间同步
 					// 还有锁具发送验证码,锁具发送报警信息
 					//这几个反向循环报文需要单独处理
-					if (outXML.size()>0 && myIsMsgFromLockFirstUp(sType))
+					// 此外针对0002查询状态报文做一个针对性补丁，834版本已经很稳定了
+					if (outXML.size()>0 && 
+						(myIsMsgFromLockFirstUp(sType) || 
+						"Lock_Now_Info"==sType)
+						)
 					{
 						ZWERROR("该锁具主动上传消息将会被另一个上传线程在不打破一问一答的前提下延迟上传")
 						jcLockMsg1512_t *nItem=new jcLockMsg1512_t;
@@ -287,8 +291,8 @@ VLOG(4)<<myFuncName<<" "<<MYFD1<<"ZWHTms="<<(cur-s_zwProcStartMs)<<endl;
 						
 						string sType=jcAtmcConvertDLL::zwGetJcxmlMsgType(strSingleUp.c_str());
 						assert(sType.size()>0);
-						int delayMs=2000;
-						//上送闭锁码需要尽快，其他默认2秒延迟
+						int delayMs=5000;
+						//上送闭锁码需要尽快，其他默认5秒延迟
 						if ("Lock_Open_Ident"==sType)
 						{
 							delayMs=200;
