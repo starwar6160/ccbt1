@@ -1,0 +1,14 @@
+2016/6/29 14:35:39 [星期三]所需的各个外部库在ccbElockLibs目录下 鉴于C++项目的各种外部引用往往很繁杂，我做了一个改进，使用一个环境变量指向某个目录，然后把用到的各个外部库都放在该目录下，然后在VC的项目配置里面的INCLUDE和LIB里面就可以写$(ZWLIB)\gtest\include,$(ZWLIB)\gtest\lib这样的使用环境变量作为根目录的相对路径，便于项目和用到的库在同一台机器的不同分区之间迁移，以及特别是在不同机器之间迁移，例如需要出差时在一台新的笔记本电脑上复制过去项目，配置好一两个环境变量就可以顺利编译了；
+此外鉴于各种库编译出来以后，DLL和LIB往往各有各的输出目录，而我自己的程序要在依赖库里面一一指定各个外部LIB的输出目录，而且各个外部LIB一般都是一旦编译完毕，就不再修改的，所以编译好的外部LIB的LIB和DLL我就手工复制到下面提到的2014BinOut目录，注意区分Debug和Release版本分别复制到相应的目录，然后我的程序的编译结果也输出到同样的Debug或者Release目录，这样运行的时候好在同一个目录下寻找可能用得到的某些DLL；
+建行ATMC 接口DLL用到的外部库如下：
+首先要设定三个环境变量，请把我提供的各个库打包好的压缩包解压缩在这几个环境变量所指向的目录下，具体目录文件名参照下面的项目配置里面的，例如$(ZWLIB)\gtest\include\;就说明gtest这个包解压缩之后，要求是D:\zwWorkLibs\gtest这个目录，才能满足项目编译所需要求；
+ZWSRC是我的DLL代码和其他多个工程代码所在的目录 ZWSRC=D:\zwWorkSrc 请在该目录下手工建立一个2014BinOut目录，这个下面手工建立Debug和Release两个目录供编译结果输出之用，这样所有的外部库的编译结果，以及DLL的编译结果都输出到这里，比较方便互相调用在同一个目录；
+ZWLIB是引用的多个外部库所在目录 ZWLIB=D:\zwWorkLibs
+BOOST这个环境变量是由于BOOST库比较大，单独一个环境变量来指向 BOOST=D:\boost156VC10Mini1014
+请注意，以下几行是项目include配置里面涉及到的外部库:
+$(ZWLIB)\glog\src\windows;
+$(BOOST);
+$(ZWLIB)\lua\src;
+$(ZWLIB)\LuaBridge\Source\LuaBridge;
+$(ZWLIB)\gtest\include\;
+各个外部库对应的lib，为了方便，我统一放在$(BOOST)\lib;$(ZWSRC)\2014BinOut\$(Configuration)\这两处；各个编译好的外部库我打包后，压缩包里面相应的编译好的LIB和DLL文件请按照Debug和Release目录放到前面提到的2014BinOut的Debug和Release目录下；
