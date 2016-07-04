@@ -252,13 +252,32 @@ void myMulHidDevJsonTest20150120A1()
 	}
 }
 
+void myDequeTest704(void)
+{
+	using std::deque;
+	deque<int> dqi;
+	for(int i=0;i<10;i++)
+	{
+		dqi.push_back(i);
+	}
+	printf("deque size=%d\n",dqi.size());
+	dqi[2]=22;
+	for(int i=0;i<10;i++)
+	{		
+		printf("D[%d]\t",dqi.front());
+		dqi.pop_front();
+	}
+}
+
+
+
 int _tmain(int argc, TCHAR * argv[])
 {
 	const char *devSN3="PAAbAAAAAAAAgAKE";
 	const char *jcHidJsonMsg116t1="{\"command\": \"Test_Motor_Open\",\"cmd_id\": \"1234567890\",\"State\": \"test\"}";
 
 	//zwStartGtestInDLL();
-	eLockGoogleTest2014(argc, argv);
+
 
 	//eLockJsonTest20150106();
 	//luaSendJsonTest1(argc, argv);
@@ -273,4 +292,7 @@ int _tmain(int argc, TCHAR * argv[])
 	//zwCCBDateTime2UTC("20140515","000000",&dstDateTime);
 	//printf("dstDateTime=%u\n",dstDateTime);
 	
+	//eLockGoogleTest2014(argc, argv);
+
+	myDequeTest704();
 }

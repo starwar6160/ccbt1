@@ -116,7 +116,7 @@ BOOL APIENTRY DllMain(HMODULE hModule,
 	catch(...)
 	{
 		//为了获取中文目录下Poco的日志库出异常时的问题
-		printf("PocoLog in Chinese PathName Execption!20150108\n");
+		//printf("PocoLog in Chinese PathName Execption!20150108\n");
 		printf("请把本ATMC DLL放到纯英文，无空格的路径下才能正确被调用，谢谢！Zhou Wei.20150108.\n");
 		exit(2015);
 	}

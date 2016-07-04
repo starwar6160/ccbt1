@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "..\\eLockTest\\jcElockTestHdr.h"
-#include "zwecies529.h"
+//#include "zwecies529.h"
 
 
 extern string s_repActReqXML;	//从锁具收到的激活请求的返回报文

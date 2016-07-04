@@ -19,14 +19,14 @@ jcHidDevice *g_jhc=NULL;	//实际的HID设备类对象
 namespace zwccbthr {
 	//建行给的接口，没有设置连接参数的地方，也就是说，完全可以端口，抑或是从配置文件读取
 	boost::mutex thrhid_mutex;
-	void pushToCallBack( const char * recvConvedXML,RecvMsgRotine pRecvMsgFun );
-	deque<string> g_dqLockUpMsg;	//锁具主动上送的答非所问消息的临时队列
+	void pushToCallBack( const char * recvConvedXML,RecvMsgRotine pRecvMsgFun );	
 	bool myWaittingReturnMsg=false;	//等待返回报文期间不要下发报文
 	boost::condition_variable condJcLock;
-	boost::timer g_LatTimer;	//用于自动计算延迟
+	boost::timer g_LatTimer;	//用于自动计算延迟	
 	deque<jcLockMsg1512_t *> s_jcNotify;		//下发命令队列，下发完毕后移动到上传队列
 	deque<jcLockMsg1512_t *> s_jcUpMsg;		//上传命令队列
 	deque<jcLockMsg1512_t *> s_LockFirstUpMsg;				//单向上传队列
+	deque<string> g_dqLockUpMsg;	//锁具主动上送的答非所问消息的临时队列
 	//map<DWORD,RecvMsgRotine> s_thrIdToPointer;	//线程ID到回调函数指针的map
 	RecvMsgRotine s_CallBack=NULL;
 	double s_zwProcStartMs=0.0;			//程序启动的时间戳，毫秒计算
