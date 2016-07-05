@@ -80,7 +80,7 @@ namespace zwccbthr {
 			//20150415.1727.为了万敏的要求，控制上传消息速率最多每2秒一条防止ATM死机
 			//Sleep(2920);
 			pRecvMsgFun(recvConvedXML);
-			ZWERROR(recvConvedXML)
+			ZWWARN(recvConvedXML)
 			VLOG_IF(4,strlen(recvConvedXML)>0)<<"回调函数收到以下内容\n"<<recvConvedXML<<endl;
 #ifdef _DEBUG401
 			
@@ -92,9 +92,10 @@ namespace zwccbthr {
 	//是否是锁具主动上送报文这样的反向循环报文
 	bool myIsMsgFromLockFirstUp(const string &jcMsg)
 	{
-		if(jcMsg=="Lock_Close_Code_Lock" ||
-			jcMsg=="Lock_Time_Sync_Lock" ||
+		if(						
 			jcMsg=="Lock_Open_Ident"	  ||
+			jcMsg=="Lock_Close_Code_Lock" ||
+			jcMsg=="Lock_Time_Sync_Lock" ||
 			jcMsg== "Lock_Alarm_Info")
 		{
 			return true;
@@ -207,7 +208,7 @@ namespace zwccbthr {
 					//这几个反向循环报文需要单独处理
 					// 此外针对0002查询状态报文做一个针对性补丁，834版本已经很稳定了
 					if (outXML.size()>0 && 
-						(myIsMsgFromLockFirstUp(sType) || 
+						(myIsMsgFromLockFirstUp(sType) ||
 						"Lock_Now_Info"==sType)
 						)
 					{
@@ -228,14 +229,15 @@ namespace zwccbthr {
 						// 按照正向和反向报文区分以后，暂不检测上下行报文类型对应了
 						// 下一步改造目标应该是正向和反向两个循环彻底分开两个线程来处理应该就最好了
 						if (outXML.size()>0 && s_jcUpMsg.size()>0 
-							&& !myIsMsgFromLockFirstUp(sType))
+							&& !myIsMsgFromLockFirstUp(sType)
+							)
 						{
 							//ZWWARN("正常上传报文")
 							DWORD tid=s_jcUpMsg.front()->CallerThreadID;
 							string tMsgType=s_jcUpMsg.front()->NotifyType;
 							double tNotifyMs=s_jcUpMsg.front()->NotifyMs;
 							double curMs=zwccbthr::zwGetMs();							
-							LOG(WARNING)<<"下发线程报文"<<tMsgType<<"处理时间"<<curMs-tNotifyMs<<"毫秒"<<endl;	
+							LOG(ERROR)<<"下发后正常上传线程报文"<<tMsgType<<"处理时间"<<curMs-tNotifyMs<<"毫秒"<<endl;	
 							assert(tid>0);
 							VLOG(3)<<"消息返回给线程ID="<<tid<<endl;
 							RecvMsgRotine pRecvMsgFun=zwccbthr::s_CallBack;
@@ -328,7 +330,7 @@ namespace zwccbthr {
 								string tMsgType=zwccbthr::s_LockFirstUpMsg.front()->NotifyType;
 								double tNotifyMs=zwccbthr::s_LockFirstUpMsg.front()->NotifyMs;
 								double curMs=zwccbthr::zwGetMs();
-								LOG(WARNING)<<"上传线程报文"<<tMsgType<<"处理时间"<<curMs-tNotifyMs<<"毫秒"<<endl;	
+								LOG(ERROR)<<"上传线程报文"<<tMsgType<<"处理时间"<<curMs-tNotifyMs<<"毫秒"<<endl;	
 								pushToCallBack(strSingleUp.c_str(),pCallBack);
 								pOld=pCallBack;
 								LOG(WARNING)<<"延迟上传报文到回调函数地址"<<std::hex<<pCallBack
