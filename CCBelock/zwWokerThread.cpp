@@ -216,6 +216,7 @@ namespace zwccbthr {
 						nItem->CallerThreadID=0;
 						nItem->UpMsg=outXML;
 						nItem->NotifyType=sType;
+						nItem->NotifyMs=zwccbthr::zwGetMs();
 						s_LockFirstUpMsg.push_back(nItem);
 						LOG(INFO)<<__FUNCTION__<<"单向上传队列s_LockFirstUpMsg大小="<<s_LockFirstUpMsg.size()<<endl;
 						if (s_jcUpMsg.size()>0)
@@ -231,6 +232,10 @@ namespace zwccbthr {
 						{
 							//ZWWARN("正常上传报文")
 							DWORD tid=s_jcUpMsg.front()->CallerThreadID;
+							string tMsgType=s_jcUpMsg.front()->NotifyType;
+							double tNotifyMs=s_jcUpMsg.front()->NotifyMs;
+							double curMs=zwccbthr::zwGetMs();							
+							LOG(WARNING)<<"下发线程报文"<<tMsgType<<"处理时间"<<curMs-tNotifyMs<<"毫秒"<<endl;	
 							assert(tid>0);
 							VLOG(3)<<"消息返回给线程ID="<<tid<<endl;
 							RecvMsgRotine pRecvMsgFun=zwccbthr::s_CallBack;
@@ -320,7 +325,10 @@ namespace zwccbthr {
 							assert(NULL!=pCallBack);
 							if (pCallBack!=pOld)
 							{
-
+								string tMsgType=zwccbthr::s_LockFirstUpMsg.front()->NotifyType;
+								double tNotifyMs=zwccbthr::s_LockFirstUpMsg.front()->NotifyMs;
+								double curMs=zwccbthr::zwGetMs();
+								LOG(WARNING)<<"上传线程报文"<<tMsgType<<"处理时间"<<curMs-tNotifyMs<<"毫秒"<<endl;	
 								pushToCallBack(strSingleUp.c_str(),pCallBack);
 								pOld=pCallBack;
 								LOG(WARNING)<<"延迟上传报文到回调函数地址"<<std::hex<<pCallBack

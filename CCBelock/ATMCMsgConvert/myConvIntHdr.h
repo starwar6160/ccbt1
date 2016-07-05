@@ -80,6 +80,7 @@ namespace jcAtmcConvertDLL {
 		string UpMsg;			//返回报文	
 		bool bSended;			//已经发送标志
 		RecvMsgRotine pRecvMsgFun;	//回调函数指针
+		double NotifyMs;	//下发报文毫秒数，20160705.1705调试用
 	};
 
 }				//namespace jcAtmcConvertDLL{

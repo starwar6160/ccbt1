@@ -58,7 +58,7 @@ void myATMCRecvMsgRotine(const char *jcLockResponseXML)
 	string ccbop, ccbname;
 	string rmsg = jcLockResponseXML;
 	zwGetCCBMsgType(rmsg, ccbop, ccbname);
-	printf("%s:%s报文处理时间是%.1f毫秒\n",ccbop.c_str(),ccbname.c_str(), curTime-G_MSGSTARTMS);
+	//printf("%s:%s报文处理时间是%.1f毫秒\n",ccbop.c_str(),ccbname.c_str(), curTime-G_MSGSTARTMS);
 
 	//cout << "*******************建行ATMC回调函数开始***####\n";
 	//cout << jcLockResponseXML << endl;

@@ -220,6 +220,7 @@ CCBELOCK_API long JCAPISTD Notify(const char *pszMsg)
 		nItem->NotifyType=jcAtmcConvertDLL::zwGetJcJsonMsgType(strJsonSend.c_str());
 		nItem->UpMsg="";
 		nItem->bSended=false;
+		nItem->NotifyMs=zwccbthr::zwGetMs();
 		zwccbthr::s_jcNotify.push_back(nItem);
 
 		return ELOCK_ERROR_SUCCESS;
