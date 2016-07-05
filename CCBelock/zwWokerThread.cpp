@@ -125,9 +125,9 @@ namespace zwccbthr {
 		boost::mutex::scoped_lock lock(tms_mutex);	
 		double cur=zwGetMs();
 #ifdef _DEBUG
-VLOG(3)<<myFuncName<<" "<<MYFD1<<"ZWHTms="<<(cur-s_zwProcStartMs)<<endl;
+//VLOG(3)<<myFuncName<<" "<<MYFD1<<"ZWHTms="<<(cur-s_zwProcStartMs)<<endl;
 #else
-VLOG(4)<<myFuncName<<" "<<MYFD1<<"ZWHTms="<<(cur-s_zwProcStartMs)<<endl;
+//VLOG(4)<<myFuncName<<" "<<MYFD1<<"ZWHTms="<<(cur-s_zwProcStartMs)<<endl;
 #endif // _DEBUG
 		
 	}
@@ -273,7 +273,7 @@ VLOG(4)<<myFuncName<<" "<<MYFD1<<"ZWHTms="<<(cur-s_zwProcStartMs)<<endl;
 #ifdef _DEBUG
 					if(zwGetMs()-s_LastNormalMsgUpTimeMs<900)
 					{
-						myDbgPrintMs("my515UpMsgThrTest1228NOTEXEC");
+						//myDbgPrintMs("my515UpMsgThrTest1228NOTEXEC");
 					}
 					else
 					{
@@ -304,7 +304,7 @@ VLOG(4)<<myFuncName<<" "<<MYFD1<<"ZWHTms="<<(cur-s_zwProcStartMs)<<endl;
 						//上位机“报文解析错误”；
 						if(zwGetMs()-s_LastNormalMsgUpTimeMs<delayMs)
 						{
-							myDbgPrintMs("my515UpMsgThr还没到上传延迟期限，先continue");
+							//myDbgPrintMs("my515UpMsgThr还没到上传延迟期限，先continue");
 							continue;
 						}
 

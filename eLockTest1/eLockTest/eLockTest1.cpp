@@ -292,7 +292,7 @@ int _tmain(int argc, TCHAR * argv[])
 	//zwCCBDateTime2UTC("20140515","000000",&dstDateTime);
 	//printf("dstDateTime=%u\n",dstDateTime);
 	
-	//eLockGoogleTest2014(argc, argv);
+	eLockGoogleTest2014(argc, argv);
 
 	myDequeTest704();
 }

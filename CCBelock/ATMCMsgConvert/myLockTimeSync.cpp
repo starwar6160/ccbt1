@@ -217,13 +217,19 @@ namespace jcAtmcConvertDLL {
 	{
 		assert(NULL!=jcJson);
 		assert(strlen(jcJson)>0);
-		ptree ptjc;
-		std::stringstream ss;
-		ss << jcJson;
-		read_json(ss, ptjc);
-		string msgType=ptjc.get<string>("Command");		
-		assert(msgType.size()>0);
-		return msgType;
+		try{
+			ptree ptjc;
+			std::stringstream ss;
+			ss << jcJson;
+			read_json(ss, ptjc);
+			string msgType=ptjc.get<string>("Command");		
+			assert(msgType.size()>0);
+			return msgType;
+		}
+		catch(...)
+		{
+			printf("jcJson=%s\n",jcJson);
+		}
 	}
 
 

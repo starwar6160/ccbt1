@@ -650,6 +650,7 @@ namespace zwHidGTest20150130{
 		//测试代码晚一点结束，以便锁具后续较慢报文能收到
 		Sleep(5000);
 		EXPECT_EQ(ELOCK_ERROR_SUCCESS,Close());
+		printf("TestInActiveLockTest.cpp");
 	}
 }	//namespace zwHidGTest20150130{
 

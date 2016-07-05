@@ -12,9 +12,12 @@
 #include "CCBelock.h"
 #include "zwCcbElockHdr.h"
 #include "zwHidComm.h"
-#include "zwHidDevClass2015.h"
 #include "hidapi.h"
 #include ".\\ATMCMsgConvert\\myConvIntHdr.h"
+
+
+#define _USE_FAKEHID_DEV20160705	//决定是否使用FAKE的函数用来调试
+#include "zwHidDevClass2015.h"
 
 using namespace std;
 using boost::property_tree::ptree_error;
@@ -101,7 +104,9 @@ CCBELOCK_API long JCAPISTD Open(long lTimeOut)
 
 	int elockStatus=JCHID_STATUS_OK;		
 	//断线重连探测机制
-	elockStatus=g_jhc->SendJson("{   \"command\": \"Lock_Firmware_Version\",    \"State\": \"get\"}");
+	elockStatus=g_jhc->SendJson("{   \"Command\": \"Lock_Firmware_Version\",    \"State\": \"get\"}");
+	char tmpRecv[256];
+	g_jhc->RecvJson(tmpRecv,256);
 	VLOG_IF(1,JCHID_STATUS_OK!=elockStatus)
 		<<"ZIJIN522 Open ELOCK_ERROR_CONNECTLOST Send get_firmware_version to JinChu Elock Fail!";
 	if (JCHID_STATUS_OK!=static_cast<JCHID_STATUS>(elockStatus))
@@ -268,7 +273,9 @@ CCBELOCK_API int JCAPISTD SetRecvMsgRotine(RecvMsgRotine pRecvMsgFun)
 
 
 //////////////////////////////////////////////////////////////////////////
+
 namespace jchidDevice2015{
+#ifndef _USE_FAKEHID_DEV20160705
 	jcHidDevice::jcHidDevice()
 	{
 		memset(&m_jcElock, 0, sizeof(JCHID));
@@ -317,7 +324,7 @@ namespace jchidDevice2015{
 	{
 		boost::mutex::scoped_lock lock(m_jchid_mutex);
 		const char *m_cmdGetFirmware=
-			"{   \"command\": \"Lock_Firmware_Version\",    \"State\": \"get\"}";
+			"{   \"Command\": \"Lock_Firmware_Version\",    \"State\": \"get\"}";
 		//
 		int elockStatus=jcHidSendData(&m_jcElock, m_cmdGetFirmware, 
 			strlen(m_cmdGetFirmware));
@@ -369,6 +376,100 @@ namespace jchidDevice2015{
 		sts=jcHidRecvData(&m_jcElock,recvJson, bufLen, &outLen,300*1);
 		return sts;
 	}
+
+#else
+jcHidDevice::jcHidDevice()
+{
+	memset(&m_jcElock, 0, sizeof(JCHID));
+	m_jcElock.vid = 2016;
+	m_jcElock.pid = 705;
+	m_hidOpened=false;
+	OpenJc();
+}
+
+
+int jcHidDevice::OpenJc()
+{
+	boost::mutex::scoped_lock lock(m_jchid_mutex);
+	ZWWARN("myOpenElock1607 模拟电子锁打开成功20160705.1003")
+			m_hidOpened=true;
+		return ELOCK_ERROR_SUCCESS;
+}
+
+void jcHidDevice::CloseJc()
+{
+	ZWWARN("myOpenElock1607 模拟电子锁关闭成功20160705.1003")
+}
+
+jcHidDevice::~jcHidDevice()
+{
+	CloseJc();
+}
+
+int jcHidDevice::getConnectStatus()
+{
+		return ELOCK_ERROR_SUCCESS;
+}
+
+int jcHidDevice::SendJson(const char *jcJson)
+{
+	boost::mutex::scoped_lock lock(m_jchid_mutex);
+	assert(NULL!=jcJson);
+	assert(strlen(jcJson)>2);
+	if (NULL==jcJson || strlen(jcJson)==0)
+	{
+		ZWWARN("jcHidDevice::SendJson can't send NULL json command 20150505.0938")
+			return -938;
+	}
+	//int sts=jcHidSendData(&m_jcElock, jcJson, strlen(jcJson));
+	//VLOG_IF(4,JCHID_STATUS_OK!=sts)<<"jcHidDevice::SendJson FAIL\n";
+	m_dqMockLock.push_back(jcJson);
+	JCHID_STATUS sts=JCHID_STATUS_OK;
+	return sts;
+}
+
+int jcHidDevice::RecvJson( char *recvJson,int bufLen )
+{
+	boost::mutex::scoped_lock lock(m_jchid_mutex);		
+	assert(NULL!=recvJson);
+	assert(bufLen>=0);
+	if (NULL==recvJson || bufLen<0)
+	{			
+		ZWWARN("jcHidDevice::RecvJson can't Using NULL buffer to Receive JinChu Lock Respone data")
+			return JCHID_STATUS_INPUTNULL;
+	}		
+	Sleep(100);
+	//OutputDebugStringA("415接收一条锁具返回消息开始\n");
+	int outLen=0;
+
+	//JCHID_STATUS sts=JCHID_STATUS_OK;
+	//sts=jcHidRecvData(&m_jcElock,recvJson, bufLen, &outLen,300*1);
+	if (m_dqMockLock.size()==0)
+	{
+		return JCHID_STATUS_FAIL;
+	}
+	string rtMsg=m_dqMockLock.front();
+	string jsonType=jcAtmcConvertDLL::zwGetJcJsonMsgType(rtMsg.c_str());
+	string mockRetMsg="";
+	if (jcAtmcConvertDLL::JCSTR_QUERY_LOCK_STATUS==jsonType)
+	{
+		mockRetMsg="{\"Command\":\"Lock_Now_Info\",\"Lock_Time\":1450418648,\"Atm_Serial\":\"\",\"Lock_Serial\":\"515066001005\",\"Lock_Status\":\"1,0,0,0,0,0,0,0,28,0,0\"}";
+	}
+
+	if (mockRetMsg.length()<=(bufLen-1))
+	{
+		strcpy(recvJson,mockRetMsg.c_str());
+		m_dqMockLock.pop_front();
+		return JCHID_STATUS_OK;
+	}
+	else
+	{
+		printf("模拟锁具接收缓冲区太小");
+		strcpy(recvJson,"bufTooSmall");
+		return JCHID_STATUS_FAIL;
+	}
+}
+#endif // _USE_JCHID_DEV20160705
 
 
 }	//namespace jchidDevice2015{

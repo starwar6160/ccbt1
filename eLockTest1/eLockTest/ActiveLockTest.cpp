@@ -206,4 +206,5 @@ TEST_F(ccbElockTest, jcHidDev20151207SpeedTestInATMCDLL)
 	//thr3->join();
 	Sleep(7000);
 	EXPECT_EQ(ELOCK_ERROR_SUCCESS,Close());
+	printf("TestInActiveLockTest.cpp");
 }
