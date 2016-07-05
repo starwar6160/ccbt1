@@ -16,7 +16,7 @@ using jcAtmcConvertDLL::jcLockMsg1512_t;
 
 jcHidDevice *g_jhc=NULL;	//实际的HID设备类对象
 
-namespace zwccbthr {
+namespace zwccbthr {	
 	//建行给的接口，没有设置连接参数的地方，也就是说，完全可以端口，抑或是从配置文件读取
 	boost::mutex thrhid_mutex;
 	void pushToCallBack( const char * recvConvedXML,RecvMsgRotine pRecvMsgFun );	
@@ -236,7 +236,7 @@ namespace zwccbthr {
 							RecvMsgRotine pRecvMsgFun=zwccbthr::s_CallBack;
 							assert(pRecvMsgFun!=NULL);
 								//zwccbthr::s_thrIdToPointer[tid];
-							pushToCallBack(outXML.c_str(),pRecvMsgFun);
+							pushToCallBack(outXML.c_str(),pRecvMsgFun);							
 							assert(s_jcUpMsg.size()>0);
 							s_jcUpMsg.pop_front();
 							VLOG(3)<<"普通上传队列大小s_jcUpMsg.size()="<<s_jcUpMsg.size()<<endl;

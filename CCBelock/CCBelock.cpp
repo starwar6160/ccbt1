@@ -29,7 +29,9 @@ using jcAtmcConvertDLL::jcLockMsg1512_t;
 extern jcHidDevice *g_jhc;	//实际的HID设备类对象
 #define DBGTHRID	VLOG(3)<<"["<<__FUNCTION__<<"] ThreadID of Caller is "<<GetCurrentThreadId()<<endl;
 
+
 namespace zwccbthr {
+	double zwGetMs(void);
 	void ThreadLockRecv();	//与锁具之间的通讯线程
 	void my515LockRecvThr();	//与锁具之间的通讯线程20150515
 	void my515UpMsgThr(void);
@@ -158,6 +160,7 @@ CCBELOCK_API long JCAPISTD Close()
 
 CCBELOCK_API long JCAPISTD Notify(const char *pszMsg)
 {
+	VLOG(3)<<"Notify开始"<<pszMsg<<endl;
 		if (NULL==g_jhc)
 		{
 			LOG(WARNING)<<"没有Open就执行Notify 20151216"<<endl;
@@ -428,8 +431,18 @@ int jcHidDevice::SendJson(const char *jcJson)
 	return sts;
 }
 
+
 int jcHidDevice::RecvJson( char *recvJson,int bufLen )
 {
+	const char * rspMsg0000="{\"Command\":\"Lock_Secret_Key\",\"Lock_Time\":1450419505,\"Atm_Serial\":\"440600300030\",\"Lock_Serial\":\"515066001005\",\"Lock_Public_Key\":\"BCE8v73suKOVk7RS/pTDMzdcB7okRziltU5QHk+svURAa6rz2G+1NdSieLW1I/BWdsDw9bexuBeuXOtwyf+9WkM=\"}";
+	const char * rspMsg0001="{\"Command\":\"Lock_System_Init\",\"Lock_Time\":1450407913,\"Atm_Serial\":\"12345676789\",\"Lock_Serial\":\"22222222\",\"State\":\"0\",\"Lock_Init_Info\":\"BKg3trzacO+lBkCD7L/gvug//ads3Js821m6viVbqQGjGyFrIN4V7hYHy960AePaqXsq/xtHgUmgou00+2zFCj4=.YW8M2C0Of7z4VFj5a0vWsfIn+kFF6YZq.6zBiQXVe8iuOwRIGT0BpNfVPtJ25WYOT6K/obdkVB2ParXvKBugdVV9MIQwadzqtyK2E9NkTz6DF3tVD6vRpHmaiVHEUCqWHPGq8v8ttNko=\"}";
+	const char * rspMsg0002="{\"Command\":\"Lock_Now_Info\",\"Lock_Time\":1450418648,\"Atm_Serial\":\"\",\"Lock_Serial\":\"515066001005\",\"Lock_Status\":\"1,0,0,0,0,0,0,0,28,0,0\"}";
+	const char * rspMsg0003="{\"Command\":\"Lock_Time_Sync_ATM\",\"Lock_Serial\":\"515066001005\",\"Ex_Syn_Time\":1450419297,\"Lock_Time\":1450419324,\"Atm_Serial\":\"\"}";
+	const char * rspMsg0004="{\"Command\":\"Lock_Close_Code_ATM\",\"Lock_Serial\":\"22222222\",\"Lock_Time\":1450407945,\"Atm_Serial\":\"12345676789\",\"Code\":75020268}";
+	const char * rspMsg1000="{\"Command\":\"Lock_Close_Code_Lock\",\"Lock_Time\":1450246882,\"Atm_Serial\":\"123456\",\"Lock_Serial\":\"22222222\",\"Code\":59907695}";
+	const char * rspMsg1002="{\"Command\":\"Lock_Open_Ident\",\"Lock_Time\":1450323811,\"Atm_Serial\":\"12345\",\"Lock_Serial\":\"515066001000\",\"Lock_Ident_Info\":52280743}";
+	
+	
 	boost::mutex::scoped_lock lock(m_jchid_mutex);		
 	assert(NULL!=recvJson);
 	assert(bufLen>=0);
@@ -442,6 +455,29 @@ int jcHidDevice::RecvJson( char *recvJson,int bufLen )
 	//OutputDebugStringA("415接收一条锁具返回消息开始\n");
 	int outLen=0;
 
+
+
+	static bool mainMsgExeced=false;
+
+	static bool msg1002Send=false;
+	//以一定几率插入单向上行报文1002也就是发送验证码
+	if (mainMsgExeced==true && msg1002Send==false)
+	{
+		msg1002Send=true;
+		strcpy(recvJson,rspMsg1002);
+		
+		return JCHID_STATUS_OK;
+	}
+
+	static bool msg1000Send=false;
+	if (mainMsgExeced==true && msg1000Send==false)
+	{
+		msg1000Send=true;
+		strcpy(recvJson,rspMsg1000);
+		
+		return JCHID_STATUS_OK;
+	}
+
 	//JCHID_STATUS sts=JCHID_STATUS_OK;
 	//sts=jcHidRecvData(&m_jcElock,recvJson, bufLen, &outLen,300*1);
 	if (m_dqMockLock.size()==0)
@@ -453,23 +489,24 @@ int jcHidDevice::RecvJson( char *recvJson,int bufLen )
 	string mockRetMsg="";
 	if (jcAtmcConvertDLL::JCSTR_LOCK_ACTIVE_REQUEST==jsonType)
 	{
-		mockRetMsg="{\"Command\":\"Lock_Secret_Key\",\"Lock_Time\":1450419505,\"Atm_Serial\":\"440600300030\",\"Lock_Serial\":\"515066001005\",\"Lock_Public_Key\":\"BCE8v73suKOVk7RS/pTDMzdcB7okRziltU5QHk+svURAa6rz2G+1NdSieLW1I/BWdsDw9bexuBeuXOtwyf+9WkM=\"}";
+		mockRetMsg=rspMsg0000;
 	}
 	if (jcAtmcConvertDLL::JCSTR_LOCK_INIT==jsonType)
 	{
-		mockRetMsg="{\"Command\":\"Lock_System_Init\",\"Lock_Time\":1450407913,\"Atm_Serial\":\"12345676789\",\"Lock_Serial\":\"22222222\",\"State\":\"0\",\"Lock_Init_Info\":\"BKg3trzacO+lBkCD7L/gvug//ads3Js821m6viVbqQGjGyFrIN4V7hYHy960AePaqXsq/xtHgUmgou00+2zFCj4=.YW8M2C0Of7z4VFj5a0vWsfIn+kFF6YZq.6zBiQXVe8iuOwRIGT0BpNfVPtJ25WYOT6K/obdkVB2ParXvKBugdVV9MIQwadzqtyK2E9NkTz6DF3tVD6vRpHmaiVHEUCqWHPGq8v8ttNko=\"}";
+		mockRetMsg=rspMsg0001;
+		mainMsgExeced=true;
 	}
 	if (jcAtmcConvertDLL::JCSTR_QUERY_LOCK_STATUS==jsonType)
 	{
-		mockRetMsg="{\"Command\":\"Lock_Now_Info\",\"Lock_Time\":1450418648,\"Atm_Serial\":\"\",\"Lock_Serial\":\"515066001005\",\"Lock_Status\":\"1,0,0,0,0,0,0,0,28,0,0\"}";
+		mockRetMsg=rspMsg0002;
 	}
 	if (jcAtmcConvertDLL::JCSTR_TIME_SYNC==jsonType)
 	{
-		mockRetMsg="{\"Command\":\"Lock_Time_Sync_ATM\",\"Lock_Serial\":\"515066001005\",\"Ex_Syn_Time\":1450419297,\"Lock_Time\":1450419324,\"Atm_Serial\":\"\"}";
+		mockRetMsg=rspMsg0003;
 	}
 	if (jcAtmcConvertDLL::JCSTR_READ_CLOSECODE==jsonType)
 	{
-		mockRetMsg="{\"Command\":\"Lock_Close_Code_ATM\",\"Lock_Serial\":\"22222222\",\"Lock_Time\":1450407945,\"Atm_Serial\":\"12345676789\",\"Code\":75020268}";
+		mockRetMsg=rspMsg0004;
 	}
 
 	if (mockRetMsg.length()<=(bufLen-1))

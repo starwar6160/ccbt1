@@ -181,19 +181,45 @@ void zw1218OpenTimeTestThr(void)
 }
 
 
+double zwGetUs(void)
+{
+	LARGE_INTEGER frq,cur;
+	QueryPerformanceCounter(&cur);
+	QueryPerformanceFrequency(&frq);
+	return 1.0e6*cur.QuadPart/frq.QuadPart;
+}
+
+double zwGetMs(void)
+{
+	return zwGetUs()/1000.0;
+}
+
+	int G_TEST_UPNUM=0;	
+	double G_MSGSTARTMS=0.0;
+
 void zw1209SpeedTestThr1(void)
 {
 	//Sleep(100);
 	//cout<<"["<<__FUNCTION__<<"] ThreadPID=["<<GetCurrentThreadId()<<"]\tSTART"<<endl;	
 	SetRecvMsgRotine(myATMCRecvMsgRotine);	
-	//EXPECT_EQ(ELOCK_ERROR_SUCCESS,Open(22));			
+	//EXPECT_EQ(ELOCK_ERROR_SUCCESS,Open(22));		
+	G_MSGSTARTMS=zwGetMs();
 	EXPECT_EQ(ELOCK_ERROR_SUCCESS,Notify(g_msg00));	
+	G_MSGSTARTMS=zwGetMs();
 	EXPECT_EQ(ELOCK_ERROR_SUCCESS,Notify(g_msg01));	
+	G_MSGSTARTMS=zwGetMs();
 	EXPECT_EQ(ELOCK_ERROR_SUCCESS,Notify(g_msg02));	
+	G_MSGSTARTMS=zwGetMs();
 	EXPECT_EQ(ELOCK_ERROR_SUCCESS,Notify(g_msg03));	
+	G_MSGSTARTMS=zwGetMs();
 	EXPECT_EQ(ELOCK_ERROR_SUCCESS,Notify(g_msg04));	
-	//测试代码晚一点结束，以便锁具后续较慢报文能收到
-	Sleep(8000);
+	//测试代码晚一点结束，以便锁具后续较慢报文能收到	
+		while (G_TEST_UPNUM<7)
+		{
+			printf("G_TEST_UPNUM=%d\n",G_TEST_UPNUM);
+			Sleep(1300);
+		}
+	
 	//EXPECT_EQ(ELOCK_ERROR_SUCCESS,Close());
 	//cout<<"["<<__FUNCTION__<<"] ThreadPID=["<<GetCurrentThreadId()<<"]\tEND"<<endl;	
 }

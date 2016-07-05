@@ -47,11 +47,19 @@ void zwGetCCBMsgType(const string & inXML, string & outOpCode,
 //测试性回调函数
 void myATMCRecvMsgRotine(const char *jcLockResponseXML)
 {
+	extern int G_TEST_UPNUM;
+	extern double G_MSGSTARTMS;
+	extern double zwGetMs(void);
 	assert(jcLockResponseXML != NULL && strlen(jcLockResponseXML) > 42);
 	EXPECT_LT(42, strlen(jcLockResponseXML));
+	G_TEST_UPNUM++;
+	double curTime=zwGetMs();
+	
 	string ccbop, ccbname;
 	string rmsg = jcLockResponseXML;
 	zwGetCCBMsgType(rmsg, ccbop, ccbname);
+	printf("%s:%s报文处理时间是%.1f毫秒\n",ccbop.c_str(),ccbname.c_str(), curTime-G_MSGSTARTMS);
+
 	//cout << "*******************建行ATMC回调函数开始***####\n";
 	//cout << jcLockResponseXML << endl;
 	//cout << "*******************建行ATMC回调函数结束****####\n";
