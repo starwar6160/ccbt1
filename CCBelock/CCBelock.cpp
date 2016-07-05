@@ -451,9 +451,25 @@ int jcHidDevice::RecvJson( char *recvJson,int bufLen )
 	string rtMsg=m_dqMockLock.front();
 	string jsonType=jcAtmcConvertDLL::zwGetJcJsonMsgType(rtMsg.c_str());
 	string mockRetMsg="";
+	if (jcAtmcConvertDLL::JCSTR_LOCK_ACTIVE_REQUEST==jsonType)
+	{
+		mockRetMsg="{\"Command\":\"Lock_Secret_Key\",\"Lock_Time\":1450419505,\"Atm_Serial\":\"440600300030\",\"Lock_Serial\":\"515066001005\",\"Lock_Public_Key\":\"BCE8v73suKOVk7RS/pTDMzdcB7okRziltU5QHk+svURAa6rz2G+1NdSieLW1I/BWdsDw9bexuBeuXOtwyf+9WkM=\"}";
+	}
+	if (jcAtmcConvertDLL::JCSTR_LOCK_INIT==jsonType)
+	{
+		mockRetMsg="{\"Command\":\"Lock_System_Init\",\"Lock_Time\":1450407913,\"Atm_Serial\":\"12345676789\",\"Lock_Serial\":\"22222222\",\"State\":\"0\",\"Lock_Init_Info\":\"BKg3trzacO+lBkCD7L/gvug//ads3Js821m6viVbqQGjGyFrIN4V7hYHy960AePaqXsq/xtHgUmgou00+2zFCj4=.YW8M2C0Of7z4VFj5a0vWsfIn+kFF6YZq.6zBiQXVe8iuOwRIGT0BpNfVPtJ25WYOT6K/obdkVB2ParXvKBugdVV9MIQwadzqtyK2E9NkTz6DF3tVD6vRpHmaiVHEUCqWHPGq8v8ttNko=\"}";
+	}
 	if (jcAtmcConvertDLL::JCSTR_QUERY_LOCK_STATUS==jsonType)
 	{
 		mockRetMsg="{\"Command\":\"Lock_Now_Info\",\"Lock_Time\":1450418648,\"Atm_Serial\":\"\",\"Lock_Serial\":\"515066001005\",\"Lock_Status\":\"1,0,0,0,0,0,0,0,28,0,0\"}";
+	}
+	if (jcAtmcConvertDLL::JCSTR_TIME_SYNC==jsonType)
+	{
+		mockRetMsg="{\"Command\":\"Lock_Time_Sync_ATM\",\"Lock_Serial\":\"515066001005\",\"Ex_Syn_Time\":1450419297,\"Lock_Time\":1450419324,\"Atm_Serial\":\"\"}";
+	}
+	if (jcAtmcConvertDLL::JCSTR_READ_CLOSECODE==jsonType)
+	{
+		mockRetMsg="{\"Command\":\"Lock_Close_Code_ATM\",\"Lock_Serial\":\"22222222\",\"Lock_Time\":1450407945,\"Atm_Serial\":\"12345676789\",\"Code\":75020268}";
 	}
 
 	if (mockRetMsg.length()<=(bufLen-1))
