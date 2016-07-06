@@ -31,28 +31,15 @@ extern jcHidDevice *g_jhc;	//实际的HID设备类对象
 
 
 namespace zwccbthr {
-	double zwGetMs(void);
-	void ThreadLockRecv();	//与锁具之间的通讯线程
-	void my515LockRecvThr();	//与锁具之间的通讯线程20150515
-	void my706LockRecvThr();
+	double zwGetMs(void);	
+	void my706LockRecvThr();	//与锁具之间的通讯线程20160706
 	void my515UpMsgThr(void);
 	boost::thread *opCommThr=NULL;	//为了控制通讯线程终止
-	boost::thread *opUpMsgThr=NULL;	
-	//boost::thread *opCommThr=new boost::thread(zwccbthr::ThreadLockRecv);
-	time_t lastOpen=0;
 	extern boost::mutex thrhid_mutex;
-	extern bool myWaittingReturnMsg;	//等待返回报文期间不要下发报文
-	extern boost::timer g_LatTimer;	//用于自动计算延迟
-	extern boost::condition_variable condJcLock;
 	extern deque<jcLockMsg1512_t *> s_jcNotify;		//下发命令
-	//extern map<DWORD,RecvMsgRotine> s_thrIdToPointer;	//线程ID到回调函数指针的map
 	extern RecvMsgRotine s_CallBack;
-
 	////供单向上传报文专用的保存所有回调函数指针的向量,好让单向报文发给所有线程;
 	extern vector <RecvMsgRotine> s_vecSingleUp;	
-
-
-
 } //namespace zwccbthr{  
 
 namespace zwCfg {
@@ -163,9 +150,7 @@ CCBELOCK_API long JCAPISTD Close()
 	zwccbthr::opCommThr->interrupt();
 	zwccbthr::opCommThr=NULL;
 	Sleep(300);
-	zwccbthr::opUpMsgThr->interrupt();
-	zwccbthr::opUpMsgThr=NULL;
-	Sleep(300);
+
 	if (NULL!=g_jhc)
 	{
 		VLOG(3)<<__FUNCTION__<<" 现在关闭底层HID设备的连接对象"<<endl;
@@ -184,11 +169,6 @@ CCBELOCK_API long JCAPISTD Notify(const char *pszMsg)
 			LOG(WARNING)<<"没有Open就执行Notify 20151216"<<endl;
 			return ELOCK_ERROR_HARDWAREERROR;
 		}
-	if (NULL==zwccbthr::opUpMsgThr)
-	{
-		VLOG(4)<<"Start my515UpMsgThr"<<endl;
-		zwccbthr::opUpMsgThr=new boost::thread(zwccbthr::my515UpMsgThr);
-	}	
 
 	if (NULL==zwccbthr::opCommThr)
 	{
