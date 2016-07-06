@@ -18,6 +18,7 @@
 #include <iostream>
 #include <cassert>
 #include <vector>
+#include <string>
 #include <deque>
 #include <set>
 using std::cout;

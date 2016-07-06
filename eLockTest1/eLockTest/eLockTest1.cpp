@@ -294,5 +294,5 @@ int _tmain(int argc, TCHAR * argv[])
 	
 	eLockGoogleTest2014(argc, argv);
 
-	myDequeTest704();
+	//myDequeTest704();
 }

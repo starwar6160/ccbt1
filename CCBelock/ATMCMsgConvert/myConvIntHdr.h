@@ -74,13 +74,16 @@ namespace jcAtmcConvertDLL {
 	//保存一条下发报文及其返回报文，还有线程ID等相关信息；
 	struct jcLockMsg1512_t 
 	{
-		DWORD CallerThreadID;	//主程序线程ID
-		string NotifyMsg;		//下发的报文
-		string NotifyType;		//下发报文类型
-		string UpMsg;			//返回报文	
-		bool bSended;			//已经发送标志
-		RecvMsgRotine pRecvMsgFun;	//回调函数指针
-		double NotifyMs;	//下发报文毫秒数，20160705.1705调试用
+		DWORD m_CallerThreadID;	//主程序线程ID
+		std::string m_NotifyMsg;		//下发的报文
+		std::string m_NotifyType;		//下发报文类型
+		std::string m_UpMsg;			//返回报文	
+		bool m_bSended;			//已经发送标志
+		RecvMsgRotine m_pRecvMsgFun;	//回调函数指针
+		double m_NotifyMs;	//下发报文毫秒数，20160705.1705调试用
+	public:
+		jcLockMsg1512_t(const std::string &notifyMsg);		
 	};
+
 
 }				//namespace jcAtmcConvertDLL{

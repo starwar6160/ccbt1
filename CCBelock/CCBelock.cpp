@@ -50,6 +50,8 @@ namespace zwccbthr {
 	////供单向上传报文专用的保存所有回调函数指针的向量,好让单向报文发给所有线程;
 	extern vector <RecvMsgRotine> s_vecSingleUp;	
 
+
+
 } //namespace zwccbthr{  
 
 namespace zwCfg {
@@ -61,6 +63,21 @@ namespace zwCfg {
 	bool s_hidOpened = false;
 } //namespace zwCfg{  
 
+namespace jcAtmcConvertDLL
+{
+	jcLockMsg1512_t::jcLockMsg1512_t(const std::string &notifyMsg)
+	{
+		DWORD iCallerThrId=GetCurrentThreadId();
+		m_CallerThreadID=iCallerThrId;
+		m_NotifyMsg=notifyMsg;
+		m_UpMsg="";
+		m_bSended=false;
+		m_pRecvMsgFun=NULL;
+		m_NotifyMs=zwccbthr::zwGetMs();
+		m_NotifyType=jcAtmcConvertDLL::zwGetJcJsonMsgType(notifyMsg.c_str());
+	}
+
+}
 
 void ZWDBGMSG(const char *x)
 {
@@ -160,7 +177,7 @@ CCBELOCK_API long JCAPISTD Close()
 
 CCBELOCK_API long JCAPISTD Notify(const char *pszMsg)
 {
-	VLOG(3)<<"Notify开始"<<pszMsg<<endl;
+	VLOG(4)<<"Notify开始"<<pszMsg<<endl;
 		if (NULL==g_jhc)
 		{
 			LOG(WARNING)<<"没有Open就执行Notify 20151216"<<endl;
@@ -213,14 +230,7 @@ CCBELOCK_API long JCAPISTD Notify(const char *pszMsg)
 
 		//现在开始一问一答过程，在获得对口回复报文之前不得上传其他报文
 		DWORD iCallerThrId=GetCurrentThreadId();
-		jcLockMsg1512_t *nItem=new jcLockMsg1512_t;
-		//下发消息前填写各个项目
-		nItem->CallerThreadID=iCallerThrId;
-		nItem->NotifyMsg=strJsonSend;
-		nItem->NotifyType=jcAtmcConvertDLL::zwGetJcJsonMsgType(strJsonSend.c_str());
-		nItem->UpMsg="";
-		nItem->bSended=false;
-		nItem->NotifyMs=zwccbthr::zwGetMs();
+		jcLockMsg1512_t *nItem=new jcLockMsg1512_t(strJsonSend);
 		zwccbthr::s_jcNotify.push_back(nItem);
 
 		return ELOCK_ERROR_SUCCESS;
@@ -452,7 +462,7 @@ int jcHidDevice::RecvJson( char *recvJson,int bufLen )
 		ZWWARN("jcHidDevice::RecvJson can't Using NULL buffer to Receive JinChu Lock Respone data")
 			return JCHID_STATUS_INPUTNULL;
 	}		
-	Sleep(100);
+	Sleep(30);
 	//OutputDebugStringA("415接收一条锁具返回消息开始\n");
 	int outLen=0;
 

@@ -158,10 +158,10 @@ namespace zwccbthr {
 				{
 					jcLockMsg1512_t *nItem=s_jcNotify.front();
 					zwccbthr::myWaittingReturnMsg=true;	
-					string sCmd=nItem->NotifyMsg;
-					DWORD tid=nItem->CallerThreadID;
-					string sType=nItem->NotifyType;
-					nItem->bSended=true;					
+					string sCmd=nItem->m_NotifyMsg;
+					DWORD tid=nItem->m_CallerThreadID;
+					string sType=nItem->m_NotifyType;
+					nItem->m_bSended=true;					
 					LOG(WARNING)<<"线程["<<tid<<"]发送给锁具的"<<
 						sType<<"类型消息.内容是"<<endl<<sCmd;
 					sts=static_cast<JCHID_STATUS>( g_jhc->SendJson(sCmd.c_str()));
@@ -188,54 +188,31 @@ namespace zwccbthr {
 				VLOG_IF(4,lRecvBytes>0)<<"RecvJson收到"<<lRecvBytes<<"字节的数据"<<endl;
 				if (strlen(recvBuf)>0)
 				{
-					VLOG(4)<<"收到锁具返回消息= "<<recvBuf<<endl;
+					VLOG(4)<<"收到锁具返回消息1607= "<<recvBuf<<endl;
 					assert(strlen(recvBuf)>0);
 					string sType=jcAtmcConvertDLL::zwGetJcJsonMsgType(recvBuf);
-					VLOG(1)<<"收到锁具返回消息.类型是"<<sType<<"内容是\n"<<recvBuf<<endl;
+					VLOG(3)<<"收到锁具返回消息.类型是"<<sType<<"内容是\n"<<recvBuf<<endl;
 					if (s_jcUpMsg.size()>0)
 					{
-						LOG_IF(WARNING,s_jcUpMsg.front()->NotifyType!=sType)
+						LOG_IF(WARNING,s_jcUpMsg.front()->m_NotifyType!=sType)
 							<<"锁具下发和返回消息类型不同，两者分别是 "
-							<<"下发类型="<<s_jcUpMsg.front()->NotifyType
+							<<"下发类型="<<s_jcUpMsg.front()->m_NotifyType
 							<<"\t返回类型="<<sType<<endl;
 					}
 
 					string outXML;
 					jcAtmcConvertDLL::zwJCjson2CCBxml(recvBuf,outXML);	
 					assert(outXML.size()>0);
-					//首先单独处理下位机主动发送闭锁码和主动请求时间同步
-					// 还有锁具发送验证码,锁具发送报警信息
-					//这几个反向循环报文需要单独处理
-					// 此外针对0002查询状态报文做一个针对性补丁，834版本已经很稳定了
-					if (outXML.size()>0 && 
-						(myIsMsgFromLockFirstUp(sType) ||
-						"Lock_Now_Info"==sType)
-						)
-					{
-						ZWERROR("该锁具主动上传消息将会被另一个上传线程在不打破一问一答的前提下延迟上传")
-						jcLockMsg1512_t *nItem=new jcLockMsg1512_t;
-						nItem->CallerThreadID=0;
-						nItem->UpMsg=outXML;
-						nItem->NotifyType=sType;
-						nItem->NotifyMs=zwccbthr::zwGetMs();
-						s_LockFirstUpMsg.push_back(nItem);
-						LOG(INFO)<<__FUNCTION__<<"单向上传队列s_LockFirstUpMsg大小="<<s_LockFirstUpMsg.size()<<endl;
-						if (s_jcUpMsg.size()>0)
-						{
-							s_jcUpMsg.pop_front();
-						}						
-					}
+
 						//除了这几个报文以外都是符合正向循环一问一答的，正常上传		
 						// 按照正向和反向报文区分以后，暂不检测上下行报文类型对应了
 						// 下一步改造目标应该是正向和反向两个循环彻底分开两个线程来处理应该就最好了
-						if (outXML.size()>0 && s_jcUpMsg.size()>0 
-							&& !myIsMsgFromLockFirstUp(sType)
-							)
+						if (outXML.size()>0 && s_jcUpMsg.size()>0 )
 						{
 							//ZWWARN("正常上传报文")
-							DWORD tid=s_jcUpMsg.front()->CallerThreadID;
-							string tMsgType=s_jcUpMsg.front()->NotifyType;
-							double tNotifyMs=s_jcUpMsg.front()->NotifyMs;
+							DWORD tid=s_jcUpMsg.front()->m_CallerThreadID;
+							string tMsgType=s_jcUpMsg.front()->m_NotifyType;
+							double tNotifyMs=s_jcUpMsg.front()->m_NotifyMs;
 							double curMs=zwccbthr::zwGetMs();							
 							LOG(ERROR)<<"下发后正常上传线程报文"<<tMsgType<<"处理时间"<<curMs-tNotifyMs<<"毫秒"<<endl;	
 							assert(tid>0);
@@ -246,10 +223,14 @@ namespace zwccbthr {
 							pushToCallBack(outXML.c_str(),pRecvMsgFun);							
 							assert(s_jcUpMsg.size()>0);
 							s_jcUpMsg.pop_front();
-							VLOG(3)<<"普通上传队列大小s_jcUpMsg.size()="<<s_jcUpMsg.size()<<endl;
+							VLOG(4)<<"普通上传队列大小s_jcUpMsg.size()="<<s_jcUpMsg.size()<<endl;
 							s_LastNormalMsgUpTimeMs=zwGetMs();
 							//VLOG(3)<<"s_LastNormalMsgUpTimeMs="<<MYFD1<<s_LastNormalMsgUpTimeMs<<endl;
 							myDbgPrintMs("s_LastNormalMsgUpTimeMs_Recv");
+						}
+						else
+						{
+							LOG(ERROR)<<"未被处理的上行报文 "<<outXML<<endl;
 						}
 				}	//if (strlen(recvBuf)>0)
 			}while(strlen(recvBuf)>0);
@@ -293,7 +274,7 @@ namespace zwccbthr {
 
 					if (s_LockFirstUpMsg.size()>0)
 					{				
-						string &strSingleUp=s_LockFirstUpMsg.front()->UpMsg;	
+						string &strSingleUp=s_LockFirstUpMsg.front()->m_UpMsg;	
 						assert(strSingleUp.size()>0);
 						
 						string sType=jcAtmcConvertDLL::zwGetJcxmlMsgType(strSingleUp.c_str());
@@ -327,8 +308,8 @@ namespace zwccbthr {
 							assert(NULL!=pCallBack);
 							if (pCallBack!=pOld)
 							{
-								string tMsgType=zwccbthr::s_LockFirstUpMsg.front()->NotifyType;
-								double tNotifyMs=zwccbthr::s_LockFirstUpMsg.front()->NotifyMs;
+								string tMsgType=zwccbthr::s_LockFirstUpMsg.front()->m_NotifyType;
+								double tNotifyMs=zwccbthr::s_LockFirstUpMsg.front()->m_NotifyMs;
 								double curMs=zwccbthr::zwGetMs();
 								LOG(ERROR)<<"上传线程报文"<<tMsgType<<"处理时间"<<curMs-tNotifyMs<<"毫秒"<<endl;	
 								pushToCallBack(strSingleUp.c_str(),pCallBack);
@@ -344,7 +325,7 @@ namespace zwccbthr {
 						}
 					}//end if (s_LockFirstUpMsg.size()>0)
 				}	//end mutex
-				Sleep(100);	//mutex控制范围结束后，Sleep一下，让出互斥锁给收发线程
+				//Sleep(100);	//mutex控制范围结束后，Sleep一下，让出互斥锁给收发线程
 				}//end while
 				//VLOG(3)<<__FUNCTION__<<"\t单向上传线程运行中，刚结束一个循环"<<endl;
 	}
