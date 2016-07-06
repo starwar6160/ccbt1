@@ -25,6 +25,7 @@ namespace zwccbthr {
 	double s_LastNormalMsgUpTimeMs=0.0;	//最后一次正常循环报文上传的时间，毫秒计算
 	////供单向上传报文专用的保存所有回调函数指针的向量,好让单向报文发给所有线程;
 	vector <RecvMsgRotine> s_vecSingleUp;	
+	bool s_bPendingNotify=false;	//是否有下发了但是由于线程锁还没进入下发队列的消息，用于避免和单向上传消息冲突
 
 
 	void wait(int milliseconds) {
@@ -186,8 +187,10 @@ namespace zwccbthr {
 			}
 			double curMs=zwccbthr::zwGetMs();
 			//当下发队列已经为空，而且此时因为线程锁的缘故暂时不能加入新的消息，而且最后一条正常下发消息
-			//的回应消息已经上传了500毫秒，就是一个空闲时刻可以上传消息了；
-			if (s_jcLockToC.size()>0 && s_jcNotify.size()==0 && (curMs-s_lastNotifyMs>500))
+			//的回应消息已经上传了500毫秒，而且没有等待进入下发队列的消息，就是一个空闲时刻可以上传消息了；
+			if (s_jcLockToC.size()>0 && s_jcNotify.size()==0 
+				&& (curMs-s_lastNotifyMs>500)
+				&& zwccbthr::s_bPendingNotify==false)
 			{
 				string sUpMsg=s_jcLockToC.front();
 				LOG(ERROR)<<"单向上传报文 "<<sUpMsg<<endl;					

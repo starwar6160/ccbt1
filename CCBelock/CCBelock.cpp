@@ -82,6 +82,7 @@ namespace zwccbthr {
 	extern RecvMsgRotine s_CallBack;
 	////供单向上传报文专用的保存所有回调函数指针的向量,好让单向报文发给所有线程;
 	extern vector <RecvMsgRotine> s_vecSingleUp;	
+	extern bool s_bPendingNotify;	//是否有下发了但是由于线程锁还没进入下发队列的消息，用于避免和单向上传消息冲突
 } //namespace zwccbthr{  
 
 namespace zwCfg {
@@ -203,8 +204,6 @@ CCBELOCK_API long JCAPISTD Notify(const char *pszMsg)
 		zwccbthr::opCommThr=new boost::thread(zwccbthr::my706LockRecvThr);
 	}	
 
-	boost::mutex::scoped_lock lock(zwccbthr::thrhid_mutex);
-
 	assert(pszMsg != NULL);
 	assert(strlen(pszMsg) >= 42);	//XML至少42字节utf8
 	if (pszMsg == NULL || strlen(pszMsg) < 42) {
@@ -236,11 +235,16 @@ CCBELOCK_API long JCAPISTD Notify(const char *pszMsg)
 		assert(strJsonSend.length() > 9);	//json最基本的符号起码好像要9个字符左右
 		VLOG_IF(4,strJsonSend.size()>0)<<"strJsonSend="<<strJsonSend;
 
-		//现在开始一问一答过程，在获得对口回复报文之前不得上传其他报文
+		//标志合法的下发命令尚未进入下发队列
+		zwccbthr::s_bPendingNotify=true;
+		boost::mutex::scoped_lock lock(zwccbthr::thrhid_mutex);
+
+
+		//现在开始一问一答过程，在获得对口回复报文之前不得上传其他报文		
 		DWORD iCallerThrId=GetCurrentThreadId();
 		jcLockMsg1512_t *nItem=new jcLockMsg1512_t(strJsonSend);
 		zwccbthr::s_jcNotify.push_back(nItem);
-
+		zwccbthr::s_bPendingNotify=false;
 		return ELOCK_ERROR_SUCCESS;
 	}
 	catch(ptree_bad_path & e) {
