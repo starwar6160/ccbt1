@@ -80,7 +80,7 @@ namespace zwccbthr {
 			//20150415.1727.为了万敏的要求，控制上传消息速率最多每2秒一条防止ATM死机
 			//Sleep(2920);
 			pRecvMsgFun(recvConvedXML);
-			ZWWARN(recvConvedXML)
+			LOG(ERROR)<<"上位机收到 "<<recvConvedXML<<endl;
 			VLOG_IF(4,strlen(recvConvedXML)>0)<<"回调函数收到以下内容\n"<<recvConvedXML<<endl;
 #ifdef _DEBUG401
 			
@@ -131,6 +131,54 @@ namespace zwccbthr {
 //VLOG(4)<<myFuncName<<" "<<MYFD1<<"ZWHTms="<<(cur-s_zwProcStartMs)<<endl;
 #endif // _DEBUG
 		
+	}
+
+	void my706LockRecvThr(void)
+	{
+		ZWERROR("与锁具之间的数据接收线程启动.20151231.v837Base834")
+		const int BLEN = 1024;
+		char recvBuf[BLEN];					
+		using zwccbthr::s_jcNotify;
+		while (1)
+		{	
+			boost::this_thread::interruption_point();
+			{
+				boost::mutex::scoped_lock lock(thrhid_mutex);		
+				JCHID_STATUS sts=JCHID_STATUS_FAIL;		
+				if (s_jcNotify.size()>0)
+				{
+					jcLockMsg1512_t *nItem=s_jcNotify.front();
+					string sCmd=nItem->m_NotifyMsg;
+					VLOG(3)<<"下发给锁具的消息内容是"<<sCmd<<endl;
+					sts=static_cast<JCHID_STATUS>( g_jhc->SendJson(sCmd.c_str()));
+					//断线重连探测机制
+					if (JCHID_STATUS_OK!=static_cast<JCHID_STATUS>(sts))
+					{
+						g_jhc->OpenJc();
+					}
+					s_jcNotify.pop_front();
+				}	//if (s_jcNotify.size()>0)
+				//读取返回值
+				do 
+				{
+					memset(recvBuf,0,BLEN);
+					sts=static_cast<JCHID_STATUS>(g_jhc->RecvJson(recvBuf,BLEN));
+					if (strlen(recvBuf)>0)
+					{
+					VLOG(3)<<"收到锁具返回消息1607= "<<recvBuf<<endl;
+					string sType=jcAtmcConvertDLL::zwGetJcJsonMsgType(recvBuf);
+					string outXML;
+					jcAtmcConvertDLL::zwJCjson2CCBxml(recvBuf,outXML);
+						if (outXML.size()>0)
+						{
+							RecvMsgRotine pRecvMsgFun=zwccbthr::s_CallBack;
+							pushToCallBack(outXML.c_str(),pRecvMsgFun);
+						}				
+					}	//if (strlen(recvBuf)>0)
+				} while (strlen(recvBuf)>0);
+			}
+		}	//end of while(1)
+
 	}
 
 
@@ -230,7 +278,11 @@ namespace zwccbthr {
 						}
 						else
 						{
-							LOG(ERROR)<<"未被处理的上行报文 "<<outXML<<endl;
+							LOG(ERROR)<<"单向上行报文 "<<outXML<<endl;
+							RecvMsgRotine pRecvMsgFun=zwccbthr::s_CallBack;
+							assert(pRecvMsgFun!=NULL);
+							//zwccbthr::s_thrIdToPointer[tid];
+							pushToCallBack(outXML.c_str(),pRecvMsgFun);							
 						}
 				}	//if (strlen(recvBuf)>0)
 			}while(strlen(recvBuf)>0);

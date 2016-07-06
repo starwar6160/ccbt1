@@ -214,12 +214,12 @@ void zw1209SpeedTestThr1(void)
 	G_MSGSTARTMS=zwGetMs();
 	EXPECT_EQ(ELOCK_ERROR_SUCCESS,Notify(g_msg04));	
 	//测试代码晚一点结束，以便锁具后续较慢报文能收到	
-		//while (G_TEST_UPNUM<7)
-		//{
-		//	printf("G_TEST_UPNUM=%d\n",G_TEST_UPNUM);
-		//	Sleep(1300);
-		//}
-	Sleep(5000);
+		while (G_TEST_UPNUM<7)
+		{
+			printf("G_TEST_UPNUM=%d\n",G_TEST_UPNUM);
+			Sleep(700);
+		}
+	//Sleep(5000);
 	//EXPECT_EQ(ELOCK_ERROR_SUCCESS,Close());
 	//cout<<"["<<__FUNCTION__<<"] ThreadPID=["<<GetCurrentThreadId()<<"]\tEND"<<endl;	
 }

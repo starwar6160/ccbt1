@@ -34,6 +34,7 @@ namespace zwccbthr {
 	double zwGetMs(void);
 	void ThreadLockRecv();	//与锁具之间的通讯线程
 	void my515LockRecvThr();	//与锁具之间的通讯线程20150515
+	void my706LockRecvThr();
 	void my515UpMsgThr(void);
 	boost::thread *opCommThr=NULL;	//为了控制通讯线程终止
 	boost::thread *opUpMsgThr=NULL;	
@@ -191,8 +192,8 @@ CCBELOCK_API long JCAPISTD Notify(const char *pszMsg)
 
 	if (NULL==zwccbthr::opCommThr)
 	{
-		VLOG(4)<<"Start my515LockRecvThr"<<endl;
-		zwccbthr::opCommThr=new boost::thread(zwccbthr::my515LockRecvThr);
+		VLOG(4)<<"Start my706LockRecvThr"<<endl;
+		zwccbthr::opCommThr=new boost::thread(zwccbthr::my706LockRecvThr);
 	}	
 
 	boost::mutex::scoped_lock lock(zwccbthr::thrhid_mutex);
