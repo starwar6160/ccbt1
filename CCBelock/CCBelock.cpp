@@ -16,7 +16,7 @@
 #include ".\\ATMCMsgConvert\\myConvIntHdr.h"
 
 
-#define _USE_FAKEHID_DEV20160705	//决定是否使用FAKE的函数用来调试
+//#define _USE_FAKEHID_DEV20160705	//决定是否使用FAKE的函数用来调试
 #include "zwHidDevClass2015.h"
 
 using namespace std;
@@ -318,12 +318,12 @@ namespace jchidDevice2015{
 		ZWWARN(__FUNCTION__)
 		if (JCHID_STATUS_OK != jcHidOpen(&m_jcElock)) {
 			ZWERROR("myOpenElock1503 return ELOCK_ERROR_PARAMINVALID "
-				"电子锁打开失败 20150504.0957 by Class jcHidDevice");
+				"电子锁打开失败 20160706.1656 by Class jcHidDevice");
 			m_hidOpened=false;
 			return ELOCK_ERROR_PARAMINVALID;
 		}
 		//hid_set_nonblocking(static_cast<hid_device *>(m_jcElock.hid_device),1);
-		ZWWARN("myOpenElock1503 电子锁打开成功20150504.0957 by Class jcHidDevice")
+		ZWWARN("myOpenElock1503 电子锁打开成功20160706.1656 by Class jcHidDevice")
 		m_hidOpened=true;
 		return ELOCK_ERROR_SUCCESS;
 	}
