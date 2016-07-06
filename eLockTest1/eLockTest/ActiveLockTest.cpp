@@ -219,7 +219,7 @@ void zw1209SpeedTestThr1(void)
 			printf("G_TEST_UPNUM=%d\n",G_TEST_UPNUM);
 			Sleep(700);
 		}
-	//Sleep(5000);
+	//Sleep(7000);
 	//EXPECT_EQ(ELOCK_ERROR_SUCCESS,Close());
 	//cout<<"["<<__FUNCTION__<<"] ThreadPID=["<<GetCurrentThreadId()<<"]\tEND"<<endl;	
 }

@@ -72,7 +72,7 @@ namespace jcAtmcConvertDLL {
 	std::string &zwtrim(std::string &s);
 
 	//保存一条下发报文及其返回报文，还有线程ID等相关信息；
-	struct jcLockMsg1512_t 
+	class jcLockMsg1512_t 
 	{
 		DWORD m_CallerThreadID;	//主程序线程ID
 		std::string m_NotifyMsg;		//下发的报文
@@ -83,7 +83,13 @@ namespace jcAtmcConvertDLL {
 		double m_NotifyMs;	//下发报文毫秒数，20160705.1705调试用
 	public:
 		jcLockMsg1512_t(const std::string &notifyMsg);		
+		~jcLockMsg1512_t();
+		const std::string &getNotifyMsg(void);
+		const std::string &getNotifyType(void);
+		double getNotifyMs(void);
 	};
-
-
 }				//namespace jcAtmcConvertDLL{
+
+namespace zwccbthr {
+	double zwGetMs(void);	
+}

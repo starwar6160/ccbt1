@@ -133,8 +133,8 @@ namespace zwccbthr {
 				if (s_jcNotify.size()>0)
 				{
 					jcLockMsg1512_t *nItem=s_jcNotify.front();
-					string sCmd=nItem->m_NotifyMsg;
-					VLOG(3)<<"下发给锁具的消息内容是"<<sCmd<<endl;
+					string sCmd=nItem->getNotifyMsg();
+					VLOG(4)<<"下发给锁具的消息内容是"<<sCmd<<endl;
 					sts=static_cast<JCHID_STATUS>( g_jhc->SendJson(sCmd.c_str()));
 					//断线重连探测机制
 					if (JCHID_STATUS_OK!=static_cast<JCHID_STATUS>(sts))
@@ -149,17 +149,24 @@ namespace zwccbthr {
 					memset(recvBuf,0,BLEN);
 					sts=static_cast<JCHID_STATUS>(g_jhc->RecvJson(recvBuf,BLEN));
 					if (strlen(recvBuf)>0)
-					{
+					{					
 					VLOG(3)<<"收到锁具返回消息1607= "<<recvBuf<<endl;
-					string sType=jcAtmcConvertDLL::zwGetJcJsonMsgType(recvBuf);
+					string upType=jcAtmcConvertDLL::zwGetJcJsonMsgType(recvBuf);
 					string outXML;
 					jcAtmcConvertDLL::zwJCjson2CCBxml(recvBuf,outXML);
 						if (outXML.size()>0)
 						{
 							RecvMsgRotine pRecvMsgFun=zwccbthr::s_CallBack;
 							pushToCallBack(outXML.c_str(),pRecvMsgFun);
-						}				
-					}	//if (strlen(recvBuf)>0)
+							//if (s_jcNotify.size()>0)
+							//{
+							//jcLockMsg1512_t *nItem=s_jcNotify.front();
+							//string downType=jcAtmcConvertDLL::zwGetJcJsonMsgType(nItem->getNotifyMsg().c_str());
+							//VLOG_IF(3,downType!=upType)<<"downType="<<downType<<" upType="<<upType<<endl;
+							////s_jcNotify.pop_front();
+							//}
+						}					
+					}	//if (strlen(recvBuf)>0)					
 				} while (strlen(recvBuf)>0);
 			}
 		}	//end of while(1)

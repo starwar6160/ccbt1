@@ -167,8 +167,7 @@ namespace jcAtmcConvertDLL {
 		write_json(sst1, ptJC);
 		string jsonJc = sst1.str();
 //#ifdef _DEBUG401
-		LOG(WARNING)<<"金储锁具返回的JSON应答开始\n"
-		<<jsonJc;
+		//LOG(WARNING)<<"金储锁具返回的JSON应答开始\n"<<jsonJc;
 		//printf("%s\n", jsonJc.c_str());
 		//ZWDBGWARN("JINCHU锁具返回的JSON应答结束\n");
 //#endif // _DEBUG401

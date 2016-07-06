@@ -24,10 +24,47 @@ using boost::property_tree::ptree_error;
 using boost::property_tree::ptree_bad_data;
 using boost::property_tree::ptree_bad_path;
 using jchidDevice2015::jcHidDevice;
-using jcAtmcConvertDLL::jcLockMsg1512_t;
+
 
 extern jcHidDevice *g_jhc;	//实际的HID设备类对象
 #define DBGTHRID	VLOG(3)<<"["<<__FUNCTION__<<"] ThreadID of Caller is "<<GetCurrentThreadId()<<endl;
+
+
+namespace jcAtmcConvertDLL
+{
+
+
+
+	jcLockMsg1512_t::jcLockMsg1512_t(const std::string &notifyMsg)
+	{
+		DWORD iCallerThrId=GetCurrentThreadId();
+		m_CallerThreadID=iCallerThrId;
+		m_NotifyMsg=notifyMsg;
+		m_UpMsg="";
+		m_bSended=false;
+		m_pRecvMsgFun=NULL;
+		m_NotifyMs=zwccbthr::zwGetMs();
+		m_NotifyType=jcAtmcConvertDLL::zwGetJcJsonMsgType(notifyMsg.c_str());
+	}
+
+	const std::string & jcLockMsg1512_t::getNotifyMsg(void)
+	{
+		return m_NotifyMsg;
+	}
+
+	const std::string & jcLockMsg1512_t::getNotifyType(void)
+	{
+		return m_NotifyType;
+	}
+
+	double jcLockMsg1512_t::getNotifyMs(void)
+	{
+		return m_NotifyMs;
+	}
+}
+
+using jcAtmcConvertDLL::jcLockMsg1512_t;
+
 
 
 namespace zwccbthr {
@@ -51,21 +88,6 @@ namespace zwCfg {
 	bool s_hidOpened = false;
 } //namespace zwCfg{  
 
-namespace jcAtmcConvertDLL
-{
-	jcLockMsg1512_t::jcLockMsg1512_t(const std::string &notifyMsg)
-	{
-		DWORD iCallerThrId=GetCurrentThreadId();
-		m_CallerThreadID=iCallerThrId;
-		m_NotifyMsg=notifyMsg;
-		m_UpMsg="";
-		m_bSended=false;
-		m_pRecvMsgFun=NULL;
-		m_NotifyMs=zwccbthr::zwGetMs();
-		m_NotifyType=jcAtmcConvertDLL::zwGetJcJsonMsgType(notifyMsg.c_str());
-	}
-
-}
 
 void ZWDBGMSG(const char *x)
 {
