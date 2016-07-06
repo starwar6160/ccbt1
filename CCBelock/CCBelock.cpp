@@ -61,6 +61,11 @@ namespace jcAtmcConvertDLL
 	{
 		return m_NotifyMs;
 	}
+
+	void jcLockMsg1512_t::setInitNotifyMs(void)
+	{
+		m_NotifyMs=zwccbthr::zwGetMs();
+	}
 }
 
 using jcAtmcConvertDLL::jcLockMsg1512_t;

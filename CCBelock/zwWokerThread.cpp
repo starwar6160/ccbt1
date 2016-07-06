@@ -55,7 +55,6 @@ namespace zwccbthr {
 
 
 		if (strlen(recvConvedXML)>0){		
-			//ZWINFO("分析锁具回传的Json并转换为建行XML成功");
 			//XML开头的固定内容38个字符，外加起码一个标签的两对尖括号合计4个字符
 			assert(strlen(recvConvedXML) > 42);
 		}
@@ -72,16 +71,11 @@ namespace zwccbthr {
 			//Sleep(2920);
 			pRecvMsgFun(recvConvedXML);
 			LOG(WARNING)<<"上位机收到 "<<recvConvedXML<<endl;
-			VLOG_IF(4,strlen(recvConvedXML)>0)<<"回调函数收到以下内容\n"<<recvConvedXML<<endl;
-#ifdef _DEBUG401
-			
-			VLOG(4)<<"成功把从锁具接收到的数据传递给回调函数\n";
-#endif // _DEBUG401
 		}
 	}
 	
 	//是否是锁具主动上送报文这样的反向循环报文
-	bool myIsMsgFromLockFirstUp(const string &jcMsg)
+	bool myIsJsonMsgFromLockFirstUp(const string &jcMsg)
 	{
 		if(						
 			jcMsg=="Lock_Open_Ident"	  ||
@@ -135,15 +129,22 @@ namespace zwccbthr {
 				if (s_jcNotify.size()>0)
 				{
 					jcLockMsg1512_t *nItem=s_jcNotify.front();
+					//记录真正下发的时间
+					nItem->setInitNotifyMs();
 					string sCmd=nItem->getNotifyMsg();
-					VLOG(4)<<"下发给锁具的消息内容是"<<sCmd<<endl;
+					
+					VLOG(3)<<"下发给锁具的消息内容是"<<sCmd<<endl;
 					sts=static_cast<JCHID_STATUS>( g_jhc->SendJson(sCmd.c_str()));
 					//断线重连探测机制
 					if (JCHID_STATUS_OK!=static_cast<JCHID_STATUS>(sts))
 					{
 						g_jhc->OpenJc();
 					}
-					
+					//如果是锁具主动上送报文的返回确认报文，那么下发完毕后不用读取锁具的返回报文
+					if(true==myIsJsonMsgFromLockFirstUp(nItem->getNotifyType())) 
+					{
+						continue;
+					}
 				}	//if (s_jcNotify.size()>0)
 				//读取返回值
 				do 
@@ -168,9 +169,11 @@ namespace zwccbthr {
 								RecvMsgRotine pRecvMsgFun=zwccbthr::s_CallBack;
 								pushToCallBack(outXML.c_str(),pRecvMsgFun);
 								s_lastNotifyMs=zwccbthr::zwGetMs();
+								VLOG(3)<<"消息"<<upType<<"处理时间"<<s_lastNotifyMs-nItem->getNotifyMs()<<"毫秒"<<endl;
 							}
-							else
+							if (downType!=upType || myIsJsonMsgFromLockFirstUp(upType))
 							{								
+								//锁具主动上送报文，暂且放到单独的队列里面有待于延迟处理
 								s_jcLockToC.push_back(outXML);
 							}							
 							}																						
@@ -182,6 +185,8 @@ namespace zwccbthr {
 				s_jcNotify.pop_front();
 			}
 			double curMs=zwccbthr::zwGetMs();
+			//当下发队列已经为空，而且此时因为线程锁的缘故暂时不能加入新的消息，而且最后一条正常下发消息
+			//的回应消息已经上传了500毫秒，就是一个空闲时刻可以上传消息了；
 			if (s_jcLockToC.size()>0 && s_jcNotify.size()==0 && (curMs-s_lastNotifyMs>500))
 			{
 				string sUpMsg=s_jcLockToC.front();
@@ -190,7 +195,7 @@ namespace zwccbthr {
 				pushToCallBack(sUpMsg.c_str(),pRecvMsgFun);
 				s_jcLockToC.pop_front();
 			}								
-			}
+			}//boost::mutex::scoped_lock lock(thrhid_mutex);		
 		}	//end of while(1)
 
 	}

@@ -87,6 +87,7 @@ namespace jcAtmcConvertDLL {
 		const std::string &getNotifyMsg(void);
 		const std::string &getNotifyType(void);
 		double getNotifyMs(void);
+		void setInitNotifyMs(void);
 	};
 }				//namespace jcAtmcConvertDLL{
 
