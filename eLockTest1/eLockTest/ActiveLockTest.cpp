@@ -217,7 +217,7 @@ void zw1209SpeedTestThr1(void)
 		while (G_TEST_UPNUM<7)
 		{
 			printf("G_TEST_UPNUM=%d\n",G_TEST_UPNUM);
-			Sleep(700);
+			Sleep(300);
 		}
 	//Sleep(7000);
 	//EXPECT_EQ(ELOCK_ERROR_SUCCESS,Close());

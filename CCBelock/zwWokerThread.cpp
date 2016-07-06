@@ -20,7 +20,7 @@ namespace zwccbthr {
 	//建行给的接口，没有设置连接参数的地方，也就是说，完全可以端口，抑或是从配置文件读取
 	boost::mutex thrhid_mutex;
 	void pushToCallBack( const char * recvConvedXML,RecvMsgRotine pRecvMsgFun );	
-	deque<jcLockMsg1512_t *> s_jcNotify;		//下发命令队列，下发完毕后移动到上传队列
+	deque<jcLockMsg1512_t *> s_jcNotify;		//下发命令队列
 	RecvMsgRotine s_CallBack=NULL;
 	double s_LastNormalMsgUpTimeMs=0.0;	//最后一次正常循环报文上传的时间，毫秒计算
 	////供单向上传报文专用的保存所有回调函数指针的向量,好让单向报文发给所有线程;
@@ -71,7 +71,7 @@ namespace zwccbthr {
 			//20150415.1727.为了万敏的要求，控制上传消息速率最多每2秒一条防止ATM死机
 			//Sleep(2920);
 			pRecvMsgFun(recvConvedXML);
-			LOG(ERROR)<<"上位机收到 "<<recvConvedXML<<endl;
+			LOG(WARNING)<<"上位机收到 "<<recvConvedXML<<endl;
 			VLOG_IF(4,strlen(recvConvedXML)>0)<<"回调函数收到以下内容\n"<<recvConvedXML<<endl;
 #ifdef _DEBUG401
 			
@@ -121,6 +121,8 @@ namespace zwccbthr {
 	void my706LockRecvThr(void)
 	{
 		ZWERROR("与锁具之间的数据接收线程启动.20151231.v837Base834")
+		deque<string> s_jcLockToC;		//锁具单向上传队列
+		double s_lastNotifyMs=0;
 		const int BLEN = 1024;
 		char recvBuf[BLEN];					
 		using zwccbthr::s_jcNotify;
@@ -141,7 +143,7 @@ namespace zwccbthr {
 					{
 						g_jhc->OpenJc();
 					}
-					s_jcNotify.pop_front();
+					
 				}	//if (s_jcNotify.size()>0)
 				//读取返回值
 				do 
@@ -155,19 +157,39 @@ namespace zwccbthr {
 					string outXML;
 					jcAtmcConvertDLL::zwJCjson2CCBxml(recvBuf,outXML);
 						if (outXML.size()>0)
-						{
-							RecvMsgRotine pRecvMsgFun=zwccbthr::s_CallBack;
-							pushToCallBack(outXML.c_str(),pRecvMsgFun);
-							//if (s_jcNotify.size()>0)
-							//{
-							//jcLockMsg1512_t *nItem=s_jcNotify.front();
-							//string downType=jcAtmcConvertDLL::zwGetJcJsonMsgType(nItem->getNotifyMsg().c_str());
-							//VLOG_IF(3,downType!=upType)<<"downType="<<downType<<" upType="<<upType<<endl;
-							////s_jcNotify.pop_front();
-							//}
+						{							
+							if (s_jcNotify.size()>0)
+							{
+							jcLockMsg1512_t *nItem=s_jcNotify.front();
+							string downType=jcAtmcConvertDLL::zwGetJcJsonMsgType(nItem->getNotifyMsg().c_str());
+							LOG_IF(ERROR,downType!=upType)<<"downType="<<downType<<" upType="<<upType<<endl;
+							if (downType==upType)
+							{
+								RecvMsgRotine pRecvMsgFun=zwccbthr::s_CallBack;
+								pushToCallBack(outXML.c_str(),pRecvMsgFun);
+								s_lastNotifyMs=zwccbthr::zwGetMs();
+							}
+							else
+							{								
+								s_jcLockToC.push_back(outXML);
+							}							
+							}																						
+							
 						}					
 					}	//if (strlen(recvBuf)>0)					
 				} while (strlen(recvBuf)>0);
+			if (s_jcNotify.size()>0){
+				s_jcNotify.pop_front();
+			}
+			double curMs=zwccbthr::zwGetMs();
+			if (s_jcLockToC.size()>0 && s_jcNotify.size()==0 && (curMs-s_lastNotifyMs>500))
+			{
+				string sUpMsg=s_jcLockToC.front();
+				LOG(ERROR)<<"单向上传报文 "<<sUpMsg<<endl;					
+				RecvMsgRotine pRecvMsgFun=zwccbthr::s_CallBack;
+				pushToCallBack(sUpMsg.c_str(),pRecvMsgFun);
+				s_jcLockToC.pop_front();
+			}								
 			}
 		}	//end of while(1)
 
