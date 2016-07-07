@@ -76,4 +76,25 @@ protected:
 };
 
 
+namespace testMatch1607{
+	struct testMsgType{
+		string msgCode;
+		string msgType;
+	};
+
+	using std::deque;
+	class myMsgSts1607
+	{
+	public:
+		myMsgSts1607();
+		~myMsgSts1607();
+		void PushDownMsg(const string &downXML);
+		void PopDownMsgType(string &mCode,string &mType);
+		void MatchDownMsgType(const string &upCode,const string &upType);
+		void dumpDownDeque(void);
+	private:
+		deque<testMsgType> m_dqDown;
+	};
+} //namespace testMatch1607{
+
 #endif // jcElockTestHdr_h__

@@ -50,6 +50,7 @@ void myATMCRecvMsgRotine(const char *jcLockResponseXML)
 	extern int G_TEST_UPNUM;
 	extern double G_MSGSTARTMS;
 	extern double zwGetMs(void);
+	extern testMatch1607::myMsgSts1607 rdq;	
 	assert(jcLockResponseXML != NULL && strlen(jcLockResponseXML) > 42);
 	EXPECT_LT(42, strlen(jcLockResponseXML));
 	G_TEST_UPNUM++;
@@ -58,6 +59,11 @@ void myATMCRecvMsgRotine(const char *jcLockResponseXML)
 	string ccbop, ccbname;
 	string rmsg = jcLockResponseXML;
 	zwGetCCBMsgType(rmsg, ccbop, ccbname);
+	rdq.MatchDownMsgType(ccbop,ccbname);
+	//if (g_downOp!=ccbop || g_downName!=ccbname)
+	//{
+	//	cout<<"下发和上传类型不匹配，下发码="<<g_downOp<<"上传码="<<ccbop<<"下发名="<<g_downName<<"上传名="<<ccbname<<endl;
+	//}
 	//printf("%s:%s报文处理时间是%.1f毫秒\n",ccbop.c_str(),ccbname.c_str(), curTime-G_MSGSTARTMS);
 
 	//cout << "*******************建行ATMC回调函数开始***####\n";

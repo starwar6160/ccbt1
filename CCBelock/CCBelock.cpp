@@ -15,8 +15,6 @@
 #include "hidapi.h"
 #include ".\\ATMCMsgConvert\\myConvIntHdr.h"
 
-
-//#define _USE_FAKEHID_DEV20160705	//决定是否使用FAKE的函数用来调试
 #include "zwHidDevClass2015.h"
 
 using namespace std;

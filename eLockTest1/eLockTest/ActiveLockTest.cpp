@@ -197,28 +197,121 @@ double zwGetMs(void)
 	int G_TEST_UPNUM=0;	
 	double G_MSGSTARTMS=0.0;
 
+namespace testMatch1607{
+
+	myMsgSts1607::myMsgSts1607()
+	{
+
+	}
+
+	myMsgSts1607::~myMsgSts1607()
+	{
+
+	}
+
+	void myMsgSts1607::PushDownMsg(const string &downXML)
+	{
+		struct testMsgType *nItem=new struct testMsgType;
+		zwGetCCBMsgType(downXML, nItem->msgCode,nItem->msgType);
+		m_dqDown.push_back(*nItem);
+	}
+
+	void myMsgSts1607::PopDownMsgType(string &mCode,string &mType)
+	{
+		if (m_dqDown.size()>0)
+		{
+			struct testMsgType &nTop=m_dqDown.front();
+			mCode=nTop.msgCode;
+			mType=nTop.msgType;
+			m_dqDown.pop_front();
+		}
+		else
+		{
+			mCode="";
+			mType="";
+		}
+	}
+
+	void myMsgSts1607::MatchDownMsgType(const string &upCode,const string &upType)
+	{
+		if (m_dqDown.size()>0)
+		{
+			//如果上传报文类型匹配下发队列第一个，那么消除下发队列第一个
+			//否则该条报文没有匹配，继续留在下发队列
+			struct testMsgType &nTop=m_dqDown.front();
+			if((upCode==nTop.msgCode) && (upType==nTop.msgType))
+			{
+				m_dqDown.pop_front();				
+			}	
+			else{
+				struct testMsgType *nItem=new struct testMsgType;
+				nItem->msgCode=upCode;
+				nItem->msgType=upType;
+				m_dqDown.push_back(*nItem);
+			}
+		}
+		else
+		{
+			//下发队列已经为空的话，那么基本可以确定是单向上传报文，也
+			//统一加入下发队列，便于最后dump查看；
+			struct testMsgType *nItem=new struct testMsgType;
+			nItem->msgCode=upCode;
+			nItem->msgType=upType;
+			m_dqDown.push_back(*nItem);
+		}
+
+	}
+
+	void myMsgSts1607::dumpDownDeque()
+	{
+		int downDqSize=m_dqDown.size();
+		if (downDqSize)
+		{
+			cout<<"void myMsgSts1607::dumpDownDeque() 余下未匹配消息有"<<downDqSize<<"条"<<endl;
+			for (int i=0;i<downDqSize;i++)
+			{
+				cout<<m_dqDown[i].msgCode<<" "<<m_dqDown[i].msgType<<endl;
+			}
+		}
+	}
+}	//namespace testMatch1607{
+
+	
+testMatch1607::myMsgSts1607 rdq;	
+
 void zw1209SpeedTestThr1(void)
 {
 	//Sleep(100);
 	//cout<<"["<<__FUNCTION__<<"] ThreadPID=["<<GetCurrentThreadId()<<"]\tSTART"<<endl;	
 	SetRecvMsgRotine(myATMCRecvMsgRotine);	
 	//EXPECT_EQ(ELOCK_ERROR_SUCCESS,Open(22));		
-	G_MSGSTARTMS=zwGetMs();
+
+#ifdef _USE_FAKEHID_DEV20160705
+	rdq.PushDownMsg(g_msg00);
 	EXPECT_EQ(ELOCK_ERROR_SUCCESS,Notify(g_msg00));	
-	G_MSGSTARTMS=zwGetMs();
+
+	rdq.PushDownMsg(g_msg01);
 	EXPECT_EQ(ELOCK_ERROR_SUCCESS,Notify(g_msg01));	
-	G_MSGSTARTMS=zwGetMs();
+#endif // _USE_FAKEHID_DEV20160705
+	
+	rdq.PushDownMsg(g_msg02);	
 	EXPECT_EQ(ELOCK_ERROR_SUCCESS,Notify(g_msg02));	
-	G_MSGSTARTMS=zwGetMs();
+	
+	rdq.PushDownMsg(g_msg03);
 	EXPECT_EQ(ELOCK_ERROR_SUCCESS,Notify(g_msg03));	
-	G_MSGSTARTMS=zwGetMs();
+		
+	rdq.PushDownMsg(g_msg04);
 	EXPECT_EQ(ELOCK_ERROR_SUCCESS,Notify(g_msg04));	
+
+	
 	//测试代码晚一点结束，以便锁具后续较慢报文能收到	
 		while (G_TEST_UPNUM<7)
 		{
 			printf("G_TEST_UPNUM=%d\n",G_TEST_UPNUM);
 			Sleep(300);
 		}
+
+	
 	//Sleep(7000);
 	//EXPECT_EQ(ELOCK_ERROR_SUCCESS,Close());
 	//cout<<"["<<__FUNCTION__<<"] ThreadPID=["<<GetCurrentThreadId()<<"]\tEND"<<endl;	
@@ -239,4 +332,5 @@ TEST_F(ccbElockTest, jcHidDev20151207SpeedTestInATMCDLL)
 	//Sleep(7000);
 	EXPECT_EQ(ELOCK_ERROR_SUCCESS,Close());
 	printf("TestInActiveLockTest.cpp");
+	rdq.dumpDownDeque();
 }
