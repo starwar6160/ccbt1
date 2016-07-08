@@ -199,8 +199,9 @@ namespace zwccbthr {
 							}																						
 							
 						}					
+						break;
 					}	//if (strlen(recvBuf)>0)					
-				} while (strlen(recvBuf)>0);
+				} while (1);
 			if (s_jcNotify.size()>0){
 				s_jcNotify.pop_front();
 			}

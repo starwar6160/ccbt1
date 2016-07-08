@@ -40,6 +40,6 @@ CCBELOCK_API void myLuaBridgeSendJsonAPI(const char *luaScriptFile);
 }
 #endif
 
-#define _USE_FAKEHID_DEV20160705	//决定是否使用FAKE的函数用来调试
+//#define _USE_FAKEHID_DEV20160705	//决定是否使用FAKE的函数用来调试
 
 #endif // CCBelock_h__

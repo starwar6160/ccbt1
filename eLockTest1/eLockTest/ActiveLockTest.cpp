@@ -6,11 +6,11 @@ void zwSecboxWDXtest20141023(void);
 
 string s_repActReqXML;	//从锁具收到的激活请求的返回报文
 string s_repLockInitXML;//从锁具收到的初始化请求的返回报文
-static const char *g_msg00="<?xml version='1.0' encoding='UTF-8'?><root><TransCode>0000</TransCode><TransName>CallForActInfo</TransName><TransDate>20150401</TransDate><TransTime>090333</TransTime><DevCode>440600300145</DevCode><SpareString1></SpareString1><SpareString2></SpareString2></root>";
-static const char *g_msg01="<?xml version='1.0' encoding='UTF-8'?><root><TransCode>0001</TransCode><TransName>SendActInfo</TransName><TransDate>20150401</TransDate><TransTime>090340</TransTime><DevCode>440600300145</DevCode><LockMan>BeiJing.JinChu</LockMan><LockId>22222222</LockId><ActInfo>BFr4af4YvXxtsGmJnDCKsZ3OhmkZimSur0itl6fwuc3fqkiK6j05arPl2on3N4rfVLQkfo9GRceMmbXDebf7rdY=.h/UOVQjtcby5I3wQyUXDdB/uDTeUq1oW.vNDgbpmArJ2CTkBSAJ0NKDeZ6vUifPLKjbLZH3eiFE+QkEBOy5+r2ZJEYEgBmjD1KGIbVfridTa3sjuqaFo0lby7YpqBXTo56v5yIzyz28k=</ActInfo><SpareString1></SpareString1><SpareString2></SpareString2></root>";
-static const char *g_msg02="<?xml version='1.0' encoding='UTF-8'?><root><TransCode>0002</TransCode><TransName>QueryForLockStatus</TransName><TransDate>20150401</TransDate><TransTime>084539</TransTime><DevCode>440600300145</DevCode><LockMan></LockMan><LockId></LockId><SpareString1></SpareString1><SpareString2></SpareString2></root>";
-static const char *g_msg03="<?xml version='1.0' encoding='UTF-8'?><root><TransCode>0003</TransCode><TransName>TimeSync</TransName><TransDate>20150401</TransDate><TransTime>085006</TransTime></root>";
-static const char *g_msg04="<?xml version='1.0' encoding='UTF-8'?><root><TransCode>0004</TransCode><TransName>ReadShutLockCode</TransName><TransDate>20150401</TransDate><TransTime>124932</TransTime><DevCode>440600300145</DevCode><SpareString1></SpareString1><SpareString2></SpareString2></root>"; 
+static const char *g_msg00="<?xml version='1.0' encoding='UTF-8'?><root><TransCode>0000</TransCode><TransName>CallForActInfo</TransName><TransDate>20160708</TransDate><TransTime>110900</TransTime><DevCode>515067001098</DevCode><SpareString1></SpareString1><SpareString2></SpareString2></root>";
+static const char *g_msg01="<?xml version='1.0' encoding='UTF-8'?><root><TransCode>0001</TransCode><TransName>SendActInfo</TransName><TransDate>20160708</TransDate><TransTime>110900</TransTime><DevCode>515067001098</DevCode><LockMan>BeiJing.JinChu</LockMan><LockId>22222222</LockId><ActInfo>BFr4af4YvXxtsGmJnDCKsZ3OhmkZimSur0itl6fwuc3fqkiK6j05arPl2on3N4rfVLQkfo9GRceMmbXDebf7rdY=.h/UOVQjtcby5I3wQyUXDdB/uDTeUq1oW.vNDgbpmArJ2CTkBSAJ0NKDeZ6vUifPLKjbLZH3eiFE+QkEBOy5+r2ZJEYEgBmjD1KGIbVfridTa3sjuqaFo0lby7YpqBXTo56v5yIzyz28k=</ActInfo><SpareString1></SpareString1><SpareString2></SpareString2></root>";
+static const char *g_msg02="<?xml version='1.0' encoding='UTF-8'?><root><TransCode>0002</TransCode><TransName>QueryForLockStatus</TransName><TransDate>20160708</TransDate><TransTime>110900</TransTime><DevCode>515067001098</DevCode><LockMan></LockMan><LockId></LockId><SpareString1></SpareString1><SpareString2></SpareString2></root>";
+static const char *g_msg03="<?xml version='1.0' encoding='UTF-8'?><root><TransCode>0003</TransCode><TransName>TimeSync</TransName><TransDate>20160708</TransDate><TransTime>110900</TransTime></root>";
+static const char *g_msg04="<?xml version='1.0' encoding='UTF-8'?><root><TransCode>0004</TransCode><TransName>ReadShutLockCode</TransName><TransDate>20160708</TransDate><TransTime>110900</TransTime><DevCode>515067001098</DevCode><SpareString1></SpareString1><SpareString2></SpareString2></root>"; 
 //从0号报文返回XML提取公钥并返回
 string myGetPubKeyFromMsg0000Rep(const string msg0000RepXML)
 {
@@ -327,44 +327,64 @@ void zw1209SpeedTestThr1(void)
 
 	rdq.PushDownMsg(g_msg01);
 	EXPECT_EQ(ELOCK_ERROR_SUCCESS,Notify(g_msg01));	
-#endif // _USE_FAKEHID_DEV20160705
 	
 	rdq.PushDownMsg(g_msg02);	
 	EXPECT_EQ(ELOCK_ERROR_SUCCESS,Notify(g_msg02));	
 	
-	rdq.PushDownMsg(g_msg03);
-	EXPECT_EQ(ELOCK_ERROR_SUCCESS,Notify(g_msg03));	
-		
 	rdq.PushDownMsg(g_msg04);
 	EXPECT_EQ(ELOCK_ERROR_SUCCESS,Notify(g_msg04));	
 
+	rdq.PushDownMsg(g_msg03);
+	EXPECT_EQ(ELOCK_ERROR_SUCCESS,Notify(g_msg03));	
+#else
+	rdq.PushDownMsg(g_msg02);	
+	EXPECT_EQ(ELOCK_ERROR_SUCCESS,Notify(g_msg02));	
+
+	rdq.PushDownMsg(g_msg03);
+	EXPECT_EQ(ELOCK_ERROR_SUCCESS,Notify(g_msg03));	
+
+	rdq.PushDownMsg(g_msg02);	
+	EXPECT_EQ(ELOCK_ERROR_SUCCESS,Notify(g_msg02));	
+
+	rdq.PushDownMsg(g_msg03);
+	EXPECT_EQ(ELOCK_ERROR_SUCCESS,Notify(g_msg03));	
+
+#endif // _USE_FAKEHID_DEV20160705	
+
+
+
 	
 	//测试代码晚一点结束，以便锁具后续较慢报文能收到	
-		while (G_TEST_UPNUM<7)
-		{
-			printf("G_TEST_UPNUM=%d\n",G_TEST_UPNUM);
-			Sleep(300);
-		}
+		//while (G_TEST_UPNUM<7)
+		//{
+		//	printf("G_TEST_UPNUM=%d\n",G_TEST_UPNUM);
+		//	Sleep(300);
+		//}
 	
-	//Sleep(7000);
+	//Sleep(4000);
 	//EXPECT_EQ(ELOCK_ERROR_SUCCESS,Close());
 	//cout<<"["<<__FUNCTION__<<"] ThreadPID=["<<GetCurrentThreadId()<<"]\tEND"<<endl;	
+	cout<<"zw1209SpeedTestThr1 结束"<<endl;
 }
 
 
 TEST_F(ccbElockTest, jcHidDev20151207SpeedTestInATMCDLL)
 {	
-	boost::thread *thr1=new boost::thread(zw1209SpeedTestThr1);	
-	Sleep(100);
+	//boost::thread *thr1=new boost::thread(zw1209SpeedTestThr1);	
+	//Sleep(100);
 	//boost::thread *thr2=new boost::thread(zw1209SpeedTestThr2);
 	//boost::thread *thr3=new boost::thread(zw1218OpenTimeTestThr);
 	
 	
-	thr1->join();
+	//thr1->join();
 	//thr2->join();
 	//thr3->join();
-	//Sleep(7000);
-	EXPECT_EQ(ELOCK_ERROR_SUCCESS,Close());
+	zw1209SpeedTestThr1();
+	cout<<"jcHidDev20151207SpeedTestInATMCDLL 1"<<endl;
+	Sleep(7000);
+	cout<<"jcHidDev20151207SpeedTestInATMCDLL 2"<<endl;
+	//EXPECT_EQ(ELOCK_ERROR_SUCCESS,Close());
 	printf("TestInActiveLockTest.cpp");
 	rdq.dumpDownDeque();
+	cout<<"jcHidDev20151207SpeedTestInATMCDLL 3"<<endl;
 }
