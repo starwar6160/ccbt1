@@ -209,6 +209,26 @@ namespace testMatch1607{
 
 	}
 
+	string myMsgSts1607::statusToStr(enum matchStatus mMatch)
+	{
+		switch (mMatch)
+		{
+		case MATCH_TWOWAY_OK:
+			return "MATCH_TWOWAY_OK";
+			break;
+		case MATCH_TWOWAY_ERROR:
+			return "MATCH_TWOWAY_ERROR";
+			break;
+		case MATCH_SUP_OK:
+			return "MATCH_SUP_OK";
+			break;
+		case MATCH_SUP_ERROR:
+			return "MATCH_SUP_ERROR";
+			break;
+		}
+		return "";
+	};
+
 	void myMsgSts1607::PushDownMsg(const string &downXML)
 	{
 		struct testMsgType *nItem=new struct testMsgType;
@@ -237,7 +257,8 @@ namespace testMatch1607{
 		if (m_dqDown.size()>0)
 		{
 			//如果上传报文类型匹配下发队列第一个，那么消除下发队列第一个
-			//否则该条报文没有匹配，继续留在下发队列
+			//否则该条报文没有匹配，继续留在下发队列,同时上传报文加入
+			//“未匹配的单向上传报文队列”尾部
 			struct testMsgType &nTop=m_dqDown.front();
 			if((upCode==nTop.msgCode) && (upType==nTop.msgType))
 			{
@@ -247,17 +268,19 @@ namespace testMatch1607{
 				struct testMsgType *nItem=new struct testMsgType;
 				nItem->msgCode=upCode;
 				nItem->msgType=upType;
-				m_dqDown.push_back(*nItem);
+				nItem->matchStatus=MATCH_TWOWAY_ERROR;
+				m_dqUpNotMatch.push_back(*nItem);
 			}
 		}
 		else
 		{
-			//下发队列已经为空的话，那么基本可以确定是单向上传报文，也
-			//统一加入下发队列，便于最后dump查看；
+			//下发队列已经为空的话，那么基本可以确定是单向上传报文，
+			//加入“未匹配的单向上传报文队列”尾部，便于最后dump查看；
 			struct testMsgType *nItem=new struct testMsgType;
 			nItem->msgCode=upCode;
 			nItem->msgType=upType;
-			m_dqDown.push_back(*nItem);
+			nItem->matchStatus=MATCH_SUP_OK;
+			m_dqUpNotMatch.push_back(*nItem);
 		}
 
 	}
@@ -265,12 +288,24 @@ namespace testMatch1607{
 	void myMsgSts1607::dumpDownDeque()
 	{
 		int downDqSize=m_dqDown.size();
-		if (downDqSize)
+		if (downDqSize>0)
 		{
-			cout<<"void myMsgSts1607::dumpDownDeque() 余下未匹配消息有"<<downDqSize<<"条"<<endl;
+			cout<<"dumpDownDeque() 下发队列余下未匹配消息有"<<downDqSize<<"条"<<endl;
 			for (int i=0;i<downDqSize;i++)
 			{
-				cout<<m_dqDown[i].msgCode<<" "<<m_dqDown[i].msgType<<endl;
+				const testMsgType &nItem=m_dqDown[i];
+				cout<<nItem.msgCode<<" "<<nItem.msgType<<" "<<statusToStr(nItem.matchStatus)<<endl;
+			}
+		}
+
+		int upDqSize=m_dqUpNotMatch.size();
+		if (upDqSize>0)
+		{
+			cout<<"dumpDownDeque() 单向上传队列余下未匹配消息有"<<upDqSize<<"条"<<endl;
+			for (int i=0;i<upDqSize;i++)
+			{
+				const testMsgType &nItem=m_dqUpNotMatch[i];
+				cout<<nItem.msgCode<<" "<<nItem.msgType<<" "<<statusToStr(nItem.matchStatus)<<endl;
 			}
 		}
 	}
@@ -310,7 +345,6 @@ void zw1209SpeedTestThr1(void)
 			printf("G_TEST_UPNUM=%d\n",G_TEST_UPNUM);
 			Sleep(300);
 		}
-
 	
 	//Sleep(7000);
 	//EXPECT_EQ(ELOCK_ERROR_SUCCESS,Close());

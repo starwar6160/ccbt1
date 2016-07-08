@@ -77,12 +77,22 @@ protected:
 
 
 namespace testMatch1607{
+	using std::string;
+	using std::deque;
+
+	enum matchStatus{
+		MATCH_TWOWAY_OK=11,
+		MATCH_TWOWAY_ERROR=12,
+		MATCH_SUP_OK=13,
+		MATCH_SUP_ERROR=14
+	};
+
 	struct testMsgType{
 		string msgCode;
 		string msgType;
+		enum matchStatus matchStatus;	//匹配状态
 	};
 
-	using std::deque;
 	class myMsgSts1607
 	{
 	public:
@@ -92,8 +102,12 @@ namespace testMatch1607{
 		void PopDownMsgType(string &mCode,string &mType);
 		void MatchDownMsgType(const string &upCode,const string &upType);
 		void dumpDownDeque(void);
+
 	private:
-		deque<testMsgType> m_dqDown;
+		deque<testMsgType> m_dqDown;	//下发队列
+		deque<testMsgType> m_dqUpNotMatch;	//单向上行报文中未匹配的		
+		string statusToStr(enum matchStatus mMatch);
+
 	};
 } //namespace testMatch1607{
 
