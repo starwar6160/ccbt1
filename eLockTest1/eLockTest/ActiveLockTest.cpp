@@ -340,13 +340,16 @@ void zw1209SpeedTestThr1(void)
 	rdq.PushDownMsg(g_msg02);	
 	EXPECT_EQ(ELOCK_ERROR_SUCCESS,Notify(g_msg02));	
 
-	rdq.PushDownMsg(g_msg03);
+	rdq.PushDownMsg(g_msg03);	
 	EXPECT_EQ(ELOCK_ERROR_SUCCESS,Notify(g_msg03));	
 
-	rdq.PushDownMsg(g_msg02);	
+	rdq.PushDownMsg(g_msg04);
+	EXPECT_EQ(ELOCK_ERROR_SUCCESS,Notify(g_msg04));	
+
+	rdq.PushDownMsg(g_msg02);
 	EXPECT_EQ(ELOCK_ERROR_SUCCESS,Notify(g_msg02));	
 
-	rdq.PushDownMsg(g_msg03);
+	rdq.PushDownMsg(g_msg03);	
 	EXPECT_EQ(ELOCK_ERROR_SUCCESS,Notify(g_msg03));	
 
 #endif // _USE_FAKEHID_DEV20160705	
@@ -381,7 +384,7 @@ TEST_F(ccbElockTest, jcHidDev20151207SpeedTestInATMCDLL)
 	//thr3->join();
 	zw1209SpeedTestThr1();
 	cout<<"jcHidDev20151207SpeedTestInATMCDLL 1"<<endl;
-	Sleep(7000);
+	Sleep(15000);
 	cout<<"jcHidDev20151207SpeedTestInATMCDLL 2"<<endl;
 	//EXPECT_EQ(ELOCK_ERROR_SUCCESS,Close());
 	printf("TestInActiveLockTest.cpp");

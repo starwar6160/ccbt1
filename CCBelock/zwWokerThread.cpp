@@ -167,8 +167,10 @@ namespace zwccbthr {
 					}
 				}	//if (s_jcNotify.size()>0)
 				//读取返回值
+				double msgReadStart=zwccbthr::zwGetMs();
 				do 
 				{
+					VLOG(4)<<"读取返回值循环进行中"<<endl;
 					memset(recvBuf,0,BLEN);
 					sts=static_cast<JCHID_STATUS>(g_jhc->RecvJson(recvBuf,BLEN));
 					if (strlen(recvBuf)>0)
@@ -198,9 +200,13 @@ namespace zwccbthr {
 							}							
 							}																						
 							
-						}					
-						break;
+						}		
 					}	//if (strlen(recvBuf)>0)					
+					double curMs=zwccbthr::zwGetMs();
+					if (curMs-msgReadStart>1800)
+					{
+						break;
+					}
 				} while (1);
 			if (s_jcNotify.size()>0){
 				s_jcNotify.pop_front();
