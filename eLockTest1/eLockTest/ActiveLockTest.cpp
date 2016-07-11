@@ -312,6 +312,10 @@ namespace testMatch1607{
 				cout<<nItem.msgCode<<" "<<nItem.msgType<<" "<<statusToStr(nItem.matchStatus)<<endl;
 			}
 		}
+		if (downDqSize==0 && upDqSize==0)
+		{
+			cout<<"两个队列所有消息都正确匹配了"<<endl;
+		}
 	}
 }	//namespace testMatch1607{
 
@@ -375,16 +379,24 @@ void zw1209SpeedTestThr1(void)
 }
 
 
+boost::mutex jctest1_mutex;	
+
 void zw711SpeedTestThr1(void)
 {
 	SetRecvMsgRotine(myATMCRecvMsgRotine);	
 	int nCount=0;
 	while(nCount++ <125)
 	{
-	rdq.PushDownMsg(g_msg02);	
-	EXPECT_EQ(ELOCK_ERROR_SUCCESS,Notify(g_msg02));	
-	rdq.PushDownMsg(g_msg03);	
-	EXPECT_EQ(ELOCK_ERROR_SUCCESS,Notify(g_msg03));	
+		{
+			boost::mutex::scoped_lock lock(jctest1_mutex);
+			rdq.PushDownMsg(g_msg02);	
+			EXPECT_EQ(ELOCK_ERROR_SUCCESS,Notify(g_msg02));	
+		}
+		{
+			boost::mutex::scoped_lock lock(jctest1_mutex);
+			rdq.PushDownMsg(g_msg03);	
+			EXPECT_EQ(ELOCK_ERROR_SUCCESS,Notify(g_msg03));	
+		}
 	}
 
 	cout<<"zw1209SpeedTestThr1 结束"<<endl;

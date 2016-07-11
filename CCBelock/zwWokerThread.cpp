@@ -65,8 +65,11 @@ namespace zwccbthr {
 
 	void pushToCallBack( const char * recvConvedXML,RecvMsgRotine pRecvMsgFun )
 	{
-		static double lastUpMsg=0;
-		static double nUpCount=0;
+		static double lastUpMsg=0;	//最后一条上传报文的时间戳，用于检测过长的间隔
+		static int nUpCount=0;	//第多少条上传报文
+		static int nExceedCount=0;	//超过2秒间隔的计数器
+		static double nExceedMsTotal=0;	//超过2秒间隔的共有多少毫秒
+		static double nExceedMaxMs=0;	//超过2秒间隔的最大多少毫秒
 		assert(NULL!=recvConvedXML);
 		assert(strlen(recvConvedXML)>0);
 		if (NULL==recvConvedXML || strlen(recvConvedXML)==0)
@@ -92,13 +95,24 @@ namespace zwccbthr {
 			//20150415.1727.为了万敏的要求，控制上传消息速率最多每2秒一条防止ATM死机
 			//Sleep(2920);
 			pRecvMsgFun(recvConvedXML);
-			LOG(WARNING)<<"上位机收到 "<<recvConvedXML<<endl;
+			LOG(INFO)<<"上位机收到 "<<recvConvedXML<<endl;
 
 			nUpCount++;
 			double curMs=zwccbthr::zwGetMs();
 			double diffMs=curMs-lastUpMsg;
-			LOG_IF(ERROR,diffMs>2000 && lastUpMsg>0)<<"两次上传报文给上位机之间间隔达到"<<diffMs
-				<<"ms 第"<<nUpCount<<"条"<<endl;
+			
+			if (diffMs>2000 && lastUpMsg>0)
+			{
+				nExceedCount++;
+				nExceedMsTotal+=diffMs;
+				if (diffMs>nExceedMaxMs)
+				{
+					nExceedMaxMs=diffMs;
+				}
+				LOG(ERROR)<<"报文间隔异常达到"<<diffMs<<"毫秒"<<endl;
+			}
+			LOG_IF(WARNING,(nUpCount%20==0))<<"报文之间间隔时间"<<diffMs<<"毫秒，当前第"<<nUpCount<<"条报文"<<endl;				
+			LOG_IF(ERROR,(nUpCount%10==0) && nExceedMaxMs>100)<<"最大"<<nExceedMaxMs<<"毫秒 平均"<<nExceedMsTotal/(nExceedCount+0.001)<<"毫秒"<<endl;
 			lastUpMsg=curMs;
 		}
 	}
