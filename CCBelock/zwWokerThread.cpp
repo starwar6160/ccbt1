@@ -65,6 +65,8 @@ namespace zwccbthr {
 
 	void pushToCallBack( const char * recvConvedXML,RecvMsgRotine pRecvMsgFun )
 	{
+		static double lastUpMsg=0;
+		static double nUpCount=0;
 		assert(NULL!=recvConvedXML);
 		assert(strlen(recvConvedXML)>0);
 		if (NULL==recvConvedXML || strlen(recvConvedXML)==0)
@@ -91,6 +93,13 @@ namespace zwccbthr {
 			//Sleep(2920);
 			pRecvMsgFun(recvConvedXML);
 			LOG(WARNING)<<"上位机收到 "<<recvConvedXML<<endl;
+
+			nUpCount++;
+			double curMs=zwccbthr::zwGetMs();
+			double diffMs=curMs-lastUpMsg;
+			LOG_IF(ERROR,diffMs>2000 && lastUpMsg>0)<<"两次上传报文给上位机之间间隔达到"<<diffMs
+				<<"ms 第"<<nUpCount<<"条"<<endl;
+			lastUpMsg=curMs;
 		}
 	}
 	
@@ -224,6 +233,8 @@ namespace zwccbthr {
 				s_jcLockToC.pop_front();
 			}								
 			}//boost::mutex::scoped_lock lock(thrhid_mutex);		
+			//在互斥锁范围以外留出一点时间给Notify添加新的报文到下发队列
+			Sleep(100);
 		}	//end of while(1)
 
 	}

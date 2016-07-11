@@ -235,6 +235,8 @@ CCBELOCK_API long JCAPISTD Notify(const char *pszMsg)
 
 		//标志合法的下发命令尚未进入下发队列
 		zwccbthr::s_bPendingNotify=true;
+		//不要一口气下发完毕，导致可能的测试线程过早结束
+		Sleep(100);
 		boost::mutex::scoped_lock lock(zwccbthr::thrhid_mutex);
 
 

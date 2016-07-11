@@ -379,7 +379,7 @@ void zw711SpeedTestThr1(void)
 {
 	SetRecvMsgRotine(myATMCRecvMsgRotine);	
 	int nCount=0;
-	while(nCount++ <5)
+	while(nCount++ <125)
 	{
 	rdq.PushDownMsg(g_msg02);	
 	EXPECT_EQ(ELOCK_ERROR_SUCCESS,Notify(g_msg02));	
