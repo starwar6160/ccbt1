@@ -199,11 +199,10 @@ namespace zwccbthr {
 								s_jcLockToC.push_back(outXML);
 							}							
 							}																						
-							
 						}		
 					}	//if (strlen(recvBuf)>0)					
 					double curMs=zwccbthr::zwGetMs();
-					if (curMs-msgReadStart>1800)
+					if (curMs-msgReadStart>1500 || strlen(recvBuf)>0)
 					{
 						break;
 					}

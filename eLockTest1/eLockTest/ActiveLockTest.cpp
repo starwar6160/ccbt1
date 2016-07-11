@@ -231,6 +231,7 @@ namespace testMatch1607{
 
 	void myMsgSts1607::PushDownMsg(const string &downXML)
 	{
+		boost::mutex::scoped_lock lock(jcMatch_mutex);
 		struct testMsgType *nItem=new struct testMsgType;
 		zwGetCCBMsgType(downXML, nItem->msgCode,nItem->msgType);
 		m_dqDown.push_back(*nItem);
@@ -238,6 +239,7 @@ namespace testMatch1607{
 
 	void myMsgSts1607::PopDownMsgType(string &mCode,string &mType)
 	{
+		boost::mutex::scoped_lock lock(jcMatch_mutex);
 		if (m_dqDown.size()>0)
 		{
 			struct testMsgType &nTop=m_dqDown.front();
@@ -254,6 +256,7 @@ namespace testMatch1607{
 
 	void myMsgSts1607::MatchDownMsgType(const string &upCode,const string &upType)
 	{
+		boost::mutex::scoped_lock lock(jcMatch_mutex);
 		if (m_dqDown.size()>0)
 		{
 			//如果上传报文类型匹配下发队列第一个，那么消除下发队列第一个
@@ -287,6 +290,7 @@ namespace testMatch1607{
 
 	void myMsgSts1607::dumpDownDeque()
 	{
+		boost::mutex::scoped_lock lock(jcMatch_mutex);
 		int downDqSize=m_dqDown.size();
 		if (downDqSize>0)
 		{
@@ -343,8 +347,8 @@ void zw1209SpeedTestThr1(void)
 	rdq.PushDownMsg(g_msg03);	
 	EXPECT_EQ(ELOCK_ERROR_SUCCESS,Notify(g_msg03));	
 
-	rdq.PushDownMsg(g_msg04);
-	EXPECT_EQ(ELOCK_ERROR_SUCCESS,Notify(g_msg04));	
+	/*rdq.PushDownMsg(g_msg04);
+	EXPECT_EQ(ELOCK_ERROR_SUCCESS,Notify(g_msg04));	*/
 
 	rdq.PushDownMsg(g_msg02);
 	EXPECT_EQ(ELOCK_ERROR_SUCCESS,Notify(g_msg02));	
@@ -371,23 +375,40 @@ void zw1209SpeedTestThr1(void)
 }
 
 
+void zw711SpeedTestThr1(void)
+{
+	SetRecvMsgRotine(myATMCRecvMsgRotine);	
+	int nCount=0;
+	while(nCount++ <5)
+	{
+	rdq.PushDownMsg(g_msg02);	
+	EXPECT_EQ(ELOCK_ERROR_SUCCESS,Notify(g_msg02));	
+	rdq.PushDownMsg(g_msg03);	
+	EXPECT_EQ(ELOCK_ERROR_SUCCESS,Notify(g_msg03));	
+	}
+
+	cout<<"zw1209SpeedTestThr1 结束"<<endl;
+}
+
+
 TEST_F(ccbElockTest, jcHidDev20151207SpeedTestInATMCDLL)
 {	
-	//boost::thread *thr1=new boost::thread(zw1209SpeedTestThr1);	
-	//Sleep(100);
-	//boost::thread *thr2=new boost::thread(zw1209SpeedTestThr2);
+	boost::thread *thr1=new boost::thread(zw711SpeedTestThr1);	
+	Sleep(100);
+	boost::thread *thr2=new boost::thread(zw711SpeedTestThr1);
 	//boost::thread *thr3=new boost::thread(zw1218OpenTimeTestThr);
 	
 	
-	//thr1->join();
-	//thr2->join();
+	thr1->join();
+	thr2->join();
 	//thr3->join();
-	zw1209SpeedTestThr1();
+	//zw711SpeedTestThr1();
 	cout<<"jcHidDev20151207SpeedTestInATMCDLL 1"<<endl;
-	Sleep(15000);
+	//Sleep(15000);
 	cout<<"jcHidDev20151207SpeedTestInATMCDLL 2"<<endl;
 	//EXPECT_EQ(ELOCK_ERROR_SUCCESS,Close());
 	printf("TestInActiveLockTest.cpp");
+	Sleep(2000);
 	rdq.dumpDownDeque();
 	cout<<"jcHidDev20151207SpeedTestInATMCDLL 3"<<endl;
 }

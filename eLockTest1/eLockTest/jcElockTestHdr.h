@@ -107,6 +107,7 @@ namespace testMatch1607{
 		deque<testMsgType> m_dqDown;	//下发队列
 		deque<testMsgType> m_dqUpNotMatch;	//单向上行报文中未匹配的		
 		string statusToStr(enum matchStatus mMatch);
+		boost::mutex jcMatch_mutex;	
 
 	};
 } //namespace testMatch1607{
