@@ -393,7 +393,7 @@ void zw711SpeedTestThr1(void)
 	SetRecvMsgRotine(myATMCRecvMsgRotine);	
 	int nCount=0;
 
-	while(nCount++ <9)
+	while(nCount++ <30)
 	{		
 		
 		int idxMsg=static_cast<int64_t>(zwGetUs()) % aSize;
@@ -418,15 +418,10 @@ TEST_F(ccbElockTest, jcHidDev20151207SpeedTestInATMCDLL)
 	thr1->join();
 	thr2->join();
 	//thr3->join();
-	//zw711SpeedTestThr1();
-	cout<<"jcHidDev20151207SpeedTestInATMCDLL 1"<<endl;
-	//Sleep(15000);
-	cout<<"jcHidDev20151207SpeedTestInATMCDLL 2"<<endl;
-	//EXPECT_EQ(ELOCK_ERROR_SUCCESS,Close());
-	printf("TestInActiveLockTest.cpp");
+		
 	Sleep(9000);
+	//EXPECT_EQ(ELOCK_ERROR_SUCCESS,Close());
 	rdq.dumpDownDeque();
-	cout<<"jcHidDev20151207SpeedTestInATMCDLL 3"<<endl;
 }
 
 void myTestPush712( const char * tMsg )
