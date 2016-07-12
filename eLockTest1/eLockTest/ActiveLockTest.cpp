@@ -314,7 +314,7 @@ namespace testMatch1607{
 		}
 		if (downDqSize==0 && upDqSize==0)
 		{
-			cout<<"两个队列所有消息都正确匹配了"<<endl;
+			cout<<endl<<"[两个队列所有消息都正确匹配了]"<<endl;
 		}
 	}
 }	//namespace testMatch1607{
@@ -381,22 +381,26 @@ void zw1209SpeedTestThr1(void)
 
 boost::mutex jctest1_mutex;	
 
+void myTestPush712( const char * tMsg );
+#include <cstdint>
+using std::int64_t;
 void zw711SpeedTestThr1(void)
 {
+	const char *msgarr[]=
+	{g_msg00,g_msg01,g_msg02,g_msg03};
+	//{g_msg00,g_msg01,g_msg04};
+	int aSize=sizeof(msgarr)/sizeof(char *);
 	SetRecvMsgRotine(myATMCRecvMsgRotine);	
 	int nCount=0;
-	while(nCount++ <125)
-	{
-		{
-			boost::mutex::scoped_lock lock(jctest1_mutex);
-			rdq.PushDownMsg(g_msg02);	
-			EXPECT_EQ(ELOCK_ERROR_SUCCESS,Notify(g_msg02));	
-		}
-		{
-			boost::mutex::scoped_lock lock(jctest1_mutex);
-			rdq.PushDownMsg(g_msg03);	
-			EXPECT_EQ(ELOCK_ERROR_SUCCESS,Notify(g_msg03));	
-		}
+
+	while(nCount++ <9)
+	{		
+		
+		int idxMsg=static_cast<int64_t>(zwGetUs()) % aSize;
+		assert(idxMsg>=0 && idxMsg <aSize);
+		myTestPush712(msgarr[idxMsg]);
+		Sleep(400);
+		//myTestPush712(msgarr[3]);
 	}
 
 	cout<<"zw1209SpeedTestThr1 结束"<<endl;
@@ -406,7 +410,7 @@ void zw711SpeedTestThr1(void)
 TEST_F(ccbElockTest, jcHidDev20151207SpeedTestInATMCDLL)
 {	
 	boost::thread *thr1=new boost::thread(zw711SpeedTestThr1);	
-	Sleep(100);
+	//Sleep(100);
 	boost::thread *thr2=new boost::thread(zw711SpeedTestThr1);
 	//boost::thread *thr3=new boost::thread(zw1218OpenTimeTestThr);
 	
@@ -420,7 +424,16 @@ TEST_F(ccbElockTest, jcHidDev20151207SpeedTestInATMCDLL)
 	cout<<"jcHidDev20151207SpeedTestInATMCDLL 2"<<endl;
 	//EXPECT_EQ(ELOCK_ERROR_SUCCESS,Close());
 	printf("TestInActiveLockTest.cpp");
-	Sleep(2000);
+	Sleep(9000);
 	rdq.dumpDownDeque();
 	cout<<"jcHidDev20151207SpeedTestInATMCDLL 3"<<endl;
+}
+
+void myTestPush712( const char * tMsg )
+{
+	{
+		boost::mutex::scoped_lock lock(jctest1_mutex);
+		rdq.PushDownMsg(tMsg);	
+		EXPECT_EQ(ELOCK_ERROR_SUCCESS,Notify(tMsg));	
+	}
 }

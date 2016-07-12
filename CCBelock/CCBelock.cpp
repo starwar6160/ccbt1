@@ -55,6 +55,31 @@ namespace jcAtmcConvertDLL
 		return m_NotifyType;
 	}
 
+	std::string jcLockMsg1512_t::getNotifyNumType(void)
+	{
+		if (m_NotifyType=="Lock_Secret_Key")
+		{
+			return "0000";
+		}
+		if (m_NotifyType=="Lock_System_Init")
+		{
+			return "0001";
+		}
+		if (m_NotifyType=="Lock_Now_Info")
+		{
+			return "0002";
+		}
+		if (m_NotifyType=="Lock_Time_Sync_ATM")
+		{
+			return "0003";
+		}
+		if (m_NotifyType=="Lock_Close_Code_ATM")
+		{
+			return "0004";
+		}
+		return "1043";
+	}
+
 	double jcLockMsg1512_t::getNotifyMs(void)
 	{
 		return m_NotifyMs;

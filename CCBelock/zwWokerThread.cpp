@@ -31,6 +31,7 @@ using boost::condition_variable;
 using boost::condition_variable_any;
 using jchidDevice2015::jcHidDevice;
 using jcAtmcConvertDLL::jcLockMsg1512_t;
+
 #define MYFD1	std::setprecision(0)<<std::setiosflags(std::ios::fixed)
 
 jcHidDevice *g_jhc=NULL;	//实际的HID设备类对象
@@ -40,6 +41,7 @@ namespace zwccbthr {
 	boost::mutex thrhid_mutex;
 	void pushToCallBack( const char * recvConvedXML,RecvMsgRotine pRecvMsgFun );	
 	deque<jcLockMsg1512_t *> s_jcNotify;		//下发命令队列
+	deque<jcLockMsg1512_t *> s_dbgMatchNotify;		//下发命令队列复制品，用于调试匹配
 	RecvMsgRotine s_CallBack=NULL;
 	double s_LastNormalMsgUpTimeMs=0.0;	//最后一次正常循环报文上传的时间，毫秒计算
 	////供单向上传报文专用的保存所有回调函数指针的向量,好让单向报文发给所有线程;
@@ -96,12 +98,21 @@ namespace zwccbthr {
 			//Sleep(2920);
 			pRecvMsgFun(recvConvedXML);
 			LOG(INFO)<<"上位机收到 "<<recvConvedXML<<endl;
+			string upMsgType= jcAtmcConvertDLL::zwGetJcxmlMsgType(recvConvedXML);
+			if (s_dbgMatchNotify.size()>0)
+			{
+				jcLockMsg1512_t *nItem=s_dbgMatchNotify.front();
+				if(nItem->getNotifyNumType()==upMsgType)
+				{
+					s_dbgMatchNotify.pop_front();
+				}
+			}
 
 			nUpCount++;
 			double curMs=zwccbthr::zwGetMs();
 			double diffMs=curMs-lastUpMsg;
 			
-			if (diffMs>2000 && lastUpMsg>0)
+			if (diffMs>2500 && lastUpMsg>0)
 			{
 				nExceedCount++;
 				nExceedMsTotal+=diffMs;
@@ -112,8 +123,12 @@ namespace zwccbthr {
 				LOG(ERROR)<<"报文间隔异常达到"<<diffMs<<"毫秒"<<endl;
 			}
 			LOG_IF(WARNING,(nUpCount%20==0))<<"报文之间间隔时间"<<diffMs<<"毫秒，当前第"<<nUpCount<<"条报文"<<endl;				
-			LOG_IF(ERROR,(nUpCount%10==0) && nExceedMaxMs>100)<<"最大"<<nExceedMaxMs<<"毫秒 平均"<<nExceedMsTotal/(nExceedCount+0.001)<<"毫秒"<<endl;
+			LOG_IF(ERROR,(nUpCount%3==0) && nExceedMaxMs>100)<<"最大"<<nExceedMaxMs<<"毫秒 平均"<<nExceedMsTotal/(nExceedCount+0.001)<<"毫秒"<<endl;
 			lastUpMsg=curMs;
+		}
+		for (size_t i=0;i<s_dbgMatchNotify.size();i++)
+		{
+			LOG(WARNING)<<"s_dbgMatchNotify."<<s_dbgMatchNotify[i]->getNotifyType()<<endl;
 		}
 	}
 	
@@ -147,13 +162,6 @@ namespace zwccbthr {
 		return zwGetUs()/1000.0;
 	}
 
-	boost::mutex tms_mutex;
-
-	void myDbgPrintMs(const char *myFuncName)
-	{
-		boost::mutex::scoped_lock lock(tms_mutex);	
-		double cur=zwGetMs();		
-	}
 
 	void my706LockRecvThr(void)
 	{
@@ -171,9 +179,11 @@ namespace zwccbthr {
 				JCHID_STATUS sts=JCHID_STATUS_FAIL;		
 				if (s_jcNotify.size()>0)
 				{
-					jcLockMsg1512_t *nItem=s_jcNotify.front();
+					jcLockMsg1512_t *nItem=s_jcNotify.front();					
 					//记录真正下发的时间
 					nItem->setInitNotifyMs();
+					//放入用于调试匹配的队列
+					s_dbgMatchNotify.push_back(nItem);
 					string sCmd=nItem->getNotifyMsg();
 					
 					VLOG(3)<<"下发给锁具的消息内容是"<<sCmd<<endl;
@@ -208,7 +218,7 @@ namespace zwccbthr {
 							{
 							jcLockMsg1512_t *nItem=s_jcNotify.front();
 							string downType=jcAtmcConvertDLL::zwGetJcJsonMsgType(nItem->getNotifyMsg().c_str());
-							LOG_IF(ERROR,downType!=upType)<<"downType="<<downType<<" upType="<<upType<<endl;
+							
 							if (downType==upType)
 							{
 								RecvMsgRotine pRecvMsgFun=zwccbthr::s_CallBack;
@@ -216,8 +226,9 @@ namespace zwccbthr {
 								s_lastNotifyMs=zwccbthr::zwGetMs();
 								VLOG(3)<<"消息"<<upType<<"处理时间"<<s_lastNotifyMs-nItem->getNotifyMs()<<"毫秒"<<endl;
 							}
-							if (downType!=upType || myIsJsonMsgFromLockFirstUp(upType))
+							if (downType!=upType && myIsJsonMsgFromLockFirstUp(upType))
 							{								
+								LOG(ERROR)<<"downType="<<downType<<" upType="<<upType<<"该报文将会放入另一个队列延迟上传"<<endl;
 								//锁具主动上送报文，暂且放到单独的队列里面有待于延迟处理
 								s_jcLockToC.push_back(outXML);
 							}							
@@ -225,7 +236,7 @@ namespace zwccbthr {
 						}		
 					}	//if (strlen(recvBuf)>0)					
 					double curMs=zwccbthr::zwGetMs();
-					if (curMs-msgReadStart>1500 || strlen(recvBuf)>0)
+					if (curMs-msgReadStart>1800 || strlen(recvBuf)>0)
 					{
 						break;
 					}
@@ -237,9 +248,14 @@ namespace zwccbthr {
 			//当下发队列已经为空，而且此时因为线程锁的缘故暂时不能加入新的消息，而且最后一条正常下发消息
 			//的回应消息已经上传了500毫秒，而且没有等待进入下发队列的消息，就是一个空闲时刻可以上传消息了；
 			if (s_jcLockToC.size()>0 && s_jcNotify.size()==0 
-				&& (curMs-s_lastNotifyMs>500)
+				&& (curMs-s_lastNotifyMs>2500)
 				&& zwccbthr::s_bPendingNotify==false)
 			{
+				VLOG(3)<<"s_jcLockToC.size()="<<s_jcLockToC.size()
+					<<" s_jcNotify.size()="<<s_jcNotify.size()
+					<<" curMs-s_lastNotifyMs="<<(curMs-s_lastNotifyMs)
+					<<" zwccbthr::s_bPendingNotify="<<zwccbthr::s_bPendingNotify
+					<<endl;
 				string sUpMsg=s_jcLockToC.front();
 				LOG(ERROR)<<"单向上传报文 "<<sUpMsg<<endl;					
 				RecvMsgRotine pRecvMsgFun=zwccbthr::s_CallBack;

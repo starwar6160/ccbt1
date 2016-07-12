@@ -86,6 +86,7 @@ namespace jcAtmcConvertDLL {
 		~jcLockMsg1512_t();
 		const std::string &getNotifyMsg(void);
 		const std::string &getNotifyType(void);
+		std::string getNotifyNumType(void);		
 		double getNotifyMs(void);
 		void setInitNotifyMs(void);
 	};
