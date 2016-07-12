@@ -112,7 +112,7 @@ namespace zwccbthr {
 			double curMs=zwccbthr::zwGetMs();
 			double diffMs=curMs-lastUpMsg;
 			
-			if (diffMs>2500 && lastUpMsg>0)
+			if (diffMs>4500 && lastUpMsg>0)
 			{
 				nExceedCount++;
 				nExceedMsTotal+=diffMs;
@@ -166,7 +166,7 @@ namespace zwccbthr {
 	void my706LockRecvThr(void)
 	{
 		ZWERROR("与锁具之间的数据接收线程启动.20160706.v853")
-		deque<string> s_jcLockToC;		//锁具单向上传队列
+		deque<jcLockMsg1512_t *> s_jcLockToC;		//锁具单向上传队列
 		double s_lastNotifyMs=0;
 		const int BLEN = 1024;
 		char recvBuf[BLEN];					
@@ -209,6 +209,7 @@ namespace zwccbthr {
 					if (strlen(recvBuf)>0)
 					{					
 					VLOG(3)<<"收到锁具返回消息1607= "<<recvBuf<<endl;
+					jcLockMsg1512_t *nUpItem=new jcLockMsg1512_t(recvBuf);
 					string upType=jcAtmcConvertDLL::zwGetJcJsonMsgType(recvBuf);
 					string outXML;
 					jcAtmcConvertDLL::zwJCjson2CCBxml(recvBuf,outXML);
@@ -216,21 +217,20 @@ namespace zwccbthr {
 						{							
 							if (s_jcNotify.size()>0)
 							{
-							jcLockMsg1512_t *nItem=s_jcNotify.front();
-							string downType=jcAtmcConvertDLL::zwGetJcJsonMsgType(nItem->getNotifyMsg().c_str());
-							
-							if (downType==upType)
+							jcLockMsg1512_t *ndownItem=s_jcNotify.front();
+							if (ndownItem->matchResponJsonMsg(recvBuf)==true)
 							{
 								RecvMsgRotine pRecvMsgFun=zwccbthr::s_CallBack;
 								pushToCallBack(outXML.c_str(),pRecvMsgFun);
 								s_lastNotifyMs=zwccbthr::zwGetMs();
-								VLOG(3)<<"消息"<<upType<<"处理时间"<<s_lastNotifyMs-nItem->getNotifyMs()<<"毫秒"<<endl;
+								VLOG(3)<<"消息"<<upType<<"处理时间"<<s_lastNotifyMs-ndownItem->getNotifyMs()<<"毫秒"<<endl;
 							}
-							if (downType!=upType && myIsJsonMsgFromLockFirstUp(upType))
+							else
 							{								
-								LOG(ERROR)<<"downType="<<downType<<" upType="<<upType<<"该报文将会放入另一个队列延迟上传"<<endl;
+								LOG(ERROR)<<"downType="<<ndownItem->getNotifyType()<<" upType="
+									<<upType<<"该报文将会放入另一个队列延迟上传"<<endl;
 								//锁具主动上送报文，暂且放到单独的队列里面有待于延迟处理
-								s_jcLockToC.push_back(outXML);
+								s_jcLockToC.push_back(nUpItem);
 							}							
 							}																						
 						}		
@@ -255,8 +255,10 @@ namespace zwccbthr {
 					<<" s_jcNotify.size()="<<s_jcNotify.size()
 					<<" curMs-s_lastNotifyMs="<<(curMs-s_lastNotifyMs)
 					<<" zwccbthr::s_bPendingNotify="<<zwccbthr::s_bPendingNotify
-					<<endl;
-				string sUpMsg=s_jcLockToC.front();
+					<<endl;				
+				string sUpMsg;
+				jcAtmcConvertDLL::zwJCjson2CCBxml(
+					s_jcLockToC.front()->getNotifyMsg(),sUpMsg);					
 				LOG(ERROR)<<"单向上传报文 "<<sUpMsg<<endl;					
 				RecvMsgRotine pRecvMsgFun=zwccbthr::s_CallBack;
 				pushToCallBack(sUpMsg.c_str(),pRecvMsgFun);

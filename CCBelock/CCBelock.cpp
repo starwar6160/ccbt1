@@ -33,16 +33,29 @@ namespace jcAtmcConvertDLL
 
 
 
-	jcLockMsg1512_t::jcLockMsg1512_t(const std::string &notifyMsg)
+	jcLockMsg1512_t::jcLockMsg1512_t(const std::string &notifyJsonMsg)
 	{
 		DWORD iCallerThrId=GetCurrentThreadId();
 		m_CallerThreadID=iCallerThrId;
-		m_NotifyMsg=notifyMsg;
+		m_NotifyMsg=notifyJsonMsg;
 		m_UpMsg="";
 		m_bSended=false;
 		m_pRecvMsgFun=NULL;
 		m_NotifyMs=zwccbthr::zwGetMs();
-		m_NotifyType=jcAtmcConvertDLL::zwGetJcJsonMsgType(notifyMsg.c_str());
+		m_NotifyType=jcAtmcConvertDLL::zwGetJcJsonMsgType(notifyJsonMsg.c_str());
+	}
+
+	bool jcLockMsg1512_t::matchResponJsonMsg(const std::string &responeJsonMsg)
+	{
+		string respMsgType=jcAtmcConvertDLL::zwGetJcJsonMsgType(responeJsonMsg.c_str());
+		if (respMsgType==m_NotifyType)
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
 	}
 
 	const std::string & jcLockMsg1512_t::getNotifyMsg(void)

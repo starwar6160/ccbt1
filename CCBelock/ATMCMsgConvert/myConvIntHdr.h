@@ -81,9 +81,12 @@ namespace jcAtmcConvertDLL {
 		bool m_bSended;			//已经发送标志
 		RecvMsgRotine m_pRecvMsgFun;	//回调函数指针
 		double m_NotifyMs;	//下发报文毫秒数，20160705.1705调试用
+		double m_SendMs;
+		double m_RecvMs;
 	public:
 		jcLockMsg1512_t(const std::string &notifyMsg);		
 		~jcLockMsg1512_t();
+		bool matchResponJsonMsg(const std::string &responeMsg);	
 		const std::string &getNotifyMsg(void);
 		const std::string &getNotifyType(void);
 		std::string getNotifyNumType(void);		
