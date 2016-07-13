@@ -73,6 +73,7 @@ void zwGlogInit()
 /////////////////////////////GLOG INIT END/////////////////////////////////////////////
 
 
+
 BOOL APIENTRY DllMain(HMODULE hModule,
 		      DWORD ul_reason_for_call, LPVOID lpReserved)
 {//
@@ -81,35 +82,36 @@ BOOL APIENTRY DllMain(HMODULE hModule,
 		zwGlogInit();
 		//设置代码页为简体中文，936是简体中文的代码页。
 		std::locale loc1 = std::locale::global(std::locale(".936"));
-		OutputDebugStringA("JinChu Elock DllMain Loaded.20151210.1523A01");
+		//OutputDebugStringA("JinChu Elock DllMain Loaded.20151210.1523A01");
 		G_DLL_HMODULE = hModule;	//方便其他需要获取DLL绝对路径的地方使用；
 		char myDllPath[256];
 		memset(myDllPath, 0, 256);
-		zwGetDLLPath(hModule, myDllPath, 256);
-		OutputDebugStringA(myDllPath);
+		zwGetDLLPath(hModule, myDllPath, 256);		
 		//myLoadCfgs(myDllPath);
 #ifdef _DEBUG
 		//cout<<"TEST912 LEXICAST.1557.\t"<<zwTest912("1409023024")<<endl;
+#else
+		OutputDebugStringA(myDllPath);
 #endif // _DEBUG
 		switch (ul_reason_for_call) {
 		case DLL_PROCESS_ATTACH:
-			OutputDebugStringA("JINCHU ELOCK DLL_PROCESS_ATTACH");
+			//OutputDebugStringA("JINCHU ELOCK DLL_PROCESS_ATTACH");
 			//LOG(WARNING)<<"JINCHU ELOCK DLL_PROCESS_ATTACH 20150116.1717"<<endl;
 			break;
 		case DLL_THREAD_ATTACH:
-			OutputDebugStringA("JINCHU ELOCK DLL_THREAD_ATTACH");
+			//OutputDebugStringA("JINCHU ELOCK DLL_THREAD_ATTACH");
 			//LOG(WARNING)<<"JINCHU ELOCK DLL_THREAD_ATTACH 20150116.1717"<<endl;
 			break;
 		case DLL_THREAD_DETACH:
-			OutputDebugStringA("JINCHU ELOCK DLL_THREAD_DETACH");
+			//OutputDebugStringA("JINCHU ELOCK DLL_THREAD_DETACH");
 			//LOG(WARNING)<<"JINCHU ELOCK DLL_THREAD_DETACH 20150116.1717"<<endl;
 			break;
 		case DLL_PROCESS_DETACH:
-			OutputDebugStringA("JINCHU ELOCK DLL_PROCESS_DETACH");
+			//OutputDebugStringA("JINCHU ELOCK DLL_PROCESS_DETACH");
 			//LOG(WARNING)<<"JINCHU ELOCK DLL_PROCESS_DETACH 20150116.1717"<<endl;
 			break;
 		}
-		OutputDebugStringA("JinChu Elock DllMain Success End.20151210.1517");
+		//OutputDebugStringA("JinChu Elock DllMain Success End.20151210.1517");
 		//恢复原来的代码页
 		std::locale::global(std::locale(loc1));
 	}

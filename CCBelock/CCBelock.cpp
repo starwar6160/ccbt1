@@ -357,7 +357,7 @@ namespace jchidDevice2015{
 			return ELOCK_ERROR_PARAMINVALID;
 		}
 		//hid_set_nonblocking(static_cast<hid_device *>(m_jcElock.hid_device),1);
-		ZWWARN("myOpenElock1503 电子锁打开成功20160706.1656 by Class jcHidDevice")
+		ZWWARN("myOpenElock1607 电子锁打开成功20160713.1608 by Class jcHidDevice")
 		m_hidOpened=true;
 		return ELOCK_ERROR_SUCCESS;
 	}
