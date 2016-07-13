@@ -248,26 +248,21 @@ namespace zwccbthr {
 					
 					string outXML;
 					jcAtmcConvertDLL::zwJCjson2CCBxml(recvBuf,outXML);
-					VLOG(3)<<"outXML.size()="<<outXML.size()<<endl;
-					VLOG(3)<<"s_jcNotify.size()="<<s_jcNotify.size()<<endl;
+					VLOG(3)<<"outXML.size()="<<outXML.size()<<"s_jcNotify.size()="<<s_jcNotify.size()<<endl;
 						if (outXML.size()>0)
-						{							
-							if (s_jcNotify.size()>0)
-							{
+						{														
 							jcLockMsg1512_t *ndownItem=s_jcNotify.front();
 							if (ndownItem->matchResponJsonMsg(recvBuf)==true)
 							{
-								VLOG(3)<<"ndownItem->matchResponJsonMsg(recvBuf)==true"<<endl;
+								VLOG(3)<<"上下行报文匹配正确"<<endl;
 								RecvMsgRotine pRecvMsgFun=zwccbthr::s_CallBack;
 								pushToCallBack(outXML.c_str(),pRecvMsgFun);
 								s_lastNotifyMs=zwccbthr::zwGetMs();
 								VLOG(3)<<"消息"<<upType<<"处理时间"<<s_lastNotifyMs-ndownItem->getNotifyMs()<<"毫秒"<<endl;
 								break;
-							}
-							}	//if (s_jcNotify.size()>0)
+							}							
 							if (myIsJsonMsgFromLockFirstUp(upType)==true)
 							{	
-								VLOG(3)<<"ndownItem->matchResponJsonMsg(recvBuf)!=true"<<endl;
 								LOG(WARNING)<<" upType="<<upType<<"该报文将会放入另一个队列延迟上传"<<endl;
 								//锁具主动上送报文，暂且放到单独的队列里面有待于延迟处理
 								nUpItem->setInitNotifyMs();
