@@ -250,15 +250,18 @@ namespace zwccbthr {
 					jcAtmcConvertDLL::zwJCjson2CCBxml(recvBuf,outXML);
 					VLOG(3)<<"outXML.size()="<<outXML.size()<<"s_jcNotify.size()="<<s_jcNotify.size()<<endl;
 						if (outXML.size()>0)
-						{														
-							jcLockMsg1512_t *ndownItem=s_jcNotify.front();
-							if (ndownItem->matchResponJsonMsg(recvBuf)==true)
+						{																					
+							if (s_jcNotify.front()>0 && s_jcNotify.front()->matchResponJsonMsg(recvBuf)==true)
 							{
 								VLOG(3)<<"上下行报文匹配正确"<<endl;
 								RecvMsgRotine pRecvMsgFun=zwccbthr::s_CallBack;
 								pushToCallBack(outXML.c_str(),pRecvMsgFun);
 								s_lastNotifyMs=zwccbthr::zwGetMs();
-								VLOG(3)<<"消息"<<upType<<"处理时间"<<s_lastNotifyMs-ndownItem->getNotifyMs()<<"毫秒"<<endl;
+								VLOG(3)<<"消息"<<upType<<"处理时间"
+									<<s_lastNotifyMs-s_jcNotify.front()->getNotifyMs()<<"毫秒"<<endl;
+								if (s_jcNotify.size()>0){
+									s_jcNotify.pop_front();
+								}
 								break;
 							}							
 							if (myIsJsonMsgFromLockFirstUp(upType)==true)
@@ -278,9 +281,6 @@ namespace zwccbthr {
 						break;
 					}
 				} while (1);
-			if (s_jcNotify.size()>0){
-				s_jcNotify.pop_front();
-			}
 					
 			}//boost::mutex::scoped_lock lock(thrhid_mutex);		
 			//在互斥锁范围以外留出一点时间给Notify添加新的报文到下发队列

@@ -268,8 +268,7 @@ CCBELOCK_API long JCAPISTD Notify(const char *pszMsg)
 		assert(strXMLSend.length() > 42);	
 		jcAtmcConvertDLL::zwCCBxml2JCjson(strXMLSend, strJsonSend);
 		assert(strJsonSend.length() > 9);	//json最基本的符号起码好像要9个字符左右
-		VLOG_IF(4,strJsonSend.size()>0)<<"strJsonSend="<<strJsonSend;
-
+		
 		//不要一口气下发完毕，导致可能的测试线程过早结束
 		Sleep(100);
 		boost::mutex::scoped_lock lock(zwccbthr::thrhid_mutex);
@@ -279,6 +278,7 @@ CCBELOCK_API long JCAPISTD Notify(const char *pszMsg)
 		DWORD iCallerThrId=GetCurrentThreadId();
 		jcLockMsg1512_t *nItem=new jcLockMsg1512_t(strJsonSend);
 		zwccbthr::s_jcNotify.push_back(nItem);
+		VLOG_IF(3,strJsonSend.size()>0)<<"NotifyJson报文="<<strJsonSend;
 		return ELOCK_ERROR_SUCCESS;
 	}
 	catch(ptree_bad_path & e) {
