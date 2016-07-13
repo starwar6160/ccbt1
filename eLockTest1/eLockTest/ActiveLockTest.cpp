@@ -393,13 +393,13 @@ void zw711SpeedTestThr1(void)
 	SetRecvMsgRotine(myATMCRecvMsgRotine);	
 	int nCount=0;
 
-	while(nCount++ <30)
+	while(nCount++ <30*1)
 	{		
 		
 		int idxMsg=static_cast<int64_t>(zwGetUs()) % aSize;
 		assert(idxMsg>=0 && idxMsg <aSize);
 		myTestPush712(msgarr[idxMsg]);
-		Sleep(400);
+		//Sleep(400);
 		//myTestPush712(msgarr[3]);
 	}
 

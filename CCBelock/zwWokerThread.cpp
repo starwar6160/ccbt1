@@ -45,8 +45,7 @@ namespace zwccbthr {
 	RecvMsgRotine s_CallBack=NULL;
 	double s_LastNormalMsgUpTimeMs=0.0;	//最后一次正常循环报文上传的时间，毫秒计算
 	////供单向上传报文专用的保存所有回调函数指针的向量,好让单向报文发给所有线程;
-	vector <RecvMsgRotine> s_vecSingleUp;	
-	bool s_bPendingNotify=false;	//是否有下发了但是由于线程锁还没进入下发队列的消息，用于避免和单向上传消息冲突
+	vector <RecvMsgRotine> s_vecSingleUp;		
 
 
 	void wait(int milliseconds) {
@@ -165,7 +164,7 @@ namespace zwccbthr {
 
 	void my706LockRecvThr(void)
 	{
-		ZWERROR("与锁具之间的数据接收线程启动.20160706.v853")
+		ZWERROR("与锁具之间的数据接收线程启动.20160713.v865")
 		deque<jcLockMsg1512_t *> s_jcLockToC;		//锁具单向上传队列
 		double s_lastNotifyMs=0;
 		const int BLEN = 1024;
@@ -176,6 +175,26 @@ namespace zwccbthr {
 			boost::this_thread::interruption_point();
 			{
 				boost::mutex::scoped_lock lock(thrhid_mutex);		
+//////////////////////////////先处理单向上传队列////////////////////////////////////////////
+				double curMs=zwccbthr::zwGetMs();
+				LOG_IF(WARNING,curMs-s_lastNotifyMs>2000)<<"curMs-s_lastNotifyMs="<<curMs-s_lastNotifyMs<<"ms"<<endl;
+				LOG_IF(WARNING,s_jcLockToC.size()>0)<<"s_jcLockToC.size()="<<s_jcLockToC.size()
+					<<" s_jcNotify.size()="<<s_jcNotify.size()
+					<<" curMs-s_lastNotifyMs="<<(curMs-s_lastNotifyMs)<<endl;		
+				//当下发队列已经为空，而且此时因为线程锁的缘故暂时不能加入新的消息，而且最后一条正常下发消息
+				//的回应消息已经上传了500毫秒，而且没有等待进入下发队列的消息，就是一个空闲时刻可以上传消息了；
+				if (s_jcLockToC.size()>0)
+				{
+					string sUpMsg;
+					jcAtmcConvertDLL::zwJCjson2CCBxml(s_jcLockToC.front()->getNotifyMsg(),sUpMsg);					
+					double curMs=zwccbthr::zwGetMs();
+					double diffMs= curMs- s_jcLockToC.front()->getNotifyMs();
+					LOG(ERROR)<<"单向上传报文延迟了"<<diffMs<<"毫秒才上传"<<sUpMsg<<endl;					
+					RecvMsgRotine pRecvMsgFun=zwccbthr::s_CallBack;
+					pushToCallBack(sUpMsg.c_str(),pRecvMsgFun);
+					s_jcLockToC.pop_front();
+				}			
+//////////////////////////////////////////////////////////////////////////
 				JCHID_STATUS sts=JCHID_STATUS_FAIL;		
 				if (s_jcNotify.size()>0)
 				{
@@ -254,29 +273,7 @@ namespace zwccbthr {
 			if (s_jcNotify.size()>0){
 				s_jcNotify.pop_front();
 			}
-			double curMs=zwccbthr::zwGetMs();
-			LOG_IF(WARNING,curMs-s_lastNotifyMs>2000)<<"curMs-s_lastNotifyMs="<<curMs-s_lastNotifyMs<<"ms"<<endl;
-			//当下发队列已经为空，而且此时因为线程锁的缘故暂时不能加入新的消息，而且最后一条正常下发消息
-			//的回应消息已经上传了500毫秒，而且没有等待进入下发队列的消息，就是一个空闲时刻可以上传消息了；
-			if (s_jcLockToC.size()>0 && s_jcNotify.size()==0 
-				&& (curMs-s_lastNotifyMs>500)
-				&& zwccbthr::s_bPendingNotify==false)
-			{
-				VLOG(3)<<"s_jcLockToC.size()="<<s_jcLockToC.size()
-					<<" s_jcNotify.size()="<<s_jcNotify.size()
-					<<" curMs-s_lastNotifyMs="<<(curMs-s_lastNotifyMs)
-					<<" zwccbthr::s_bPendingNotify="<<zwccbthr::s_bPendingNotify
-					<<endl;				
-				string sUpMsg;
-				jcAtmcConvertDLL::zwJCjson2CCBxml(
-					s_jcLockToC.front()->getNotifyMsg(),sUpMsg);					
-				double curMs=zwccbthr::zwGetMs();
-				double diffMs= curMs- s_jcLockToC.front()->getNotifyMs();
-				LOG(ERROR)<<"单向上传报文延迟了"<<diffMs/1000.0<<"秒才上传"<<sUpMsg<<endl;					
-				RecvMsgRotine pRecvMsgFun=zwccbthr::s_CallBack;
-				pushToCallBack(sUpMsg.c_str(),pRecvMsgFun);
-				s_jcLockToC.pop_front();
-			}								
+					
 			}//boost::mutex::scoped_lock lock(thrhid_mutex);		
 			//在互斥锁范围以外留出一点时间给Notify添加新的报文到下发队列
 			Sleep(100);
