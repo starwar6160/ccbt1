@@ -421,7 +421,7 @@ TEST_F(ccbElockTest, jcHidDev20151207SpeedTestInATMCDLL)
 		
 	Sleep(9000);
 	//EXPECT_EQ(ELOCK_ERROR_SUCCESS,Close());
-	rdq.dumpDownDeque();
+	//rdq.dumpDownDeque();
 }
 
 void myTestPush712( const char * tMsg )

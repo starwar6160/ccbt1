@@ -104,12 +104,13 @@ namespace zwccbthr {
 				{
 					
 					string downType=s_dbgMatchNotify.front()->getNotifyNumType();
-					if (s_dbgMatchNotify.front()->getNotifyNumType()!=upMsgType)
-					{
-						LOG(ERROR)<<"下行报文类型"<<s_dbgMatchNotify.front()->getNotifyNumType()
-							<<"不匹配上行报文类型"<<upMsgType<<endl;
-					}					
+					//LOG_IF(INFO,downType==upMsgType)<<"下行报文类型"<<downType<<"等于上行报文类型"<<upMsgType<<endl;
+					LOG_IF(ERROR,downType!=upMsgType)<<"下行报文类型"<<downType<<"不匹配上行报文类型"<<upMsgType<<endl;
 					s_dbgMatchNotify.pop_front();
+					if (downType==upMsgType)
+					{
+						break;
+					}
 				}				
 			}
 
@@ -117,7 +118,7 @@ namespace zwccbthr {
 			double curMs=zwccbthr::zwGetMs();
 			double diffMs=curMs-lastUpMsg;
 			
-			if (diffMs>4500 && lastUpMsg>0)
+			if (diffMs>2800 && lastUpMsg>0)
 			{
 				nExceedCount++;
 				nExceedMsTotal+=diffMs;
