@@ -100,11 +100,17 @@ namespace zwccbthr {
 			string upMsgType= jcAtmcConvertDLL::zwGetJcxmlMsgType(recvConvedXML);
 			if (s_dbgMatchNotify.size()>0)
 			{
-				jcLockMsg1512_t *nItem=s_dbgMatchNotify.front();
-				if(nItem->getNotifyNumType()==upMsgType)
+				for(int i=0;i<s_dbgMatchNotify.size();i++)
 				{
+					
+					string downType=s_dbgMatchNotify.front()->getNotifyNumType();
+					if (s_dbgMatchNotify.front()->getNotifyNumType()!=upMsgType)
+					{
+						LOG(ERROR)<<"下行报文类型"<<s_dbgMatchNotify.front()->getNotifyNumType()
+							<<"不匹配上行报文类型"<<upMsgType<<endl;
+					}					
 					s_dbgMatchNotify.pop_front();
-				}
+				}				
 			}
 
 			nUpCount++;
@@ -115,14 +121,15 @@ namespace zwccbthr {
 			{
 				nExceedCount++;
 				nExceedMsTotal+=diffMs;
+				LOG_IF(WARNING,diffMs>nExceedMaxMs)<<"报文间隔异常达到"<<diffMs<<"毫秒"<<endl;
 				if (diffMs>nExceedMaxMs)
 				{
 					nExceedMaxMs=diffMs;
 				}
-				LOG(ERROR)<<"报文间隔异常达到"<<diffMs<<"毫秒"<<endl;
+				
 			}
 			LOG_IF(WARNING,(nUpCount%20==0))<<"报文之间间隔时间"<<diffMs<<"毫秒，当前第"<<nUpCount<<"条报文"<<endl;				
-			LOG_IF(ERROR,(nUpCount%3==0) && nExceedMaxMs>100)<<"最大"<<nExceedMaxMs<<"毫秒 平均"<<nExceedMsTotal/(nExceedCount+0.001)<<"毫秒"<<endl;
+			LOG_IF(WARNING,(nUpCount%3==0) && nExceedMaxMs>100)<<"最大"<<nExceedMaxMs<<"毫秒 平均"<<nExceedMsTotal/(nExceedCount+0.001)<<"毫秒"<<endl;
 			lastUpMsg=curMs;
 		}
 		for (size_t i=0;i<s_dbgMatchNotify.size();i++)
@@ -189,7 +196,7 @@ namespace zwccbthr {
 					jcAtmcConvertDLL::zwJCjson2CCBxml(s_jcLockToC.front()->getNotifyMsg(),sUpMsg);					
 					double curMs=zwccbthr::zwGetMs();
 					double diffMs= curMs- s_jcLockToC.front()->getNotifyMs();
-					LOG(ERROR)<<"单向上传报文延迟了"<<diffMs<<"毫秒才上传"<<sUpMsg<<endl;					
+					LOG(WARNING)<<"单向上传报文延迟了"<<diffMs<<"毫秒才上传"<<sUpMsg<<endl;					
 					RecvMsgRotine pRecvMsgFun=zwccbthr::s_CallBack;
 					pushToCallBack(sUpMsg.c_str(),pRecvMsgFun);
 					s_jcLockToC.pop_front();
@@ -254,7 +261,7 @@ namespace zwccbthr {
 							}
 							else
 							{								
-								LOG(ERROR)<<"downType="<<ndownItem->getNotifyType()<<" upType="
+								LOG(WARNING)<<"downType="<<ndownItem->getNotifyType()<<" upType="
 									<<upType<<"该报文将会放入另一个队列延迟上传"<<endl;
 								//锁具主动上送报文，暂且放到单独的队列里面有待于延迟处理
 								nUpItem->setInitNotifyMs();
