@@ -508,7 +508,7 @@ int jcHidDevice::RecvJson( char *recvJson,int bufLen )
 		ZWWARN("jcHidDevice::RecvJson can't Using NULL buffer to Receive JinChu Lock Respone data")
 			return JCHID_STATUS_INPUTNULL;
 	}		
-	Sleep(30);
+	Sleep(300);
 	//OutputDebugStringA("415接收一条锁具返回消息开始\n");
 	int outLen=0;
 
@@ -550,8 +550,7 @@ int jcHidDevice::RecvJson( char *recvJson,int bufLen )
 	}
 	if (jcAtmcConvertDLL::JCSTR_LOCK_INIT==jsonType)
 	{
-		mockRetMsg=rspMsg0001;
-		mainMsgExeced=true;
+		mockRetMsg=rspMsg0001;		
 	}
 	if (jcAtmcConvertDLL::JCSTR_QUERY_LOCK_STATUS==jsonType)
 	{
@@ -565,6 +564,7 @@ int jcHidDevice::RecvJson( char *recvJson,int bufLen )
 	{
 		mockRetMsg=rspMsg0004;
 	}
+	mainMsgExeced=true;
 
 	if (mockRetMsg.length()<=(bufLen-1))
 	{

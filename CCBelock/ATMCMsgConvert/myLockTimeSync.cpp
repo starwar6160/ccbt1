@@ -229,6 +229,7 @@ namespace jcAtmcConvertDLL {
 		catch(...)
 		{
 			printf("jcJson=%s\n",jcJson);
+			return "";
 		}
 	}
 

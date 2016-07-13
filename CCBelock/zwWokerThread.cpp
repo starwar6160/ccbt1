@@ -100,7 +100,7 @@ namespace zwccbthr {
 			string upMsgType= jcAtmcConvertDLL::zwGetJcxmlMsgType(recvConvedXML);
 			if (s_dbgMatchNotify.size()>0)
 			{
-				for(int i=0;i<s_dbgMatchNotify.size();i++)
+				for(size_t i=0;i<s_dbgMatchNotify.size();i++)
 				{
 					
 					string downType=s_dbgMatchNotify.front()->getNotifyNumType();
@@ -172,7 +172,7 @@ namespace zwccbthr {
 
 	void my706LockRecvThr(void)
 	{
-		ZWERROR("与锁具之间的数据接收线程启动.20160713.v865")
+		ZWERROR("与锁具之间的数据接收线程启动.20160713.v867")
 		deque<jcLockMsg1512_t *> s_jcLockToC;		//锁具单向上传队列
 		double s_lastNotifyMs=0;
 		const int BLEN = 1024;
@@ -185,13 +185,14 @@ namespace zwccbthr {
 				boost::mutex::scoped_lock lock(thrhid_mutex);		
 //////////////////////////////先处理单向上传队列////////////////////////////////////////////
 				double curMs=zwccbthr::zwGetMs();
-				LOG_IF(WARNING,curMs-s_lastNotifyMs>2000)<<"curMs-s_lastNotifyMs="<<curMs-s_lastNotifyMs<<"ms"<<endl;
+				//LOG_IF(WARNING,curMs-s_lastNotifyMs>2000)<<"curMs-s_lastNotifyMs="<<curMs-s_lastNotifyMs<<"ms"<<endl;
 				LOG_IF(WARNING,s_jcLockToC.size()>0)<<"s_jcLockToC.size()="<<s_jcLockToC.size()
 					<<" s_jcNotify.size()="<<s_jcNotify.size()
 					<<" curMs-s_lastNotifyMs="<<(curMs-s_lastNotifyMs)<<endl;		
 				//当下发队列已经为空，而且此时因为线程锁的缘故暂时不能加入新的消息，而且最后一条正常下发消息
 				//的回应消息已经上传了500毫秒，而且没有等待进入下发队列的消息，就是一个空闲时刻可以上传消息了；
-				if (s_jcLockToC.size()>0)
+				LOG_IF(WARNING,s_jcLockToC.size()>0)<<"s_jcLockToC.size()="<<s_jcLockToC.size()<<endl;
+				while (s_jcLockToC.size()>0)
 				{
 					string sUpMsg;
 					jcAtmcConvertDLL::zwJCjson2CCBxml(s_jcLockToC.front()->getNotifyMsg(),sUpMsg);					
@@ -213,7 +214,7 @@ namespace zwccbthr {
 					s_dbgMatchNotify.push_back(nItem);
 					string sCmd=nItem->getNotifyMsg();
 					
-					VLOG(3)<<"下发给锁具的消息内容是"<<sCmd<<endl;
+					LOG(INFO)<<"下发给锁具的消息内容是"<<sCmd<<endl;
 					sts=static_cast<JCHID_STATUS>( g_jhc->SendJson(sCmd.c_str()));
 					//断线重连探测机制
 					if (JCHID_STATUS_OK!=static_cast<JCHID_STATUS>(sts))
@@ -247,6 +248,8 @@ namespace zwccbthr {
 					
 					string outXML;
 					jcAtmcConvertDLL::zwJCjson2CCBxml(recvBuf,outXML);
+					VLOG(3)<<"outXML.size()="<<outXML.size()<<endl;
+					VLOG(3)<<"s_jcNotify.size()="<<s_jcNotify.size()<<endl;
 						if (outXML.size()>0)
 						{							
 							if (s_jcNotify.size()>0)
@@ -254,22 +257,24 @@ namespace zwccbthr {
 							jcLockMsg1512_t *ndownItem=s_jcNotify.front();
 							if (ndownItem->matchResponJsonMsg(recvBuf)==true)
 							{
+								VLOG(3)<<"ndownItem->matchResponJsonMsg(recvBuf)==true"<<endl;
 								RecvMsgRotine pRecvMsgFun=zwccbthr::s_CallBack;
 								pushToCallBack(outXML.c_str(),pRecvMsgFun);
 								s_lastNotifyMs=zwccbthr::zwGetMs();
 								VLOG(3)<<"消息"<<upType<<"处理时间"<<s_lastNotifyMs-ndownItem->getNotifyMs()<<"毫秒"<<endl;
 								break;
 							}
-							else
-							{								
-								LOG(WARNING)<<"downType="<<ndownItem->getNotifyType()<<" upType="
-									<<upType<<"该报文将会放入另一个队列延迟上传"<<endl;
+							}	//if (s_jcNotify.size()>0)
+							if (myIsJsonMsgFromLockFirstUp(upType)==true)
+							{	
+								VLOG(3)<<"ndownItem->matchResponJsonMsg(recvBuf)!=true"<<endl;
+								LOG(WARNING)<<" upType="<<upType<<"该报文将会放入另一个队列延迟上传"<<endl;
 								//锁具主动上送报文，暂且放到单独的队列里面有待于延迟处理
 								nUpItem->setInitNotifyMs();
 								s_jcLockToC.push_back(nUpItem);
 								continue;
 							}							
-							}																						
+																												
 						}		
 					}	//if (strlen(recvBuf)>0)					
 					double curMs=zwccbthr::zwGetMs();

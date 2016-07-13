@@ -393,7 +393,7 @@ void zw711SpeedTestThr1(void)
 	SetRecvMsgRotine(myATMCRecvMsgRotine);	
 	int nCount=0;
 
-	while(nCount++ <30*9)
+	while(nCount++ <30*1)
 	{		
 		
 		int idxMsg=static_cast<int64_t>(zwGetUs()) % aSize;
@@ -406,22 +406,12 @@ void zw711SpeedTestThr1(void)
 	cout<<"zw1209SpeedTestThr1 ½áÊø"<<endl;
 }
 
+void zw713SpeedTest1(void)
+{
+	SetRecvMsgRotine(myATMCRecvMsgRotine);	
 
-TEST_F(ccbElockTest, jcHidDev20151207SpeedTestInATMCDLL)
-{	
-	boost::thread *thr1=new boost::thread(zw711SpeedTestThr1);	
-	//Sleep(100);
-	boost::thread *thr2=new boost::thread(zw711SpeedTestThr1);
-	//boost::thread *thr3=new boost::thread(zw1218OpenTimeTestThr);
-	
-	
-	thr1->join();
-	thr2->join();
-	//thr3->join();
-		
-	Sleep(9000);
-	//EXPECT_EQ(ELOCK_ERROR_SUCCESS,Close());
-	//rdq.dumpDownDeque();
+	myTestPush712(g_msg00);
+	myTestPush712(g_msg01);
 }
 
 void myTestPush712( const char * tMsg )
@@ -432,3 +422,21 @@ void myTestPush712( const char * tMsg )
 		EXPECT_EQ(ELOCK_ERROR_SUCCESS,Notify(tMsg));	
 	}
 }
+
+
+TEST_F(ccbElockTest, jcHidDev20151207SpeedTestInATMCDLL)
+{	
+	//boost::thread *thr3=new boost::thread(zw1218OpenTimeTestThr);
+	
+	boost::thread *thr1=new boost::thread(zw711SpeedTestThr1);	
+	boost::thread *thr2=new boost::thread(zw711SpeedTestThr1);
+	
+	thr1->join();
+	thr2->join();
+	//thr3->join();
+	//zw713SpeedTest1();
+	Sleep(9000);
+	//EXPECT_EQ(ELOCK_ERROR_SUCCESS,Close());
+	//rdq.dumpDownDeque();
+}
+
