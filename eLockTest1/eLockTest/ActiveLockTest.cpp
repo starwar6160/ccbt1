@@ -384,8 +384,11 @@ boost::mutex jctest1_mutex;
 void myTestPush712( const char * tMsg );
 #include <cstdint>
 using std::int64_t;
-void zw711SpeedTestThr1(void)
+int g_totalRunCount=0;
+void zw711SpeedTestThr1()
 {
+	assert(g_totalRunCount>0);
+	//cout<<"线程将会运行"<<g_totalRunCount/2<<"条报文"<<endl;
 	const char *msgarr[]=
 	{g_msg00,g_msg01,g_msg02,g_msg03};
 	//{g_msg00,g_msg01,g_msg04};
@@ -393,7 +396,7 @@ void zw711SpeedTestThr1(void)
 	SetRecvMsgRotine(myATMCRecvMsgRotine);	
 	int nCount=0;
 
-	while(nCount++ <30*1)
+	while(nCount++ <(g_totalRunCount/2))
 	{		
 		
 		int idxMsg=static_cast<int64_t>(zwGetUs()) % aSize;
@@ -423,11 +426,24 @@ void myTestPush712( const char * tMsg )
 	}
 }
 
+int myGetRunCount(void)
+{
+	cout<<"请输入需要运行的消息条数"<<endl;
+	int nCount=0;
+	cin>>nCount;
+	if (nCount<=0)
+	{
+		nCount=10;
+	}
+	return nCount;
+}
+
+
 
 TEST_F(ccbElockTest, jcHidDev20151207SpeedTestInATMCDLL)
 {	
 	//boost::thread *thr3=new boost::thread(zw1218OpenTimeTestThr);
-	
+	g_totalRunCount=myGetRunCount();
 	boost::thread *thr1=new boost::thread(zw711SpeedTestThr1);	
 	boost::thread *thr2=new boost::thread(zw711SpeedTestThr1);
 	

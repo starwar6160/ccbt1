@@ -269,7 +269,7 @@ void myDequeTest704(void)
 	}
 }
 
-
+int myGetRunCount(void);
 
 int _tmain(int argc, TCHAR * argv[])
 {
@@ -291,8 +291,11 @@ int _tmain(int argc, TCHAR * argv[])
 	//time_t dstDateTime=0;
 	//zwCCBDateTime2UTC("20140515","000000",&dstDateTime);
 	//printf("dstDateTime=%u\n",dstDateTime);
-	
-	eLockGoogleTest2014(argc, argv);
 
 	//myDequeTest704();
+
+	eLockGoogleTest2014(argc, argv);	
+	cout<<"输入任何数字结束"<<endl;
+	int tmpaa;
+	cin>>tmpaa;
 }
