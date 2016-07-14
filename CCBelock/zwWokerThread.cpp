@@ -26,11 +26,13 @@
 #include ".\\ATMCMsgConvert\\myConvIntHdr.h"
 #include <stdio.h>
 #include <deque>
+#include <iomanip>
 using namespace boost::property_tree;
 using boost::condition_variable;
 using boost::condition_variable_any;
 using jchidDevice2015::jcHidDevice;
 using jcAtmcConvertDLL::jcLockMsg1512_t;
+using std::setprecision;
 
 #define MYFD1	std::setprecision(0)<<std::setiosflags(std::ios::fixed)
 
@@ -44,8 +46,6 @@ namespace zwccbthr {
 	deque<jcLockMsg1512_t *> s_dbgMatchNotify;		//下发命令队列复制品，用于调试匹配
 	RecvMsgRotine s_CallBack=NULL;
 	double s_LastNormalMsgUpTimeMs=0.0;	//最后一次正常循环报文上传的时间，毫秒计算
-	////供单向上传报文专用的保存所有回调函数指针的向量,好让单向报文发给所有线程;
-	vector <RecvMsgRotine> s_vecSingleUp;		
 
 
 	void wait(int milliseconds) {
@@ -79,8 +79,8 @@ namespace zwccbthr {
 			return;
 		}		
 
-
 		if (strlen(recvConvedXML)>0){		
+			LOG_IF(ERROR,strlen(recvConvedXML) <= 42)<<"XML长度不足42字符，不是合法XML"<<endl;
 			//XML开头的固定内容38个字符，外加起码一个标签的两对尖括号合计4个字符
 			assert(strlen(recvConvedXML) > 42);
 		}
@@ -96,19 +96,20 @@ namespace zwccbthr {
 			//20150415.1727.为了万敏的要求，控制上传消息速率最多每2秒一条防止ATM死机
 			//Sleep(2920);
 			pRecvMsgFun(recvConvedXML);
-			LOG(INFO)<<"上位机收到 "<<recvConvedXML<<endl;
+			LOG(INFO)<<"上位机回调函数已经收到 "<<recvConvedXML<<endl;
 			string upMsgType= jcAtmcConvertDLL::zwGetJcxmlMsgType(recvConvedXML);
 			if (s_dbgMatchNotify.size()>0)
 			{
+				VLOG(3)<<"s_dbgMatchNotify.size()="<<s_dbgMatchNotify.size()<<endl;
 				for(size_t i=0;i<s_dbgMatchNotify.size();i++)
 				{
 					
 					string downType=s_dbgMatchNotify.front()->getNotifyNumType();
-					//LOG_IF(INFO,downType==upMsgType)<<"下行报文类型"<<downType<<"等于上行报文类型"<<upMsgType<<endl;
 					LOG_IF(ERROR,downType!=upMsgType)<<"下行报文类型"<<downType<<"不匹配上行报文类型"<<upMsgType<<endl;
 					s_dbgMatchNotify.pop_front();
 					if (downType==upMsgType)
 					{
+						LOG(INFO)<<"pushToCallBack中上下行报文匹配了一对,现在跳出逐个匹配s_dbgMatchNotify队列的循环"<<endl;
 						break;
 					}
 				}				
@@ -122,15 +123,15 @@ namespace zwccbthr {
 			{
 				nExceedCount++;
 				nExceedMsTotal+=diffMs;
-				VLOG_IF(3,diffMs>nExceedMaxMs)<<"报文间隔异常达到"<<diffMs<<"毫秒"<<endl;
+				VLOG_IF(3,diffMs>nExceedMaxMs)<<"报文间隔异常达到"<<setprecision(0)<<diffMs<<"毫秒"<<endl;
 				if (diffMs>nExceedMaxMs)
 				{
 					nExceedMaxMs=diffMs;
 				}
 				
 			}
-			LOG_IF(WARNING,(nUpCount%20==0))<<"报文之间间隔时间"<<diffMs<<"毫秒，当前第"<<nUpCount<<"条报文"<<endl;				
-			LOG_IF(WARNING,(nUpCount%3==0) && nExceedMaxMs>100)<<"最大"<<nExceedMaxMs<<"毫秒 平均"<<nExceedMsTotal/(nExceedCount+0.001)<<"毫秒"<<endl;
+			LOG_IF(WARNING,(nUpCount%20==0))<<"报文之间间隔时间"<<setprecision(0)<<diffMs<<"毫秒，当前第"<<nUpCount<<"条报文"<<endl;				
+			LOG_IF(WARNING,(nUpCount%3==0) && nExceedMaxMs>100)<<setprecision(0)<<"最大"<<nExceedMaxMs<<"毫秒 平均"<<setprecision(2)<<nExceedMsTotal/(nExceedCount+0.001)<<"毫秒"<<endl;
 			lastUpMsg=curMs;
 		}
 		for (size_t i=0;i<s_dbgMatchNotify.size();i++)
@@ -185,11 +186,10 @@ namespace zwccbthr {
 				boost::mutex::scoped_lock lock(thrhid_mutex);		
 //////////////////////////////先处理单向上传队列////////////////////////////////////////////
 				double curMs=zwccbthr::zwGetMs();
-				//LOG_IF(WARNING,curMs-s_lastNotifyMs>2000)<<"curMs-s_lastNotifyMs="<<curMs-s_lastNotifyMs<<"ms"<<endl;
-				VLOG_IF(3,s_jcNotify.size()>0)<<"s_jcNotify.front()="<<s_jcNotify.front()->getNotifyType()<<endl;
-				LOG_IF(WARNING,s_jcLockToC.size()>0)<<"s_jcLockToC.size()="<<s_jcLockToC.size()
-					<<" s_jcNotify.size()="<<s_jcNotify.size()
-					<<" curMs-s_lastNotifyMs="<<(curMs-s_lastNotifyMs)<<endl;		
+				VLOG_IF(3,s_jcNotify.size()>0)<<"下发队列头部元素="<<s_jcNotify.front()->getNotifyType()<<endl;
+				VLOG_IF(2,s_jcLockToC.size()>0)<<"单向上传队列大小="<<s_jcLockToC.size()
+					<<" 下发队列大小="<<s_jcNotify.size()
+					<<" 最后一次上传报文后已经过了="<<(curMs-s_lastNotifyMs)<<setprecision(0)<<"毫秒"<<endl;		
 				//当下发队列已经为空，而且此时因为线程锁的缘故暂时不能加入新的消息，而且最后一条正常下发消息
 				//的回应消息已经上传了500毫秒，而且没有等待进入下发队列的消息，就是一个空闲时刻可以上传消息了；
 				LOG_IF(WARNING,s_jcLockToC.size()>0)<<"s_jcLockToC.size()="<<s_jcLockToC.size()<<endl;
@@ -199,15 +199,17 @@ namespace zwccbthr {
 					jcAtmcConvertDLL::zwJCjson2CCBxml(s_jcLockToC.front()->getNotifyMsg(),sUpMsg);					
 					double curMs=zwccbthr::zwGetMs();
 					double diffMs= curMs- s_jcLockToC.front()->getNotifyMs();
-					LOG(WARNING)<<"单向上传报文延迟了"<<diffMs<<"毫秒才上传"<<sUpMsg<<endl;					
 					RecvMsgRotine pRecvMsgFun=zwccbthr::s_CallBack;
-					pushToCallBack(sUpMsg.c_str(),pRecvMsgFun);
+					pushToCallBack(sUpMsg.c_str(),pRecvMsgFun);					
+					LOG(WARNING)<<"单向上传报文"<<s_jcLockToC.front()->getNotifyType()
+						<<"延迟了"<<setprecision(0)<<diffMs
+						<<"毫秒才上传,上传后单向上传队列头部元素弹出"<<endl;					
 					s_jcLockToC.pop_front();
 				}			
 ///////////////////////////////下发报文///////////////////////////////////////////
 				JCHID_STATUS sts=JCHID_STATUS_FAIL;		
-				VLOG_IF(3,s_jcNotify.size()>0)<<"s_jcNotify.size()="<<s_jcNotify.size()
-					<<"s_jcNotify.front()="<<s_jcNotify.front()->getNotifyType()<<endl;
+				VLOG_IF(3,s_jcNotify.size()>0)<<"下发队列大小="<<s_jcNotify.size()
+					<<"\t头部元素="<<s_jcNotify.front()->getNotifyType()<<endl;
 				if (s_jcNotify.size()>0)
 				{
 					
@@ -218,19 +220,21 @@ namespace zwccbthr {
 					s_dbgMatchNotify.push_back(nItem);
 					string sCmd=nItem->getNotifyMsg();
 					
-					LOG(INFO)<<"下发给锁具的消息内容是"<<sCmd<<endl;
+					LOG(INFO)<<"下发给锁具的消息内容是"<<sCmd;
 					sts=static_cast<JCHID_STATUS>( g_jhc->SendJson(sCmd.c_str()));
 					//断线重连探测机制
 					if (JCHID_STATUS_OK!=static_cast<JCHID_STATUS>(sts))
-					{
+					{						
 						g_jhc->OpenJc();
+						LOG(WARNING)<<"发生了一次断线重连"<<endl;
 					}
 					//如果是锁具主动上送报文的返回确认报文，那么下发完毕后不用读取锁具的返回报文
 					if(true==myIsJsonMsgFromLockFirstUp(nItem->getNotifyType())) 
 					{
 						if (s_jcNotify.size()>0){
 							s_jcNotify.pop_front();
-							VLOG(3)<<"返回确认报文下发之后continue s_jcNotify.pop_front()"<<"\ts_jcNotify.size()="<<s_jcNotify.size()<<endl;
+							VLOG(3)<<"锁具单向上送报文的返回确认报文下发之后continue 下发队列头部元素弹出"
+								<<"\t下发队列大小="<<s_jcNotify.size()<<endl;
 						}
 						continue;
 					}
@@ -252,43 +256,46 @@ namespace zwccbthr {
 						LOG(WARNING)<<"收到锁具单向上传消息 "<<recvBuf<<endl;
 					}
 					else{
-						VLOG(3)<<"收到锁具返回消息1607= "<<recvBuf<<endl;
+						LOG(INFO)<<"收到锁具返回消息= "<<recvBuf<<endl;
 					}
 					
 					string outXML;
 					jcAtmcConvertDLL::zwJCjson2CCBxml(recvBuf,outXML);
-					VLOG(3)<<"outXML.size()="<<outXML.size()<<"s_jcNotify.size()="<<s_jcNotify.size()<<endl;
+					VLOG(3)<<"回应XML报文大小="<<outXML.size()<<"\t下发队列大小="<<s_jcNotify.size()<<endl;
 						if (outXML.size()>0)
 						{							
-							VLOG_IF(3,s_jcNotify.size()>0)<<"s_jcNotify.front()="<<s_jcNotify.front()->getNotifyType()<<endl;
+							VLOG_IF(3,s_jcNotify.size()>0)<<"下发队列头部元素="<<s_jcNotify.front()->getNotifyType()<<endl;
 							if (s_jcNotify.size()>0 && s_jcNotify.front()->matchResponJsonMsg(recvBuf)==true)
-							{
-								VLOG(3)<<"上下行报文匹配正确"<<endl;
+							{								
 								RecvMsgRotine pRecvMsgFun=zwccbthr::s_CallBack;
-								pushToCallBack(outXML.c_str(),pRecvMsgFun);
+								pushToCallBack(outXML.c_str(),pRecvMsgFun);								
 								s_lastNotifyMs=zwccbthr::zwGetMs();
 								VLOG(3)<<"消息"<<upType<<"处理时间"
-									<<s_lastNotifyMs-s_jcNotify.front()->getNotifyMs()<<"毫秒"<<endl;
+									<<s_lastNotifyMs-s_jcNotify.front()->getNotifyMs()<<setprecision(1)<<"毫秒"<<endl;
 								if (s_jcNotify.size()>0){
 									s_jcNotify.pop_front();
-									VLOG(3)<<"s_jcNotify.pop_front()"<<"\ts_jcNotify.size()="<<s_jcNotify.size()<<endl;
+									VLOG(3)<<"下发队列头部元素弹出"<<"\t下发队列大小="<<s_jcNotify.size()<<endl;
 								}
+								VLOG(3)<<"上下行报文匹配正确，现在回应报文传给了回调函数，现在读取循环break"<<endl;
 								break;
 							}							
 							if (myIsJsonMsgFromLockFirstUp(upType)==true)
 							{	
-								LOG(WARNING)<<" upType="<<upType<<"该报文将会放入另一个队列延迟上传"<<endl;
+								
 								//锁具主动上送报文，暂且放到单独的队列里面有待于延迟处理
 								nUpItem->setInitNotifyMs();
 								s_jcLockToC.push_back(nUpItem);
+								LOG(WARNING)<<" upType="<<upType<<"该报文将会放入另一个队列延迟上传,现在读取循环continue"<<endl;
 								continue;
 							}							
 																												
 						}		
 					}	//if (strlen(recvBuf)>0)					
 					double curMs=zwccbthr::zwGetMs();
-					if (curMs-msgReadStart>1800 || strlen(recvBuf)>0)
+					int nMaxReadMs=1800;
+					if (curMs-msgReadStart>nMaxReadMs || strlen(recvBuf)>0)
 					{
+						VLOG(3)<<"读取循环开始以后已经过了"<<nMaxReadMs<<"毫秒或者没有读取到任何内容，现在读取循环将break";
 						break;
 					}
 				} while (1);

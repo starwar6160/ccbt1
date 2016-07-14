@@ -113,7 +113,6 @@
     <ClInclude Include="ATMCMsgConvert\myConvIntHdr.h" />
     <ClInclude Include="CCBelock.h" />
     <ClInclude Include="hidCode\hidapi.h" />
-    <ClInclude Include="hidCode\usbHidHdr.h" />
     <ClInclude Include="hidCode\zwHidDevClass2015.h" />
     <ClInclude Include="hidCode\zwHidGtest130.h" />
     <ClInclude Include="hidCode\zwHidMulHeader.h" />
@@ -122,7 +121,6 @@
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="zwCcbElockHdr.h" />
-    <ClInclude Include="zwSecretBoxCCBcsWrap.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="atmcDLLConvert731.cpp" />
