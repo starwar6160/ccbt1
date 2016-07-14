@@ -118,11 +118,11 @@ namespace zwccbthr {
 			double curMs=zwccbthr::zwGetMs();
 			double diffMs=curMs-lastUpMsg;
 			
-			if (diffMs>2800 && lastUpMsg>0)
+			if (diffMs>30000 && lastUpMsg>0)
 			{
 				nExceedCount++;
 				nExceedMsTotal+=diffMs;
-				LOG_IF(WARNING,diffMs>nExceedMaxMs)<<"报文间隔异常达到"<<diffMs<<"毫秒"<<endl;
+				VLOG_IF(3,diffMs>nExceedMaxMs)<<"报文间隔异常达到"<<diffMs<<"毫秒"<<endl;
 				if (diffMs>nExceedMaxMs)
 				{
 					nExceedMaxMs=diffMs;
@@ -172,7 +172,7 @@ namespace zwccbthr {
 
 	void my706LockRecvThr(void)
 	{
-		ZWERROR("与锁具之间的数据接收线程启动.20160713.v867")
+		ZWERROR("与锁具之间的数据接收线程启动.20160714.v872")
 		deque<jcLockMsg1512_t *> s_jcLockToC;		//锁具单向上传队列
 		double s_lastNotifyMs=0;
 		const int BLEN = 1024;
@@ -186,6 +186,7 @@ namespace zwccbthr {
 //////////////////////////////先处理单向上传队列////////////////////////////////////////////
 				double curMs=zwccbthr::zwGetMs();
 				//LOG_IF(WARNING,curMs-s_lastNotifyMs>2000)<<"curMs-s_lastNotifyMs="<<curMs-s_lastNotifyMs<<"ms"<<endl;
+				VLOG_IF(3,s_jcNotify.size()>0)<<"s_jcNotify.front()="<<s_jcNotify.front()->getNotifyType()<<endl;
 				LOG_IF(WARNING,s_jcLockToC.size()>0)<<"s_jcLockToC.size()="<<s_jcLockToC.size()
 					<<" s_jcNotify.size()="<<s_jcNotify.size()
 					<<" curMs-s_lastNotifyMs="<<(curMs-s_lastNotifyMs)<<endl;		
@@ -203,10 +204,13 @@ namespace zwccbthr {
 					pushToCallBack(sUpMsg.c_str(),pRecvMsgFun);
 					s_jcLockToC.pop_front();
 				}			
-//////////////////////////////////////////////////////////////////////////
+///////////////////////////////下发报文///////////////////////////////////////////
 				JCHID_STATUS sts=JCHID_STATUS_FAIL;		
+				VLOG_IF(3,s_jcNotify.size()>0)<<"s_jcNotify.size()="<<s_jcNotify.size()
+					<<"s_jcNotify.front()="<<s_jcNotify.front()->getNotifyType()<<endl;
 				if (s_jcNotify.size()>0)
 				{
+					
 					jcLockMsg1512_t *nItem=s_jcNotify.front();					
 					//记录真正下发的时间
 					nItem->setInitNotifyMs();
@@ -224,10 +228,15 @@ namespace zwccbthr {
 					//如果是锁具主动上送报文的返回确认报文，那么下发完毕后不用读取锁具的返回报文
 					if(true==myIsJsonMsgFromLockFirstUp(nItem->getNotifyType())) 
 					{
+						if (s_jcNotify.size()>0){
+							s_jcNotify.pop_front();
+							VLOG(3)<<"返回确认报文下发之后continue s_jcNotify.pop_front()"<<"\ts_jcNotify.size()="<<s_jcNotify.size()<<endl;
+						}
 						continue;
 					}
 				}	//if (s_jcNotify.size()>0)
-				//读取返回值
+				////////////////////////////////读取返回值//////////////////////////////////////////
+				
 				double msgReadStart=zwccbthr::zwGetMs();
 				do 
 				{
@@ -250,8 +259,9 @@ namespace zwccbthr {
 					jcAtmcConvertDLL::zwJCjson2CCBxml(recvBuf,outXML);
 					VLOG(3)<<"outXML.size()="<<outXML.size()<<"s_jcNotify.size()="<<s_jcNotify.size()<<endl;
 						if (outXML.size()>0)
-						{																					
-							if (s_jcNotify.front()>0 && s_jcNotify.front()->matchResponJsonMsg(recvBuf)==true)
+						{							
+							VLOG_IF(3,s_jcNotify.size()>0)<<"s_jcNotify.front()="<<s_jcNotify.front()->getNotifyType()<<endl;
+							if (s_jcNotify.size()>0 && s_jcNotify.front()->matchResponJsonMsg(recvBuf)==true)
 							{
 								VLOG(3)<<"上下行报文匹配正确"<<endl;
 								RecvMsgRotine pRecvMsgFun=zwccbthr::s_CallBack;
@@ -261,6 +271,7 @@ namespace zwccbthr {
 									<<s_lastNotifyMs-s_jcNotify.front()->getNotifyMs()<<"毫秒"<<endl;
 								if (s_jcNotify.size()>0){
 									s_jcNotify.pop_front();
+									VLOG(3)<<"s_jcNotify.pop_front()"<<"\ts_jcNotify.size()="<<s_jcNotify.size()<<endl;
 								}
 								break;
 							}							

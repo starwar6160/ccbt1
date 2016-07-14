@@ -263,7 +263,7 @@ CCBELOCK_API long JCAPISTD Notify(const char *pszMsg)
 		}
 		//////////////////////////////////////////////////////////////////////////
 		string strXMLSend = pszMsg;
-		VLOG_IF(4,strXMLSend.size()>0)<<"strXMLSend=\n"<<strXMLSend;
+		VLOG_IF(4,strXMLSend.size()>0)<<"上位机下发XML报文20160714=\n"<<strXMLSend;
 		//XML开头的固定内容38个字符，外加起码一个标签的两对尖括号合计4个字符
 		assert(strXMLSend.length() > 42);	
 		jcAtmcConvertDLL::zwCCBxml2JCjson(strXMLSend, strJsonSend);
@@ -278,7 +278,7 @@ CCBELOCK_API long JCAPISTD Notify(const char *pszMsg)
 		DWORD iCallerThrId=GetCurrentThreadId();
 		jcLockMsg1512_t *nItem=new jcLockMsg1512_t(strJsonSend);
 		zwccbthr::s_jcNotify.push_back(nItem);
-		VLOG_IF(3,strJsonSend.size()>0)<<"NotifyJson报文="<<strJsonSend;
+		VLOG_IF(4,strJsonSend.size()>0)<<"NotifyJson报文="<<strJsonSend;
 		return ELOCK_ERROR_SUCCESS;
 	}
 	catch(ptree_bad_path & e) {

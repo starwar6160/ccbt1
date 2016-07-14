@@ -80,6 +80,7 @@ BOOL APIENTRY DllMain(HMODULE hModule,
 	try
 	{ 
 		zwGlogInit();
+		LOG(WARNING)<<"ATMC DLL LOADED 20160714.1024"<<endl;
 		//设置代码页为简体中文，936是简体中文的代码页。
 		std::locale loc1 = std::locale::global(std::locale(".936"));
 		//OutputDebugStringA("JinChu Elock DllMain Loaded.20151210.1523A01");
