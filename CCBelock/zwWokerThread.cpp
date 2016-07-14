@@ -173,7 +173,7 @@ namespace zwccbthr {
 
 	void my706LockRecvThr(void)
 	{
-		ZWERROR("与锁具之间的数据接收线程启动.20160714.v872")
+		ZWERROR("与锁具之间的数据接收线程启动.20160714.v874")
 		deque<jcLockMsg1512_t *> s_jcLockToC;		//锁具单向上传队列
 		double s_lastNotifyMs=0;
 		const int BLEN = 1024;
@@ -184,9 +184,10 @@ namespace zwccbthr {
 			boost::this_thread::interruption_point();
 			{
 				boost::mutex::scoped_lock lock(thrhid_mutex);		
+				zw_trace zntr("报文收发线程同步锁");
 //////////////////////////////先处理单向上传队列////////////////////////////////////////////
 				double curMs=zwccbthr::zwGetMs();
-				VLOG_IF(3,s_jcNotify.size()>0)<<"下发队列头部元素="<<s_jcNotify.front()->getNotifyType()<<endl;
+				VLOG_IF(3,s_jcNotify.size()>0)<<"处理单向上传队列时.下发队列头部元素="<<s_jcNotify.front()->getNotifyType()<<endl;
 				VLOG_IF(2,s_jcLockToC.size()>0)<<"单向上传队列大小="<<s_jcLockToC.size()
 					<<" 下发队列大小="<<s_jcNotify.size()
 					<<" 最后一次上传报文后已经过了="<<(curMs-s_lastNotifyMs)<<setprecision(0)<<"毫秒"<<endl;		
@@ -195,6 +196,7 @@ namespace zwccbthr {
 				LOG_IF(WARNING,s_jcLockToC.size()>0)<<"s_jcLockToC.size()="<<s_jcLockToC.size()<<endl;
 				while (s_jcLockToC.size()>0)
 				{
+					zw_trace zntr("单向上传队列处理");
 					string sUpMsg;
 					jcAtmcConvertDLL::zwJCjson2CCBxml(s_jcLockToC.front()->getNotifyMsg(),sUpMsg);					
 					double curMs=zwccbthr::zwGetMs();
@@ -208,11 +210,11 @@ namespace zwccbthr {
 				}			
 ///////////////////////////////下发报文///////////////////////////////////////////
 				JCHID_STATUS sts=JCHID_STATUS_FAIL;		
-				VLOG_IF(3,s_jcNotify.size()>0)<<"下发队列大小="<<s_jcNotify.size()
+				VLOG_IF(3,s_jcNotify.size()>0)<<"开始下发报文时.下发队列大小="<<s_jcNotify.size()
 					<<"\t头部元素="<<s_jcNotify.front()->getNotifyType()<<endl;
 				if (s_jcNotify.size()>0)
 				{
-					
+					zw_trace zntr("下发队列处理");
 					jcLockMsg1512_t *nItem=s_jcNotify.front();					
 					//记录真正下发的时间
 					nItem->setInitNotifyMs();
@@ -231,6 +233,7 @@ namespace zwccbthr {
 					//如果是锁具主动上送报文的返回确认报文，那么下发完毕后不用读取锁具的返回报文
 					if(true==myIsJsonMsgFromLockFirstUp(nItem->getNotifyType())) 
 					{
+						zw_trace zntr("单向上传报文的确认报文的处理");
 						if (s_jcNotify.size()>0){
 							s_jcNotify.pop_front();
 							VLOG(3)<<"锁具单向上送报文的返回确认报文下发之后continue 下发队列头部元素弹出"
@@ -249,6 +252,7 @@ namespace zwccbthr {
 					sts=static_cast<JCHID_STATUS>(g_jhc->RecvJson(recvBuf,BLEN));
 					if (strlen(recvBuf)>0)
 					{										
+					zw_trace zntr("读到一条回应报文的处理");
 					jcLockMsg1512_t *nUpItem=new jcLockMsg1512_t(recvBuf);
 					string upType=jcAtmcConvertDLL::zwGetJcJsonMsgType(recvBuf);
 					if (myIsJsonMsgFromLockFirstUp(upType)==true)
@@ -264,9 +268,11 @@ namespace zwccbthr {
 					VLOG(3)<<"回应XML报文大小="<<outXML.size()<<"\t下发队列大小="<<s_jcNotify.size()<<endl;
 						if (outXML.size()>0)
 						{							
-							VLOG_IF(3,s_jcNotify.size()>0)<<"下发队列头部元素="<<s_jcNotify.front()->getNotifyType()<<endl;
+							zw_trace zntr("回应报文成功转换出回应XML报文的处理");
+							VLOG_IF(3,s_jcNotify.size()>0)<<"读取返回值时.下发队列头部元素="<<s_jcNotify.front()->getNotifyType()<<endl;
 							if (s_jcNotify.size()>0 && s_jcNotify.front()->matchResponJsonMsg(recvBuf)==true)
 							{								
+								zw_trace zntr("上下行报文正确匹配的处理");
 								RecvMsgRotine pRecvMsgFun=zwccbthr::s_CallBack;
 								pushToCallBack(outXML.c_str(),pRecvMsgFun);								
 								s_lastNotifyMs=zwccbthr::zwGetMs();
@@ -281,7 +287,7 @@ namespace zwccbthr {
 							}							
 							if (myIsJsonMsgFromLockFirstUp(upType)==true)
 							{	
-								
+								zw_trace zntr("锁具主动上送报文的处理");
 								//锁具主动上送报文，暂且放到单独的队列里面有待于延迟处理
 								nUpItem->setInitNotifyMs();
 								s_jcLockToC.push_back(nUpItem);

@@ -142,12 +142,12 @@ zw_trace::zw_trace(const char *funcName)
 	m_str = funcName;
 	m_start = m_str + "\tSTART";
 	m_end = m_str + "\tEND";
-	VLOG(4)<<m_start;
+	VLOG(3)<<m_start;
 }
 
 zw_trace::~zw_trace()
 {
-	VLOG(4)<<m_end;
+	VLOG(3)<<m_end;
 }
 
 
@@ -158,6 +158,7 @@ extern int G_TESTCB_SUCC;	//是否成功调用了回调函数的一个标志位，仅仅测试用
 
 CCBELOCK_API long JCAPISTD Open(long lTimeOut)
 {
+	ZWFUNCTRACE
 	VLOG_IF(3,lTimeOut<=-600 || lTimeOut>600)<<"ZIJIN423 Open Invalid Para 20150423.1559";
 	if (NULL==g_jhc)
 	{
@@ -195,6 +196,7 @@ CCBELOCK_API long JCAPISTD Open(long lTimeOut)
 
 CCBELOCK_API long JCAPISTD Close()
 {
+	ZWFUNCTRACE
 	if (NULL==g_jhc)
 	{
 		LOG(WARNING)<<"没有Open就执行Close 20151216"<<endl;
@@ -221,6 +223,7 @@ CCBELOCK_API long JCAPISTD Close()
 
 CCBELOCK_API long JCAPISTD Notify(const char *pszMsg)
 {
+	ZWFUNCTRACE
 	VLOG(4)<<"Notify开始"<<pszMsg<<endl;
 		if (NULL==g_jhc)
 		{
@@ -305,6 +308,7 @@ CCBELOCK_API long JCAPISTD Notify(const char *pszMsg)
 
 CCBELOCK_API int JCAPISTD SetRecvMsgRotine(RecvMsgRotine pRecvMsgFun)
 {
+	ZWFUNCTRACE
 	DBGTHRID
 	G_TESTCB_SUCC=0;
 	assert(NULL != pRecvMsgFun);
