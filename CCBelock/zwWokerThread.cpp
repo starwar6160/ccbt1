@@ -66,6 +66,25 @@ namespace zwccbthr {
 
 	}
 
+	//根据下发队列大小调整延迟
+	int myAdjustNotifyDelay(int dqNotifySize)
+	{
+		if (dqNotifySize>=0 && dqNotifySize<10)
+		{
+			return 100;
+		}
+		if (dqNotifySize>=10 && dqNotifySize<20)
+		{
+			return 200;
+		}
+		if (dqNotifySize>=20)
+		{
+			return 300;
+		}
+		return 120;	//其他非法输入返回120毫秒还算比较安全
+	}
+
+
 	void pushToCallBack( const char * recvConvedXML,RecvMsgRotine pRecvMsgFun )
 	{
 		static double lastUpMsg=0;	//最后一条上传报文的时间戳，用于检测过长的间隔
@@ -214,7 +233,8 @@ namespace zwccbthr {
 				JCHID_STATUS sts=JCHID_STATUS_FAIL;		
 				VLOG_IF(3,s_jcNotify.size()>0)<<"开始下发报文时.下发队列大小="<<s_jcNotify.size()
 					<<"\t头部元素="<<s_jcNotify.front()->getNotifyType()<<endl;
-				LOG_IF(WARNING,s_jcNotify.size()>20)<<"开始下发报文时.下发队列太长，长度达到了"<<"条"<<endl;
+				LOG_IF(WARNING,s_jcNotify.size()>20)<<"开始下发报文时.下发队列太长，长度达到了"
+					<<s_jcNotify.size()<<"条"<<endl;
 				if (s_jcNotify.size()>0)
 				{
 					zw_trace zntr("下发队列处理");
@@ -312,6 +332,7 @@ namespace zwccbthr {
 			}//boost::mutex::scoped_lock lock(thrhid_mutex);		
 			//在互斥锁范围以外留出一点时间给Notify添加新的报文到下发队列
 			Sleep(s_MsgNotifyDelay);
+			s_MsgNotifyDelay=myAdjustNotifyDelay(s_jcNotify.size());
 		}	//end of while(1)
 
 	}
