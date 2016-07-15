@@ -116,7 +116,7 @@ namespace zwccbthr {
 	extern boost::mutex thrhid_mutex;
 	extern deque<jcLockMsg1512_t *> s_jcNotify;		//下发命令
 	extern RecvMsgRotine s_CallBack;
-	////供单向上传报文专用的保存所有回调函数指针的向量,好让单向报文发给所有线程;
+	extern int s_MsgNotifyDelay;	//报文下发延迟，防止下位机处理不过来
 } //namespace zwccbthr{  
 
 namespace zwCfg {
@@ -268,7 +268,7 @@ CCBELOCK_API long JCAPISTD Notify(const char *pszMsg)
 		assert(strJsonSend.length() > 9);	//json最基本的符号起码好像要9个字符左右
 		
 		//不要一口气下发完毕，导致可能的测试线程过早结束
-		Sleep(100);
+		Sleep(zwccbthr::s_MsgNotifyDelay);
 		boost::mutex::scoped_lock lock(zwccbthr::thrhid_mutex);
 
 		//现在开始一问一答过程，在获得对口回复报文之前不得上传其他报文		

@@ -46,7 +46,9 @@ namespace zwccbthr {
 	deque<jcLockMsg1512_t *> s_dbgMatchNotify;		//下发命令队列复制品，用于调试匹配
 	RecvMsgRotine s_CallBack=NULL;
 	double s_LastNormalMsgUpTimeMs=0.0;	//最后一次正常循环报文上传的时间，毫秒计算
-
+	//消息下发延迟，防止下发过快导致下位机处理不过来，经过测试100毫秒的话
+	// 连续下发1500条就会有220条的下发队列；
+	int s_MsgNotifyDelay=150;		
 
 	void wait(int milliseconds) {
 		assert(milliseconds>0);
@@ -212,6 +214,7 @@ namespace zwccbthr {
 				JCHID_STATUS sts=JCHID_STATUS_FAIL;		
 				VLOG_IF(3,s_jcNotify.size()>0)<<"开始下发报文时.下发队列大小="<<s_jcNotify.size()
 					<<"\t头部元素="<<s_jcNotify.front()->getNotifyType()<<endl;
+				LOG_IF(WARNING,s_jcNotify.size()>20)<<"开始下发报文时.下发队列太长，长度达到了"<<"条"<<endl;
 				if (s_jcNotify.size()>0)
 				{
 					zw_trace zntr("下发队列处理");
@@ -308,7 +311,7 @@ namespace zwccbthr {
 					
 			}//boost::mutex::scoped_lock lock(thrhid_mutex);		
 			//在互斥锁范围以外留出一点时间给Notify添加新的报文到下发队列
-			Sleep(100);
+			Sleep(s_MsgNotifyDelay);
 		}	//end of while(1)
 
 	}
