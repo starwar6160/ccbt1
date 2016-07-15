@@ -6,6 +6,9 @@
 #include "eLockGUITest20151208.h"
 #include "eLockGUITest20151208Dlg.h"
 #include "afxdialogex.h"
+#include "zwLibTools.h"
+
+using zwLibTools2015::myGetUs;
 
 
 //获取XML报文类型
@@ -192,6 +195,8 @@ void myStr2Bstr(const char *strIn,VARIANT &bstrOut)
 void CeLockGUITest20151208Dlg::OnBnClickedButton1()
 {
 	// TODO: 在此添加控件通知处理程序代码	
+	// 
+	// 
 	// std::string to variant.
 	VARIANT tmpMsg;
 	myStr2Bstr(g_msg04,tmpMsg);	
@@ -209,7 +214,11 @@ void CeLockGUITest20151208Dlg::OnRecvMsgZjelockctrl1(const VARIANT& varMsg)
 	//OutputDebugStringA(__FUNCTION__);
 	char *rMsg=_com_util::ConvertBSTRToString(varMsg.bstrVal);
 	string sType=zwGetJcxmlMsgType(rMsg);
-	MessageBoxA(NULL,rMsg,"TIPZW1216",MB_OK);
+	int64_t nowUs=myGetUs();
+	char buf[32];
+	memset(buf,0,32);
+	sprintf(buf,"%s%lld","TIPZW1216 ",nowUs);
+	MessageBoxA(NULL,rMsg,buf,MB_OK);
 	
 }
 
@@ -222,3 +231,4 @@ void CeLockGUITest20151208Dlg::OnClose()
 	m_zjOCX.Close();
 	CDialogEx::OnClose();
 }
+

@@ -51,15 +51,14 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_WINDOWS;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>U:\zwWorkSrc\CCBelock\CCBelock\ATMCMsgConvert;$(BOOST)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>U:\zwWorkSrc\CCBelock\CCBelock\ATMCMsgConvert;$(BOOST);U:\zwWorkSrc\zwBaseLib\zwLibTools</AdditionalIncludeDirectories>
       <AdditionalOptions>-Zm127 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(BOOST)\lib</AdditionalLibraryDirectories>
-      <AdditionalDependencies>
-      </AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(BOOST)\lib;$(ZWSRC)\2014BinOut\$(Configuration)\</AdditionalLibraryDirectories>
+      <AdditionalDependencies>zwLibTools.lib</AdditionalDependencies>
     </Link>
     <Midl>
       <MkTypLibCompatible>false</MkTypLibCompatible>
@@ -80,7 +79,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>U:\zwWorkSrc\CCBelock\CCBelock\ATMCMsgConvert;$(BOOST)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>U:\zwWorkSrc\CCBelock\CCBelock\ATMCMsgConvert;$(BOOST);U:\zwWorkSrc\zwBaseLib\zwLibTools</AdditionalIncludeDirectories>
       <AdditionalOptions>-Zm127 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
@@ -88,9 +87,8 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>$(BOOST)\lib</AdditionalLibraryDirectories>
-      <AdditionalDependencies>
-      </AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(BOOST)\lib;$(ZWSRC)\2014BinOut\$(Configuration)\</AdditionalLibraryDirectories>
+      <AdditionalDependencies>zwLibTools.lib</AdditionalDependencies>
     </Link>
     <Midl>
       <MkTypLibCompatible>false</MkTypLibCompatible>
