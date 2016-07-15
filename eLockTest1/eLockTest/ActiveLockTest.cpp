@@ -390,7 +390,7 @@ void zw711SpeedTestThr1()
 	assert(g_totalRunCount>0);
 	//cout<<"线程将会运行"<<g_totalRunCount/2<<"条报文"<<endl;
 	const char *msgarr[]=
-	{g_msg00,g_msg01,g_msg02,g_msg03};
+	{g_msg02,g_msg03,g_msg04,g_msg03,g_msg04,g_msg03,g_msg04,g_msg03,g_msg04};
 	//{g_msg00,g_msg01,g_msg04};
 	int aSize=sizeof(msgarr)/sizeof(char *);
 	SetRecvMsgRotine(myATMCRecvMsgRotine);	

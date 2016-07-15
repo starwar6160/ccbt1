@@ -28,8 +28,9 @@ string zwGetJcxmlMsgType(const char *jcXML)
 #define new DEBUG_NEW
 #endif
 
-static const char *g_msg02="<?xml version='1.0' encoding='UTF-8'?><root><TransCode>0002</TransCode><TransName>QueryForLockStatus</TransName><TransDate>20150401</TransDate><TransTime>084539</TransTime><DevCode>440600300145</DevCode><LockMan></LockMan><LockId></LockId><SpareString1></SpareString1><SpareString2></SpareString2></root>";
-static const char *g_msg03="<?xml version='1.0' encoding='UTF-8'?><root><TransCode>0003</TransCode><TransName>TimeSync</TransName><TransDate>20150401</TransDate><TransTime>085006</TransTime></root>";
+static const char *g_msg02="<?xml version='1.0' encoding='UTF-8'?><root><TransCode>0002</TransCode><TransName>QueryForLockStatus</TransName><TransDate>20160708</TransDate><TransTime>110900</TransTime><DevCode>515067001098</DevCode><LockMan></LockMan><LockId></LockId><SpareString1></SpareString1><SpareString2></SpareString2></root>";
+static const char *g_msg03="<?xml version='1.0' encoding='UTF-8'?><root><TransCode>0003</TransCode><TransName>TimeSync</TransName><TransDate>20160708</TransDate><TransTime>110900</TransTime></root>";
+static const char *g_msg04="<?xml version='1.0' encoding='UTF-8'?><root><TransCode>0004</TransCode><TransName>ReadShutLockCode</TransName><TransDate>20160708</TransDate><TransTime>110900</TransTime><DevCode>515067001098</DevCode><SpareString1></SpareString1><SpareString2></SpareString2></root>"; 
 
 // 用于应用程序“关于”菜单项的 CAboutDlg 对话框
 
@@ -86,6 +87,7 @@ BEGIN_MESSAGE_MAP(CeLockGUITest20151208Dlg, CDialogEx)
 	ON_WM_PAINT()
 	ON_WM_QUERYDRAGICON()
 	ON_BN_CLICKED(IDC_BUTTON1, &CeLockGUITest20151208Dlg::OnBnClickedButton1)
+	ON_WM_CLOSE()
 END_MESSAGE_MAP()
 
 
@@ -121,6 +123,11 @@ BOOL CeLockGUITest20151208Dlg::OnInitDialog()
 	SetIcon(m_hIcon, FALSE);		// 设置小图标
 
 	// TODO: 在此添加额外的初始化代码
+	DWORD iOpen=m_zjOCX.Open(22);
+	if (0!=iOpen)
+	{
+		MessageBoxA(NULL,"金储电子密码锁打开失败","失败",MB_OK);
+	}
 
 	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
 }
@@ -174,26 +181,22 @@ HCURSOR CeLockGUITest20151208Dlg::OnQueryDragIcon()
 	return static_cast<HCURSOR>(m_hIcon);
 }
 
+void myStr2Bstr(const char *strIn,VARIANT &bstrOut)
+{
+	_bstr_t strMessage = strIn;
+	bstrOut.vt=VT_BSTR;
+	bstrOut.bstrVal= strMessage;	
+}
 
 
 void CeLockGUITest20151208Dlg::OnBnClickedButton1()
 {
-	// std::string to variant.
-	_bstr_t strMessage = g_msg03;
-	
-	VARIANT variant;
-	variant.vt=VT_BSTR;
-	variant.bstrVal= strMessage;
 	// TODO: 在此添加控件通知处理程序代码	
-	DWORD iOpen=m_zjOCX.Open(22);
-	if (0!=iOpen)
-	{
-		MessageBoxA(NULL,"金储电子密码锁打开失败","失败",MB_OK);
-	}
-	m_zjOCX.Notify(variant);
-	Sleep(1000);
-	m_zjOCX.Close();
-	
+	// std::string to variant.
+	VARIANT tmpMsg;
+	myStr2Bstr(g_msg04,tmpMsg);	
+	m_zjOCX.Notify(tmpMsg);
+
 }
 BEGIN_EVENTSINK_MAP(CeLockGUITest20151208Dlg, CDialogEx)
 	ON_EVENT(CeLockGUITest20151208Dlg, IDC_ZJELOCKCTRL1, 1, CeLockGUITest20151208Dlg::OnRecvMsgZjelockctrl1, VTS_VARIANT)
@@ -206,6 +209,16 @@ void CeLockGUITest20151208Dlg::OnRecvMsgZjelockctrl1(const VARIANT& varMsg)
 	//OutputDebugStringA(__FUNCTION__);
 	char *rMsg=_com_util::ConvertBSTRToString(varMsg.bstrVal);
 	string sType=zwGetJcxmlMsgType(rMsg);
-	MessageBoxA(NULL,sType.c_str(),"TIPZW1216",MB_OK);
+	MessageBoxA(NULL,rMsg,"TIPZW1216",MB_OK);
 	
+}
+
+
+void CeLockGUITest20151208Dlg::OnClose()
+{
+	// TODO: 在此添加消息处理程序代码和/或调用默认值
+
+	Sleep(800);
+	m_zjOCX.Close();
+	CDialogEx::OnClose();
 }

@@ -211,9 +211,7 @@ namespace zwccbthr {
 				VLOG_IF(3,s_jcNotify.size()>0)<<"处理单向上传队列时.下发队列头部元素="<<s_jcNotify.front()->getNotifyType()<<endl;
 				VLOG_IF(2,s_jcLockToC.size()>0)<<"单向上传队列大小="<<s_jcLockToC.size()
 					<<" 下发队列大小="<<s_jcNotify.size()
-					<<" 最后一次上传报文后已经过了="<<(curMs-s_lastNotifyMs)<<setprecision(0)<<"毫秒"<<endl;		
-				//当下发队列已经为空，而且此时因为线程锁的缘故暂时不能加入新的消息，而且最后一条正常下发消息
-				//的回应消息已经上传了500毫秒，而且没有等待进入下发队列的消息，就是一个空闲时刻可以上传消息了；
+					<<" 最后一次上传报文后已经过了="<<(curMs-s_lastNotifyMs)<<setprecision(0)<<"毫秒"<<endl;						
 				LOG_IF(WARNING,s_jcLockToC.size()>0)<<"s_jcLockToC.size()="<<s_jcLockToC.size()<<endl;
 				while (s_jcLockToC.size()>0)
 				{
@@ -229,12 +227,17 @@ namespace zwccbthr {
 						<<"毫秒才上传,上传后单向上传队列头部元素弹出"<<endl;					
 					s_jcLockToC.pop_front();
 				}			
+				boost::this_thread::interruption_point();
 ///////////////////////////////下发报文///////////////////////////////////////////
 				JCHID_STATUS sts=JCHID_STATUS_FAIL;		
 				VLOG_IF(3,s_jcNotify.size()>0)<<"开始下发报文时.下发队列大小="<<s_jcNotify.size()
 					<<"\t头部元素="<<s_jcNotify.front()->getNotifyType()<<endl;
 				LOG_IF(WARNING,s_jcNotify.size()>20)<<"开始下发报文时.下发队列太长，长度达到了"
-					<<s_jcNotify.size()<<"条"<<endl;
+					<<s_jcNotify.size()<<"条，需要加大下发延迟了"<<endl;
+				LOG_IF(ERROR,s_jcNotify.size()>100)<<"开始下发报文时.下发队列太长，长度达到了"
+					<<s_jcNotify.size()<<"条，下发太快锁具忙不过来了"<<endl;
+				LOG_IF(FATAL,s_jcNotify.size()>200)<<"开始下发报文时.下发队列太长，长度达到了"
+					<<s_jcNotify.size()<<"条,锁具应该已经挂了"<<endl;
 				if (s_jcNotify.size()>0)
 				{
 					zw_trace zntr("下发队列处理");
@@ -264,12 +267,13 @@ namespace zwccbthr {
 						}
 						continue;
 					}
-				}	//if (s_jcNotify.size()>0)
+				}	//if (s_jcNotify.size()>0)				
 				////////////////////////////////读取返回值//////////////////////////////////////////
 				
 				double msgReadStart=zwccbthr::zwGetMs();
 				do 
 				{
+					boost::this_thread::interruption_point();					
 					VLOG(4)<<"读取返回值循环进行中"<<endl;
 					memset(recvBuf,0,BLEN);
 					sts=static_cast<JCHID_STATUS>(g_jhc->RecvJson(recvBuf,BLEN));

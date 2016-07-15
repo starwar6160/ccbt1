@@ -36,4 +36,5 @@ public:
 	afx_msg void OnBnClickedButton1();
 	DECLARE_EVENTSINK_MAP()
 	void OnRecvMsgZjelockctrl1(const VARIANT& varMsg);
+	afx_msg void OnClose();
 };
