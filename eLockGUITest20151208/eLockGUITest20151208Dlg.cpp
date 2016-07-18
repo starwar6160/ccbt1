@@ -11,6 +11,7 @@
 using zwLibTools2015::myGetUs;
 
 UINT MyThreadProc( LPVOID pParam );
+UINT zw711SpeedTestThr1(LPVOID pParam);
 
 //获取XML报文类型
 //临时复制过来的代码，因为该段代码在DLL中被上层应用调用会导致堆栈破坏，原因暂时未知
@@ -134,8 +135,8 @@ BOOL CeLockGUITest20151208Dlg::OnInitDialog()
 	{
 		MessageBoxA(NULL,"金储电子密码锁打开失败","失败",MB_OK);
 	}
-	int tData=777888;
-	AfxBeginThread(MyThreadProc, &tData);
+	
+	AfxBeginThread(zw711SpeedTestThr1, &m_zjOCX);
 	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
 }
 
@@ -219,10 +220,13 @@ void CeLockGUITest20151208Dlg::OnRecvMsgZjelockctrl1(const VARIANT& varMsg)
 	char *rMsg=_com_util::ConvertBSTRToString(varMsg.bstrVal);
 	string sType=zwGetJcxmlMsgType(rMsg);
 	int64_t nowUs=myGetUs();
-	char buf[32];
-	memset(buf,0,32);
-	sprintf(buf,"%s%lld","TIPZW1216 ",nowUs);
-	MessageBoxA(NULL,rMsg,buf,MB_OK);
+	char timeStampBuf[32];
+	memset(timeStampBuf,0,32);
+	sprintf(timeStampBuf,"%s%lld","TIPZW1216 ",nowUs);
+	int rMsgLen=strlen(rMsg);
+	assert(rMsgLen<512);
+	OutputDebugStringA(rMsg);
+	//MessageBoxA(NULL,rMsg,buf,MB_OK);
 	
 }
 
@@ -240,24 +244,31 @@ void CeLockGUITest20151208Dlg::OnClose()
 #include <cstdint>
 #include "zwLibTools.h"
 using std::int64_t;
-int g_totalRunCount=0;
+int g_totalRunCount=5;
 using zwLibTools2015::myGetUs;
-void zw711SpeedTestThr1()
+UINT zw711SpeedTestThr1(LPVOID pParam)
 {
 	assert(g_totalRunCount>0);
+	CZjelockctrl1 *pZjOCX=reinterpret_cast<CZjelockctrl1 *>(pParam);
 	const char *msgarr[]=
 	{g_msg00,g_msg02,g_msg03,g_msg04,g_msg03,g_msg04,g_msg03,g_msg04,g_msg03,g_msg04};
 	int aSize=sizeof(msgarr)/sizeof(char *);	
 	int nCount=0;
 
-	while(nCount++ <(g_totalRunCount/2))
+	while(nCount <(g_totalRunCount))
 	{		
 
 		int idxMsg=static_cast<int64_t>(myGetUs()) % aSize;
 		assert(idxMsg>=0 && idxMsg <aSize);
 		//myTestPush712(msgarr[idxMsg]);
+		VARIANT tmpMsg;
+		myStr2Bstr(msgarr[idxMsg],tmpMsg);	
+		pZjOCX->Notify(tmpMsg);
+		nCount++;
+		Sleep(1000);
 	}
 	//cout<<"zw1209SpeedTestThr1 结束"<<endl;
+	return 0;
 }
 
 UINT MyThreadProc( LPVOID pParam )
