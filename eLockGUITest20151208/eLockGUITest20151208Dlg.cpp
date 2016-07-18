@@ -11,7 +11,9 @@
 using zwLibTools2015::myGetUs;
 
 UINT MyThreadProc( LPVOID pParam );
-UINT zw711SpeedTestThr1(LPVOID pParam);
+//UINT zw711SpeedTestThr1(LPVOID pParam);
+extern int g_totalRunCount;
+extern int g_curMsg;
 
 //获取XML报文类型
 //临时复制过来的代码，因为该段代码在DLL中被上层应用调用会导致堆栈破坏，原因暂时未知
@@ -78,6 +80,10 @@ END_MESSAGE_MAP()
 
 CeLockGUITest20151208Dlg::CeLockGUITest20151208Dlg(CWnd* pParent /*=NULL*/)
 	: CDialogEx(CeLockGUITest20151208Dlg::IDD, pParent)
+	, m_runMsgNum(0)
+	, m_curMsg(0)
+	, m_failCount(0)
+	, m_succRate(0)
 {
 	EnableActiveAccessibility();
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
@@ -87,6 +93,11 @@ void CeLockGUITest20151208Dlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialogEx::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_ZJELOCKCTRL1, m_zjOCX);
+	DDX_Text(pDX, IDC_EDIT_MSGNUM, m_runMsgNum);
+	DDX_Text(pDX, IDC_LBL_CURMSG, m_curMsg);
+	DDX_Text(pDX, IDC_LBL_FAILCOUNT, m_failCount);
+	DDX_Text(pDX, IDC_LBL_SUCCRATE, m_succRate);
+	
 }
 
 BEGIN_MESSAGE_MAP(CeLockGUITest20151208Dlg, CDialogEx)
@@ -136,7 +147,6 @@ BOOL CeLockGUITest20151208Dlg::OnInitDialog()
 		MessageBoxA(NULL,"金储电子密码锁打开失败","失败",MB_OK);
 	}
 	
-	AfxBeginThread(zw711SpeedTestThr1, &m_zjOCX);
 	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
 }
 
@@ -206,7 +216,14 @@ void CeLockGUITest20151208Dlg::OnBnClickedButton1()
 	VARIANT tmpMsg;
 	myStr2Bstr(g_msg04,tmpMsg);	
 	m_zjOCX.Notify(tmpMsg);
-
+	UpdateData(TRUE);
+	if (m_runMsgNum<=0)
+	{
+		m_runMsgNum=1;
+	}
+	g_totalRunCount=m_runMsgNum;
+	AfxBeginThread(zw711SpeedTestThr1, this);
+	AfxBeginThread(zw711SpeedTestThr1, this);
 }
 BEGIN_EVENTSINK_MAP(CeLockGUITest20151208Dlg, CDialogEx)
 	ON_EVENT(CeLockGUITest20151208Dlg, IDC_ZJELOCKCTRL1, 1, CeLockGUITest20151208Dlg::OnRecvMsgZjelockctrl1, VTS_VARIANT)
@@ -224,8 +241,10 @@ void CeLockGUITest20151208Dlg::OnRecvMsgZjelockctrl1(const VARIANT& varMsg)
 	memset(timeStampBuf,0,32);
 	sprintf(timeStampBuf,"%s%lld","TIPZW1216 ",nowUs);
 	int rMsgLen=strlen(rMsg);
-	assert(rMsgLen<512);
+	assert(rMsgLen<768);
 	OutputDebugStringA(rMsg);
+	m_curMsg=g_curMsg;
+	UpdateData(FALSE);
 	//MessageBoxA(NULL,rMsg,buf,MB_OK);
 	
 }
@@ -244,18 +263,19 @@ void CeLockGUITest20151208Dlg::OnClose()
 #include <cstdint>
 #include "zwLibTools.h"
 using std::int64_t;
-int g_totalRunCount=5;
+int g_totalRunCount=100;
+int g_curMsg=0;
 using zwLibTools2015::myGetUs;
-UINT zw711SpeedTestThr1(LPVOID pParam)
+UINT CeLockGUITest20151208Dlg::zw711SpeedTestThr1(LPVOID pParam)
 {
 	assert(g_totalRunCount>0);
-	CZjelockctrl1 *pZjOCX=reinterpret_cast<CZjelockctrl1 *>(pParam);
+	CeLockGUITest20151208Dlg *pDlg=reinterpret_cast<CeLockGUITest20151208Dlg *>(pParam);
 	const char *msgarr[]=
 	{g_msg00,g_msg02,g_msg03,g_msg04,g_msg03,g_msg04,g_msg03,g_msg04,g_msg03,g_msg04};
 	int aSize=sizeof(msgarr)/sizeof(char *);	
 	int nCount=0;
 
-	while(nCount <(g_totalRunCount))
+	while(nCount <(g_totalRunCount/2))
 	{		
 
 		int idxMsg=static_cast<int64_t>(myGetUs()) % aSize;
@@ -263,8 +283,13 @@ UINT zw711SpeedTestThr1(LPVOID pParam)
 		//myTestPush712(msgarr[idxMsg]);
 		VARIANT tmpMsg;
 		myStr2Bstr(msgarr[idxMsg],tmpMsg);	
-		pZjOCX->Notify(tmpMsg);
+		pDlg->m_zjOCX.Notify(tmpMsg);
+		g_curMsg++;
 		nCount++;
+		char buf[64];
+		memset(buf,0,64);
+		sprintf(buf,"nCount=%d g_totalRunCount=%d",nCount,g_totalRunCount);
+		OutputDebugStringA(buf);
 		Sleep(1000);
 	}
 	//cout<<"zw1209SpeedTestThr1 结束"<<endl;

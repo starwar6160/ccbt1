@@ -37,4 +37,14 @@ public:
 	DECLARE_EVENTSINK_MAP()
 	void OnRecvMsgZjelockctrl1(const VARIANT& varMsg);
 	afx_msg void OnClose();
+	static UINT zw711SpeedTestThr1(LPVOID pParam);
+private:
+	// 需要运行的报文条数
+	int m_runMsgNum;
+	// 当前回复消息序号
+	int m_curMsg;
+	// 失败数量
+	int m_failCount;
+	// 成功率
+	float m_succRate;
 };
