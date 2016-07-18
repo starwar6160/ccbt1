@@ -148,10 +148,10 @@ namespace zwccbthr {
 				if (diffMs>nExceedMaxMs)
 				{
 					nExceedMaxMs=diffMs;
-				}
-				
+				}				
 			}
 			LOG_IF(WARNING,(nUpCount%20==0))<<"报文之间间隔时间"<<setprecision(0)<<diffMs<<"毫秒，当前第"<<nUpCount<<"条报文"<<endl;				
+			VLOG(3)<<"报文之间间隔时间"<<setprecision(0)<<diffMs<<"毫秒，当前第"<<nUpCount<<"条报文"<<endl;				
 			LOG_IF(WARNING,(nUpCount%3==0) && nExceedMaxMs>100)<<setprecision(0)<<"最大"<<nExceedMaxMs<<"毫秒 平均"<<setprecision(2)<<nExceedMsTotal/(nExceedCount+0.001)<<"毫秒"<<endl;
 			lastUpMsg=curMs;
 		}

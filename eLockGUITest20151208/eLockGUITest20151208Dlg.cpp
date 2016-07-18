@@ -10,6 +10,7 @@
 
 using zwLibTools2015::myGetUs;
 
+UINT MyThreadProc( LPVOID pParam );
 
 //获取XML报文类型
 //临时复制过来的代码，因为该段代码在DLL中被上层应用调用会导致堆栈破坏，原因暂时未知
@@ -31,6 +32,8 @@ string zwGetJcxmlMsgType(const char *jcXML)
 #define new DEBUG_NEW
 #endif
 
+static const char *g_msg00="<?xml version='1.0' encoding='UTF-8'?><root><TransCode>0000</TransCode><TransName>CallForActInfo</TransName><TransDate>20160708</TransDate><TransTime>110900</TransTime><DevCode>515067001098</DevCode><SpareString1></SpareString1><SpareString2></SpareString2></root>";
+static const char *g_msg01="<?xml version='1.0' encoding='UTF-8'?><root><TransCode>0001</TransCode><TransName>SendActInfo</TransName><TransDate>20160708</TransDate><TransTime>110900</TransTime><DevCode>515067001098</DevCode><LockMan>BeiJing.JinChu</LockMan><LockId>22222222</LockId><ActInfo>BFr4af4YvXxtsGmJnDCKsZ3OhmkZimSur0itl6fwuc3fqkiK6j05arPl2on3N4rfVLQkfo9GRceMmbXDebf7rdY=.h/UOVQjtcby5I3wQyUXDdB/uDTeUq1oW.vNDgbpmArJ2CTkBSAJ0NKDeZ6vUifPLKjbLZH3eiFE+QkEBOy5+r2ZJEYEgBmjD1KGIbVfridTa3sjuqaFo0lby7YpqBXTo56v5yIzyz28k=</ActInfo><SpareString1></SpareString1><SpareString2></SpareString2></root>";
 static const char *g_msg02="<?xml version='1.0' encoding='UTF-8'?><root><TransCode>0002</TransCode><TransName>QueryForLockStatus</TransName><TransDate>20160708</TransDate><TransTime>110900</TransTime><DevCode>515067001098</DevCode><LockMan></LockMan><LockId></LockId><SpareString1></SpareString1><SpareString2></SpareString2></root>";
 static const char *g_msg03="<?xml version='1.0' encoding='UTF-8'?><root><TransCode>0003</TransCode><TransName>TimeSync</TransName><TransDate>20160708</TransDate><TransTime>110900</TransTime></root>";
 static const char *g_msg04="<?xml version='1.0' encoding='UTF-8'?><root><TransCode>0004</TransCode><TransName>ReadShutLockCode</TransName><TransDate>20160708</TransDate><TransTime>110900</TransTime><DevCode>515067001098</DevCode><SpareString1></SpareString1><SpareString2></SpareString2></root>"; 
@@ -131,7 +134,8 @@ BOOL CeLockGUITest20151208Dlg::OnInitDialog()
 	{
 		MessageBoxA(NULL,"金储电子密码锁打开失败","失败",MB_OK);
 	}
-
+	int tData=777888;
+	AfxBeginThread(MyThreadProc, &tData);
 	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
 }
 
@@ -230,5 +234,47 @@ void CeLockGUITest20151208Dlg::OnClose()
 	Sleep(800);
 	m_zjOCX.Close();
 	CDialogEx::OnClose();
+}
+
+
+#include <cstdint>
+#include "zwLibTools.h"
+using std::int64_t;
+int g_totalRunCount=0;
+using zwLibTools2015::myGetUs;
+void zw711SpeedTestThr1()
+{
+	assert(g_totalRunCount>0);
+	const char *msgarr[]=
+	{g_msg00,g_msg02,g_msg03,g_msg04,g_msg03,g_msg04,g_msg03,g_msg04,g_msg03,g_msg04};
+	int aSize=sizeof(msgarr)/sizeof(char *);	
+	int nCount=0;
+
+	while(nCount++ <(g_totalRunCount/2))
+	{		
+
+		int idxMsg=static_cast<int64_t>(myGetUs()) % aSize;
+		assert(idxMsg>=0 && idxMsg <aSize);
+		//myTestPush712(msgarr[idxMsg]);
+	}
+	//cout<<"zw1209SpeedTestThr1 结束"<<endl;
+}
+
+UINT MyThreadProc( LPVOID pParam )
+{
+	int aa= (int)pParam;
+
+	char buf[256];
+	for (int i=0;i<20;i++)
+	{
+		memset(buf,0,256);
+		sprintf(buf,"%s %d %d",__FUNCTION__,aa,time(NULL));
+		OutputDebugStringA(buf);
+
+		Sleep(1000);
+	}
+	// do something with 'pObject'
+
+	return 0;   // thread completed successfully
 }
 

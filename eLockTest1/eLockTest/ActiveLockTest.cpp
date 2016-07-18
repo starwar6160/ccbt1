@@ -389,7 +389,7 @@ void zw711SpeedTestThr1()
 {
 	assert(g_totalRunCount>0);
 	const char *msgarr[]=
-	{g_msg02,g_msg03,g_msg04,g_msg03,g_msg04,g_msg03,g_msg04,g_msg03,g_msg04};
+	{g_msg00,g_msg02,g_msg03,g_msg04,g_msg03,g_msg04,g_msg03,g_msg04,g_msg03,g_msg04};
 	int aSize=sizeof(msgarr)/sizeof(char *);
 	SetRecvMsgRotine(myATMCRecvMsgRotine);	
 	int nCount=0;
