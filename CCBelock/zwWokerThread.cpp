@@ -326,6 +326,17 @@ namespace zwccbthr {
 					}	//if (strlen(recvBuf)>0)					
 					double curMs=zwccbthr::zwGetMs();
 					int nMaxReadMs=1800;
+					if (s_jcNotify.size()>0)
+					{
+						string downType= s_jcNotify.front()->getNotifyType();
+						if (downType=="Lock_System_Init")
+						{
+							//20160719.1725.李钺发现初始化时会下发2次1号报文，锁具不是普通的滴滴两声初始完毕，而是4声，我发现
+							//原因是预设的1800毫秒读取超时不够，我观察到的2次分别是2300和2500毫秒之后才回应报文的，所以在此
+							// 检测如果是初始化报文的1号报文，就延长超时时间
+							nMaxReadMs=3000;
+						}
+					}
 					if (curMs-msgReadStart>nMaxReadMs || strlen(recvBuf)>0)
 					{
 						VLOG(3)<<"读取循环开始以后已经过了"<<nMaxReadMs<<"毫秒或者没有读取到任何内容，现在读取循环将break";
