@@ -10,10 +10,11 @@
 
 using zwLibTools2015::myGetUs;
 
-UINT MyThreadProc( LPVOID pParam );
-//UINT zw711SpeedTestThr1(LPVOID pParam);
-extern int g_totalRunCount;
-extern int g_curMsg;
+static const char *g_msg00="<?xml version='1.0' encoding='UTF-8'?><root><TransCode>0000</TransCode><TransName>CallForActInfo</TransName><TransDate>20160708</TransDate><TransTime>110900</TransTime><DevCode>515067001098</DevCode><SpareString1></SpareString1><SpareString2></SpareString2></root>";
+static const char *g_msg01="<?xml version='1.0' encoding='UTF-8'?><root><TransCode>0001</TransCode><TransName>SendActInfo</TransName><TransDate>20160708</TransDate><TransTime>110900</TransTime><DevCode>515067001098</DevCode><LockMan>BeiJing.JinChu</LockMan><LockId>22222222</LockId><ActInfo>BFr4af4YvXxtsGmJnDCKsZ3OhmkZimSur0itl6fwuc3fqkiK6j05arPl2on3N4rfVLQkfo9GRceMmbXDebf7rdY=.h/UOVQjtcby5I3wQyUXDdB/uDTeUq1oW.vNDgbpmArJ2CTkBSAJ0NKDeZ6vUifPLKjbLZH3eiFE+QkEBOy5+r2ZJEYEgBmjD1KGIbVfridTa3sjuqaFo0lby7YpqBXTo56v5yIzyz28k=</ActInfo><SpareString1></SpareString1><SpareString2></SpareString2></root>";
+static const char *g_msg02="<?xml version='1.0' encoding='UTF-8'?><root><TransCode>0002</TransCode><TransName>QueryForLockStatus</TransName><TransDate>20160708</TransDate><TransTime>110900</TransTime><DevCode>515067001098</DevCode><LockMan></LockMan><LockId></LockId><SpareString1></SpareString1><SpareString2></SpareString2></root>";
+static const char *g_msg03="<?xml version='1.0' encoding='UTF-8'?><root><TransCode>0003</TransCode><TransName>TimeSync</TransName><TransDate>20160708</TransDate><TransTime>110900</TransTime></root>";
+static const char *g_msg04="<?xml version='1.0' encoding='UTF-8'?><root><TransCode>0004</TransCode><TransName>ReadShutLockCode</TransName><TransDate>20160708</TransDate><TransTime>110900</TransTime><DevCode>515067001098</DevCode><SpareString1></SpareString1><SpareString2></SpareString2></root>"; 
 
 //获取XML报文类型
 //临时复制过来的代码，因为该段代码在DLL中被上层应用调用会导致堆栈破坏，原因暂时未知
@@ -34,12 +35,6 @@ string zwGetJcxmlMsgType(const char *jcXML)
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
-
-static const char *g_msg00="<?xml version='1.0' encoding='UTF-8'?><root><TransCode>0000</TransCode><TransName>CallForActInfo</TransName><TransDate>20160708</TransDate><TransTime>110900</TransTime><DevCode>515067001098</DevCode><SpareString1></SpareString1><SpareString2></SpareString2></root>";
-static const char *g_msg01="<?xml version='1.0' encoding='UTF-8'?><root><TransCode>0001</TransCode><TransName>SendActInfo</TransName><TransDate>20160708</TransDate><TransTime>110900</TransTime><DevCode>515067001098</DevCode><LockMan>BeiJing.JinChu</LockMan><LockId>22222222</LockId><ActInfo>BFr4af4YvXxtsGmJnDCKsZ3OhmkZimSur0itl6fwuc3fqkiK6j05arPl2on3N4rfVLQkfo9GRceMmbXDebf7rdY=.h/UOVQjtcby5I3wQyUXDdB/uDTeUq1oW.vNDgbpmArJ2CTkBSAJ0NKDeZ6vUifPLKjbLZH3eiFE+QkEBOy5+r2ZJEYEgBmjD1KGIbVfridTa3sjuqaFo0lby7YpqBXTo56v5yIzyz28k=</ActInfo><SpareString1></SpareString1><SpareString2></SpareString2></root>";
-static const char *g_msg02="<?xml version='1.0' encoding='UTF-8'?><root><TransCode>0002</TransCode><TransName>QueryForLockStatus</TransName><TransDate>20160708</TransDate><TransTime>110900</TransTime><DevCode>515067001098</DevCode><LockMan></LockMan><LockId></LockId><SpareString1></SpareString1><SpareString2></SpareString2></root>";
-static const char *g_msg03="<?xml version='1.0' encoding='UTF-8'?><root><TransCode>0003</TransCode><TransName>TimeSync</TransName><TransDate>20160708</TransDate><TransTime>110900</TransTime></root>";
-static const char *g_msg04="<?xml version='1.0' encoding='UTF-8'?><root><TransCode>0004</TransCode><TransName>ReadShutLockCode</TransName><TransDate>20160708</TransDate><TransTime>110900</TransTime><DevCode>515067001098</DevCode><SpareString1></SpareString1><SpareString2></SpareString2></root>"; 
 
 // 用于应用程序“关于”菜单项的 CAboutDlg 对话框
 
@@ -221,7 +216,6 @@ void CeLockGUITest20151208Dlg::OnBnClickedButton1()
 	{
 		m_runMsgNum=1;
 	}
-	g_totalRunCount=m_runMsgNum;
 	AfxBeginThread(zw711SpeedTestThr1, this);
 	AfxBeginThread(zw711SpeedTestThr1, this);
 }
@@ -233,7 +227,6 @@ END_EVENTSINK_MAP()
 void CeLockGUITest20151208Dlg::OnRecvMsgZjelockctrl1(const VARIANT& varMsg)
 {
 	// TODO: 在此处添加消息处理程序代码
-	//OutputDebugStringA(__FUNCTION__);
 	char *rMsg=_com_util::ConvertBSTRToString(varMsg.bstrVal);
 	string sType=zwGetJcxmlMsgType(rMsg);
 	int64_t nowUs=myGetUs();
@@ -243,7 +236,6 @@ void CeLockGUITest20151208Dlg::OnRecvMsgZjelockctrl1(const VARIANT& varMsg)
 	int rMsgLen=strlen(rMsg);
 	assert(rMsgLen<768);
 	OutputDebugStringA(rMsg);
-	m_curMsg=g_curMsg;
 	UpdateData(FALSE);
 	//MessageBoxA(NULL,rMsg,buf,MB_OK);
 	
@@ -263,54 +255,29 @@ void CeLockGUITest20151208Dlg::OnClose()
 #include <cstdint>
 #include "zwLibTools.h"
 using std::int64_t;
-int g_totalRunCount=100;
-int g_curMsg=0;
 using zwLibTools2015::myGetUs;
 UINT CeLockGUITest20151208Dlg::zw711SpeedTestThr1(LPVOID pParam)
 {
-	assert(g_totalRunCount>0);
 	CeLockGUITest20151208Dlg *pDlg=reinterpret_cast<CeLockGUITest20151208Dlg *>(pParam);
+	assert(pDlg->m_runMsgNum>0);
 	const char *msgarr[]=
 	{g_msg00,g_msg02,g_msg03,g_msg04,g_msg03,g_msg04,g_msg03,g_msg04,g_msg03,g_msg04};
 	int aSize=sizeof(msgarr)/sizeof(char *);	
 	int nCount=0;
 
-	while(nCount <(g_totalRunCount/2))
+	while(nCount <(pDlg->m_runMsgNum/2))
 	{		
 
 		int idxMsg=static_cast<int64_t>(myGetUs()) % aSize;
 		assert(idxMsg>=0 && idxMsg <aSize);
-		//myTestPush712(msgarr[idxMsg]);
 		VARIANT tmpMsg;
 		myStr2Bstr(msgarr[idxMsg],tmpMsg);	
 		pDlg->m_zjOCX.Notify(tmpMsg);
-		g_curMsg++;
+		pDlg->m_curMsg++;
 		nCount++;
-		char buf[64];
-		memset(buf,0,64);
-		sprintf(buf,"nCount=%d g_totalRunCount=%d",nCount,g_totalRunCount);
-		OutputDebugStringA(buf);
+
 		Sleep(1000);
 	}
-	//cout<<"zw1209SpeedTestThr1 结束"<<endl;
 	return 0;
-}
-
-UINT MyThreadProc( LPVOID pParam )
-{
-	int aa= (int)pParam;
-
-	char buf[256];
-	for (int i=0;i<20;i++)
-	{
-		memset(buf,0,256);
-		sprintf(buf,"%s %d %d",__FUNCTION__,aa,time(NULL));
-		OutputDebugStringA(buf);
-
-		Sleep(1000);
-	}
-	// do something with 'pObject'
-
-	return 0;   // thread completed successfully
 }
 
