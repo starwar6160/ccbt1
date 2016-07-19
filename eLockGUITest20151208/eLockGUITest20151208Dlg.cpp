@@ -32,6 +32,23 @@ string zwGetJcxmlMsgType(const char *jcXML)
 	return msgType;
 }
 
+//是否是锁具主动上送报文这样的反向循环报文
+bool myIsJsonMsgFromLockFirstUp(const string &jcMsg)
+{
+	if(						
+		jcMsg=="Lock_Open_Ident"	  ||
+		jcMsg=="Lock_Close_Code_Lock" ||
+		jcMsg=="Lock_Time_Sync_Lock" ||
+		jcMsg== "Lock_Alarm_Info")
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
@@ -92,7 +109,8 @@ void CeLockGUITest20151208Dlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_LBL_CURMSG, m_curMsg);
 	DDX_Text(pDX, IDC_LBL_FAILCOUNT, m_failCount);
 	DDX_Text(pDX, IDC_LBL_SUCCRATE, m_succRate);
-	
+
+	DDX_Control(pDX, IDC_BTNRUN, m_btnRun);
 }
 
 BEGIN_MESSAGE_MAP(CeLockGUITest20151208Dlg, CDialogEx)
@@ -135,6 +153,12 @@ BOOL CeLockGUITest20151208Dlg::OnInitDialog()
 	SetIcon(m_hIcon, TRUE);			// 设置大图标
 	SetIcon(m_hIcon, FALSE);		// 设置小图标
 
+	m_runMsgNum=50;
+	m_curMsg=0;
+	m_failCount=0;
+	m_succRate=0.0f;
+	UpdateData(FALSE);
+	m_btnRun.SetFocus();
 	// TODO: 在此添加额外的初始化代码
 	DWORD iOpen=m_zjOCX.Open(22);
 	if (0!=iOpen)
@@ -217,7 +241,8 @@ void CeLockGUITest20151208Dlg::OnBnClickedButton1()
 		m_runMsgNum=1;
 	}
 	AfxBeginThread(zw711SpeedTestThr1, this);
-	AfxBeginThread(zw711SpeedTestThr1, this);
+	AfxBeginThread(zw711SpeedTestThr1, this);	
+	m_btnRun.EnableWindow(FALSE);
 }
 BEGIN_EVENTSINK_MAP(CeLockGUITest20151208Dlg, CDialogEx)
 	ON_EVENT(CeLockGUITest20151208Dlg, IDC_ZJELOCKCTRL1, 1, CeLockGUITest20151208Dlg::OnRecvMsgZjelockctrl1, VTS_VARIANT)
@@ -237,7 +262,36 @@ void CeLockGUITest20151208Dlg::OnRecvMsgZjelockctrl1(const VARIANT& varMsg)
 	assert(rMsgLen<768);
 	OutputDebugStringA(rMsg);
 	UpdateData(FALSE);
-	//MessageBoxA(NULL,rMsg,buf,MB_OK);
+
+	string downMsgType;
+	string upMsgType;
+	m_secDqNotify.Lock();
+	if (m_dqNotify.size()>0)
+	{
+		downMsgType=m_dqNotify.front();
+		upMsgType=zwGetJcxmlMsgType(rMsg);
+		if (downMsgType==upMsgType
+			&& !myIsJsonMsgFromLockFirstUp(upMsgType))
+		{
+			m_dqNotify.pop_front();
+		}		
+		if (downMsgType!=upMsgType
+			&& !myIsJsonMsgFromLockFirstUp(upMsgType))
+		{
+			m_failCount++;		
+		}
+	}	
+	if (m_curMsg>=m_runMsgNum)
+	{
+		m_btnRun.EnableWindow(TRUE);
+	}
+		m_succRate=100.0f*(m_curMsg-m_failCount)/(m_curMsg+0.001);
+		m_succRate=ceil(m_succRate*10)/10.0f;
+
+	m_secDqNotify.Unlock();	
+	
+	//MessageBoxA(NULL,rMsg,timeStampBuf,MB_OK);
+	UpdateData(FALSE);
 	
 }
 
@@ -273,10 +327,14 @@ UINT CeLockGUITest20151208Dlg::zw711SpeedTestThr1(LPVOID pParam)
 		VARIANT tmpMsg;
 		myStr2Bstr(msgarr[idxMsg],tmpMsg);	
 		pDlg->m_zjOCX.Notify(tmpMsg);
+		pDlg->m_secDqNotify.Lock();
+		pDlg->m_dqNotify.push_back(zwGetJcxmlMsgType(msgarr[idxMsg]));
 		pDlg->m_curMsg++;
+		pDlg->m_secDqNotify.Unlock();
+		
 		nCount++;
 
-		Sleep(1000);
+		Sleep(500);
 	}
 	return 0;
 }

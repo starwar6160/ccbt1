@@ -4,7 +4,9 @@
 
 #pragma once
 #include "zjelockctrl1.h"
-
+#include <deque>
+#include "afxwin.h"
+using std::deque;
 
 // CeLockGUITest20151208Dlg 对话框
 class CeLockGUITest20151208Dlg : public CDialogEx
@@ -47,4 +49,9 @@ private:
 	int m_failCount;
 	// 成功率
 	float m_succRate;
+	CCriticalSection  m_secDqNotify;
+	deque<string> m_dqNotify;
+public:
+	// 开始测试的按钮
+	CButton m_btnRun;
 };
