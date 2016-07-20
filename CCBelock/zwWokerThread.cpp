@@ -194,7 +194,8 @@ namespace zwccbthr {
 
 	void my706LockRecvThr(void)
 	{
-		ZWERROR("与锁具之间的数据接收线程启动.20160714.v874")
+		try{
+		ZWWARN("与锁具之间的数据接收线程启动.20160714.v874")
 		deque<jcLockMsg1512_t *> s_jcLockToC;		//锁具单向上传队列
 		double s_lastNotifyMs=0;
 		const int BLEN = 1024;
@@ -293,6 +294,14 @@ namespace zwccbthr {
 					string outXML;
 					jcAtmcConvertDLL::zwJCjson2CCBxml(recvBuf,outXML);
 					VLOG(3)<<"回应XML报文大小="<<outXML.size()<<"\t下发队列大小="<<s_jcNotify.size()<<endl;
+					if (outXML.size()==0)
+					{
+						if (s_jcNotify.size()>0)
+						{
+							s_jcNotify.pop_front();
+							continue;
+						}
+					}
 						if (outXML.size()>0)
 						{							
 							zw_trace zntr("回应报文成功转换出回应XML报文的处理");
@@ -320,8 +329,7 @@ namespace zwccbthr {
 								s_jcLockToC.push_back(nUpItem);
 								LOG(WARNING)<<" upType="<<upType<<"该报文将会放入另一个队列延迟上传,现在读取循环continue"<<endl;
 								continue;
-							}							
-																												
+							}																																			
 						}		
 					}	//if (strlen(recvBuf)>0)					
 					double curMs=zwccbthr::zwGetMs();
@@ -349,10 +357,20 @@ namespace zwccbthr {
 			Sleep(s_MsgNotifyDelay);
 			s_MsgNotifyDelay=myAdjustNotifyDelay(s_jcNotify.size());
 		}	//end of while(1)
-
+		}
+		catch(boost::property_tree::json_parser_error &e)
+		{
+			LOG(ERROR)<<"my706LockRecvThr json_parser_error异常:"<<e.what()<<endl;
+		}
+		catch(boost::property_tree::xml_parser_error &e)
+		{
+			LOG(ERROR)<<"my706LockRecvThr xml_parser_error异常:"<<e.what()<<endl;
+		}
+		catch(boost::property_tree::file_parser_error &e)
+		{
+			LOG(ERROR)<<"my706LockRecvThr file_parser_error异常:"<<e.what()<<endl;
+		}
 	}
-
-
 
 //////////////////////////////////////////////////////////////////////////
 }				//namespace zwccbthr{
