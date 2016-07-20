@@ -48,10 +48,12 @@ private:
 	// 失败数量
 	int m_failCount;
 	// 成功率
-	float m_succRate;
+	float m_failRate;
 	CCriticalSection  m_secDqNotify;
 	deque<string> m_dqNotify;
 public:
 	// 开始测试的按钮
 	CButton m_btnRun;
+	// 累计执行了多少条报文了
+	CStatic m_lblAccMsgNum;
 };

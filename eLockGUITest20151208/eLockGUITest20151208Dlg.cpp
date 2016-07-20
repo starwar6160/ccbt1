@@ -11,6 +11,7 @@ using zwLibTools2015::myGetUs;
 void myStr2Bstr(const char *strIn,VARIANT &bstrOut);
 string zwGetJcxmlMsgType(const char *jcXML);
 bool myIsJsonMsgFromLockFirstUp(const string &jcMsg);
+bool myIsXMLMsgCodeFromLockFirstUp(const string &jcMsg);
 extern const char *g_msg00;
 extern const char *g_msg01;
 extern const char *g_msg02;
@@ -65,7 +66,7 @@ CeLockGUITest20151208Dlg::CeLockGUITest20151208Dlg(CWnd* pParent /*=NULL*/)
 	, m_runMsgNum(0)
 	, m_curMsg(0)
 	, m_failCount(0)
-	, m_succRate(0)
+	, m_failRate(0)
 {
 	EnableActiveAccessibility();
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
@@ -78,9 +79,10 @@ void CeLockGUITest20151208Dlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_EDIT_MSGNUM, m_runMsgNum);
 	DDX_Text(pDX, IDC_LBL_CURMSG, m_curMsg);
 	DDX_Text(pDX, IDC_LBL_FAILCOUNT, m_failCount);
-	DDX_Text(pDX, IDC_LBL_SUCCRATE, m_succRate);
+	DDX_Text(pDX, IDC_LBL_SUCCRATE, m_failRate);
 
 	DDX_Control(pDX, IDC_BTNRUN, m_btnRun);
+	DDX_Control(pDX, IDC_LBLCURITEM, m_lblAccMsgNum);
 }
 
 BEGIN_MESSAGE_MAP(CeLockGUITest20151208Dlg, CDialogEx)
@@ -126,7 +128,7 @@ BOOL CeLockGUITest20151208Dlg::OnInitDialog()
 	m_runMsgNum=50;
 	m_curMsg=0;
 	m_failCount=0;
-	m_succRate=0.0f;
+	m_failRate=0.0f;
 	UpdateData(FALSE);
 	m_btnRun.SetFocus();
 	// TODO: 在此添加额外的初始化代码
@@ -135,7 +137,7 @@ BOOL CeLockGUITest20151208Dlg::OnInitDialog()
 	{
 		MessageBoxA(NULL,"金储电子密码锁打开失败","失败",MB_OK);
 	}
-	
+	m_lblAccMsgNum.SetWindowText(TEXT("累计条数"));
 	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
 }
 
@@ -233,12 +235,12 @@ void CeLockGUITest20151208Dlg::OnRecvMsgZjelockctrl1(const VARIANT& varMsg)
 		downMsgType=m_dqNotify.front();
 		upMsgType=zwGetJcxmlMsgType(rMsg);
 		if (downMsgType==upMsgType
-			&& !myIsJsonMsgFromLockFirstUp(upMsgType))
+			&& !myIsXMLMsgCodeFromLockFirstUp(upMsgType))
 		{
 			m_dqNotify.pop_front();
 		}		
 		if (downMsgType!=upMsgType
-			&& !myIsJsonMsgFromLockFirstUp(upMsgType))
+			&& !myIsXMLMsgCodeFromLockFirstUp(upMsgType))
 		{
 			m_failCount++;		
 		}
@@ -247,8 +249,8 @@ void CeLockGUITest20151208Dlg::OnRecvMsgZjelockctrl1(const VARIANT& varMsg)
 	{
 		m_btnRun.EnableWindow(TRUE);
 	}
-		m_succRate=100.0f*(m_curMsg-m_failCount)/(m_curMsg+0.001f);
-		m_succRate=ceil(m_succRate*10)/10.0f;
+		m_failRate=100.0f*(m_failCount)/(m_curMsg+0.001f);
+		m_failRate=ceil(m_failRate*100)/100.0f;
 
 	m_secDqNotify.Unlock();	
 	

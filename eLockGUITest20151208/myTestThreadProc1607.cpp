@@ -46,6 +46,23 @@ bool myIsJsonMsgFromLockFirstUp(const string &jcMsg)
 	}
 }
 
+bool myIsXMLMsgCodeFromLockFirstUp(const string &jcMsg)
+{
+	if(						
+		jcMsg=="1000"	  ||
+		jcMsg=="1001" ||
+		jcMsg=="1002" ||
+		jcMsg== "1003")
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+
+
 void myStr2Bstr(const char *strIn,VARIANT &bstrOut)
 {
 	_bstr_t strMessage = strIn;

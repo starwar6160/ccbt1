@@ -158,14 +158,21 @@ namespace jcAtmcConvertDLL {
 	const JC_MSG_TYPE zwJCjson2CCBxml(const string & upJson, string & upXML) {
 		    //从下位机接收而来的json结果字符串，解码为中间形式ptree
 		    assert(upJson.length() > 9);	//json最基本的符号起码好像要9个字符左右
-		ptree ptJC;
-		std::stringstream ss;
-		ss << upJson;
-		read_json(ss, ptJC);
-		//////////////////////////////////////////////////////////////////////////
-		std::stringstream sst1;
-		write_json(sst1, ptJC);
-		string jsonJc = sst1.str();
+			ptree ptJC;
+			std::stringstream ss;
+			std::stringstream sst1;
+		try
+		{
+			ss << upJson;
+			read_json(ss, ptJC);
+			//////////////////////////////////////////////////////////////////////////			
+			write_json(sst1, ptJC);
+			string jsonJc = sst1.str();
+		}
+		catch (boost::property_tree::json_parser_error * e)
+		{
+			MessageBoxA(NULL,e->what(),"zwJCjson2CCBxml",MB_OK);
+		}
 //#ifdef _DEBUG401
 		//LOG(WARNING)<<"金储锁具返回的JSON应答开始\n"<<jsonJc;
 		//printf("%s\n", jsonJc.c_str());
