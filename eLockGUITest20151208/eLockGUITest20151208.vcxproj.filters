@@ -56,6 +56,9 @@
     <ClCompile Include="zjelockctrl1.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="myTestThreadProc1607.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="eLockGUITest20151208.rc">
