@@ -161,6 +161,8 @@ namespace jcAtmcConvertDLL {
 			ptree ptJC;
 			std::stringstream ss;
 			std::stringstream sst1;
+
+
 		try
 		{
 			ss << upJson;
@@ -169,9 +171,14 @@ namespace jcAtmcConvertDLL {
 			write_json(sst1, ptJC);
 			string jsonJc = sst1.str();
 		}
-		catch (boost::property_tree::json_parser_error * e)
+		catch (const boost::property_tree::ptree_error &e)
 		{
-			MessageBoxA(NULL,e->what(),"zwJCjson2CCBxml",MB_OK);
+			string myErrMsg="锁具上行JSON报文解析错误20160720 "+upJson+" "+e.what();
+			OutputDebugStringA(myErrMsg.c_str());
+			//MessageBoxA(NULL,myErrMsg.c_str(),"zwJCjson2CCBxml",MB_OK);
+			LOG(ERROR)<<myErrMsg<<endl;
+			upXML="";
+			return JCMSG_INVALID_TYPE;
 		}
 //#ifdef _DEBUG401
 		//LOG(WARNING)<<"金储锁具返回的JSON应答开始\n"<<jsonJc;

@@ -125,7 +125,7 @@ BOOL CeLockGUITest20151208Dlg::OnInitDialog()
 	SetIcon(m_hIcon, TRUE);			// 设置大图标
 	SetIcon(m_hIcon, FALSE);		// 设置小图标
 
-	m_runMsgNum=50;
+	m_runMsgNum=300;
 	m_curMsg=0;
 	m_failCount=0;
 	m_failRate=0.0f;
