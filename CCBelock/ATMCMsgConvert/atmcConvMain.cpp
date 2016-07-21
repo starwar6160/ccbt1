@@ -161,25 +161,27 @@ namespace jcAtmcConvertDLL {
 			ptree ptJC;
 			std::stringstream ss;
 			std::stringstream sst1;
-
+			ptree ptCCB;
 
 		try
 		{
+			
+
+#ifdef _DEBUG_TEST721
+			if (time(NULL)%3==0)
+			{
+				string modiJson=upJson;
+				modiJson[5]=':';
+				ss<<modiJson;
+			}
+#else
 			ss << upJson;
+#endif // _DEBUG
+			
 			read_json(ss, ptJC);
 			//////////////////////////////////////////////////////////////////////////			
 			write_json(sst1, ptJC);
 			string jsonJc = sst1.str();
-		}
-		catch (const boost::property_tree::ptree_error &e)
-		{
-			string myErrMsg="锁具上行JSON报文解析错误20160720 "+upJson+" "+e.what();
-			OutputDebugStringA(myErrMsg.c_str());
-			//MessageBoxA(NULL,myErrMsg.c_str(),"zwJCjson2CCBxml",MB_OK);
-			LOG(ERROR)<<myErrMsg<<endl;
-			upXML="";
-			return JCMSG_INVALID_TYPE;
-		}
 //#ifdef _DEBUG401
 		//LOG(WARNING)<<"金储锁具返回的JSON应答开始\n"<<jsonJc;
 		//printf("%s\n", jsonJc.c_str());
@@ -189,7 +191,7 @@ namespace jcAtmcConvertDLL {
 		//判断消息类型并从我们的JSON接口变为建行的接口所需字段
 		string jcCmd =
 		    ptJC.get < string > (jcAtmcConvertDLL::JCSTR_CMDTITLE);
-		ptree ptCCB;
+		
 		if (JCSTR_LOCK_ACTIVE_REQUEST == jcCmd) {	//发送锁具激活请求
 			zwconvLockActiveUp(ptJC, ptCCB);
 		}
@@ -272,6 +274,35 @@ namespace jcAtmcConvertDLL {
 			fclose(fp);
 		}
 #endif // TMP_MAHAO_TEST_20150105
+				}
+				catch(boost::property_tree::ptree_bad_path &e)
+				{
+					string myErrMsg="锁具上行JSON报文解析错误ptree_bad_path "+upJson+" "+e.what();
+					OutputDebugStringA(myErrMsg.c_str());
+					//MessageBoxA(NULL,myErrMsg.c_str(),"zwJCjson2CCBxml",MB_OK);
+					LOG(ERROR)<<myErrMsg<<endl;
+					upXML="";
+					return JCMSG_INVALID_TYPE;
+				}
+				catch(boost::property_tree::ptree_bad_data &e)
+				{
+					string myErrMsg="锁具上行JSON报文解析错误ptree_bad_data "+upJson+" "+e.what();
+					OutputDebugStringA(myErrMsg.c_str());
+					//MessageBoxA(NULL,myErrMsg.c_str(),"zwJCjson2CCBxml",MB_OK);
+					LOG(ERROR)<<myErrMsg<<endl;
+					upXML="";
+					return JCMSG_INVALID_TYPE;
+				}
+				catch (const boost::property_tree::ptree_error &e)
+				{
+					string myErrMsg="锁具上行JSON报文解析错误ptree_error "+upJson+" "+e.what();
+					OutputDebugStringA(myErrMsg.c_str());
+					//MessageBoxA(NULL,myErrMsg.c_str(),"zwJCjson2CCBxml",MB_OK);
+					LOG(ERROR)<<myErrMsg<<endl;
+					upXML="";
+					return JCMSG_INVALID_TYPE;
+				}
+
 
 		try {			
 			string transCode = ptCCB.get < string > (CCBSTR_CODE);			
