@@ -178,6 +178,22 @@ namespace zwccbthr {
 		}
 	}
 
+	//搜索字符串判断是否是锁具主动上送字符串
+	bool myIsJsonMsgFromLockFirstUpByStr(const string &jcUpJson)
+	{
+		if(std::string::npos!=jcUpJson.find("Lock_Open_Ident") ||
+		std::string::npos!=jcUpJson.find("Lock_Close_Code_Lock") ||
+		std::string::npos!=jcUpJson.find("Lock_Time_Sync_Lock") ||
+		std::string::npos!=jcUpJson.find("Lock_Alarm_Info"))
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+
 	double zwGetUs(void)
 	{
 		LARGE_INTEGER frq,cur;
@@ -225,7 +241,7 @@ namespace zwccbthr {
 					pushToCallBack(sUpMsg.c_str(),pRecvMsgFun);					
 					LOG(WARNING)<<"单向上传报文"<<s_jcLockToC.front()->getNotifyType()
 						<<"延迟了"<<setprecision(0)<<diffMs
-						<<"毫秒才上传,上传后单向上传队列头部元素弹出"<<endl;					
+						<<"毫秒才上传,上传后单向上传队列头部元素弹出,弹出前队列大小是"<<s_jcLockToC.size()<<endl;					
 					s_jcLockToC.pop_front();
 				}			
 				boost::this_thread::interruption_point();
@@ -296,7 +312,9 @@ namespace zwccbthr {
 					VLOG(3)<<"回应XML报文大小="<<outXML.size()<<"\t下发队列大小="<<s_jcNotify.size()<<endl;
 					if (outXML.size()==0)
 					{
-						if (s_jcNotify.size()>0)
+						//只有上行json报文非法，而且不是锁具主动上传报文时，才弹出下发队列第一项
+						//这样才是正确的
+						if (s_jcNotify.size()>0 && false==myIsJsonMsgFromLockFirstUpByStr(recvBuf))
 						{
 							s_jcNotify.pop_front();
 							continue;
@@ -327,7 +345,8 @@ namespace zwccbthr {
 								//锁具主动上送报文，暂且放到单独的队列里面有待于延迟处理
 								nUpItem->setInitNotifyMs();
 								s_jcLockToC.push_back(nUpItem);
-								LOG(WARNING)<<" upType="<<upType<<"该报文将会放入另一个队列延迟上传,现在读取循环continue"<<endl;
+								LOG(WARNING)<<" upType="<<upType<<"该报文将会放入另一个队列s_jcLockToC延迟上传,该队列当前大小是"
+									<<s_jcLockToC.size()<<",现在读取循环continue"<<endl;
 								continue;
 							}																																			
 						}		

@@ -205,7 +205,7 @@ void CeLockGUITest20151208Dlg::OnBnClickedButton1()
 		m_runMsgNum=1;
 	}
 	AfxBeginThread(zw711SpeedTestThr1, this);
-	AfxBeginThread(zw711SpeedTestThr1, this);	
+	AfxBeginThread(zw711SpeedTestThr2, this);	
 	m_btnRun.EnableWindow(FALSE);
 }
 BEGIN_EVENTSINK_MAP(CeLockGUITest20151208Dlg, CDialogEx)

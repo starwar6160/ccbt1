@@ -76,11 +76,11 @@ UINT CeLockGUITest20151208Dlg::zw711SpeedTestThr1(LPVOID pParam)
 	CeLockGUITest20151208Dlg *pDlg=reinterpret_cast<CeLockGUITest20151208Dlg *>(pParam);
 	assert(pDlg->m_runMsgNum>0);
 	const char *msgarr[]=
-	{g_msg00,g_msg02,g_msg03,g_msg04,g_msg03,g_msg04,g_msg03,g_msg04,g_msg03,g_msg04};
+	{g_msg00,g_msg03,g_msg04,g_msg03,g_msg04,g_msg03,g_msg04,g_msg03,g_msg04};
 	int aSize=sizeof(msgarr)/sizeof(char *);	
 	int nCount=0;
 
-	while(nCount <(pDlg->m_runMsgNum/2))
+	while(nCount <(pDlg->m_runMsgNum))
 	{		
 
 		int idxMsg=static_cast<int64_t>(myGetUs()) % aSize;
@@ -100,3 +100,21 @@ UINT CeLockGUITest20151208Dlg::zw711SpeedTestThr1(LPVOID pParam)
 	return 0;
 }
 
+
+UINT CeLockGUITest20151208Dlg::zw711SpeedTestThr2(LPVOID pParam)
+{
+	CeLockGUITest20151208Dlg *pDlg=reinterpret_cast<CeLockGUITest20151208Dlg *>(pParam);
+	VARIANT tmpMsg;
+	myStr2Bstr(g_msg02,tmpMsg);	
+
+	while(1)
+	{		
+		Sleep(6000);
+		pDlg->m_zjOCX.Notify(tmpMsg);
+		pDlg->m_secDqNotify.Lock();
+		pDlg->m_dqNotify.push_back(zwGetJcxmlMsgType(g_msg02));
+		pDlg->m_curMsg++;
+		pDlg->m_secDqNotify.Unlock();
+	}
+	return 0;
+}

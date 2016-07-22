@@ -40,6 +40,7 @@ public:
 	void OnRecvMsgZjelockctrl1(const VARIANT& varMsg);
 	afx_msg void OnClose();
 	static UINT zw711SpeedTestThr1(LPVOID pParam);
+	static UINT zw711SpeedTestThr2(LPVOID pParam);
 private:
 	// 需要运行的报文条数
 	int m_runMsgNum;
