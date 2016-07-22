@@ -312,7 +312,7 @@ namespace zwccbthr {
 								RecvMsgRotine pRecvMsgFun=zwccbthr::s_CallBack;
 								pushToCallBack(outXML.c_str(),pRecvMsgFun);								
 								s_lastNotifyMs=zwccbthr::zwGetMs();
-								VLOG(3)<<"消息"<<upType<<"处理时间"
+								VLOG(3)<<upType<<"JC正常下发消息处理时间"
 									<<s_lastNotifyMs-s_jcNotify.front()->getNotifyMs()<<setprecision(1)<<"毫秒"<<endl;
 								if (s_jcNotify.size()>0){
 									s_jcNotify.pop_front();

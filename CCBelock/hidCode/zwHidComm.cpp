@@ -372,9 +372,9 @@ JCHID_STATUS jcHidRecvData( JCHID *hid,char *outData,const int outMaxLen,int *ou
 		tmm=(JC_MSG_MULPART *)partBuf;
 		rIndex=NtoHs(tmm->nIndex);
 		rTotal=NtoHs(tmm->nTotalBlock);
-		assert(rIndex>=0 && rIndex <256);
-		assert(rTotal>0 && rTotal <256);
-		assert(rIndex<rTotal);
+		//assert(rIndex>=0 && rIndex <256);
+		//assert(rTotal>0 && rTotal <256);
+		//assert(rIndex<rTotal);
 		if (rIndex<0 || rIndex>=256 ||
 			rTotal<=0 || rTotal>=256 ||
 			rIndex>=rTotal
