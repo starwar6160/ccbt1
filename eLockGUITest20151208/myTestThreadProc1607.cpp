@@ -94,8 +94,8 @@ UINT CeLockGUITest20151208Dlg::zw711SpeedTestThr1(LPVOID pParam)
 		pDlg->m_secDqNotify.Unlock();
 
 		nCount++;
-
-		Sleep(500);
+		
+		Sleep(pDlg->m_msgInvMs);
 	}
 	return 0;
 }
@@ -115,6 +115,10 @@ UINT CeLockGUITest20151208Dlg::zw711SpeedTestThr2(LPVOID pParam)
 		pDlg->m_dqNotify.push_back(zwGetJcxmlMsgType(g_msg02));
 		pDlg->m_curMsg++;
 		pDlg->m_secDqNotify.Unlock();
+		if (pDlg->m_curMsg>pDlg->m_runMsgNum)
+		{
+			break;
+		}
 	}
 	return 0;
 }

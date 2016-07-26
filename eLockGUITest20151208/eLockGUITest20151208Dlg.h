@@ -50,6 +50,8 @@ private:
 	int m_failCount;
 	// 成功率
 	float m_failRate;
+	//报文间隔时间毫秒数
+	int m_msgInvMs;
 	CCriticalSection  m_secDqNotify;
 	deque<string> m_dqNotify;
 public:

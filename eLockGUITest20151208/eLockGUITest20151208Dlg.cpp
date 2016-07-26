@@ -67,6 +67,7 @@ CeLockGUITest20151208Dlg::CeLockGUITest20151208Dlg(CWnd* pParent /*=NULL*/)
 	, m_curMsg(0)
 	, m_failCount(0)
 	, m_failRate(0)
+	,m_msgInvMs(0)
 {
 	EnableActiveAccessibility();
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
@@ -80,6 +81,7 @@ void CeLockGUITest20151208Dlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_LBL_CURMSG, m_curMsg);
 	DDX_Text(pDX, IDC_LBL_FAILCOUNT, m_failCount);
 	DDX_Text(pDX, IDC_LBL_SUCCRATE, m_failRate);
+	DDX_Text(pDX, IDC_EDT_INVMS, m_msgInvMs);
 
 	DDX_Control(pDX, IDC_BTNRUN, m_btnRun);
 	DDX_Control(pDX, IDC_LBLCURITEM, m_lblAccMsgNum);
@@ -125,10 +127,11 @@ BOOL CeLockGUITest20151208Dlg::OnInitDialog()
 	SetIcon(m_hIcon, TRUE);			// 设置大图标
 	SetIcon(m_hIcon, FALSE);		// 设置小图标
 
-	m_runMsgNum=1000;
+	m_runMsgNum=300;
 	m_curMsg=0;
 	m_failCount=0;
 	m_failRate=0.0f;
+	m_msgInvMs=1200;
 	UpdateData(FALSE);
 	m_btnRun.SetFocus();
 	// TODO: 在此添加额外的初始化代码
@@ -244,6 +247,9 @@ void CeLockGUITest20151208Dlg::OnRecvMsgZjelockctrl1(const VARIANT& varMsg)
 		{
 			m_failCount++;		
 			m_dqNotify.pop_front();
+			string myErrMsg="CCBMFC错误722.downMsgType="+downMsgType+"upMsg="+rMsg;
+			OutputDebugStringA(myErrMsg.c_str());
+			 
 		}
 	}	
 	if (m_curMsg>=m_runMsgNum)
