@@ -89,8 +89,8 @@ UINT CeLockGUITest20151208Dlg::zw711SpeedTestThr1(LPVOID pParam)
 		myStr2Bstr(msgarr[idxMsg],tmpMsg);	
 		pDlg->m_zjOCX.Notify(tmpMsg);
 		pDlg->m_secDqNotify.Lock();
-		pDlg->m_dqNotify.push_back(zwGetJcxmlMsgType(msgarr[idxMsg]));
-		pDlg->m_curMsg++;
+		pDlg->m_dqNotifyT1.push_back(zwGetJcxmlMsgType(msgarr[idxMsg]));
+		pDlg->m_curMsg1++;
 		pDlg->m_secDqNotify.Unlock();
 
 		nCount++;
@@ -112,10 +112,10 @@ UINT CeLockGUITest20151208Dlg::zw711SpeedTestThr2(LPVOID pParam)
 		Sleep(6000);
 		pDlg->m_zjOCX.Notify(tmpMsg);
 		pDlg->m_secDqNotify.Lock();
-		pDlg->m_dqNotify.push_back(zwGetJcxmlMsgType(g_msg02));
-		pDlg->m_curMsg++;
+		pDlg->m_dqNotifyT2.push_back(zwGetJcxmlMsgType(g_msg02));
+		pDlg->m_curMsg2++;
 		pDlg->m_secDqNotify.Unlock();
-		if (pDlg->m_curMsg>pDlg->m_runMsgNum)
+		if (pDlg->m_curMsg2>(pDlg->m_runMsgNum/4))
 		{
 			break;
 		}

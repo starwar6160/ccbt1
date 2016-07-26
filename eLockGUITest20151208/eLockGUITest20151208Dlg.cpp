@@ -64,9 +64,12 @@ END_MESSAGE_MAP()
 CeLockGUITest20151208Dlg::CeLockGUITest20151208Dlg(CWnd* pParent /*=NULL*/)
 	: CDialogEx(CeLockGUITest20151208Dlg::IDD, pParent)
 	, m_runMsgNum(0)
-	, m_curMsg(0)
-	, m_failCount(0)
-	, m_failRate(0)
+	, m_curMsg1(0)
+	, m_curMsg2(0)
+	, m_failCount1(0)
+	, m_failCount2(0)
+	, m_failRate1(0)
+	, m_failRate2(0)
 	,m_msgInvMs(0)
 {
 	EnableActiveAccessibility();
@@ -78,9 +81,12 @@ void CeLockGUITest20151208Dlg::DoDataExchange(CDataExchange* pDX)
 	CDialogEx::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_ZJELOCKCTRL1, m_zjOCX);
 	DDX_Text(pDX, IDC_EDIT_MSGNUM, m_runMsgNum);
-	DDX_Text(pDX, IDC_LBL_CURMSG, m_curMsg);
-	DDX_Text(pDX, IDC_LBL_FAILCOUNT, m_failCount);
-	DDX_Text(pDX, IDC_LBL_SUCCRATE, m_failRate);
+	DDX_Text(pDX, IDC_LBL_CURMSG1, m_curMsg1);
+	DDX_Text(pDX, IDC_LBL_CURMSG2, m_curMsg2);
+	DDX_Text(pDX, IDC_LBL_FAILCOUNT1, m_failCount1);
+	DDX_Text(pDX, IDC_LBL_FAILCOUNT2, m_failCount2);
+	DDX_Text(pDX, IDC_LBL_FAILRATE1, m_failRate1);
+	DDX_Text(pDX, IDC_LBL_FAILRATE2, m_failRate2);
 	DDX_Text(pDX, IDC_EDT_INVMS, m_msgInvMs);
 
 	DDX_Control(pDX, IDC_BTNRUN, m_btnRun);
@@ -128,10 +134,10 @@ BOOL CeLockGUITest20151208Dlg::OnInitDialog()
 	SetIcon(m_hIcon, FALSE);		// 设置小图标
 
 	m_runMsgNum=300;
-	m_curMsg=0;
-	m_failCount=0;
-	m_failRate=0.0f;
-	m_msgInvMs=1200;
+	m_curMsg1=0;
+	m_failCount1=0;
+	m_failRate1=0.0f;
+	m_msgInvMs=200;
 	UpdateData(FALSE);
 	m_btnRun.SetFocus();
 	// TODO: 在此添加额外的初始化代码
@@ -230,35 +236,52 @@ void CeLockGUITest20151208Dlg::OnRecvMsgZjelockctrl1(const VARIANT& varMsg)
 	OutputDebugStringA(rMsg);
 	UpdateData(FALSE);
 
-	string downMsgType;
+
 	string upMsgType;
+	upMsgType=zwGetJcxmlMsgType(rMsg);
 	m_secDqNotify.Lock();
-	if (m_dqNotify.size()>0)
+	if (m_dqNotifyT2.size()>0)
 	{
-		downMsgType=m_dqNotify.front();
-		upMsgType=zwGetJcxmlMsgType(rMsg);
+		string downMsgType;
+		downMsgType=m_dqNotifyT2.front();
 		if (downMsgType==upMsgType
 			&& !myIsXMLMsgCodeFromLockFirstUp(upMsgType))
 		{
-			m_dqNotify.pop_front();
+			m_dqNotifyT2.pop_front();
+		}	
+		if (downMsgType!=upMsgType
+			&& !myIsXMLMsgCodeFromLockFirstUp(upMsgType))
+		{
+			m_failCount2++;		
+			m_dqNotifyT2.pop_front();
+		}
+	}
+	if (m_dqNotifyT1.size()>0)
+	{
+		string downMsgType;
+		downMsgType=m_dqNotifyT1.front();		
+		if (downMsgType==upMsgType
+			&& !myIsXMLMsgCodeFromLockFirstUp(upMsgType))
+		{
+			m_dqNotifyT1.pop_front();
 		}		
 		if (downMsgType!=upMsgType
 			&& !myIsXMLMsgCodeFromLockFirstUp(upMsgType))
 		{
-			m_failCount++;		
-			m_dqNotify.pop_front();
+			m_failCount1++;		
+			m_dqNotifyT1.pop_front();
 			string myErrMsg="CCBMFC错误722.downMsgType="+downMsgType+"upMsg="+rMsg;
-			OutputDebugStringA(myErrMsg.c_str());
-			 
+			OutputDebugStringA(myErrMsg.c_str());			 
 		}
 	}	
-	if (m_curMsg>=m_runMsgNum)
+	if (m_curMsg1>=m_runMsgNum)
 	{
 		m_btnRun.EnableWindow(TRUE);
 	}
-		m_failRate=100.0f*(m_failCount)/(m_curMsg+0.001f);
-		m_failRate=ceil(m_failRate*100)/100.0f;
-
+		m_failRate1=100.0f*(m_failCount1)/(m_curMsg1+0.001f);
+		m_failRate1=ceil(m_failRate1*100)/100.0f;
+		m_failRate2=100.0f*(m_failCount2)/(m_curMsg2+0.001f);
+		m_failRate2=ceil(m_failRate2*100)/100.0f;
 	m_secDqNotify.Unlock();	
 	
 	//MessageBoxA(NULL,rMsg,timeStampBuf,MB_OK);

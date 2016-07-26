@@ -45,15 +45,19 @@ private:
 	// 需要运行的报文条数
 	int m_runMsgNum;
 	// 当前回复消息序号
-	int m_curMsg;
+	int m_curMsg1;
+	int m_curMsg2;
 	// 失败数量
-	int m_failCount;
+	int m_failCount1;
+	int m_failCount2;
 	// 成功率
-	float m_failRate;
+	float m_failRate1;
+	float m_failRate2;
 	//报文间隔时间毫秒数
 	int m_msgInvMs;
 	CCriticalSection  m_secDqNotify;
-	deque<string> m_dqNotify;
+	deque<string> m_dqNotifyT1;
+	deque<string> m_dqNotifyT2;
 public:
 	// 开始测试的按钮
 	CButton m_btnRun;
