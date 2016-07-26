@@ -236,17 +236,18 @@ void CeLockGUITest20151208Dlg::OnRecvMsgZjelockctrl1(const VARIANT& varMsg)
 	OutputDebugStringA(rMsg);
 	UpdateData(FALSE);
 
-
+	bool upMatched=false;
 	string upMsgType;
 	upMsgType=zwGetJcxmlMsgType(rMsg);
 	m_secDqNotify.Lock();
-	if (m_dqNotifyT2.size()>0)
+	if (m_dqNotifyT2.size()>0 && false==upMatched)
 	{
 		string downMsgType;
 		downMsgType=m_dqNotifyT2.front();
 		if (downMsgType==upMsgType
 			&& !myIsXMLMsgCodeFromLockFirstUp(upMsgType))
 		{
+			upMatched=true;
 			m_dqNotifyT2.pop_front();
 		}	
 		if (downMsgType!=upMsgType
@@ -256,13 +257,14 @@ void CeLockGUITest20151208Dlg::OnRecvMsgZjelockctrl1(const VARIANT& varMsg)
 			m_dqNotifyT2.pop_front();
 		}
 	}
-	if (m_dqNotifyT1.size()>0)
+	if (m_dqNotifyT1.size()>0 && false==upMatched)
 	{
 		string downMsgType;
 		downMsgType=m_dqNotifyT1.front();		
 		if (downMsgType==upMsgType
 			&& !myIsXMLMsgCodeFromLockFirstUp(upMsgType))
 		{
+			upMatched=true;
 			m_dqNotifyT1.pop_front();
 		}		
 		if (downMsgType!=upMsgType
