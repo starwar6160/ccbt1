@@ -263,6 +263,9 @@ void CeLockGUITest20151208Dlg::OnRecvMsgZjelockctrl1(const VARIANT& varMsg)
 			&& !myIsXMLMsgCodeFromLockFirstUp(upMsgType))
 		{
 			m_failCount2++;					
+			//干扰线程下发的报文也要参与时间统计
+			m_dqNotifyT2.front()->msgDiffMs=(myGetUs()-m_dqNotifyT2.front()->msgStartUs)/1000.0f;
+			m_vecTimeStatus.push_back(m_dqNotifyT2.front());
 		}
 		m_dqNotifyT2.pop_front();
 		UpdateData(FALSE);
