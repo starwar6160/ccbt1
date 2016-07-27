@@ -6,17 +6,26 @@
 #include "zjelockctrl1.h"
 #include <deque>
 #include <vector>
+#include <map>
 #include <string>
 #include "afxwin.h"
 using std::deque;
 using std::string;
 using std::vector;
+using std::map;
 
 struct myTestMsg1607_t 
 {
 	string msgType;
-	float msgDiffUs;
+	float msgDiffMs;
 	int64_t msgStartUs;	
+};
+
+struct myTestSts1607_t{
+	float prMaxMs;
+	float prMinMs;
+	float prTotalMs;
+	int32_t msgCount;
 };
 
 
@@ -72,9 +81,12 @@ private:
 	deque<myTestMsg1607_t *> m_dqNotifyT1;
 	deque<myTestMsg1607_t *> m_dqNotifyT2;
 	vector<myTestMsg1607_t *> m_vecTimeStatus;
+	map<string, myTestSts1607_t *> m_mapSts;
 public:
 	// 开始测试的按钮
 	CButton m_btnRun;
 	// 累计执行了多少条报文了
 	CStatic m_lblAccMsgNum;
+	// 统计结果存放的地方
+	CEdit m_MsgSts;
 };

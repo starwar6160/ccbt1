@@ -91,6 +91,7 @@ void CeLockGUITest20151208Dlg::DoDataExchange(CDataExchange* pDX)
 
 	DDX_Control(pDX, IDC_BTNRUN, m_btnRun);
 	DDX_Control(pDX, IDC_LBLCURITEM, m_lblAccMsgNum);
+	DDX_Control(pDX, IDC_EDIT_STS, m_MsgSts);
 }
 
 BEGIN_MESSAGE_MAP(CeLockGUITest20151208Dlg, CDialogEx)
@@ -205,6 +206,8 @@ void CeLockGUITest20151208Dlg::OnBnClickedButton1()
 	// 
 	// 
 	// std::string to variant.
+	// 
+
 	VARIANT tmpMsg;
 	myStr2Bstr(g_msg04,tmpMsg);	
 	m_zjOCX.Notify(tmpMsg);
@@ -247,7 +250,7 @@ void CeLockGUITest20151208Dlg::OnRecvMsgZjelockctrl1(const VARIANT& varMsg)
 		if (downMsgType==upMsgType
 			&& !myIsXMLMsgCodeFromLockFirstUp(upMsgType))
 		{
-			m_dqNotifyT2.front()->msgDiffUs=(myGetUs()-m_dqNotifyT2.front()->msgStartUs)/1000.0f;
+			m_dqNotifyT2.front()->msgDiffMs=(myGetUs()-m_dqNotifyT2.front()->msgStartUs)/1000.0f;
 			m_vecTimeStatus.push_back(m_dqNotifyT2.front());
 			upMatched=true;			
 		}	
@@ -265,7 +268,7 @@ void CeLockGUITest20151208Dlg::OnRecvMsgZjelockctrl1(const VARIANT& varMsg)
 		if (downMsgType==upMsgType
 			&& !myIsXMLMsgCodeFromLockFirstUp(upMsgType))
 		{
-			m_dqNotifyT1.front()->msgDiffUs=(myGetUs()-m_dqNotifyT1.front()->msgStartUs)/1000.0f;
+			m_dqNotifyT1.front()->msgDiffMs=(myGetUs()-m_dqNotifyT1.front()->msgStartUs)/1000.0f;
 			m_vecTimeStatus.push_back(m_dqNotifyT1.front());
 			upMatched=true;			
 		}		
@@ -278,9 +281,63 @@ void CeLockGUITest20151208Dlg::OnRecvMsgZjelockctrl1(const VARIANT& varMsg)
 		}
 		m_dqNotifyT1.pop_front();
 	}	
-	if (m_curMsg1>=m_runMsgNum)
+	bool static bStsRuned=false;
+	if (m_curMsg1>=m_runMsgNum && bStsRuned==false)
 	{
 		m_btnRun.EnableWindow(TRUE);
+		bStsRuned=true;
+		for (auto iter=m_vecTimeStatus.begin();iter!=m_vecTimeStatus.end();iter++)
+		{
+			string msgType=(*iter)->msgType;
+			int tjCount=m_mapSts.count(msgType);
+			if (tjCount==0)
+			{
+				//新生成一个统计用的元素
+				myTestSts1607_t *tSts=new myTestSts1607_t;
+				tSts->msgCount=1;
+				tSts->prMaxMs=(*iter)->msgDiffMs;
+				tSts->prMinMs=(*iter)->msgDiffMs;
+				tSts->prTotalMs=(*iter)->msgDiffMs;
+				m_mapSts[msgType]=tSts;
+			}
+			if (tjCount>0)
+			{	myTestMsg1607_t *sItem=(*iter);
+				myTestSts1607_t *tItem=m_mapSts[msgType];
+				if (sItem->msgDiffMs>tItem->prMaxMs)
+				{
+					//找找看有没有更大的值
+					tItem->prMaxMs=sItem->msgDiffMs;
+				}
+				if (sItem->msgDiffMs<tItem->prMinMs)
+				{
+					//找找看有没有更小的值
+					tItem->prMinMs=sItem->msgDiffMs;
+				}
+				tItem->msgCount++;
+				tItem->prTotalMs=tItem->prTotalMs+sItem->msgDiffMs;
+			}
+		}//for (auto iter=m_vecTimeStatus.begin()
+		string myMsgSts;
+		for (auto iter=m_mapSts.begin();iter!=m_mapSts.end();++iter)
+		{
+			char msgBuf[256];
+			memset(msgBuf,0,256);
+			myTestSts1607_t *tItem=iter->second;
+			sprintf(msgBuf,"报文%s统计处理时间平均%.1f毫秒,最小%.1f毫秒,最大%.1f毫秒",
+			iter->first.c_str()	,tItem->prTotalMs/tItem->msgCount,tItem->prMinMs,tItem->prMaxMs);
+			if (myMsgSts.length()==0)
+			{
+				myMsgSts=msgBuf;			
+			}
+			else
+			{
+				myMsgSts=myMsgSts+"\r\n"+msgBuf;			
+			}
+		}
+		//MessageBoxA(NULL,myMsgSts.c_str(),"报文统计1607",MB_OK);
+		_bstr_t tjMsg=myMsgSts.c_str();
+		m_MsgSts.SetWindowText(tjMsg);
+
 	}
 		m_failRate1=100.0f*(m_failCount1)/(m_curMsg1+0.001f);
 		m_failRate1=ceil(m_failRate1*100)/100.0f;
