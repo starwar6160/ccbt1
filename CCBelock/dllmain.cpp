@@ -18,7 +18,7 @@ string zwTest912(string now)
 
 /////////////////////////////GLOG INIT START/////////////////////////////////////////////
 void zwFatalExec(void)
-{
+{	
 	cout<<"ZWGLOG FATAL ERROR FOUND!"<<endl;
 	//exit(10000);
 }

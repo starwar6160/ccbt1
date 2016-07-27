@@ -60,6 +60,9 @@ public:
 	afx_msg void OnBnClickedButton1();
 	DECLARE_EVENTSINK_MAP()
 	void OnRecvMsgZjelockctrl1(const VARIANT& varMsg);
+
+	bool myMsgTimeSts( bool &bStsRuned );
+
 	afx_msg void OnClose();
 	static UINT zw711SpeedTestThr1(LPVOID pParam);
 	static UINT zw711SpeedTestThr2(LPVOID pParam);
@@ -77,6 +80,8 @@ private:
 	float m_failRate2;
 	//报文间隔时间毫秒数
 	int m_msgInvMs;
+	//运行起始时间
+	time_t m_runStartSecond;
 	CCriticalSection  m_secDqNotify;
 	deque<myTestMsg1607_t *> m_dqNotifyT1;
 	deque<myTestMsg1607_t *> m_dqNotifyT2;
@@ -89,4 +94,6 @@ public:
 	CStatic m_lblAccMsgNum;
 	// 统计结果存放的地方
 	CEdit m_MsgSts;
+	// 干扰线程下发间隔毫秒
+	int m_thr2InvMs;
 };

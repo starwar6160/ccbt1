@@ -71,6 +71,7 @@ CeLockGUITest20151208Dlg::CeLockGUITest20151208Dlg(CWnd* pParent /*=NULL*/)
 	, m_failRate1(0)
 	, m_failRate2(0)
 	,m_msgInvMs(0)
+	, m_thr2InvMs(0)
 {
 	EnableActiveAccessibility();
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
@@ -88,6 +89,8 @@ void CeLockGUITest20151208Dlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_LBL_FAILRATE1, m_failRate1);
 	DDX_Text(pDX, IDC_LBL_FAILRATE2, m_failRate2);
 	DDX_Text(pDX, IDC_EDT_INVMS, m_msgInvMs);
+	DDX_Text(pDX, IDC_EDT_INVT2MS, m_thr2InvMs);
+	
 
 	DDX_Control(pDX, IDC_BTNRUN, m_btnRun);
 	DDX_Control(pDX, IDC_LBLCURITEM, m_lblAccMsgNum);
@@ -134,11 +137,12 @@ BOOL CeLockGUITest20151208Dlg::OnInitDialog()
 	SetIcon(m_hIcon, TRUE);			// 设置大图标
 	SetIcon(m_hIcon, FALSE);		// 设置小图标
 
-	m_runMsgNum=300;
+	m_runMsgNum=30;
 	m_curMsg1=0;
 	m_failCount1=0;
 	m_failRate1=0.0f;
-	m_msgInvMs=200;
+	m_msgInvMs=300;
+	m_thr2InvMs=600;
 	UpdateData(FALSE);
 	m_btnRun.SetFocus();
 	// TODO: 在此添加额外的初始化代码
@@ -216,6 +220,7 @@ void CeLockGUITest20151208Dlg::OnBnClickedButton1()
 	{
 		m_runMsgNum=1;
 	}
+	m_runStartSecond=time(NULL);
 	AfxBeginThread(zw711SpeedTestThr1, this);
 	AfxBeginThread(zw711SpeedTestThr2, this);	
 	m_btnRun.EnableWindow(FALSE);
@@ -260,6 +265,7 @@ void CeLockGUITest20151208Dlg::OnRecvMsgZjelockctrl1(const VARIANT& varMsg)
 			m_failCount2++;					
 		}
 		m_dqNotifyT2.pop_front();
+		UpdateData(FALSE);
 	}
 	if (m_dqNotifyT1.size()>0 && false==upMatched)
 	{
@@ -280,8 +286,35 @@ void CeLockGUITest20151208Dlg::OnRecvMsgZjelockctrl1(const VARIANT& varMsg)
 			OutputDebugStringA(myErrMsg.c_str());			 
 		}
 		m_dqNotifyT1.pop_front();
+		UpdateData(FALSE);
 	}	
+
+	UpdateData(TRUE);
 	bool static bStsRuned=false;
+	bStsRuned = myMsgTimeSts(bStsRuned);
+	m_failRate1=100.0f*(m_failCount1)/(m_curMsg1+0.001f);
+		m_failRate1=ceil(m_failRate1*100)/100.0f;
+		m_failRate2=100.0f*(m_failCount2)/(m_curMsg2+0.001f);
+		m_failRate2=ceil(m_failRate2*100)/100.0f;
+	m_secDqNotify.Unlock();	
+	
+	//MessageBoxA(NULL,rMsg,timeStampBuf,MB_OK);
+	UpdateData(FALSE);
+	
+}
+
+
+void CeLockGUITest20151208Dlg::OnClose()
+{
+	// TODO: 在此添加消息处理程序代码和/或调用默认值
+
+	Sleep(800);
+	m_zjOCX.Close();
+	CDialogEx::OnClose();
+}
+
+bool CeLockGUITest20151208Dlg::myMsgTimeSts( bool &bStsRuned )
+{
 	if (m_curMsg1>=m_runMsgNum && bStsRuned==false)
 	{
 		m_btnRun.EnableWindow(TRUE);
@@ -302,19 +335,19 @@ void CeLockGUITest20151208Dlg::OnRecvMsgZjelockctrl1(const VARIANT& varMsg)
 			}
 			if (tjCount>0)
 			{	myTestMsg1607_t *sItem=(*iter);
-				myTestSts1607_t *tItem=m_mapSts[msgType];
-				if (sItem->msgDiffMs>tItem->prMaxMs)
-				{
-					//找找看有没有更大的值
-					tItem->prMaxMs=sItem->msgDiffMs;
-				}
-				if (sItem->msgDiffMs<tItem->prMinMs)
-				{
-					//找找看有没有更小的值
-					tItem->prMinMs=sItem->msgDiffMs;
-				}
-				tItem->msgCount++;
-				tItem->prTotalMs=tItem->prTotalMs+sItem->msgDiffMs;
+			myTestSts1607_t *tItem=m_mapSts[msgType];
+			if (sItem->msgDiffMs>tItem->prMaxMs)
+			{
+				//找找看有没有更大的值
+				tItem->prMaxMs=sItem->msgDiffMs;
+			}
+			if (sItem->msgDiffMs<tItem->prMinMs)
+			{
+				//找找看有没有更小的值
+				tItem->prMinMs=sItem->msgDiffMs;
+			}
+			tItem->msgCount++;
+			tItem->prTotalMs=tItem->prTotalMs+sItem->msgDiffMs;
 			}
 		}//for (auto iter=m_vecTimeStatus.begin()
 		string myMsgSts;
@@ -324,7 +357,7 @@ void CeLockGUITest20151208Dlg::OnRecvMsgZjelockctrl1(const VARIANT& varMsg)
 			memset(msgBuf,0,256);
 			myTestSts1607_t *tItem=iter->second;
 			sprintf(msgBuf,"报文%s统计处理时间平均%.1f毫秒,最小%.1f毫秒,最大%.1f毫秒",
-			iter->first.c_str()	,tItem->prTotalMs/tItem->msgCount,tItem->prMinMs,tItem->prMaxMs);
+				iter->first.c_str()	,tItem->prTotalMs/tItem->msgCount,tItem->prMinMs,tItem->prMaxMs);
 			if (myMsgSts.length()==0)
 			{
 				myMsgSts=msgBuf;			
@@ -338,17 +371,29 @@ void CeLockGUITest20151208Dlg::OnRecvMsgZjelockctrl1(const VARIANT& varMsg)
 
 		time_t rawtime;
 		struct tm* timeinfo;
-		char timE[80];
+		char myTimeStr[80];
+		memset(myTimeStr,0,80);
 		time(&rawtime);
 		timeinfo=localtime(&rawtime);
-		strftime(timE,80,"%Y年%m月%d日%I:%M:%S\n",timeinfo);
+		strftime(myTimeStr,80,"%Y年%m月%d日%I:%M:%S\n",timeinfo);
+		time_t runEndTime=time(NULL);
+		time_t runLength=runEndTime-m_runStartSecond;
+
+		int t1Succ=m_curMsg1-m_failCount1;
+		int t2Succ=m_curMsg2-m_failCount2;
+		float t1SuccRate=100.0f*t1Succ/m_curMsg1;
+		float t1FailRate=100.0f*m_failCount1/(m_curMsg1+0.001);
+		float t2SuccRate=100.0f*t2Succ/m_curMsg2;
+		float t2FailRate=100.0f*m_failCount2/(m_curMsg2+0.001);
 
 		char nbBuf[512];
 		memset(nbBuf,0,512);
-		sprintf(nbBuf, "正常报文%d条,失败%d条,失败率%.1f%%;干扰报文%d条,失败%d条,失败率%.1f%%;统计时间:%s",
-			m_curMsg1,m_failCount1,100.0f*m_failCount1/(m_curMsg1+0.001),
-			m_curMsg2,m_failCount2,100.0f*m_failCount2/(m_curMsg2+0.001),
-			timE);
+		sprintf(nbBuf, "正常报文%d条,成功%d条,成功率%.2f%%,失败%d条,失败率%.2f%%;\r\n"
+			"干扰报文%d条,成功%d条,成功率%.2f%%,失败%d条,失败率%.2f%%;\r\n"
+			"统计时间:%s,运行历时%d秒",
+			m_curMsg1,t1Succ,t1SuccRate, m_failCount1,t1FailRate,
+			m_curMsg2,t2Succ,t2SuccRate, m_failCount2,t2FailRate,
+			myTimeStr,runLength);
 
 		myMsgSts=myMsgSts+"\r\n"+nbBuf;
 		//MessageBoxA(NULL,myMsgSts.c_str(),"报文统计1607",MB_OK);
@@ -356,25 +401,7 @@ void CeLockGUITest20151208Dlg::OnRecvMsgZjelockctrl1(const VARIANT& varMsg)
 		m_MsgSts.SetWindowText(tjMsg);
 
 	}
-		m_failRate1=100.0f*(m_failCount1)/(m_curMsg1+0.001f);
-		m_failRate1=ceil(m_failRate1*100)/100.0f;
-		m_failRate2=100.0f*(m_failCount2)/(m_curMsg2+0.001f);
-		m_failRate2=ceil(m_failRate2*100)/100.0f;
-	m_secDqNotify.Unlock();	
-	
-	//MessageBoxA(NULL,rMsg,timeStampBuf,MB_OK);
-	UpdateData(FALSE);
-	
-}
-
-
-void CeLockGUITest20151208Dlg::OnClose()
-{
-	// TODO: 在此添加消息处理程序代码和/或调用默认值
-
-	Sleep(800);
-	m_zjOCX.Close();
-	CDialogEx::OnClose();
+	return bStsRuned;
 }
 
 

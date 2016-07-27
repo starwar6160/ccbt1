@@ -112,7 +112,7 @@ UINT CeLockGUITest20151208Dlg::zw711SpeedTestThr2(LPVOID pParam)
 
 	while(1)
 	{		
-		Sleep(6000);
+		Sleep(pDlg->m_thr2InvMs);
 		pDlg->m_zjOCX.Notify(tmpMsg);
 		pDlg->m_secDqNotify.Lock();
 		myTestMsg1607_t *tMsg=new myTestMsg1607_t();

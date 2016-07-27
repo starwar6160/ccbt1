@@ -253,6 +253,11 @@ namespace zwccbthr {
 					<<s_jcNotify.size()<<"条，需要加大下发延迟了"<<endl;
 				LOG_IF(ERROR,s_jcNotify.size()>100)<<"开始下发报文时.下发队列太长，长度达到了"
 					<<s_jcNotify.size()<<"条，下发太快锁具忙不过来了"<<endl;
+				if (s_jcNotify.size()>100)
+				{
+					MessageBoxA(NULL,"程序无法运行下去了，锁具挂了等等","FATAL错误",MB_OK);
+					exit(99);
+				}
 				LOG_IF(FATAL,s_jcNotify.size()>200)<<"开始下发报文时.下发队列太长，长度达到了"
 					<<s_jcNotify.size()<<"条,锁具应该已经挂了"<<endl;
 				if (s_jcNotify.size()>0)
