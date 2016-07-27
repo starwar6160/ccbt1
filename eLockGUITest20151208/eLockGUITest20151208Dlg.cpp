@@ -334,6 +334,23 @@ void CeLockGUITest20151208Dlg::OnRecvMsgZjelockctrl1(const VARIANT& varMsg)
 				myMsgSts=myMsgSts+"\r\n"+msgBuf;			
 			}
 		}
+
+
+		time_t rawtime;
+		struct tm* timeinfo;
+		char timE[80];
+		time(&rawtime);
+		timeinfo=localtime(&rawtime);
+		strftime(timE,80,"%Y年%m月%d日%I:%M:%S\n",timeinfo);
+
+		char nbBuf[512];
+		memset(nbBuf,0,512);
+		sprintf(nbBuf, "正常报文%d条,失败%d条,失败率%.1f%%;干扰报文%d条,失败%d条,失败率%.1f%%;统计时间:%s",
+			m_curMsg1,m_failCount1,100.0f*m_failCount1/(m_curMsg1+0.001),
+			m_curMsg2,m_failCount2,100.0f*m_failCount2/(m_curMsg2+0.001),
+			timE);
+
+		myMsgSts=myMsgSts+"\r\n"+nbBuf;
 		//MessageBoxA(NULL,myMsgSts.c_str(),"报文统计1607",MB_OK);
 		_bstr_t tjMsg=myMsgSts.c_str();
 		m_MsgSts.SetWindowText(tjMsg);
