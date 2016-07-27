@@ -243,38 +243,40 @@ void CeLockGUITest20151208Dlg::OnRecvMsgZjelockctrl1(const VARIANT& varMsg)
 	if (m_dqNotifyT2.size()>0 && false==upMatched)
 	{
 		string downMsgType;
-		downMsgType=m_dqNotifyT2.front();
+		downMsgType=m_dqNotifyT2.front()->msgType;
 		if (downMsgType==upMsgType
 			&& !myIsXMLMsgCodeFromLockFirstUp(upMsgType))
 		{
-			upMatched=true;
-			m_dqNotifyT2.pop_front();
+			m_dqNotifyT2.front()->msgDiffUs=(myGetUs()-m_dqNotifyT2.front()->msgStartUs)/1000.0f;
+			m_vecTimeStatus.push_back(m_dqNotifyT2.front());
+			upMatched=true;			
 		}	
 		if (downMsgType!=upMsgType
 			&& !myIsXMLMsgCodeFromLockFirstUp(upMsgType))
 		{
-			m_failCount2++;		
-			m_dqNotifyT2.pop_front();
+			m_failCount2++;					
 		}
+		m_dqNotifyT2.pop_front();
 	}
 	if (m_dqNotifyT1.size()>0 && false==upMatched)
 	{
 		string downMsgType;
-		downMsgType=m_dqNotifyT1.front();		
+		downMsgType=m_dqNotifyT1.front()->msgType;		
 		if (downMsgType==upMsgType
 			&& !myIsXMLMsgCodeFromLockFirstUp(upMsgType))
 		{
-			upMatched=true;
-			m_dqNotifyT1.pop_front();
+			m_dqNotifyT1.front()->msgDiffUs=(myGetUs()-m_dqNotifyT1.front()->msgStartUs)/1000.0f;
+			m_vecTimeStatus.push_back(m_dqNotifyT1.front());
+			upMatched=true;			
 		}		
 		if (downMsgType!=upMsgType
 			&& !myIsXMLMsgCodeFromLockFirstUp(upMsgType))
 		{
-			m_failCount1++;		
-			m_dqNotifyT1.pop_front();
+			m_failCount1++;					
 			string myErrMsg="CCBMFC´íÎó722.downMsgType="+downMsgType+"upMsg="+rMsg;
 			OutputDebugStringA(myErrMsg.c_str());			 
 		}
+		m_dqNotifyT1.pop_front();
 	}	
 	if (m_curMsg1>=m_runMsgNum)
 	{

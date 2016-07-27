@@ -5,8 +5,21 @@
 #pragma once
 #include "zjelockctrl1.h"
 #include <deque>
+#include <vector>
+#include <string>
 #include "afxwin.h"
 using std::deque;
+using std::string;
+using std::vector;
+
+struct myTestMsg1607_t 
+{
+	string msgType;
+	float msgDiffUs;
+	int64_t msgStartUs;	
+};
+
+
 
 // CeLockGUITest20151208Dlg 对话框
 class CeLockGUITest20151208Dlg : public CDialogEx
@@ -56,8 +69,9 @@ private:
 	//报文间隔时间毫秒数
 	int m_msgInvMs;
 	CCriticalSection  m_secDqNotify;
-	deque<string> m_dqNotifyT1;
-	deque<string> m_dqNotifyT2;
+	deque<myTestMsg1607_t *> m_dqNotifyT1;
+	deque<myTestMsg1607_t *> m_dqNotifyT2;
+	vector<myTestMsg1607_t *> m_vecTimeStatus;
 public:
 	// 开始测试的按钮
 	CButton m_btnRun;
