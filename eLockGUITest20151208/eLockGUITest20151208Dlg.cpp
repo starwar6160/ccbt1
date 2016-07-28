@@ -141,7 +141,7 @@ BOOL CeLockGUITest20151208Dlg::OnInitDialog()
 	m_curMsg1=0;
 	m_failCount1=0;
 	m_failRate1=0.0f;
-	m_msgInvMs=1300;
+	m_msgInvMs=500;
 	m_thr2InvMs=5000;
 	UpdateData(FALSE);
 	m_btnRun.SetFocus();
@@ -323,7 +323,7 @@ void myGetTimeStr1607(time_t inTime,string &outTimeStr)
 	char myTimeStr[80];
 	memset(myTimeStr,0,80);
 	timeinfo=localtime(&rawtime);
-	strftime(myTimeStr,80,"%Y/%m/%d %I:%M:%S\n",timeinfo);
+	strftime(myTimeStr,80,"%Y/%m/%d %H:%M:%S\n",timeinfo);
 	outTimeStr=myTimeStr;
 }
 
@@ -403,10 +403,11 @@ bool CeLockGUITest20151208Dlg::myMsgTimeSts( bool &bStsRuned )
 		memset(nbBuf,0,512);
 		sprintf(nbBuf, "正常报文%d条,成功%d条,成功率%.2f%%,失败%d条,失败率%.2f%%;\r\n"
 			"干扰报文%d条,成功%d条,成功率%.2f%%,失败%d条,失败率%.2f%%;\r\n"
-			"开始时间:%s,结束时间:%s,运行历时%.1f分",
+			"开始时间:%s,结束时间:%s,运行历时%.1f分,主线程间隔%.1f秒,副线程间隔%.1f秒",
 			m_curMsg1,t1Succ,t1SuccRate, m_failCount1,t1FailRate,
 			m_curMsg2,t2Succ,t2SuccRate, m_failCount2,t2FailRate,
-			strStartTime.c_str(),strEndTime.c_str(),runLength/60.0f);
+			strStartTime.c_str(),strEndTime.c_str(),runLength/60.0f,
+			m_msgInvMs/1000.0f,m_thr2InvMs/1000.0f);
 
 		myMsgSts=myMsgSts+"\r\n"+nbBuf;
 		//MessageBoxA(NULL,myMsgSts.c_str(),"报文统计1607",MB_OK);
