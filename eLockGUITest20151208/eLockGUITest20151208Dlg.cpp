@@ -137,12 +137,12 @@ BOOL CeLockGUITest20151208Dlg::OnInitDialog()
 	SetIcon(m_hIcon, TRUE);			// 设置大图标
 	SetIcon(m_hIcon, FALSE);		// 设置小图标
 
-	m_runMsgNum=30;
+	m_runMsgNum=500;
 	m_curMsg1=0;
 	m_failCount1=0;
 	m_failRate1=0.0f;
-	m_msgInvMs=300;
-	m_thr2InvMs=600;
+	m_msgInvMs=1300;
+	m_thr2InvMs=5000;
 	UpdateData(FALSE);
 	m_btnRun.SetFocus();
 	// TODO: 在此添加额外的初始化代码
@@ -316,6 +316,19 @@ void CeLockGUITest20151208Dlg::OnClose()
 	CDialogEx::OnClose();
 }
 
+void myGetTimeStr1607(time_t inTime,string &outTimeStr)
+{
+	time_t rawtime=inTime;
+	struct tm* timeinfo;
+	char myTimeStr[80];
+	memset(myTimeStr,0,80);
+	timeinfo=localtime(&rawtime);
+	strftime(myTimeStr,80,"%Y/%m/%d %I:%M:%S\n",timeinfo);
+	outTimeStr=myTimeStr;
+}
+
+
+
 bool CeLockGUITest20151208Dlg::myMsgTimeSts( bool &bStsRuned )
 {
 	if (m_curMsg1>=m_runMsgNum && bStsRuned==false)
@@ -359,7 +372,7 @@ bool CeLockGUITest20151208Dlg::myMsgTimeSts( bool &bStsRuned )
 			char msgBuf[256];
 			memset(msgBuf,0,256);
 			myTestSts1607_t *tItem=iter->second;
-			sprintf(msgBuf,"报文%s统计处理时间平均%.1f毫秒,最小%.1f毫秒,最大%.1f毫秒",
+			sprintf(msgBuf,"报文%s统计处理时间平均%.0f毫秒,最小%.0f毫秒,最大%.0f毫秒",
 				iter->first.c_str()	,tItem->prTotalMs/tItem->msgCount,tItem->prMinMs,tItem->prMaxMs);
 			if (myMsgSts.length()==0)
 			{
@@ -371,14 +384,11 @@ bool CeLockGUITest20151208Dlg::myMsgTimeSts( bool &bStsRuned )
 			}
 		}
 
+		string strStartTime;
+		string strEndTime;
+		myGetTimeStr1607(m_runStartSecond,strStartTime);
+		myGetTimeStr1607(time(NULL),strEndTime);
 
-		time_t rawtime;
-		struct tm* timeinfo;
-		char myTimeStr[80];
-		memset(myTimeStr,0,80);
-		time(&rawtime);
-		timeinfo=localtime(&rawtime);
-		strftime(myTimeStr,80,"%Y年%m月%d日%I:%M:%S\n",timeinfo);
 		time_t runEndTime=time(NULL);
 		time_t runLength=runEndTime-m_runStartSecond;
 
@@ -393,10 +403,10 @@ bool CeLockGUITest20151208Dlg::myMsgTimeSts( bool &bStsRuned )
 		memset(nbBuf,0,512);
 		sprintf(nbBuf, "正常报文%d条,成功%d条,成功率%.2f%%,失败%d条,失败率%.2f%%;\r\n"
 			"干扰报文%d条,成功%d条,成功率%.2f%%,失败%d条,失败率%.2f%%;\r\n"
-			"统计时间:%s,运行历时%d秒",
+			"开始时间:%s,结束时间:%s,运行历时%.1f分",
 			m_curMsg1,t1Succ,t1SuccRate, m_failCount1,t1FailRate,
 			m_curMsg2,t2Succ,t2SuccRate, m_failCount2,t2FailRate,
-			myTimeStr,runLength);
+			strStartTime.c_str(),strEndTime.c_str(),runLength/60.0f);
 
 		myMsgSts=myMsgSts+"\r\n"+nbBuf;
 		//MessageBoxA(NULL,myMsgSts.c_str(),"报文统计1607",MB_OK);
