@@ -82,6 +82,10 @@ UINT CeLockGUITest20151208Dlg::zw711SpeedTestThr1(LPVOID pParam)
 
 	while(nCount <(pDlg->m_runMsgNum))
 	{		
+		//随机延迟不到0.5秒
+		time_t rndT1=myGetUs();
+		rndT1=(rndT1%450)+50;
+		Sleep(rndT1);
 
 		int idxMsg=static_cast<int64_t>(myGetUs()) % aSize;
 		assert(idxMsg>=0 && idxMsg <aSize);
@@ -110,9 +114,16 @@ UINT CeLockGUITest20151208Dlg::zw711SpeedTestThr2(LPVOID pParam)
 	VARIANT tmpMsg;
 	myStr2Bstr(g_msg02,tmpMsg);	
 
+	
+
 	while(1)
 	{		
 		Sleep(pDlg->m_thr2InvMs);
+		//随机延迟不到1秒
+		time_t rndT1=myGetUs();
+		rndT1=(rndT1%900)+100;
+		Sleep(rndT1);
+
 		pDlg->m_zjOCX.Notify(tmpMsg);
 		pDlg->m_secDqNotify.Lock();
 		myTestMsg1607_t *tMsg=new myTestMsg1607_t();

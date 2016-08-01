@@ -22,6 +22,11 @@ typedef enum jcmsg_ccb_elock_t {
 	JCMSG_SENSE_SET_INSIDE_LOOP_TIMES,//ATM机设置上传的小循环次数命令
 	JCMSG_SENSE_SET_INSIDE_LOOP_PERIOD,//ATM机设置上传的小循环周期(单位秒)命令
 	JCMSG_SENSE_SET_OUTSIDE_LOOP_PERIOD,//ATM机设置上传的大循环周期(单位分钟)命令
+
+#ifdef _JINCHU_DEV1608
+	JCMSG_PRV_LOCK_UNINSTALL=32	//这个绝不能出现在给建行的版本里面，只是内部调试用
+#endif // _JINCHU_DEV1608
+
 } JC_MSG_TYPE;
 
 //为了日志，报警等用途设计的数据结构
@@ -59,7 +64,9 @@ namespace jcAtmcConvertDLL {
 	extern const char *JCSTR_SENSE_SET_INSIDE_LOOP_TIMES;//ATM机设置上传的小循环次数命令
 	extern const char *JCSTR_SENSE_SET_INSIDE_LOOP_PERIOD;//ATM机设置上传的小循环周期(单位秒)命令
 	extern const char *JCSTR_SENSE_SET_OUTSIDE_LOOP_PERIOD;//ATM机设置上传的大循环周期(单位分钟)命令
-
+#ifdef _JINCHU_DEV1608
+	extern const char *JCSTR_PRV_LOCKUNINSTALL;	//金储内部调试用的锁具卸载功能命令
+#endif // _JINCHU_DEV1608
 
 	extern const char *CCBSTR_CODE;
 	extern const char *CCBSTR_NAME;

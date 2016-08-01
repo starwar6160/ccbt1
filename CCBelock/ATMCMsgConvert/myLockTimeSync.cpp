@@ -196,6 +196,29 @@ namespace jcAtmcConvertDLL {
 		ptccb.put("root.Status", ptjc.get < int >("Status"));
 	}
 
+#ifdef _JINCHU_DEV1608
+	//金储内部使用的锁具卸载指令，绝不能出现在给建行的版本中
+	void zwconvJCDevLockUninstallDown(const ptree & ptccb, ptree & ptjc) {
+
+		ptjc.put(jcAtmcConvertDLL::JCSTR_CMDTITLE,
+			jcAtmcConvertDLL::JCSTR_PRV_LOCKUNINSTALL);		
+	}
+
+	void zwconvJCDevLockUninstallUp( const ptree & ptjc, ptree & ptccb )
+	{
+		ptccb.put(CCBSTR_CODE, "5005");
+		ptccb.put(CCBSTR_NAME, "OnLineLockUninstall");
+		string zwDate, zwTime;
+		zwGetLocalDateTimeString(time(NULL), zwDate, zwTime);
+		ptccb.put(CCBSTR_DATE, zwDate);
+		ptccb.put(CCBSTR_TIME, zwTime);
+		//实质性有用字段
+		ptccb.put(CCBSTR_DEVCODE, ptjc.get < string > ("Atm_Serial"));
+		ptccb.put("root.LockId", ptjc.get < string > ("Lock_Serial"));
+		ptccb.put("root.Status", ptjc.get < int >("Status"));
+	}
+#endif // _JINCHU_DEV1608
+
 //////////////////////////////////////////////////////////////////////////
 	//获取XML报文类型
 	CCBELOCK_API string zwGetJcxmlMsgType(const char *jcXML) 

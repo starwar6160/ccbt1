@@ -51,6 +51,11 @@ namespace jcAtmcConvertDLL {
 	//ATM机设置上传的大循环周期(单位分钟)命令
 	void zwconvTemptureSetOutsideLoopPeriodDown(const ptree & ptccb, ptree & ptjc) ;
 	void zwconvTemptureSetOutsideLoopPeriodUp(const ptree & ptjc, ptree & ptccb) ;
+#ifdef _JINCHU_DEV1608
+	//金储内部使用的锁具卸载指令，绝不能出现在给建行的版本中
+	void zwconvJCDevLockUninstallDown(const ptree & ptccb, ptree & ptjc);
+	void zwconvJCDevLockUninstallUp( const ptree & ptjc, ptree & ptccb );
+#endif // _JINCHU_DEV1608
 
 
 //以下4个字段，为的是在上下转换期间保存建行报文中冗余的，我们基本不用但又必须返回给建行的字段

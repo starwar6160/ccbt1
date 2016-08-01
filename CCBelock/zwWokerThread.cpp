@@ -48,7 +48,8 @@ namespace zwccbthr {
 	double s_LastNormalMsgUpTimeMs=0.0;	//最后一次正常循环报文上传的时间，毫秒计算
 	//消息下发延迟，防止下发过快导致下位机处理不过来，经过测试100毫秒的话
 	// 连续下发1500条就会有220条的下发队列；
-	int s_MsgNotifyDelay=150;		
+	int s_MsgNotifyDelay=150;	
+	time_t s_LastUpload=0;	//记录最后一次上传报文的时间，检测锁具挂掉之用
 
 	void wait(int milliseconds) {
 		assert(milliseconds>0);
@@ -117,6 +118,7 @@ namespace zwccbthr {
 			//20150415.1727.为了万敏的要求，控制上传消息速率最多每2秒一条防止ATM死机
 			//Sleep(2920);
 			pRecvMsgFun(recvConvedXML);
+			s_LastUpload=time(NULL);
 			LOG(INFO)<<"上位机回调函数已经收到 "<<recvConvedXML<<endl;
 			string upMsgType= jcAtmcConvertDLL::zwGetJcxmlMsgType(recvConvedXML);
 			if (s_dbgMatchNotify.size()>0)
@@ -251,14 +253,14 @@ namespace zwccbthr {
 					<<"\t头部元素="<<s_jcNotify.front()->getNotifyType()<<endl;
 				LOG_IF(WARNING,s_jcNotify.size()>20)<<"开始下发报文时.下发队列太长，长度达到了"
 					<<s_jcNotify.size()<<"条，需要加大下发延迟了"<<endl;
-				LOG_IF(ERROR,s_jcNotify.size()>100)<<"开始下发报文时.下发队列太长，长度达到了"
+				LOG_IF(ERROR,s_jcNotify.size()>30)<<"开始下发报文时.下发队列太长，长度达到了"
 					<<s_jcNotify.size()<<"条，下发太快锁具忙不过来了"<<endl;
-				if (s_jcNotify.size()>100)
+				if (s_jcNotify.size()>50)
 				{
-					MessageBoxA(NULL,"程序无法运行下去了，锁具挂了等等","FATAL错误",MB_OK);
-					exit(99);
+					MessageBoxA(NULL,"锁具已经对50条消息失去反应了","FATAL错误",MB_OK);
+					break;
 				}
-				LOG_IF(FATAL,s_jcNotify.size()>200)<<"开始下发报文时.下发队列太长，长度达到了"
+				LOG_IF(FATAL,s_jcNotify.size()>50)<<"开始下发报文时.下发队列太长，长度达到了"
 					<<s_jcNotify.size()<<"条,锁具应该已经挂了"<<endl;
 				if (s_jcNotify.size()>0)
 				{
@@ -315,6 +317,7 @@ namespace zwccbthr {
 					string outXML;
 					jcAtmcConvertDLL::zwJCjson2CCBxml(recvBuf,outXML);
 					VLOG(3)<<"回应XML报文大小="<<outXML.size()<<"\t下发队列大小="<<s_jcNotify.size()<<endl;
+					
 					if (outXML.size()==0)
 					{
 						//只有上行json报文非法，而且不是锁具主动上传报文时，才弹出下发队列第一项
@@ -380,6 +383,8 @@ namespace zwccbthr {
 					if (curMs-msgReadStart>nMaxReadMs || strlen(recvBuf)>0)
 					{
 						VLOG(3)<<"读取循环开始以后已经过了"<<nMaxReadMs<<"毫秒或者没有读取到任何内容，现在读取循环将break";
+						const int MYLOCKEXP=6;	//锁具最大处理时间目前是2.7秒左右，翻倍大约6秒还没反应就认为锁具挂了
+						VLOG_IF(1,time(NULL)-s_LastUpload>MYLOCKEXP)<<"锁具已经"<<MYLOCKEXP<<"秒没有反应了，应该是挂了729"<<endl;
 						break;
 					}
 				} while (1);

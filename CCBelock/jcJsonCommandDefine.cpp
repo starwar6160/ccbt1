@@ -22,6 +22,11 @@ namespace jcAtmcConvertDLL {
 	const char *JCSTR_SENSE_SET_INSIDE_LOOP_TIMES="Set_Inside_Loop_Times";
 	const char *JCSTR_SENSE_SET_INSIDE_LOOP_PERIOD="Set_Inside_Loop_Period";
 	const char *JCSTR_SENSE_SET_OUTSIDE_LOOP_PERIOD="Set_Outside_Loop_Period";
+#ifdef _JINCHU_DEV1608
+	//20160801.张靖钰让我增加的金储内部调试方便卸载锁具免得一旦初始化就要
+	// 重新刷机的卸载命令，绝不能出现在给建行的版本里面；
+	const char *JCSTR_PRV_LOCKUNINSTALL="Lock_Uninstall";
+#endif // _JINCHU_DEV1608
 
 	const char *CCBSTR_CODE = "root.TransCode";
 	const char *CCBSTR_NAME = "root.TransName";

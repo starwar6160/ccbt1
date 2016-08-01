@@ -126,6 +126,17 @@ namespace jcAtmcConvertDLL {
 			zwconvTemptureSetOutsideLoopPeriodDown(ptCCB, ptJC);
 		}
 
+#ifdef _JINCHU_DEV1608
+		if ("5005" == transCode) {	
+			//金储内部开发方便用的在线锁卸载命令，绝不能出现在给建行的版本里面；
+			//所以特地在这里调用，把实际代码用于条件编译，那么给建行的正式Release版本
+			// 如果调用了这两个函数就会链接错误，特意这么做的；20160801.1441.周伟
+			msgType = JCMSG_PRV_LOCK_UNINSTALL;
+			zwconvJCDevLockUninstallDown(ptCCB, ptJC);
+		}
+#endif // _JINCHU_DEV1608
+
+
 		//////////////////////////////////////////////////////////////////////////
 		//锁具单向上传消息的配合一问一答测试消息：
 		if ("1000" == transCode) {	//接收初始闭锁码
@@ -241,7 +252,12 @@ namespace jcAtmcConvertDLL {
 		if (JCSTR_SENSE_SET_OUTSIDE_LOOP_PERIOD == jcCmd) {	//ATM机设置上传的大循环周期(单位分钟)命令
 			zwconvTemptureSetOutsideLoopPeriodUp(ptCCB, ptJC);
 		}
-
+#ifdef _JINCHU_DEV1608
+		if (JCSTR_PRV_LOCKUNINSTALL == jcCmd) {	
+			//金储内部使用的锁具卸载指令，绝不能出现在给建行的版本中
+			zwconvJCDevLockUninstallUp(ptJC, ptCCB);
+		}
+#endif // _JINCHU_DEV1608
 		//////////////////////////////////////////////////////////////////////////
 		std::stringstream sst2;		
 		write_json(sst2, ptCCB);		

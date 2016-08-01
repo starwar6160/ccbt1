@@ -141,8 +141,8 @@ BOOL CeLockGUITest20151208Dlg::OnInitDialog()
 	m_curMsg1=0;
 	m_failCount1=0;
 	m_failRate1=0.0f;
-	m_msgInvMs=500;
-	m_thr2InvMs=5000;
+	m_msgInvMs=600;
+	m_thr2InvMs=3000;
 	UpdateData(FALSE);
 	m_btnRun.SetFocus();
 	// TODO: 在此添加额外的初始化代码
