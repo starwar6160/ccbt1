@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "zwCcbElockHdr.h"
 #include "myConvIntHdr.h"
+extern uint32_t G_JCDBG_CODE;
 
 namespace jcAtmcConvertDLL {
 
@@ -196,16 +197,24 @@ namespace jcAtmcConvertDLL {
 		ptccb.put("root.Status", ptjc.get < int >("Status"));
 	}
 
-#ifdef _JINCHU_DEV1608
+#ifdef _JINCHU_DEV1608	
 	//金储内部使用的锁具卸载指令，绝不能出现在给建行的版本中
 	void zwconvJCDevLockUninstallDown(const ptree & ptccb, ptree & ptjc) {
-
+		//设置环境变量JCDEVDBG1608为某个特定数字比如74484053才能开启
+		// 调试功能比如卸载锁具等等，这个开关是一个双保险
+		if (74484053==G_JCDBG_CODE)
+		{		
 		ptjc.put(jcAtmcConvertDLL::JCSTR_CMDTITLE,
 			jcAtmcConvertDLL::JCSTR_PRV_LOCKUNINSTALL);		
+		}	//if (74484053==G_JCDBG_CODE)
 	}
 
 	void zwconvJCDevLockUninstallUp( const ptree & ptjc, ptree & ptccb )
 	{
+		if (74484053==G_JCDBG_CODE)
+		{		
+		//设置环境变量JCDEVDBG1608为某个特定数字比如74484053才能开启
+		// 调试功能比如卸载锁具等等，这个开关是一个双保险
 		ptccb.put(CCBSTR_CODE, "5005");
 		ptccb.put(CCBSTR_NAME, "OnLineLockUninstall");
 		string zwDate, zwTime;
@@ -216,6 +225,7 @@ namespace jcAtmcConvertDLL {
 		ptccb.put(CCBSTR_DEVCODE, ptjc.get < string > ("Atm_Serial"));
 		ptccb.put("root.LockId", ptjc.get < string > ("Lock_Serial"));
 		ptccb.put("root.Status", ptjc.get < int >("Status"));
+		}	//if (74484053==G_JCDBG_CODE)
 	}
 #endif // _JINCHU_DEV1608
 

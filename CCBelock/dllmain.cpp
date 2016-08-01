@@ -4,7 +4,10 @@
 //void myLoadCfgs(const char *DLLPath);
 //extern Poco::LogStream * pocoLog;
 
+
+
 HMODULE G_DLL_HMODULE = NULL;
+uint32_t G_JCDBG_CODE=0;
 
 #ifdef _DEBUG
 string zwTest912(string now)
@@ -22,6 +25,20 @@ void zwFatalExec(void)
 	cout<<"ZWGLOG FATAL ERROR FOUND!"<<endl;
 	//exit(10000);
 }
+
+//设置环境变量为某个特定数字才能开启调试功能比如卸载锁具等等 74484053
+uint32_t myJcDbgCodeGet1608(void)
+{
+	const char *jcDbgEnv= getenv("JCDEVDBG1608");
+	if (NULL==jcDbgEnv)
+	{
+		return 0;
+	}
+	uint32_t jcDbgCode=0;
+	sscanf(jcDbgEnv,"%u",&jcDbgCode);	
+	return jcDbgCode;
+}
+
 
 #include <direct.h>
 void zwGlogInit()
@@ -88,6 +105,7 @@ BOOL APIENTRY DllMain(HMODULE hModule,
 		char myDllPath[256];
 		memset(myDllPath, 0, 256);
 		zwGetDLLPath(hModule, myDllPath, 256);		
+		G_JCDBG_CODE=myJcDbgCodeGet1608();
 		//myLoadCfgs(myDllPath);
 #ifdef _DEBUG
 		//cout<<"TEST912 LEXICAST.1557.\t"<<zwTest912("1409023024")<<endl;
