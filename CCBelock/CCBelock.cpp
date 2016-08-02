@@ -90,7 +90,11 @@ namespace jcAtmcConvertDLL
 		{
 			return "0004";
 		}
-		return "1043";
+		if (m_NotifyType=="Lock_Uninstall")
+		{
+			return "5005";
+		}
+		return "没有匹配的命令数字20160802.1027";	//没有匹配的错误值
 	}
 
 	double jcLockMsg1512_t::getNotifyMs(void)

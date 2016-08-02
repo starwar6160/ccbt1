@@ -301,6 +301,12 @@ namespace zwccbthr {
 					VLOG(4)<<"读取返回值循环进行中"<<endl;
 					memset(recvBuf,0,BLEN);
 					sts=static_cast<JCHID_STATUS>(g_jhc->RecvJson(recvBuf,BLEN));
+					LOG_IF(ERROR,JCHID_STATUS_HANDLE_NULL==sts)<<"JCHID_STATUS_HANDLE_NULL 错误发生了，JC锁具打开失败"<<endl;
+					if (JCHID_STATUS_HANDLE_NULL==sts)
+					{
+						LOG(WARNING)<<"等待5秒等待锁具恢复正常"<<endl;
+						Sleep(5000);
+					}
 					if (strlen(recvBuf)>0)
 					{										
 					zw_trace zntr("读到一条回应报文的处理");
@@ -371,6 +377,14 @@ namespace zwccbthr {
 							// 检测如果是初始化报文的1号报文，就延长超时时间
 							nMaxReadMs=3000;
 						}
+#ifdef _JINCHU_DEV1608
+						if (downType==jcAtmcConvertDLL::JCSTR_PRV_LOCKUNINSTALL)
+						{
+							//卸载锁具，测试性5秒超时看看
+							nMaxReadMs=5000;
+						}
+#endif // _JINCHU_DEV1608
+						
 						if (downType==jcAtmcConvertDLL::JCSTR_LOCK_ACTIVE_REQUEST ||
 							downType==jcAtmcConvertDLL::JCSTR_QUERY_LOCK_STATUS 
 							)
@@ -380,11 +394,12 @@ namespace zwccbthr {
 						}
 
 					}
-					if (curMs-msgReadStart>nMaxReadMs || strlen(recvBuf)>0)
+					if (curMs-msgReadStart>nMaxReadMs && strlen(recvBuf)==0)
 					{
-						VLOG(3)<<"读取循环开始以后已经过了"<<nMaxReadMs<<"毫秒或者没有读取到任何内容，现在读取循环将break";
-						const int MYLOCKEXP=6;	//锁具最大处理时间目前是2.7秒左右，翻倍大约6秒还没反应就认为锁具挂了
-						VLOG_IF(1,time(NULL)-s_LastUpload>MYLOCKEXP)<<"锁具已经"<<MYLOCKEXP<<"秒没有反应了，应该是挂了729"<<endl;
+						VLOG(3)<<"读取循环开始以后已经过了"<<nMaxReadMs<<"毫秒并且没有读取到任何内容，现在读取循环将break";
+						float MYLOCKEXP=(nMaxReadMs*2+1000)/1000;	//锁具最大处理时间目前是2.7秒左右，翻倍大约6秒还没反应就认为锁具挂了
+						VLOG_IF(1,(time(NULL)-s_LastUpload>MYLOCKEXP) && MYLOCKEXP>5.0f)
+							<<"锁具已经"<<MYLOCKEXP<<"秒没有反应了，应该是挂了801"<<endl;
 						break;
 					}
 				} while (1);

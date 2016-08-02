@@ -11,6 +11,7 @@ static const char *g_msg01="<?xml version='1.0' encoding='UTF-8'?><root><TransCo
 static const char *g_msg02="<?xml version='1.0' encoding='UTF-8'?><root><TransCode>0002</TransCode><TransName>QueryForLockStatus</TransName><TransDate>20160708</TransDate><TransTime>110900</TransTime><DevCode>515067001098</DevCode><LockMan></LockMan><LockId></LockId><SpareString1></SpareString1><SpareString2></SpareString2></root>";
 static const char *g_msg03="<?xml version='1.0' encoding='UTF-8'?><root><TransCode>0003</TransCode><TransName>TimeSync</TransName><TransDate>20160708</TransDate><TransTime>110900</TransTime></root>";
 static const char *g_msg04="<?xml version='1.0' encoding='UTF-8'?><root><TransCode>0004</TransCode><TransName>ReadShutLockCode</TransName><TransDate>20160708</TransDate><TransTime>110900</TransTime><DevCode>515067001098</DevCode><SpareString1></SpareString1><SpareString2></SpareString2></root>"; 
+static const char *g_msgUninstall="<?xml version='1.0' encoding='UTF-8'?><root><TransCode>5005</TransCode><TransName>OnLineLockUninstall</TransName><TransDate>20160801</TransDate><TransTime>101300</TransTime></root>";
 //从0号报文返回XML提取公钥并返回
 string myGetPubKeyFromMsg0000Rep(const string msg0000RepXML)
 {
@@ -408,8 +409,9 @@ void zw713SpeedTest1(void)
 {
 	SetRecvMsgRotine(myATMCRecvMsgRotine);	
 
-	myTestPush712(g_msg00);
-	myTestPush712(g_msg01);
+	//myTestPush712(g_msg00);
+	//myTestPush712(g_msg01);
+	myTestPush712(g_msgUninstall);
 }
 
 void myTestPush712( const char * tMsg )
@@ -423,6 +425,7 @@ void myTestPush712( const char * tMsg )
 
 int myGetRunCount(void)
 {
+	return 5;
 	cout<<"请输入需要运行的消息条数"<<endl;
 	int nCount=0;
 	cin>>nCount;
@@ -439,14 +442,14 @@ TEST_F(ccbElockTest, jcHidDev20151207SpeedTestInATMCDLL)
 {	
 	//boost::thread *thr3=new boost::thread(zw1218OpenTimeTestThr);
 	g_totalRunCount=myGetRunCount();
-	boost::thread *thr1=new boost::thread(zw711SpeedTestThr1);	
-	boost::thread *thr2=new boost::thread(zw711SpeedTestThr1);
+	boost::thread *thr1=new boost::thread(zw713SpeedTest1);	
+	//boost::thread *thr2=new boost::thread(zw711SpeedTestThr1);
 	
 	thr1->join();
-	thr2->join();
+	//thr2->join();
 	//thr3->join();
 	//zw713SpeedTest1();
-	Sleep(9000);
+	Sleep(19000);
 	//EXPECT_EQ(ELOCK_ERROR_SUCCESS,Close());
 	//rdq.dumpDownDeque();
 }
