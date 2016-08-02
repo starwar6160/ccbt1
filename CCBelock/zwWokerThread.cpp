@@ -380,8 +380,10 @@ namespace zwccbthr {
 #ifdef _JINCHU_DEV1608
 						if (downType==jcAtmcConvertDLL::JCSTR_PRV_LOCKUNINSTALL)
 						{
-							//卸载锁具，测试性5秒超时看看
-							nMaxReadMs=5000;
+							//卸载锁具，测试性5秒超时不够，潘飞说实际大约8秒左右
+							// 我就设定在12秒应该够了
+							//20160802.1612
+							nMaxReadMs=12000;
 						}
 #endif // _JINCHU_DEV1608
 						
