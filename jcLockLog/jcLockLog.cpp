@@ -2,21 +2,53 @@
 //
 
 #include "stdafx.h"
+#include <cassert>
 #include "jcLockLog.h"
 
-
-// 这是导出变量的一个示例
-JCLOCKLOG_API int njcLockLog=0;
-
-// 这是导出函数的一个示例。
-JCLOCKLOG_API int fnjcLockLog(void)
+//黑钥匙日志处理
+//该函数通过下面的回调函数返回处理结果
+int SwapTouchKeyLog(char * TouchKeyLogItem)
 {
-	return 42;
+	assert(NULL!=TouchKeyLogItem);
+	assert(strlen(TouchKeyLogItem)>0);
+	if ((NULL==TouchKeyLogItem) || (strlen(TouchKeyLogItem)==0))
+	{
+		return -1;
+	}
+	return 0;
+}
+//设置回调函数的函数：
+void SetReturnTouchKeyLog(ReturnTouchKeyLog _TouchKeyLogHandleFun)
+{
+	assert(NULL!=_TouchKeyLogHandleFun);
+	if (NULL==_TouchKeyLogHandleFun)
+	{
+		return ;
+	}
 }
 
-// 这是已导出类的构造函数。
-// 有关类定义的信息，请参阅 jcLockLog.h
-CjcLockLog::CjcLockLog()
+//////////////////////////////////////////////////////////////////////////
+//红钥匙日志处理
+void SetReturnLockLog(ReturnLockLog _LockLogHandleFun)
 {
-	return;
+	assert(NULL!=_LockLogHandleFun);
+	if (NULL==_LockLogHandleFun)
+	{
+		return ;
+	}
+}
+
+
+
+int SwapLockLog(char * LockLogItem,int IsFinish)
+{
+	assert(NULL!=LockLogItem);
+	assert(strlen(LockLogItem)>0);
+
+	if ((NULL==LockLogItem) || (strlen(LockLogItem)==0))
+	{
+		return -2;
+	}
+
+	return 0;
 }

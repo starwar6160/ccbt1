@@ -10,21 +10,27 @@
 #define JCLOCKLOG_API __declspec(dllimport)
 #endif
 
-// 此类是从 jcLockLog.dll 导出的
-class JCLOCKLOG_API CjcLockLog {
-public:
-	CjcLockLog(void);
-	// TODO: 在此添加您的方法。
-};
-
 #ifdef  __cplusplus
 extern "C" {
 #endif
 
+//黑钥匙日志处理：
+//黑钥匙日志处理回调函数：
+//TouchKeyLogItem是HEX格式原文，TouchKeyLogFactor是输出的人类可读字符串；
+typedef void (CDECL *ReturnTouchKeyLog)(char* TouchKeyLogItem, char* TouchKeyLogFactor);
+//分解黑钥匙日志的函数：(返回值是什么含义？)
+//该函数通过下面的回调函数返回处理结果
+JCLOCKLOG_API int SwapTouchKeyLog(char * TouchKeyLogItem);
+//设置回调函数的函数：
+JCLOCKLOG_API void SetReturnTouchKeyLog(ReturnTouchKeyLog _TouchKeyLogHandleFun);
 
-extern JCLOCKLOG_API int njcLockLog;
 
-JCLOCKLOG_API int fnjcLockLog(void);
+//红钥匙日志处理
+typedef void (CDECL *ReturnLockLog)(char* LockLogItem,char* LockLogEventTime,char* LockLogFactor);
+JCLOCKLOG_API void SetReturnLockLog(ReturnLockLog _LockLogHandleFun);
+JCLOCKLOG_API int SwapLockLog(char * LockLogItem,int IsFinish);
+
+
 
 #ifdef  __cplusplus
 }
