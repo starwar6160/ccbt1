@@ -137,12 +137,12 @@ BOOL CeLockGUITest20151208Dlg::OnInitDialog()
 	SetIcon(m_hIcon, TRUE);			// 设置大图标
 	SetIcon(m_hIcon, FALSE);		// 设置小图标
 
-	m_runMsgNum=500;
+	m_runMsgNum=1000;
 	m_curMsg1=0;
 	m_failCount1=0;
 	m_failRate1=0.0f;
-	m_msgInvMs=600;
-	m_thr2InvMs=3000;
+	m_msgInvMs=5000;
+	m_thr2InvMs=5100;
 	UpdateData(FALSE);
 	m_btnRun.SetFocus();
 	// TODO: 在此添加额外的初始化代码
