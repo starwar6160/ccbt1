@@ -316,6 +316,8 @@ void CeLockGUITest20151208Dlg::OnClose()
 	CDialogEx::OnClose();
 }
 
+//namespace zwTools2015
+//用这个来打标记应该放到工具函数静态库共用的函数
 void myGetTimeStr1607(time_t inTime,string &outTimeStr)
 {
 	time_t rawtime=inTime;

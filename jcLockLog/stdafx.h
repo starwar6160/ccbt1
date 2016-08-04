@@ -12,7 +12,14 @@
 #include <windows.h>
 #include <cassert>
 #include <string>
+#include <iostream>
+#include <cstdint>
+#include <ctime>
+#include <sstream>
 using std::string;
+using std::cout;
+using std::endl;
+using std::ostringstream;
 
 
 // TODO: 在此处引用程序需要的其他头文件

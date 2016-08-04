@@ -17,7 +17,7 @@ void SetReturnLockLog(ReturnLockLog _LockLogHandleFun)
 
 
 
-int SwapLockLog(char * LockLogItem,int IsFinish)
+int SwapLockLog(const char * LockLogItem,int IsFinish)
 {
 	assert(NULL!=LockLogItem);
 	assert(strlen(LockLogItem)>0);

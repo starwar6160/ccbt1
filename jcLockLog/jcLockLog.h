@@ -17,20 +17,22 @@ extern "C" {
 //黑钥匙日志处理：
 //黑钥匙日志处理回调函数：
 //TouchKeyLogItem是HEX格式原文，TouchKeyLogFactor是输出的人类可读字符串；
-typedef void (CDECL *ReturnTouchKeyLog)(char* TouchKeyLogItem, char* TouchKeyLogFactor);
+typedef void (CDECL *ReturnTouchKeyLog)(const char* TouchKeyLogItem, const char* TouchKeyLogFactor);
 //分解黑钥匙日志的函数：(返回值是什么含义？)
 //该函数通过下面的回调函数返回处理结果
-JCLOCKLOG_API int SwapTouchKeyLog(char * TouchKeyLogItem);
+JCLOCKLOG_API int SwapTouchKeyLog(const char * TouchKeyLogItem);
 //设置回调函数的函数：
 JCLOCKLOG_API void SetReturnTouchKeyLog(ReturnTouchKeyLog _TouchKeyLogHandleFun);
 
 
 //红钥匙日志处理
-typedef void (CDECL *ReturnLockLog)(char* LockLogItem,char* LockLogEventTime,char* LockLogFactor);
+//红钥匙日志处理回调函数：
+typedef void (CDECL *ReturnLockLog)(const char* LockLogItem,const char* LockLogEventTime,const char* LockLogFactor);
 JCLOCKLOG_API void SetReturnLockLog(ReturnLockLog _LockLogHandleFun);
-JCLOCKLOG_API int SwapLockLog(char * LockLogItem,int IsFinish);
+JCLOCKLOG_API int SwapLockLog(const char * LockLogItem,int IsFinish);
 
-
+/////////////////////////////////测试代码/////////////////////////////////////////
+JCLOCKLOG_API void myBlackKeyTest804(void);
 
 #ifdef  __cplusplus
 }

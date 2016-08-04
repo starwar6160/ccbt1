@@ -274,7 +274,7 @@ void myDequeTest704(void)
 
 int myGetRunCount(void);
 
-
+#include "jcLockLog.h"
 
 int _tmain(int argc, TCHAR * argv[])
 {
@@ -303,8 +303,9 @@ int _tmain(int argc, TCHAR * argv[])
 
 	//myDequeTest704();
 
-	eLockGoogleTest2014(argc, argv);	
-	cout<<"输入任何数字结束"<<endl;
-	int tmpaa;
-	cin>>tmpaa;
+	//eLockGoogleTest2014(argc, argv);	
+	//cout<<"输入任何数字结束"<<endl;
+	//int tmpaa;
+	//cin>>tmpaa;
+	myBlackKeyTest804();
 }
