@@ -12,6 +12,9 @@ void eLockJsonTestLua107(void);
 
 const char *jcHidJsonMsg0005="{ \"command\": \"Lock_System_Journal\",\"State\": \"get\"}";
 
+
+
+
 //将TCHAR转为char   
 //*tchar是TCHAR类型指针，*_char是char类型指针   
 void TcharToChar (const TCHAR * tchar, char * _char)  
@@ -271,10 +274,16 @@ void myDequeTest704(void)
 
 int myGetRunCount(void);
 
+
+
 int _tmain(int argc, TCHAR * argv[])
 {
 	const char *devSN3="PAAbAAAAAAAAgAKE";
 	const char *jcHidJsonMsg116t1="{\"command\": \"Test_Motor_Open\",\"cmd_id\": \"1234567890\",\"State\": \"test\"}";
+	//string srcHexStr="414243440041424344";
+	//string dstBinStr;
+	//myHex2Bin(srcHexStr,dstBinStr);
+	//cout<<dstBinStr<<endl;
 
 	//zwStartGtestInDLL();
 

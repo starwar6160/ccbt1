@@ -27,6 +27,9 @@
     <ClInclude Include="jcLockLog.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="myLXLockDecHdr.h">
+      <Filter>源文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -36,6 +39,15 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="dllmain.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="JCRedKeyLogDec.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="JCBlackKeyLogDec.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="zwTools1608.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
