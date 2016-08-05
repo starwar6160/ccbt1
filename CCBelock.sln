@@ -16,8 +16,6 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "jcMultiHID15", "jcMultiHID1
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "eLockGUITest20151208", "eLockGUITest20151208\eLockGUITest20151208.vcxproj", "{170463F1-A68F-479F-A6CE-B0F8C6BD9A18}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "jcLockLog", "jcLockLog\jcLockLog.vcxproj", "{A2FD4E3F-49B8-4B85-802A-E324C490433B}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -142,24 +140,6 @@ Global
 		{170463F1-A68F-479F-A6CE-B0F8C6BD9A18}.Release|Win32.ActiveCfg = Release|Win32
 		{170463F1-A68F-479F-A6CE-B0F8C6BD9A18}.Release|Win32.Build.0 = Release|Win32
 		{170463F1-A68F-479F-A6CE-B0F8C6BD9A18}.Release|x86.ActiveCfg = Release|Win32
-		{A2FD4E3F-49B8-4B85-802A-E324C490433B}.Debug|Any CPU.ActiveCfg = Debug|Win32
-		{A2FD4E3F-49B8-4B85-802A-E324C490433B}.Debug|Mixed Platforms.ActiveCfg = Debug|Win32
-		{A2FD4E3F-49B8-4B85-802A-E324C490433B}.Debug|Mixed Platforms.Build.0 = Debug|Win32
-		{A2FD4E3F-49B8-4B85-802A-E324C490433B}.Debug|Win32.ActiveCfg = Debug|Win32
-		{A2FD4E3F-49B8-4B85-802A-E324C490433B}.Debug|Win32.Build.0 = Debug|Win32
-		{A2FD4E3F-49B8-4B85-802A-E324C490433B}.Debug|x86.ActiveCfg = Debug|Win32
-		{A2FD4E3F-49B8-4B85-802A-E324C490433B}.JCRelease|Any CPU.ActiveCfg = Release|Win32
-		{A2FD4E3F-49B8-4B85-802A-E324C490433B}.JCRelease|Mixed Platforms.ActiveCfg = Release|Win32
-		{A2FD4E3F-49B8-4B85-802A-E324C490433B}.JCRelease|Mixed Platforms.Build.0 = Release|Win32
-		{A2FD4E3F-49B8-4B85-802A-E324C490433B}.JCRelease|Win32.ActiveCfg = Release|Win32
-		{A2FD4E3F-49B8-4B85-802A-E324C490433B}.JCRelease|Win32.Build.0 = Release|Win32
-		{A2FD4E3F-49B8-4B85-802A-E324C490433B}.JCRelease|x86.ActiveCfg = Release|Win32
-		{A2FD4E3F-49B8-4B85-802A-E324C490433B}.Release|Any CPU.ActiveCfg = Release|Win32
-		{A2FD4E3F-49B8-4B85-802A-E324C490433B}.Release|Mixed Platforms.ActiveCfg = Release|Win32
-		{A2FD4E3F-49B8-4B85-802A-E324C490433B}.Release|Mixed Platforms.Build.0 = Release|Win32
-		{A2FD4E3F-49B8-4B85-802A-E324C490433B}.Release|Win32.ActiveCfg = Release|Win32
-		{A2FD4E3F-49B8-4B85-802A-E324C490433B}.Release|Win32.Build.0 = Release|Win32
-		{A2FD4E3F-49B8-4B85-802A-E324C490433B}.Release|x86.ActiveCfg = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

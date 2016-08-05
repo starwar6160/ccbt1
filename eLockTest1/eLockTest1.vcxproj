@@ -53,7 +53,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\CCBelock;$(ZWLIB)\gtest\include\;$(BOOST);$(ZWSRC)\jclmsCCB2014\jclmsCCB2014\zwECIES;$(ZWSRC)\\zwBaseLib\zwBaseLib\SerialPortTestCode\;$(ZWLIB)\lua\src;$(ZWLIB)\LuaBridge\Source\LuaBridge;$(ZWSRC)\CCBelock\CCBelock\hidCode;$(ZWSRC)\CCBelock\jcLockLog;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\CCBelock;$(ZWLIB)\gtest\include\;$(BOOST);$(ZWSRC)\jclmsCCB2014\jclmsCCB2014\zwECIES;$(ZWSRC)\\zwBaseLib\zwBaseLib\SerialPortTestCode\;$(ZWLIB)\lua\src;$(ZWLIB)\LuaBridge\Source\LuaBridge;$(ZWSRC)\CCBelock\CCBelock\hidCode;$(ZWSRC)\jcLXLockLogDecDLL\jcLockLog;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalOptions>-Zm139 %(AdditionalOptions)</AdditionalOptions>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
     </ClCompile>
@@ -75,7 +75,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\CCBelock;$(ZWLIB)\gtest\include\;$(BOOST);$(ZWSRC)\jclmsCCB2014\jclmsCCB2014\zwECIES;$(ZWSRC)\\zwBaseLib\zwBaseLib\SerialPortTestCode\;$(ZWLIB)\lua\src;$(ZWLIB)\LuaBridge\Source\LuaBridge;$(ZWSRC)\CCBelock\CCBelock\hidCode;$(ZWSRC)\CCBelock\jcLockLog;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\CCBelock;$(ZWLIB)\gtest\include\;$(BOOST);$(ZWSRC)\jclmsCCB2014\jclmsCCB2014\zwECIES;$(ZWSRC)\\zwBaseLib\zwBaseLib\SerialPortTestCode\;$(ZWLIB)\lua\src;$(ZWLIB)\LuaBridge\Source\LuaBridge;$(ZWSRC)\CCBelock\CCBelock\hidCode;$(ZWSRC)\jcLXLockLogDecDLL\jcLockLog;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalOptions>-Zm139 %(AdditionalOptions)</AdditionalOptions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
     </ClCompile>
