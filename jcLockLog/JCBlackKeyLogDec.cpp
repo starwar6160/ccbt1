@@ -51,10 +51,11 @@ string jclxBlackKeyLog2Str(const struct jclxBlackKeyLog1608_t *inBlackLog)
 	myGetTimeStr1607(inBlackLog->closeLockTime,closeLockTime);
 	std::ostringstream oStr;
 	//开锁状态不知为何要转换为int才能正常通过ostringstream输出;
-	oStr<<"离线锁据序列号=["<<lockSN<<"];开锁时间=["<<openLockTime
-		<<"]开锁状态=["<<static_cast<int>(inBlackLog->openLockStatus)
-		<<"]闭锁码=["<<inBlackLog->closeCode
-		<<"]关锁时间=["<<closeLockTime<<"]";
+	const string SPR=",";
+	oStr<<lockSN<<SPR<<openLockTime
+		<<SPR<<static_cast<int>(inBlackLog->openLockStatus)
+		<<SPR<<inBlackLog->closeCode
+		<<SPR<<closeLockTime;
 	string resStr=oStr.str();
 	return resStr;
 }
