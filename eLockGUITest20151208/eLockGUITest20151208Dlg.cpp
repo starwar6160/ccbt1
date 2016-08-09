@@ -24,6 +24,45 @@ extern const char *g_msg04;
 #define new DEBUG_NEW
 #endif
 
+//namespace zwTools2015
+//用这个来打标记应该放到工具函数静态库共用的函数
+void myGetTimeStr1607(time_t inTime,string &outTimeStr)
+{
+	time_t rawtime=inTime;
+	struct tm* timeinfo;
+	char myTimeStr[80];
+	memset(myTimeStr,0,80);
+	timeinfo=localtime(&rawtime);
+	strftime(myTimeStr,80,"%Y/%m/%d %H:%M:%S",timeinfo);
+	outTimeStr=myTimeStr;
+}
+
+void myGetFNTimeStr1608(time_t inTime,string &outTimeStr)
+{
+	time_t rawtime=inTime;
+	struct tm* timeinfo;
+	char myTimeStr[80];
+	memset(myTimeStr,0,80);
+	timeinfo=localtime(&rawtime);
+	strftime(myTimeStr,80,"%Y_%m_%d",timeinfo);
+	outTimeStr=myTimeStr;
+}
+
+
+void myTestFW809(const string &myMsgSts)
+{
+	//本函数就是随便把内容纪录到简单的日志文件
+	string fnRec;	
+	time_t curSec=time(NULL);
+	time_t todayTail=curSec%(24*3600);
+	myGetFNTimeStr1608(curSec-todayTail,fnRec);
+	fnRec="jcLXLockTestLog"+fnRec+".txt";
+	FILE *fpLog=fopen(fnRec.c_str(),"a+");
+	fwrite(myMsgSts.c_str(),myMsgSts.length(),1,fpLog);
+	fclose(fpLog);
+
+}
+
 // 用于应用程序“关于”菜单项的 CAboutDlg 对话框
 
 class CAboutDlg : public CDialogEx
@@ -137,6 +176,9 @@ BOOL CeLockGUITest20151208Dlg::OnInitDialog()
 	SetIcon(m_hIcon, TRUE);			// 设置大图标
 	SetIcon(m_hIcon, FALSE);		// 设置小图标
 
+	CMenu* pMenu = this->GetSystemMenu(FALSE);//系统菜单
+	pMenu->ModifyMenu(SC_CLOSE,MF_BYCOMMAND | MF_GRAYED );//禁用关闭按钮
+
 	m_runMsgNum=1000;
 	m_curMsg1=0;
 	m_failCount1=0;
@@ -151,7 +193,7 @@ BOOL CeLockGUITest20151208Dlg::OnInitDialog()
 	{
 		MessageBoxA(NULL,"金储电子密码锁打开失败","失败",MB_OK);
 	}
-	m_lblAccMsgNum.SetWindowText(TEXT("累计条数"));
+	m_lblAccMsgNum.SetWindowText(TEXT("累计条数"));	
 	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
 }
 
@@ -316,18 +358,6 @@ void CeLockGUITest20151208Dlg::OnClose()
 	CDialogEx::OnClose();
 }
 
-//namespace zwTools2015
-//用这个来打标记应该放到工具函数静态库共用的函数
-void myGetTimeStr1607(time_t inTime,string &outTimeStr)
-{
-	time_t rawtime=inTime;
-	struct tm* timeinfo;
-	char myTimeStr[80];
-	memset(myTimeStr,0,80);
-	timeinfo=localtime(&rawtime);
-	strftime(myTimeStr,80,"%Y/%m/%d %H:%M:%S\n",timeinfo);
-	outTimeStr=myTimeStr;
-}
 
 
 
@@ -405,7 +435,7 @@ bool CeLockGUITest20151208Dlg::myMsgTimeSts( bool &bStsRuned )
 		memset(nbBuf,0,512);
 		sprintf(nbBuf, "正常报文%d条,成功%d条,成功率%.2f%%,失败%d条,失败率%.2f%%;\r\n"
 			"干扰报文%d条,成功%d条,成功率%.2f%%,失败%d条,失败率%.2f%%;\r\n"
-			"开始时间:%s,结束时间:%s,运行历时%.1f分,主线程间隔%.1f秒,副线程间隔%.1f秒",
+			"开始时间:%s,结束时间:%s\r\n,运行历时%.1f分,主线程间隔%.1f秒,副线程间隔%.1f秒\r\n\r\n",
 			m_curMsg1,t1Succ,t1SuccRate, m_failCount1,t1FailRate,
 			m_curMsg2,t2Succ,t2SuccRate, m_failCount2,t2FailRate,
 			strStartTime.c_str(),strEndTime.c_str(),runLength/60.0f,
@@ -415,9 +445,22 @@ bool CeLockGUITest20151208Dlg::myMsgTimeSts( bool &bStsRuned )
 		//MessageBoxA(NULL,myMsgSts.c_str(),"报文统计1607",MB_OK);
 		_bstr_t tjMsg=myMsgSts.c_str();
 		m_MsgSts.SetWindowText(tjMsg);
+		//写入文件保险
+		myTestFW809(myMsgSts);
 
 	}
 	return bStsRuned;
 }
 
+
+
+
+BOOL CeLockGUITest20151208Dlg::PreTranslateMessage(MSG* pMsg)
+{
+	// TODO: 在此添加专用代码和/或调用基类
+	if(pMsg->message==WM_KEYDOWN && pMsg->wParam==VK_ESCAPE)  return TRUE;
+	if(pMsg->message==WM_KEYDOWN && pMsg->wParam==VK_RETURN) return TRUE; 
+	else 
+		return CDialog::PreTranslateMessage(pMsg);
+}
 

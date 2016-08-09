@@ -188,6 +188,14 @@ CCBELOCK_API long JCAPISTD Open(long lTimeOut)
 	if (JCHID_STATUS_OK==elockStatus)
 	{
 		LOG(INFO)<<"打开锁具HID连接成功"<<endl;
+		Sleep(100);
+		if (NULL==zwccbthr::opCommThr)
+		{		
+			//启动后台数据收发线程的地方从Notify移动到了Open里面,
+			//20160808,应潘飞和刘浩的需求修改的；
+			zwccbthr::opCommThr=new boost::thread(zwccbthr::my706LockRecvThr);
+			LOG(INFO)<<"启动后台数据收发线程"<<endl;
+		}	
 		return ELOCK_ERROR_SUCCESS;
 	}
 	else
@@ -195,6 +203,7 @@ CCBELOCK_API long JCAPISTD Open(long lTimeOut)
 		LOG(ERROR)<<"打开锁具HID连接失败"<<endl;
 		return ELOCK_ERROR_CONNECTLOST;
 	}
+
 	
 }
 
@@ -234,12 +243,6 @@ CCBELOCK_API long JCAPISTD Notify(const char *pszMsg)
 			LOG(WARNING)<<"没有Open就执行Notify 20151216"<<endl;
 			return ELOCK_ERROR_HARDWAREERROR;
 		}
-
-	if (NULL==zwccbthr::opCommThr)
-	{		
-		zwccbthr::opCommThr=new boost::thread(zwccbthr::my706LockRecvThr);
-		LOG(INFO)<<"启动后台数据收发线程"<<endl;
-	}	
 
 	assert(pszMsg != NULL);
 	assert(strlen(pszMsg) >= 42);	//XML至少42字节utf8

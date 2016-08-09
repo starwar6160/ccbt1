@@ -96,4 +96,5 @@ public:
 	CEdit m_MsgSts;
 	// 干扰线程下发间隔毫秒
 	int m_thr2InvMs;
+	virtual BOOL PreTranslateMessage(MSG* pMsg);
 };
