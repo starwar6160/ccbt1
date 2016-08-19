@@ -146,12 +146,12 @@ zw_trace::zw_trace(const char *funcName)
 	m_str = funcName;
 	m_start = m_str + "\tSTART";
 	m_end = m_str + "\tEND";
-	VLOG(3)<<m_start;
+	VLOG(4)<<m_start;
 }
 
 zw_trace::~zw_trace()
 {
-	VLOG(3)<<m_end;
+	VLOG(4)<<m_end;
 }
 
 

@@ -398,7 +398,7 @@ namespace zwccbthr {
 					}
 					if (curMs-msgReadStart>nMaxReadMs && strlen(recvBuf)==0)
 					{
-						VLOG(3)<<"读取循环开始以后已经过了"<<nMaxReadMs<<"毫秒并且没有读取到任何内容，现在读取循环将break";
+						VLOG(4)<<"读取循环开始以后已经过了"<<nMaxReadMs<<"毫秒并且没有读取到任何内容，现在读取循环将break";
 						float MYLOCKEXP=(nMaxReadMs*2+1000)/1000;	//锁具最大处理时间目前是2.7秒左右，翻倍大约6秒还没反应就认为锁具挂了
 						VLOG_IF(1,(time(NULL)-s_LastUpload>MYLOCKEXP) && MYLOCKEXP>5.0f)
 							<<"锁具已经"<<MYLOCKEXP<<"秒没有反应了，应该是挂了801"<<endl;

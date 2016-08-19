@@ -42,6 +42,9 @@
     <ClInclude Include="zjelockctrl1.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="jcelock16ctrl1.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="eLockGUITest20151208.cpp">
@@ -57,6 +60,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="myTestThreadProc1607.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="jcelock16ctrl1.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

@@ -91,7 +91,7 @@ UINT CeLockGUITest20151208Dlg::zw711SpeedTestThr1(LPVOID pParam)
 		assert(idxMsg>=0 && idxMsg <aSize);
 		VARIANT tmpMsg;
 		myStr2Bstr(msgarr[idxMsg],tmpMsg);	
-		pDlg->m_zjOCX.Notify(tmpMsg);
+		pDlg->m_jcElock.Notify(tmpMsg);
 		pDlg->m_secDqNotify.Lock();
 		myTestMsg1607_t *tMsg=new myTestMsg1607_t();
 		tMsg->msgType=zwGetJcxmlMsgType(msgarr[idxMsg]);
@@ -124,7 +124,7 @@ UINT CeLockGUITest20151208Dlg::zw711SpeedTestThr2(LPVOID pParam)
 		rndT1=(rndT1%900)+100;
 		Sleep(rndT1);
 
-		pDlg->m_zjOCX.Notify(tmpMsg);
+		pDlg->m_jcElock.Notify(tmpMsg);
 		pDlg->m_secDqNotify.Lock();
 		myTestMsg1607_t *tMsg=new myTestMsg1607_t();
 		tMsg->msgType=zwGetJcxmlMsgType(g_msg02);

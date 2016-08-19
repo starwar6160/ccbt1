@@ -111,6 +111,7 @@
   <ItemGroup>
     <ClInclude Include="eLockGUITest20151208.h" />
     <ClInclude Include="eLockGUITest20151208Dlg.h" />
+    <ClInclude Include="jcelock16ctrl1.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
@@ -119,6 +120,7 @@
   <ItemGroup>
     <ClCompile Include="eLockGUITest20151208.cpp" />
     <ClCompile Include="eLockGUITest20151208Dlg.cpp" />
+    <ClCompile Include="jcelock16ctrl1.cpp" />
     <ClCompile Include="myTestThreadProc1607.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
@@ -134,7 +136,7 @@
   </ImportGroup>
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties RESOURCE_FILE="eLockGUITest20151208.rc" _x007B_FBD9F9B5-5A34-4BD6-9FF1-BDE298685AFB_x007D_="CZjelockctrl1" />
+      <UserProperties RESOURCE_FILE="eLockGUITest20151208.rc" _x007B_FBD9F9B5-5A34-4BD6-9FF1-BDE298685AFB_x007D_="CZjelockctrl1" _x007B_ED9E331A-B93C-4EC8-9E89-77C486EDA910_x007D_="CJcelock16ctrl1" />
     </VisualStudio>
   </ProjectExtensions>
 </Project>

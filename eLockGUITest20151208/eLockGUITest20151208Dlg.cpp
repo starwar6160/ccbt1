@@ -119,7 +119,7 @@ CeLockGUITest20151208Dlg::CeLockGUITest20151208Dlg(CWnd* pParent /*=NULL*/)
 void CeLockGUITest20151208Dlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialogEx::DoDataExchange(pDX);
-	DDX_Control(pDX, IDC_ZJELOCKCTRL1, m_zjOCX);
+	//DDX_Control(pDX, IDC_ZJELOCKCTRL1, m_zjOCX);
 	DDX_Text(pDX, IDC_EDIT_MSGNUM, m_runMsgNum);
 	DDX_Text(pDX, IDC_LBL_CURMSG1, m_curMsg1);
 	DDX_Text(pDX, IDC_LBL_CURMSG2, m_curMsg2);
@@ -129,11 +129,12 @@ void CeLockGUITest20151208Dlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_LBL_FAILRATE2, m_failRate2);
 	DDX_Text(pDX, IDC_EDT_INVMS, m_msgInvMs);
 	DDX_Text(pDX, IDC_EDT_INVT2MS, m_thr2InvMs);
-	
+
 
 	DDX_Control(pDX, IDC_BTNRUN, m_btnRun);
 	DDX_Control(pDX, IDC_LBLCURITEM, m_lblAccMsgNum);
 	DDX_Control(pDX, IDC_EDIT_STS, m_MsgSts);
+	DDX_Control(pDX, IDC_JCELOCK16CTRL1, m_jcElock);
 }
 
 BEGIN_MESSAGE_MAP(CeLockGUITest20151208Dlg, CDialogEx)
@@ -179,16 +180,16 @@ BOOL CeLockGUITest20151208Dlg::OnInitDialog()
 	CMenu* pMenu = this->GetSystemMenu(FALSE);//系统菜单
 	pMenu->ModifyMenu(SC_CLOSE,MF_BYCOMMAND | MF_GRAYED );//禁用关闭按钮
 
-	m_runMsgNum=1000;
+	m_runMsgNum=9;
 	m_curMsg1=0;
 	m_failCount1=0;
 	m_failRate1=0.0f;
-	m_msgInvMs=5000;
-	m_thr2InvMs=5100;
+	m_msgInvMs=500;
+	m_thr2InvMs=710;
 	UpdateData(FALSE);
 	m_btnRun.SetFocus();
 	// TODO: 在此添加额外的初始化代码
-	DWORD iOpen=m_zjOCX.Open(22);
+	DWORD iOpen=m_jcElock.Open(22);
 	if (0!=iOpen)
 	{
 		MessageBoxA(NULL,"金储电子密码锁打开失败","失败",MB_OK);
@@ -256,7 +257,7 @@ void CeLockGUITest20151208Dlg::OnBnClickedButton1()
 
 	VARIANT tmpMsg;
 	myStr2Bstr(g_msg04,tmpMsg);	
-	m_zjOCX.Notify(tmpMsg);
+	m_jcElock.Notify(tmpMsg);
 	UpdateData(TRUE);
 	if (m_runMsgNum<=0)
 	{
@@ -354,7 +355,7 @@ void CeLockGUITest20151208Dlg::OnClose()
 	// TODO: 在此添加消息处理程序代码和/或调用默认值
 
 	Sleep(800);
-	m_zjOCX.Close();
+	m_jcElock.Close();
 	CDialogEx::OnClose();
 }
 

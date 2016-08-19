@@ -9,6 +9,7 @@
 #include <map>
 #include <string>
 #include "afxwin.h"
+#include "jcelock16ctrl1.h"
 using std::deque;
 using std::string;
 using std::vector;
@@ -56,7 +57,7 @@ protected:
 	DECLARE_MESSAGE_MAP()
 public:
 	// 紫金系统的OCX
-	CZjelockctrl1 m_zjOCX;
+	//CZjelockctrl1 m_zjOCX;
 	afx_msg void OnBnClickedButton1();
 	DECLARE_EVENTSINK_MAP()
 	void OnRecvMsgZjelockctrl1(const VARIANT& varMsg);
@@ -97,4 +98,6 @@ public:
 	// 干扰线程下发间隔毫秒
 	int m_thr2InvMs;
 	virtual BOOL PreTranslateMessage(MSG* pMsg);
+	// 金储自己的电子锁控件
+	CJcelock16ctrl1 m_jcElock;
 };
