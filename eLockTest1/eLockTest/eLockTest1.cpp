@@ -274,7 +274,7 @@ void myDequeTest704(void)
 
 int myGetRunCount(void);
 
-#include "jcLockLog.h"
+//#include "jcLockLog.h"
 
 int _tmain(int argc, TCHAR * argv[])
 {
@@ -288,7 +288,7 @@ int _tmain(int argc, TCHAR * argv[])
 	//zwStartGtestInDLL();
 
 
-	//eLockJsonTest20150106();
+	eLockJsonTest20150106();
 	//luaSendJsonTest1(argc, argv);
 	//myMulHidDevJsonTest20150116A();
 
@@ -307,5 +307,5 @@ int _tmain(int argc, TCHAR * argv[])
 	//cout<<"输入任何数字结束"<<endl;
 	//int tmpaa;
 	//cin>>tmpaa;
-	myBlackKeyTest804();
+	//myBlackKeyTest804();
 }
