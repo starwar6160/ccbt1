@@ -115,6 +115,7 @@ using jcAtmcConvertDLL::jcLockMsg1512_t;
 namespace zwccbthr {
 	double zwGetMs(void);	
 	void my706LockRecvThr();	//与锁具之间的通讯线程20160706
+	void my912LockRecvXMLThr();	//与锁具之间的通讯线程20160912
 	void my515UpMsgThr(void);
 	boost::thread *opCommThr=NULL;	//为了控制通讯线程终止
 	extern boost::mutex thrhid_mutex;
@@ -193,7 +194,13 @@ CCBELOCK_API long JCAPISTD Open(long lTimeOut)
 		{		
 			//启动后台数据收发线程的地方从Notify移动到了Open里面,
 			//20160808,应潘飞和刘浩的需求修改的；
+#ifdef MY_CCBXML_MODE1609
 			zwccbthr::opCommThr=new boost::thread(zwccbthr::my706LockRecvThr);
+#else
+			zwccbthr::opCommThr=new boost::thread(zwccbthr::my912LockRecvXMLThr);
+#endif // MY_CCBXML_MODE1609
+			 
+			
 			LOG(INFO)<<"启动后台数据收发线程"<<endl;
 		}	
 		return ELOCK_ERROR_SUCCESS;
@@ -272,6 +279,11 @@ CCBELOCK_API long JCAPISTD Notify(const char *pszMsg)
 		//XML开头的固定内容38个字符，外加起码一个标签的两对尖括号合计4个字符
 		assert(strXMLSend.length() > 42);	
 		jcAtmcConvertDLL::zwCCBxml2JCjson(strXMLSend, strJsonSend);
+#ifdef MY_CCBXML_MODE1609
+		jcAtmcConvertDLL::zwCCBxml2JCjson(strXMLSend, strJsonSend);
+#else 
+		strJsonSend=strXMLSend;
+#endif // MY_CCBXML_MODE1609
 		assert(strJsonSend.length() > 9);	//json最基本的符号起码好像要9个字符左右
 		
 		//不要一口气下发完毕，导致可能的测试线程过早结束

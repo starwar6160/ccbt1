@@ -275,6 +275,7 @@ void myDequeTest704(void)
 int myGetRunCount(void);
 
 //#include "jcLockLog.h"
+#include "zwHidMulHeader.h"
 
 int _tmain(int argc, TCHAR * argv[])
 {
@@ -288,7 +289,7 @@ int _tmain(int argc, TCHAR * argv[])
 	//zwStartGtestInDLL();
 
 
-	eLockJsonTest20150106();
+	//eLockJsonTest20150106();
 	//luaSendJsonTest1(argc, argv);
 	//myMulHidDevJsonTest20150116A();
 
@@ -303,7 +304,7 @@ int _tmain(int argc, TCHAR * argv[])
 
 	//myDequeTest704();
 
-	//eLockGoogleTest2014(argc, argv);	
+	eLockGoogleTest2014(argc, argv);	
 	//cout<<"输入任何数字结束"<<endl;
 	//int tmpaa;
 	//cin>>tmpaa;

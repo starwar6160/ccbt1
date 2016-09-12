@@ -119,7 +119,9 @@ namespace zwccbthr {
 			//Sleep(2920);
 			pRecvMsgFun(recvConvedXML);
 			s_LastUpload=time(NULL);
-			LOG(INFO)<<"上位机回调函数已经收到 "<<recvConvedXML<<endl;
+			LOG(WARNING)<<"上位机回调函数已经收到 "<<recvConvedXML<<endl;
+
+#ifdef MY_CCBXML_MODE1609
 			string upMsgType= jcAtmcConvertDLL::zwGetJcxmlMsgType(recvConvedXML);
 			if (s_dbgMatchNotify.size()>0)
 			{
@@ -156,11 +158,14 @@ namespace zwccbthr {
 			VLOG(3)<<"报文之间间隔时间"<<setprecision(0)<<diffMs<<"毫秒，当前第"<<nUpCount<<"条报文"<<endl;				
 			LOG_IF(WARNING,(nUpCount%3==0) && nExceedMaxMs>100)<<setprecision(0)<<"最大"<<nExceedMaxMs<<"毫秒 平均"<<setprecision(2)<<nExceedMsTotal/(nExceedCount+0.001)<<"毫秒"<<endl;
 			lastUpMsg=curMs;
+#endif // MY_CCBXML_MODE1609
 		}
+#ifdef MY_CCBXML_MODE1609
 		for (size_t i=0;i<s_dbgMatchNotify.size();i++)
 		{
 			LOG(WARNING)<<"s_dbgMatchNotify."<<s_dbgMatchNotify[i]->getNotifyType()<<endl;
 		}
+#endif // MY_CCBXML_MODE1609
 	}
 	
 	//是否是锁具主动上送报文这样的反向循环报文
@@ -207,6 +212,80 @@ namespace zwccbthr {
 	double zwGetMs(void)
 	{
 		return zwGetUs()/1000.0;
+	}
+
+	void my912LockRecvXMLThr(void)
+	{
+	try{
+		ZWWARN("与锁具之间的XML透传数据接收线程启动.20160912")
+		deque<jcLockMsg1512_t *> s_jcLockToC;		//锁具单向上传队列
+		const int BLEN = 1024;
+		char recvBuf[BLEN];					
+		using zwccbthr::s_jcNotify;
+		while (1)
+		{	
+			boost::this_thread::interruption_point();
+			{
+//////////////////////////////////////////////////////////////////////////
+				boost::mutex::scoped_lock lock(thrhid_mutex);				
+				boost::this_thread::interruption_point();
+				//下发报文
+				if (s_jcNotify.size()>0)
+				{
+					jcLockMsg1512_t *nItem=s_jcNotify.front();					
+					string sCmd=nItem->getNotifyMsg();
+					LOG(WARNING)<<"下发给锁具的消息内容是"<<sCmd;
+					JCHID_STATUS sts=static_cast<JCHID_STATUS>( g_jhc->SendJson(sCmd.c_str()));
+					//断线重连探测机制
+					if (JCHID_STATUS_OK!=static_cast<JCHID_STATUS>(sts))
+					{						
+						g_jhc->OpenJc();
+						LOG(WARNING)<<"发生了一次断线重连"<<endl;
+					}
+					s_jcNotify.pop_front();
+					VLOG(3)<<"下发队列头部元素弹出"<<"\t下发队列大小="<<s_jcNotify.size()<<endl;
+				}	//if (s_jcNotify.size()>0)	
+				//读取返回值
+				boost::this_thread::interruption_point();					
+				int nReadCount=0;
+				while(nReadCount<9)
+				{				
+				memset(recvBuf,0,BLEN);
+				JCHID_STATUS sts=static_cast<JCHID_STATUS>(g_jhc->RecvJson(recvBuf,BLEN));
+				LOG_IF(ERROR,JCHID_STATUS_HANDLE_NULL==sts)<<"JCHID_STATUS_HANDLE_NULL 错误发生了，JC锁具打开失败"<<endl;
+				if (JCHID_STATUS_HANDLE_NULL==sts)
+				{
+					LOG(WARNING)<<"等待5秒等待锁具恢复正常"<<endl;
+					Sleep(5000);
+				}
+				if (strlen(recvBuf)>0)
+				{										
+					LOG(INFO)<<"收到锁具返回消息= "<<recvBuf<<endl;
+					RecvMsgRotine pRecvMsgFun=zwccbthr::s_CallBack;
+					pushToCallBack(recvBuf,pRecvMsgFun);																
+				}
+				else
+				{
+					break;
+				}
+				}	//while(nReadCount<9)
+//////////////////////////////////////////////////////////////////////////
+			}	//boost::mutex::scoped_lock 
+		}	//while (1)
+
+	}
+	catch(boost::property_tree::json_parser_error &e)
+	{
+		LOG(ERROR)<<"my706LockRecvThr json_parser_error异常:"<<e.what()<<endl;
+	}
+	catch(boost::property_tree::xml_parser_error &e)
+	{
+		LOG(ERROR)<<"my706LockRecvThr xml_parser_error异常:"<<e.what()<<endl;
+	}
+	catch(boost::property_tree::file_parser_error &e)
+	{
+		LOG(ERROR)<<"my706LockRecvThr file_parser_error异常:"<<e.what()<<endl;
+	}
 	}
 
 

@@ -326,7 +326,7 @@ testMatch1607::myMsgSts1607 rdq;
 void zw1209SpeedTestThr1(void)
 {
 	//Sleep(100);
-	//cout<<"["<<__FUNCTION__<<"] ThreadPID=["<<GetCurrentThreadId()<<"]\tSTART"<<endl;	
+	cout<<"912["<<__FUNCTION__<<"] ThreadPID=["<<GetCurrentThreadId()<<"]\tSTART"<<endl;	
 	SetRecvMsgRotine(myATMCRecvMsgRotine);	
 	//EXPECT_EQ(ELOCK_ERROR_SUCCESS,Open(22));		
 
@@ -442,14 +442,17 @@ TEST_F(ccbElockTest, jcHidDev20151207SpeedTestInATMCDLL)
 {	
 	//boost::thread *thr3=new boost::thread(zw1218OpenTimeTestThr);
 	g_totalRunCount=myGetRunCount();
-	boost::thread *thr1=new boost::thread(zw713SpeedTest1);	
+	//boost::thread *thr1=new boost::thread(zw713SpeedTest1);	
 	//boost::thread *thr2=new boost::thread(zw711SpeedTestThr1);
 	
-	thr1->join();
+	
+	//thr1->join();
 	//thr2->join();
 	//thr3->join();
 	//zw713SpeedTest1();
-	Sleep(19000);
+	zw1209SpeedTestThr1();
+	Sleep(9000);
+	
 	//EXPECT_EQ(ELOCK_ERROR_SUCCESS,Close());
 	//rdq.dumpDownDeque();
 }
